@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:quran_app/core/components/animation_list.dart';
+import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/jsons/hisn_almuslim.dart';
+import 'package:quran_app/core/jsons/ruqia_text.dart';
+import 'package:quran_app/core/services/clip_board_services.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
+
+class RuqiaShareiahScreen extends StatelessWidget {
+  const RuqiaShareiahScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseHome(
+      customAppBar: Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios),
+          ),
+          Text(
+            "الرقية الشرعية",
+            style: titleMedium(context),
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: ruqiaText.length,
+        itemBuilder: (context, index) {
+          return BaseAnimationListView(
+            index: index,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          ruqiaText[index]['category'],
+                          style: titleMedium(context),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.share_sharp),
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              await ClipBoardServices.copyText(
+                                text: ruqiaText[index]['zekr'],
+                                message: "تم النسخ بنجاح",
+                              );
+                            },
+                            icon: const Icon(Icons.copy_outlined),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  //
+          
+                  Text(
+                    ruqiaText[index]['zekr'],
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 210, 209, 209)),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "المرجع : ${ruqiaText[index]['reference'] == "" ? "القرأن الكريم" : ruqiaText[index]['reference']}",
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

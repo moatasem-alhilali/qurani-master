@@ -1,0 +1,109 @@
+name: quran_app
+description: A new Flutter project.
+publish_to: 'none' 
+
+version: 1.0.6+6
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_local_notifications: ^9.7.1
+  flutter_native_timezone: ^2.0.0
+  intl: ^0.17.0
+  rxdart: ^0.27.2
+  flutter_bloc: ^8.0.1
+  flutter_svg: ^1.1.6
+  shared_preferences: ^2.0.15
+  scrollable_positioned_list: ^0.3.5
+  geolocator: ^9.0.2
+  flutter_qiblah: ^2.1.0
+  lottie: ^1.4.2
+  fluttertoast: ^8.1.2
+  sqflite: ^2.0.0+4
+  pdfx: ^2.3.0
+  just_audio: ^0.9.31
+  path_provider: ^2.0.11
+  dio: ^5.0.2
+  audio_video_progress_bar: ^1.0.0
+  connectivity_plus: ^2.3.9
+  rename: ^2.1.1
+  quran: ^1.2.0
+  adhan: ^1.1.16
+  adhan_dart: ^1.0.8
+  smooth_page_indicator: ^1.0.0+2
+  timelines: ^0.1.0
+  carousel_slider: ^4.2.1
+  readmore: ^2.2.0
+  flutter_animate:
+  shimmer: ^2.0.0
+  flutter_staggered_animations: ^1.1.1
+  al_quran: ^0.1.1+5
+  # ---------------------------------------
+   
+
+dev_dependencies:
+  flutter_native_splash: ^2.2.19
+
+flutter_native_splash:
+  color: "#1e1e1e"
+  color_dark: "#1e1e1e"
+  image_dark: assets/logo/splash.png
+  image: assets/logo/splash.png
+
+  android_12: 
+    image_android: assets/logo/splash.png
+    image_dark_android: assets/logo/splash.png
+    color_android:  "#1e1e1e"
+    color_dark_android: "#1e1e1e"
+
+  android: true
+  ios: false
+  web: false
+
+
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  assets:
+    - assets/
+    - assets/image/
+    - assets/pdf/
+    - assets/svg/
+    - assets/athores/
+    - assets/prayer_time/
+    - assets/lang/
+    - assets/logo/
+    - assets/lottie/
+
+  fonts:
+    - family: quran
+      fonts:
+        - asset: assets/fonts/lpmq.otf
+
+    - family: quran2
+      fonts:
+        - asset: assets/fonts/tfont.ttf
+
+    - family: ios-1
+      fonts:
+        - asset: assets/fonts/fontone.ttf
+
+    - family: ios-2
+      fonts:
+        - asset: assets/fonts/fonttow.ttf
+
+    - family: ios-3
+      fonts:
+        - asset: assets/fonts/fontthree.otf
+
+       
+  uses-material-design: true
+
