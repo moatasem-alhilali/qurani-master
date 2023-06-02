@@ -1,3 +1,9 @@
+# Qur'an App 🎬
+
+![visitors](https://visitor-badge.glitch.me/badge?right_color=teal&page_id=vellt/Movies-App) 
+![Web 1280 – 1]( https://img.shields.io/badge/made%20with-flutter-blue?style=flat)
+[![License](https://img.shields.io/badge/license-MIT-orange)](./LICENSE)
+![Web 1280 – 1]( https://img.shields.io/badge/-open%20source-wheat)
 ## Some Screens:
 
 <table>
