@@ -1,7 +1,21 @@
-# A Completed Functional Flutter App - Peachy Ecommerce  (BLoC + Firebase + Clean Architecture)
+## Some Screens:
 
-![Banner](https://github.com/haonguyenuet/ecommerce-flutter-firebase/blob/main/screenshots/banner.png)
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/1.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/2.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/3.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/4.jpg" alt="Image 2"></td>
+  </tr>
+</table>
 
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/5.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/6.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/7.jpg" alt="Image 2"></td>
+  </tr>
+</table>
 ## Folder Structure
 Here is the core folder structure which flutter provides.
 
@@ -13,44 +27,18 @@ flutter_bloc_boilerplate/
 |- lib
 ```
 
-Here is the folder structure we have been using in this project
-
-```
-lib/
-|- configs/
-|- constants/
-|- data/
-   |- local/
-   |- models/
-   |- repository/
-   |- request/
-|- presentation/
-   |- common_blogs/
-   |- views/
-   |- widgets/
-|- utils/
-```
 
 ## App Features:
-* Flutter + Firebase (Firestore, Authentication, Storage)
-  Test account: haonguyen.uet@gmail.com / 123456
 * Use BloC pattern
 * Responsive
 * User-friendly interface
 * Clean Architecture
 * Custom resuable widgets
-* Login or register by email and password
 * Search, filter and sort products
 * Send your feedback and rating
-* Contact with admin by message
-* Payment by 2 methods: Cash or Credit card
 * Track your orders
-* Select your delivery address
-* Change app language
 * More...
 
-## Some Screens:
-![Banner](https://github.com/haonguyenuet/ecommerce-flutter-firebase/blob/main/screenshots/screens.png)
 
 ## Before run project, execute commands:
 - `flutter clean`
