@@ -2,7 +2,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/jsons/moast_reader_text.dart';
 import 'package:quran_app/core/jsons/quran_text.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
-import 'package:quran/quran.dart' as quran;
 
 class AudioPlayerHelper {
   //Audio Player object

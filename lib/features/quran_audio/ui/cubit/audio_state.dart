@@ -1,30 +1,31 @@
 part of 'audio_cubit.dart';
 
 @immutable
-abstract class AudioCubitState {}
+abstract class AudioState {}
 
-class AudioCubitInitial extends AudioCubitState {}
-
-//
-class InitAudioAudioLoadingState extends AudioCubitState {}
-
-class InitAudioAudioSuccessState extends AudioCubitState {}
-
-class InitAudioAudioErrorState extends AudioCubitState {}
+class AudioCubitInitial extends AudioState {}
 
 //
+class InitAudioAudioLoadingState extends AudioState {}
 
-class CurrentAudioPlayerState extends AudioCubitState {}
-class UpdateAudioPlayerState extends AudioCubitState {}
+class InitAudioAudioSuccessState extends AudioState {}
 
-class LoadingInitAudioPlayerState extends AudioCubitState {}
-
-//
-class PlayAudioLoadingState extends AudioCubitState {}
-
-class PlayAudioSuccessState extends AudioCubitState {}
+class InitAudioAudioErrorState extends AudioState {}
 
 //
-class NextPlayAudioLoadingState extends AudioCubitState {}
 
-class NextPlayAudioSuccessState extends AudioCubitState {}
+class CurrentAudioPlayerState extends AudioState {}
+
+class UpdateAudioPlayerState extends AudioState {}
+
+class LoadingInitAudioPlayerState extends AudioState {}
+
+//
+class PlayAudioLoadingState extends AudioState {}
+
+class PlayAudioSuccessState extends AudioState {}
+
+//
+class NextPlayAudioLoadingState extends AudioState {}
+
+class NextPlayAudioSuccessState extends AudioState {}

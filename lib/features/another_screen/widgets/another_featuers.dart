@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/core/shared/resources/assets_manager.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/another_screen/widgets/surah_and_detail.dart';
+import 'package:quran_app/features/my_adia/page/doua_home.dart';
 import 'package:quran_app/features/quran_audio/ui/pages/audio_home.dart';
-import 'package:quran_app/features/search_ayah/pages/search_ayah.dart';
+import 'package:quran_app/features/allh_name/pages/allh_name_screen.dart';
+import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/qiblah/qiblah_main.dart';
+import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_app/features/sabih/pages/sabih_screen.dart';
+import 'package:quran_app/features/thikr/pages/thikr_screen.dart';
+import 'package:quran_app/features/thikr/pages/wird_screen.dart';
 
 import 'azkar_after_pray.dart';
 import 'hadith_40.dart';
@@ -18,117 +27,170 @@ class AnotherFeatures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
-        children: [
-          //
-          Row(
-            children: [
-              _Item(
-                onPressed: () {
-                  navigateTo(HisnMuslim(), context);
-                },
-                svg: "assets/prayer_time/document_svgrepo.svg",
-                colorSvg: const Color.fromARGB(255, 132, 210, 84),
-                text: "حصن المسلم",
-              ),
-              _Item(
-                onPressed: () {
-                  navigateTo(const Hadith40(), context);
-                },
-                svg: "assets/prayer_time/document_svgrepo.svg",
-                colorSvg: const Color.fromARGB(255, 57, 156, 205),
-                text: "الأربعين النووية",
-              ),
-              _Item(
-                onPressed: () {
-                  navigateTo(const AzkarAfterPray(), context);
-                },
-                svg: "assets/prayer_time/document_svgrepo.svg",
-                colorSvg: const Color.fromARGB(255, 241, 72, 72),
-                text: "أذكار بعد الصلاة",
-              ),
-            ],
+    return GridView(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        childAspectRatio: 1 / 1.5,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 10,
+      ),
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      children: [
+        _Item(
+          onPressed: () {
+            context.push(const ReadQuranScreen());
+          },
+          text: "القرآن الكريم",
+          icon: FlutterIslamicIcons.quran2,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const WirdScreen(), context);
+          },
+          text: "أذكار الصباح",
+          icon: FlutterIslamicIcons.prayer,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(QiblahMain(), context);
+          },
+          text: "القبلة",
+          icon: FlutterIslamicIcons.qibla,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const WirdScreen(), context);
+          },
+          text: "أذكار المساء",
+          icon: FlutterIslamicIcons.prayer,
+        ),
+        if (serviceEnabled)
+          _Item(
+            onPressed: () {
+              PrayerTimeController.setCurrentColorPrayer();
+
+              navigateTo(const PrayerTimeScreen(), context);
+            },
+            text: "أوقات الصلاة",
+            icon: FlutterIslamicIcons.prayingPerson,
           ),
 
-          //second
-          Row(
-            children: [
-              _Item(
-                onPressed: () {
-                  navigateTo(const RuqiaShareiahScreen(), context);
-                },
-                svg: "assets/prayer_time/document_svgrepo.svg",
-                colorSvg: const Color.fromARGB(255, 226, 113, 236),
-                text: "الرقية الشرعية",
-              ),
-              _Item(
-                onPressed: () {
-                  navigateTo(SearchAyahScreen(), context);
-                },
-                svg: "assets/prayer_time/document_svgrepo.svg",
-                text: "البحث على أية",
-                colorSvg: const Color.fromARGB(255, 255, 136, 72),
-              ),
-              _Item(
-                onPressed: () {
-                  navigateTo(const SurahWithAllDetail(), context);
-                },
-                svg: AssetsManager.quran,
-                text: "السور وسبب النزول",
-              ),
-            ],
-          ),
-        ],
-      ),
+        _Item(
+          onPressed: () {
+            navigateTo(SabihScreen(), context);
+          },
+          text: "التسبيح",
+          icon: FlutterIslamicIcons.tasbih2,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const AllhNameScreen(), context);
+          },
+          text: "أسماء الله ",
+          icon: FlutterIslamicIcons.allah,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const ThikrScreen(), context);
+          },
+          text: "الاذكار",
+          icon: FlutterIslamicIcons.quran,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const AudioHome(), context);
+          },
+          text: "السماع",
+          icon: FlutterIslamicIcons.quran,
+        ),
+
+        //
+        _Item(
+          onPressed: () {
+            navigateTo(HisnMuslim(), context);
+          },
+          text: "حصن المسلم",
+          icon: FlutterIslamicIcons.quran,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const Hadith40(), context);
+          },
+          text: "الأربعين النووية",
+          icon: FlutterIslamicIcons.quran,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const AzkarAfterPray(), context);
+          },
+          text: "أذكار بعد الصلاة",
+          icon: FlutterIslamicIcons.tasbihHand,
+        ),
+
+        //second
+        _Item(
+          onPressed: () {
+            navigateTo(const RuqiaShareiahScreen(), context);
+          },
+          text: "الرقية الشرعية",
+          icon: FlutterIslamicIcons.quran,
+        ),
+
+        _Item(
+          onPressed: () {
+            navigateTo(const SurahWithAllDetail(), context);
+          },
+          text: "السور وسبب النزول",
+          icon: FlutterIslamicIcons.quran,
+        ),
+        _Item(
+          onPressed: () {
+            navigateTo(const DouaHome(), context);
+          },
+          text: "ادعيتي",
+          icon: FlutterIslamicIcons.muslim2,
+        ),
+      ],
     );
   }
 }
 
 class _Item extends StatelessWidget {
-  _Item({
-    super.key,
+  const _Item({
     required this.onPressed,
-    required this.svg,
-    this.svgSize,
     required this.text,
-    this.colorSvg,
+    this.icon,
   });
 
   final String text;
-  final String svg;
-  double? svgSize;
-  Color? colorSvg;
+
+  final IconData? icon;
+
   final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return InkWell(
+      onTap: onPressed,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                backgroundColor: ColorsManager.customMainSecondary,
-              ),
-              onPressed: onPressed,
-              child: SvgPicture.asset(
-                svg,
-                height: svgSize ?? SizeConfig.blockSizeVertical! * 6,
-                color: colorSvg,
-              ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: FxColors.secondary,
+            ),
+            child: Icon(
+              icon,
+              size: 40,
+              // color: DarkColors.customPrimary,
             ),
           ),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: titleSmall(context),
-          ),
+          // if (isSvgImage)
+
+          const SizedBox(height: 5),
+          text.autoSize(context,
+              maxLines: 3, minFontSize: 10, textAlign: TextAlign.center),
         ],
       ),
     );

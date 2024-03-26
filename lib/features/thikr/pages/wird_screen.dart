@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/doa_item.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/wird.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class WirdScreen extends StatefulWidget {
-  WirdScreen({super.key});
+  const WirdScreen({super.key});
 
   @override
   State<WirdScreen> createState() => _WirdScreenState();
@@ -24,23 +25,15 @@ class _WirdScreenState extends State<WirdScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "المأثورات",
-              style: titleMedium(context),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
-          ],
-        ),
+      titleWidget:
+          "“يقول تعالى \n والذاكرين الله كثيرا والذاكرات \n أعد الله لهم مغفرة وأجرا عظيما”"
+              .autoSize(
+        context,
+        fontSize: 12,
+        minFontSize: 8,
+        maxLines: 3,
+        color: Colors.grey,
+        textAlign: TextAlign.center,
       ),
       body: Column(
         children: [
@@ -58,8 +51,7 @@ class _WirdScreenState extends State<WirdScreen> {
               itemBuilder: (context, index) {
                 var datathikr = wird[index];
 
-                return BaseAnimationListView(
-                  duration: 100,
+                return BaseAnimateFlipList(
                   index: index,
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -68,7 +60,7 @@ class _WirdScreenState extends State<WirdScreen> {
                         childPageNumber: Text(
                           "${wird.length - 1}/$current",
                           style: titleSmall(context).copyWith(
-                            color: ColorsManager.customPrimary,
+                            color: FxColors.primary,
                           ),
                         ),
                         fontFamily: 'ios-1',
@@ -76,7 +68,7 @@ class _WirdScreenState extends State<WirdScreen> {
                         content: datathikr['content'],
                         text: datathikr['text'],
                         number: 'التكرار :  ${datathikr['counter']} ',
-                        onTap: () async {
+                        onLongPress: () async {
                           await ClipBoardServices.copyText(
                               text: datathikr['text']);
                           ToastServes.showToast(message: 'تم النسخ بنجاح');
@@ -95,7 +87,7 @@ class _WirdScreenState extends State<WirdScreen> {
             effect: ExpandingDotsEffect(
               spacing: 15.0,
               radius: 10.0,
-              activeDotColor: ColorsManager.customPrimary,
+              activeDotColor: FxColors.primary,
               dotHeight: 15,
               dotWidth: 15,
             ),

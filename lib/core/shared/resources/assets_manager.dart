@@ -1,4 +1,3 @@
-
 const String mainPathImage = "assets/lottie";
 
 class AssetsManager {
@@ -15,24 +14,6 @@ class AssetsManager {
   static const kiblat = "assets/svg/kiblat.svg";
   static const other = "assets/svg/other.svg";
 
-  //new icon
-  // static const time_hourglass = "assets/prayer_time/time_hourglass.svg";
-  // static const document_svgrepo = "assets/prayer_time/document_svgrepo.svg";
-  // static const document_svgrepo2 = "assets/prayer_time/document_svgrepo2.svg";
-  // static const document_svgrepo3 = "assets/prayer_time/document_svgrepo3.svg";
-  // static const document_svgrepo4 = "assets/prayer_time/document_svgrepo4.svg";
-  // static const document_download_svgrepo =
-  //     "assets/prayer_time/document_download_svgrepo5.svg";
-  // static const document_cloud_svgrepo =
-  //     "assets/prayer_time/document_cloud_svgrepo.svg";
-
-  // static const quran_image1 = "assets/prayer_time/quran_image.png";
-  // static const quran_image2 = "assets/prayer_time/quran_image2.png";
-  // static const praying = "assets/prayer_time/praying.png";
-  // static const table = "assets/prayer_time/table.png";
-  // static const teaching = "assets/prayer_time/teaching.png";
-  // static const time = "assets/prayer_time/time.png";
-
   //icon
   static const quran_icon = "assets/image/quran_icon.png";
   static const listeng_icon = "assets/image/listeng_icon.png";
@@ -47,4 +28,16 @@ class AssetsManager {
   static const zhur = "assets/athores/zhur.png";
   static const sunset = "assets/athores/sunset.png";
   static const subuh = "assets/athores/subuh.png";
+}
+
+class FxSvg {
+  // static const category = "assets/icons/category.svg";
+}
+
+class FxFonts {
+  static const ios1 = 'ios-1';
+  static const ios2 = 'ios-2';
+  static const ios3 = 'ios-3';
+  static const quran2 = 'quran2';
+  static const quran = 'quran';
 }

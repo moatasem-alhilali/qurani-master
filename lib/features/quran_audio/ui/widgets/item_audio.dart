@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/components/base_bottom_sheet.dart';
-import 'package:quran_app/core/theme/themeData.dart';
-import 'package:quran_app/features/quran/presentation/model/surah_model.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/constant.dart';
-
+import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 
 class StyleContainer extends StatelessWidget {
   StyleContainer({super.key, required this.child});
@@ -62,7 +59,6 @@ class ItemDownloaded extends StatelessWidget {
         IconButton(
           onPressed: () async {
             if (ISCONNECTED) {
-           
             } else {
               ToastServes.showToast(message: 'لست متصلا بالأنترنت');
             }

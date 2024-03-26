@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/Home/cubit.dart';
-import 'package:quran_app/core/Home/state.dart';
-import 'package:quran_app/core/components/base_bottom_sheet.dart';
 import 'package:quran_app/core/jsons/moast_reader_text.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
@@ -12,7 +9,7 @@ import 'package:quran_app/features/quran_audio/controller/repository/audio_playe
 import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
 
 class RecommendedQurea extends StatefulWidget {
-  RecommendedQurea({
+  const RecommendedQurea({
     super.key,
   });
 
@@ -49,7 +46,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
             itemBuilder: (context, indexOfQarea) {
               var data = mostReaderData[indexOfQarea];
 
-              return BlocBuilder<AudioCubit, AudioCubitState>(
+              return BlocBuilder<AudioCubit, AudioState>(
                   builder: (context, state) {
                 var cubit = AudioCubit.get(context);
                 return InkWell(
@@ -82,7 +79,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: cubit.currentReader == indexOfQarea
-                          ? ColorsManager.customPrimarySecondary
+                          ? FxColors.primarySecondary
                           : Theme.of(context).primaryColor,
                     ),
                     duration: const Duration(milliseconds: 500),

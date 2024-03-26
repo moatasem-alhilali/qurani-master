@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/bloc/base_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
-import 'package:quran_app/features/offline_audio/cubit/offline_cubit.dart';
-import 'package:quran_app/features/offline_audio/pages/offline_audio_screen.dart';
+import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/auto_text.dart';
+import 'package:quran_app/features/home/widgets/custom_bottom_navigation_bar2.dart';
 
 import 'package:quran_app/features/quran_audio/ui/widgets/all_surah_aduio.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/features/quran_audio/ui/widgets/play_suarh_audio.dart';
 import 'package:quran_app/features/quran_audio/ui/widgets/recommended_qurea.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/main_view.dart';
 
 class AudioHome extends StatefulWidget {
   const AudioHome({Key? key}) : super(key: key);
@@ -21,59 +26,59 @@ class _AudioHomeState extends State<AudioHome> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        body: SafeArea(
-          child: BaseHome(
-            customAppBar: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back_ios),
-                    ),
-                    Text(
-                      "القرأن استماع",
-                      style: titleMedium(context),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  onPressed: () {
-                    OfflineCubit.get(context).getAudioPath();
-                    navigateTo(const OfflineAudioScreen(), context);
-                  },
-                  icon: const Icon(
-                    Icons.wifi_off_outlined,
-                    size: 30,
-                  ),
-                ),
-              ],
-            ),
-
-            //body
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                //Audio play suarh listen
-
-                PlaySurahAudio(),
-
-                //recommended qura
-
-                RecommendedQurea(),
-
-                //another surah
-                const AllSurahAudio(),
-              ],
+    return BaseHome(
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircleAvatar(
+          radius: 15,
+          backgroundColor: FxColors.primary,
+          child: FittedBox(
+            child: IconButton(
+              onPressed: () {
+                currentPage = 5;
+                context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                context.push(const MainPage());
+              },
+              icon: const Icon(
+                Icons.offline_pin_outlined,
+              ),
             ),
           ),
         ),
+      ),
+      titleWidget: "واذا قرئ القران فاستمعوا له وانصتوا".autoSize(
+        context,
+        fontSize: 12,
+        minFontSize: 8,
+        maxLines: 3,
+        color: Colors.grey,
+        textAlign: TextAlign.center,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const PlaySurahAudio(),
+
+          const RecommendedQurea(),
+
+          //another surah
+          BlocBuilder<ReadQuranBloc, ReadQuranState>(
+            builder: (context, state) {
+              switch (state.loadQuranState) {
+                case RequestState.defaults:
+                  return const SizedBox();
+
+                case RequestState.loading:
+                  return const SizedBox();
+
+                case RequestState.error:
+                  return const SizedBox();
+                case RequestState.success:
+                  return const AllSurahAudio();
+              }
+            },
+          ),
+        ],
       ),
     );
   }

@@ -10,7 +10,7 @@ part 'audio_state.dart';
 
 double progress = 0;
 
-class AudioCubit extends Cubit<AudioCubitState> {
+class AudioCubit extends Cubit<AudioState> {
   AudioCubit() : super(AudioCubitInitial());
   static AudioCubit get(context) => BlocProvider.of(context);
 

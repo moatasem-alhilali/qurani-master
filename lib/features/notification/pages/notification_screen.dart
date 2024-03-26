@@ -10,24 +10,7 @@ class ManageNotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  BaseHome(
-        customAppBar: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back_ios),
-              ),
-              Text(
-                "إعدادت الإشعارات",
-                style: titleMedium(context),
-              ),
-            ],
-          ),
-        ),
+      
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [

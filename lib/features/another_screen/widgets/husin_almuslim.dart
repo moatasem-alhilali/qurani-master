@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
-import 'package:quran_app/core/components/base_bottom_sheet.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/hisn_almuslim.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 class HisnMuslim extends StatelessWidget {
   HisnMuslim({super.key});
@@ -14,20 +14,7 @@ class HisnMuslim extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text(
-            "حصن المسلم",
-            style: titleMedium(context),
-          ),
-        ],
-      ),
+      title: "حصن المسلم",
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -44,12 +31,11 @@ class HisnMuslim extends StatelessWidget {
           final _keyHusin = keyHusin[index];
           final _footnoteHusin = footnoteHusin[index];
           final _valueHusin = valueHusin[index];
-          return BaseAnimationListView(
-            index: index,
+          return BaseAnimateFlipList(
+            index: 0,
             child: InkWell(
               onTap: () {
-                showBottomSheetFunction(
-                  context: context,
+                context.showBottomSheet(
                   child: _bottomSheet(
                       keyHusin: _keyHusin,
                       valueHusin: _valueHusin,
@@ -76,8 +62,8 @@ class HisnMuslim extends StatelessWidget {
                     ),
                     CircleAvatar(
                       backgroundColor: index % 2 == 0
-                          ? ColorsManager.customPrimary
-                          : ColorsManager.customPrimarySecondary,
+                          ? FxColors.primary
+                          : FxColors.primarySecondary,
                       radius: 18,
                       child: Text("${index + 1}"),
                     ),

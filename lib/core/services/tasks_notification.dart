@@ -9,13 +9,14 @@ import 'notification_message.dart';
 class ServicesNotification {
   static Future<void> sendNotification() async {
     //الصلاة على النبي
-    if (ManageNotificationController.isNotificationMohummed) {
-      await showScheduledNotificationMohummed();
-      showScheduledRandomThikrNotification();
-    }
+    // if (ManageNotificationController.isNotificationMohummed) {
+    await showScheduledNotificationMohummed();
+    await showScheduledRandomThikrNotification();
+    // }
 
     //كل الاذكار اليوميه
-    if (ManageNotificationController.isNotificationAllThirk) {
+    // if (ManageNotificationController.isNotificationAllThirk) {
+    if (true) {
       //النوافل
       if (ManageNotificationController.isNotificationPrayMiddleNight) {
         await showScheduledNotificationPrayMiddleNight();
@@ -210,7 +211,7 @@ class ServicesNotification {
   //------------------------الصلاة على النبي------------------------
 
   static Future<void> showScheduledNotificationMohummed() async {
-    for (int i = 4; i < 23; i++) {
+    for (int i = 1; i < 23; i++) {
       await notifyHelper.customScheduledNotification(
         channelId: "sound_mohamed_android_channel",
         channelName: "Sound Mohamed Android Channel",
@@ -321,7 +322,7 @@ class ServicesNotification {
   static Future<void> showScheduledRandomThikrNotification() async {
     Random random = Random();
 
-    for (int i = 4; i < 23; i++) {
+    for (int i = 1; i < 23; i++) {
       await notifyHelper.customScheduledNotification(
         hour: i,
         minute: 15,

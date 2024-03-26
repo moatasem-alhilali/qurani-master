@@ -15,20 +15,6 @@ class _ThikrEvreyDayScreenState extends State<ThikrEvreyDayScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text(
-            "الاذكار اليومية",
-            style: titleMedium(context),
-          ),
-        ],
-      ),
       body: Column(
         children: [
           _StyleContainer(
@@ -64,7 +50,7 @@ class _ThikrEvreyDayScreenState extends State<ThikrEvreyDayScreen> {
                 Text(
                   "الأذكار اليومية",
                   style: titleSmall(context).copyWith(
-                    color: ColorsManager.customPrimary,
+                    color: FxColors.primary,
                   ),
                 ),
               ],
@@ -343,10 +329,10 @@ class _MySwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return Switch.adaptive(
       //color
-      activeColor: ColorsManager.customPrimary,
-      activeTrackColor: ColorsManager.customPrimary,
-      inactiveThumbColor: ColorsManager.customPrimarySecondary,
-      inactiveTrackColor: ColorsManager.customPrimarySecondary,
+      activeColor: FxColors.primary,
+      activeTrackColor: FxColors.primary,
+      inactiveThumbColor: FxColors.primarySecondary,
+      inactiveTrackColor: FxColors.primarySecondary,
 
       value: value,
       onChanged: onChanged,

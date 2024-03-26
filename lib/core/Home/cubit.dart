@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/Home/state.dart';
 
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/features/quran_audio/controller/repository/audio_player_helper.dart';
-import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(InitialState());
@@ -67,13 +64,13 @@ class HomeCubit extends Cubit<HomeState> {
   //internet checker
   void checkConnection() async {
     //check if connect of internet
-    Connectivity _connectivity = Connectivity();
+    Connectivity connectivity = Connectivity();
     //check if connect of internet
-    if (_connectivity.checkConnectivity() == ConnectivityResult.none) {
+    if (connectivity.checkConnectivity() == ConnectivityResult.none) {
       ISCONNECTED = false;
     }
     _subscription =
-        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+        connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       if (result == ConnectivityResult.wifi ||
           result == ConnectivityResult.mobile) {
         emit(ConnectedState());

@@ -10,13 +10,14 @@ class Controller extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: StreamBuilder<PlayerState>(
+        stream: audioPlayer.playerStateStream,
         builder: (context, snapshot) {
           final playerState = snapshot.data;
           final processingState = playerState?.processingState;
           final playing = playerState?.playing;
           if (!(playing ?? false)) {
             return CircleAvatar(
-              backgroundColor: ColorsManager.customPrimary,
+              backgroundColor: FxColors.primary,
               child: IconButton(
                 onPressed: audioPlayer.play,
                 icon: const Icon(Icons.play_arrow_outlined),
@@ -34,12 +35,11 @@ class Controller extends StatelessWidget {
             );
           } else {
             return CircleAvatar(
-              backgroundColor: ColorsManager.customPrimary,
+              backgroundColor: FxColors.primary,
               child: const Icon(Icons.play_arrow_rounded),
             );
           }
         },
-        stream: audioPlayer.playerStateStream,
       ),
     );
   }

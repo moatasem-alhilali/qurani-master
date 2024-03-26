@@ -1,5 +1,4 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 
 class ServicesLocation {
@@ -37,4 +36,16 @@ class ServicesLocation {
 
     return await Geolocator.getCurrentPosition();
   }
+
+  static Future<Position> getCurrentPosition() async {
+    return await Geolocator.getCurrentPosition();
+  }
+
+  static Future<bool> isLocationEnabled() async {
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    return serviceEnabled;
+  }
 }
+
+bool serviceEnabled = false;

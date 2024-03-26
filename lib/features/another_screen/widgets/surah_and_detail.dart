@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
-import 'package:quran_app/core/components/base_bottom_sheet.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/random_surah_detail.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 class SurahWithAllDetail extends StatelessWidget {
   const SurahWithAllDetail({super.key});
@@ -11,20 +11,7 @@ class SurahWithAllDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text(
-            "معلومات حول السور",
-            style: titleMedium(context),
-          ),
-        ],
-      ),
+      title: "معلومات حول السور",
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -32,12 +19,11 @@ class SurahWithAllDetail extends StatelessWidget {
         itemBuilder: (context, index) {
           var data = randomSurahDetail[index];
 
-          return BaseAnimationListView(
-            index: index,
+          return BaseAnimate(
+            index: 0,
             child: InkWell(
               onTap: () {
-                showBottomSheetFunction(
-                  context: context,
+                context.showBottomSheet(
                   child: _bottomSheet(data: data),
                 );
               },
@@ -61,8 +47,8 @@ class SurahWithAllDetail extends StatelessWidget {
                     ),
                     CircleAvatar(
                       backgroundColor: index % 2 == 0
-                          ? ColorsManager.customPrimary
-                          : ColorsManager.customPrimarySecondary,
+                          ? FxColors.primary
+                          : FxColors.primarySecondary,
                       radius: 18,
                       child: Text("${index + 1}"),
                     ),
@@ -79,7 +65,6 @@ class SurahWithAllDetail extends StatelessWidget {
 
 class _bottomSheet extends StatelessWidget {
   const _bottomSheet({
-    super.key,
     required this.data,
   });
 

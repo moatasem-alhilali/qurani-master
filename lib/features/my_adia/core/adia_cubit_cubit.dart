@@ -5,9 +5,9 @@ import 'package:quran_app/features/my_adia/core/db/db_helper_note.dart';
 
 part 'adia_cubit_state.dart';
 
-class AdiaCubitCubit extends Cubit<AdiaCubitState> {
-  AdiaCubitCubit() : super(AdiaCubitInitial());
-  static AdiaCubitCubit get(context) => BlocProvider.of(context);
+class AdiaCubit extends Cubit<AdiaCubitState> {
+  AdiaCubit() : super(AdiaCubitInitial());
+  static AdiaCubit get(context) => BlocProvider.of(context);
 
   List<DoaModel> doaList = [];
   void addDua({String? title, String? content}) {

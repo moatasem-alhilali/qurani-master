@@ -103,10 +103,10 @@ class MySwitchListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SwitchListTile(
       //color
-      activeColor: ColorsManager.customPrimary,
-      activeTrackColor: ColorsManager.customPrimary,
-      inactiveThumbColor: ColorsManager.customPrimarySecondary,
-      inactiveTrackColor: ColorsManager.customPrimarySecondary,
+      activeColor: FxColors.primary,
+      activeTrackColor: FxColors.primary,
+      inactiveThumbColor: FxColors.primarySecondary,
+      inactiveTrackColor: FxColors.primarySecondary,
       // dense: true,
 
       value: value,

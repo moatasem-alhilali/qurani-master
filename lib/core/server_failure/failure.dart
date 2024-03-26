@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 
+class AssetFailure extends Failure {
+  AssetFailure(super.messageError);
+}
+
 abstract class Failure {
   final String messageError;
 

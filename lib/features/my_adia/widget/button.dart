@@ -25,7 +25,7 @@ class MyButtonCustom extends StatelessWidget {
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
-          color: ColorsManager.customPrimary,
+          color: FxColors.primary,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

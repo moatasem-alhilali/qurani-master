@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 ThemeData getDarkMode() {
   return ThemeData(
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: FxColors.primary,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -9,9 +12,10 @@ ThemeData getDarkMode() {
     iconTheme: const IconThemeData(
       color: Colors.white,
     ),
+
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: ColorsManager.customMainSecondary,
+      fillColor: FxColors.secondary,
       prefixStyle: const TextStyle(
         color: Colors.white,
       ),
@@ -20,11 +24,15 @@ ThemeData getDarkMode() {
     ),
     fontFamily: 'ios-1',
 
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: FxColors.primary,
+    ),
+
     //
     scaffoldBackgroundColor: const Color(0xff1e1e1e), //customScaffoldColor,
     splashColor: const Color(0xff252525), //customBackGroundBody
     primaryColor: const Color(0xff2f2f2f), //custom main
-    shadowColor: ColorsManager.customMainSecondary,
+    shadowColor: FxColors.secondary,
 
     //
     textTheme: const TextTheme(
@@ -104,7 +112,7 @@ ThemeData getLightMode() {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: ColorsManager.customMainSecondary,
+      fillColor: FxColors.secondary,
       prefixStyle: const TextStyle(
         color: Colors.white,
       ),
@@ -117,7 +125,7 @@ ThemeData getLightMode() {
         const Color.fromARGB(255, 89, 88, 88), //customScaffoldColor,
     splashColor: Colors.white, //customBackGroundBody
     primaryColor: const Color.fromARGB(255, 206, 205, 205), //custom main
-    shadowColor: ColorsManager.customMainSecondary,
+    shadowColor: FxColors.secondary,
     //
 
     //
@@ -199,11 +207,13 @@ TextStyle titleLarge(context) {
   return Theme.of(context).textTheme.titleLarge!;
 }
 
-class ColorsManager {
+class FxColors {
   //custom
 
-  static Color customMainSecondary = const Color(0xff353535);
-  static Color customMainThird = const Color(0xff2c2c2c);
-  static Color customPrimary = const Color(0xff42796c);
-  static Color customPrimarySecondary = const Color(0xff364945);
+  static Color background = const Color(0xff1e1e1e);
+  static Color secondary = const Color(0xff353535);
+  static Color third = const Color(0xff2c2c2c);
+  //
+  static Color primary = const Color(0xff42796c);
+  static Color primarySecondary = const Color(0xff364945);
 }

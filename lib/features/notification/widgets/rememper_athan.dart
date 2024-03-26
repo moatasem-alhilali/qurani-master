@@ -47,8 +47,8 @@ class _AthanTathkirState extends State<AthanTathkir> {
                   ),
                   Text(
                     "الاذان",
-                    style: titleSmall(context)
-                        .copyWith(color: ColorsManager.customPrimary),
+                    style:
+                        titleSmall(context).copyWith(color: FxColors.primary),
                   ),
                 ],
               ),
@@ -222,10 +222,10 @@ class _MySwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return Switch.adaptive(
       //color
-      activeColor: ColorsManager.customPrimary,
-      activeTrackColor: ColorsManager.customPrimary,
-      inactiveThumbColor: ColorsManager.customPrimarySecondary,
-      inactiveTrackColor: ColorsManager.customPrimarySecondary,
+      activeColor: FxColors.primary,
+      activeTrackColor: FxColors.primary,
+      inactiveThumbColor: FxColors.primarySecondary,
+      inactiveTrackColor: FxColors.primarySecondary,
 
       value: value,
       onChanged: onChanged,

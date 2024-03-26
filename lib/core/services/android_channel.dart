@@ -97,9 +97,9 @@ var subhan_allh = const AndroidNotificationChannel(
   sound: RawResourceAndroidNotificationSound("subhan_allh"),
 );
 
-Future<void> initAllChannelAndroid(
-    {required FlutterLocalNotificationsPlugin
-        flutterLocalNotificationsPlugin}) async {
+Future<void> initAllChannelAndroid({
+  required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+}) async {
   //sound Middle Night Android Channel
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<

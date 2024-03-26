@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/hadith_text.dart';
-import 'package:quran_app/core/jsons/hisn_almuslim.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:readmore/readmore.dart';
@@ -15,20 +14,7 @@ class Hadith40 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text(
-            "الأربعين النووية",
-            style: titleMedium(context),
-          ),
-        ],
-      ),
+      title: "الأربعين النووية",
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -36,8 +22,8 @@ class Hadith40 extends StatelessWidget {
         itemBuilder: (context, index) {
           var data = hadith[index];
 
-          return BaseAnimationListView(
-            index: index,
+          return BaseAnimate(
+            index: 0,
             child: Container(
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.all(8),
@@ -74,8 +60,8 @@ class Hadith40 extends StatelessWidget {
                   ),
                   Text(
                     "شرح الحديث",
-                    style: titleMedium(context)
-                        .copyWith(color: ColorsManager.customPrimary),
+                    style:
+                        titleMedium(context).copyWith(color: FxColors.primary),
                   ),
                   const SizedBox(
                     height: 15,

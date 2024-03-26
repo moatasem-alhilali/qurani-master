@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/allh_name_text.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -17,8 +17,8 @@ class ItemAllhName extends StatelessWidget {
       itemCount: allhName.length,
       itemBuilder: (context, index) {
         var data = allhName[index];
-        return BaseAnimationListView(
-          index: index,
+        return BaseAnimate(
+          index: 0,
           child: Container(
             padding: const EdgeInsets.all(12),
             margin: const EdgeInsets.all(8),

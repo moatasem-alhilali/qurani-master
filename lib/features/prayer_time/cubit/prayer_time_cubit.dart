@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 
 import '../controllers/prayer_time_controller.dart';
@@ -7,18 +8,19 @@ import '../controllers/prayer_time_controller.dart';
 part 'prayer_time_state.dart';
 
 class PrayerTimeCubit extends Cubit<PrayerTimeState> {
-  PrayerTimeCubit() : super(PrayerTimeInitial());
+  PrayerTimeCubit() : super(PrayerTimeState());
   static PrayerTimeCubit get(context) => BlocProvider.of(context);
 
   void initPrayerTime() async {
-    emit(PrayerTimeLoadingState());
     try {
-      // if (!PrayerTimeController.isGetTheTimePrayer) {
+      emit(PrayerTimeState(prayerState: RequestState.loading));
       await PrayerTimeController.initPrayerTimes();
-      // }
+
       await doNotification();
-      emit(PrayerTimeSuccessState());
+      emit(PrayerTimeState(prayerState: RequestState.success));
     } catch (e) {
+      emit(PrayerTimeState(prayerState: RequestState.error));
+
       print(e);
     }
   }

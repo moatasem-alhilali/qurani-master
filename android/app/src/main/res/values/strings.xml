@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">طمأنينة</string>
+
+    <!-- Flutter Downloader Notification Strings -->
+    <string name="flutter_downloader_notification_started">بدأ التنزيل</string>
+    <string name="flutter_downloader_notification_in_progress">التنزيل قيد التقدم</string>
+    <string name="flutter_downloader_notification_canceled">تم إلغاء التنزيل</string>
+    <string name="flutter_downloader_notification_failed">التحميل فشل</string>
+    <string name="flutter_downloader_notification_complete">تم التحميل</string>
+    <string name="flutter_downloader_notification_paused">تم إيقاف التنزيل مؤقتًا</string>
+</resources>

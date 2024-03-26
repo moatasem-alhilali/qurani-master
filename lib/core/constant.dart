@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/features/quran/controller/db_helper.dart';
-import 'package:quran_app/features/quran/presentation/model/surah_model.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_screen.dart';
+import 'package:quran_app/features/home/pages/home_screen.dart';
+import 'package:quran_app/features/offline/presentation/view/pages/offline_screen.dart';
+import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 import 'package:quran_app/features/sabih/model/subih_model.dart';
-import 'package:quran_app/features/offline_audio/model/quran_audio_offline.dart';
 import 'package:quran_app/core/services/services_notification.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
 
 const String ayah =
     "﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾";
@@ -14,11 +13,9 @@ const String thikr =
     "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير";
 //url audio
 List<String> urlAudio = [];
-List<QuranAudioModel> quranAudioDataGlobal = [];
 List<SurahModel> surahDownload = [];
-List<SurahModel> surahData = [];
+// List<SurahModel> surahData = [];
 List<SubihModel> tusbihData = [];
-List<QuranBookMarkModel> quranBookMark = [];
 //-----------Cash Helper-----------
 
 bool fabIsClicked = false;
@@ -66,3 +63,15 @@ const String urlAudioReader =
     "https://cdn.islamic.network/quran/audio-surah/128";
 //
 int nextCurrentPrayer = 0;
+
+List<Widget> screens = [
+  const HomeScreenNew(),
+  const CategoryScreen(),
+  // const AnotherScreen(),
+
+  const OfflineScreen(),
+];
+
+//
+int lastPageRead = 0;
+int currentThemeType = 0;

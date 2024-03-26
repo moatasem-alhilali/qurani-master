@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/animation_list.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/post_prayer_azkar.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -13,20 +13,7 @@ class AzkarAfterPray extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      customAppBar: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          Text(
-            "أذكار بعد الصلاة",
-            style: titleMedium(context),
-          ),
-        ],
-      ),
+      title: "أذكار بعد الصلاة",
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -34,8 +21,8 @@ class AzkarAfterPray extends StatelessWidget {
         itemBuilder: (context, index) {
           var data = azkarAfterPray[index];
 
-          return BaseAnimationListView(
-            index: index,
+          return BaseAnimate(
+            index: 0,
             child: Container(
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.all(8),
@@ -63,8 +50,8 @@ class AzkarAfterPray extends StatelessWidget {
                             : Expanded(
                                 child: Text(
                                   "العدد: ${data['bless']}",
-                                  style: titleSmall(context)
-                                      .copyWith(color: Colors.grey, fontSize: 12),
+                                  style: titleSmall(context).copyWith(
+                                      color: Colors.grey, fontSize: 12),
                                 ),
                               ),
                         data['repeat'] == ""

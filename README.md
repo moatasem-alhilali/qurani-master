@@ -1,6 +1,31 @@
-# A Completed Functional Flutter App - Peachy Ecommerce  (BLoC + Firebase + Clean Architecture)
+# Qur'an App 🎬
 
-![Banner](https://github.com/haonguyenuet/ecommerce-flutter-firebase/blob/main/screenshots/banner.png)
+![visitors](https://visitor-badge.glitch.me/badge?right_color=teal&page_id=vellt/Movies-App) 
+![Web 1280 – 1]( https://img.shields.io/badge/made%20with-flutter-blue?style=flat)
+[![License](https://img.shields.io/badge/license-MIT-orange)](./LICENSE)
+![Web 1280 – 1]( https://img.shields.io/badge/-open%20source-wheat)
+## Some Screens:
+
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/1.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/2.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/3.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/4.jpg" alt="Image 2"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/5.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/6.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/7.jpg" alt="Image 2"></td>
+  </tr>
+</table>
+
+## Operating Principle
+ 
+<a target="_blank" href="https://volansys.com/wp-content/uploads/2019/07/VOLANSYS_Tiers-of-Architecture-new.jpg"> <img width="350" alt="multitier_architecture" src="https://user-images.githubusercontent.com/61885011/132905821-d68d4792-3f8f-4660-a648-968f353dcb1c.jpg"> </a>
 
 ## Folder Structure
 Here is the core folder structure which flutter provides.
@@ -13,44 +38,15 @@ flutter_bloc_boilerplate/
 |- lib
 ```
 
-Here is the folder structure we have been using in this project
-
-```
-lib/
-|- configs/
-|- constants/
-|- data/
-   |- local/
-   |- models/
-   |- repository/
-   |- request/
-|- presentation/
-   |- common_blogs/
-   |- views/
-   |- widgets/
-|- utils/
-```
 
 ## App Features:
-* Flutter + Firebase (Firestore, Authentication, Storage)
-  Test account: haonguyen.uet@gmail.com / 123456
 * Use BloC pattern
 * Responsive
 * User-friendly interface
 * Clean Architecture
 * Custom resuable widgets
-* Login or register by email and password
-* Search, filter and sort products
-* Send your feedback and rating
-* Contact with admin by message
-* Payment by 2 methods: Cash or Credit card
-* Track your orders
-* Select your delivery address
-* Change app language
 * More...
 
-## Some Screens:
-![Banner](https://github.com/haonguyenuet/ecommerce-flutter-firebase/blob/main/screenshots/screens.png)
 
 ## Before run project, execute commands:
 - `flutter clean`

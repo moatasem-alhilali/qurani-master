@@ -43,7 +43,7 @@ class NotifyHelper {
       initializationSettings,
       onSelectNotification: (String? payload) async {
         if (payload != null) {
-          debugPrint('notification payload: ' + payload);
+          debugPrint('notification payload: $payload');
         }
         selectNotificationSubject.add(payload!);
       },
@@ -106,7 +106,7 @@ class NotifyHelper {
     required String channelName,
     required int id,
   }) async {
-    var _notificationDetail = await customNotificationDetails(
+    var notificationDetail = await customNotificationDetails(
       channelId: channelId,
       channelName: channelName,
       contentTitle: contentTitle,
@@ -121,7 +121,7 @@ class NotifyHelper {
         hour: hour,
         minute: minute,
       ),
-      _notificationDetail,
+      notificationDetail,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -138,7 +138,7 @@ class NotifyHelper {
     required String body,
     required int id,
   }) async {
-    var _notificationDetail = await defaultNotificationDetails();
+    var notificationDetail = await defaultNotificationDetails();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
@@ -148,7 +148,7 @@ class NotifyHelper {
         hour: hour,
         minute: minute,
       ),
-      _notificationDetail,
+      notificationDetail,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -161,12 +161,12 @@ class NotifyHelper {
     required String title,
     required String body,
   }) async {
-    var _notificationDetail = await defaultNotificationDetails();
+    var notificationDetail = await defaultNotificationDetails();
     await flutterLocalNotificationsPlugin.show(
       0,
       title,
       body,
-      _notificationDetail,
+      notificationDetail,
       payload: '$title|$body',
     );
   }

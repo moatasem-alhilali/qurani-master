@@ -1,39 +1,86 @@
 <manifest
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.example.quran_app"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" 
+    package="com.example.quran_app"
 >
 
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-   <application
-    android:label="طمأنينة"
-    android:name="${applicationName}"
-    android:icon="@mipmap/ic_launcher"
-  >
-        <activity
-      android:name=".MainActivity"
-      android:exported="true"
-      android:launchMode="singleTop"
-      android:theme="@style/LaunchTheme"
-      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-      android:hardwareAccelerated="true"
-      android:windowSoftInputMode="adjustResize"
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:label="طمأنينة"
+        android:name="${applicationName}"
+        android:icon="@mipmap/launcher_icon"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
     >
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize"
+        >
 
             <meta-data
-        android:name="io.flutter.embedding.android.NormalTheme"
-        android:resource="@style/NormalTheme"
-      />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+            />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Flutter Embedding -->
         <meta-data android:name="flutterEmbedding" android:value="2" />
+
+        <!-- Flutter Downloader Configuration -->
+        <provider
+            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+            android:authorities="${applicationId}.flutter_downloader.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <!-- Flutter Downloader Customization -->
+        <!-- Disable default Initializer -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!-- Declare customized Initializer -->
+        <provider
+            android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+            android:authorities="${applicationId}.flutter-downloader-init"
+            android:exported="false">
+
+            <!-- Change this number to configure the maximum number of concurrent tasks -->
+            <meta-data
+                android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+                android:value="5" />
+        </provider>
+        <!-- End Flutter Downloader Customization -->
+
     </application>
 </manifest>
