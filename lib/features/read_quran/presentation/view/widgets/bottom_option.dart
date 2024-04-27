@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/base_bloc.dart';
@@ -33,100 +35,119 @@ class BottomOption extends StatelessWidget {
               )
             ],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      context.showBottomSheet(
-                        backgroundColor:
-                            currentThemeData.colorScheme.background,
-                        child: SizedBox(
-                          height: context.getHight(80),
-                          child: SurahJuzList(),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        bookmark_list(height: 25.0, width: 25.0),
-                        Text(
-                          "السور",
-                          style: TextStyle(
-                            color: currentThemeData.colorScheme.surface,
-                          ),
-                        ),
-                      ],
+              InkWell(
+                onTap: () {
+                  context.showBottomSheet(
+                    backgroundColor: currentThemeData.colorScheme.background,
+                    child: SizedBox(
+                      height: context.getHight(80),
+                      child: SurahJuzList(),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      context.showBottomSheet(
-                        backgroundColor:
-                            currentThemeData.colorScheme.background,
-                        child: SizedBox(
-                          height: context.getHight(80),
-                          child: BookMarkList(),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        bookmark_list(height: 25.0, width: 25.0),
-                        Text(
-                          "المحفوظ",
-                          style: TextStyle(
-                            color: currentThemeData.colorScheme.surface,
-                          ),
-                        ),
-                      ],
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        CashConfig.setLastRead();
+                        context.pop();
+                        context.pop();
+                      },
+                      child: Icon(
+                        CupertinoIcons.arrow_uturn_left,
+                        color: currentThemeData.colorScheme.surface,
+                        size: 25,
+                      ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      context.showBottomSheet(
-                          child: SearchAyah(),
+                    Text(
+                      "خروج",
+                      style: TextStyle(
+                        color: currentThemeData.colorScheme.surface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: context.getWidth(20)),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        context.showBottomSheet(
                           backgroundColor:
-                              currentThemeData.colorScheme.background);
-                    },
-                    child: Column(
-                      children: [
-                        search_icon(height: 25.0, width: 25.0),
-                        Text(
-                          "البحث",
-                          style: TextStyle(
-                            color: currentThemeData.colorScheme.surface,
+                              currentThemeData.colorScheme.background,
+                          child: SizedBox(
+                            height: context.getHight(80),
+                            child: SurahJuzList(),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      context.showBottomSheet(
-                        backgroundColor:
-                            currentThemeData.colorScheme.background,
-                        child: SettingTheme(),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        options(height: 25.0, width: 25.0),
-                        Text(
-                          "الاعدادات",
-                          style: TextStyle(
-                            color: currentThemeData.colorScheme.surface,
+                        );
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          bookmark_list(height: 25.0, width: 25.0),
+                          Text(
+                            "السور",
+                            style: TextStyle(
+                              color: currentThemeData.colorScheme.surface,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    InkWell(
+                      onTap: () {
+                        context.showBottomSheet(
+                          backgroundColor:
+                              currentThemeData.colorScheme.background,
+                          child: SizedBox(
+                            height: context.getHight(80),
+                            child: BookMarkList(),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          bookmark_list(height: 25.0, width: 25.0),
+                          Text(
+                            "المحفوظ",
+                            style: TextStyle(
+                              color: currentThemeData.colorScheme.surface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        context.showBottomSheet(
+                            child: SearchAyah(),
+                            backgroundColor:
+                                currentThemeData.colorScheme.background);
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          search_icon(height: 25.0, width: 25.0),
+                          Text(
+                            "البحث",
+                            style: TextStyle(
+                              color: currentThemeData.colorScheme.surface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ).animate().fade(),

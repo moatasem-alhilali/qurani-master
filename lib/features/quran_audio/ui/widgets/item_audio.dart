@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
@@ -11,7 +12,8 @@ class StyleContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      height: SizeConfig.blockSizeVertical! * 10,
+                      height: context.getHight(10) ,
+
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(

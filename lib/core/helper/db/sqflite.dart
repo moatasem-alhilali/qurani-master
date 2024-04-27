@@ -4,6 +4,8 @@ import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
+  static Database? _db;
+
   static const int _version = 8;
   static const String tableNote = 'noteTable';
   static const String tableBookmarks = 'bookmarkTable';
@@ -14,6 +16,8 @@ class DBHelper {
   static const String columnCId = 'id';
   static const String columnTId = 'nomPageF';
   static const String columnPageNum = 'pageNum';
+
+  //
   static const String _searchEngine = '''
 CREATE TABLE search_engine_mosoaa (
     id INTEGER PRIMARY KEY,
@@ -33,7 +37,34 @@ CREATE TABLE search_engine_mosoaa (
         time TEXT NOT NULL 
       )
       ''';
-  static Database? _db;
+  static var bookmarkTextTable = 'CREATE TABLE bookmarkTextTable ('
+      'id INTEGER PRIMARY KEY, '
+      'sorahName TEXT, '
+      'sorahNum INTEGER, '
+      'pageNum INTEGER, '
+      'ayahNum INTEGER, '
+      'nomPageF INTEGER, '
+      'nomPageL INTEGER, '
+      'lastRead TEXT)';
+  static var bookmarkTable = 'CREATE TABLE bookmarkTable ('
+      'id INTEGER PRIMARY KEY, '
+      'sorahName TEXT, '
+      'pageNum INTEGER, '
+      'lastRead TEXT)';
+
+  //
+  static String coordinates = '''
+      CREATE TABLE coordinates(
+        id INTEGER PRIMARY KEY,
+        latitude double NOT NULL,
+        longitude double NOT NULL);
+      ''';
+  static String doua = '''
+      CREATE TABLE doua(
+        id INTEGER PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL);
+      ''';
 
   static Future<void> initDb() async {
     if (_db != null) {
@@ -41,32 +72,19 @@ CREATE TABLE search_engine_mosoaa (
     }
     try {
       String path =
-          '${await getDatabasesPath()}dddddddddddddddfddddddddddddddddDddhdddfdd.db';
+          '${await getDatabasesPath()}ddddddddddddddddfddddddddddddddddDddhdddfdd.db';
       _db = await openDatabase(
         path,
         version: 1,
         onCreate: (db, version) async {
           await db.execute(_searchEngine);
           await db.execute(_sqlBookMark);
-          await db.execute(
-            'CREATE TABLE bookmarkTextTable ('
-            'id INTEGER PRIMARY KEY, '
-            'sorahName TEXT, '
-            'sorahNum INTEGER, '
-            'pageNum INTEGER, '
-            'ayahNum INTEGER, '
-            'nomPageF INTEGER, '
-            'nomPageL INTEGER, '
-            'lastRead TEXT)',
-          );
-          await db.execute(
-            'CREATE TABLE bookmarkTable ('
-            'id INTEGER PRIMARY KEY, '
-            'sorahName TEXT, '
-            'pageNum INTEGER, '
-            'lastRead TEXT)',
-          );
+          await db.execute(bookmarkTextTable);
+          await db.execute(bookmarkTable);
 
+          //
+          await db.execute(doua);
+          await db.execute(coordinates);
           logger.i('data opened And created');
         },
       );
@@ -103,6 +121,20 @@ CREATE TABLE search_engine_mosoaa (
     }
   }
 
+  static Future<bool> update(
+      String table, Map<String, dynamic> values, int id) async {
+    try {
+      final res =
+          await _db!.update(table, values, where: "id = ?", whereArgs: [id]);
+      if (res == 1) return true;
+      return false;
+    } catch (e) {
+      logger.e(e);
+
+      return false;
+    }
+  }
+
   static Future<bool> delete(
     String table, {
     String? where,
@@ -117,10 +149,7 @@ CREATE TABLE search_engine_mosoaa (
     return false;
   }
 
-  // static Future<List<Map<String, dynamic>>> getAllBookMark() async {
-  //   print("query function called");
-  //   return _db!.query('offlines');
-  // }
+//
   static Future<int> deleteBookmarkText(BookmarksAyahs? bookmarksText) async {
     print('Delete Text Bookmarks');
     return await _db!.delete(tableBookmarksText,

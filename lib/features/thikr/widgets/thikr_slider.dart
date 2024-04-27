@@ -3,6 +3,7 @@ import 'package:quran_app/core/components/custom_container.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/thikr/pages/wird_screen.dart';
 
 class ThikrSlider extends StatelessWidget {
@@ -52,7 +53,7 @@ class _item extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: CustomContainer(
-          height: SizeConfig.blockSizeVertical! * 20,
+          height: context.getHight(20),
           image: "image/time.jpg",
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

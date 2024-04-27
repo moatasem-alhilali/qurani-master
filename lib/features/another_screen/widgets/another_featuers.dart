@@ -68,7 +68,7 @@ class AnotherFeatures extends StatelessWidget {
         if (serviceEnabled)
           _Item(
             onPressed: () {
-              PrayerTimeController.setCurrentColorPrayer();
+              // PrayerTimeController.getNextPrayerName();
 
               navigateTo(const PrayerTimeScreen(), context);
             },

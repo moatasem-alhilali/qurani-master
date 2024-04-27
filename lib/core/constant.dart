@@ -6,6 +6,7 @@ import 'package:quran_app/features/offline/presentation/view/pages/offline_scree
 import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 import 'package:quran_app/features/sabih/model/subih_model.dart';
 import 'package:quran_app/core/services/services_notification.dart';
+import 'package:quran_app/features/setting/pages/setting_screen.dart';
 
 const String ayah =
     "﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾";
@@ -62,7 +63,6 @@ int selectedIndex = 3;
 const String urlAudioReader =
     "https://cdn.islamic.network/quran/audio-surah/128";
 //
-int nextCurrentPrayer = 0;
 
 List<Widget> screens = [
   const HomeScreenNew(),
@@ -70,6 +70,7 @@ List<Widget> screens = [
   // const AnotherScreen(),
 
   const OfflineScreen(),
+  SettingScreen(),
 ];
 
 //

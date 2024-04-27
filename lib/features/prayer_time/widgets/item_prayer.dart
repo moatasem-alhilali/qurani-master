@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/model/time_prayer_model.dart';
 
 class ItemPrayer extends StatefulWidget {
@@ -51,7 +52,7 @@ class _ItemPrayerState extends State<ItemPrayer> {
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
                         widget.data.image,
-                        height: SizeConfig.blockSizeVertical! * 4,
+                        height: context.getHight(4),
                       ),
                     ),
                     const SizedBox(

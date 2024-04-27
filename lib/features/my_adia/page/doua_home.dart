@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/my_adia/core/adia_cubit_cubit.dart';
-import 'package:quran_app/features/my_adia/core/db/db_helper_note.dart';
+import 'package:quran_app/features/my_adia/doa_model.dart';
 import 'package:quran_app/features/my_adia/page/AddDua.dart';
 import 'package:quran_app/core/components/doa_item.dart';
 import 'package:quran_app/features/my_adia/widget/button.dart';
@@ -116,7 +116,7 @@ class DouaHome extends StatelessWidget {
                           ClipboardData(
                               text: AdiaCubit.get(context)
                                   .doaList[index]
-                                  .content),
+                                  .content??""),
                         ).then(
                           (value) {
                             ToastServes.showToast(message: 'تم النسخ بنجاح');

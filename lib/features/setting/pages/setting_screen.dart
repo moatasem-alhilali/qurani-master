@@ -1,203 +1,361 @@
-// import 'package:accordion/controllers.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:quran_app/features/setting/logic/method.dart';
-// import 'package:quran_app/features/setting/widgets/about.dart';
-// import 'package:quran_app/features/notification/pages/notification_screen.dart';
-// import 'package:quran_app/features/setting/widgets/style_settings.dart';
-// import 'package:quran_app/features/setting/widgets/thikr_size_seeting.dart';
-// import 'package:quran_app/core/Home/cubit.dart';
-// import 'package:quran_app/core/Home/state.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:quran_app/core/bloc/base_bloc.dart';
+import 'package:quran_app/core/components/base_header.dart';
+import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/helper/db/sqflite.dart';
+import 'package:quran_app/core/services/services_location.dart';
+import 'package:quran_app/core/services/tasks_notification.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/util/snack_bar.dart';
+import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/setting/logic/manage_notification_controller.dart';
 
-// import 'package:quran_app/core/shared/export/export-shared.dart';
-// import 'package:quran_app/core/shared/resources/assets_manager.dart';
-// import 'package:quran_app/core/shared/resources/size_config.dart';
-// import 'package:accordion/accordion.dart';
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
 
-// class SettingScreen extends StatefulWidget {
-//   SettingScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BaseBloc, BaseState>(
+      builder: (context, state) {
+        return const Column(
+          children: [
+            BaseHeder(text: "تحديث الموقع"),
+            UpdateLocation(),
+            PrayerSetting(),
+          ],
+        );
+      },
+    );
+  }
+}
 
-//   @override
-//   State<SettingScreen> createState() => _SettingScreenState();
-// }
+class UpdateLocation extends StatelessWidget {
+  const UpdateLocation({
+    super.key,
+  });
 
-// class _SettingScreenState extends State<SettingScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocConsumer<HomeCubit, HomeState>(
-//       listener: (context, state) {},
-//       builder: (context, state) {
-//         var cubit = HomeCubit.get(context);
-//         return Directionality(
-//           textDirection: TextDirection.rtl,
-//           child: Scaffold(
-//             appBar: AppBar(),
-//             body: SingleChildScrollView(
-//               physics: BouncingScrollPhysics(),
-//               child: Accordion(
-//                 scrollIntoViewOfItems: ScrollIntoViewOfItems.slow,
-//                 headerBorderRadius: 7,
-//                 maxOpenSections: 4,
-//                 disableScrolling: true,
-//                 headerBackgroundColorOpened: ColorsManager.customMain,
-//                 scaleWhenAnimating: true,
-//                 openAndCloseAnimation: true,
-//                 contentBackgroundColor: ColorsManager.background,
-//                 sectionOpeningHapticFeedback: SectionHapticFeedback.medium,
-//                 sectionClosingHapticFeedback: SectionHapticFeedback.selection,
-//                 children: [
-//                   //
-//                   AccordionSection(
-//                     contentBorderColor: Colors.transparent,
-//                     contentBorderRadius: 5,
-//                     contentBorderWidth: 0,
-//                     contentBackgroundColor: ColorsManager.background,
-//                     isOpen: false,
-//                     leftIcon: const Icon(
-//                       Icons.notifications,
-//                       color: Colors.white,
-//                     ),
-//                     header: Text(
-//                       " الإشعارات",
-//                       style: titleMedium(context),
-//                     ),
-//                     content: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         _Container(
-//                           text: 'هل تريد  ايقاف الاشعارات',
-//                           iconchild: Switch(
-//                             activeColor: Colors.red,
-//                             value: ISNOT_NOTIFY,
-//                             inactiveThumbColor: Colors.grey,
-//                             onChanged: (val) {
-//                               MethodSetting.unLockNoitification(val);
-//                               setState(() {});
-//                             },
-//                           ),
-//                         ),
-//                         TextButton(
-//                           onPressed: () {
-//                             navigateTo(ManageNotificationScreen(), context);
-//                           },
-//                           child: Text("إعداد الاشعارات"),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: FxColors.secondary,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('تحديث الموقع'),
+                Text(
+                  'يستخدم هذا عند تغير مكان معيشتك لكي يعطيك الاوقات الخاصه بالصلاه للمكان الذي قمت بالإنتقال اليه',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+            builder: (context, state) {
+              switch (state.prayerState) {
+                case RequestState.defaults:
+                  return IconButton(
+                    onPressed: () async {
+                      PrayerTimeCubit.get(context).initPrayerTime();
+                    },
+                    icon: Icon(
+                      Icons.update,
+                      color: FxColors.primary,
+                    ),
+                  );
 
-//                   //
-//                   AccordionSection(
-//                     contentBorderColor: Colors.transparent,
-//                     contentBorderRadius: 5,
-//                     contentBorderWidth: 0,
-//                     contentBackgroundColor: ColorsManager.background,
-//                     isOpen: false,
-//                     leftIcon: const Icon(
-//                       Icons.adb_outlined,
-//                       color: Colors.white,
-//                     ),
-//                     header: Text(
-//                       'حجم خط الأدعية والأذكار',
-//                       style: titleMedium(context),
-//                     ),
-//                     content: ThikrSizeSetting(cubit: cubit),
-//                   ),
+                case RequestState.loading:
+                  return const Center(child: CircularProgressIndicator());
 
-//                   //
-//                   AccordionSection(
-//                     contentBorderColor: Colors.transparent,
-//                     contentBorderRadius: 5,
-//                     contentBorderWidth: 0,
-//                     contentBackgroundColor: ColorsManager.background,
-//                     isOpen: false,
-//                     leftIcon: const Icon(
-//                       Icons.adb_outlined,
-//                       color: Colors.white,
-//                     ),
-//                     header: Text(
-//                       'التنسيق والشكل',
-//                       style: titleMedium(context),
-//                     ),
-//                     content: StyleSetting(),
-//                   ),
-//                   //
-//                   AccordionSection(
-//                     contentBorderColor: Colors.transparent,
-//                     contentBorderRadius: 5,
-//                     contentBorderWidth: 0,
-//                     contentBackgroundColor: ColorsManager.background,
-//                     isOpen: false,
-//                     leftIcon: const Icon(
-//                       Icons.adb_outlined,
-//                       color: Colors.white,
-//                     ),
-//                     header: Text(
-//                       ' حول التطبيق',
-//                       style: titleMedium(context),
-//                     ),
-//                     content: Column(
-//                       children: [
-//                         about(
-//                           icon: AssetsManager.person,
-//                           content: "مطور تطبيقات موبايل",
-//                           text: 'معتصم الهلالي',
-//                           onTap: MethodSetting.lunchToFacebook,
-//                         ),
-//                         about(
-//                           icon: AssetsManager.facebook,
-//                           content: "حسابي الشخصي على فيسبوك",
-//                           text: 'الفيسبوك',
-//                           onTap: MethodSetting.lunchToFacebook,
-//                         ),
-//                         about(
-//                           icon: AssetsManager.instagram,
-//                           content: "حسابي الشخصي على الإنستاجرام",
-//                           text: 'الإنستاجرام',
-//                           onTap: () async {
-//                             await MethodSetting.lunchToInstagram();
-//                           },
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
+                case RequestState.error:
+                  return const Center(child: CircularProgressIndicator());
+                case RequestState.success:
+                  return IconButton(
+                    onPressed: () async {
+                      PrayerTimeCubit.get(context).updateLocation();
+                    },
+                    icon: Icon(
+                      Icons.update,
+                      color: FxColors.primary,
+                    ),
+                  );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-// class _Container extends StatelessWidget {
-//   _Container({required this.text, this.onTap, this.iconchild});
-//   void Function()? onTap;
-//   String text;
-//   Widget? iconchild;
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: onTap,
-//       child: Container(
-//         height: SizeConfig.blockSizeVertical! * 8,
-//         padding: const EdgeInsets.all(8),
-//         decoration: BoxDecoration(
-//           color: ColorsManager.main,
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             iconchild ?? const Icon(Icons.arrow_back_ios),
-//             Text(
-//               text,
-//               style: titleMedium(context),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class PrayerSetting extends StatelessWidget {
+  const PrayerSetting({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BaseBloc, BaseState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            const BaseHeder(text: "الاذان"),
+            _Item(
+              data: {
+                "title": "كل الصلوات",
+                "value": ManageNotification.isNotificationAllAthan,
+                "onChanged": (val) async {
+                  await ManageNotification.toggleAllAthan(val);
+                  if (context.mounted) {
+                    context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  }
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذان الفجر",
+                "value": ManageNotification.isNotificationAthanFagr,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationAthanFagr = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationAthanFagr', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذان الظهر",
+                "value": ManageNotification.isNotificationAthanDuhr,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationAthanDuhr = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationAthanDuhr', value: val);
+
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذان العصر",
+                "value": ManageNotification.isNotificationAthanAsr,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationAthanAsr = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationAthanAsr', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذان المغرب",
+                "value": ManageNotification.isNotificationAthanMagrib,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationAthanMagrib = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationAthanMagrib', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذان العشاء",
+                "value": ManageNotification.isNotificationAthanIsha,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationAthanIsha = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationAthanIsha', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            const BaseHeder(text: "الورد اليومي"),
+            _Item(
+              data: {
+                "title": "اذكار الصباح",
+                "value": ManageNotification.isNotificationThikrMorning,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationThikrMorning = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationThikrMorning', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذكار المساء",
+                "value": ManageNotification.isNotificationThikrNight,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationThikrNight = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationThikrNight', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            const BaseHeder(text: "العشوائي"),
+            _Item(
+              data: {
+                "title": "الصلاة على محمد",
+                "value": ManageNotification.isNotificationMohammed,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationMohammed = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationMohammed', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "الاذكار الصوتيه العشوائية",
+                "value": ManageNotification.isNotificationRandomThikr,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationRandomThikr = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationRandomThikr', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            const BaseHeder(text: "اخرى"),
+            _Item(
+              data: {
+                "title": "اذكار الاستيقاض من النوم",
+                "value": ManageNotification.isNotificationWridGetup,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationWridGetup = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationWridGetup', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "اذكار النوم",
+                "value": ManageNotification.isNotificationWridSleep,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationWridSleep = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationWridSleep', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "قراءة سورة الملك",
+                "value": ManageNotification.isNotificationReadSurahMulk,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationReadSurahMulk = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationReadSurahMulk', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "الورد القراني",
+                "value": ManageNotification.isNotificationReadQuran,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationReadQuran = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationReadQuran', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+            _Item(
+              data: {
+                "title": "قيام اليل",
+                "value": ManageNotification.isNotificationMiddleNight,
+                "onChanged": (val) async {
+                  ManageNotification.isNotificationMiddleNight = val;
+                  context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+                  await CashHelper.setData(
+                      key: 'isNotificationMiddleNight', value: val);
+                  ServicesNotification.cancelAllNotification();
+                  await ServicesNotification.sendNotification();
+                },
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _Item extends StatelessWidget {
+  const _Item({super.key, required this.data});
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: FxColors.secondary,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: SwitchListTile(
+        activeColor: FxColors.primary,
+        inactiveTrackColor: Colors.black12,
+        title: Text(data['title'] ?? "اذكار الصباح"),
+        subtitle: Text(
+          data['subtitle'] ?? "لإرسال او عدم ارسال الاشعار",
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+        ),
+        value: data['value'] ?? false,
+        onChanged: data['onChanged'],
+      ),
+    );
+  }
+}

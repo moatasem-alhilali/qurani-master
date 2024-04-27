@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
 import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
@@ -24,9 +25,9 @@ class NextTimePrayerRemain extends StatelessWidget {
             return const SizedBox();
 
           case RequestState.success:
-            if (nextDateTimePrayer != null) {
+            if (sl.get<PrayerTimesProvider>().nextPrayerTime != null) {
               return PrayerTimeWidget(
-                nextPrayerTime: nextDateTimePrayer!,
+                nextPrayerTime: sl.get<PrayerTimesProvider>().nextPrayerTime!,
               );
             }
             return const SizedBox();
@@ -39,7 +40,10 @@ class NextTimePrayerRemain extends StatelessWidget {
 class PrayerTimeWidget extends StatefulWidget {
   final DateTime nextPrayerTime;
 
-  const PrayerTimeWidget({super.key, required this.nextPrayerTime});
+  const PrayerTimeWidget({
+    super.key,
+    required this.nextPrayerTime,
+  });
 
   @override
   _PrayerTimeWidgetState createState() => _PrayerTimeWidgetState();
@@ -79,7 +83,7 @@ class _PrayerTimeWidgetState extends State<PrayerTimeWidget> {
       stream: _remainingTimeController!.stream,
       initialData: "00:00:00",
       builder: (context, snapshot) {
-        return "  ${PrayerTimeController.getNextPrayer().title ?? ""} : ${PrayerTimeController.nextPrayerTime ?? ""}  \n الوقت المتبقي : ${snapshot.data} "
+        return "  ${sl.get<PrayerTimesProvider>().getNextPrayerName()['title']} : ${sl.get<PrayerTimesProvider>().getNextPrayerName()['time']}  \n الوقت المتبقي : ${snapshot.data} "
             .autoSize(
           context,
           textAlign: TextAlign.center,

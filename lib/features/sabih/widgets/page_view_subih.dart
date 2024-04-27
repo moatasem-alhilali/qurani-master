@@ -4,6 +4,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 class PageViewSubih extends StatelessWidget {
   const PageViewSubih({super.key, required this.controller});
@@ -12,7 +13,7 @@ class PageViewSubih extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: SizeConfig.blockSizeVertical! * 20,
+      height: context.getHight(20),
       child: PageView.builder(
         controller: controller,
         physics: const BouncingScrollPhysics(),

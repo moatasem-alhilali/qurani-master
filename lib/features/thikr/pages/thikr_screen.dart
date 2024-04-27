@@ -15,7 +15,6 @@ class ThikrScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return BaseHome(
       title: "الا بذكر الله تطمئن القلوب",
       body: Column(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 class CustomSvgContainer extends StatelessWidget {
   CustomSvgContainer({super.key, this.child, this.image, this.height});
@@ -11,7 +12,7 @@ class CustomSvgContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: SizeConfig.blockSizeVertical! * 30,
+      height: context.getHight(30),
       child: Stack(
         alignment: Alignment.topLeft,
         children: <Widget>[
@@ -21,7 +22,7 @@ class CustomSvgContainer extends StatelessWidget {
               image!,
               width: double.infinity,
               fit: BoxFit.cover,
-              height: SizeConfig.blockSizeVertical! * 30,
+              height: context.getHight(30),
             ),
           ),
           Container(

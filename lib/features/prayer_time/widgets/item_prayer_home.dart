@@ -5,8 +5,10 @@ import 'package:quran_app/core/components/base_header.dart';
 import 'package:quran_app/core/components/location_enable_screen.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
 import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/pages/prayer_time_screen.dart';
@@ -21,51 +23,104 @@ class ItemPrayerHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
-        return !serviceEnabled
-            ? const LocationEnableScreen()
-            : Column(
-                children: [
-                  const BaseHeder(text: "اوقات الصلاة"),
-                  SizedBox(
-                    width: double.infinity,
-                    height: context.getHight(15),
-                    child: BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
-                      builder: (context, state) {
-                        switch (state.prayerState) {
-                          case RequestState.defaults:
-                            return const _Loading();
+        if (!CashConfig.hasInitLocal) {
+          if (!serviceEnabled) {
+            return const LocationEnableScreen();
+          }
+          return Column(
+            children: [
+              const BaseHeder(text: "اوقات الصلاة"),
+              SizedBox(
+                width: double.infinity,
+                height: context.getHight(15),
+                child: BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+                  builder: (context, state) {
+                    switch (state.prayerState) {
+                      case RequestState.defaults:
+                        return const _Loading();
 
-                          case RequestState.loading:
-                            return const _Loading();
+                      case RequestState.loading:
+                        return const _Loading();
 
-                          case RequestState.error:
-                            return const _Loading();
-                          case RequestState.success:
-                            return ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                //set the color to the next player
-                                var data = prayerData[index];
-                                return BaseAnimate(
-                                  index: index,
-                                  child: _ItemPrayer(
-                                    nextPray: data,
-                                    data: data,
-                                    index: index,
-                                    nextCurrent: nextCurrentPrayer,
-                                  ),
-                                );
-                              },
-                              shrinkWrap: true,
-                              itemCount: 6,
+                      case RequestState.error:
+                        return const _Loading();
+                      case RequestState.success:
+                        return ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            //set the color to the next player
+                            var data = prayerData[index];
+                            return BaseAnimate(
+                              index: index,
+                              child: _ItemPrayer(
+                                nextPray: data,
+                                data: data,
+                                index: index,
+                                nextCurrent: sl
+                                    .get<PrayerTimesProvider>()
+                                    .currentPrayer
+                                    .index,
+                              ),
                             );
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ).animate().fade();
+                          },
+                          shrinkWrap: true,
+                          itemCount: 6,
+                        );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ).animate().fade();
+        } else {
+          return Column(
+            children: [
+              const BaseHeder(text: "اوقات الصلاة"),
+              SizedBox(
+                width: double.infinity,
+                height: context.getHight(15),
+                child: BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+                  builder: (context, state) {
+                    switch (state.prayerState) {
+                      case RequestState.defaults:
+                        return const _Loading();
+
+                      case RequestState.loading:
+                        return const _Loading();
+
+                      case RequestState.error:
+                        return const _Loading();
+                      case RequestState.success:
+                        return ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            //set the color to the next player
+                            var data = prayerData[index];
+                            return BaseAnimate(
+                              index: index,
+                              child: _ItemPrayer(
+                                nextPray: data,
+                                data: data,
+                                index: index,
+                                nextCurrent: sl
+                                    .get<PrayerTimesProvider>()
+                                    .currentPrayer
+                                    .index,
+                              ),
+                            );
+                          },
+                          shrinkWrap: true,
+                          itemCount: 6,
+                        );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ).animate().fade();
+        }
       },
     );
   }

@@ -1,9 +1,13 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quran_app/core/services/services_location.dart';
 
 class PermissionService {
-  static void init() async {
-    handelNotification();
+  static Future<void> init() async {
+    await _requestLocationGeolocator();
+    await _requestLocation();
+    await handelNotification();
+    serviceEnabled = await locationEnabled();
   }
 
   static Future<void> handelNotification() async {
@@ -25,7 +29,7 @@ class PermissionService {
     } else {}
   }
 
-  static void _requestLocation() async {
+  static Future<void> _requestLocation() async {
     final permission = await Permission.location.status;
 
     if (permission == LocationPermission.denied) {
@@ -33,7 +37,7 @@ class PermissionService {
     }
   }
 
-  static void _requestLocationGeolocator() async {
+  static Future<void> _requestLocationGeolocator() async {
     final permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {

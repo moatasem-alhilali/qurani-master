@@ -1,208 +1,156 @@
 import 'dart:math';
 
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/features/notification/controller/manage_notification_controller.dart';
+import 'package:quran_app/features/setting/logic/manage_notification_controller.dart';
+import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/text/teme_prayer_text.dart';
 
 import 'notification_message.dart';
+
+final prayerTimeList = sl.get<PrayerTimesProvider>().prayerTimeList;
 
 //Services Notification
 class ServicesNotification {
   static Future<void> sendNotification() async {
     //الصلاة على النبي
-    // if (ManageNotificationController.isNotificationMohummed) {
-    await showScheduledNotificationMohummed();
-    await showScheduledRandomThikrNotification();
-    // }
+    if (ManageNotification.isNotificationMohammed) {
+      await showScheduledNotificationMohummed();
+    }
 
     //كل الاذكار اليوميه
-    // if (ManageNotificationController.isNotificationAllThirk) {
-    if (true) {
-      //النوافل
-      if (ManageNotificationController.isNotificationPrayMiddleNight) {
-        await showScheduledNotificationPrayMiddleNight();
-      }
-      //اذكار الصباح
-      if (ManageNotificationController.isNotificationThikrMorning) {
-        await showScheduledNotificationThikrMorning();
-      }
+    if (ManageNotification.isNotificationRandomThikr) {
+      await showScheduledRandomThikrNotification();
+    }
 
-      //اذكار المساء
-      if (ManageNotificationController.isNotificationThikrNight) {
-        await showScheduledNotificationThikrNight();
-      }
+    //النوافل
+    if (ManageNotification.isNotificationMiddleNight) {
+      await showScheduledNotificationPrayMiddleNight();
+    }
+    //اذكار الصباح
+    if (ManageNotification.isNotificationThikrMorning) {
+      await showScheduledNotificationThikrMorning();
+    }
 
-      //الورد القرأني
-      if (ManageNotificationController.isNotificationReadQuranRoutine) {
-        await showScheduledDefaultNotification(
-          hour: timesReadQuranRoutineNotification.hour,
-          minute: timesReadQuranRoutineNotification.minute,
-          title: timesReadQuranRoutineNotification.title,
-          body: timesReadQuranRoutineNotification.body,
-          id: timesReadQuranRoutineNotification.id,
-        );
-      }
+    //اذكار المساء
+    if (ManageNotification.isNotificationThikrNight) {
+      await showScheduledNotificationThikrNight();
+    }
 
+    //الورد القرأني
+    if (ManageNotification.isNotificationReadQuran) {
+      await showScheduledDefaultNotification(
+        hour: timesReadQuranRoutineNotification.hour,
+        minute: timesReadQuranRoutineNotification.minute,
+        title: timesReadQuranRoutineNotification.title,
+        body: timesReadQuranRoutineNotification.body,
+        id: timesReadQuranRoutineNotification.id,
+      );
+    }
+    if (ManageNotification.isNotificationReadSurahMulk) {
       // سورة الملك
-      if (ManageNotificationController.isNotificationReadSurahAlMulk) {
-        await showScheduledDefaultNotification(
-          hour: timesReadSurahAlMulkNotification.hour,
-          minute: timesReadSurahAlMulkNotification.minute,
-          title: timesReadSurahAlMulkNotification.title,
-          body: timesReadSurahAlMulkNotification.body,
-          id: timesReadSurahAlMulkNotification.id,
-        );
-      }
-
+      await showScheduledDefaultNotification(
+        hour: timesReadSurahAlMulkNotification.hour,
+        minute: timesReadSurahAlMulkNotification.minute,
+        title: timesReadSurahAlMulkNotification.title,
+        body: timesReadSurahAlMulkNotification.body,
+        id: timesReadSurahAlMulkNotification.id,
+      );
+    }
+    if (ManageNotification.isNotificationWridSleep) {
       // أذكار النوم
-      if (ManageNotificationController.isNotificationThikrSleep) {
-        await showScheduledDefaultNotification(
-          hour: timesThikrSleepNotification.hour,
-          minute: timesThikrSleepNotification.minute,
-          title: timesThikrSleepNotification.title,
-          body: timesThikrSleepNotification.body,
-          id: timesThikrSleepNotification.id,
-        );
-      }
-
+      await showScheduledDefaultNotification(
+        hour: timesThikrSleepNotification.hour,
+        minute: timesThikrSleepNotification.minute,
+        title: timesThikrSleepNotification.title,
+        body: timesThikrSleepNotification.body,
+        id: timesThikrSleepNotification.id,
+      );
+    }
+    if (ManageNotification.isNotificationWridGetup) {
       // أذكار الاستيقاض
-      if (ManageNotificationController.isNotificationThikrGetUp) {
-        await showScheduledDefaultNotification(
-          hour: timesThikrGetUpNotification.hour,
-          minute: timesThikrGetUpNotification.minute,
-          title: timesThikrGetUpNotification.title,
-          body: timesThikrGetUpNotification.body,
-          id: timesThikrGetUpNotification.id,
-        );
-      }
+      await showScheduledDefaultNotification(
+        hour: timesThikrGetUpNotification.hour,
+        minute: timesThikrGetUpNotification.minute,
+        title: timesThikrGetUpNotification.title,
+        body: timesThikrGetUpNotification.body,
+        id: timesThikrGetUpNotification.id,
+      );
     }
 
     //اشعار كل الاذان
-    if (ManageNotificationController.isNotificationAllAthan) {
+    if (ManageNotification.isNotificationAllAthan) {
       //  اذان الفجر
-      if (ManageNotificationController.isNotificationAthanFagr) {
+      if (ManageNotification.isNotificationAthanFagr) {
         await showScheduledNotificationAthan(
-          hour: timesAthanAlfagarNotification.hour,
-          minute: timesAthanAlfagarNotification.minute,
-          title: timesAthanAlfagarNotification.title,
-          body: timesAthanAlfagarNotification.body,
-          contentTitle: timesAthanAlfagarNotification.title,
-          summaryText: timesAthanAlfagarNotification.body,
+          id: prayerData[0].id,
+          hour: int.parse(prayerTimeList[0].time24Hour.split(":")[0]),
+          minute: int.parse(prayerTimeList[0].time24Hour.split(":")[1]),
+          title: 'أذان الفجر',
+          body: prayerData[0].content,
+          summaryText: prayerData[0].content,
+          contentTitle: 'أذان الفجر',
           channelId: "athan_android_channel",
           channelName: "athan  Android Channel",
-          id: timesAthanAlfagarNotification.id,
         );
       }
 
       // أذان الظهر
-      if (ManageNotificationController.isNotificationAthanDuhr) {
+      if (ManageNotification.isNotificationAthanDuhr) {
         await showScheduledNotificationAthan(
-          hour: timesAthanDuhrNotification.hour,
-          minute: timesAthanDuhrNotification.minute,
-          title: timesAthanDuhrNotification.title,
-          body: timesAthanDuhrNotification.body,
-          contentTitle: timesAthanDuhrNotification.title,
-          summaryText: timesAthanDuhrNotification.body,
+          id: prayerData[2].id,
+          hour: int.parse(prayerTimeList[2].time24Hour.split(":")[0]),
+          minute: int.parse(prayerTimeList[2].time24Hour.split(":")[1]),
+          title: 'أذان الظهر',
+          contentTitle: 'أذان الظهر',
+          body: prayerData[2].content,
+          summaryText: prayerData[2].content,
           channelId: "athan_android_channel",
           channelName: "athan  Android Channel",
-          id: timesAthanDuhrNotification.id,
         );
       }
 
       //  اذان العصر
-      if (ManageNotificationController.isNotificationAthanAsr) {
+      if (ManageNotification.isNotificationAthanAsr) {
         await showScheduledNotificationAthan(
-          hour: timesAthanAsrNotification.hour,
-          minute: timesAthanAsrNotification.minute,
-          title: timesAthanAsrNotification.title,
-          body: timesAthanAsrNotification.body,
-          contentTitle: timesAthanAsrNotification.title,
-          summaryText: timesAthanAsrNotification.body,
+          id: prayerData[3].id,
+          hour: int.parse(prayerTimeList[3].time24Hour.split(":")[0]),
+          minute: int.parse(prayerTimeList[3].time24Hour.split(":")[1]),
+          title: 'أذان العصر',
+          contentTitle: 'أذان العصر',
+          body: prayerData[3].content,
+          summaryText: prayerData[3].content,
           channelId: "athan_android_channel",
           channelName: "athan  Android Channel",
-          id: timesAthanAsrNotification.id,
         );
       }
 
       //  اذان المغرب
-      if (ManageNotificationController.isNotificationAthanMagrib) {
+      if (ManageNotification.isNotificationAthanMagrib) {
         await showScheduledNotificationAthan(
-          hour: timesAthanMugribNotification.hour,
-          minute: timesAthanMugribNotification.minute,
-          title: timesAthanMugribNotification.title,
-          body: timesAthanMugribNotification.body,
-          contentTitle: timesAthanMugribNotification.title,
-          summaryText: timesAthanMugribNotification.body,
+          id: prayerData[4].id,
+          hour: int.parse(prayerTimeList[4].time24Hour.split(":")[0]),
+          minute: int.parse(prayerTimeList[4].time24Hour.split(":")[1]),
+          title: ' أذان المغرب',
+          contentTitle: ' أذان المغرب',
+          body: prayerData[4].content,
+          summaryText: prayerData[4].content,
           channelId: "athan_android_channel",
           channelName: "athan  Android Channel",
-          id: timesAthanMugribNotification.id,
         );
       }
       //  اذان العشاء
-      if (ManageNotificationController.isNotificationAthanIsha) {
+      if (ManageNotification.isNotificationAthanIsha) {
         await showScheduledNotificationAthan(
-          hour: timesAthanIshaNotification.hour,
-          minute: timesAthanIshaNotification.minute,
-          title: timesAthanIshaNotification.title,
-          body: timesAthanIshaNotification.body,
-          contentTitle: timesAthanIshaNotification.title,
-          summaryText: timesAthanIshaNotification.body,
+          hour: int.parse(prayerTimeList[5].time24Hour.split(":")[0]),
+          minute: int.parse(prayerTimeList[5].time24Hour.split(":")[1]),
+          title: 'أذان العشاء',
+          contentTitle: 'أذان العشاء',
+          id: prayerData[5].id,
+          body: prayerData[5].content,
+          summaryText: prayerData[5].content,
           channelId: "athan_android_channel",
           channelName: "athan  Android Channel",
-          id: timesAthanIshaNotification.id,
-        );
-      }
-    }
-
-    //تنبيه كل الصلوات
-    if (ManageNotificationController.isNotificationAllTimePrayer) {
-      //  صلاة الفجر
-      if (ManageNotificationController.isNotificationTimeFagr) {
-        await showScheduledDefaultNotification(
-          hour: timesPrayFagrNotification.hour,
-          minute: timesPrayFagrNotification.minute,
-          title: timesPrayFagrNotification.title,
-          body: timesPrayFagrNotification.body,
-          id: timesPrayFagrNotification.id,
-        );
-      }
-      //  صلاة الظهر
-      if (ManageNotificationController.isNotificationTimeDuhr) {
-        await showScheduledDefaultNotification(
-          hour: timesPrayDohurNotification.hour,
-          minute: timesPrayDohurNotification.minute,
-          title: timesPrayDohurNotification.title,
-          body: timesPrayDohurNotification.body,
-          id: timesPrayDohurNotification.id,
-        );
-      }
-      //  صلاة العصر
-      if (ManageNotificationController.isNotificationTimeAsr) {
-        await showScheduledDefaultNotification(
-          hour: timesPrayAsrNotification.hour,
-          minute: timesPrayAsrNotification.minute,
-          title: timesPrayAsrNotification.title,
-          body: timesPrayAsrNotification.body,
-          id: timesPrayAsrNotification.id,
-        );
-      }
-      //  صلاة المغرب
-      if (ManageNotificationController.isNotificationTimeMagrib) {
-        await showScheduledDefaultNotification(
-          hour: timesPrayMagribNotification.hour,
-          minute: timesPrayMagribNotification.minute,
-          title: timesPrayMagribNotification.title,
-          body: timesPrayMagribNotification.body,
-          id: timesPrayMagribNotification.id,
-        );
-      }
-      //  صلاة العشاء
-      if (ManageNotificationController.isNotificationTimeIsha) {
-        await showScheduledDefaultNotification(
-          hour: timesPrayIshaNotification.hour,
-          minute: timesPrayIshaNotification.minute,
-          title: timesPrayIshaNotification.title,
-          body: timesPrayIshaNotification.body,
-          id: timesPrayIshaNotification.id,
         );
       }
     }

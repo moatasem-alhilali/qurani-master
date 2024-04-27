@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/bloc/base_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
-import 'package:quran_app/core/Home/cubit.dart';
-import 'package:quran_app/core/Home/state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/sabih/cubit/subih_cubit.dart';
 import 'package:quran_app/features/sabih/widgets/page_view_subih.dart';
@@ -15,8 +15,7 @@ class SabihScreen extends StatelessWidget {
   PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return BlocConsumer<HomeCubit, HomeState>(
+    return BlocConsumer<BaseBloc, BaseState>(
       listener: (context, state) {},
       builder: (context, state) {
         return BlocProvider(
@@ -36,7 +35,7 @@ class SabihScreen extends StatelessWidget {
               onPressed: () {
                 masbahSize = 0;
                 CashHelper.setData(key: 'subih', value: masbahSize);
-                HomeCubit.get(context).mySetState();
+                BlocProvider.of<BaseBloc>(context).add(SetStateBaseBlocEvent());
               },
               icon: const Icon(
                 Icons.restart_alt_outlined,
@@ -70,13 +69,14 @@ class SabihScreen extends StatelessWidget {
 
                   //
                   SizedBox(
-                    height: SizeConfig.blockSizeVertical! * 25,
+                    height:context.getHight(25),
                   ),
                   //
                   InkWell(
                     onTap: () {
                       CashHelper.setData(key: 'subih', value: masbahSize);
-                      HomeCubit.get(context).ChangedMasbahState();
+                                      BlocProvider.of<BaseBloc>(context).add(SetStateBaseBlocEvent());
+
                     },
                     child: CircleAvatar(
                       radius: 100,

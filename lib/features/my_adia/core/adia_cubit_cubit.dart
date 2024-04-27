@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:quran_app/features/my_adia/core/db/db_helper_note.dart';
+import 'package:quran_app/core/helper/db/sqflite.dart';
+import 'package:quran_app/features/my_adia/doa_model.dart';
 
 part 'adia_cubit_state.dart';
 
@@ -13,7 +14,10 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
   void addDua({String? title, String? content}) {
     DoaModel doaModel = DoaModel(content: content, title: title);
 
-    DBHelperDou.addNote(doaModel).then((value) {
+    DBHelper.insert(
+      'doua',
+      doaModel.toMap(),
+    ).then((value) {
       getDoa();
       emit(AddDoaState());
     }).catchError((onError) {
@@ -23,10 +27,10 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
 
   void getDoa() {
     doaList = [];
-    DBHelperDou.getAllData().then((value) {
-      value.forEach((element) {
+    DBHelper.get('doua').then((value) {
+      for (var element in value) {
         doaList.add(DoaModel.fromJson(element));
-      });
+      }
       emit(GetDoaState());
     }).catchError((onError) {
       print(onError);
@@ -35,7 +39,11 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
   }
 
   void deleteDoa({DoaModel? doaModel}) {
-    DBHelperDou.deleteDoa(doaModel!).then((value) {
+    DBHelper.delete(
+      'doua',
+      where: 'id',
+      whereArgs: [doaModel!.id!],
+    ).then((value) {
       emit(DeleteDoaState());
       getDoa();
       print(value);
@@ -47,7 +55,11 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
 
   void editDoa({String? title, String? content, int? id}) {
     DoaModel doaModel = DoaModel(content: content, title: title, id: id);
-    DBHelperDou.updateNote(doaModel).then((value) {
+    DBHelper.update(
+      'doua',
+      doaModel.toMap(),
+      doaModel.id!,
+    ).then((value) {
       emit(EditDoaState());
       getDoa();
     }).catchError((onError) {

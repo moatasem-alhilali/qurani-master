@@ -19,22 +19,12 @@ class _HomeScreenState extends State<HomeScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        // MyTextFormField(
-        //   readOnly: true,
-        //   onTap: () {
-        //     context.push(SearchMosoaaScreen());
-        //   },
-        //   hintText: "اسئل الذكاء الاصطناعي",
-        //   suffixIcon: const Icon(Icons.search),
-        // ),
-
+      children: [
         ItemPrayerHome(),
         SurahAudioOnly(),
         BaseHeder(text: "المميزات"),
-
         AnotherFeatures(),
       ],
     );

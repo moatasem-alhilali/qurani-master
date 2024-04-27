@@ -5,6 +5,7 @@ import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/jsons/wird.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/theme/themeData.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
@@ -38,7 +39,7 @@ class _WirdScreenState extends State<WirdScreen> {
       body: Column(
         children: [
           SizedBox(
-            height: SizeConfig.blockSizeVertical! * 70,
+            height: context.getHight(70),
             child: PageView.builder(
               controller: controller,
               physics: const BouncingScrollPhysics(),

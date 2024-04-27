@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AyahBottomSheet extends StatelessWidget {
@@ -25,7 +26,7 @@ class AyahBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          height: SizeConfig.blockSizeVertical! * 60,
+          height: context.getHight(60),
           padding: const EdgeInsets.all(8),
           decoration: const BoxDecoration(
             color: Color(0xff1e1e1e),

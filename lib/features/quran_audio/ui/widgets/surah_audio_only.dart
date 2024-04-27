@@ -19,7 +19,6 @@ class SurahAudioOnly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
 
     return BlocBuilder<ReadQuranBloc, ReadQuranState>(
       builder: (context, state) {

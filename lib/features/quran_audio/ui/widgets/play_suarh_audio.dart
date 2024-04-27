@@ -5,6 +5,7 @@ import 'package:quran_app/core/bloc/base_bloc.dart';
 
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/controller/repository/audio_player_helper.dart';
 import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,7 +36,7 @@ class _PlaySurahAudioState extends State<PlaySurahAudio> {
               borderRadius: BorderRadius.circular(50),
               child: SvgPicture.asset(
                 AudioPlayerHelper.currentAudioData.imageReader!,
-                height: SizeConfig.blockSizeVertical! * 20,
+                height: context.getHight(20),
                 fit: BoxFit.cover,
               ),
             ),

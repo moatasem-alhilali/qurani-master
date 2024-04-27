@@ -3,6 +3,7 @@ import 'package:quran_app/features/audios/data/base_audio_repository_imp.dart';
 import 'package:quran_app/features/books/data/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/category_repository_imp.dart';
 import 'package:quran_app/features/offline/data/offline_repository_imp.dart';
+import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
 import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
 import 'package:quran_app/features/search/data/aya_repository.dart';
 import 'package:quran_app/features/search/data/search_repository_imp.dart';
@@ -16,6 +17,7 @@ void setupServiceLocator() async {
   sl.registerSingleton<CategoryRepositoryImpl>(CategoryRepositoryImpl());
   sl.registerSingleton<SearchRepositoryImpl>(SearchRepositoryImpl());
   sl.registerSingleton<AyaRepository>(AyaRepository());
+  sl.registerSingleton<PrayerTimesProvider>(PrayerTimesProvider());
   //
   await _initDatabaseClient();
   // sl.registerSingleton<DataBaseClient>(DataBaseClient());

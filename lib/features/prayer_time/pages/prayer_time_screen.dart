@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/home/widgets/next_player.dart';
+import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
 import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/text/teme_prayer_text.dart';
 import 'package:quran_app/features/prayer_time/widgets/item_prayer.dart';
@@ -66,7 +68,11 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                                             ),
                                           ),
                                         ),
-                                  nextCurrentPrayer == index
+                                  sl
+                                              .get<PrayerTimesProvider>()
+                                              .currentPrayer
+                                              .index ==
+                                          index
                                       ? BaseAnimateFlipList(
                                           index: index,
                                           child: DotIndicator(
@@ -103,7 +109,10 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                                     nextPray: data,
                                     data: data,
                                     index: index,
-                                    nextCurrent: nextCurrentPrayer,
+                                    nextCurrent: sl
+                                        .get<PrayerTimesProvider>()
+                                        .currentPrayer
+                                        .index,
                                   ),
                                 ),
                               )

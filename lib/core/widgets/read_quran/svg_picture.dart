@@ -112,7 +112,7 @@ Widget options({double? height, double? width, Color? color}) {
     'assets/svg/options.svg',
     width: width,
     height: height ?? 60,
-    color: Colors.red,
+    color: color ?? Colors.red,
     // colorFilter: ColorFilter.mode(
     //     color ?? Get.theme.colorScheme.secondary, BlendMode.srcIn),
   );

@@ -6,67 +6,42 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran_app/core/bloc/base_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/theme/dark_theme.dart';
 
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/widgets/custom_bottom_navigation_bar2.dart';
 import 'package:quran_app/features/home/widgets/next_player.dart';
-import 'package:quran_app/main.dart';
+import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 import 'core/AppLocalizations/AppLocalizations.dart';
-import 'core/services/get_cash_data.dart';
-import 'core/services/services_notification.dart';
 import 'core/util/exit_alert.dialog.dart';
 import 'features/prayer_time/cubit/prayer_time_cubit.dart';
 
-void setLastRead() async {
-  await CashHelper.setData(
-    key: 'lastPageRead',
-    value: lastPageRead,
-  );
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    initNotification();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.paused) {
-      setLastRead();
-      // The app is in the background
-      logger.d('App is paused');
-    } else if (state == AppLifecycleState.resumed) {
-      // The app is in the foreground
-      logger.d('App is resumed');
-    }
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PrayerTimeCubit()..initPrayerTime(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PrayerTimeCubit()..initPrayerTime(),
+        ),
+        BlocProvider(create: (context) => AudioCubit()..initAudioPlayer()),
+
+        //Home Cubit
+
+        BlocProvider(create: (context) => BaseBloc()),
+        BlocProvider(create: (context) => BookmarkBloc()),
+        BlocProvider(
+            lazy: false,
+            create: (context) => ReadQuranBloc()..add(LoadQuranEvent())),
+      ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,
@@ -96,77 +71,45 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           supportedLocales: const [Locale('ar'), Locale('en')],
           onGenerateRoute: RouterGenerator.getRoute,
           initialRoute: RoutesManager.main,
-          home: const MainView(),
           // darkTheme: getDarkMode(),
           darkTheme: getDarkTheme(),
           theme: getLightMode(),
           title: 'بلغوا عني ',
           themeMode: ThemeMode.dark,
+          navigatorKey: NavigationService.navigatorKey,
           debugShowCheckedModeBanner: false,
+          home: const _App(),
         ),
       ),
     );
   }
-
-  void initNotification() async {
-    notifyHelper = NotifyHelper();
-    await notifyHelper.initializeNotification(context);
-    await notifyHelper.initChannelAndroid();
-    print("init Notification ");
-  }
 }
 
-class MainView extends StatefulWidget {
-  const MainView({super.key});
-
-  @override
-  State<MainView> createState() => _MainViewState();
-}
-
-class _MainViewState extends State<MainView> {
-  @override
-  void initState() {
-    super.initState();
-    // ControllerQuran.loadSurah();
-    initCashValue();
-    ToastServes.fToast = FToast();
-    ToastServes.fToast!.init(context);
-  }
+class _App extends StatelessWidget {
+  const _App({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
         showMyAlert(context: context);
-        // await showDialog(
-        //   context: context,
-        //   builder: (context) => const MyAlertDialog(),
-        // );
-        return false;
       },
       // child: ,
-      child: const MainPage(),
-    );
-  }
-}
-
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<BaseBloc, BaseState>(
-      builder: (context, state) {
-        return BaseHome(
-          titleWidget: currentPage == 0 ? const NextTimePrayerRemain() : null,
-          back: false,
-          title: "",
-          isScroll: currentPage == 2 ? false : true,
-          bottomNavigationBar: const CustomBottomNavigationBar(),
-          body: screens[currentPage],
-        );
-      },
+      child: BlocBuilder<BaseBloc, BaseState>(
+        builder: (context, state) {
+          return BaseHome(
+            titleWidget: currentPage == 0 ? const NextTimePrayerRemain() : null,
+            back: false,
+            title: "",
+            isScroll: currentPage == 2 ? false : true,
+            bottomNavigationBar: const CustomBottomNavigationBar(),
+            body: screens[currentPage],
+          );
+        },
+      ),
     );
   }
 }

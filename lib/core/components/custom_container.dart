@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 class CustomContainer extends StatelessWidget {
   CustomContainer({super.key, this.child, this.image, this.height});
@@ -21,10 +22,10 @@ class CustomContainer extends StatelessWidget {
               ),
             ),
           ),
-          height: height ?? SizeConfig.blockSizeVertical! * 30,
+          height: height ?? context.getHight(30),
         ),
         Container(
-          height: height ?? SizeConfig.blockSizeVertical! * 30,
+          height: height ?? context.getHight(30),
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

@@ -47,35 +47,23 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             icon: listOfIcons[1],
             title: titles[1],
           ),
-          // _IconItem(
-          //   onTap: () {
-          //     currentPage = 2;
-          //     BlocProvider.of<BaseBloc>(context).add(SetStateBaseBlocEvent());
-          //   },
-          //   index: 2,
-          //   icon: listOfIcons[2],
-          //   title: titles[2],
-          // ),
-          // _IconItem(
-          //   onTap: () {
-          //     currentPage = 3;
-          //     // context.read<HomeBloc>().add(GetProfileEvent());
-          //     context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-          //   },
-          //   index: 3,
-          //   icon: listOfIcons[3],
-          //   title: titles[3],
-          // ),
-
           _IconItem(
             onTap: () {
               currentPage = 2;
-              // context.read<HomeBloc>().add(GetProfileEvent());
+              context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+            },
+            index: 2,
+            icon: listOfIcons[2],
+            title: titles[2],
+          ),
+          _IconItem(
+            onTap: () {
+              currentPage = 3;
               context.read<BaseBloc>().add(SetStateBaseBlocEvent());
             },
             index: 3,
-            icon: listOfIcons[2],
-            title: titles[2],
+            icon: listOfIcons[3],
+            title: titles[3],
           ),
         ],
       ),
@@ -162,12 +150,12 @@ class _IconItem extends StatelessWidget {
 List<IconData> listOfIcons = [
   CupertinoIcons.home,
   CupertinoIcons.collections,
-  // CupertinoIcons.collections_solid,
   CupertinoIcons.cloud_download,
+  CupertinoIcons.settings_solid,
 ];
 List<String> titles = [
   'الرئيسية',
   'الاقسام',
-  // 'المزيد',
   'التنزيلات',
+  'الإعدادات',
 ];

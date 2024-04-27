@@ -5,6 +5,7 @@ import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/theme/themeData.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/controller/repository/audio_player_helper.dart';
 import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
 
@@ -39,7 +40,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
 
         //list of qurea
         SizedBox(
-          height: SizeConfig.blockSizeVertical! * 22,
+          height:context.getHight(22),
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
@@ -74,7 +75,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                   child: AnimatedContainer(
                     margin:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    width: SizeConfig.blockSizeHorizontal! * 22,
+                    width:context.getWidth(22),
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -92,7 +93,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                             borderRadius: BorderRadius.circular(10),
                             child: SvgPicture.asset(
                               data['image'],
-                              height: SizeConfig.blockSizeVertical! * 10,
+                              height:context.getHight(10),
                               fit: BoxFit.cover,
                             ),
                           ),

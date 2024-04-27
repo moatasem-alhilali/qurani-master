@@ -71,6 +71,7 @@ class NotifyHelper {
       priority: Priority.high,
       importance: Importance.max,
       ticker: 'test ticker',
+      
       playSound: true,
       // largeIcon: const DrawableResourceAndroidBitmap("logo"),
     );
@@ -121,8 +122,11 @@ class NotifyHelper {
         hour: hour,
         minute: minute,
       ),
+
       notificationDetail,
+      
       androidAllowWhileIdle: true,
+      
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,

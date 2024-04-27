@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/Home/cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/bloc/base_bloc.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/sabih/cubit/subih_cubit.dart';
 
 class ButtonResAndSave extends StatelessWidget {
@@ -15,13 +17,13 @@ class ButtonResAndSave extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: SizeConfig.blockSizeVertical! * 10,
+            height: context.getHight(10),
             child: _MyButton(
               label: "الاعادة",
               onPressed: () {
                 masbahSize = 0;
                 CashHelper.setData(key: 'subih', value: masbahSize);
-                HomeCubit.get(context).mySetState();
+                BlocProvider.of<BaseBloc>(context).add(SetStateBaseBlocEvent());
               },
               bottomRight: 12,
               topRight: 12,
@@ -34,7 +36,7 @@ class ButtonResAndSave extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: SizeConfig.blockSizeVertical! * 10,
+            height:context.getHight(10),
             child: _MyButton(
               label: "حفظ",
               onPressed: () {
