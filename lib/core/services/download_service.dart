@@ -64,12 +64,9 @@ class DownloadService {
       await _permission();
 
       final externalDirectory = await getExternalStorageDirectory();
-      // if (externalDir == null) {
-      //   logger.e('External storage directory is null.');
-      //   return;
-      // }
-      final dir =
-          await Directory('${externalDirectory!.path}/Download').create();
+
+      // final dir =
+      //     await Directory('${externalDirectory!.path}/Download').create();
       final di = await getDownloadPath();
       String extension = url.split("/").last.split(".").last;
       String fileName =
