@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_aya_tab.dart';
 
@@ -23,7 +23,7 @@ class BookMarkList extends StatelessWidget {
               padding: const EdgeInsets.all(4.0),
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                color: currentThemeData.colorScheme.primary,
+                color: context.currentThemeData.colorScheme.primary,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
@@ -33,7 +33,7 @@ class BookMarkList extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 labelStyle: TextStyle(
-                  color: currentThemeData.hintColor,
+                  color: context.currentThemeData.hintColor,
                   fontFamily: 'kufi',
                   fontSize: 11,
                 ),
@@ -41,15 +41,15 @@ class BookMarkList extends StatelessWidget {
                   borderRadius: const BorderRadius.all(
                     Radius.circular(8),
                   ),
-                  color:
-                      currentThemeData.colorScheme.background.withOpacity(.3),
+                  color: context.currentThemeData.colorScheme.background
+                      .withOpacity(.3),
                 ),
                 tabs: [
                   Tab(
                     child: Text(
                       'الصفحات',
                       style: TextStyle(
-                        color: currentThemeData.canvasColor,
+                        color: context.currentThemeData.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -59,7 +59,7 @@ class BookMarkList extends StatelessWidget {
                     child: Text(
                       'الايات',
                       style: TextStyle(
-                        color: currentThemeData.canvasColor,
+                        color: context.currentThemeData.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),

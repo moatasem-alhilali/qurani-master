@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/widgets/drawer_slide/juz_page.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
@@ -23,7 +24,7 @@ class SurahJuzList extends StatelessWidget {
               padding: const EdgeInsets.all(4.0),
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                color: currentThemeData.colorScheme.primary,
+                color: context.currentThemeData.colorScheme.primary,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
@@ -33,7 +34,7 @@ class SurahJuzList extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 labelStyle: TextStyle(
-                  color: currentThemeData.hintColor,
+                  color: context.currentThemeData.hintColor,
                   fontFamily: 'kufi',
                   fontSize: 11,
                 ),
@@ -42,14 +43,14 @@ class SurahJuzList extends StatelessWidget {
                     Radius.circular(8),
                   ),
                   color:
-                      currentThemeData.colorScheme.background.withOpacity(.3),
+                      context.currentThemeData.colorScheme.background.withOpacity(.3),
                 ),
                 tabs: [
                   Tab(
                     child: Text(
                       'السور',
                       style: TextStyle(
-                        color: currentThemeData.canvasColor,
+                        color: context.currentThemeData.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -59,7 +60,7 @@ class SurahJuzList extends StatelessWidget {
                     child: Text(
                       'الاجزاء',
                       style: TextStyle(
-                        color: currentThemeData.canvasColor,
+                        color:context. currentThemeData.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),

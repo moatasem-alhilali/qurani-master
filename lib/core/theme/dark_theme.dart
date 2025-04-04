@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 
 enum ToolAppThemeType { light, dark }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
 class CustomSvgContainer extends StatelessWidget {

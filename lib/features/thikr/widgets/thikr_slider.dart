@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/custom_container.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/thikr/pages/wird_screen.dart';
 

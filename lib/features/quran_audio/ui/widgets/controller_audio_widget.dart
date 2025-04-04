@@ -2,7 +2,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/bloc/base_bloc.dart';
+import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/features/quran_audio/controller/repository/audio_player_helper.dart';

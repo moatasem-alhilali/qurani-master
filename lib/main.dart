@@ -11,15 +11,8 @@ import 'package:quran_app/core/BlocObserver/BlocObserver.dart';
 import 'main_view.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
-//flutter pub outdated
-
-//flutter build appbundle --no-tree-shake-icons
-//keytool -importkeystore -srckeystore upload-keystore.jks -destkeystore upload-keystore.jks -deststoretype pkcs12
 
 Logger logger = Logger();
-//flutter build appbundle --release --no-sound-null-safety
-//flutter build appbundle --target-platform android-arm,android-arm64,android-x64 --no-sound-null-safety
-//flutter build appbundle --target-platform android-arm,android-arm64,android-x64 --no-sound-null-safety --obfuscate --split-debug-info=symbols/
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +30,3 @@ void main() async {
   runApp(const MyApp());
 }
 
-//https://raw.githubusercontent.com/islamic-network/cdn/master/info/cdn_surah_audio.json
-
-//https://api.alquran.cloud/v1/edition/format/audio
-
-//ai:https://islam-ai-api.p.rapidapi.com/api/bot?question="اهميه الصلاة"
-//ai:https://islam-ai-api.p.rapidapi.com/api/chat?question="اهميه الصلاة"

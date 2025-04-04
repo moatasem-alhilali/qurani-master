@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 
 class Controller extends StatelessWidget {
   const Controller({Key? key, required this.audioPlayer}) : super(key: key);

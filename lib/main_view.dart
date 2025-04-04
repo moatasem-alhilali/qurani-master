@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:quran_app/core/bloc/base_bloc.dart';
+import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/theme/dark_theme.dart';
 
-import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/widgets/custom_bottom_navigation_bar2.dart';
 import 'package:quran_app/features/home/widgets/next_player.dart';
@@ -33,53 +31,59 @@ class MyApp extends StatelessWidget {
           create: (context) => PrayerTimeCubit()..initPrayerTime(),
         ),
         BlocProvider(create: (context) => AudioCubit()..initAudioPlayer()),
-
-        //Home Cubit
-
+        //
+        BlocProvider(
+            create: (context) =>
+                ThemeBloc()..add(ChangeThemeEvent(theme: currentThemeType))),
         BlocProvider(create: (context) => BaseBloc()),
         BlocProvider(create: (context) => BookmarkBloc()),
         BlocProvider(
-            lazy: false,
-            create: (context) => ReadQuranBloc()..add(LoadQuranEvent())),
-      ],
-      child: ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (_, child) => MaterialApp(
-          builder: BotToastInit(), //1. call BotToastInit
-          navigatorObservers: [
-            BotToastNavigatorObserver()
-          ], //2. registered route observer
-
-          locale: const Locale('ar'),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
-          ],
-          localeResolutionCallback: (deviceLocale, supportedLocales) {
-            for (var locale in supportedLocales) {
-              if (deviceLocale != null &&
-                  deviceLocale.languageCode == locale.languageCode) {
-                return deviceLocale;
-              }
-            }
-            return supportedLocales.first;
-          },
-          supportedLocales: const [Locale('ar'), Locale('en')],
-          onGenerateRoute: RouterGenerator.getRoute,
-          initialRoute: RoutesManager.main,
-          // darkTheme: getDarkMode(),
-          darkTheme: getDarkTheme(),
-          theme: getLightMode(),
-          title: 'بلغوا عني ',
-          themeMode: ThemeMode.dark,
-          navigatorKey: NavigationService.navigatorKey,
-          debugShowCheckedModeBanner: false,
-          home: const _App(),
+          lazy: false,
+          create: (context) => ReadQuranBloc()..add(LoadQuranEvent()),
         ),
+      ],
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          return ScreenUtilInit(
+            designSize: const Size(360, 690),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (_, child) => MaterialApp(
+              builder: BotToastInit(), //1. call BotToastInit
+              navigatorObservers: [
+                BotToastNavigatorObserver()
+              ], //2. registered route observer
+
+              locale: const Locale('ar'),
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate
+              ],
+              localeResolutionCallback: (deviceLocale, supportedLocales) {
+                for (var locale in supportedLocales) {
+                  if (deviceLocale != null &&
+                      deviceLocale.languageCode == locale.languageCode) {
+                    return deviceLocale;
+                  }
+                }
+                return supportedLocales.first;
+              },
+              supportedLocales: const [Locale('ar'), Locale('en')],
+              onGenerateRoute: RouterGenerator.getRoute,
+              initialRoute: RoutesManager.main,
+              // darkTheme: getDarkMode(),
+              darkTheme: getDarkTheme(),
+              theme: getLightMode(),
+              title: 'طمأنينة',
+              themeMode: ThemeMode.dark,
+              navigatorKey: NavigationService.navigatorKey,
+              debugShowCheckedModeBanner: false,
+              home: const _App(),
+            ),
+          );
+        },
       ),
     );
   }

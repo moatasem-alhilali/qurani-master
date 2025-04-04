@@ -5,18 +5,18 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
-import 'package:quran_app/features/read_quran/presentation/view/widgets/pages_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/pages_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/top_title_widget.dart';
 import 'package:quran_app/main.dart';
 
-class QuranPage extends StatefulWidget {
-  const QuranPage({Key? key}) : super(key: key);
+class QuranBodyWidget extends StatefulWidget {
+  const QuranBodyWidget({Key? key}) : super(key: key);
 
   @override
-  State<QuranPage> createState() => _QuranPageState();
+  State<QuranBodyWidget> createState() => _QuranBodyWidgetState();
 }
 
-class _QuranPageState extends State<QuranPage> {
+class _QuranBodyWidgetState extends State<QuranBodyWidget> {
   @override
   void initState() {
     if (lastPageRead != 0) {
@@ -83,7 +83,7 @@ class _QuranPageState extends State<QuranPage> {
                                   padding: EdgeInsets.symmetric(
                                     horizontal: horizontal,
                                   ),
-                                  child: PagesWidget(pageIndex: index),
+                                  child: PagesQuranWidget(pageIndex: index),
                                 );
                               },
                             ),

@@ -3,7 +3,7 @@ import 'package:quran_app/core/components/custom_svg_container.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
 class PageViewSubih extends StatelessWidget {

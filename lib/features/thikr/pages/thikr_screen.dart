@@ -3,7 +3,7 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/my_adia/page/doua_home.dart';
 import 'package:quran_app/features/sabih/pages/sabih_screen.dart';
 import 'package:quran_app/features/thikr/pages/wird_screen.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
@@ -18,7 +19,7 @@ class QuranJuz extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
-        color: currentThemeData.colorScheme.background,
+        color: context.currentThemeData.colorScheme.background,
       ),
       child: ListView.builder(
         padding: EdgeInsets.zero,
@@ -51,7 +52,7 @@ class QuranJuz extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                         color: (index % 2 == 0
-                            ? currentThemeData.colorScheme.primary
+                            ? context.currentThemeData.colorScheme.primary
                                 .withOpacity(.15)
                             : Colors.transparent),
                         borderRadius:
@@ -84,7 +85,7 @@ class QuranJuz extends StatelessWidget {
                                           width: 40,
                                           child: SvgPicture.asset(
                                             'assets/svg/sora_num.svg',
-                                            color: currentThemeData
+                                            color: context.currentThemeData
                                                 .colorScheme.primary,
                                           )),
                                       Transform.translate(
@@ -93,7 +94,8 @@ class QuranJuz extends StatelessWidget {
                                           convertNumbers(
                                               (index + 1).toString()),
                                           style: TextStyle(
-                                              color: currentThemeData.hintColor,
+                                              color: context
+                                                  .currentThemeData.hintColor,
                                               fontFamily: "kufi",
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -113,7 +115,8 @@ class QuranJuz extends StatelessWidget {
                                     Text(
                                       juz.text,
                                       style: TextStyle(
-                                        color: currentThemeData.hintColor,
+                                        color:
+                                            context.currentThemeData.hintColor,
                                         fontFamily: "uthmanic2",
                                         fontSize: 20,
                                         height: 2,
@@ -131,7 +134,7 @@ class QuranJuz extends StatelessWidget {
                                           fontFamily: "naskh",
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12,
-                                          color: currentThemeData
+                                          color: context.currentThemeData
                                               .colorScheme.surface,
                                         ),
                                       ),
@@ -155,7 +158,8 @@ class QuranJuz extends StatelessWidget {
                 },
               ),
               hDivider(
-                  color: currentThemeData.colorScheme.primary.withOpacity(0.2)),
+                  color: context.currentThemeData.colorScheme.primary
+                      .withOpacity(0.2)),
             ],
           );
         },

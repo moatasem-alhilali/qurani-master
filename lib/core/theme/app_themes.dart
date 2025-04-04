@@ -1,38 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
-enum AppTheme { blue, brown, old, dark }
-
-AppTheme _currentTheme = AppTheme.blue;
-
-// MyColorTheme get currentThemeData {
-//   switch (_currentTheme) {
-//     case AppTheme.blue:
-//       return blueTheme;
-//     case AppTheme.brown:
-//       return brownTheme;
-//     case AppTheme.old:
-//       return oldTheme;
-//     case AppTheme.dark:
-//       return darkTheme;
-//     default:
-//       return blueTheme;
-//   }
-// }
-MyColorTheme get currentThemeData {
-  switch (currentThemeType) {
-    case 1:
-      return blueTheme;
-    case 2:
-      return brownTheme;
-    case 3:
-      return oldTheme;
-    case 4:
-      return darkTheme;
-    default:
-      return blueTheme;
-  }
-}
 class MyColorTheme {
   MyColorTheme({
     required this.colorScheme,
@@ -136,12 +104,6 @@ final MyColorTheme brownTheme = MyColorTheme(
   focusColor: const Color(0xff77554B),
   secondaryHeaderColor: const Color(0xff77554B),
   cardColor: const Color(0xff77554B),
-  // textSelectionTheme: TextSelectionThemeData(
-  //     selectionColor: const Color(0xffCD9974).withOpacity(0.3),
-  //     selectionHandleColor: const Color(0xffCD9974)),
-  // cupertinoOverrideTheme: const CupertinoThemeData(
-  //   primaryColor: Color(0xffCD9974),
-  // ),
 );
 
 final MyColorTheme oldTheme = MyColorTheme(
@@ -175,15 +137,6 @@ final MyColorTheme oldTheme = MyColorTheme(
   focusColor: const Color(0xffE0E1E0),
   secondaryHeaderColor: const Color(0xff53618c),
   cardColor: const Color(0xff232c13),
-  // dividerTheme: const DividerThemeData(
-  //   color: Color(0xff91a57d),
-  // ),
-  // textSelectionTheme: TextSelectionThemeData(
-  //     selectionColor: const Color(0xffE0E1E0).withOpacity(0.3),
-  //     selectionHandleColor: const Color(0xffE0E1E0)),
-  // cupertinoOverrideTheme: const CupertinoThemeData(
-  //   primaryColor: Color(0xff53618c),
-  // ),
 );
 
 final MyColorTheme darkTheme = MyColorTheme(
@@ -217,10 +170,21 @@ final MyColorTheme darkTheme = MyColorTheme(
   focusColor: const Color(0xff404C6E),
   secondaryHeaderColor: const Color(0xff404C6E),
   cardColor: const Color(0xffF6F6EE),
-  // textSelectionTheme: TextSelectionThemeData(
-  //     selectionColor: const Color(0xff404C6E).withOpacity(0.3),
-  //     selectionHandleColor: const Color(0xff404C6E)),
-  // cupertinoOverrideTheme: const CupertinoThemeData(
-  //   primaryColor: Color(0xff404C6E),
-  // ),
 );
+
+class ThemeManager {
+  static MyColorTheme getThemeByType(int type) {
+    switch (type) {
+      case 1:
+        return blueTheme;
+      case 2:
+        return brownTheme;
+      case 3:
+        return oldTheme;
+      case 4:
+        return darkTheme;
+      default:
+        return blueTheme;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 
 class CustomAppBar extends StatelessWidget {
   CustomAppBar({super.key, this.icon, required this.text, this.iconWidget});

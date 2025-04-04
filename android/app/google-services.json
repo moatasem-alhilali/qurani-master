@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139423264424",
+    "project_id": "ygbnow2",
+    "storage_bucket": "ygbnow2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139423264424:android:d090ae7e3f84f63dd9dc9d",
+        "android_client_info": {
+          "package_name": "com.ygb.ygbnow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo2keINi8N6sPojVyeqZx4Hxv9Pm9FG9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

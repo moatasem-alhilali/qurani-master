@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
   cupertino_icons:
   flutter_local_notifications:
-  flutter_native_timezone:
   intl:
   rxdart:
   flutter_bloc:
@@ -22,7 +21,6 @@ dependencies:
   shared_preferences:
   scrollable_positioned_list:
   geolocator:
-  flutter_qiblah:
   lottie:
   fluttertoast:
   sqflite:
@@ -32,7 +30,6 @@ dependencies:
   dio:
   audio_video_progress_bar:
   connectivity_plus:
-  # quran:
   adhan:
   adhan_dart:
   smooth_page_indicator:
@@ -41,13 +38,10 @@ dependencies:
   readmore:
   flutter_animate:
   shimmer:
-  # flutter_staggered_animations:
-  # al_quran:
   url_launcher:
   auto_size_text:
   animated_text_kit:
   logger:
-  cached_network_image: ^3.3.0
   flutter_islamic_icons:
   syncfusion_flutter_pdfviewer:
   dartz:
@@ -59,8 +53,11 @@ dependencies:
   in_app_update:
   gap:
   bot_toast:
+  cached_network_image: ^3.3.0
   flutter_screenutil: ^5.9.0
   restart_app:
+  flutter_timezone: ^1.0.8
+  flutter_qiblah: ^3.0.3
   # ---------------------------------------
 
 dev_dependencies:
@@ -137,6 +134,9 @@ flutter:
     - family: bn
       fonts:
         - asset: assets/fonts/NotoSerifBengali.ttf
+    - family: QuranUnified
+      fonts:
+        - asset: assets/fonts/QuranUnified.ttf
 
     - family: page1
       fonts:

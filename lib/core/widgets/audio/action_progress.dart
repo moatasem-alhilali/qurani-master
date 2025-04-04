@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/bloc/base_bloc.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 
 class ActionProgress extends StatelessWidget {
   const ActionProgress({

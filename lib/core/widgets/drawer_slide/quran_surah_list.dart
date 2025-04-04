@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
@@ -14,7 +14,7 @@ class QuranSurahList extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
-        color: currentThemeData.colorScheme.background,
+        color: context.currentThemeData.colorScheme.background,
       ),
       child: ListView.builder(
         padding: EdgeInsets.zero,
@@ -45,7 +45,7 @@ class QuranSurahList extends StatelessWidget {
                         height: 60,
                         decoration: BoxDecoration(
                           color: (index % 2 == 0
-                              ? currentThemeData.colorScheme.primary
+                              ? context.currentThemeData.colorScheme.primary
                                   .withOpacity(.15)
                               : Colors.transparent),
                           borderRadius: const BorderRadius.all(
@@ -68,7 +68,7 @@ class QuranSurahList extends StatelessWidget {
                                         width: 40,
                                         child: SvgPicture.asset(
                                           'assets/svg/sora_num.svg',
-                                          color: currentThemeData
+                                          color: context.currentThemeData
                                               .colorScheme.primary,
                                         ),
                                       ),
@@ -78,7 +78,8 @@ class QuranSurahList extends StatelessWidget {
                                           convertNumbers(
                                               surah.surahNumber.toString()),
                                           style: TextStyle(
-                                              color: currentThemeData.hintColor,
+                                              color: context
+                                                  .currentThemeData.hintColor,
                                               fontFamily: "kufi",
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -98,7 +99,7 @@ class QuranSurahList extends StatelessWidget {
                                     SvgPicture.asset(
                                       'assets/svg/surah_name/00${index + 1}.svg',
                                       width: 90,
-                                      color: currentThemeData.hintColor,
+                                      color: context.currentThemeData.hintColor,
                                     ),
                                     Padding(
                                       padding:
@@ -109,7 +110,8 @@ class QuranSurahList extends StatelessWidget {
                                           fontFamily: "naskh",
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12,
-                                          color: currentThemeData.hintColor,
+                                          color: context
+                                              .currentThemeData.hintColor,
                                         ),
                                       ),
                                     ),
@@ -134,7 +136,7 @@ class QuranSurahList extends StatelessWidget {
                                             style: TextStyle(
                                               fontFamily: "uthman",
                                               fontSize: 13,
-                                              color: currentThemeData
+                                              color: context.currentThemeData
                                                   .colorScheme.surface,
                                             ),
                                           ),
@@ -146,7 +148,7 @@ class QuranSurahList extends StatelessWidget {
                                               fontFamily: "kufi",
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,
-                                              color: currentThemeData
+                                              color: context.currentThemeData
                                                   .colorScheme.surface,
                                             ),
                                           ),
@@ -160,18 +162,17 @@ class QuranSurahList extends StatelessWidget {
                           ),
                         )),
                     onTap: () {
-                       
                       context
                           .read<ReadQuranBloc>()
                           .pageController
                           .jumpToPage(surah.ayahs.first.page - 1);
-                     context.pop();
-                          context.pop();
+                      context.pop();
+                      context.pop();
                       // quranCtrl.changeSurahListOnTap(surah.ayahs.first.page);
                     },
                   ),
                   hDivider(
-                      color: currentThemeData.colorScheme.primary
+                      color: context.currentThemeData.colorScheme.primary
                           .withOpacity(0.2)),
                 ],
               ),

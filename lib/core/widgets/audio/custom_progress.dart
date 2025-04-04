@@ -5,8 +5,8 @@ import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/bloc/base_bloc.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 
 class ProgressAudio extends StatelessWidget {
   const ProgressAudio(

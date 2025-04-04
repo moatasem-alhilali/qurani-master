@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
@@ -32,12 +32,12 @@ class SearchAyah extends StatelessWidget {
                 builder: (context, state) {
                   return MyTextFormField(
                     hintStyle: TextStyle(
-                      color: currentThemeData.colorScheme.surface,
+                      color: context.currentThemeData.colorScheme.surface,
                       fontSize: 14,
                     ),
                     hintText: 'ادخل اسم الايه',
                     style: TextStyle(
-                      color: currentThemeData.cardColor,
+                      color: context.currentThemeData.cardColor,
                     ),
                     onChanged: (text) {
                       BlocProvider.of<SearchBloc>(context)
@@ -72,9 +72,11 @@ class SearchAyah extends StatelessWidget {
                               children: <Widget>[
                                 Container(
                                   color: (index % 2 == 0
-                                      ? currentThemeData.colorScheme.surface
+                                      ? context
+                                          .currentThemeData.colorScheme.surface
                                           .withOpacity(.05)
-                                      : currentThemeData.colorScheme.surface
+                                      : context
+                                          .currentThemeData.colorScheme.surface
                                           .withOpacity(.1)),
                                   child: ListTile(
                                     onTap: () {
@@ -93,7 +95,8 @@ class SearchAyah extends StatelessWidget {
                                           fontFamily: "uthmanic2",
                                           fontWeight: FontWeight.normal,
                                           fontSize: 22,
-                                          color: currentThemeData.hintColor,
+                                          color: context
+                                              .currentThemeData.hintColor,
                                         ),
                                       ),
                                       // child: RichText(
@@ -114,8 +117,8 @@ class SearchAyah extends StatelessWidget {
                                     subtitle: Container(
                                       height: 20,
                                       decoration: BoxDecoration(
-                                        color:
-                                            currentThemeData.primaryColorLight,
+                                        color: context
+                                            .currentThemeData.primaryColorLight,
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(4),
                                         ),
@@ -127,8 +130,10 @@ class SearchAyah extends StatelessWidget {
                                             child: Container(
                                                 decoration: BoxDecoration(
                                                     color: (index % 2 == 0
-                                                        ? currentThemeData
-                                                            .colorScheme.primary
+                                                        ? context
+                                                            .currentThemeData
+                                                            .colorScheme
+                                                            .primary
                                                             .withOpacity(.15)
                                                         : Colors.transparent),
                                                     borderRadius:
@@ -142,7 +147,8 @@ class SearchAyah extends StatelessWidget {
                                                   " ${'الجزء'}: ${search.partNum}",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: currentThemeData
+                                                    color: context
+                                                        .currentThemeData
                                                         .canvasColor,
                                                     fontSize: 12,
                                                   ),
@@ -151,7 +157,8 @@ class SearchAyah extends StatelessWidget {
                                           Expanded(
                                             child: Container(
                                                 decoration: BoxDecoration(
-                                                    color: currentThemeData
+                                                    color: context
+                                                        .currentThemeData
                                                         .primaryColor,
                                                     borderRadius:
                                                         const BorderRadius.only(
@@ -164,7 +171,8 @@ class SearchAyah extends StatelessWidget {
                                                   " ${'الصفحه'}: ${search.pageNum}",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                      color: currentThemeData
+                                                      color: context
+                                                          .currentThemeData
                                                           .canvasColor,
                                                       fontSize: 12),
                                                 )),
@@ -172,7 +180,8 @@ class SearchAyah extends StatelessWidget {
                                           Expanded(
                                             child: Container(
                                                 decoration: BoxDecoration(
-                                                    color: currentThemeData
+                                                    color: context
+                                                        .currentThemeData
                                                         .primaryColor,
                                                     borderRadius:
                                                         const BorderRadius.only(
@@ -185,7 +194,8 @@ class SearchAyah extends StatelessWidget {
                                                   " ${'الايه'}: ${search.ayaNum}",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                      color: currentThemeData
+                                                      color: context
+                                                          .currentThemeData
                                                           .canvasColor,
                                                       fontSize: 12),
                                                 )),
@@ -195,7 +205,7 @@ class SearchAyah extends StatelessWidget {
                                     ),
                                     leading: context.surahNameWidget(
                                       search.surahNum.toString(),
-                                      currentThemeData.hintColor!,
+                                      context.currentThemeData.hintColor!,
                                     ),
                                   ),
                                 ),

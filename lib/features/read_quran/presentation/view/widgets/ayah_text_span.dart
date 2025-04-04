@@ -1,11 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 
-TextSpan span({
+TextSpan ayahTextSpan({
   required String text,
   required int pageIndex,
   required bool isSelected,
@@ -24,15 +25,16 @@ TextSpan span({
     final String lastCharacter = text.substring(text.length - 1);
     TextSpan? first;
     TextSpan? second;
+    var fontFamily = 'page${pageIndex + 1}';
     if (isFirstAyah) {
       first = TextSpan(
         text: partOne,
         style: TextStyle(
-          fontFamily: 'page${pageIndex + 1}',
+          fontFamily: fontFamily,
           fontSize: fontSize,
           height: 2,
           letterSpacing: 30,
-          color: currentThemeData.colorScheme.inversePrimary,
+          color: context.currentThemeData.colorScheme.inversePrimary,
           backgroundColor: Colors.transparent,
         ),
         recognizer: LongPressGestureRecognizer(
@@ -42,12 +44,12 @@ TextSpan span({
       second = TextSpan(
         text: partTwo,
         style: TextStyle(
-          fontFamily: 'page${pageIndex + 1}',
+          fontFamily: fontFamily,
           fontSize: fontSize,
           height: 2,
           letterSpacing: 5,
           // wordSpacing: wordSpacing + 10,
-          color: currentThemeData.colorScheme.inversePrimary,
+          color: context.currentThemeData.colorScheme.inversePrimary,
           backgroundColor: context
                   .read<BookmarkBloc>()
                   .bookmarksController
@@ -66,11 +68,11 @@ TextSpan span({
     final TextSpan initialTextSpan = TextSpan(
       text: initialPart,
       style: TextStyle(
-        fontFamily: 'page${pageIndex + 1}',
+        fontFamily: fontFamily,
         fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
-        color: currentThemeData.colorScheme.inversePrimary,
+        color: context.currentThemeData.colorScheme.inversePrimary,
         backgroundColor: context
                 .read<BookmarkBloc>()
                 .bookmarksController
@@ -88,7 +90,7 @@ TextSpan span({
     final TextSpan lastCharacterSpan = TextSpan(
       text: lastCharacter,
       style: TextStyle(
-        fontFamily: 'page${pageIndex + 1}',
+        fontFamily: fontFamily,
         fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
@@ -96,7 +98,7 @@ TextSpan span({
                 .read<BookmarkBloc>()
                 .bookmarksController
                 .hasBookmarkSelect(surahNum, ayahNum, pageIndex)
-            ? currentThemeData.colorScheme.inversePrimary
+            ?context. currentThemeData.colorScheme.inversePrimary
             : const Color(0xff77554B),
         backgroundColor: context
                 .read<BookmarkBloc>()
@@ -104,7 +106,7 @@ TextSpan span({
                 .hasBookmarkSelect(surahNum, ayahNum, pageIndex)
             ? const Color(0xffCD9974).withOpacity(.4)
             : isSelected
-                ? currentThemeData.highlightColor
+                ? context.currentThemeData.highlightColor
                 : Colors.transparent,
       ),
       recognizer: LongPressGestureRecognizer(

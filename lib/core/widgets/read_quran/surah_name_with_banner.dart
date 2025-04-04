@@ -79,8 +79,8 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
                         ? (quranCtrl.getSurahNumberByAyah(ayahs.first) == 95 ||
                                 quranCtrl.getSurahNumberByAyah(ayahs.first) ==
                                     97)
-                            ? besmAllah2()
-                            : besmAllah()
+                            ? besmAllah2(context)
+                            : besmAllah(context)
                         : const SizedBox.shrink(),
                 const Gap(6),
               ],

@@ -7,7 +7,7 @@ import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
-import 'package:quran_app/core/theme/themeData.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
