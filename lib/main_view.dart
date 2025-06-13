@@ -21,9 +21,9 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
-import 'core/AppLocalizations/AppLocalizations.dart';
-import 'core/util/exit_alert.dialog.dart';
-import 'features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/core/AppLocalizations/AppLocalizations.dart';
+import 'package:quran_app/core/util/exit_alert.dialog.dart';
+import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -51,8 +51,9 @@ class MyApp extends StatelessWidget {
 
         ///theme
         BlocProvider(
-            create: (context) =>
-                ThemeBloc()..add(ChangeThemeEvent(theme: currentThemeType))),
+          create: (context) =>
+              ThemeBloc()..add(ChangeThemeEvent(theme: currentThemeType)),
+        ),
 
         ///base
         BlocProvider(create: (context) => BaseBloc()),
@@ -79,13 +80,12 @@ class MyApp extends StatelessWidget {
             },
             builder: (context, state) {
               return ScreenUtilInit(
-                designSize: const Size(360, 690),
                 minTextAdapt: true,
                 splitScreenMode: true,
                 builder: (_, child) => MaterialApp(
                   builder: BotToastInit(), //1. call BotToastInit
                   navigatorObservers: [
-                    BotToastNavigatorObserver()
+                    BotToastNavigatorObserver(),
                   ], //2. registered route observer
 
                   locale: const Locale('ar'),
@@ -93,10 +93,10 @@ class MyApp extends StatelessWidget {
                     AppLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate
+                    GlobalCupertinoLocalizations.delegate,
                   ],
                   localeResolutionCallback: (deviceLocale, supportedLocales) {
-                    for (var locale in supportedLocales) {
+                    for (final locale in supportedLocales) {
                       if (deviceLocale != null &&
                           deviceLocale.languageCode == locale.languageCode) {
                         return deviceLocale;
@@ -143,7 +143,7 @@ class _App extends StatelessWidget {
           return BaseHome(
             titleWidget: currentPage == 0 ? const NextTimePrayerRemain() : null,
             back: false,
-            title: "",
+            title: 'طمأنينة',
             isScroll: currentPage == 2 ? false : true,
             bottomNavigationBar: const CustomBottomNavigationBar(),
             body: screens[currentPage],

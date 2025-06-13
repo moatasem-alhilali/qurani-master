@@ -116,7 +116,7 @@ class NotificationSettingsSeeder {
           key: entry.key,
           label: entry.value['label'] as String,
           value: entry.value['value'] as bool,
-          time: entry.value['time'] as String,
+          time: entry.value['time'] as String?,
         ));
       }
     }

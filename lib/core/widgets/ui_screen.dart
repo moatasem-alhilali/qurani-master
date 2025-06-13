@@ -4,8 +4,8 @@ import 'package:quran_app/core/util/my_extensions.dart';
 
 class BaseUiScreen extends StatelessWidget {
   const BaseUiScreen({
-    super.key,
     required this.child,
+    super.key,
     this.background,
     this.title,
     this.leading,
@@ -53,7 +53,7 @@ class BaseUiScreen extends StatelessWidget {
               leading: leading ?? const SizedBox(),
               actions: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: CircleAvatar(
                     radius: 18,
                     backgroundColor: FxColors.primary,
@@ -80,12 +80,11 @@ class BaseUiScreen extends StatelessWidget {
               flexibleSpace: FlexibleSpaceBar(
                 title: title,
                 centerTitle: true,
-                collapseMode: CollapseMode.parallax,
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
-                      "assets/logo/bg.jpg",
+                      'assets/logo/bg.jpg',
                       fit: BoxFit.cover,
                     ),
                     // Container(
@@ -140,7 +139,7 @@ class BaseUiScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: RefreshIndicator(
                       onRefresh: onRefresh ?? () async {},
                       child: child,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
@@ -47,64 +48,102 @@ class BaseHome extends StatelessWidget {
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              toolbarHeight: toolbarHeight,
-              expandedHeight: expandedHeight ?? 130,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              leading: leading ?? const SizedBox(),
-              actions: [
-                if (back)
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: FxColors.primary,
-                      child: FittedBox(
-                        child: IconButton(
-                          onPressed: () {
-                            context.pop();
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                          ),
+            if (back)
+              SliverAppBar(
+                expandedHeight: 50.h,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                leading: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: FxColors.primary,
+                    child: FittedBox(
+                      child: IconButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                          size: 25,
                         ),
                       ),
                     ),
                   ),
-              ],
-              bottom: bottom,
-              flexibleSpace: FlexibleSpaceBar(
-                title: titleWidget ??
-                    title!.autoSize(context, maxLines: 4, color: Colors.grey),
-                centerTitle: true,
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/logo/bg.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                   
-                  ],
                 ),
-                // centerTitle: true,
+              ),
+            SliverAppBar(
+              toolbarHeight: toolbarHeight,
+              expandedHeight: 90.h,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              leading: leading ?? const SizedBox(),
+              actions: const [],
+              bottom: bottom,
+              flexibleSpace: Container(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: FlexibleSpaceBar(
+                  background: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image.asset(
+                          'assets/logo/bg.jpg',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 80.h,
+                          // height: double.infinity,
+                        ),
+                      ),
+                      Container(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: LinearGradient(
+                            begin: FractionalOffset.bottomCenter,
+                            end: FractionalOffset.topCenter,
+                            colors: [
+                              FxColors.background.withOpacity(0.8),
+                              FxColors.background.withOpacity(0.1),
+                            ],
+                            stops: const [
+                              1,
+                              1,
+                            ],
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: titleWidget ??
+                            title!.autoSize(
+                              context,
+                              maxLines: 4,
+                              color: Colors.grey,
+                            ),
+                      ),
+                    ],
+                  ),
+                  // centerTitle: true,
+                ),
               ),
             ),
           ],
           body: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,
+            margin: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 10.sp),
             decoration: BoxDecoration(
               color: Theme.of(context).splashColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(20),
-              ),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(4.sp),
                     child: isScroll
                         ? SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),

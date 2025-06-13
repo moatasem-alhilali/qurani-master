@@ -6,8 +6,8 @@ import 'package:quran_app/main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'channel/notification_channel.dart';
-import 'channel/channel_initializer.dart';
+import 'package:quran_app/core/notification/channel/notification_channel.dart';
+import 'package:quran_app/core/notification/channel/channel_initializer.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin =
@@ -47,7 +47,7 @@ class NotificationService {
 
     _configureSelectNotificationSubject();
 
-    logger.d("Notification service initialized");
+    logger.d('Notification service initialized');
   }
 
   Future<void> showInstantNotification({
@@ -89,7 +89,7 @@ class NotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
-    logger.i("Notification service scheduled at $time");
+    // logger.i('Notification service scheduled at $time');
   }
 
   Future<void> cancel({required int id}) async => _plugin.cancel(id);
@@ -98,7 +98,8 @@ class NotificationService {
   // ================== Internals ==================
 
   Future<NotificationDetails> _buildNotificationDetails(
-      NotificationChannel channel) async {
+    NotificationChannel channel,
+  ) async {
     final data = channel.data;
 
     final android = AndroidNotificationDetails(
@@ -106,10 +107,8 @@ class NotificationService {
       data.name,
       channelDescription: 'Channel for ${data.name}',
       sound: RawResourceAndroidNotificationSound(data.sound),
-      playSound: true,
       priority: Priority.high,
       importance: Importance.max,
-      enableVibration: true,
     );
 
     const ios = IOSNotificationDetails();
@@ -134,7 +133,7 @@ class NotificationService {
 
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((payload) {
-      debugPrint("Notification tapped with payload: $payload");
+      debugPrint('Notification tapped with payload: $payload');
       // Navigate or handle inside app
     });
   }
@@ -145,6 +144,6 @@ class NotificationService {
     String? body,
     String? payload,
   ) async {
-    debugPrint("Legacy iOS notification received: $title");
+    debugPrint('Legacy iOS notification received: $title');
   }
 }
