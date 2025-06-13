@@ -11,8 +11,9 @@ import 'package:quran_app/main.dart';
 abstract class SearchRepository {
   Future<Either<Failure, dynamic>> searchMosoaa(String text);
   Future<Either<Failure, List<dynamic>>> historySearchMosoaa();
-  Future<Either<Failure, List<Aya>>> searchQuran(text, limit, offset);
-  Future<Either<Failure, List<Aya>>> searchSurah(text);
+  Future<Either<Failure, List<Aya>>> searchQuran(
+      String text, int limit, int offset);
+  Future<Either<Failure, List<Aya>>> searchSurah(String text);
 }
 
 class SearchRepositoryImpl implements SearchRepository {
@@ -21,7 +22,7 @@ class SearchRepositoryImpl implements SearchRepository {
   @override
   Future<Either<Failure, dynamic>> searchMosoaa(String text) async {
     try {
-      var url = "https://islam-ai-api.p.rapidapi.com/api/bot?question=$text";
+      final url = 'https://islam-ai-api.p.rapidapi.com/api/bot?question=$text';
       logger.i(url);
 
       final result = await DioHelper.get(
@@ -36,7 +37,10 @@ class SearchRepositoryImpl implements SearchRepository {
       );
 
       final answer = result.data['response'];
-      await _searchEngineService.addEntry(question: text, answer: answer);
+      await _searchEngineService.addEntry(
+        question: text,
+        answer: answer as String,
+      );
 
       return right(result.data);
     } catch (e) {
@@ -56,9 +60,10 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   @override
-  Future<Either<Failure, List<Aya>>> searchQuran(text, limit, offset) async {
+  Future<Either<Failure, List<Aya>>> searchQuran(
+      String text, int limit, int offset) async {
     try {
-      String convertedText = convertArabicToEnglishNumbers(text);
+      final convertedText = convertArabicToEnglishNumbers(text);
       final ayaRepository = sl.get<AyaRepository>();
       final result = await ayaRepository.search(convertedText, limit, offset);
       return right(result);
@@ -68,15 +73,15 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   @override
-  Future<Either<Failure, List<Aya>>> searchSurah(text) async {
+  Future<Either<Failure, List<Aya>>> searchSurah(String text) async {
     try {
-      String convertedText = convertArabicToEnglishNumbers(text);
+      final convertedText = convertArabicToEnglishNumbers(text);
       final ayaRepository = sl.get<AyaRepository>();
       final result = await ayaRepository.surahSearch(convertedText);
 
       // extract unique surahs
       final uniqueSurahs = <int, Aya>{};
-      for (var aya in result) {
+      for (final aya in result) {
         uniqueSurahs.putIfAbsent(aya.surahNum, () => aya);
       }
 

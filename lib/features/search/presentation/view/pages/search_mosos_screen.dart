@@ -31,7 +31,7 @@ class SearchMosoaaScreen extends StatelessWidget {
               suffixIcon: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   switch (state.searchMossoState) {
-                    case RequestState.defaults:
+                    case RequestState.initial:
                       return IconButton(
                         onPressed: () {
                           if (search.text.isNotEmpty) {
@@ -141,14 +141,14 @@ class _Item extends StatelessWidget {
                       child: Column(
                         children: [
                           BubbleSpecialThree(
-                            text: data['question'],
+                            text: data['question'] as String,
                             color: const Color(0xFF6e57dd),
                             tail: true,
                             textStyle: const TextStyle(
                                 color: Colors.white, fontSize: 16),
                           ),
                           BubbleSpecialThree(
-                            text: data['answer'],
+                            text: data['answer'] as String,
                             color: const Color(0xFF283643),
                             isSender: false,
                             textStyle: const TextStyle(

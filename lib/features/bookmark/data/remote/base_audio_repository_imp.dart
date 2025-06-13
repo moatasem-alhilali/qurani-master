@@ -11,13 +11,13 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
   @override
   Future<Either<Failure, List<dynamic>>> famousReader(String id) async {
     try {
-      var url = "/quran/get-category/$id/ar/json";
+      final url = '/quran/get-category/$id/ar/json';
       final result = await DioHelper.get(
         url: url,
       );
-      var data = result.data['recitations'];
+      final data = result.data['recitations'];
       logger.i('get famous Reader');
-      return right(data);
+      return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
       return left(ServerFailure('غير قادر على معالجة العملية'));
@@ -30,9 +30,9 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
       final result = await DioHelper.get(
         url: url,
       );
-      var data = result.data['attachments'];
+      final data = result.data['attachments'];
       logger.i('get famous Reader Detail');
-      return right(data);
+      return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
       return left(ServerFailure('غير قادر على معالجة العملية'));
@@ -42,11 +42,11 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
   @override
   Future<Either<Failure, AudioPlayer>> initAudio(dynamic data) async {
     try {
-      List<String> urls = [];
-      for (var element in data) {
-        urls.add(element['url']);
+      final urls = <String>[];
+      for (final element in data as List<dynamic>) {
+        urls.add(element['url'] as String);
       }
-      AudioService audioService = AudioService();
+      final audioService = AudioService();
       await audioService.initAudiosNetworks(urls);
       return right(audioService.audioPlayer);
     } catch (e) {
@@ -58,13 +58,13 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
   @override
   Future<Either<Failure, List<dynamic>>> quranLearnChild() async {
     try {
-      var url = ApiServes.quranLearnForChild;
+      const url = ApiServes.quranLearnForChild;
       final result = await DioHelper.get(
         url: url,
       );
-      var data = result.data['data'];
+      final data = result.data['data'];
       logger.i('get quran Learn Child');
-      return right(data);
+      return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
       return left(ServerFailure('غير قادر على معالجة العملية'));

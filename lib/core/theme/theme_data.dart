@@ -195,15 +195,15 @@ ThemeData getLightMode() {
   );
 }
 
-TextStyle titleSmall(context) {
+TextStyle titleSmall(BuildContext context) {
   return Theme.of(context).textTheme.titleSmall!;
 }
 
-TextStyle titleMedium(context) {
+TextStyle titleMedium(BuildContext context) {
   return Theme.of(context).textTheme.titleMedium!;
 }
 
-TextStyle titleLarge(context) {
+TextStyle titleLarge(BuildContext context) {
   return Theme.of(context).textTheme.titleLarge!;
 }
 

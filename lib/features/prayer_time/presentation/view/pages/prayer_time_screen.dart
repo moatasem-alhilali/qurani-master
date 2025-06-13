@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
-import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
-import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
+import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/prayer_time/data/text/teme_prayer_text.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
 import 'package:timelines/timelines.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quran_app/core/shared/resources/assets_manager.dart';
+import 'package:adhan/adhan.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
@@ -21,110 +21,103 @@ class PrayerTimeScreen extends StatefulWidget {
 }
 
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
-  String selectedDateTime = "";
   @override
   Widget build(BuildContext context) {
     return BaseUiScreen(
       title: const NextTimePrayerRemain(),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              //!time line
               BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
                 builder: (context, state) {
-                  switch (state.prayerState) {
-                    case RequestState.defaults:
-                      return const _shimmerEffect();
+                  if (state.prayerState != RequestState.success) {
+                    return const _ShimmerEffect();
+                  }
 
-                    case RequestState.loading:
-                      return const _shimmerEffect();
+                  final list = state.prayerList;
+                  final currentType = state.currentPrayer?.type;
+                  final nextType = state.nextPrayer?.type;
 
-                    case RequestState.error:
-                      return const _shimmerEffect();
+                  return ListView.builder(
+                    itemCount: list.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final data = list[index];
+                      final isCurrent = currentType == data.type;
+                      final isNext = nextType == data.type;
 
-                    case RequestState.success:
-                      return ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          //set the color to the next player
-                          var data = prayerData[index];
-                          return Row(
+                      return Row(
+                        children: [
+                          Column(
                             children: [
-                              Column(
-                                children: [
-                                  index == 0
-                                      ? Container()
-                                      : SizedBox(
-                                          height: 20.0,
-                                          child: BaseAnimateFlipList(
-                                            index: index,
-                                            child: SolidLineConnector(
-                                              color: prayerData[index].color,
-                                            ),
-                                          ),
-                                        ),
-                                  sl
-                                              .get<PrayerTimesRepo>()
-                                              .currentPrayer
-                                              .index ==
-                                          index
-                                      ? BaseAnimateFlipList(
-                                          index: index,
-                                          child: DotIndicator(
-                                            color: prayerData[index].color,
-                                            size: 20,
-                                          ),
-                                        )
-                                      : BaseAnimateFlipList(
-                                          index: index,
-                                          child: OutlinedDotIndicator(
-                                            color: prayerData[index].color,
-                                            size: 20,
-                                          ),
-                                        ),
-                                  index == 4
-                                      ? Container()
-                                      : BaseAnimateFlipList(
-                                          index: index,
-                                          child: SizedBox(
-                                            height: 20.0,
-                                            child: SolidLineConnector(
-                                              color: prayerData[index].color,
-                                            ),
-                                          ),
-                                        ),
-                                ],
-                              ).animate().fadeIn(),
-
-                              //
-                              Expanded(
-                                child: BaseAnimate(
-                                  index: index + 2,
-                                  child: ItemPrayer(
-                                    nextPray: data,
-                                    data: data,
-                                    index: index,
-                                    nextCurrent: sl
-                                        .get<PrayerTimesRepo>()
-                                        .currentPrayer
-                                        .index,
+                              if (index != 0)
+                                const SizedBox(
+                                  height: 20,
+                                  child: SolidLineConnector(
+                                    color: Colors.grey,
                                   ),
                                 ),
-                              )
+                              if (isCurrent)
+                                const DotIndicator(
+                                  color: Colors.blue,
+                                  size: 20,
+                                )
+                              else
+                                const OutlinedDotIndicator(
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                              if (index != list.length - 1)
+                                const SizedBox(
+                                  height: 20,
+                                  child: SolidLineConnector(
+                                    color: Colors.grey,
+                                  ),
+                                ),
                             ],
-                          );
-                        },
-                        shrinkWrap: true,
-                        itemCount: 6,
+                          ).animate().fadeIn(),
+
+                          // 📦 المحتوى الجانبي
+                          Expanded(
+                            child: BaseAnimate(
+                              index: index + 2,
+                              child: ItemPrayerWidget(
+                                data: TimePrayerModel(
+                                  id: 200 + index,
+                                  title: data.name,
+                                  time: data.time12,
+                                  content: data.type.description,
+                                  image: data.type.imageAsset,
+                                  color: isCurrent
+                                      ? Colors.blue
+                                      : Colors.grey.shade300,
+                                ),
+                                nextPray: isNext
+                                    ? TimePrayerModel(
+                                        title: data.name,
+                                        time: data.time12,
+                                        content: '',
+                                        image: '',
+                                        color: Colors.blue,
+                                        id: -1,
+                                      )
+                                    : null,
+                                index: index,
+                                nextCurrent: index,
+                              ),
+                            ),
+                          ),
+                        ],
                       );
-                  }
+                    },
+                  );
                 },
-              )
+              ),
             ],
           ),
         ),
@@ -133,19 +126,25 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   }
 }
 
-class _shimmerEffect extends StatelessWidget {
-  const _shimmerEffect();
+class _ShimmerEffect extends StatelessWidget {
+  const _ShimmerEffect();
 
   @override
   Widget build(BuildContext context) {
-    return BaseShimmer(
-      child: Expanded(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).primaryColor,
+    return Column(
+      children: List.generate(
+        6,
+        (index) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: BaseShimmer(
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
           ),
         ),
       ),

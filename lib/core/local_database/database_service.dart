@@ -62,6 +62,8 @@ class DatabaseService {
     await db.execute(_bookmarkTable);
     await db.execute(_coordinates);
     await db.execute(_doua);
+    await db.execute(_notificationSettings);
+
     logger.i("✅ Database initialized and tables created.");
   }
 
@@ -127,6 +129,16 @@ class DatabaseService {
       content TEXT NOT NULL
     );
   ''';
+  static const String _notificationSettings = '''
+  CREATE TABLE notification_settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT NOT NULL UNIQUE,
+    value INTEGER NOT NULL DEFAULT 0,
+    label TEXT,
+    updated_at TEXT,
+    time TEXT
+  );
+''';
 
   // ──────────────────────────────────────────────────────────────────────────────
   // 🔁 Generic CRUD Methods
@@ -146,6 +158,12 @@ class DatabaseService {
     List<String>? columns,
     String? where,
     List<Object?>? whereArgs,
+    String? orderBy,
+    int? limit,
+    int? offset,
+    bool? distinct,
+    String? groupBy,
+    String? having,
   }) async {
     final db = await database;
     return await db.query(
@@ -153,6 +171,12 @@ class DatabaseService {
       columns: columns,
       where: where,
       whereArgs: whereArgs,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+      distinct: distinct,
+      groupBy: groupBy,
+      having: having,
     );
   }
 
@@ -168,9 +192,17 @@ class DatabaseService {
   ///   'lastRead': DateTime.now().toString(),
   /// });
   /// ```
-  Future<int> insert(String table, Map<String, dynamic> values) async {
+  Future<int> insert(
+    String table,
+    Map<String, dynamic> values, {
+    ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
+  }) async {
     final db = await database;
-    return await db.insert(table, values);
+    return await db.insert(
+      table,
+      values,
+      conflictAlgorithm: conflictAlgorithm,
+    );
   }
 
   /// Updates a record by its [id] in the given [table].
@@ -184,13 +216,19 @@ class DatabaseService {
   ///   'lastRead': DateTime.now().toString(),
   /// }, 1);
   /// ```
-  Future<int> update(String table, Map<String, dynamic> values, int id) async {
+  Future<int> update(
+    String table,
+    Map<String, dynamic> values,
+    int id, {
+    ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
+  }) async {
     final db = await database;
     return await db.update(
       table,
       values,
       where: 'id = ?',
       whereArgs: [id],
+      conflictAlgorithm: conflictAlgorithm,
     );
   }
 

@@ -30,7 +30,7 @@ void showAyahMenu(
   required BuildContext context,
 }) {
   BotToast.showAttachedWidget(
-    target: details.globalPosition,
+    target: details.globalPosition as Offset,
     verticalOffset: 30.0,
     horizontalOffset: 0.0,
     animationDuration: const Duration(microseconds: 700),

@@ -17,10 +17,10 @@ import 'package:quran_app/main.dart';
 
 class CategoryDataScreen extends StatelessWidget {
   CategoryDataScreen({
-    super.key,
     required this.id,
     required this.title,
     required this.url,
+    super.key,
   });
   final int id;
   final String url;
@@ -41,7 +41,7 @@ class CategoryDataScreen extends StatelessWidget {
               listener: (context, state) {},
               builder: (context, state) {
                 switch (state.categoryState) {
-                  case RequestState.defaults:
+                  case RequestState.initial:
                     return const SizedBox();
                   case RequestState.loading:
                     return const CircularProgressIndicator();
@@ -52,7 +52,7 @@ class CategoryDataScreen extends StatelessWidget {
                       children: [
                         MyTextFormField(
                           controller: search,
-                          hintText: "بحث",
+                          hintText: 'بحث',
                           suffixIcon: search.text.isNotEmpty
                               ? IconButton(
                                   onPressed: () {
@@ -85,7 +85,7 @@ class CategoryDataScreen extends StatelessWidget {
                               childAspectRatio: 1 / 1.5,
                             ),
                             itemBuilder: (context, index) {
-                              var allData =
+                              final allData =
                                   _onSearchTextChanged(state.category)[index];
                               return BaseAnimate(
                                 index: index,
@@ -114,10 +114,12 @@ class CategoryDataScreen extends StatelessWidget {
 
   List<dynamic> _onSearchTextChanged(List data) {
     final res = data
-        .where((data) => data['title']
-            .toString()
-            .toLowerCase()
-            .contains(search.text.toLowerCase()))
+        .where(
+          (data) => data['title']
+              .toString()
+              .toLowerCase()
+              .contains(search.text.toLowerCase()),
+        )
         .toList();
     return res;
   }
@@ -128,14 +130,14 @@ class CategoryDataScreen extends StatelessWidget {
     if (allData['datatype'] == 'multicategories') {
       context.push(
         CategoryDataScreen(
-          id: allData['id'],
-          title: allData['title'],
-          url: allData['apiurl'],
+          id: allData['id'] as int,
+          title: allData['title'] as String,
+          url: allData['apiurl'] as String,
         ),
       );
       return;
     }
-    if (allData['datatype'] != "category") {
+    if (allData['datatype'] != 'category') {
       if (allData['datatype'] == 'quran') {
         allData['api_url'] = allData['apiurl'];
         context.push(BaseAudioDetail(data: allData));
@@ -146,12 +148,12 @@ class CategoryDataScreen extends StatelessWidget {
       }
       return;
     }
-    if (allData['datatype'] == "category") {
+    if (allData['datatype'] == 'category') {
       context.push(
         CategoryDataScreen(
-          id: allData['id'],
+          id: allData['id'] as int,
           title: title,
-          url: allData['apiurl'],
+          url: allData['apiurl'] as String,
         ),
       );
       return;

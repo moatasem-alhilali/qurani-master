@@ -10,7 +10,7 @@ import 'package:quran_app/features/read_quran/presentation/view/widgets/top_titl
 import 'package:quran_app/main.dart';
 
 class QuranBodyWidget extends StatefulWidget {
-  const QuranBodyWidget({Key? key}) : super(key: key);
+  const QuranBodyWidget({super.key});
 
   @override
   State<QuranBodyWidget> createState() => _QuranBodyWidgetState();
@@ -34,8 +34,9 @@ class _QuranBodyWidgetState extends State<QuranBodyWidget> {
       builder: (context, state) {
         return Container(
           padding: context.customOrientation(
-              const EdgeInsets.symmetric(vertical: 8.0),
-              const EdgeInsets.symmetric(vertical: 0.0)),
+            const EdgeInsets.symmetric(vertical: 8),
+            const EdgeInsets.symmetric(),
+          ) as EdgeInsetsGeometry,
           height: context.getScreenHeight(),
           child: quranCtrl.pages.isEmpty
               ? const Center(child: CircularProgressIndicator.adaptive())
@@ -51,7 +52,6 @@ class _QuranBodyWidgetState extends State<QuranBodyWidget> {
                           .add(SetStateBookmarkEvent());
                     }
                   },
-                  scrollDirection: Axis.horizontal,
                   physics: const ClampingScrollPhysics(),
                   itemBuilder: (_, index) {
                     return Center(
@@ -65,7 +65,6 @@ class _QuranBodyWidgetState extends State<QuranBodyWidget> {
                             ),
                           ),
                           Align(
-                            alignment: Alignment.center,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
                                 final width = constraints.maxWidth;
@@ -93,7 +92,8 @@ class _QuranBodyWidgetState extends State<QuranBodyWidget> {
                             child: Text(
                               convertNumbers('${index + 1}'),
                               style: TextStyle(
-                                fontSize: context.customOrientation(18.0, 22.0),
+                                fontSize: context.customOrientation(18.0, 22.0)
+                                    as double,
                                 fontFamily: 'naskh',
                                 color: const Color(0xff77554B),
                               ),

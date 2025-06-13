@@ -1,8 +1,4 @@
 class HisnMuslimModel {
-  final String title;
-  final List<String> text;
-  final List<String> footnote;
-
   HisnMuslimModel({
     required this.title,
     required this.text,
@@ -12,8 +8,11 @@ class HisnMuslimModel {
   factory HisnMuslimModel.fromJson(String title, Map<String, dynamic> json) {
     return HisnMuslimModel(
       title: title,
-      text: List<String>.from(json['text']),
-      footnote: List<String>.from(json['footnote']),
+      text: List<String>.from(json['text'] as Iterable<dynamic>),
+      footnote: List<String>.from(json['footnote'] as Iterable<dynamic>),
     );
   }
+  final String title;
+  final List<String> text;
+  final List<String> footnote;
 }

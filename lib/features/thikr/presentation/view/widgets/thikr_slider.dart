@@ -17,15 +17,15 @@ class ThikrSlider extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Text(
-            "الورد اليومي",
+            'الورد اليومي',
             style: titleMedium(context).copyWith(color: FxColors.primary),
           ),
         ),
-        _item(
+        const _item(
           data:
-              "يقول تعالى “ والذاكرين الله كثيرا والذاكرات أعد الله لهم مغفرة وأجرا عظيما”",
+              'يقول تعالى “ والذاكرين الله كثيرا والذاكرات أعد الله لهم مغفرة وأجرا عظيما”',
         ),
       ],
     );
@@ -33,37 +33,37 @@ class ThikrSlider extends StatelessWidget {
 }
 
 class _item extends StatelessWidget {
-  _item({
-    super.key,
+  const _item({
     required this.data,
+    super.key,
   });
 
-  dynamic data;
+  final dynamic data;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         if (DateTime.now().hour >= 17) {
-          navigateTo(WirdScreen(), context);
+          navigateTo(const WirdScreen(), context);
         } else {
-          navigateTo(WirdScreen(), context);
+          navigateTo(const WirdScreen(), context);
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomContainer(
           height: context.getHight(20),
-          image: "image/time.jpg",
+          image: 'image/time.jpg',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Text(
-                  data,
+                  data as String,
                   style: titleMedium(context)
                       .copyWith(color: Colors.white, fontSize: 16),
                 ),

@@ -40,7 +40,7 @@ class _AudioHomeState extends State<AudioHome> {
           BlocBuilder<ReadQuranBloc, ReadQuranState>(
             builder: (context, state) {
               switch (state.loadQuranState) {
-                case RequestState.defaults:
+                case RequestState.initial:
                   return const SizedBox();
 
                 case RequestState.loading:

@@ -5,13 +5,13 @@ import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart
 import 'package:quran_app/features/offline/presentation/view/pages/offline_screen.dart';
 import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
-import 'package:quran_app/core/services/services_notification.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 const String ayah =
-    "﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾";
+    '﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾';
 const String thikr =
-    "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير";
+    'لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير';
 //url audio
 List<String> urlAudio = [];
 List<SurahModel> surahDownload = [];
@@ -28,9 +28,6 @@ String lastDateCash = '';
 
 String dateNow = DateFormat('yMMMd').format(DateTime.now());
 String timeNow = DateFormat('jm').format(DateTime.now());
-
-//-------Notification -------
-late NotifyHelper notifyHelper;
 
 //theme mode
 bool isLightMode = false;
@@ -49,10 +46,10 @@ double? fontSizeAthkar;
 
 Color defaultColor = const Color(0xff2f2f2f);
 bool ISCONNECTED = true;
-bool ISNOT_NOTIFY = true;
+// bool ISNOT_NOTIFY = true;
 
 //
-void navigateTo(Widget? child, context) {
+void navigateTo(Widget? child, BuildContext context) {
   Navigator.push(context, MaterialPageRoute(builder: (_) => child!));
 }
 
@@ -61,7 +58,7 @@ int selectedIndex = 3;
 
 //url of audio reader
 const String urlAudioReader =
-    "https://cdn.islamic.network/quran/audio-surah/128";
+    'https://cdn.islamic.network/quran/audio-surah/128';
 //
 
 List<Widget> screens = [
@@ -70,7 +67,7 @@ List<Widget> screens = [
   // const AnotherScreen(),
 
   const OfflineScreen(),
-  SettingScreen(),
+  const SettingScreen(),
 ];
 
 //

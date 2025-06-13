@@ -12,23 +12,24 @@ class QuranReadHelper {
   List<Ayah> allAyahs = [];
 
   //
- static  String getTafsirAyah({required int ayah, required int surahNumber}) {
-    String ayahTafsir = "";
-    for (var element in tafsir) {
+  static String getTafsirAyah({required int ayah, required int surahNumber}) {
+    var ayahTafsir = '';
+    for (final element in tafsir) {
       //
       if (element['aya'] == ayah && element['sura'] == surahNumber) {
-        ayahTafsir = element['text'];
+        ayahTafsir = element['text'] as String;
       }
     }
-        return ayahTafsir;
-
+    return ayahTafsir;
   }
 
   Future<void> loadQuran() async {
-    String jsonString = await rootBundle.loadString('assets/json/quranV2.json');
-    Map<String, dynamic> jsonResponse = jsonDecode(jsonString);
-    List<dynamic> surahsJson = jsonResponse['data']['surahs'];
-    surahs = surahsJson.map((s) => Surah.fromJson(s)).toList();
+    final jsonString = await rootBundle.loadString('assets/json/quranV2.json');
+    final jsonResponse = jsonDecode(jsonString) as Map<String, dynamic>;
+    final surahsJson = jsonResponse['data']['surahs'] as List<dynamic>;
+    surahs = surahsJson
+        .map((s) => Surah.fromJson(s as Map<String, dynamic>))
+        .toList();
 
     for (final surah in surahs) {
       allAyahs.addAll(surah.ayahs);
@@ -50,20 +51,23 @@ class QuranReadHelper {
 
   int getSurahNumberFromPage(int pageNumber) => surahs
       .firstWhere(
-          (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first))
+        (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first),
+      )
       .surahNumber;
 
   Surah getCurrentSurahByPage(int pageNumber) => surahs.firstWhere(
-      (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first));
+        (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first),
+      );
 
   String getSurahNameFromPage(int pageNumber) {
     try {
       return surahs
           .firstWhere(
-              (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first))
+            (s) => s.ayahs.contains(getCurrentPageAyahs(pageNumber).first),
+          )
           .arabicName;
     } catch (e) {
-      return "Surah not found";
+      return 'Surah not found';
     }
   }
 
@@ -97,7 +101,7 @@ class QuranReadHelper {
     547,
     554,
     556,
-    583
+    583,
   ];
   List<int> topOfThePageIndex = [
     76,
@@ -120,7 +124,7 @@ class QuranReadHelper {
     555,
     557,
     583,
-    584
+    584,
   ];
 }
 
@@ -129,14 +133,15 @@ extension IterableExtension<T> on Iterable<T> {
       splitBetweenIndexed((_, first, second) => test(first, second));
 
   Iterable<List<T>> splitBetweenIndexed(
-      bool Function(int index, T first, T second) test) sync* {
-    var iterator = this.iterator;
+    bool Function(int index, T first, T second) test,
+  ) sync* {
+    final iterator = this.iterator;
     if (!iterator.moveNext()) return;
     var previous = iterator.current;
     var chunk = <T>[previous];
     var index = 1;
     while (iterator.moveNext()) {
-      var element = iterator.current;
+      final element = iterator.current;
       if (test(index++, previous, element)) {
         yield chunk;
         chunk = [];

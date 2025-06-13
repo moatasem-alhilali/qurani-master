@@ -37,7 +37,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   FutureOr<void> searchMossos(event, emit) async {
     emit(state.copyWith(searchMossoState: RequestState.loading));
-    var result = await repositoryImpl.searchMosoaa(event.text);
+    var result = await repositoryImpl.searchMosoaa(event.text as String);
     result.fold(
       (l) {
         emit(state.copyWith(searchMossoState: RequestState.error));
@@ -69,15 +69,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
     );
     emit(
-      state.copyWith(searchMossoState: RequestState.defaults),
+      state.copyWith(searchMossoState: RequestState.initial),
     );
   }
 
   FutureOr<void> searchQuran(event, emit) async {
     emit(state.copyWith(ayahState: RequestState.loading));
-    text = event.text;
-    var result =
-        await repositoryImpl.searchQuran(event.text, pageSize, pageNumber);
+    text = event.text as String;
+    var result = await repositoryImpl.searchQuran(
+      event.text as String,
+      pageSize,
+      pageNumber,
+    );
     result.fold(
       (l) {
         emit(state.copyWith(ayahState: RequestState.error));
@@ -115,6 +118,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         // logger.d(state.ayaData.length);
       },
     );
-    emit(state.copyWith(loadAyahState: RequestState.defaults));
+    emit(state.copyWith(loadAyahState: RequestState.initial));
   }
 }

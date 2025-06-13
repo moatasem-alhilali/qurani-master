@@ -1,4 +1,13 @@
 class SurahModel {
+  SurahModel.fromJson(Map<String, dynamic> data) {
+    place = data['place'] as String?;
+    type = data['type'] as String?;
+    count = data['count'] as int?;
+    title = data['title'] as String?;
+    titleAr = data['titleAr'] as String?;
+    index = data['index'] as String?;
+    pages = data['pages'] as String?;
+  }
   String? place;
   String? type;
   int? count;
@@ -6,13 +15,4 @@ class SurahModel {
   String? titleAr;
   String? index;
   String? pages;
-  SurahModel.fromJson(Map data) {
-    place = data['place'];
-    type = data['type'];
-    count = data['count'];
-    title = data['title'];
-    titleAr = data['titleAr'];
-    index = data['index'];
-    pages = data['pages'];
-  }
 }

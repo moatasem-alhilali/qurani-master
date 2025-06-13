@@ -4,6 +4,7 @@ import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_bloc.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_event.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_state.dart';
@@ -26,7 +27,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "معلومات حول السور",
+      title: 'معلومات حول السور',
       body: BlocBuilder<SurahInfoBloc, SurahInfoState>(
         builder: (context, state) {
           if (state is SurahInfoLoading) {
@@ -68,7 +69,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "إسم السورة : ${data.surah}",
+                            'إسم السورة : ${data.surah}',
                             style: const TextStyle(color: Colors.grey),
                           ),
                           CircleAvatar(
@@ -76,7 +77,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                                 ? FxColors.primary
                                 : FxColors.primarySecondary,
                             radius: 18,
-                            child: Text("${index + 1}"),
+                            child: Text('${index + 1}'),
                           ),
                         ],
                       ),
@@ -96,7 +97,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
 
 class _BottomSheet extends StatelessWidget {
   const _BottomSheet({required this.data});
-  final dynamic data;
+  final SurahInfoModel data;
 
   @override
   Widget build(BuildContext context) {
@@ -106,14 +107,14 @@ class _BottomSheet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _headerRow("إسم السورة", data.surah, "عدد الآيات", data.ayaatiha),
+            _headerRow('إسم السورة', data.surah, 'عدد الآيات', data.ayaatiha),
             const Divider(),
-            _section(context, "معنى الإسم", data.maeniAsamuha),
-            _section(context, "سبب التسمية", data.sababTasmiatiha),
-            _section(context, "أسماء السورة", data.asmawuha),
-            _section(context, "المقصد العلمي من السورة", data.maqsiduhaAleamu),
-            _section(context, "سبب النزول", data.sababNuzuliha),
-            _section(context, "فضلها", (data.fadluha as List).join('\n\n')),
+            _section(context, 'معنى الإسم', data.maeniAsamuha),
+            _section(context, 'سبب التسمية', data.sababTasmiatiha),
+            _section(context, 'أسماء السورة', data.asmawuha),
+            _section(context, 'المقصد العلمي من السورة', data.maqsiduhaAleamu),
+            _section(context, 'سبب النزول', data.sababNuzuliha),
+            _section(context, 'فضلها', (data.fadluha as List).join('\n\n')),
           ],
         ),
       ),
@@ -124,8 +125,8 @@ class _BottomSheet extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("$key1 : $value1", style: const TextStyle(color: Colors.grey)),
-        Text("$key2 : $value2", style: const TextStyle(color: Colors.grey)),
+        Text('$key1 : $value1', style: const TextStyle(color: Colors.grey)),
+        Text('$key2 : $value2', style: const TextStyle(color: Colors.grey)),
       ],
     );
   }

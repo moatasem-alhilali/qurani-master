@@ -25,7 +25,7 @@ class OfflineDetail extends StatelessWidget {
     return BlocProvider(
       create: (context) => OfflineBloc(
         repositoryImpl: sl.get<OfflineRepositoryImpl>(),
-      )..add(InitOfflinePlayerEvent(data['type'])),
+      )..add(InitOfflinePlayerEvent(data['type'] as String)),
       child: BaseUiScreen(
         onRefresh: () async {},
         title: data['title'].toString().autoSize(
@@ -37,7 +37,7 @@ class OfflineDetail extends StatelessWidget {
         child: BlocBuilder<OfflineBloc, OfflineState>(
           builder: (context, state) {
             switch (state.getState) {
-              case RequestState.defaults:
+              case RequestState.initial:
                 return const CircularProgressIndicator();
               case RequestState.loading:
                 return const CircularProgressIndicator();
@@ -51,12 +51,12 @@ class OfflineDetail extends StatelessWidget {
                 return Column(
                   children: [
                     const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8),
                       child: Divider(),
                     ),
                     MyTextFormField(
                       controller: search,
-                      hintText: "بحث",
+                      hintText: 'بحث',
                       suffixIcon: search.text.isNotEmpty
                           ? IconButton(
                               onPressed: () {
@@ -91,10 +91,12 @@ class OfflineDetail extends StatelessWidget {
 
   List<dynamic> _onSearchTextChanged(List data) {
     final res = data
-        .where((data) => data['title']
-            .toString()
-            .toLowerCase()
-            .contains(search.text.toLowerCase()))
+        .where(
+          (data) => data['title']
+              .toString()
+              .toLowerCase()
+              .contains(search.text.toLowerCase()),
+        )
         .toList();
     return res;
   }
@@ -108,7 +110,7 @@ class BuildItemOffline extends StatelessWidget {
     return BlocBuilder<OfflineBloc, OfflineState>(
       builder: (context, state) {
         switch (state.getState) {
-          case RequestState.defaults:
+          case RequestState.initial:
             return const CircularProgressIndicator();
           case RequestState.loading:
             return const CircularProgressIndicator();
@@ -124,14 +126,14 @@ class BuildItemOffline extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: state.data.length,
               itemBuilder: (context, index) {
-                var allData = state.data[index];
+                final allData = state.data[index];
                 return BaseAnimate(
                   index: index,
                   child: ItemDetailOffline(
                     current: index,
                     data: allData,
                     onTap: () {
-                      if (allData['type'] == "mp3") {
+                      if (allData['type'] == 'mp3') {
                         context.showBottomSheet(
                           child: AudioOfflineSheet(
                             data: allData,
@@ -139,7 +141,7 @@ class BuildItemOffline extends StatelessWidget {
                         );
                         return;
                       }
-                      if (allData['type'] == "mp4") {
+                      if (allData['type'] == 'mp4') {
                         context.showBottomSheet(
                           child: VideoOfflineSheet(
                             data: allData,

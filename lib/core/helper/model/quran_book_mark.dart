@@ -1,26 +1,24 @@
-
 class QuranBookMarkModel {
+  QuranBookMarkModel({
+    required this.verseNumber,
+    required this.pageNumber,
+    required this.nameSurah,
+    required this.surahNumber,
+    this.id,
+  });
+
+  QuranBookMarkModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'] as int?;
+    nameSurah = json['nameSurah'] as String?;
+    verseNumber = json['verseNumber'] as int?;
+    pageNumber = json['pageNumber'] as int?;
+    surahNumber = json['surahNumber'] as int?;
+  }
   int? id;
   String? nameSurah;
   int? surahNumber;
   int? verseNumber;
   int? pageNumber;
-
-  QuranBookMarkModel({
-    this.id,
-    required this.verseNumber,
-    required this.pageNumber,
-    required this.nameSurah,
-    required this.surahNumber,
-  });
-
-  QuranBookMarkModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    nameSurah = json['nameSurah'];
-    verseNumber = json['verseNumber'];
-    pageNumber = json['pageNumber'];
-    surahNumber = json['surahNumber'];
-  }
 
   Map<String, dynamic> toJson() {
     return {

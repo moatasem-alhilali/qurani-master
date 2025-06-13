@@ -9,13 +9,13 @@ class BookRepositoryImpl implements BookRepository {
   @override
   Future<Either<Failure, List<dynamic>>> index(int limit) async {
     try {
-      var url = "${ApiServes.books}/$limit/25/json";
+      final url = '${ApiServes.books}/$limit/25/json';
       final result = await DioHelper.get(
         url: url,
       );
-      var data = result.data['data'];
+      final data = result.data['data'];
       logger.i('get books');
-      return right(data);
+      return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
       return left(ServerFailure('غير قادر على معالجة العملية'));

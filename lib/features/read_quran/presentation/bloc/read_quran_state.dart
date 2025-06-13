@@ -3,7 +3,7 @@ part of 'read_quran_bloc.dart';
 @immutable
 class ReadQuranState {
   RequestState loadQuranState;
-  ReadQuranState({this.loadQuranState = RequestState.defaults});
+  ReadQuranState({this.loadQuranState = RequestState.initial});
 
   ReadQuranState copyWith({
     RequestState? loadQuranState,

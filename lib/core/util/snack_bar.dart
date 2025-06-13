@@ -110,7 +110,7 @@ class SnackBarMessage {
     double? height,
     int seconds = 3,
     IconData? icon,
-    RequestState state = RequestState.defaults,
+    RequestState state = RequestState.initial,
     DismissDirection dismissDirection = DismissDirection.horizontal,
   }) {
     final snackbar = SnackBar(
@@ -172,7 +172,7 @@ class SnackBarMessage {
 
 Color _getStatusBackGround(RequestState state, Color? backgroundColor) {
   switch (state) {
-    case RequestState.defaults:
+    case RequestState.initial:
       return backgroundColor ?? FxColors.background;
 
     case RequestState.loading:
@@ -187,7 +187,7 @@ Color _getStatusBackGround(RequestState state, Color? backgroundColor) {
 
 IconData _getIcon(RequestState state, IconData? icon) {
   switch (state) {
-    case RequestState.defaults:
+    case RequestState.initial:
       return icon ?? Icons.cancel;
     case RequestState.loading:
       return icon ?? Icons.cancel;

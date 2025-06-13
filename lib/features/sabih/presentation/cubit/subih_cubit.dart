@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -6,18 +7,18 @@ part 'subih_state.dart';
 
 class SubihCubit extends Cubit<SubihState> {
   SubihCubit() : super(AddSubihSuccessState());
-  static SubihCubit get(context) => BlocProvider.of(context);
+  static SubihCubit get(BuildContext context) => BlocProvider.of(context);
 //add
-  void addSubih({
+  Future<void> addSubih({
     required String count,
     required String date,
     required String text,
   }) async {
     emit(AddSubihLoadingState());
-    SubihModel subihModel = SubihModel(
-      count: "count",
-      date: "date",
-      text: "text",
+    final subihModel = SubihModel(
+      count: 'count',
+      date: 'date',
+      text: 'text',
     );
     try {
       // final res = await DBHelperAudio.addTasbih(subihModel);
@@ -31,7 +32,7 @@ class SubihCubit extends Cubit<SubihState> {
   }
   //get
 
-  void getAllSubih() async {
+  Future<void> getAllSubih() async {
     emit(GetSubihLoadingState());
     try {
       // await DBHelperAudio.getAllTusbih();

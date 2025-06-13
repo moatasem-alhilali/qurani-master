@@ -1,42 +1,34 @@
 class Surah {
+  Surah({
+    required this.surahNumber,
+    required this.arabicName,
+    required this.englishName,
+    required this.revelationType,
+    required this.ayahs,
+  });
+
+  factory Surah.fromJson(Map<String, dynamic> json) {
+    final ayahsFromJson = json['ayahs'] as List;
+    final ayahsList = ayahsFromJson
+        .map((i) => Ayah.fromJson(i as Map<String, dynamic>))
+        .toList();
+
+    return Surah(
+      surahNumber: json['number'] as int,
+      arabicName: json['name'] as String,
+      englishName: json['englishName'] as String,
+      revelationType: json['revelationType'] as String,
+      ayahs: ayahsList,
+    );
+  }
   final int surahNumber;
   final String arabicName;
   final String englishName;
   final String revelationType;
   final List<Ayah> ayahs;
-
-  Surah(
-      {required this.surahNumber,
-      required this.arabicName,
-      required this.englishName,
-      required this.revelationType,
-      required this.ayahs});
-
-  factory Surah.fromJson(Map<String, dynamic> json) {
-    var ayahsFromJson = json['ayahs'] as List;
-    List<Ayah> ayahsList = ayahsFromJson.map((i) => Ayah.fromJson(i)).toList();
-
-    return Surah(
-      surahNumber: json['number'],
-      arabicName: json['name'],
-      englishName: json['englishName'],
-      revelationType: json['revelationType'],
-      ayahs: ayahsList,
-    );
-  }
 }
 
 class Ayah {
-  final int ayahUQNumber;
-  final int ayahNumber;
-  final String text;
-  final String aya_text_emlaey;
-  final String code_v2;
-  final String audio;
-  final int juz;
-  final int page;
-  dynamic sajda;
-
   Ayah({
     required this.ayahUQNumber,
     required this.ayahNumber,
@@ -51,33 +43,43 @@ class Ayah {
 
   factory Ayah.fromJson(Map<String, dynamic> json) {
     return Ayah(
-      ayahUQNumber: json['number'],
-      ayahNumber: json['numberInSurah'],
-      text: json['text'],
-      aya_text_emlaey: json['aya_text_emlaey'],
-      code_v2: json['code_v2'],
-      juz: json['juz'],
-      page: json['page'],
+      ayahUQNumber: json['number'] as int,
+      ayahNumber: json['numberInSurah'] as int,
+      text: json['text'] as String,
+      aya_text_emlaey: json['aya_text_emlaey'] as String,
+      code_v2: json['code_v2'] as String,
+      juz: json['juz'] as int,
+      page: json['page'] as int,
       sajda: json['sajda'],
-      audio: json['audio'],
+      audio: json['audio'] as String,
     );
   }
+  final int ayahUQNumber;
+  final int ayahNumber;
+  final String text;
+  final String aya_text_emlaey;
+  final String code_v2;
+  final String audio;
+  final int juz;
+  final int page;
+  dynamic sajda;
 }
 
 class Sajda {
-  final int id;
-  final bool recommended;
-  final bool obligatory;
-
-  Sajda(
-      {required this.id, required this.recommended, required this.obligatory});
+  Sajda({
+    required this.id,
+    required this.recommended,
+    required this.obligatory,
+  });
 
   factory Sajda.fromJson(Map<String, dynamic> json) {
     return Sajda(
-      id: json['id'],
-      recommended: json['recommended'],
-      obligatory: json['obligatory'] ??
-          false, // Assuming obligatory might not always be present
+      id: json['id'] as int,
+      recommended: json['recommended'] as bool,
+      obligatory: json['obligatory'] as bool,
     );
   }
+  final int id;
+  final bool recommended;
+  final bool obligatory;
 }

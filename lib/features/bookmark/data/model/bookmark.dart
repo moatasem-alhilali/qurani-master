@@ -16,9 +16,9 @@ class Bookmarks {
   }
 
   Bookmarks.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    sorahName = json['sorahName'];
-    pageNum = json['pageNum'];
-    lastRead = json['lastRead'];
+    id = json['id'] as int?;
+    sorahName = json['sorahName'] as String?;
+    pageNum = json['pageNum'] as int?;
+    lastRead = json['lastRead'] as String?;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
@@ -11,7 +12,7 @@ double progress = 0;
 
 class AudioCubit extends Cubit<AudioState> {
   AudioCubit() : super(AudioCubitInitial());
-  static AudioCubit get(context) => BlocProvider.of(context);
+  static AudioCubit get(BuildContext context) => BlocProvider.of(context);
 
   int currentReader = 0;
 
@@ -20,7 +21,7 @@ class AudioCubit extends Cubit<AudioState> {
     // emit(ToggleState());
   }
 
-  void initAudioPlayer() async {
+  Future<void> initAudioPlayer() async {
     emit(LoadingInitAudioPlayerState());
     try {
       await AudioPlayerRepo.initPlayerOnlineListenAudioSource();
@@ -32,7 +33,7 @@ class AudioCubit extends Cubit<AudioState> {
   }
   //next player
 
-  void nextPlayer() async {
+  Future<void> nextPlayer() async {
     emit(LoadingInitAudioPlayerState());
 
     try {
@@ -46,7 +47,7 @@ class AudioCubit extends Cubit<AudioState> {
 
   //play audio
 
-  void playAudioSelected({required int indexSurah}) async {
+  Future<void> playAudioSelected({required int indexSurah}) async {
     emit(PlayAudioLoadingState());
 
     try {
@@ -64,7 +65,7 @@ class AudioCubit extends Cubit<AudioState> {
 
   //next player
 
-  void playAudioNextOrPrevious({required bool isNext}) async {
+  Future<void> playAudioNextOrPrevious({required bool isNext}) async {
     emit(NextPlayAudioLoadingState());
     try {
       if (isNext) {
@@ -85,15 +86,18 @@ class AudioCubit extends Cubit<AudioState> {
   StreamSubscription? _subscription;
   //
   void audioPlayerListener() {
-    _subscription = AudioPlayerRepo.audioPlayerOnlineListen.playbackEventStream
-        .listen((event) {
-      //
-      AudioPlayerRepo.currentAudioData.indexSurah =
-          AudioPlayerRepo.audioPlayerOnlineListen.currentIndex!;
-      //
-      emit(CurrentAudioPlayerState());
-    }, onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
-    });
+    _subscription =
+        AudioPlayerRepo.audioPlayerOnlineListen.playbackEventStream.listen(
+      (event) {
+        //
+        AudioPlayerRepo.currentAudioData.indexSurah =
+            AudioPlayerRepo.audioPlayerOnlineListen.currentIndex;
+        //
+        emit(CurrentAudioPlayerState());
+      },
+      onError: (Object e, StackTrace stackTrace) {
+        print('A stream error occurred: $e');
+      },
+    );
   }
 }

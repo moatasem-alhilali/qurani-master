@@ -1,4 +1,23 @@
 class BookmarksAyahs {
+  BookmarksAyahs(
+    this.id,
+    this.surahName,
+    this.surahNumber,
+    this.pageNumber,
+    this.ayahNumber,
+    this.ayahUQNumber,
+    this.lastRead,
+  );
+
+  BookmarksAyahs.fromJson(Map<String, dynamic> json) {
+    id = json['id'] as int?;
+    surahName = json['sorahName'] as String?;
+    surahNumber = json['sorahNum'] as int?;
+    pageNumber = json['pageNum'] as int?;
+    ayahNumber = json['ayahNum'] as int?;
+    ayahUQNumber = json['nomPageF'] as int?;
+    lastRead = json['lastRead'] as String?;
+  }
   int? id;
   String? surahName;
   int? surahNumber;
@@ -6,9 +25,6 @@ class BookmarksAyahs {
   int? ayahNumber;
   int? ayahUQNumber;
   String? lastRead;
-
-  BookmarksAyahs(this.id, this.surahName, this.surahNumber, this.pageNumber,
-      this.ayahNumber, this.ayahUQNumber, this.lastRead);
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -20,15 +36,5 @@ class BookmarksAyahs {
       'nomPageF': ayahUQNumber,
       'lastRead': lastRead,
     };
-  }
-
-  BookmarksAyahs.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    surahName = json['sorahName'];
-    surahNumber = json['sorahNum'];
-    pageNumber = json['pageNum'];
-    ayahNumber = json['ayahNum'];
-    ayahUQNumber = json['nomPageF'];
-    lastRead = json['lastRead'];
   }
 }

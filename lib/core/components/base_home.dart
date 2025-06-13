@@ -5,10 +5,10 @@ import 'package:quran_app/core/widgets/auto_text.dart';
 
 class BaseHome extends StatelessWidget {
   const BaseHome({
-    super.key,
     required this.body,
+    super.key,
     this.background,
-    this.title = "",
+    this.title = '',
     this.leading,
     this.bottom,
     this.onRefresh,
@@ -55,7 +55,7 @@ class BaseHome extends StatelessWidget {
               actions: [
                 if (back)
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: CircleAvatar(
                       radius: 18,
                       backgroundColor: FxColors.primary,
@@ -77,30 +77,14 @@ class BaseHome extends StatelessWidget {
                 title: titleWidget ??
                     title!.autoSize(context, maxLines: 4, color: Colors.grey),
                 centerTitle: true,
-                collapseMode: CollapseMode.parallax,
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
-                      "assets/logo/bg.jpg",
+                      'assets/logo/bg.jpg',
                       fit: BoxFit.cover,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: FractionalOffset.bottomCenter,
-                          end: FractionalOffset.topCenter,
-                          colors: [
-                            FxColors.background.withOpacity(0.8),
-                            FxColors.background.withOpacity(0.1),
-                          ],
-                          stops: const [
-                            0.1,
-                            1,
-                          ],
-                        ),
-                      ),
-                    ),
+                   
                   ],
                 ),
                 // centerTitle: true,
@@ -120,7 +104,7 @@ class BaseHome extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: isScroll
                         ? SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),

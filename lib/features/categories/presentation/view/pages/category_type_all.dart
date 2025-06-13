@@ -25,28 +25,28 @@ class CategoryTypeDetail extends StatelessWidget {
       child: BlocProvider(
         create: (context) => CategoryBloc(
           repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-        )..add(GetQuranBookEvent(data['api_url'])),
+        )..add(GetQuranBookEvent(data['api_url'] as String)),
         child: BlocBuilder<CategoryBloc, CategoryState>(
           builder: (context, state) {
             switch (state.quranBooksState) {
-              case RequestState.defaults:
+              case RequestState.initial:
                 return const Center(child: CircularProgressIndicator());
               case RequestState.loading:
                 return const Center(child: CircularProgressIndicator());
 
               case RequestState.error:
                 return const Center(
-                    child: CircularProgressIndicator(color: Colors.red));
+                  child: CircularProgressIndicator(color: Colors.red),
+                );
 
               case RequestState.success:
-                var allData = state.quranBooksDetailSearch;
+                final allData = state.quranBooksDetailSearch;
 
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MyTextFormField(
                       controller: search,
-                      hintText: "بحث",
+                      hintText: 'بحث',
                       suffixIcon: search.text.isNotEmpty
                           ? IconButton(
                               onPressed: () {
@@ -75,7 +75,7 @@ class CategoryTypeDetail extends StatelessWidget {
                           childAspectRatio: 1 / 1.5,
                         ),
                         itemBuilder: (context, index) {
-                          var data = _onSearchTextChanged(allData)[index];
+                          final data = _onSearchTextChanged(allData)[index];
                           return BaseBookItem(
                             data['title'],
                             () {
@@ -91,7 +91,7 @@ class CategoryTypeDetail extends StatelessWidget {
                                 );
                               }
                             },
-                            type: data['type'],
+                            type: data['type'] as String,
                           );
                           //  _Item(allData);
                         },
@@ -108,17 +108,19 @@ class CategoryTypeDetail extends StatelessWidget {
 
   List<dynamic> _onSearchTextChanged(List data) {
     final res = data
-        .where((data) => data['title']
-            .toString()
-            .toLowerCase()
-            .contains(search.text.toLowerCase()))
+        .where(
+          (data) => data['title']
+              .toString()
+              .toLowerCase()
+              .contains(search.text.toLowerCase()),
+        )
         .toList();
     return res;
   }
 }
 
 class _ItemDownloaded extends StatelessWidget {
-  _ItemDownloaded({Key? key}) : super(key: key);
+  _ItemDownloaded({super.key});
 
   dynamic data;
 
@@ -134,13 +136,12 @@ class _ItemDownloaded extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (data['description'] != null)
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: data['description']
                       .toString()
                       .autoSize(context, maxLines: 5),

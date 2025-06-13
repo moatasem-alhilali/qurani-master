@@ -24,7 +24,7 @@ class OfflineScreen extends StatelessWidget {
             listener: (context, state) {},
             builder: (context, state) {
               switch (state.getState) {
-                case RequestState.defaults:
+                case RequestState.initial:
                   return const Center(child: CircularProgressIndicator());
                 case RequestState.loading:
                   return const Center(child: CircularProgressIndicator());
@@ -36,7 +36,7 @@ class OfflineScreen extends StatelessWidget {
                           height: context.getHight(30),
                           child: Center(
                             child: Text(
-                              "لا يوجد تنزيلات بعد",
+                              'لا يوجد تنزيلات بعد',
                               style: titleMedium(context),
                             ),
                           ),
@@ -46,7 +46,7 @@ class OfflineScreen extends StatelessWidget {
                           children: [
                             Align(
                               child: Text(
-                                "التنزيلات",
+                                'التنزيلات',
                                 style: titleMedium(context)
                                     .copyWith(color: FxColors.primary),
                               ),
@@ -66,7 +66,7 @@ class OfflineScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "الكل",
+                              'الكل',
                               style: titleMedium(context),
                             ),
                             const Expanded(child: BuildItemOffline()),
@@ -113,7 +113,7 @@ class _Item extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      type['title'],
+                      type['title'] as String,
                       style: titleMedium(context)
                           .copyWith(color: FxColors.primary),
                     ),
@@ -147,8 +147,10 @@ class _Item extends StatelessWidget {
 
   List<dynamic> _onSearchTextChanged(List data, value) {
     final res = data
-        .where((data) =>
-            data['type'].toString().toLowerCase().contains(value.toLowerCase()))
+        .where(
+          (data) =>
+              data['type'].toString().toLowerCase().contains(value.toString()),
+        )
         .toList();
     return res;
   }
@@ -156,11 +158,11 @@ class _Item extends StatelessWidget {
 
 List<Map<String, dynamic>> types = [
   {
-    "title": "صوت",
-    "type": "mp3",
+    'title': 'صوت',
+    'type': 'mp3',
   },
   {
-    "title": "الفيديو",
-    "type": "mp4",
+    'title': 'الفيديو',
+    'type': 'mp4',
   },
 ];

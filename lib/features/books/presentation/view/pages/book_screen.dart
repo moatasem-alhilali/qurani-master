@@ -28,7 +28,7 @@ class BookScreen extends StatelessWidget {
               listener: (context, state) {},
               builder: (context, state) {
                 switch (state.getState) {
-                  case RequestState.defaults:
+                  case RequestState.initial:
                     return const SizedBox();
                   case RequestState.loading:
                     return const CircularProgressIndicator();

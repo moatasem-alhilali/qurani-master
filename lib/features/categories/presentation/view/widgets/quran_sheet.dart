@@ -26,62 +26,64 @@ class QuranBooksDetail extends StatelessWidget {
       child: BlocProvider(
         create: (context) => CategoryBloc(
           repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-        )..add(GetQuranBookEvent(data['apiurl'])),
+        )..add(GetQuranBookEvent(data['apiurl'] as String)),
         child: BlocBuilder<CategoryBloc, CategoryState>(
           builder: (context, state) {
             switch (state.quranBooksState) {
-              case RequestState.defaults:
+              case RequestState.initial:
                 return const Center(child: CircularProgressIndicator());
               case RequestState.loading:
                 return const Center(child: CircularProgressIndicator());
 
               case RequestState.error:
                 return const Center(
-                    child: CircularProgressIndicator(color: Colors.red));
+                  child: CircularProgressIndicator(color: Colors.red),
+                );
 
               case RequestState.success:
                 // logger.i(state.quranBooksDetail['attachments']);
 
                 return state.quranBooksDetail['attachments'] == null ||
-                        state.quranBooksDetail['attachments'].isEmpty
+                        state.quranBooksDetail['attachments'].isEmpty as bool
                     ? Center(
                         child: Text(
-                          "لا يوجد بيانات",
+                          'لا يوجد بيانات',
                           style: titleMedium(context),
                         ),
                       )
                     : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: state.quranBooksDetail['title']
                                 .toString()
                                 .autoSize(context, fontSize: 20),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: state.quranBooksDetail['description']
                                 .toString()
-                                .autoSize(context,
-                                    color: Colors.grey,
-                                    maxLines: 5,
-                                    fontSize: 14),
+                                .autoSize(
+                                  context,
+                                  color: Colors.grey,
+                                  maxLines: 5,
+                                  fontSize: 14,
+                                ),
                           ),
                           const SizedBox(height: 10),
                           const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Divider(color: Colors.grey),
                           ),
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const BouncingScrollPhysics(),
-                              itemCount:
-                                  state.quranBooksDetail['attachments'].length,
+                              itemCount: state.quranBooksDetail['attachments']
+                                  .length as int,
                               itemBuilder: (context, index) {
-                                var data = state.quranBooksDetail['attachments']
-                                    [index];
+                                final data = state
+                                    .quranBooksDetail['attachments'][index];
                                 return _ItemDownloaded(data: data);
                               },
                             ),
@@ -98,9 +100,9 @@ class QuranBooksDetail extends StatelessWidget {
 
 class _ItemDownloaded extends StatelessWidget {
   _ItemDownloaded({
-    Key? key,
+    super.key,
     this.data,
-  }) : super(key: key);
+  });
 
   dynamic data;
 
@@ -115,13 +117,12 @@ class _ItemDownloaded extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (data['description'] != null)
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: data['description']
                       .toString()
                       .autoSize(context, maxLines: 5),
@@ -176,7 +177,10 @@ class _BtnDownloadState extends State<_BtnDownload> {
                     onTap: () {
                       final url = widget.data['url'];
                       final description = widget.data['description'];
-                      downloadService.download(url, description);
+                      downloadService.download(
+                        url as String,
+                        description as String,
+                      );
                     },
                     child: Container(
                       height: context.getHight(6),
@@ -205,9 +209,9 @@ class _BtnDownloadState extends State<_BtnDownload> {
                                 .autoSize(context, minFontSize: 10),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
-                              widget.data['extension_type'],
+                              widget.data['extension_type'] as String,
                               style: titleMedium(context),
                             ),
                           ),
@@ -230,7 +234,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                       //pdf
                       if (res == 'PDF') {
                         context.push(
-                          ReadBook(url: widget.data['url']),
+                          ReadBook(url: widget.data['url'] as String),
                         );
                         return;
                       }
@@ -238,21 +242,22 @@ class _BtnDownloadState extends State<_BtnDownload> {
                       if (res == 'MP4') {
                         final url = widget.data['url'];
                         context.showBottomSheet(
-                            child: CustomVideoPlayer(url: url));
+                          child: CustomVideoPlayer(url: url as String),
+                        );
                         return;
                       }
 
                       //YOUTUBE
                       if (res == 'YOUTUBE') {
                         final url = widget.data['url'];
-                        await UrlLauncher.fLaunch(url);
+                        await UrlLauncher.fLaunch(url as String);
                         return;
                       }
 
                       //App
                       if (res == 'LINK') {
                         final url = widget.data['url'];
-                        await UrlLauncher.fLaunch(url);
+                        await UrlLauncher.fLaunch(url as String);
                         return;
                       }
                     },
@@ -274,13 +279,13 @@ class _BtnDownloadState extends State<_BtnDownload> {
 
   bool allowDownload() {
     final data = widget.data['extension_type'];
-    if (data != "YOUTUBE" && data != 'LINK') return true;
+    if (data != 'YOUTUBE' && data != 'LINK') return true;
     return false;
   }
 
   bool allowOpen() {
     final data = widget.data['extension_type'];
-    if (data == "PDF" || data == 'MP4' || data == 'LINK' || data == 'YOUTUBE') {
+    if (data == 'PDF' || data == 'MP4' || data == 'LINK' || data == 'YOUTUBE') {
       return true;
     }
     return false;
@@ -288,10 +293,10 @@ class _BtnDownloadState extends State<_BtnDownload> {
 
   String titleType() {
     final data = widget.data['extension_type'];
-    if (data == "MP4") return "مشاهده";
-    if (data == "PDF") return "قراءه";
-    if (data == "LINK") return "تحميل";
-    if (data == "YOUTUBE") return "مشاهده";
-    return "";
+    if (data == 'MP4') return 'مشاهده';
+    if (data == 'PDF') return 'قراءه';
+    if (data == 'LINK') return 'تحميل';
+    if (data == 'YOUTUBE') return 'مشاهده';
+    return '';
   }
 }

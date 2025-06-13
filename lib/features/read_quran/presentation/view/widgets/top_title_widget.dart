@@ -33,7 +33,7 @@ class TopTitleWidget extends StatelessWidget {
                   },
                   child: bookmarkIcon(
                     context,
-                    height: context.customOrientation(35.h, 55.h),
+                    height: context.customOrientation(35.h, 55.h) as double,
                     pageNum: lastPageRead,
                   ),
                 );
@@ -43,7 +43,7 @@ class TopTitleWidget extends StatelessWidget {
             Text(
               '${'juz'}: ${convertNumbers(quranCtrl.getJuzByPage(index).juz.toString())}',
               style: TextStyle(
-                fontSize: context.customOrientation(18.0, 22.0),
+                fontSize: context.customOrientation(18.0, 22.0) as double,
                 fontFamily: 'naskh',
                 color: const Color(0xff77554B),
               ),
@@ -52,7 +52,7 @@ class TopTitleWidget extends StatelessWidget {
             Text(
               quranCtrl.getSurahNameFromPage(index),
               style: TextStyle(
-                fontSize: context.customOrientation(18.0, 22.0),
+                fontSize: context.customOrientation(18.0, 22.0) as double,
                 // fontWeight: FontWeight.bold,
                 fontFamily: 'naskh',
                 color: const Color(0xff77554B),

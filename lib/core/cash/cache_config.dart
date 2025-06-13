@@ -1,6 +1,5 @@
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/features/setting/data/remote/manage_notification_repo.dart';
 
 /// Handles domain-specific logic related to app-level cache initialization and state.
 class CacheConfig {
@@ -12,8 +11,6 @@ class CacheConfig {
     await _loadLastPageRead();
     await _loadCurrentThemeType();
     await _loadInitFlag();
-
-    await ManageNotificationRepo.initNotification();
   }
 
   // ─────────────────────────────────────────────

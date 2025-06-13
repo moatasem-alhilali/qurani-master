@@ -14,13 +14,13 @@ class Hadith40 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "الأربعين النووية",
+      title: 'الأربعين النووية',
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: hadith.length,
         itemBuilder: (context, index) {
-          var data = hadith[index];
+          final data = hadith[index];
 
           return BaseAnimate(
             index: 0,
@@ -35,7 +35,7 @@ class Hadith40 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ReadMoreText(
-                    data['hadith'],
+                    data['hadith'] as String,
                     trimLines: 5,
                     colorClickableText: Colors.red,
                     trimMode: TrimMode.Line,
@@ -53,13 +53,13 @@ class Hadith40 extends StatelessWidget {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8),
                     child: Divider(
                       color: Colors.grey,
                     ),
                   ),
                   Text(
-                    "شرح الحديث",
+                    'شرح الحديث',
                     style:
                         titleMedium(context).copyWith(color: FxColors.primary),
                   ),
@@ -67,7 +67,7 @@ class Hadith40 extends StatelessWidget {
                     height: 15,
                   ),
                   ReadMoreText(
-                    data['description'],
+                    data['description'] as String,
                     trimLines: 3,
                     colorClickableText: Colors.red,
                     trimMode: TrimMode.Line,
@@ -85,7 +85,7 @@ class Hadith40 extends StatelessWidget {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8),
                     child: Divider(
                       color: Colors.grey,
                     ),
@@ -100,8 +100,8 @@ class Hadith40 extends StatelessWidget {
                       IconButton(
                         onPressed: () async {
                           await ClipBoardServices.copyText(
-                            text: "$data['hadith'] : $data['description']",
-                            message: "تم النسخ بنجاح",
+                            text: '${data['hadith']} : ${data['description']}',
+                            message: 'تم النسخ بنجاح',
                           );
                         },
                         icon: const Icon(Icons.copy_outlined),

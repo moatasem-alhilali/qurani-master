@@ -18,117 +18,128 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const BaseHeder(text: "القرأن الكريم وعلومه"),
+        const BaseHeder(text: 'القرأن الكريم وعلومه'),
         SizedBox(
           height: context.getHight(25),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
                 // for (int i = 0; i < 5;i++)
                 _ITem(
                   onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "364764",
-                      title: "تلاوات مشهوره",
-                    ));
+                    context.push(
+                      BaseAudioScreen(
+                        id: '364764',
+                        title: 'تلاوات مشهوره',
+                      ),
+                    );
                   },
-                  title: "تلاوات مشهوره",
+                  title: 'تلاوات مشهوره',
                   image:
-                      "https://cdn.myportfolio.com/b718dae02f30e9fb7a2b33ef47b6de15/9b3688b5-b76f-4e40-a2c5-f10f25b857cd_rw_3840.jpg?h=1d031cb00142e741d04802f7a44159ee",
+                      'https://cdn.myportfolio.com/b718dae02f30e9fb7a2b33ef47b6de15/9b3688b5-b76f-4e40-a2c5-f10f25b857cd_rw_3840.jpg?h=1d031cb00142e741d04802f7a44159ee',
                 ),
                 _ITem(
                   onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "364777",
-                      title: "تعليم اطفال",
-                    ));
+                    context.push(
+                      BaseAudioScreen(
+                        id: '364777',
+                        title: 'تعليم اطفال',
+                      ),
+                    );
                   },
-                  title: "تعليم اطفال",
+                  title: 'تعليم اطفال',
                   image:
-                      "https://i0.wp.com/abunawaf.com/wp-content/uploads/2014/07/12345693.jpg?fit=960%2C638&ssl=1",
+                      'https://i0.wp.com/abunawaf.com/wp-content/uploads/2014/07/12345693.jpg?fit=960%2C638&ssl=1',
                 ),
                 _ITem(
                   onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "364774",
-                      title: "تلاوات بروايات وقراءات",
-                    ));
+                    context.push(
+                      BaseAudioScreen(
+                        id: '364774',
+                        title: 'تلاوات بروايات وقراءات',
+                      ),
+                    );
                   },
-                  title: "تلاوات بروايات وقراءات",
+                  title: 'تلاوات بروايات وقراءات',
                   image:
-                      "https://img.freepik.com/premium-photo/religious-bearded-asian-muslim-man-reading-quran-mosque_641698-1048.jpg",
-                ),
-
-                _ITem(
-                  onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "364771",
-                      title: "مصاحف الحرمين",
-                    ));
-                  },
-                  title: "مصاحف الحرمين",
-                  image:
-                      "https://cnn-arabic-images.cnn.io/cloudinary/image/upload/w_1920,c_scale,q_auto/cnnarabic/2020/08/15/images/162561.jpg",
+                      'https://img.freepik.com/premium-photo/religious-bearded-asian-muslim-man-reading-quran-mosque_641698-1048.jpg',
                 ),
 
                 _ITem(
                   onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "364768",
-                      title: "مصاحف مترجمة معانيها",
-                    ));
+                    context.push(
+                      BaseAudioScreen(
+                        id: '364771',
+                        title: 'مصاحف الحرمين',
+                      ),
+                    );
                   },
-                  title: "مصاحف مترجمة معانيها",
+                  title: 'مصاحف الحرمين',
                   image:
-                      "https://www.noor-book.com/publice/covers_cache_webp/1/d/d/5/02f62b4165dd537df60326da06d3724d.jpg.webp",
+                      'https://cnn-arabic-images.cnn.io/cloudinary/image/upload/w_1920,c_scale,q_auto/cnnarabic/2020/08/15/images/162561.jpg',
                 ),
 
                 _ITem(
                   onTap: () {
-                    context.push(BaseAudioScreen(
-                      id: "691",
-                      title: "مصاحف مترجمة ",
-                    ));
+                    context.push(
+                      BaseAudioScreen(
+                        id: '364768',
+                        title: 'مصاحف مترجمة معانيها',
+                      ),
+                    );
                   },
-                  title: "مصاحف مترجمة",
+                  title: 'مصاحف مترجمة معانيها',
                   image:
-                      "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1547257935i/25766113.jpg",
+                      'https://www.noor-book.com/publice/covers_cache_webp/1/d/d/5/02f62b4165dd537df60326da06d3724d.jpg.webp',
+                ),
+
+                _ITem(
+                  onTap: () {
+                    context.push(
+                      BaseAudioScreen(
+                        id: '691',
+                        title: 'مصاحف مترجمة ',
+                      ),
+                    );
+                  },
+                  title: 'مصاحف مترجمة',
+                  image:
+                      'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1547257935i/25766113.jpg',
                 ),
               ],
             ),
           ),
         ),
-        const BaseHeder(text: "تصنيفات "),
+        const BaseHeder(text: 'تصنيفات '),
         const CategorySection(),
-        const BaseHeder(text: "الاقسام "),
+        const BaseHeder(text: 'الاقسام '),
         GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
-            childAspectRatio: 2 / 2,
             crossAxisSpacing: 5,
             mainAxisSpacing: 10,
           ),
           children: [
-            QuranCategory(data: quranJson, title: "القرأن"),
-            QuranCategory(data: sonaJson, title: "السنه"),
-            QuranCategory(data: serahNabawyJson, title: "السيرة النبوية"),
-            QuranCategory(data: aqidaJson, title: "العقيدة"),
-            QuranCategory(data: fikhJson, title: "فقه"),
-            QuranCategory(data: kotabManbrJson, title: "الخطب المنبرية"),
+            QuranCategory(data: quranJson, title: 'القرأن'),
+            QuranCategory(data: sonaJson, title: 'السنه'),
+            QuranCategory(data: serahNabawyJson, title: 'السيرة النبوية'),
+            QuranCategory(data: aqidaJson, title: 'العقيدة'),
+            QuranCategory(data: fikhJson, title: 'فقه'),
+            QuranCategory(data: kotabManbrJson, title: 'الخطب المنبرية'),
             QuranCategory(
               data: fdaelJson,
-              title: "فضائل الأقوال والأفعال والأخلاق",
+              title: 'فضائل الأقوال والأفعال والأخلاق',
             ),
-            QuranCategory(data: dawaForAllhJson, title: "الدعوة إلى الله"),
-            QuranCategory(data: historyJson, title: "التاريخ"),
-            QuranCategory(data: arabicLangJson, title: "اللغة العربية"),
-            QuranCategory(data: studyIslamic, title: "دراسات إسلامية"),
-            QuranCategory(data: lessonJson, title: "الدروس والمتون العلمية"),
-            QuranCategory(data: kabaerJson, title: "الكبائر والمحرمات"),
+            QuranCategory(data: dawaForAllhJson, title: 'الدعوة إلى الله'),
+            QuranCategory(data: historyJson, title: 'التاريخ'),
+            QuranCategory(data: arabicLangJson, title: 'اللغة العربية'),
+            QuranCategory(data: studyIslamic, title: 'دراسات إسلامية'),
+            QuranCategory(data: lessonJson, title: 'الدروس والمتون العلمية'),
+            QuranCategory(data: kabaerJson, title: 'الكبائر والمحرمات'),
           ],
         ),
       ],
@@ -151,7 +162,7 @@ class QuranCategory extends StatelessWidget {
           ),
         );
       },
-      title: title,
+      title: title as String,
     ).animate().fade();
   }
 }
@@ -178,7 +189,7 @@ class _ITem extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             const BaseFadeImageAsset(
-              image: "assets/image/card-2.jpg",
+              image: 'assets/image/card-2.jpg',
               fit: BoxFit.cover,
             ),
             Container(
@@ -188,7 +199,7 @@ class _ITem extends StatelessWidget {
                   begin: FractionalOffset.topCenter,
                   end: FractionalOffset.bottomCenter,
                   colors: [
-                    Colors.grey.withOpacity(0.0),
+                    Colors.grey.withOpacity(0),
                     Colors.black,
                   ],
                   stops: const [
@@ -202,9 +213,13 @@ class _ITem extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-                child: title!.autoSize(context,
-                    maxLines: 2, textAlign: TextAlign.center, minFontSize: 10),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                child: title!.autoSize(
+                  context,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  minFontSize: 10,
+                ),
               ),
             ),
           ],

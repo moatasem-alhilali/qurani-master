@@ -58,12 +58,14 @@ dependencies:
   restart_app:
   flutter_timezone: ^1.0.8
   flutter_qiblah: ^3.0.3
+  equatable: ^2.0.7
   # ---------------------------------------
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  very_good_analysis: ^5.1.0
 
 flutter:
   assets:
@@ -72,19 +74,14 @@ flutter:
     - assets/json/
     # - assets/pdf/
     - assets/athores/
-    - assets/prayer_time/
     - assets/lang/
     - assets/logo/
-    - assets/lottie/
-    - assets/icons/
     - assets/svg/
-    - assets/icons/
     - assets/svg/surah_name/
     # - assets/images/
     - assets/svg/hijri/
     - assets/svg/alwaqf/
     - assets/json/
-    - assets/lottie/
 
   fonts:
     - family: quran

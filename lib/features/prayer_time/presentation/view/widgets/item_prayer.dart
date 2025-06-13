@@ -1,44 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 
-class ItemPrayer extends StatefulWidget {
-  const ItemPrayer({
+class ItemPrayerWidget extends StatefulWidget {
+  const ItemPrayerWidget({
     super.key,
     required this.data,
-    required this.nextCurrent,
+    this.nextPray,
     required this.index,
-    required this.nextPray,
+    required this.nextCurrent,
   });
+
   final TimePrayerModel data;
-  final TimePrayerModel nextPray;
+  final TimePrayerModel? nextPray;
   final int index;
   final int nextCurrent;
 
   @override
-  State<ItemPrayer> createState() => _ItemPrayerState();
+  State<ItemPrayerWidget> createState() => _ItemPrayerWidgetState();
 }
 
-class _ItemPrayerState extends State<ItemPrayer> {
+class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
   bool isMaxLine = false;
+
   @override
   Widget build(BuildContext context) {
+    final isNext = widget.nextPray?.id == widget.data.id;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Theme.of(context).primaryColor,
-        border: widget.nextCurrent == widget.index
-            ? Border.all(color: Colors.white)
-            : null,
+        border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
       ),
       child: InkWell(
         onTap: () {
-          isMaxLine = !isMaxLine;
-          setState(() {});
+          setState(() {
+            isMaxLine = !isMaxLine;
+          });
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,9 +57,7 @@ class _ItemPrayerState extends State<ItemPrayer> {
                         height: context.getHight(4),
                       ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
+                    const SizedBox(width: 5),
                     Text(
                       widget.data.title,
                       style: titleMedium(context),
@@ -73,6 +73,7 @@ class _ItemPrayerState extends State<ItemPrayer> {
                 ),
               ],
             ),
+            const SizedBox(height: 8),
             Text(
               widget.data.content,
               maxLines: isMaxLine ? null : 1,

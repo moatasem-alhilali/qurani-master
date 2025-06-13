@@ -23,11 +23,11 @@ class _VideoOfflineSheetState extends State<VideoOfflineSheet> {
   }
 
   Future<void> _initAudioPlayer() async {
-    var path = widget.data['path'];
+    final path = widget.data['path'];
 
     logger.i(path);
     try {
-      await _audioPlayer.setFilePath(path);
+      await _audioPlayer.setFilePath(path as String);
     } catch (e) {
       logger.e(e);
     }
@@ -46,7 +46,7 @@ class _VideoOfflineSheetState extends State<VideoOfflineSheet> {
       children: [
         CustomVideoPlayer(
           offline: true,
-          url: widget.data['path'],
+          url: widget.data['path'] as String,
         ),
         const SizedBox(height: 5),
         Text(

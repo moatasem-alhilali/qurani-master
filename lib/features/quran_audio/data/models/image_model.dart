@@ -24,11 +24,11 @@ class Photo {
   }
 
   Photo.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
-    photo_name = map['picture'];
-    content = map['content'];
-    price = map['price'];
-    title = map['title'];
+    id = map['id'] as int?;
+    photo_name = map['picture'] as String?;
+    content = map['content'] as String?;
+    price = map['price'] as int?;
+    title = map['title'] as String?;
   }
 }
 

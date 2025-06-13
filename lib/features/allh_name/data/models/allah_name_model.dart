@@ -9,8 +9,8 @@ class AllahNameModel {
 
   factory AllahNameModel.fromJson(Map<String, dynamic> json) {
     return AllahNameModel(
-      name: json['name'] ?? '',
-      text: json['text'] ?? '',
+      name: json['name'] as String,
+      text: json['text'] as String,
     );
   }
 }

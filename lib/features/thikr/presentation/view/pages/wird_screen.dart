@@ -27,7 +27,7 @@ class _WirdScreenState extends State<WirdScreen> {
   Widget build(BuildContext context) {
     return BaseHome(
       titleWidget:
-          "“يقول تعالى \n والذاكرين الله كثيرا والذاكرات \n أعد الله لهم مغفرة وأجرا عظيما”"
+          '“يقول تعالى \n والذاكرين الله كثيرا والذاكرات \n أعد الله لهم مغفرة وأجرا عظيما”'
               .autoSize(
         context,
         fontSize: 12,
@@ -50,28 +50,28 @@ class _WirdScreenState extends State<WirdScreen> {
                 });
               },
               itemBuilder: (context, index) {
-                var datathikr = wird[index];
+                final datathikr = wird[index];
 
                 return BaseAnimateFlipList(
                   index: index,
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
                     children: [
                       DoaItem(
                         childPageNumber: Text(
-                          "${wird.length - 1}/$current",
+                          '${wird.length - 1}/$current',
                           style: titleSmall(context).copyWith(
                             color: FxColors.primary,
                           ),
                         ),
                         fontFamily: 'ios-1',
                         color: Theme.of(context).primaryColor,
-                        content: datathikr['content'],
-                        text: datathikr['text'],
+                        content: datathikr['content'] as String?,
+                        text: datathikr['text'] as String,
                         number: 'التكرار :  ${datathikr['counter']} ',
                         onLongPress: () async {
                           await ClipBoardServices.copyText(
-                              text: datathikr['text']);
+                            text: datathikr['text'] as String,
+                          );
                           ToastServes.showToast(message: 'تم النسخ بنجاح');
                         },
                       ),
@@ -84,10 +84,9 @@ class _WirdScreenState extends State<WirdScreen> {
           SmoothPageIndicator(
             controller: controller,
             count: 6,
-            axisDirection: Axis.horizontal,
             effect: ExpandingDotsEffect(
-              spacing: 15.0,
-              radius: 10.0,
+              spacing: 15,
+              radius: 10,
               activeDotColor: FxColors.primary,
               dotHeight: 15,
               dotWidth: 15,

@@ -49,7 +49,7 @@ class SearchAyah extends StatelessWidget {
               BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
                   switch (state.ayahState) {
-                    case RequestState.defaults:
+                    case RequestState.initial:
                       return const SizedBox();
 
                     case RequestState.loading:
@@ -66,7 +66,7 @@ class SearchAyah extends StatelessWidget {
                           controller: BlocProvider.of<SearchBloc>(context)
                               .scrollController,
                           itemBuilder: (context, index) {
-                            Aya search = ayahList[index];
+                            final search = ayahList[index];
 
                             return Column(
                               children: <Widget>[
@@ -83,16 +83,17 @@ class SearchAyah extends StatelessWidget {
                                       context
                                           .read<ReadQuranBloc>()
                                           .pageController
-                                          .jumpToPage(search.pageNum! - 1);
+                                          .jumpToPage(
+                                              (search.pageNum as int) - 1);
                                       context.pop();
                                       context.pop();
                                     },
                                     title: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8),
                                       child: Text(
                                         search.searchText,
                                         style: TextStyle(
-                                          fontFamily: "uthmanic2",
+                                          fontFamily: 'uthmanic2',
                                           fontWeight: FontWeight.normal,
                                           fontSize: 22,
                                           color: context
@@ -128,77 +129,78 @@ class SearchAyah extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: (index % 2 == 0
-                                                        ? context
-                                                            .currentThemeData
-                                                            .colorScheme
-                                                            .primary
-                                                            .withOpacity(.15)
-                                                        : Colors.transparent),
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                      topRight:
-                                                          Radius.circular(4),
-                                                      bottomRight:
-                                                          Radius.circular(4),
-                                                    )),
-                                                child: Text(
-                                                  " ${'الجزء'}: ${search.partNum}",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: context
-                                                        .currentThemeData
-                                                        .canvasColor,
-                                                    fontSize: 12,
-                                                  ),
-                                                )),
+                                              decoration: BoxDecoration(
+                                                color: (index % 2 == 0
+                                                    ? context.currentThemeData
+                                                        .colorScheme.primary
+                                                        .withOpacity(.15)
+                                                    : Colors.transparent),
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topRight: Radius.circular(4),
+                                                  bottomRight:
+                                                      Radius.circular(4),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                " ${'الجزء'}: ${search.partNum}",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: context
+                                                      .currentThemeData
+                                                      .canvasColor,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                           Expanded(
                                             child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: context
-                                                        .currentThemeData
-                                                        .primaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(4),
-                                                      bottomLeft:
-                                                          Radius.circular(4),
-                                                    )),
-                                                child: Text(
-                                                  " ${'الصفحه'}: ${search.pageNum}",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: context
-                                                          .currentThemeData
-                                                          .canvasColor,
-                                                      fontSize: 12),
-                                                )),
+                                              decoration: BoxDecoration(
+                                                color: context.currentThemeData
+                                                    .primaryColor,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4),
+                                                  bottomLeft:
+                                                      Radius.circular(4),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                " ${'الصفحه'}: ${search.pageNum}",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: context
+                                                      .currentThemeData
+                                                      .canvasColor,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                           Expanded(
                                             child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: context
-                                                        .currentThemeData
-                                                        .primaryColor,
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(4),
-                                                      bottomLeft:
-                                                          Radius.circular(4),
-                                                    )),
-                                                child: Text(
-                                                  " ${'الايه'}: ${search.ayaNum}",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: context
-                                                          .currentThemeData
-                                                          .canvasColor,
-                                                      fontSize: 12),
-                                                )),
+                                              decoration: BoxDecoration(
+                                                color: context.currentThemeData
+                                                    .primaryColor,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  topLeft: Radius.circular(4),
+                                                  bottomLeft:
+                                                      Radius.circular(4),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                " ${'الايه'}: ${search.ayaNum}",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: context
+                                                      .currentThemeData
+                                                      .canvasColor,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -209,7 +211,7 @@ class SearchAyah extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                const Divider()
+                                const Divider(),
                               ],
                             );
                           },

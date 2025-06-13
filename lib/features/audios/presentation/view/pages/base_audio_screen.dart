@@ -32,7 +32,7 @@ class BaseAudioScreen extends StatelessWidget {
               listener: (context, state) {},
               builder: (context, state) {
                 switch (state.famousBaseAudioState) {
-                  case RequestState.defaults:
+                  case RequestState.initial:
                     return const SizedBox();
                   case RequestState.loading:
                     return const CircularProgressIndicator();

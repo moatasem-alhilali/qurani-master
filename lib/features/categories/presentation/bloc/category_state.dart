@@ -12,12 +12,12 @@ class CategoryState {
   RequestState quranBooksState;
 
   CategoryState({
-    this.categoryState = RequestState.defaults,
+    this.categoryState = RequestState.initial,
     this.category = const [],
     this.categoryDetail = const [],
     this.quranBooksDetailSearch = const [],
     //
-    this.quranBooksState = RequestState.defaults,
+    this.quranBooksState = RequestState.initial,
     this.quranBooksDetail = const {},
   });
 
@@ -29,7 +29,7 @@ class CategoryState {
     //
     RequestState? quranBooksState,
     Map<String, dynamic>? quranBooksDetail,
-      List<dynamic>? quranBooksDetailSearch,
+    List<dynamic>? quranBooksDetailSearch,
   }) {
     return CategoryState(
       //famous Category
@@ -41,7 +41,8 @@ class CategoryState {
       //
       quranBooksDetail: quranBooksDetail ?? this.quranBooksDetail,
       quranBooksState: quranBooksState ?? this.quranBooksState,
-      quranBooksDetailSearch: quranBooksDetailSearch ?? this.quranBooksDetailSearch,
+      quranBooksDetailSearch:
+          quranBooksDetailSearch ?? this.quranBooksDetailSearch,
     );
   }
 }

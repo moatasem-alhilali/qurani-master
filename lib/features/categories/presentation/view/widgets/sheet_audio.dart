@@ -24,51 +24,55 @@ class SheetAudios extends StatelessWidget {
       child: BlocProvider(
         create: (context) => BaseAudioBloc(
           repositoryImpl: sl.get<BaseAudioRepositoryImpl>(),
-        )..add(BaseAudioDetailEvent(baseData['api_url'])),
+        )..add(BaseAudioDetailEvent(baseData['api_url'] as String)),
         child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
           builder: (context, state) {
             switch (state.famousBaseAudioState) {
-              case RequestState.defaults:
+              case RequestState.initial:
                 return const Center(child: CircularProgressIndicator());
               case RequestState.loading:
                 return const Center(child: CircularProgressIndicator());
 
               case RequestState.error:
                 return const Center(
-                    child: CircularProgressIndicator(color: Colors.red));
+                  child: CircularProgressIndicator(color: Colors.red),
+                );
 
               case RequestState.success:
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: baseData['title'].toString().autoSize(context,
-                          fontSize: 20, maxLines: 2, minFontSize: 10),
+                      padding: const EdgeInsets.all(8),
+                      child: baseData['title'].toString().autoSize(
+                            context,
+                            fontSize: 20,
+                            maxLines: 2,
+                            minFontSize: 10,
+                          ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: baseData['description'].toString().autoSize(
                             context,
                             color: Colors.grey,
-                            maxLines: null,
                             fontSize: 14,
                           ),
                     ),
                     const SizedBox(height: 10),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Divider(color: Colors.grey),
                     ),
                     ProgressAudio(
-                        audioPlayer: state.audioPlayer ?? AudioPlayer()),
+                      audioPlayer: state.audioPlayer ?? AudioPlayer(),
+                    ),
                     Expanded(
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const BouncingScrollPhysics(),
                         itemCount: state.baseAudioDetail.length,
                         itemBuilder: (context, index) {
-                          var data = state.baseAudioDetail[index];
+                          final data = state.baseAudioDetail[index];
                           return _ItemDownloaded(
                             audioPlayer: state.audioPlayer,
                             current: index,
@@ -90,12 +94,12 @@ class SheetAudios extends StatelessWidget {
 
 class _ItemDownloaded extends StatelessWidget {
   _ItemDownloaded({
-    Key? key,
     required this.current,
+    super.key,
     this.data,
     this.audioPlayer,
     this.baseData,
-  }) : super(key: key);
+  });
   dynamic data;
   dynamic baseData;
   int current;
@@ -125,18 +129,19 @@ class _ItemDownloaded extends StatelessWidget {
           Row(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
                   builder: (context, state) {
                     switch (state.audioState) {
-                      case RequestState.defaults:
+                      case RequestState.initial:
                         return const CircularProgressIndicator();
                       case RequestState.loading:
                         return const CircularProgressIndicator();
 
                       case RequestState.error:
                         return const CircularProgressIndicator(
-                            color: Colors.red);
+                          color: Colors.red,
+                        );
 
                       case RequestState.success:
                         return Container(
@@ -202,7 +207,10 @@ class _BtnDownloadState extends State<_BtnDownload> {
         onTap: () {
           final url = widget.data['url'];
           final description = widget.data['description'];
-          downloadService.download(url, description);
+          downloadService.download(
+            url as String,
+            description as String,
+          );
         },
         child: Container(
           height: context.getHight(6),

@@ -9,8 +9,6 @@ part 'category_event.dart';
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  CategoryRepositoryImpl repositoryImpl;
-
   CategoryBloc({required this.repositoryImpl}) : super(CategoryState()) {
     on<GetCategoryEvent>(index);
 
@@ -23,10 +21,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       },
     );
   }
+  CategoryRepositoryImpl repositoryImpl;
 
   FutureOr<void> index(event, emit) async {
     emit(state.copyWith(famousCategoryState: RequestState.loading));
-    var result = await repositoryImpl.categoriesData(event.id, event.url);
+    final result = await repositoryImpl.categoriesData(
+      event.id as int,
+      event.url as String,
+    );
     result.fold(
       (l) {
         emit(state.copyWith(famousCategoryState: RequestState.error));
@@ -42,11 +44,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     );
   }
 
-
-
   FutureOr<void> detail(event, emit) async {
     emit(state.copyWith(quranBooksState: RequestState.loading));
-    var result = await repositoryImpl.categoryDetail(event.url);
+    final result = await repositoryImpl.categoryDetail(event.url as String);
     result.fold(
       (l) {
         emit(state.copyWith(quranBooksState: RequestState.error));
@@ -55,13 +55,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         emit(
           state.copyWith(
             quranBooksState: RequestState.success,
-            quranBooksDetail: r,
-            quranBooksDetailSearch: r['data'],
+            quranBooksDetail: r as Map<String, dynamic>?,
+            quranBooksDetailSearch: r?['data'] as List<dynamic>?,
           ),
         );
       },
     );
   }
-
-  
 }

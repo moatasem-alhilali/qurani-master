@@ -11,7 +11,6 @@ class CustomAutoSizeText extends StatelessWidget {
     return AutoSizeText(
       text,
       style: const TextStyle(fontSize: 14),
-      minFontSize: 12,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
@@ -20,7 +19,7 @@ class CustomAutoSizeText extends StatelessWidget {
 
 extension MyTextAuto on String {
   Widget autoSize(
-    context, {
+    BuildContext context, {
     int? maxLines,
     Color? color,
     double fontSize = 18,

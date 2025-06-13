@@ -13,16 +13,15 @@ class CategoryViewAll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: title,
+      title: title as String,
       body: Column(
         children: [
           GridView.builder(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
-            itemCount: data.length,
+            itemCount: data.length as int,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 2 / 2,
               crossAxisSpacing: 5,
               mainAxisSpacing: 10,
             ),
@@ -38,14 +37,14 @@ class CategoryViewAll extends StatelessWidget {
                   } else {
                     context.push(
                       CategoryDataScreen(
-                        id: data[index]['id'],
-                        title: data[index]['title'],
-                        url: data[index]['apiurl'],
+                        id: data[index]['id'] as int,
+                        title: data[index]['title'] as String,
+                        url: data[index]['apiurl'] as String,
                       ),
                     );
                   }
                 },
-                title: data[index]['title'],
+                title: data[index]['title'] as String,
               ).animate().fade();
             },
           ),

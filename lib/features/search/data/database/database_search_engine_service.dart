@@ -8,9 +8,9 @@ class DatabaseSearchEngineService {
     required String answer,
   }) async {
     return await _db.insert(DatabaseTables.searchEngine, {
-      "question": question,
-      "answer": answer,
-      "created_at": DateTime.now().toIso8601String(),
+      'question': question,
+      'answer': answer,
+      'created_at': DateTime.now().toIso8601String(),
     });
   }
 
@@ -20,9 +20,10 @@ class DatabaseSearchEngineService {
 
   Future<int> clearAll() async {
     final all = await getAllEntries();
-    int deleted = 0;
+    var deleted = 0;
     for (final row in all) {
-      deleted += await _db.delete(DatabaseTables.searchEngine, row['id']);
+      deleted +=
+          await _db.delete(DatabaseTables.searchEngine, row['id'] as int);
     }
     return deleted;
   }

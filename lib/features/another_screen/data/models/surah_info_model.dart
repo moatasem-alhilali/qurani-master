@@ -1,17 +1,4 @@
 class SurahInfoModel {
-  final int id;
-  final String surah;
-  final String audio;
-  final String image;
-  final String ayaatiha;
-  final String maeniAsamuha;
-  final String sababTasmiatiha;
-  final String asmawuha;
-  final String maqsiduhaAleamu;
-  final String sababNuzuliha;
-  final List<String> fadluha;
-  final List<String> munasabatiha;
-
   SurahInfoModel({
     required this.id,
     required this.surah,
@@ -29,18 +16,31 @@ class SurahInfoModel {
 
   factory SurahInfoModel.fromJson(Map<String, dynamic> json) {
     return SurahInfoModel(
-      id: json['id'],
-      surah: json['surah'],
-      audio: json['audio'],
-      image: json['image'],
-      ayaatiha: json['ayaatiha'],
-      maeniAsamuha: json['maeni_asamuha'],
-      sababTasmiatiha: json['sabab_tasmiatiha'],
-      asmawuha: json['asmawuha'],
-      maqsiduhaAleamu: json['maqsiduha_aleamu'],
-      sababNuzuliha: json['sabab_nuzuliha'],
-      fadluha: List<String>.from(json['fadluha']),
-      munasabatiha: List<String>.from(json['munasabatiha']),
+      id: json['id'] as int,
+      surah: json['surah'] as String,
+      audio: json['audio'] as String,
+      image: json['image'] as String,
+      ayaatiha: json['ayaatiha'] as String,
+      maeniAsamuha: json['maeni_asamuha'] as String,
+      sababTasmiatiha: json['sabab_tasmiatiha'] as String,
+      asmawuha: json['asmawuha'] as String,
+      maqsiduhaAleamu: json['maqsiduha_aleamu'] as String,
+      sababNuzuliha: json['sabab_nuzuliha'] as String,
+      fadluha: List<String>.from(json['fadluha'] as Iterable<dynamic>),
+      munasabatiha:
+          List<String>.from(json['munasabatiha'] as Iterable<dynamic>),
     );
   }
+  final int id;
+  final String surah;
+  final String audio;
+  final String image;
+  final String ayaatiha;
+  final String maeniAsamuha;
+  final String sababTasmiatiha;
+  final String asmawuha;
+  final String maqsiduhaAleamu;
+  final String sababNuzuliha;
+  final List<String> fadluha;
+  final List<String> munasabatiha;
 }

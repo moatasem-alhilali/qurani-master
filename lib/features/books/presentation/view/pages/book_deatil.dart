@@ -17,6 +17,7 @@ class BookDetail extends StatelessWidget {
   BookDetail({super.key, this.data});
   final dynamic data;
   final PageController _controller = PageController();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -40,7 +41,7 @@ class BookDetail extends StatelessWidget {
                     height: context.getHight(34),
                     child: PageView.builder(
                       controller: _controller,
-                      itemCount: data['attachments'].length,
+                      itemCount: data['attachments'].length as int,
                       itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.all(8),
@@ -65,20 +66,20 @@ class BookDetail extends StatelessWidget {
                   const SizedBox(height: 10),
                   BaseSmoothPageIndicator(
                     controller: _controller,
-                    count: data['attachments'].length,
+                    count: data['attachments'].length as int,
                   ),
                   const SizedBox(height: 10),
                   Info(
                     data: {
-                      "title": "الوصف",
-                      "subtitle": data['description'],
+                      'title': 'الوصف',
+                      'subtitle': data['description'],
                     },
                   ),
                   const SizedBox(height: 10),
                   Info(
                     data: {
-                      "title": "المرجع",
-                      "subtitle": data['prepared_by'][0]['title'],
+                      'title': 'المرجع',
+                      'subtitle': data['prepared_by'][0]['title'],
                     },
                   ),
                 ],
@@ -156,7 +157,7 @@ class _ItemState extends State<_Item> {
           ),
           child: const BaseFadeImage(
             image:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNDgmghQNk_-gH-n4L_YzFBo6EeE5QOYpmWM_pUGgqWSNVLYNulaoD9JEoJ9xw0FoxjU&usqp=CAU",
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNDgmghQNk_-gH-n4L_YzFBo6EeE5QOYpmWM_pUGgqWSNVLYNulaoD9JEoJ9xw0FoxjU&usqp=CAU',
             fit: BoxFit.contain,
           ),
         ),
@@ -167,7 +168,7 @@ class _ItemState extends State<_Item> {
               Expanded(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   child: widget.data['description'].toString().autoSize(
                         context,
                         maxLines: 8,
@@ -176,8 +177,8 @@ class _ItemState extends State<_Item> {
               ),
               InkWell(
                 onTap: () {
-                  final url = widget.data['url'];
-                  final description = widget.data['description'];
+                  final url = widget.data['url'] as String;
+                  final description = widget.data['description'] as String;
                   downloadService.download(url, description);
                 },
                 child: Container(
@@ -203,7 +204,7 @@ class _ItemState extends State<_Item> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          widget.data['size'],
+                          widget.data['size'] as String,
                           style: titleMedium(context),
                         ),
                       ),
@@ -228,13 +229,13 @@ class _ItemState extends State<_Item> {
                   Expanded(
                     child: MyProgressButton(
                       borderRadius: 12,
-                      text: "قراءة",
+                      text: 'قراءة',
                       defaultColor: FxColors.secondary,
                       isBorderColor: true,
                       onPressed: () {
                         context.push(
                           ReadBook(
-                            url: widget.data['url'],
+                            url: widget.data['url'] as String,
                           ),
                         );
                       },

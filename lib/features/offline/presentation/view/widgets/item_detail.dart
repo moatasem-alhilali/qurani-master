@@ -3,11 +3,11 @@ import 'package:quran_app/core/widgets/auto_text.dart';
 
 class ItemDetailOffline extends StatelessWidget {
   ItemDetailOffline({
-    Key? key,
     required this.current,
+    super.key,
     this.onTap,
     this.data,
-  }) : super(key: key);
+  });
   dynamic data;
   int current;
   void Function()? onTap;
@@ -24,7 +24,7 @@ class ItemDetailOffline extends StatelessWidget {
           color: Theme.of(context).primaryColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -32,12 +32,13 @@ class ItemDetailOffline extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ("العنوان : " + data['title'])
-                      .toString()
-                      .autoSize(context, maxLines: 1, minFontSize: 12),
+                  'العنوان : ${data['title'] as String}'.autoSize(
+                    context,
+                    maxLines: 1,
+                  ),
                   const SizedBox(height: 5),
                   Text(
-                    "التاريخ:  ${data['time'].toString().split(" ").first}",
+                    "التاريخ:  ${data['time'].toString().split(' ').first}",
                     style: const TextStyle(
                       color: Colors.grey,
                     ),
@@ -48,7 +49,7 @@ class ItemDetailOffline extends StatelessWidget {
                 radius: 15,
                 child: FittedBox(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: data['type'].toString().autoSize(context),
                   ),
                 ),

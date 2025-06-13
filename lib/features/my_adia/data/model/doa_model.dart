@@ -1,16 +1,16 @@
 class DoaModel {
+  DoaModel({this.content, this.id, this.title});
+  DoaModel.fromJson(dynamic data) {
+    id = data['id'] as int?;
+    title = data['title'] as String?;
+    content = data['content'] as String?;
+  }
   int? id;
   String? title;
   String? content;
-  DoaModel({this.content, this.id, this.title});
   Map<String, dynamic> toMap() => {
-        "id": id,
-        "title": title,
-        "content": content,
+        'id': id,
+        'title': title,
+        'content': content,
       };
-  DoaModel.fromJson(dynamic data) {
-    id = data['id'];
-    title = data['title'];
-    content = data['content'];
-  }
 }

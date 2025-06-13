@@ -1,5 +1,12 @@
 enum RequestState {
-  defaults,
+  initial,
+  loading,
+  error,
+  success,
+}
+
+enum LoadState {
+  initial,
   loading,
   error,
   success,

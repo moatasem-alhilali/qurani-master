@@ -25,9 +25,9 @@ class DataBaseClient {
     return _database;
   }
 
-  Future _openDatabase(String fileName) async {
-    Directory databasePath = await getApplicationDocumentsDirectory();
-    var path = join(databasePath.path, fileName);
+  Future<Database?> _openDatabase(String fileName) async {
+    final databasePath = await getApplicationDocumentsDirectory();
+    final path = join(databasePath.path, fileName);
     return openDatabase(path);
   }
 

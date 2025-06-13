@@ -29,9 +29,9 @@ Widget besmAllah2(BuildContext context) {
   );
 }
 
-Widget spaceLine(double height, width) {
+Widget spaceLine(double height, double width) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    padding: const EdgeInsets.symmetric(vertical: 8),
     child: SvgPicture.asset(
       'assets/svg/space_line.svg',
       height: height,
@@ -40,8 +40,12 @@ Widget spaceLine(double height, width) {
   );
 }
 
-Widget bookmarkIcon(BuildContext context,
-    {double? height, double? width, required int pageNum}) {
+Widget bookmarkIcon(
+  BuildContext context, {
+  required int pageNum,
+  double? height,
+  double? width,
+}) {
   final bookmarksController = context.read<BookmarkBloc>().bookmarksController;
   return Semantics(
     button: true,

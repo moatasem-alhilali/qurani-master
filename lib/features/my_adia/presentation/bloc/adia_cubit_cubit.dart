@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:quran_app/features/my_adia/data/model/doa_model.dart';
@@ -8,13 +9,13 @@ part 'adia_cubit_state.dart';
 
 class AdiaCubit extends Cubit<AdiaCubitState> {
   AdiaCubit() : super(AdiaCubitInitial());
-  static AdiaCubit get(context) => BlocProvider.of(context);
+  static AdiaCubit get(BuildContext context) => BlocProvider.of(context);
 
   final _doaService = DatabaseDoaService();
 
   List<DoaModel> doaList = [];
 
-  void addDua({String? title, String? content}) async {
+  Future<void> addDua({String? title, String? content}) async {
     try {
       final doa = DoaModel(title: title, content: content);
       await _doaService.addDoa(doa);
@@ -35,7 +36,7 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
     }
   }
 
-  void deleteDoa({required DoaModel doaModel}) async {
+  Future<void> deleteDoa({required DoaModel doaModel}) async {
     try {
       await _doaService.deleteDoa(doaModel.id!);
       await getDoa();
@@ -46,7 +47,7 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
     }
   }
 
-  void editDoa({String? title, String? content, int? id}) async {
+  Future<void> editDoa({String? title, String? content, int? id}) async {
     try {
       final doa = DoaModel(id: id, title: title, content: content);
       await _doaService.updateDoa(doa);

@@ -1,90 +1,198 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/cash/cache_service.dart';
-import 'package:quran_app/core/services/tasks_notification.dart';
+import 'package:quran_app/core/notification/channel/notification_channel.dart';
+import 'package:quran_app/core/notification/seed/notification_data_seeder.dart';
+import 'package:quran_app/core/notification/tasks_notification.dart';
+import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
+import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/main.dart';
 
 class ManageNotificationRepo {
-//notification atahn remember
-  static bool isNotificationAllAthan = true;
+  TasksNotification? tasksNotification;
+  final DatabaseNotificationSettingService settingDb;
 
-  //
-  static bool isNotificationAthanFagr = true;
-  static bool isNotificationAthanDuhr = true;
-  static bool isNotificationAthanAsr = true;
-  static bool isNotificationAthanMagrib = true;
-  static bool isNotificationAthanIsha = true;
+  ManageNotificationRepo({
+    required this.settingDb,
+    this.tasksNotification,
+  });
 
-  //
-  static bool isNotificationMiddleNight = false;
-
-  //notification thikr remember
-  static bool isNotificationThikrMorning = false;
-  static bool isNotificationThikrNight = false;
-
-  //
-  static bool isNotificationMohammed = true;
-  static bool isNotificationRandomThikr = true;
-
-  //
-  static bool isNotificationReadQuran = false;
-  static bool isNotificationReadSurahMulk = false;
-  static bool isNotificationWridSleep = false;
-  static bool isNotificationWridGetup = false;
-
-  //toggle all athan
-
-  static Future<void> toggleAllAthan(bool val) async {
-    isNotificationAllAthan = !isNotificationAllAthan;
-    //
-    isNotificationAthanFagr = isNotificationAllAthan;
-    isNotificationAthanDuhr = isNotificationAllAthan;
-    isNotificationAthanAsr = isNotificationAllAthan;
-    isNotificationAthanMagrib = isNotificationAllAthan;
-    isNotificationAthanIsha = isNotificationAllAthan;
-
-    await CacheService().setBool('isNotificationAllAthan', val);
-    ServicesNotification.cancelAllNotification();
-    await ServicesNotification.sendNotification();
+  // ✅ دوال عامة لجلب الإعدادات
+  Future<bool> getBool(String key) async {
+    final setting = await settingDb.getByKey(key);
+    return setting?.value ?? false;
   }
 
-  static Future<void> initNotification() async {
-    isNotificationReadQuran =
-        CacheService().getBool('isNotificationReadQuran') ?? true;
-    isNotificationReadSurahMulk =
-        CacheService().getBool('isNotificationReadSurahMulk') ?? true;
-    isNotificationWridSleep =
-        CacheService().getBool('isNotificationWridSleep') ?? true;
-    isNotificationWridGetup =
-        CacheService().getBool('isNotificationWridGetup') ?? true;
-
-    //
-    isNotificationAthanFagr =
-        CacheService().getBool('isNotificationAthanFagr') ?? true;
-    isNotificationAthanDuhr =
-        CacheService().getBool('isNotificationAthanDuhr') ?? true;
-    isNotificationAthanAsr =
-        CacheService().getBool('isNotificationAthanAsr') ?? true;
-    isNotificationAthanMagrib =
-        CacheService().getBool('isNotificationAthanMagrib') ?? true;
-    isNotificationAthanIsha =
-        CacheService().getBool('isNotificationAthanIsha') ?? true;
-
-    //
-    isNotificationMiddleNight =
-        CacheService().getBool('isNotificationMiddleNight') ?? true;
-
-    //
-    isNotificationThikrMorning =
-        CacheService().getBool('isNotificationThikrMorning') ?? true;
-    isNotificationThikrNight =
-        CacheService().getBool('isNotificationThikrNight') ?? true;
-    //
-    isNotificationMohammed =
-        CacheService().getBool('isNotificationMohammed') ?? true;
-    isNotificationRandomThikr =
-        CacheService().getBool('isNotificationRandomThikr') ?? true;
+  Future<String?> getTime(String key) async {
+    final setting = await settingDb.getByKey(key);
+    return setting?.time;
   }
 
-  //time picker
+  // ✅ تبديل إعداد
+  Future<Map<String, bool>> toggle(String key, bool val) async {
+    try {
+      await settingDb.updateValue(key, val);
+
+      // ⬇️ حالة خاصة: مفتاح يشمل الآخرين
+      if (key == NotificationKeys.isNotificationAllAthan) {
+        final athanKeys = [
+          NotificationKeys.isNotificationAthanFagr,
+          NotificationKeys.isNotificationAthanDuhr,
+          NotificationKeys.isNotificationAthanAsr,
+          NotificationKeys.isNotificationAthanMagrib,
+          NotificationKeys.isNotificationAthanIsha,
+        ];
+
+        for (final subKey in athanKeys) {
+          await settingDb.updateValue(subKey, val);
+          await _applyNotificationChange(subKey, val);
+        }
+      } else {
+        // ⬇️ أي مفتاح عادي: طبّق عليه فقط
+        await _applyNotificationChange(key, val);
+      }
+
+      return loadAll();
+    } catch (e, stackTrace) {
+      logger.e("Error toggling setting: $e");
+      logger.e("Stack trace: $stackTrace");
+      return {};
+    }
+  }
+
+  Future<void> _applyNotificationChange(String key, bool enable) async {
+    switch (key) {
+      case NotificationKeys.isNotificationAthanFagr:
+      case NotificationKeys.isNotificationAthanDuhr:
+      case NotificationKeys.isNotificationAthanAsr:
+      case NotificationKeys.isNotificationAthanMagrib:
+      case NotificationKeys.isNotificationAthanIsha:
+        final prayerService = AdhanPrayerTimeService();
+        final list = await prayerService.getTodayPrayerTimes();
+        final map = {
+          NotificationKeys.isNotificationAthanFagr: list[0],
+          NotificationKeys.isNotificationAthanDuhr: list[2],
+          NotificationKeys.isNotificationAthanAsr: list[3],
+          NotificationKeys.isNotificationAthanMagrib: list[4],
+          NotificationKeys.isNotificationAthanIsha: list[5],
+        };
+        final info = map[key]!;
+        if (enable) {
+          await tasksNotification!.sendAthanScheduleNotification(
+            info: info,
+          );
+        } else {
+          tasksNotification!.cancelNotification(id: info.id);
+        }
+        break;
+
+      case NotificationKeys.isNotificationMiddleNight:
+        return _handleSingleSeederNotification(
+            enable, tasksNotification!.showScheduledNotificationPrayMiddleNight,
+            id: 101);
+
+      case NotificationKeys.isNotificationThikrMorning:
+        return _handleSingleSeederNotification(
+            enable, tasksNotification!.showScheduledNotificationThikrMorning,
+            id: 102);
+
+      case NotificationKeys.isNotificationThikrNight:
+        return _handleSingleSeederNotification(
+            enable, tasksNotification!.showScheduledNotificationThikrNight,
+            id: 103);
+
+      case NotificationKeys.isNotificationReadQuran:
+        return _handleSingleSeederNotification(enable, () async {
+          final notify = NotificationDataSeeder().readQuran;
+          await tasksNotification!.showScheduledDefaultNotification(
+            hour: notify.hour,
+            minute: notify.minute,
+            title: notify.title,
+            body: notify.body,
+            id: notify.id,
+          );
+        }, id: 104);
+
+      case NotificationKeys.isNotificationReadSurahMulk:
+        return _handleSingleSeederNotification(enable, () async {
+          final notify = NotificationDataSeeder().readSurahMulk;
+          await tasksNotification!.showScheduledDefaultNotification(
+            hour: notify.hour,
+            minute: notify.minute,
+            title: notify.title,
+            body: notify.body,
+            id: notify.id,
+          );
+        }, id: 105);
+
+      case NotificationKeys.isNotificationMohammed:
+        if (enable) {
+          await tasksNotification!.showScheduledNotificationMohummed();
+        } else {
+          for (int i = 1; i < 23; i++) {
+            tasksNotification!.cancelNotification(id: 1000 + i);
+          }
+        }
+        break;
+
+      case NotificationKeys.isNotificationRandomThikr:
+        if (enable) {
+          await tasksNotification!.showScheduledRandomThikrNotification();
+        } else {
+          for (int i = 1; i < 23; i++) {
+            tasksNotification!.cancelNotification(id: 108 + i);
+          }
+        }
+        break;
+
+      case NotificationKeys.isNotificationWridSleep:
+        return _handleSingleSeederNotification(enable, () async {
+          final notify = NotificationDataSeeder().thikrSleep;
+          await tasksNotification!.showScheduledDefaultNotification(
+            hour: notify.hour,
+            minute: notify.minute,
+            title: notify.title,
+            body: notify.body,
+            id: notify.id,
+          );
+        }, id: 106);
+
+      case NotificationKeys.isNotificationWridGetup:
+        return _handleSingleSeederNotification(enable, () async {
+          final notify = NotificationDataSeeder().thikrGetup;
+          await tasksNotification!.showScheduledDefaultNotification(
+            hour: notify.hour,
+            minute: notify.minute,
+            title: notify.title,
+            body: notify.body,
+            id: notify.id,
+          );
+        }, id: 107);
+
+      default:
+        logger.w("Unhandled notification key: $key");
+    }
+  }
+
+  Future<void> _handleSingleSeederNotification(
+    bool enable,
+    Future<void> Function() scheduleFn, {
+    required int id,
+  }) async {
+    if (enable) {
+      await scheduleFn();
+    } else {
+      tasksNotification!.cancelNotification(id: id);
+    }
+  }
+
+  // ✅ تحميل كل الإعدادات كبول
+  Future<Map<String, bool>> loadAll() async {
+    final all = await settingDb.getAll();
+    return {for (final e in all) e.key: e.value};
+  }
+
+  // ✅ اختيار وقت من الـ UI
   static Future<String?> showTimePikerNotification({
     required BuildContext context,
   }) async {
@@ -96,28 +204,20 @@ class ManageNotificationRepo {
       initialTime: TimeOfDay.now(),
     );
     var split = res.toString().split("(")[1].split(")")[0];
-
     return split;
   }
 
-  //====================var data time of every notification===================
-  //thikr detail
-  static String timeRememberPrayerMiddleNight = "22:00";
-  static String timeRememberThikrMorning = "7:00";
-  static String timeRememberThikrNight = "18:00";
-  static String timeRememberThikrGetUp = "7:30";
-  static String timeRememberThikrSleep = "20:00";
-  static String timeRememberReadSurhAlMulk = "20:10";
-  static String timeRememberReadQuranRoutine = "18:30";
+  // ✅ تعطيل/تشغيل جميع الإشعارات
+  Future<void> unLockNotification(bool newValue) async {
+    // ISNOT_NOTIFY = newValue;
+    await settingDb.updateValue(NotificationKeys.isNotify, newValue);
 
-  //
-  static String timeRememberMohummed = "14:00";
-
-  static String timeRememberFasting = "20:30";
-  static String timeRememberReadSurah = "";
-  static String timeRememberReadSurahAlkahf = "10:30";
-  static String timeRememberFastingMonday = "20:30";
-  static String timeRememberFastingThursday = "20:30";
-
-  //
+    if (newValue) {
+      tasksNotification!.cancelAllNotification();
+      debugPrint("🔕 تم إيقاف جميع الإشعارات.");
+    } else {
+      tasksNotification!.showScheduledNotificationMohummed();
+      debugPrint("🔔 تم تفعيل الإشعارات من جديد.");
+    }
+  }
 }

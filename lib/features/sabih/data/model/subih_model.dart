@@ -1,9 +1,4 @@
 class SubihModel {
-  int? id;
-  String? count;
-  String? text;
-  String? date;
-
   SubihModel({
     this.id,
     this.count,
@@ -12,11 +7,15 @@ class SubihModel {
   });
 
   SubihModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    date = json['date'];
-    count = json['count'];
-    text = json['text'];
+    id = json['id'] as int?;
+    date = json['date'] as String?;
+    count = json['count'] as String?;
+    text = json['text'] as String?;
   }
+  int? id;
+  String? count;
+  String? text;
+  String? date;
 
   Map<String, dynamic> toJson() {
     return {

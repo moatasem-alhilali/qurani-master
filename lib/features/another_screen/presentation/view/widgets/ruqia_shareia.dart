@@ -34,7 +34,7 @@ class RuqiaShareiahScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          ruqiaText[index]['category'],
+                          ruqiaText[index]['category'] as String,
                           style: titleMedium(context),
                         ),
                       ),
@@ -47,8 +47,8 @@ class RuqiaShareiahScreen extends StatelessWidget {
                           IconButton(
                             onPressed: () async {
                               await ClipBoardServices.copyText(
-                                text: ruqiaText[index]['zekr'],
-                                message: "تم النسخ بنجاح",
+                                text: ruqiaText[index]['zekr'] as String,
+                                message: 'تم النسخ بنجاح',
                               );
                             },
                             icon: const Icon(Icons.copy_outlined),
@@ -63,7 +63,7 @@ class RuqiaShareiahScreen extends StatelessWidget {
                   //
 
                   Text(
-                    ruqiaText[index]['zekr'],
+                    ruqiaText[index]['zekr'] as String,
                     style: const TextStyle(
                         color: Color.fromARGB(255, 210, 209, 209)),
                   ),

@@ -56,10 +56,10 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                     //update
                     CurrentAudioModel updateCurrent = CurrentAudioModel(
                       countSurahVerse: currentAudioData.countSurahVerse,
-                      imageReader: data['image'],
-                      nameReader: data['name'],
+                      imageReader: data['image'] as String,
+                      nameReader: data['name'] as String,
                       nameSurah: currentAudioData.nameSurah,
-                      identifier: data['identifier'],
+                      identifier: data['identifier'] as String,
                       indexSurah: currentAudioData.indexSurah,
                     );
                     //save
@@ -91,7 +91,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: SvgPicture.asset(
-                              data['image'],
+                              data['image'] as String,
                               height: context.getHight(10),
                               fit: BoxFit.cover,
                             ),
@@ -99,7 +99,7 @@ class _RecommendedQureaState extends State<RecommendedQurea> {
                         ),
                         Expanded(
                           child: Text(
-                            data['name'],
+                            data['name'] as String,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.white,

@@ -11,9 +11,9 @@ class BaseAudioState {
 
   BaseAudioState({
     //famous Reader
-    this.famousBaseAudioState = RequestState.defaults,
+    this.famousBaseAudioState = RequestState.initial,
     this.audioPlayer,
-    this.audioState = RequestState.defaults,
+    this.audioState = RequestState.initial,
     this.baseAudio = const [],
     this.baseAudioDetail = const [],
   });
@@ -21,7 +21,7 @@ class BaseAudioState {
   BaseAudioState copyWith({
     //famous Reader
     RequestState? audioState,
-      AudioPlayer? audioPlayer,
+    AudioPlayer? audioPlayer,
     RequestState? famousBaseAudioState,
     List<dynamic>? baseAudio,
     List<dynamic>? baseAudioDetail,

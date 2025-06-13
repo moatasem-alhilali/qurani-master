@@ -16,15 +16,15 @@ class SearchState {
 
   SearchState({
     //
-    this.searchMossoState = RequestState.defaults,
+    this.searchMossoState = RequestState.initial,
     this.result = const {},
 
     //
-    this.historyState = RequestState.defaults,
+    this.historyState = RequestState.initial,
     this.historySearchMosoaa = const [],
     //
-    this.ayahState = RequestState.defaults,
-    this.loadAyahState = RequestState.defaults,
+    this.ayahState = RequestState.initial,
+    this.loadAyahState = RequestState.initial,
     this.ayaData = const [],
   });
 

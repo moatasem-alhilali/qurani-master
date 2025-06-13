@@ -12,8 +12,8 @@ class OfflineState {
   OfflineState({
     //famous Reader
     this.audioPlayer,
-    this.audioState = RequestState.defaults,
-    this.getState = RequestState.defaults,
+    this.audioState = RequestState.initial,
+    this.getState = RequestState.initial,
     this.data = const [],
   });
 

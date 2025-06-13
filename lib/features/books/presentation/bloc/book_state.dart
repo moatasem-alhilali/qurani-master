@@ -9,9 +9,9 @@ class BookState {
 
   BookState({
     //
-    this.getState = RequestState.defaults,
+    this.getState = RequestState.initial,
     this.books = const [],
-    this.loadMoreState = RequestState.defaults,
+    this.loadMoreState = RequestState.initial,
   });
 
   BookState copyWith({

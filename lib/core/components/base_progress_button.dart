@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import '/core/failure/request_state.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 
 class MyProgressButton extends StatelessWidget {
   MyProgressButton({
     super.key,
-    this.state = RequestState.defaults,
-    this.text = "add",
+    this.state = RequestState.initial,
+    this.text = 'add',
     this.onPressed,
     this.border,
     this.width,
@@ -58,7 +58,7 @@ class MyProgressButton extends StatelessWidget {
 //color
 Color? getBackColor(RequestState state, Color? defaultColor) {
   switch (state) {
-    case RequestState.defaults:
+    case RequestState.initial:
       return defaultColor ?? FxColors.primary;
     case RequestState.loading:
       return FxColors.primary;
@@ -73,11 +73,12 @@ Color? getBackColor(RequestState state, Color? defaultColor) {
 }
 
 //Widget
-Widget getWidget(RequestState state, String? text, context, Color? colorText) {
+Widget getWidget(
+    RequestState state, String? text, BuildContext context, Color? colorText) {
   switch (state) {
-    case RequestState.defaults:
+    case RequestState.initial:
       return Text(
-        text ?? "إضافة",
+        text ?? 'إضافة',
         style: titleMedium(context).copyWith(
           color: colorText ?? Colors.white,
           fontWeight: FontWeight.bold,
@@ -112,7 +113,7 @@ Widget getWidget(RequestState state, String? text, context, Color? colorText) {
 //width
 double? getWidth(RequestState state, double? width, BuildContext context) {
   switch (state) {
-    case RequestState.defaults:
+    case RequestState.initial:
       return width ?? context.getWidth(80);
     case RequestState.loading:
       return context.getWidth(70);

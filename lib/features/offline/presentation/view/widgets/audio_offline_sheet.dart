@@ -24,11 +24,11 @@ class _AudioOfflineSheetState extends State<AudioOfflineSheet> {
   }
 
   Future<void> _initAudioPlayer() async {
-    var path = widget.data['path'];
+    final path = widget.data['path'];
 
     logger.i(path);
     try {
-      await _audioPlayer.setFilePath(path);
+      await _audioPlayer.setFilePath(path as String);
     } catch (e) {
       logger.e(e);
     }

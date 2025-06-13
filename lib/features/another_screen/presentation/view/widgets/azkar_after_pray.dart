@@ -13,13 +13,13 @@ class AzkarAfterPray extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "أذكار بعد الصلاة",
+      title: 'أذكار بعد الصلاة',
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: azkarAfterPray.length,
         itemBuilder: (context, index) {
-          var data = azkarAfterPray[index];
+          final data = azkarAfterPray[index];
 
           return BaseAnimate(
             index: 0,
@@ -34,7 +34,7 @@ class AzkarAfterPray extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    data['zekr'],
+                    data['zekr'] as String,
                     style: titleMedium(context),
                   ),
                   const SizedBox(
@@ -80,8 +80,8 @@ class AzkarAfterPray extends StatelessWidget {
                       IconButton(
                         onPressed: () async {
                           await ClipBoardServices.copyText(
-                            text: "$data['hadith'] : $data['description']",
-                            message: "تم النسخ بنجاح",
+                            text: '${data['hadith']} : ${data['description']}',
+                            message: 'تم النسخ بنجاح',
                           );
                         },
                         icon: const Icon(Icons.copy_outlined),

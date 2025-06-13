@@ -20,10 +20,11 @@ class AllahNamesBloc extends Bloc<AllahNamesEvent, AllahNamesState> {
       final String jsonStr =
           await rootBundle.loadString('assets/json/allah_names.json');
 
-      final List<dynamic> list = jsonDecode(jsonStr);
+      final List<dynamic> list = jsonDecode(jsonStr) as List<dynamic>;
 
-      final List<AllahNameModel> names =
-          list.map((e) => AllahNameModel.fromJson(e)).toList();
+      final names = list
+          .map((e) => AllahNameModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       emit(AllahNamesLoaded(names));
     } catch (e) {

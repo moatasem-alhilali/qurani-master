@@ -10,12 +10,6 @@ part 'bookmark_event.dart';
 part 'bookmark_state.dart';
 
 class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
-  //
-  BookmarksController bookmarksController = BookmarksController();
-  bool toggle = false;
-
   //
   BookmarkBloc() : super(BookmarkState()) {
     bookmarksController.init();
@@ -28,6 +22,11 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
       },
     );
   }
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
+  //
+  BookmarksController bookmarksController = BookmarksController();
+  bool toggle = false;
 
   FutureOr<void> toggleUi(event, emit) {
     toggle = !toggle;
@@ -36,7 +35,8 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
   FutureOr<void> addBookmarkText(event, emit) async {
     try {
-      await bookmarksController.addBookmarksText(event.bookmarksAyahs);
+      await bookmarksController
+          .addBookmarksText(event.bookmarksAyahs as BookmarksAyahs?);
       emit(BookmarkState(setState: RequestState.success));
     } catch (e) {
       logger.e(e.toString());
@@ -45,8 +45,10 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
   FutureOr<void> deleteBookmarkText(event, emit) async {
     try {
-      bookmarksController.deleteBookmarksText(
-          event.ayahUQNum, event.surahNumber);
+      await bookmarksController.deleteBookmarksText(
+        event.ayahUQNum as int,
+        event.surahNumber as int,
+      );
       emit(BookmarkState(setState: RequestState.success));
     } catch (e) {
       logger.e(e.toString());

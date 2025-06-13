@@ -25,7 +25,7 @@ class BaseAudioDetail extends StatelessWidget {
     return BlocProvider(
       create: (context) => BaseAudioBloc(
         repositoryImpl: sl.get<BaseAudioRepositoryImpl>(),
-      )..add(BaseAudioDetailEvent(data['api_url'])),
+      )..add(BaseAudioDetailEvent(data['api_url'] as String)),
       child: BaseUiScreen(
         onRefresh: () async {},
         title: data['title'].toString().autoSize(
@@ -37,7 +37,7 @@ class BaseAudioDetail extends StatelessWidget {
         child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
           builder: (context, state) {
             switch (state.famousBaseAudioState) {
-              case RequestState.defaults:
+              case RequestState.initial:
                 return const CircularProgressIndicator();
               case RequestState.loading:
                 return const CircularProgressIndicator();
@@ -51,7 +51,8 @@ class BaseAudioDetail extends StatelessWidget {
                 return Column(
                   children: [
                     ProgressAudio(
-                        audioPlayer: state.audioPlayer ?? AudioPlayer()),
+                      audioPlayer: state.audioPlayer ?? AudioPlayer(),
+                    ),
                     Expanded(
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -61,9 +62,9 @@ class BaseAudioDetail extends StatelessWidget {
                           final surahs =
                               context.read<ReadQuranBloc>().quranRH.surahs;
 
-                          var data = surahs[index];
+                          final data = surahs[index];
 
-                          var dataSurah = state.baseAudioDetail[index];
+                          final dataSurah = state.baseAudioDetail[index];
                           return _ItemDownloaded(
                             audioPlayer: state.audioPlayer,
                             data: data,
@@ -84,17 +85,17 @@ class BaseAudioDetail extends StatelessWidget {
 }
 
 class _ItemDownloaded extends StatelessWidget {
-  _ItemDownloaded({
-    Key? key,
-    this.data,
+  const _ItemDownloaded({
     required this.current,
+    this.data,
     this.dataSurah,
     this.audioPlayer,
-  }) : super(key: key);
-  Surah? data;
-  dynamic dataSurah;
-  int current;
-  AudioPlayer? audioPlayer;
+    super.key,
+  });
+  final Surah? data;
+  final dynamic dataSurah;
+  final int current;
+  final AudioPlayer? audioPlayer;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -106,15 +107,14 @@ class _ItemDownloaded extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 5.0),
+            padding: const EdgeInsets.only(right: 5),
             child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
               builder: (context, state) {
                 switch (state.audioState) {
-                  case RequestState.defaults:
+                  case RequestState.initial:
                     return const CircularProgressIndicator();
                   case RequestState.loading:
                     return const CircularProgressIndicator();
@@ -136,7 +136,7 @@ class _ItemDownloaded extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -148,11 +148,11 @@ class _ItemDownloaded extends StatelessWidget {
                   ),
                 ),
                 const Text(
-                  " | ",
+                  ' | ',
                   style: TextStyle(color: Colors.grey),
                 ),
                 Text(
-                  "${data!.ayahs.length}",
+                  '${data!.ayahs.length}',
                   style: const TextStyle(
                     color: Colors.grey,
                   ),
@@ -168,10 +168,7 @@ class _ItemDownloaded extends StatelessWidget {
 }
 
 class _BtnDownload extends StatefulWidget {
-  const _BtnDownload({
-    required this.data,
-    required this.title,
-  });
+  const _BtnDownload({required this.data, required this.title});
 
   final dynamic data;
   final dynamic title;
@@ -198,8 +195,8 @@ class _BtnDownloadState extends State<_BtnDownload> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        final url = widget.data['url'];
-        final description = widget.title;
+        final url = widget.data['url'] as String;
+        final description = widget.title as String;
         downloadService.download(url, description);
       },
       child: Container(
@@ -213,7 +210,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
         child: Row(
           children: [
             Text(
-              widget.data['size'],
+              widget.data['size'] as String,
               style: titleMedium(context),
             ),
             const SizedBox(width: 10),
