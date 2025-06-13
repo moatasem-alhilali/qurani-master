@@ -7,12 +7,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
-import 'package:quran_app/features/offline/data/services/offline_service.dart';
+import 'package:quran_app/features/offline/data/database/database_offline_service.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
   final ReceivePort _port = ReceivePort();
-  final LocalOfflineService _offlineService = LocalOfflineService();
+  final DatabaseOfflineService _offlineService = DatabaseOfflineService();
 
   void init() {
     _bindBackgroundIsolate();

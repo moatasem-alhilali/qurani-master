@@ -7,7 +7,7 @@ import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/snack_bar.dart';
-import 'package:quran_app/features/search/data/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class SearchMosoaaScreen extends StatelessWidget {

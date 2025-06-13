@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/audios/data/base_audio_repository_imp.dart';
+import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 
 part 'base_audio_event.dart';
 part 'base_audio_state.dart';

@@ -9,10 +9,10 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 import 'package:quran_app/core/util/snack_bar.dart';
-import 'package:quran_app/features/prayer_time/data/service/coordinates_service.dart';
+import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/main.dart';
 
-import '../../data/controllers/prayer_time_controller.dart';
+import '../../data/remote/prayer_time_repo.dart';
 
 part 'prayer_time_state.dart';
 
@@ -22,7 +22,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   void initPrayerTime() async {
     try {
       emit(PrayerTimeState(prayerState: RequestState.loading));
-      await sl.get<PrayerTimesProvider>().initialize();
+      await sl.get<PrayerTimesRepo>().initialize();
 
       await ServicesNotification.sendNotification();
       emit(PrayerTimeState(prayerState: RequestState.success));
@@ -33,7 +33,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     }
   }
 
-  final _coordinatesService = CoordinatesService();
+  final _coordinatesService = DatabaseCoordinatesService();
 
   void updateLocation() async {
     try {

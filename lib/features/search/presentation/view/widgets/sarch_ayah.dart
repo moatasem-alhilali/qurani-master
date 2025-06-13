@@ -8,7 +8,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 import 'package:quran_app/features/search/data/model/aya.dart';
-import 'package:quran_app/features/search/data/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class SearchAyah extends StatelessWidget {

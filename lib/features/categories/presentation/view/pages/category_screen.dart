@@ -9,7 +9,7 @@ import 'package:quran_app/features/categories/data/json/quran_json.dart';
 import 'package:quran_app/features/categories/data/json/serah_json.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_view_all.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/item.dart';
-import 'package:quran_app/features/home/widgets/category_section.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/category_section.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});

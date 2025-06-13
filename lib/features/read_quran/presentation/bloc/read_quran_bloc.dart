@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/bookmark/bookmark_service.dart';
+import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_ayahs.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 

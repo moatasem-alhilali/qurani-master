@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/search/data/model/aya.dart';
-import 'package:quran_app/features/search/data/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';

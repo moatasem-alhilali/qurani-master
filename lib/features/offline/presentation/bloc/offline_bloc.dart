@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/offline/data/offline_repository_imp.dart';
+import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 
 part 'offline_event.dart';
 part 'offline_state.dart';

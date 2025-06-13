@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/books/data/book_repository_imp.dart';
+import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 
 part 'book_event.dart';
 part 'book_state.dart';

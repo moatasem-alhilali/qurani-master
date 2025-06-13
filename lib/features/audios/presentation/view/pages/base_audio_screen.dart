@@ -7,7 +7,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
-import 'package:quran_app/features/audios/data/base_audio_repository_imp.dart';
+import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
 

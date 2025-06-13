@@ -11,7 +11,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/core/widgets/custom_video_player.dart';
 import 'package:quran_app/features/books/presentation/view/pages/read_book.dart';
-import 'package:quran_app/features/categories/data/category_repository_imp.dart';
+import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/main.dart';
 

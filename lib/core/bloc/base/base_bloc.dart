@@ -9,7 +9,7 @@ import 'package:quran_app/core/services/update_serves.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 
-import 'package:quran_app/features/home/widgets/custom_bottom_navigation_bar2.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/custom_bottom_navigation_bar2.dart';
 
 part 'base_event.dart';
 part 'base_state.dart';

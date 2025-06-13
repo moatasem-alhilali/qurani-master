@@ -5,8 +5,8 @@ import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
-import 'package:quran_app/features/home/widgets/next_player.dart';
-import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/data/text/teme_prayer_text.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
@@ -69,7 +69,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                                           ),
                                         ),
                                   sl
-                                              .get<PrayerTimesProvider>()
+                                              .get<PrayerTimesRepo>()
                                               .currentPrayer
                                               .index ==
                                           index
@@ -110,7 +110,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                                     data: data,
                                     index: index,
                                     nextCurrent: sl
-                                        .get<PrayerTimesProvider>()
+                                        .get<PrayerTimesRepo>()
                                         .currentPrayer
                                         .index,
                                   ),

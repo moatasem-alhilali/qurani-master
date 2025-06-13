@@ -5,7 +5,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/offline/data/offline_repository_imp.dart';
+import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/offline/presentation/bloc/offline_bloc.dart';
 import 'package:quran_app/features/offline/presentation/view/pages/offline_detail.dart';
 

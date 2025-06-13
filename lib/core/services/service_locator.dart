@@ -1,12 +1,12 @@
 import 'package:get_it/get_it.dart';
-import 'package:quran_app/features/audios/data/base_audio_repository_imp.dart';
-import 'package:quran_app/features/books/data/book_repository_imp.dart';
-import 'package:quran_app/features/categories/data/category_repository_imp.dart';
-import 'package:quran_app/features/offline/data/offline_repository_imp.dart';
-import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
+import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
+import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
+import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
-import 'package:quran_app/features/search/data/aya_repository.dart';
-import 'package:quran_app/features/search/data/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/remote/aya_repository.dart';
+import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 
 final sl = GetIt.instance;
 
@@ -17,7 +17,7 @@ void setupServiceLocator() async {
   sl.registerSingleton<CategoryRepositoryImpl>(CategoryRepositoryImpl());
   sl.registerSingleton<SearchRepositoryImpl>(SearchRepositoryImpl());
   sl.registerSingleton<AyaRepository>(AyaRepository());
-  sl.registerSingleton<PrayerTimesProvider>(PrayerTimesProvider());
+  sl.registerSingleton<PrayerTimesRepo>(PrayerTimesRepo());
   //
   await _initDatabaseClient();
   // sl.registerSingleton<DataBaseClient>(DataBaseClient());

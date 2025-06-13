@@ -8,7 +8,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
@@ -58,7 +58,7 @@ class ItemPrayerHome extends StatelessWidget {
                                 data: data,
                                 index: index,
                                 nextCurrent: sl
-                                    .get<PrayerTimesProvider>()
+                                    .get<PrayerTimesRepo>()
                                     .currentPrayer
                                     .index,
                               ),
@@ -105,7 +105,7 @@ class ItemPrayerHome extends StatelessWidget {
                                 data: data,
                                 index: index,
                                 nextCurrent: sl
-                                    .get<PrayerTimesProvider>()
+                                    .get<PrayerTimesRepo>()
                                     .currentPrayer
                                     .index,
                               ),

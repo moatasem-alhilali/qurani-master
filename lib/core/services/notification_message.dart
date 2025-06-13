@@ -1,7 +1,7 @@
 // import 'package:bottom_bar_matu/utils/app_utils.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/features/setting/logic/manage_notification_controller.dart';
-import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/setting/data/remote/manage_notification_repo.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/text/teme_prayer_text.dart';
 
 //model of data Notification
@@ -42,10 +42,10 @@ class RandomThikrNotification {
 
 TimeNoti timesPrayMiddleNightNotification = TimeNoti(
   id: 101,
-  hour:
-      int.parse(ManageNotification.timeRememberPrayerMiddleNight.split(':')[0]),
-  minute:
-      int.parse(ManageNotification.timeRememberPrayerMiddleNight.split(':')[1]),
+  hour: int.parse(
+      ManageNotificationRepo.timeRememberPrayerMiddleNight.split(':')[0]),
+  minute: int.parse(
+      ManageNotificationRepo.timeRememberPrayerMiddleNight.split(':')[1]),
   title: 'اشعارات النوافل',
   body: 'حان وقت الصلاة قيام اليل! قم وناجى الرحمن',
   sound: 'middlenight',
@@ -54,8 +54,10 @@ TimeNoti timesPrayMiddleNightNotification = TimeNoti(
 //!-------------------------الورد الصباحي------------------------
 TimeNoti timesThikrMorningNotification = TimeNoti(
   id: 102,
-  hour: int.parse(ManageNotification.timeRememberThikrMorning.split(':')[0]),
-  minute: int.parse(ManageNotification.timeRememberThikrMorning.split(':')[1]),
+  hour:
+      int.parse(ManageNotificationRepo.timeRememberThikrMorning.split(':')[0]),
+  minute:
+      int.parse(ManageNotificationRepo.timeRememberThikrMorning.split(':')[1]),
   title: 'حان الوقت',
   body: 'حان موعد اذكار الصباح',
   sound: 'morning',
@@ -64,8 +66,9 @@ TimeNoti timesThikrMorningNotification = TimeNoti(
 //!------------------------الورد المسائي------------------------
 TimeNoti timesThikrNightNotification = TimeNoti(
   id: 103,
-  hour: int.parse(ManageNotification.timeRememberThikrNight.split(':')[0]),
-  minute: int.parse(ManageNotification.timeRememberThikrNight.split(':')[1]),
+  hour: int.parse(ManageNotificationRepo.timeRememberThikrNight.split(':')[0]),
+  minute:
+      int.parse(ManageNotificationRepo.timeRememberThikrNight.split(':')[1]),
   title: 'حان الوقت',
   body: 'حان موعد اذكار المساء',
   sound: 'night',
@@ -74,10 +77,10 @@ TimeNoti timesThikrNightNotification = TimeNoti(
 //------------------------الورد القرأني ------------------------
 TimeNoti timesReadQuranRoutineNotification = TimeNoti(
   id: 104,
-  hour:
-      int.parse(ManageNotification.timeRememberReadQuranRoutine.split(':')[0]),
-  minute:
-      int.parse(ManageNotification.timeRememberReadQuranRoutine.split(':')[1]),
+  hour: int.parse(
+      ManageNotificationRepo.timeRememberReadQuranRoutine.split(':')[0]),
+  minute: int.parse(
+      ManageNotificationRepo.timeRememberReadQuranRoutine.split(':')[1]),
   title: 'الورد القرآن',
   body: 'لاتنسى قراءة القرآن',
   sound: '',
@@ -85,9 +88,10 @@ TimeNoti timesReadQuranRoutineNotification = TimeNoti(
 //------------------------ سورة الملك------------------------
 TimeNoti timesReadSurahAlMulkNotification = TimeNoti(
   id: 105,
-  hour: int.parse(ManageNotification.timeRememberReadSurhAlMulk.split(':')[0]),
-  minute:
-      int.parse(ManageNotification.timeRememberReadSurhAlMulk.split(':')[1]),
+  hour: int.parse(
+      ManageNotificationRepo.timeRememberReadSurhAlMulk.split(':')[0]),
+  minute: int.parse(
+      ManageNotificationRepo.timeRememberReadSurhAlMulk.split(':')[1]),
   title: 'قراة سورة الملك',
   body: 'لا تنسى قراءة سورة الملك',
   sound: '',
@@ -95,8 +99,9 @@ TimeNoti timesReadSurahAlMulkNotification = TimeNoti(
 //------------------------  أذكار النوم------------------------
 TimeNoti timesThikrSleepNotification = TimeNoti(
   id: 106,
-  hour: int.parse(ManageNotification.timeRememberThikrSleep.split(':')[0]),
-  minute: int.parse(ManageNotification.timeRememberThikrSleep.split(':')[1]),
+  hour: int.parse(ManageNotificationRepo.timeRememberThikrSleep.split(':')[0]),
+  minute:
+      int.parse(ManageNotificationRepo.timeRememberThikrSleep.split(':')[1]),
   title: 'أذكار النوم',
   body: '',
   sound: '',
@@ -104,13 +109,13 @@ TimeNoti timesThikrSleepNotification = TimeNoti(
 //------------------------  أذكار الاستيقاض------------------------
 TimeNoti timesThikrGetUpNotification = TimeNoti(
   id: 107,
-  hour: int.parse(ManageNotification.timeRememberThikrGetUp.split(':')[0]),
-  minute: int.parse(ManageNotification.timeRememberThikrGetUp.split(':')[1]),
+  hour: int.parse(ManageNotificationRepo.timeRememberThikrGetUp.split(':')[0]),
+  minute:
+      int.parse(ManageNotificationRepo.timeRememberThikrGetUp.split(':')[1]),
   title: 'اذكار الاستيقاض',
   body: 'لا تنسى أذكار الاستيقاض',
   sound: '',
 );
-
 
 List<RandomThikrNotification> randomThikrNotification = [
   //استغفر الله

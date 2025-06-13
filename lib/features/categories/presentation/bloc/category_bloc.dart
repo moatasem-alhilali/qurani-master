@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/categories/data/category_repository_imp.dart';
+import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/main.dart';
 
 part 'category_event.dart';

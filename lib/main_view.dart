@@ -11,9 +11,9 @@ import 'package:quran_app/core/theme/dark_theme.dart';
 
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/home/widgets/custom_bottom_navigation_bar2.dart';
-import 'package:quran_app/features/home/widgets/next_player.dart';
-import 'package:quran_app/features/quran_audio/ui/cubit/audio_cubit.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/custom_bottom_navigation_bar2.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
+import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 import 'core/AppLocalizations/AppLocalizations.dart';

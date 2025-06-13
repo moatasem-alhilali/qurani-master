@@ -10,7 +10,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/audio/action_progress.dart';
 import 'package:quran_app/core/widgets/audio/custom_progress.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/features/audios/data/base_audio_repository_imp.dart';
+import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
 
 class SheetAudios extends StatelessWidget {

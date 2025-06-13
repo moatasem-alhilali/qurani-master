@@ -10,7 +10,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
-import 'package:quran_app/features/categories/data/category_repository_imp.dart';
+import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
 import 'package:quran_app/main.dart';

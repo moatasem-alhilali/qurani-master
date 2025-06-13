@@ -8,7 +8,7 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/core/widgets/ui_screen.dart';
-import 'package:quran_app/features/offline/data/offline_repository_imp.dart';
+import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/offline/presentation/bloc/offline_bloc.dart';
 import 'package:quran_app/features/offline/presentation/view/widgets/audio_offline_sheet.dart';
 import 'package:quran_app/features/offline/presentation/view/widgets/item_detail.dart';

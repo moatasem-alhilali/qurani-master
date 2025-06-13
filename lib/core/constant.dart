@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_screen.dart';
-import 'package:quran_app/features/home/pages/home_screen.dart';
+import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/offline/presentation/view/pages/offline_screen.dart';
 import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
-import 'package:quran_app/features/sabih/model/subih_model.dart';
+import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/core/services/services_notification.dart';
-import 'package:quran_app/features/setting/pages/setting_screen.dart';
+import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 const String ayah =
     "﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾";
