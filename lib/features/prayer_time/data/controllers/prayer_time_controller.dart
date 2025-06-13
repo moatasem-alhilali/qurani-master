@@ -121,10 +121,11 @@
 import 'package:adhan/adhan.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/features/prayer_time/text/teme_prayer_text.dart';
+import 'package:quran_app/features/prayer_time/data/service/coordinates_service.dart';
 import 'package:quran_app/main.dart';
 
 class PrayerTime {
@@ -230,32 +231,37 @@ class PrayerTimesProvider {
     }
   }
 
+  final _coordinatesService = CoordinatesService();
+
   Future<Coordinates> getCoordinates() async {
     late Coordinates coordinates;
-    if (!CashConfig.hasInitLocal) {
+
+    if (!CacheConfig.hasInitLocal) {
       final permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         await Geolocator.requestPermission();
       }
     }
 
-    if (CashConfig.hasInitLocal) {
+    if (CacheConfig.hasInitLocal) {
       logger.v('get coordinates from local');
-      final coordinatesLocal = (await DBHelper.get('coordinates')).first;
-      coordinates = Coordinates(
-          coordinatesLocal['latitude'], coordinatesLocal['longitude']);
+      final coordsMap = await _coordinatesService.getCoordinates();
+      if (coordsMap != null) {
+        coordinates =
+            Coordinates(coordsMap['latitude'], coordsMap['longitude']);
+      } else {
+        throw Exception('No coordinates found in local storage');
+      }
     } else {
       logger.v('get coordinates from Location device');
-
       final position = await ServicesLocation.determinePosition();
-
       coordinates = Coordinates(position.latitude, position.longitude);
-      await CashHelper.setData(key: 'hasInitLocal', value: true);
-      await DBHelper.insert('coordinates', {
-        'latitude': coordinates.latitude,
-        'longitude': coordinates.longitude,
-      });
+
+      await CacheService().setBool('hasInitLocal', true);
+      await _coordinatesService.setCoordinates(
+          coordinates.latitude, coordinates.longitude);
     }
+
     return coordinates;
   }
 }

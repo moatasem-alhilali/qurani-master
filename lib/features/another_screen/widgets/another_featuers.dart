@@ -9,8 +9,8 @@ import 'package:quran_app/features/another_screen/widgets/surah_and_detail.dart'
 import 'package:quran_app/features/my_adia/page/doua_home.dart';
 import 'package:quran_app/features/quran_audio/ui/pages/audio_home.dart';
 import 'package:quran_app/features/allh_name/pages/allh_name_screen.dart';
-import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
-import 'package:quran_app/features/prayer_time/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/qiblah/qiblah_main.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/sabih/pages/sabih_screen.dart';

@@ -11,8 +11,9 @@ class AddBookmarkEvent extends BookmarkEvent {
   BookmarksAyahs bookmarksAyahs;
   AddBookmarkEvent(this.bookmarksAyahs);
 }
+
 class DeleteBookmarkEvent extends BookmarkEvent {
   int ayahUQNum;
   int surahNumber;
-  DeleteBookmarkEvent(this.ayahUQNum,this.surahNumber);
+  DeleteBookmarkEvent(this.ayahUQNum, this.surahNumber);
 }

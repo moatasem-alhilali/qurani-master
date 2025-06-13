@@ -203,7 +203,7 @@ class _QuickExitButton extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        CashConfig.setLastRead();
+        CacheConfig.saveLastPageRead();
         context.pop();
         context.pop();
       },

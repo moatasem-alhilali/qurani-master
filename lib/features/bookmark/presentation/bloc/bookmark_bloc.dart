@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/bookmark/data/bookmarks_controller.dart';
-import 'package:quran_app/features/read_quran/data/model/bookmark_ayahs.dart';
+import 'package:quran_app/features/bookmark/data/model/bookmark_ayahs.dart';
 import 'package:quran_app/main.dart';
 
 part 'bookmark_event.dart';

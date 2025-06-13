@@ -5,12 +5,14 @@ import 'dart:ui';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
+import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
+import 'package:quran_app/features/offline/data/services/offline_service.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
   final ReceivePort _port = ReceivePort();
+  final LocalOfflineService _offlineService = LocalOfflineService();
 
   void init() {
     _bindBackgroundIsolate();
@@ -86,16 +88,15 @@ class DownloadService {
       try {
         ToastServes.showToast(message: "تم التنزيل");
 
-        await DBHelper.insert(
-          'offlines',
-          {
-            "path": '/storage/emulated/0/Download/$fileName',
-            "type": extension,
-            "title": description,
-            "url": url,
-            "description": description,
-            "time": DateTime.now().toString(),
-          },
+        await _offlineService.insert(
+          OfflineFileModel(
+            path: '/storage/emulated/0/Download/$fileName',
+            type: extension,
+            title: description,
+            url: url,
+            description: description,
+            time: DateTime.now().toString(),
+          ),
         );
       } catch (e) {
         logger.e(e);

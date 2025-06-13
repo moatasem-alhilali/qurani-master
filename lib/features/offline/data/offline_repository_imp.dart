@@ -1,17 +1,27 @@
 import 'package:dartz/dartz.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/services/audio_service.dart';
-import 'package:quran_app/features/offline/data/offline_repository.dart';
+import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
+import 'package:quran_app/features/offline/data/services/offline_service.dart';
 import 'package:quran_app/main.dart';
 
+abstract class OfflineRepository {
+  Future<Either<Failure, List<OfflineFileModel>>> index();
+  Future<Either<Failure, bool>> add(OfflineFileModel data);
+  Future<Either<Failure, AudioPlayer>> initAudio(List url);
+
+  //
+}
+
 class OfflineRepositoryImpl implements OfflineRepository {
+  final _offlineService = LocalOfflineService();
+
   @override
-  Future<Either<Failure, List<dynamic>>> index() async {
+  Future<Either<Failure, List<OfflineFileModel>>> index() async {
     try {
-      final data = await DBHelper.get('offlines');
-      logger.i('get offline audio');
+      final data = await _offlineService.getAll();
+      logger.i('✔️ fetched offline audios');
       return right(data);
     } catch (e) {
       logger.e(e);
@@ -20,10 +30,10 @@ class OfflineRepositoryImpl implements OfflineRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> add(Map<String, dynamic> data) async {
+  Future<Either<Failure, bool>> add(OfflineFileModel data) async {
     try {
-      final result = await DBHelper.insert('offlines', data);
-      logger.i('get famous Reader Detail');
+      await _offlineService.insert(data);
+      logger.i('✔️ inserted offline audio');
       return right(true);
     } catch (e) {
       logger.e(e);
@@ -32,18 +42,27 @@ class OfflineRepositoryImpl implements OfflineRepository {
   }
 
   @override
-  Future<Either<Failure, AudioPlayer>> initAudio(dynamic data) async {
+  Future<Either<Failure, AudioPlayer>> initAudio(List data) async {
     try {
-      List<String> urls = [];
-      for (var element in data) {
-        urls.add(element['path']);
-      }
-      AudioService audioService = AudioService();
+      List<String> urls = data.map<String>((e) => e['path'] as String).toList();
+
+      final audioService = AudioService();
       await audioService.initAudiosNetworks(urls, offline: true);
+
       return right(audioService.audioPlayer);
     } catch (e) {
       logger.e(e);
       return left(ServerFailure('غير قادر على معالجة العملية'));
+    }
+  }
+
+  Future<Either<Failure, List<OfflineFileModel>>> getByType(String type) async {
+    try {
+      final filtered = await _offlineService.getByType(type);
+      return right(filtered);
+    } catch (e) {
+      logger.e(e);
+      return left(ServerFailure('حدث خطأ أثناء التصفية حسب النوع'));
     }
   }
 }

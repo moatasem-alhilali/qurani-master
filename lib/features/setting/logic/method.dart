@@ -1,3 +1,4 @@
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
@@ -7,7 +8,7 @@ class MethodSetting {
   static void unLockNoitification(newValue) {
     ISNOT_NOTIFY = newValue;
     if (ISNOT_NOTIFY) {
-      CashHelper.setData(key: 'ISNOTIFY', value: ISNOT_NOTIFY);
+      CacheService().setBool('ISNOTIFY', ISNOT_NOTIFY);
       ServicesNotification.cancelAllNotification();
       ToastServes.showToast(message: "تم ايقاف تنبيه الاشعارات");
 
@@ -19,7 +20,7 @@ class MethodSetting {
         message: "سوف يتم تنبيهك بالاشعارات من بعد الان",
       );
       ServicesNotification.showScheduledNotificationMohummed();
-      CashHelper.setData(key: 'ISNOTIFY', value: ISNOT_NOTIFY);
+      CacheService().setBool('ISNOTIFY', ISNOT_NOTIFY);
     }
   }
 

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/setting/logic/manage_notification_controller.dart';
-import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
-import 'package:quran_app/features/prayer_time/text/teme_prayer_text.dart';
+import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/data/text/teme_prayer_text.dart';
 
 import 'notification_message.dart';
 

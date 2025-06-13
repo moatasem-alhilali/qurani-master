@@ -14,12 +14,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 
 import 'editDoa.dart';
 
-Future<void> setCashData(
-    {required String key, required dynamic value, String? message}) async {
-  await CashHelper.setData(key: key, value: value).then((value) {
-    ToastServes.showToast(message: message);
-  });
-}
+
 
 Future<void> setCopyBoard({required String value, String? message}) async {
   Clipboard.setData(
@@ -115,8 +110,9 @@ class DouaHome extends StatelessWidget {
                         Clipboard.setData(
                           ClipboardData(
                               text: AdiaCubit.get(context)
-                                  .doaList[index]
-                                  .content??""),
+                                      .doaList[index]
+                                      .content ??
+                                  ""),
                         ).then(
                           (value) {
                             ToastServes.showToast(message: 'تم النسخ بنجاح');

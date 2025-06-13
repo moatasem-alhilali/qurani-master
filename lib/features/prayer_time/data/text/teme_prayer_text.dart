@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
-import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
-import 'package:quran_app/features/prayer_time/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 
 List<TimePrayerModel> prayerData = [
   TimePrayerModel(

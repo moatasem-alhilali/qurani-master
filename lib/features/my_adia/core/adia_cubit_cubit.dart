@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
 import 'package:quran_app/features/my_adia/doa_model.dart';
+import 'package:quran_app/features/my_adia/service/doa_service.dart';
 
 part 'adia_cubit_state.dart';
 
@@ -10,61 +10,51 @@ class AdiaCubit extends Cubit<AdiaCubitState> {
   AdiaCubit() : super(AdiaCubitInitial());
   static AdiaCubit get(context) => BlocProvider.of(context);
 
+  final _doaService = DoaService();
+
   List<DoaModel> doaList = [];
-  void addDua({String? title, String? content}) {
-    DoaModel doaModel = DoaModel(content: content, title: title);
 
-    DBHelper.insert(
-      'doua',
-      doaModel.toMap(),
-    ).then((value) {
-      getDoa();
+  void addDua({String? title, String? content}) async {
+    try {
+      final doa = DoaModel(title: title, content: content);
+      await _doaService.addDoa(doa);
+      await getDoa();
       emit(AddDoaState());
-    }).catchError((onError) {
+    } catch (e) {
       emit(AddDoaErrorState());
-    });
+    }
   }
 
-  void getDoa() {
-    doaList = [];
-    DBHelper.get('doua').then((value) {
-      for (var element in value) {
-        doaList.add(DoaModel.fromJson(element));
-      }
+  Future<void> getDoa() async {
+    try {
+      doaList = await _doaService.getAllDoa();
       emit(GetDoaState());
-    }).catchError((onError) {
-      print(onError);
+    } catch (e) {
+      print(e);
       emit(GetDoaErrorState());
-    });
+    }
   }
 
-  void deleteDoa({DoaModel? doaModel}) {
-    DBHelper.delete(
-      'doua',
-      where: 'id',
-      whereArgs: [doaModel!.id!],
-    ).then((value) {
+  void deleteDoa({required DoaModel doaModel}) async {
+    try {
+      await _doaService.deleteDoa(doaModel.id!);
+      await getDoa();
       emit(DeleteDoaState());
-      getDoa();
-      print(value);
-    }).catchError((onError) {
-      print(onError);
+    } catch (e) {
+      print(e);
       emit(DeleteDoaErrorState());
-    });
+    }
   }
 
-  void editDoa({String? title, String? content, int? id}) {
-    DoaModel doaModel = DoaModel(content: content, title: title, id: id);
-    DBHelper.update(
-      'doua',
-      doaModel.toMap(),
-      doaModel.id!,
-    ).then((value) {
+  void editDoa({String? title, String? content, int? id}) async {
+    try {
+      final doa = DoaModel(id: id, title: title, content: content);
+      await _doaService.updateDoa(doa);
+      await getDoa();
       emit(EditDoaState());
-      getDoa();
-    }).catchError((onError) {
-      print(onError);
+    } catch (e) {
+      print(e);
       emit(EditDoaErrorState());
-    });
+    }
   }
 }

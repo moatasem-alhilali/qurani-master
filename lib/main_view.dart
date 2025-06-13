@@ -18,7 +18,7 @@ import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.
 
 import 'core/AppLocalizations/AppLocalizations.dart';
 import 'core/util/exit_alert.dialog.dart';
-import 'features/prayer_time/cubit/prayer_time_cubit.dart';
+import 'features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

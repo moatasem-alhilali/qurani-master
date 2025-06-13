@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/local/cash.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/dialog/option_quran_dialog.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/quran_body_widget.dart';
 
@@ -14,7 +14,7 @@ class ReadQuranScreen extends StatelessWidget {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            CashConfig.setLastRead();
+            CacheConfig.saveLastPageRead();
             return true;
           },
           child: Scaffold(

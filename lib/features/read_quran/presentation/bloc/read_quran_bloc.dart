@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
-import 'package:quran_app/features/read_quran/data/model/bookmark_ayahs.dart';
+import 'package:quran_app/features/bookmark/bookmark_service.dart';
+import 'package:quran_app/features/bookmark/data/model/bookmark_ayahs.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 
 part 'read_quran_event.dart';
@@ -12,30 +11,27 @@ part 'read_quran_state.dart';
 
 class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final PageController pageController = PageController();
 
-  //
-  QuranReadHelper quranRH = QuranReadHelper();
-  PageController pageController = PageController();
+  final QuranReadHelper quranRH = QuranReadHelper();
+  final BookmarkTextService _bookmarkTextService = BookmarkTextService();
+
   bool toggle = false;
 
-  //
   ReadQuranBloc() : super(ReadQuranState()) {
-    on<LoadQuranEvent>(index);
-    on<ToggleEvent>((event, emit) {
-      toggle = !toggle;
-      emit(ReadQuranState(loadQuranState: RequestState.success));
-    });
-    on<SetStateRBlocEvent>((event, emit) {
-      emit(ReadQuranState(loadQuranState: RequestState.success));
-    });
+    on<LoadQuranEvent>(_loadQuran);
+    on<ToggleEvent>(_toggle);
+    on<SetStateRBlocEvent>(_emitState);
   }
-  addBookmarkText(
+
+  /// Adds a text bookmark (ayah-based) using the BookmarkTextService
+  Future<void> addBookmarkText(
     String surahName,
     int surahNum,
-    pageNum,
-    ayahNum,
-    ayahUQNum,
-    lastRead,
+    int pageNum,
+    int ayahNum,
+    int ayahUQNum,
+    String lastRead,
   ) async {
     try {
       final bookMark = BookmarksAyahs(
@@ -47,19 +43,32 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
         ayahUQNum,
         lastRead,
       );
-      await DBHelper.insert('bookmarkTextTable', bookMark.toJson());
+      await _bookmarkTextService.addTextBookmark(bookMark);
     } catch (e) {
-      print('Error');
+      print('Error adding bookmark: $e');
     }
   }
 
-  FutureOr<void> index(event, emit) async {
-    emit(ReadQuranState(loadQuranState: RequestState.loading));
+  /// Loads Quran data using the helper
+  Future<void> _loadQuran(
+      LoadQuranEvent event, Emitter<ReadQuranState> emit) async {
+    emit(state.copyWith(loadQuranState: RequestState.loading));
     try {
       await quranRH.loadQuran();
-      emit(ReadQuranState(loadQuranState: RequestState.success));
+      emit(state.copyWith(loadQuranState: RequestState.success));
     } catch (e) {
-      emit(ReadQuranState(loadQuranState: RequestState.error));
+      emit(state.copyWith(loadQuranState: RequestState.error));
     }
+  }
+
+  /// Toggles internal view state
+  void _toggle(ToggleEvent event, Emitter<ReadQuranState> emit) {
+    toggle = !toggle;
+    emit(state.copyWith(loadQuranState: RequestState.success));
+  }
+
+  /// Emits a fresh state manually
+  void _emitState(SetStateRBlocEvent event, Emitter<ReadQuranState> emit) {
+    emit(state.copyWith(loadQuranState: RequestState.success));
   }
 }

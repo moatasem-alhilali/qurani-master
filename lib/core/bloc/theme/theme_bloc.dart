@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/core/local/cash.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/theme/app_themes.dart';
 
 part 'theme_event.dart';
@@ -20,10 +20,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     Emitter<ThemeState> emit,
   ) async {
     currentThemeType = event.theme;
-    await CashHelper.setData(
-      key: 'currentThemeType',
-      value: currentThemeType,
-    );
+    await CacheService().setInt('currentThemeType', currentThemeType);
     emit(
       state.copyWith(
         currentThemeType: event.theme,

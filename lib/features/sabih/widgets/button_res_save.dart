@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/sabih/cubit/subih_cubit.dart';
 
@@ -22,7 +22,7 @@ class ButtonResAndSave extends StatelessWidget {
               label: "الاعادة",
               onPressed: () {
                 masbahSize = 0;
-                CashHelper.setData(key: 'subih', value: masbahSize);
+                CacheService().setInt('subih', masbahSize);
                 BlocProvider.of<BaseBloc>(context).add(SetStateBaseBlocEvent());
               },
               bottomRight: 12,

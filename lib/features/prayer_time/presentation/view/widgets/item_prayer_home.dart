@@ -8,13 +8,13 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
-import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/prayer_time/model/time_prayer_model.dart';
-import 'package:quran_app/features/prayer_time/pages/prayer_time_screen.dart';
-import 'package:quran_app/features/prayer_time/text/teme_prayer_text.dart';
+import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/prayer_time/data/text/teme_prayer_text.dart';
 
-import '../../../core/services/services_location.dart';
+import '../../../../../core/services/services_location.dart';
 
 class ItemPrayerHome extends StatelessWidget {
   const ItemPrayerHome({super.key});
@@ -23,7 +23,7 @@ class ItemPrayerHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
       builder: (context, state) {
-        if (!CashConfig.hasInitLocal) {
+        if (!CacheConfig.hasInitLocal) {
           if (!serviceEnabled) {
             return const LocationEnableScreen();
           }

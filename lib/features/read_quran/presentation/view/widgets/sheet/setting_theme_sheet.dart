@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class SettingThemeSheet extends StatelessWidget {
   SettingThemeSheet({super.key});
@@ -30,10 +28,8 @@ class SettingThemeSheet extends StatelessWidget {
                     context
                         .read<ThemeBloc>()
                         .add(ChangeThemeEvent(theme: i + 1));
-                    await CashHelper.setData(
-                      key: 'currentThemeType',
-                      value: currentThemeType,
-                    );
+                    await CacheService()
+                        .setInt('currentThemeType', currentThemeType);
                     if (context.mounted) {
                       context.pop();
                       context.pop();

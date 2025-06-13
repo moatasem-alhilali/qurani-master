@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/prayer_time/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 
 class ItemPrayer extends StatefulWidget {
   const ItemPrayer({

@@ -3,10 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/helper/cash/cash_helper.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/main_view.dart';
 
 Future<void> showMyBottomSheetFunction({
   required BuildContext context,
@@ -205,90 +203,3 @@ Future<void> showMyExitDialogFunction({
 
 //-------------------------EXIT---------------------------
 
-Future<void> showMyResetDataDialogFunction({
-  required BuildContext context,
-}) async {
-  showGeneralDialog(
-    context: context,
-    useRootNavigator: true,
-    transitionDuration: 500.milliseconds,
-    pageBuilder: (context, animation, secondaryAnimation) {
-      return Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Center(
-            child: Container(
-              width: context.getWidth(70),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              // padding: const EdgeInsets.all(8),
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const HeaderStyle(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'سوف نقوم بحذف بيانات تسجيل الدخول السابقه',
-                      style: titleMedium(context).copyWith(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: context.getScreenWidth(),
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            context.pop();
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(color: FxColors.primary),
-                            child: Text(
-                              'تراجع',
-                              style: titleMedium(context)
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            GetHelperCash.resetData();
-                            context.pushAndRemoveUntil(const MyApp());
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                            ),
-                            child: Text(
-                              'موافق',
-                              style: titleMedium(context)
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ).animate().fade();
-    },
-  );
-}

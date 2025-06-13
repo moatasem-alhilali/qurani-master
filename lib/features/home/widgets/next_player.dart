@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/features/prayer_time/controllers/prayer_time_controller.dart';
-import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/data/controllers/prayer_time_controller.dart';
+import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 
 class NextTimePrayerRemain extends StatelessWidget {
   const NextTimePrayerRemain({super.key});

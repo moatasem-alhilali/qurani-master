@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
-import 'package:quran_app/core/local/cash.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 import 'package:quran_app/core/util/snack_bar.dart';
+import 'package:quran_app/features/prayer_time/data/service/coordinates_service.dart';
 import 'package:quran_app/main.dart';
 
-import '../controllers/prayer_time_controller.dart';
+import '../../data/controllers/prayer_time_controller.dart';
 
 part 'prayer_time_state.dart';
 
@@ -32,6 +33,8 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     }
   }
 
+  final _coordinatesService = CoordinatesService();
+
   void updateLocation() async {
     try {
       emit(PrayerTimeState(prayerState: RequestState.loading));
@@ -39,25 +42,26 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       if (permission == LocationPermission.denied) {
         await Geolocator.requestPermission();
       }
+
       await ServicesLocation.isLocationEnabled();
-      if (!serviceEnabled) {
-        if (NavigationService.context.mounted) {
-          SnackBarMessage.show(
-            context: NavigationService.context,
-            title: "قم بتفعيل الموقع لمره واحده فقط",
-            state: RequestState.error,
-          );
-        }
+
+      if (!serviceEnabled && NavigationService.context.mounted) {
+        SnackBarMessage.show(
+          context: NavigationService.context,
+          title: "قم بتفعيل الموقع لمره واحده فقط",
+          state: RequestState.error,
+        );
       }
+
       if (serviceEnabled) {
         final position = await ServicesLocation.determinePosition();
 
-        await CashHelper.setData(key: 'hasInitLocal', value: true);
-        await DBHelper.delete('coordinates');
-        await DBHelper.insert('coordinates', {
-          'latitude': position.latitude,
-          'longitude': position.longitude,
-        });
+        await CacheService().setBool('hasInitLocal', true);
+        await _coordinatesService.setCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+
         if (NavigationService.context.mounted) {
           SnackBarMessage.show(
             context: NavigationService.context,
@@ -65,14 +69,14 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
             state: RequestState.success,
           );
         }
+
         initPrayerTime();
       }
+
       emit(PrayerTimeState(prayerState: RequestState.success));
     } catch (e) {
       emit(PrayerTimeState(prayerState: RequestState.error));
-
       logger.e(e);
     }
   }
-  //
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/local/cash.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 
 class ManageNotification {
@@ -42,47 +43,47 @@ class ManageNotification {
     isNotificationAthanMagrib = isNotificationAllAthan;
     isNotificationAthanIsha = isNotificationAllAthan;
 
-    await CashHelper.setData(key: 'isNotificationAllAthan', value: val);
+    await CacheService().setBool('isNotificationAllAthan', val);
     ServicesNotification.cancelAllNotification();
     await ServicesNotification.sendNotification();
   }
 
   static Future<void> initNotification() async {
     isNotificationReadQuran =
-        CashHelper.getBool(key: 'isNotificationReadQuran') ?? true;
+        CacheService().getBool('isNotificationReadQuran') ?? true;
     isNotificationReadSurahMulk =
-        CashHelper.getBool(key: 'isNotificationReadSurahMulk') ?? true;
+        CacheService().getBool('isNotificationReadSurahMulk') ?? true;
     isNotificationWridSleep =
-        CashHelper.getBool(key: 'isNotificationWridSleep') ?? true;
+        CacheService().getBool('isNotificationWridSleep') ?? true;
     isNotificationWridGetup =
-        CashHelper.getBool(key: 'isNotificationWridGetup') ?? true;
+        CacheService().getBool('isNotificationWridGetup') ?? true;
 
     //
     isNotificationAthanFagr =
-        CashHelper.getBool(key: 'isNotificationAthanFagr') ?? true;
+        CacheService().getBool('isNotificationAthanFagr') ?? true;
     isNotificationAthanDuhr =
-        CashHelper.getBool(key: 'isNotificationAthanDuhr') ?? true;
+        CacheService().getBool('isNotificationAthanDuhr') ?? true;
     isNotificationAthanAsr =
-        CashHelper.getBool(key: 'isNotificationAthanAsr') ?? true;
+        CacheService().getBool('isNotificationAthanAsr') ?? true;
     isNotificationAthanMagrib =
-        CashHelper.getBool(key: 'isNotificationAthanMagrib') ?? true;
+        CacheService().getBool('isNotificationAthanMagrib') ?? true;
     isNotificationAthanIsha =
-        CashHelper.getBool(key: 'isNotificationAthanIsha') ?? true;
+        CacheService().getBool('isNotificationAthanIsha') ?? true;
 
     //
     isNotificationMiddleNight =
-        CashHelper.getBool(key: 'isNotificationMiddleNight') ?? true;
+        CacheService().getBool('isNotificationMiddleNight') ?? true;
 
     //
     isNotificationThikrMorning =
-        CashHelper.getBool(key: 'isNotificationThikrMorning') ?? true;
+        CacheService().getBool('isNotificationThikrMorning') ?? true;
     isNotificationThikrNight =
-        CashHelper.getBool(key: 'isNotificationThikrNight') ?? true;
+        CacheService().getBool('isNotificationThikrNight') ?? true;
     //
     isNotificationMohammed =
-        CashHelper.getBool(key: 'isNotificationMohammed') ?? true;
+        CacheService().getBool('isNotificationMohammed') ?? true;
     isNotificationRandomThikr =
-        CashHelper.getBool(key: 'isNotificationRandomThikr') ?? true;
+        CacheService().getBool('isNotificationRandomThikr') ?? true;
   }
 
   //time picker

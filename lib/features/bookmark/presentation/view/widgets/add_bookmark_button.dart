@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
+import 'package:quran_app/features/bookmark/data/model/bookmark_ayahs.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/read_quran/data/model/bookmark_ayahs.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class AddBookmarkButton extends StatelessWidget {

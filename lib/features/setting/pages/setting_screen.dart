@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/components/base_header.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/helper/db/sqflite.dart';
-import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/services/tasks_notification.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
-import 'package:quran_app/core/util/snack_bar.dart';
-import 'package:quran_app/features/prayer_time/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/setting/logic/manage_notification_controller.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -130,8 +125,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationAthanFagr = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationAthanFagr', value: val);
+                  await CacheService().setBool('isNotificationAthanFagr', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -144,8 +138,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationAthanDuhr = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationAthanDuhr', value: val);
+                  await CacheService().setBool('isNotificationAthanDuhr', val);
 
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
@@ -159,8 +152,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationAthanAsr = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationAthanAsr', value: val);
+                  await CacheService().setBool('isNotificationAthanAsr', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -173,8 +165,8 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationAthanMagrib = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationAthanMagrib', value: val);
+                  await CacheService()
+                      .setBool('isNotificationAthanMagrib', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -187,8 +179,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationAthanIsha = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationAthanIsha', value: val);
+                  await CacheService().setBool('isNotificationAthanIsha', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -202,8 +193,8 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationThikrMorning = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationThikrMorning', value: val);
+                  await CacheService()
+                      .setBool('isNotificationThikrMorning', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -216,8 +207,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationThikrNight = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationThikrNight', value: val);
+                  await CacheService().setBool('isNotificationThikrNight', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -231,8 +221,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationMohammed = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationMohammed', value: val);
+                  await CacheService().setBool('isNotificationMohammed', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -245,8 +234,8 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationRandomThikr = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationRandomThikr', value: val);
+                  await CacheService()
+                      .setBool('isNotificationRandomThikr', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -260,8 +249,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationWridGetup = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationWridGetup', value: val);
+                  await CacheService().setBool('isNotificationWridGetup', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -274,8 +262,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationWridSleep = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationWridSleep', value: val);
+                  await CacheService().setBool('isNotificationWridSleep', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -288,8 +275,8 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationReadSurahMulk = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationReadSurahMulk', value: val);
+                  await CacheService()
+                      .setBool('isNotificationReadSurahMulk', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -302,8 +289,7 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationReadQuran = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationReadQuran', value: val);
+                  await CacheService().setBool('isNotificationReadQuran', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
@@ -316,8 +302,8 @@ class PrayerSetting extends StatelessWidget {
                 "onChanged": (val) async {
                   ManageNotification.isNotificationMiddleNight = val;
                   context.read<BaseBloc>().add(SetStateBaseBlocEvent());
-                  await CashHelper.setData(
-                      key: 'isNotificationMiddleNight', value: val);
+                  await CacheService()
+                      .setBool('isNotificationMiddleNight', val);
                   ServicesNotification.cancelAllNotification();
                   await ServicesNotification.sendNotification();
                 },
