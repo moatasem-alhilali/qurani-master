@@ -23,7 +23,7 @@ class DatabaseBookmarkService {
   }
 }
 
-class BookmarkTextService {
+class DatabaseBookmarkTextService {
   final _db = DatabaseService();
 
   Future<int> addTextBookmark(BookmarksAyahs ayah) {

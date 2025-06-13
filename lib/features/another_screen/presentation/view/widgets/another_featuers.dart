@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail.dart';
+import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
+import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
+import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_bloc.dart';
+import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/page/doua_home.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_home.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
-import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/qiblah/qiblah_main.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
@@ -19,7 +22,7 @@ import 'package:quran_app/features/thikr/presentation/view/pages/wird_screen.dar
 
 import 'azkar_after_pray.dart';
 import 'hadith_40.dart';
-import 'husin_almuslim.dart';
+import '../pages/husin_almuslim_screen.dart';
 import 'ruqia_shareia.dart';
 
 class AnotherFeatures extends StatelessWidget {
@@ -85,7 +88,12 @@ class AnotherFeatures extends StatelessWidget {
         ),
         _Item(
           onPressed: () {
-            navigateTo(const AllhNameScreen(), context);
+            navigateTo(
+                BlocProvider(
+                  create: (_) => AllahNamesBloc(),
+                  child: const AllhNameScreen(),
+                ),
+                context);
           },
           text: "أسماء الله ",
           icon: FlutterIslamicIcons.allah,
@@ -108,7 +116,12 @@ class AnotherFeatures extends StatelessWidget {
         //
         _Item(
           onPressed: () {
-            navigateTo(HisnMuslim(), context);
+            navigateTo(
+                BlocProvider(
+                  create: (_) => HisnMuslimBloc(),
+                  child: const HisnMuslimScreen(),
+                ),
+                context);
           },
           text: "حصن المسلم",
           icon: FlutterIslamicIcons.quran,
@@ -139,7 +152,12 @@ class AnotherFeatures extends StatelessWidget {
 
         _Item(
           onPressed: () {
-            navigateTo(const SurahWithAllDetail(), context);
+            navigateTo(
+                BlocProvider(
+                  create: (_) => SurahInfoBloc(),
+                  child: const SurahWithAllDetailScreen(),
+                ),
+                context);
           },
           text: "السور وسبب النزول",
           icon: FlutterIslamicIcons.quran,

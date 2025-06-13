@@ -14,7 +14,8 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   final PageController pageController = PageController();
 
   final QuranReadHelper quranRH = QuranReadHelper();
-  final BookmarkTextService _bookmarkTextService = BookmarkTextService();
+  final DatabaseBookmarkTextService _bookmarkTextService =
+      DatabaseBookmarkTextService();
 
   bool toggle = false;
 

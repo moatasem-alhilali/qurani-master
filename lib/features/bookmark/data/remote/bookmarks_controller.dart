@@ -8,7 +8,7 @@ import 'package:quran_app/main.dart';
 
 class BookmarksController {
   final _bookmarkService = DatabaseBookmarkService();
-  final _bookmarkTextService = BookmarkTextService();
+  final _bookmarkTextService = DatabaseBookmarkTextService();
 
   final List<Bookmarks> bookmarksList = <Bookmarks>[];
   final List<BookmarksAyahs> bookmarkTextList = <BookmarksAyahs>[];

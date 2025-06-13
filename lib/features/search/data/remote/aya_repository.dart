@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
 import 'package:quran_app/features/search/data/model/aya.dart';
-import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AyaRepository {

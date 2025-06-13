@@ -1,15 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
-import 'package:quran_app/features/allh_name/presentation/view/widgets/allh_name_item.dart';
+import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/services/clip_board_services.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
+import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_event.dart';
+import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_state.dart';
 
-class AllhNameScreen extends StatelessWidget {
+class AllhNameScreen extends StatefulWidget {
   const AllhNameScreen({super.key});
 
   @override
+  State<AllhNameScreen> createState() => _AllhNameScreenState();
+}
+
+class _AllhNameScreenState extends State<AllhNameScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AllahNamesBloc>().add(LoadAllahNamesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const BaseHome(
+    return BaseHome(
       title: "أسماء الله الحسنى",
-      body: ItemAllhName(),
+      body: BlocBuilder<AllahNamesBloc, AllahNamesState>(
+        builder: (context, state) {
+          if (state is AllahNamesLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is AllahNamesError) {
+            return Center(child: Text(state.message));
+          }
+
+          if (state is AllahNamesLoaded) {
+            final data = state.data;
+
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final item = data[index];
+                return BaseAnimate(
+                  index: index,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item.name,
+                                style: titleMedium(context),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    // TODO: add sharing logic if needed
+                                  },
+                                  icon: const Icon(Icons.share_sharp),
+                                ),
+                                IconButton(
+                                  onPressed: () async {
+                                    await ClipBoardServices.copyText(
+                                      text: "${item.name} : ${item.text}",
+                                      message: "تم النسخ بنجاح",
+                                    );
+                                  },
+                                  icon: const Icon(Icons.copy_outlined),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          item.text,
+                          style: titleSmall(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+
+          return const SizedBox(); // fallback
+        },
+      ),
     );
   }
 }
