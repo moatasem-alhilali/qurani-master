@@ -5,17 +5,13 @@ import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart
 
 class ItemPrayerWidget extends StatefulWidget {
   const ItemPrayerWidget({
-    super.key,
-    required this.data,
+    required this.currentPrayer,
     this.nextPray,
-    required this.index,
-    required this.nextCurrent,
+    super.key,
   });
 
-  final TimePrayerModel data;
+  final TimePrayerModel currentPrayer;
   final TimePrayerModel? nextPray;
-  final int index;
-  final int nextCurrent;
 
   @override
   State<ItemPrayerWidget> createState() => _ItemPrayerWidgetState();
@@ -26,7 +22,7 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isNext = widget.nextPray?.id == widget.data.id;
+    final isNext = widget.nextPray?.id == widget.currentPrayer.id;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -53,19 +49,19 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
-                        widget.data.image,
+                        widget.currentPrayer.image,
                         height: context.getHight(4),
                       ),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      widget.data.title,
+                      widget.currentPrayer.title,
                       style: titleMedium(context),
                     ),
                   ],
                 ),
                 Text(
-                  widget.data.time,
+                  widget.currentPrayer.time,
                   style: titleMedium(context).copyWith(
                     color: Colors.grey,
                     fontSize: 17,
@@ -75,7 +71,7 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.data.content,
+              widget.currentPrayer.content,
               maxLines: isMaxLine ? null : 1,
               overflow: isMaxLine ? null : TextOverflow.ellipsis,
               style: const TextStyle(

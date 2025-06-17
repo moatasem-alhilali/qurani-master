@@ -1,6 +1,7 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/main.dart';
+import 'package:sqflite/sqflite.dart';
 
 /// Centralized table name definitions to be reused across all services and models.
 class DatabaseTables {
@@ -18,13 +19,13 @@ class DatabaseTables {
 /// This class handles initialization and provides reusable CRUD methods.
 /// Use this in feature-specific services like BookmarkService.
 class DatabaseService {
-  /// Singleton instance
-  static final DatabaseService _instance = DatabaseService._internal();
-
   /// Factory constructor for singleton access
   factory DatabaseService() => _instance;
 
   DatabaseService._internal();
+
+  /// Singleton instance
+  static final DatabaseService _instance = DatabaseService._internal();
 
   /// Internal database reference
   static Database? _db;
@@ -63,8 +64,11 @@ class DatabaseService {
     await db.execute(_coordinates);
     await db.execute(_doua);
     await db.execute(_notificationSettings);
+    await db.execute(DatabaseSabihService.subihTable);
+    await db.execute(DatabaseSabihService.subihLogsTable);
+    await db.execute(DatabaseSabihService.subihSummaryTable);
 
-    logger.i("✅ Database initialized and tables created.");
+    logger.i('✅ Database initialized and tables created.');
   }
 
   // ──────────────────────────────────────────────────────────────────────────────
@@ -243,5 +247,13 @@ class DatabaseService {
   Future<int> delete(String table, int id) async {
     final db = await database;
     return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<Map<String, Object?>>> rawQuery(
+    String sql,
+    List<Object?>? arguments,
+  ) async {
+    final db = await database;
+    return db.rawQuery(sql, arguments);
   }
 }

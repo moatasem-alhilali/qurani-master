@@ -216,4 +216,13 @@ class FxColors {
   //
   static Color primary = const Color(0xff42796c);
   static Color primarySecondary = const Color(0xff364945);
+  // gray colors
+  static Color gray1 = const Color(0xff808080);
+  static Color gray2 = const Color(0xffa9a9a9);
+  static Color gray3 = const Color(0xffd3d3d3);
+  static Color gray4 = const Color(0xffdcdcdc);
+  static Color gray5 = const Color(0xffe0e0e0);
+  static Color gray6 = const Color(0xffe8e8e8);
+
+  static Color error = const Color(0xffe74c3c);
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/AppLocalizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
@@ -10,20 +11,17 @@ import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/core/theme/dark_theme.dart';
-
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/theme/dark_theme.dart';
+import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/custom_bottom_navigation_bar2.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-
-import 'package:quran_app/core/AppLocalizations/AppLocalizations.dart';
-import 'package:quran_app/core/util/exit_alert.dialog.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -57,7 +55,14 @@ class MyApp extends StatelessWidget {
 
         ///base
         BlocProvider(create: (context) => BaseBloc()),
-        BlocProvider(create: (context) => BookmarkBloc()),
+
+        ///bookmark
+        BlocProvider(
+          create: (context) => sl<BookmarkBloc>()
+            ..add(GetBookmarksAyahEvent())
+            ..add(GetBookmarksPageEvent()),
+          lazy: false,
+        ),
 
         ///read quran
         BlocProvider(

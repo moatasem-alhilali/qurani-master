@@ -8,23 +8,22 @@ import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
+import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_bloc.dart';
-import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
-import 'package:quran_app/features/my_adia/presentation/view/page/doua_home.dart';
-import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_home.dart';
-import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
-import 'package:quran_app/features/qiblah/qiblah_main.dart';
-import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
-import 'package:quran_app/features/sabih/presentation/view/pages/sabih_screen.dart';
-import 'package:quran_app/features/thikr/presentation/view/pages/thikr_screen.dart';
-import 'package:quran_app/features/thikr/presentation/view/pages/wird_screen.dart';
-
+import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/azkar_after_pray.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/hadith_40.dart';
-import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/ruqia_shareia.dart';
+import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
+import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/qiblah/qiblah_main.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_home.dart';
+import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
+import 'package:quran_app/features/thikr/presentation/view/pages/thikr_screen.dart';
+import 'package:quran_app/features/thikr/presentation/view/pages/wird_screen.dart';
 
 class AnotherFeatures extends StatelessWidget {
   const AnotherFeatures({super.key});
@@ -82,7 +81,7 @@ class AnotherFeatures extends StatelessWidget {
 
         _Item(
           onPressed: () {
-            navigateTo(SabihScreen(), context);
+            navigateTo(const TasbeehProvider(), context);
           },
           text: 'التسبيح',
           icon: FlutterIslamicIcons.tasbih2,
@@ -168,7 +167,7 @@ class AnotherFeatures extends StatelessWidget {
         ),
         _Item(
           onPressed: () {
-            navigateTo(const DouaHome(), context);
+            context.push(const MuDoaProvider());
           },
           text: 'ادعيتي',
           icon: FlutterIslamicIcons.muslim2,

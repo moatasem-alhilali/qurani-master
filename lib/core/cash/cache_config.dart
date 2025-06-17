@@ -3,6 +3,10 @@ import 'package:quran_app/core/constant.dart';
 
 /// Handles domain-specific logic related to app-level cache initialization and state.
 class CacheConfig {
+  // constants
+  static const String subihKey = 'SUBIH';
+
+  //
   static bool hasInitLocal = false;
 
   /// Initializes global settings stored in local cache (theme, last page, etc).

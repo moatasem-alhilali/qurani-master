@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logger/logger.dart';
+import 'package:quran_app/core/bloc/bloc_observer.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
-
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/core/BlocObserver/BlocObserver.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:quran_app/features/setting/data/seed/notification_settings_seeder.dart';
+import 'package:quran_app/main_view.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'features/setting/data/seed/notification_settings_seeder.dart';
-import 'main_view.dart';
 
 // ✅ Logger instance used globally for debugging and logging
 Logger logger = Logger();
@@ -43,6 +43,9 @@ void main() async {
   // 💾 Initialize local cache (e.g., SharedPreferences)
   await CacheService.init();
 
+  // 💾 Initialize local cache (e.g., SharedPreferences)
+  await CacheConfig.init();
+
   // 🔄 Load initial app state from local cache (e.g., last read page, theme type
   await NotificationSettingsSeeder().runIfNeeded();
 
@@ -56,8 +59,8 @@ void main() async {
 Future<void> setupTimezone() async {
   tz.initializeTimeZones();
 
-  final String localTimezone = await FlutterTimezone.getLocalTimezone();
-  final tz.Location location = tz.getLocation(localTimezone);
+  final localTimezone = await FlutterTimezone.getLocalTimezone();
+  final location = tz.getLocation(localTimezone);
 
   tz.setLocalLocation(location);
 }

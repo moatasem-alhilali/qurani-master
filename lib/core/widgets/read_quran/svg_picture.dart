@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 
@@ -40,26 +39,7 @@ Widget spaceLine(double height, double width) {
   );
 }
 
-Widget bookmarkIcon(
-  BuildContext context, {
-  required int pageNum,
-  double? height,
-  double? width,
-}) {
-  final bookmarksController = context.read<BookmarkBloc>().bookmarksController;
-  return Semantics(
-    button: true,
-    enabled: true,
-    label: 'Add Bookmark',
-    child: SvgPicture.asset(
-      bookmarksController.isPageBookmarked(pageNum + 1)
-          ? 'assets/svg/bookmarked.svg'
-          : 'assets/svg/bookmark.svg',
-      width: width,
-      height: height,
-    ),
-  );
-}
+
 
 Widget bookmarkPageIcon({double? height, double? width, int? pageNum}) {
   return SvgPicture.asset(

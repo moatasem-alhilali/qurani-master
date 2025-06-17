@@ -1,55 +1,60 @@
 import 'package:dio/dio.dart';
 
 class AssetFailure extends Failure {
-  AssetFailure(super.messageError);
+  AssetFailure(super.message);
 }
 
 abstract class Failure {
-  final String messageError;
+  Failure(this.message);
+  final String message;
+}
 
-  Failure(this.messageError);
+class LogicFailure extends Failure {
+  LogicFailure(super.message);
 }
 
 class ServerFailure extends Failure {
-  ServerFailure(super.messageError);
+  ServerFailure(super.message);
   factory ServerFailure.fromServerFailure(DioError dioError) {
     switch (dioError.type) {
       case DioErrorType.connectionTimeout:
-        return ServerFailure("connection Time out");
+        return ServerFailure('connection Time out');
       case DioErrorType.sendTimeout:
-        return ServerFailure("send Time out");
+        return ServerFailure('send Time out');
 
       case DioErrorType.receiveTimeout:
-        return ServerFailure("receive Time out");
+        return ServerFailure('receive Time out');
 
       case DioErrorType.badCertificate:
-        return ServerFailure("bad Certificate");
+        return ServerFailure('bad Certificate');
       case DioErrorType.badResponse:
         return ServerFailure.fromResponsive(
-            dioError.response!.statusCode!, dioError.response!.data);
+          dioError.response!.statusCode!,
+          dioError.response!.data,
+        );
       case DioErrorType.cancel:
-        return ServerFailure("cancel");
+        return ServerFailure('cancel');
       case DioErrorType.connectionError:
-        return ServerFailure("there is no internet connection");
+        return ServerFailure('there is no internet connection');
       case DioErrorType.unknown:
         // if (dioError.message!.contains("SocketException")) {
         //   return ServerFailure("there is no internet connection");
         // }
-        return ServerFailure("unknown Error:${dioError.error}");
+        return ServerFailure('unknown Error:${dioError.error}');
       default:
-        return ServerFailure("ops there is an error,please try again");
+        return ServerFailure('ops there is an error,please try again');
     }
   }
 
   factory ServerFailure.fromResponsive(int statusCode, dynamic data) {
     if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
-      return ServerFailure("your  responsive error message");
+      return ServerFailure('your  responsive error message');
     } else if (statusCode == 403) {
-      return ServerFailure("not found");
+      return ServerFailure('not found');
     } else if (statusCode == 500) {
-      return ServerFailure("Internal server error");
+      return ServerFailure('Internal server error');
     } else {
-      return ServerFailure("ops there is an error,please try again");
+      return ServerFailure('ops there is an error,please try again');
     }
   }
 }

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
 import 'package:timelines/timelines.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/shared/resources/assets_manager.dart';
-import 'package:adhan/adhan.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
@@ -84,8 +81,9 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                         child: BaseAnimate(
                           index: index + 2,
                           child: ItemPrayerWidget(
-                            data: TimePrayerModel(
+                            currentPrayer: TimePrayerModel(
                               id: 200 + index,
+                              type: data.type,
                               title: data.name,
                               time: data.time12,
                               content: data.type.description,
@@ -102,10 +100,9 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                                     image: '',
                                     color: Colors.blue,
                                     id: -1,
+                                    type: data.type,
                                   )
                                 : null,
-                            index: index,
-                            nextCurrent: index,
                           ),
                         ),
                       ),

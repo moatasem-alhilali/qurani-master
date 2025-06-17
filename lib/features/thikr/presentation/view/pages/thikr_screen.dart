@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
-import 'package:quran_app/features/my_adia/presentation/view/page/doua_home.dart';
-import 'package:quran_app/features/sabih/presentation/view/pages/sabih_screen.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
+import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/wird_screen.dart';
-
 import 'package:quran_app/features/thikr/presentation/view/widgets/thikr_slider.dart';
 
 class ThikrScreen extends StatelessWidget {
@@ -16,7 +15,7 @@ class ThikrScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "الا بذكر الله تطمئن القلوب",
+      title: 'الا بذكر الله تطمئن القلوب',
       body: Column(
         children: [
           const ThikrSlider(),
@@ -28,7 +27,7 @@ class ThikrScreen extends StatelessWidget {
                   onPressed: () {
                     navigateTo(const WirdScreen(), context);
                   },
-                  text: "أذكار المساء",
+                  text: 'أذكار المساء',
                   icon: FlutterIslamicIcons.prayer,
                 ),
               ),
@@ -37,7 +36,7 @@ class ThikrScreen extends StatelessWidget {
                   onPressed: () {
                     navigateTo(const WirdScreen(), context);
                   },
-                  text: "أذكار الصباح",
+                  text: 'أذكار الصباح',
                   icon: FlutterIslamicIcons.prayer,
                 ),
               ),
@@ -48,18 +47,18 @@ class ThikrScreen extends StatelessWidget {
               Expanded(
                 child: _Item(
                   onPressed: () {
-                    navigateTo(SabihScreen(), context);
+                    navigateTo(const TasbeehProvider(), context);
                   },
-                  text: "التسبيح",
+                  text: 'التسبيح',
                   icon: FlutterIslamicIcons.tasbih2,
                 ),
               ),
               Expanded(
                 child: _Item(
                   onPressed: () {
-                    navigateTo(const DouaHome(), context);
+                    context.push(const MuDoaProvider());
                   },
-                  text: "أدعيتي",
+                  text: 'أدعيتي',
                   icon: FlutterIslamicIcons.muslim2,
                 ),
               ),

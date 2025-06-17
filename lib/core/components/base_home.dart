@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -114,6 +116,16 @@ class BaseHome extends StatelessWidget {
                               1,
                               1,
                             ],
+                          ),
+                        ),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                          child: SizedBox(
+                            height: 80.h,
+                            width: double.infinity,
                           ),
                         ),
                       ),

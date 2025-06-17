@@ -17,8 +17,7 @@ class BookmarkAyahTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
-        final bookmarkTextList =
-            context.read<BookmarkBloc>().bookmarksController.bookmarkTextList;
+        final bookmarkTextList = state.ayahBookmarkList;
         final quranRH = context.read<ReadQuranBloc>().quranRH;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

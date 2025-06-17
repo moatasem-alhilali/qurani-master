@@ -1,7 +1,7 @@
 import 'package:adhan/adhan.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/extensions/list_extension.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -12,6 +12,7 @@ import 'package:quran_app/main.dart';
 abstract class PrayerTimeService {
   Future<List<PrayerInfoModel>> getTodayPrayerTimes();
   PrayerInfoModel? getCurrentPrayer();
+
   PrayerInfoModel? getNextPrayer();
 }
 
@@ -116,7 +117,7 @@ class AdhanPrayerTimeService implements PrayerTimeService {
           .setCoordinates(coords.latitude, coords.longitude);
       return coords;
     } catch (e) {
-      logger.e("Failed to resolve coordinates: $e");
+      logger.e('Failed to resolve coordinates: $e');
       rethrow;
     }
   }

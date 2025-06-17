@@ -938,6 +938,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  smooth_sheets:
+    dependency: "direct main"
+    description:
+      name: smooth_sheets
+      sha256: f673e448418f3e9e02f17a991691eef1c8a85b59e4438f47c5f28580787920f9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.2"
   source_span:
     dependency: transitive
     description:
@@ -1260,4 +1268,4 @@ packages:
     version: "6.2.2"
 sdks:
   dart: ">=3.3.3 <4.0.0"
-  flutter: ">=3.10.0"
+  flutter: ">=3.16.0"

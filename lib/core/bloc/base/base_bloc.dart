@@ -65,7 +65,6 @@ class BaseBloc extends Bloc<BaseEvent, BaseState> {
   @override
   Future<void> close() async {
     super.close();
-    CacheConfig.saveLastPageRead();
     _subscription!.cancel();
   }
 }
