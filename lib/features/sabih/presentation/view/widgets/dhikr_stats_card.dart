@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 
 class DhikrStatsCard extends StatelessWidget {
@@ -15,7 +15,7 @@ class DhikrStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: FxColors.secondary,
+        color: context.secondary,
         borderRadius: BorderRadius.circular(16),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -45,8 +45,7 @@ class DhikrStatsCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            color: context.primaryScheme.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(

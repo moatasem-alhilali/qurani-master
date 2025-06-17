@@ -15,7 +15,7 @@
 //       padding: const EdgeInsets.all(4),
 //       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
 //       decoration: BoxDecoration(
-//         color: Theme.of(context).primaryColor,
+//         color: context.primary,
 //         borderRadius: BorderRadius.circular(12),
 //       ),
 //       child: DatePicker(

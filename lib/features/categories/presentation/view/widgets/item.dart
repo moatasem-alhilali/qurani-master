@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
 class ItemCategory extends StatelessWidget {
-  const ItemCategory({super.key, required this.onTap, this.title});
+  const ItemCategory({required this.onTap, super.key, this.title});
   final void Function()? onTap;
   final String? title;
   @override
@@ -26,7 +27,7 @@ class ItemCategory extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             const BaseFadeImageAsset(
-              image: "assets/image/bg.png",
+              image: 'assets/image/bg.png',
               fit: BoxFit.fill,
             ),
             Container(
@@ -36,7 +37,7 @@ class ItemCategory extends StatelessWidget {
                   begin: FractionalOffset.topCenter,
                   end: FractionalOffset.bottomCenter,
                   colors: [
-                    Colors.grey.withOpacity(0.0),
+                    Colors.grey.withOpacity(0),
                     Colors.black,
                   ],
                   stops: const [
@@ -50,8 +51,13 @@ class ItemCategory extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-                child: title!.autoSize(context, maxLines: 2, fontSize: 22),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                child: title!.autoSize(
+                  context,
+                  maxLines: 2,
+                  fontSize: 22,
+                  color: context.onPrimary,
+                ),
               ),
             ),
           ],

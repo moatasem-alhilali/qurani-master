@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/widgets/custom_video_player.dart';
 import 'package:quran_app/main.dart';
 
@@ -61,7 +61,7 @@ class _VideoOfflineSheetState extends State<VideoOfflineSheet> {
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: FxColors.third,
+            color: context.onPrimaryContainer,
           ),
           child: Text(
             "مسار التنزيل: \n  ${widget.data['path']}",

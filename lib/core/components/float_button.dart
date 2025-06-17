@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 class FloatButton extends StatelessWidget {
   FloatButton({
     required this.icon,
     required this.text,
     required this.onPressed,
-    this.widgetIcon,
     required this.herotag,
-    Key? key,
-  }) : super(key: key);
+    this.widgetIcon,
+    super.key,
+  });
   final String text;
   final IconData icon;
   final void Function() onPressed;
@@ -21,23 +21,25 @@ class FloatButton extends StatelessWidget {
       child: SizedBox(
         height: double.infinity,
         child: TextButton.icon(
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              backgroundColor: Theme.of(context).primaryColor,
-              iconColor: Colors.white,
-              foregroundColor: Colors.white,
-              textStyle: const TextStyle(
-                color: Colors.white,
-                fontFamily: "ios-1",
-              ),
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-            onPressed: onPressed,
-            icon: Text(
-              text,
+            backgroundColor: context.primaryScheme,
+            iconColor: Colors.white,
+            foregroundColor: Colors.white,
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontFamily: 'ios-1',
             ),
-            label: widgetIcon ?? Icon(icon)),
+          ),
+          onPressed: onPressed,
+          icon: Text(
+            text,
+          ),
+          label: widgetIcon ?? Icon(icon),
+        ),
       ),
     );
   }

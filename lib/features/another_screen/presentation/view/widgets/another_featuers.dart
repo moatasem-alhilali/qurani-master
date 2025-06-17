@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/constant.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/services_location.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
@@ -19,7 +20,7 @@ import 'package:quran_app/features/another_screen/presentation/view/widgets/sura
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/qiblah/qiblah_main.dart';
-import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_home.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/thikr_screen.dart';
@@ -101,14 +102,14 @@ class AnotherFeatures extends StatelessWidget {
         ),
         _Item(
           onPressed: () {
-            navigateTo(const ThikrScreen(), context);
+            context.push(const ThikrScreen());
           },
           text: 'الاذكار',
           icon: FlutterIslamicIcons.quran,
         ),
         _Item(
           onPressed: () {
-            navigateTo(const AudioHome(), context);
+            navigateTo(const AudioQuranScreen(), context);
           },
           text: 'السماع',
           icon: FlutterIslamicIcons.quran,
@@ -195,15 +196,11 @@ class _Item extends StatelessWidget {
       onTap: onPressed,
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(16.sp),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: FxColors.secondary,
-            ),
+          CardWidget(
             child: Icon(
               icon,
               size: 40.sp,
+              color: context.primaryScheme,
               // color: DarkColors.customPrimary,
             ),
           ),

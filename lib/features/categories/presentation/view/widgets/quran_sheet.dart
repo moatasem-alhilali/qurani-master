@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -114,7 +114,7 @@ class _ItemDownloaded extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).primaryColor,
+        color: context.primaryScheme,
       ),
       child: Column(
         children: [
@@ -185,7 +185,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                     child: Container(
                       height: context.getHight(6),
                       decoration: BoxDecoration(
-                        color: FxColors.secondary,
+                        color: context.secondary,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -194,7 +194,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                             height: double.infinity,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: FxColors.primary,
+                              color: context.primaryScheme,
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(8),
                                 bottomRight: Radius.circular(8),
@@ -226,7 +226,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                   child: MyProgressButton(
                     borderRadius: 12,
                     text: titleType(),
-                    defaultColor: FxColors.secondary,
+                    defaultColor: context.secondary,
                     isBorderColor: true,
                     onPressed: () async {
                       final res = widget.data['extension_type'];

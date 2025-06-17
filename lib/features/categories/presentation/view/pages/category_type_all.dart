@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_item_book.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -133,7 +133,7 @@ class _ItemDownloaded extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).primaryColor,
+        color: context.primaryScheme,
       ),
       child: Column(
         children: [

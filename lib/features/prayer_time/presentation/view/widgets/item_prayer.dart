@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
@@ -24,14 +25,10 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
   Widget build(BuildContext context) {
     final isNext = widget.nextPray?.id == widget.currentPrayer.id;
 
-    return Container(
+    return CardWidget(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).primaryColor,
-        border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
-      ),
+      border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
       child: InkWell(
         onTap: () {
           setState(() {

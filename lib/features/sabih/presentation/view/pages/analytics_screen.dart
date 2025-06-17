@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -197,7 +198,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: context.primaryScheme,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
@@ -273,7 +274,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+                  color: context.primaryScheme,
                 ),
               ),
             ],

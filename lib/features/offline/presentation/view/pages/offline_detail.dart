@@ -129,7 +129,7 @@ class BuildItemOffline extends StatelessWidget {
                 final allData = state.data[index];
                 return BaseAnimate(
                   index: index,
-                  child: ItemDetailOffline(
+                  child: ItemDetailOfflineWidget(
                     current: index,
                     data: allData,
                     onTap: () {

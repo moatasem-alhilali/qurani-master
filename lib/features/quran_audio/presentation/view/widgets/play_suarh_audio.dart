@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
-
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/controller_audio_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
-import 'controller_audio_widget.dart';
-
-class PlaySurahAudio extends StatefulWidget {
-  const PlaySurahAudio({
+class PlaySurahAudioWidget extends StatefulWidget {
+  const PlaySurahAudioWidget({
     super.key,
   });
 
   @override
-  State<PlaySurahAudio> createState() => _PlaySurahAudioState();
+  State<PlaySurahAudioWidget> createState() => _PlaySurahAudioWidgetState();
 }
 
-class _PlaySurahAudioState extends State<PlaySurahAudio> {
+class _PlaySurahAudioWidgetState extends State<PlaySurahAudioWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AudioCubit, AudioState>(
       builder: (context, state) {
         final quranRH = context.read<ReadQuranBloc>().quranRH;
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             //
             ClipRRect(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -19,8 +20,8 @@ class SnackBarMessage {
       backgroundColor: backgroundColor,
       duration: Duration(seconds: seconds),
       behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.all(6.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      margin: const EdgeInsets.all(6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       content: SizedBox(
         height: height ?? context.getHight(4),
         child: Row(
@@ -50,7 +51,7 @@ class SnackBarMessage {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 12.0),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 text ?? 'جاري الحذف',
@@ -62,21 +63,20 @@ class SnackBarMessage {
               ),
             ),
             Container(
-              constraints: const BoxConstraints(maxHeight: 22.0),
+              constraints: const BoxConstraints(maxHeight: 22),
               child: TweenAnimationBuilder(
                 tween: Tween<double>(begin: 0, end: seconds * 1000.toDouble()),
                 duration: Duration(seconds: seconds),
                 onEnd: onEnd,
                 builder: (context, double value, child) {
                   return Stack(
-                    fit: StackFit.loose,
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        height: 27.0,
-                        width: 25.0,
+                        height: 27,
+                        width: 25,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2.0,
+                          strokeWidth: 2,
                           value: value / (seconds * 1000),
                           color: Colors.grey[850],
                           backgroundColor: Colors.white,
@@ -103,8 +103,8 @@ class SnackBarMessage {
   }
 
   static void show({
-    String? title,
     required BuildContext context,
+    String? title,
     void Function()? onVisible,
     Color? backgroundColor,
     double? height,
@@ -114,11 +114,11 @@ class SnackBarMessage {
     DismissDirection dismissDirection = DismissDirection.horizontal,
   }) {
     final snackbar = SnackBar(
-      backgroundColor: _getStatusBackGround(state, backgroundColor),
+      backgroundColor: _getStatusBackGround(state, backgroundColor, context),
       duration: Duration(seconds: seconds),
       behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.all(6.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      margin: const EdgeInsets.all(6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       content: SizedBox(
         height: height ?? context.getHight(5),
         child: Row(
@@ -130,7 +130,7 @@ class SnackBarMessage {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 12.0),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 title ?? 'جاري الحذف',
@@ -147,10 +147,10 @@ class SnackBarMessage {
               },
               child: CircleAvatar(
                 radius: 15,
-                backgroundColor: FxColors.secondary,
+                backgroundColor: context.secondary,
                 child: FittedBox(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: Icon(
                       _getIcon(state, icon),
                       // size: context.getHight(4),
@@ -170,13 +170,17 @@ class SnackBarMessage {
   }
 }
 
-Color _getStatusBackGround(RequestState state, Color? backgroundColor) {
+Color _getStatusBackGround(
+  RequestState state,
+  Color? backgroundColor,
+  BuildContext context,
+) {
   switch (state) {
     case RequestState.initial:
-      return backgroundColor ?? FxColors.background;
+      return backgroundColor ?? context.scaffoldBackgroundColor;
 
     case RequestState.loading:
-      return backgroundColor ?? FxColors.primary;
+      return backgroundColor ?? context.primaryScheme;
     case RequestState.success:
       return backgroundColor ?? Colors.green;
 

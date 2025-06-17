@@ -1,16 +1,19 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/material.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 
 class ProgressAudio extends StatelessWidget {
-  const ProgressAudio(
-      {super.key, required this.audioPlayer, this.isOffline = false});
+  const ProgressAudio({
+    required this.audioPlayer,
+    super.key,
+    this.isOffline = false,
+  });
   final AudioPlayer audioPlayer;
   final bool isOffline;
   @override
@@ -19,7 +22,7 @@ class ProgressAudio extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
+            horizontal: 20,
           ),
           child: StreamBuilder<PositionData>(
             stream: positionDataStreamOfOnlineListing,
@@ -30,8 +33,8 @@ class ProgressAudio extends StatelessWidget {
                 baseBarColor: Colors.white.withOpacity(0.24),
                 bufferedBarColor: Colors.white.withOpacity(0.24),
                 thumbColor: Colors.white,
-                barHeight: 8.0,
-                thumbRadius: 5.0,
+                barHeight: 8,
+                thumbRadius: 5,
                 timeLabelTextStyle: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -50,7 +53,7 @@ class ProgressAudio extends StatelessWidget {
         //icon controller
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -148,12 +151,12 @@ class ProgressAudio extends StatelessWidget {
 
 class _ActionProgress extends StatelessWidget {
   const _ActionProgress({
-    Key? key,
     required this.audioPlayer,
     required this.currentIndex,
     required this.onPressed,
     required this.itemIndex,
-  }) : super(key: key);
+    super.key,
+  });
 
   final AudioPlayer audioPlayer;
   final int currentIndex;
@@ -175,12 +178,10 @@ class _ActionProgress extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: FittedBox(
                   child: IconButton(
-                    onPressed: () {
-                      audioPlayer.play();
-                    },
+                    onPressed: audioPlayer.play,
                     icon: const Icon(Icons.play_arrow_outlined),
                   ),
                 ),
@@ -201,7 +202,7 @@ class _ActionProgress extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

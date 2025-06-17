@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
@@ -161,7 +161,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         child: const AddDhikrDialog(),
       ),
       title: 'إضافة أدعية مخصصة',
-      backgroundColor: FxColors.background,
+      backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 
@@ -172,7 +172,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         child: AddDhikrDialog(subihToEdit: subih),
       ),
       title: 'تعديل أدعية مخصصة',
-      backgroundColor: FxColors.background,
+      backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 

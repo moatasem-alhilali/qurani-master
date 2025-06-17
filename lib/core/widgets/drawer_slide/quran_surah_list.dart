@@ -12,9 +12,9 @@ class QuranSurahList extends StatelessWidget {
   Widget build(BuildContext context) {
     final quranCtrl = context.read<ReadQuranBloc>().quranRH;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: context.currentThemeData.colorScheme.background,
+        color: context.quranTheme.colorScheme.background,
       ),
       child: ListView.builder(
         padding: EdgeInsets.zero,
@@ -26,12 +26,12 @@ class QuranSurahList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
-                  '${'الجزء'} ${surah.ayahs.first.juz.toString()}',
+                  '${'الجزء'} ${surah.ayahs.first.juz}',
                   style: TextStyle(
                     color: Theme.of(context).hintColor,
-                    fontFamily: "kufi",
+                    fontFamily: 'kufi',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     height: 2,
@@ -42,125 +42,126 @@ class QuranSurahList extends StatelessWidget {
                 children: [
                   GestureDetector(
                     child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: (index % 2 == 0
-                              ? context.currentThemeData.colorScheme.primary
-                                  .withOpacity(.15)
-                              : Colors.transparent),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8),
-                          ),
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: (index % 2 == 0
+                            ? context.quranTheme.colorScheme.primary
+                                .withOpacity(.15)
+                            : Colors.transparent),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 40,
-                                        width: 40,
-                                        child: SvgPicture.asset(
-                                          'assets/svg/sora_num.svg',
-                                          color: context.currentThemeData
-                                              .colorScheme.primary,
-                                        ),
-                                      ),
-                                      Transform.translate(
-                                        offset: const Offset(0, 1),
-                                        child: Text(
-                                          convertNumbers(
-                                              surah.surahNumber.toString()),
-                                          style: TextStyle(
-                                              color: context
-                                                  .currentThemeData.hintColor,
-                                              fontFamily: "kufi",
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              height: 2),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 8,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Stack(
+                                  alignment: Alignment.center,
                                   children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/surah_name/00${index + 1}.svg',
-                                      width: 90,
-                                      color: context.currentThemeData.hintColor,
+                                    SizedBox(
+                                      height: 40,
+                                      width: 40,
+                                      child: SvgPicture.asset(
+                                        'assets/svg/sora_num.svg',
+                                        color: context
+                                            .quranTheme.colorScheme.primary,
+                                      ),
                                     ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
+                                    Transform.translate(
+                                      offset: const Offset(0, 1),
                                       child: Text(
-                                        surah.englishName,
+                                        convertNumbers(
+                                          surah.surahNumber.toString(),
+                                        ),
                                         style: TextStyle(
-                                          fontFamily: "naskh",
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12,
-                                          color: context
-                                              .currentThemeData.hintColor,
+                                          color: context.quranTheme.hintColor,
+                                          fontFamily: 'kufi',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          height: 2,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                flex: 5,
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'عدد الايات',
-                                            style: TextStyle(
-                                              fontFamily: "uthman",
-                                              fontSize: 13,
-                                              color: context.currentThemeData
-                                                  .colorScheme.surface,
-                                            ),
-                                          ),
-                                          Text(
-                                            convertNumbers(surah
-                                                .ayahs.last.ayahNumber
-                                                .toString()),
-                                            style: TextStyle(
-                                              fontFamily: "kufi",
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: context.currentThemeData
-                                                  .colorScheme.surface,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                            ),
+                            Expanded(
+                              flex: 8,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/surah_name/00${index + 1}.svg',
+                                    width: 90,
+                                    color: context.quranTheme.hintColor,
                                   ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: Text(
+                                      surah.englishName,
+                                      style: TextStyle(
+                                        fontFamily: 'naskh',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                        color: context.quranTheme.hintColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 5,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'عدد الايات',
+                                          style: TextStyle(
+                                            fontFamily: 'uthman',
+                                            fontSize: 13,
+                                            color: context
+                                                .quranTheme.colorScheme.surface,
+                                          ),
+                                        ),
+                                        Text(
+                                          convertNumbers(
+                                            surah.ayahs.last.ayahNumber
+                                                .toString(),
+                                          ),
+                                          style: TextStyle(
+                                            fontFamily: 'kufi',
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: context
+                                                .quranTheme.colorScheme.surface,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              )
-                            ],
-                          ),
-                        )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     onTap: () {
                       context
                           .read<ReadQuranBloc>()
@@ -172,8 +173,9 @@ class QuranSurahList extends StatelessWidget {
                     },
                   ),
                   hDivider(
-                      color: context.currentThemeData.colorScheme.primary
-                          .withOpacity(0.2)),
+                    color:
+                        context.quranTheme.colorScheme.primary.withOpacity(0.2),
+                  ),
                 ],
               ),
             ],
@@ -188,7 +190,7 @@ Widget hDivider({double? width, double? height, Color? color}) {
   return Container(
     height: height ?? 2,
     width: width ?? double.infinity,
-    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     color: color,
   );
 }

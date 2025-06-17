@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/services/download_service.dart';
@@ -104,7 +105,7 @@ class _ItemDownloaded extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).primaryColor,
+        color: context.primaryScheme,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,7 +219,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
               height: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: FxColors.primary,
+                color: context.primaryScheme,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),

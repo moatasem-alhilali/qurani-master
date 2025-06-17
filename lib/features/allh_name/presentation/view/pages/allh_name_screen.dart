@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
@@ -25,7 +26,7 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "أسماء الله الحسنى",
+      title: 'أسماء الله الحسنى',
       body: BlocBuilder<AllahNamesBloc, AllahNamesState>(
         builder: (context, state) {
           if (state is AllahNamesLoading) {
@@ -52,7 +53,7 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(context).primaryColor,
+                      color: context.primaryScheme,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,8 +78,8 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
                                 IconButton(
                                   onPressed: () async {
                                     await ClipBoardServices.copyText(
-                                      text: "${item.name} : ${item.text}",
-                                      message: "تم النسخ بنجاح",
+                                      text: '${item.name} : ${item.text}',
+                                      message: 'تم النسخ بنجاح',
                                     );
                                   },
                                   icon: const Icon(Icons.copy_outlined),

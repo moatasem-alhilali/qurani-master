@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:video_player/video_player.dart';
 
@@ -97,9 +97,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           const SizedBox(height: 10),
           if (_controller.value.isInitialized)
             ProgressBar(
-              baseBarColor: FxColors.primary.withOpacity(0.5),
-              bufferedBarColor: FxColors.primary,
-              progressBarColor: FxColors.primary,
+              baseBarColor: context.primaryScheme.withOpacity(0.5),
+              bufferedBarColor: context.primaryScheme,
+              progressBarColor: context.primaryScheme,
               thumbColor: Colors.red,
               timeLabelType: TimeLabelType.totalTime,
               progress: _controller.value.position,

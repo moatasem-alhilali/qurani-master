@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/bottom_sheet/header_sheet_style.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:smooth_sheets/smooth_sheets.dart';
 
 class SmoothSheet extends StatelessWidget {
@@ -21,8 +19,9 @@ class SmoothSheet extends StatelessWidget {
   final Widget? bottomBar;
   @override
   Widget build(BuildContext context) {
-    const sheetShape = ShapeDecoration(
-      shape: RoundedRectangleBorder(
+    final sheetShape = ShapeDecoration(
+      color: context.background,
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     );
@@ -36,62 +35,8 @@ class SmoothSheet extends StatelessWidget {
           ),
           child: ScrollableSheet(
             child: Container(
-              clipBehavior: Clip.antiAlias,
               decoration: sheetShape,
-              child: SheetContentScaffold(
-                backgroundColor: backgroundColor,
-                resizeBehavior: const ResizeScaffoldBehavior.avoidBottomInset(
-                  // Make the bottom bar visible when the keyboard is open.
-                  maintainBottomBar: true,
-                ),
-                body: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        HeaderStyleSheet(),
-                      ],
-                    ),
-                    // if (canBack)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 8.0.sp,
-                        left: 8.0.sp,
-                        bottom: 8.h,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (title != null)
-                            Text(
-                              title!,
-                              style: titleMedium(context)
-                                  .copyWith(fontSize: 18.sp),
-                            ),
-                          BaseOnTap(
-                            onTap: () {
-                              // context.pop();
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: const Color(0xffdddddd),
-                              radius: 12.sp,
-                              child: const Icon(
-                                Icons.clear,
-                                color: Color(0xff6c7072),
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Expanded(child: body),
-                    body,
-                  ],
-                ),
-                bottomBar: bottomBar,
-              ),
+              child: body,
             ),
           ),
         ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/theme/blue_theme.dart';
+import 'package:quran_app/core/theme/brown_theme.dart';
+import 'package:quran_app/core/theme/dark_theme.dart';
+import 'package:quran_app/core/theme/green_theme.dart';
 
 class MyColorTheme {
   MyColorTheme({
@@ -106,7 +109,7 @@ final MyColorTheme brownTheme = MyColorTheme(
   cardColor: const Color(0xff77554B),
 );
 
-final MyColorTheme oldTheme = MyColorTheme(
+final MyColorTheme greenTheme = MyColorTheme(
   colorScheme: const ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xff232c13),
@@ -180,11 +183,26 @@ class ThemeManager {
       case 2:
         return brownTheme;
       case 3:
-        return oldTheme;
+        return greenTheme;
       case 4:
         return darkTheme;
       default:
         return blueTheme;
+    }
+  }
+
+  static ThemeData getThemeApp(int type) {
+    switch (type) {
+      case 1:
+        return blueThemeData;
+      case 2:
+        return brownThemeData;
+      case 3:
+        return greenThemeData;
+      case 4:
+        return darkThemeData;
+      default:
+        return blueThemeData;
     }
   }
 }

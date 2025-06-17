@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/setting_theme_sheet.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/drawer_slide/surah_juz_list.dart';
+import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_list.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/setting_theme_sheet.dart';
 import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah.dart';
 
 class OptionQuranDialog extends StatelessWidget {
@@ -38,7 +37,7 @@ class OptionQuranDialog extends StatelessWidget {
 class _TopSettingsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = context.currentThemeData.colorScheme;
+    final theme = context.quranTheme.colorScheme;
 
     return Align(
       alignment: Alignment.topLeft,
@@ -68,7 +67,6 @@ class _CloseDialogArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.center,
       child: SizedBox(
         height: context.getHight(70),
         width: double.infinity,
@@ -93,7 +91,7 @@ class _BottomOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReadQuranBloc, ReadQuranState>(
       builder: (context, state) {
-        final theme = context.currentThemeData.colorScheme;
+        final theme = context.quranTheme.colorScheme;
 
         return Container(
           padding: const EdgeInsets.all(8),
@@ -111,7 +109,7 @@ class _BottomOption extends StatelessWidget {
                 blurRadius: 3,
                 spreadRadius: 3,
                 color: theme.primary.withOpacity(.15),
-              )
+              ),
             ],
           ),
           child: Row(
@@ -120,17 +118,17 @@ class _BottomOption extends StatelessWidget {
               const SizedBox(),
               _BottomAction(
                 icon: bookmark_list,
-                label: "السور",
+                label: 'السور',
                 widget: SurahJuzList(),
               ),
               _BottomAction(
                 icon: bookmark_list,
-                label: "المحفوظ",
+                label: 'المحفوظ',
                 widget: BookMarkList(),
               ),
               _BottomAction(
                 icon: search_icon,
-                label: "البحث",
+                label: 'البحث',
                 widget: SearchAyah(),
               ),
               InkWell(
@@ -146,7 +144,7 @@ class _BottomOption extends StatelessWidget {
                     options(height: 25, width: 25, color: theme.surface),
                     const SizedBox(height: 4),
                     Text(
-                      "الثيم",
+                      'الثيم',
                       style: TextStyle(color: theme.surface),
                     ),
                   ],
@@ -162,21 +160,20 @@ class _BottomOption extends StatelessWidget {
 }
 
 class _BottomAction extends StatelessWidget {
-  final Widget Function({double height, double width}) icon;
-  final String label;
-  final Widget widget;
-
   const _BottomAction({
     required this.icon,
     required this.label,
     required this.widget,
   });
+  final Widget Function({double height, double width}) icon;
+  final String label;
+  final Widget widget;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => context.showBottomSheet(
-        backgroundColor: context.currentThemeData.colorScheme.background,
+        backgroundColor: context.quranTheme.colorScheme.background,
         child: SizedBox(
           height: context.getHight(80),
           child: widget,
@@ -185,11 +182,12 @@ class _BottomAction extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          icon(height: 25.0, width: 25.0),
+          icon(height: 25, width: 25),
           const SizedBox(height: 4),
-          Text(label,
-              style: TextStyle(
-                  color: context.currentThemeData.colorScheme.surface)),
+          Text(
+            label,
+            style: TextStyle(color: context.quranTheme.colorScheme.surface),
+          ),
         ],
       ),
     );
@@ -199,7 +197,7 @@ class _BottomAction extends StatelessWidget {
 class _QuickExitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = context.currentThemeData.colorScheme;
+    final theme = context.quranTheme.colorScheme;
 
     return InkWell(
       onTap: () {

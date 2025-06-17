@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
-import 'package:quran_app/core/components/base_header.dart';
+import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
-import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_home.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class SurahAudioOnly extends StatelessWidget {
@@ -33,27 +35,24 @@ class SurahAudioOnly extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const BaseHeder(text: "الاستماع الى القرأن"),
+                const BaseHederWidget(text: 'الاستماع الى القرأن'),
                 InkWell(
                   onTap: () {
-                    navigateTo(const AudioHome(), context);
+                    navigateTo(const AudioQuranScreen(), context);
                   },
                   child: BlocBuilder<BaseBloc, BaseState>(
                     builder: (context, state) {
                       return BlocBuilder<AudioCubit, AudioState>(
                         builder: (context, state) {
-                          return Container(
+                          return CardWidget(
                             margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Theme.of(context).primaryColor,
+                              horizontal: 10,
+                              vertical: 10,
                             ),
+                            padding: const EdgeInsets.all(8),
                             child: Column(
                               children: [
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -84,7 +83,7 @@ class SurahAudioOnly extends StatelessWidget {
                                             Text(
                                               AudioPlayerRepo
                                                   .currentAudioData.nameReader!,
-                                              style: titleSmall(context),
+                                              style: titleMedium(context),
                                             ),
                                             const SizedBox(
                                               height: 5,
@@ -147,11 +146,11 @@ class SurahAudioOnly extends StatelessWidget {
 
 class _ActionProgress extends StatelessWidget {
   const _ActionProgress({
-    Key? key,
     required this.audioPlayer,
     required this.currentIndex,
     required this.itemIndex,
-  }) : super(key: key);
+    super.key,
+  });
 
   final AudioPlayer audioPlayer;
   final int currentIndex;
@@ -173,12 +172,10 @@ class _ActionProgress extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: FittedBox(
                   child: IconButton(
-                    onPressed: () {
-                      audioPlayer.play();
-                    },
+                    onPressed: audioPlayer.play,
                     icon: const Icon(Icons.play_arrow_outlined),
                   ),
                 ),
@@ -199,7 +196,7 @@ class _ActionProgress extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

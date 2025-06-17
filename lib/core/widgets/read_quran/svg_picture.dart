@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
-import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 Widget besmAllah(BuildContext context) {
   return SvgPicture.asset(
@@ -12,7 +10,7 @@ Widget besmAllah(BuildContext context) {
     width: 150.0.w,
     // height: 100,
 
-    color: context.currentThemeData.cardColor?.withOpacity(.8),
+    color: context.quranTheme.cardColor?.withOpacity(.8),
     // colorFilter:
     //     ColorFilter.mode(Get.theme.cardColor.withOpacity(.8), BlendMode.srcIn),
   );
@@ -23,7 +21,7 @@ Widget besmAllah2(BuildContext context) {
     'assets/svg/besmAllah2.svg',
     width: 150.0.w,
     // height: 100,
-    color: context.currentThemeData.cardColor?.withOpacity(.8),
+    color: context.quranTheme.cardColor?.withOpacity(.8),
     // color: const Color(0xffd0d0d0),
   );
 }
@@ -38,8 +36,6 @@ Widget spaceLine(double height, double width) {
     ),
   );
 }
-
-
 
 Widget bookmarkPageIcon({double? height, double? width, int? pageNum}) {
   return SvgPicture.asset(
@@ -70,12 +66,17 @@ Widget decorations(BuildContext context, {double? height, double? width}) {
   );
 }
 
-Widget button_curve({double? height, double? width, Color? color}) {
+Widget button_curve({
+  required BuildContext context,
+  double? height,
+  double? width,
+  Color? color,
+}) {
   return SvgPicture.asset(
     'assets/svg/button_curve.svg',
     width: width,
     height: height ?? 60,
-    color: FxColors.primary,
+    color: context.primaryScheme,
     // colorFilter: ColorFilter.mode(
     //     color ?? Get.theme.colorScheme.primary, BlendMode.srcIn),
   );

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/failure/request_state.dart';
 
 class MyProgressButton extends StatelessWidget {
   MyProgressButton({
@@ -40,10 +41,11 @@ class MyProgressButton extends StatelessWidget {
       duration: 300.milliseconds,
       decoration: BoxDecoration(
         border: isBorderColor
-            ? Border.all(color: defaultColor ?? FxColors.primary, width: 2)
+            ? Border.all(color: defaultColor ?? context.primaryScheme, width: 2)
             : null,
         borderRadius: BorderRadius.circular(borderRadius ?? 23),
-        color: isBorderColor ? null : getBackColor(state, defaultColor),
+        color:
+            isBorderColor ? null : getBackColor(state, defaultColor, context),
       ),
       child: TextButton(
         onPressed: onPressed,
@@ -56,12 +58,13 @@ class MyProgressButton extends StatelessWidget {
 }
 
 //color
-Color? getBackColor(RequestState state, Color? defaultColor) {
+Color? getBackColor(
+    RequestState state, Color? defaultColor, BuildContext context) {
   switch (state) {
     case RequestState.initial:
-      return defaultColor ?? FxColors.primary;
+      return defaultColor ?? context.primaryScheme;
     case RequestState.loading:
-      return FxColors.primary;
+      return context.primaryScheme;
 
     case RequestState.success:
       return Colors.green;

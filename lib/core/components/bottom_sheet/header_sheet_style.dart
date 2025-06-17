@@ -17,7 +17,7 @@ class HeaderStyleSheet extends StatelessWidget {
           //   margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
           //   decoration: BoxDecoration(
           //     borderRadius: BorderRadius.circular(8),
-          //     color: FxColors.primary,
+          //     color: context.primary,
           //   ),
           // ),
           Container(
@@ -35,7 +35,7 @@ class HeaderStyleSheet extends StatelessWidget {
           //   margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
           //   decoration: BoxDecoration(
           //     borderRadius: BorderRadius.circular(8),
-          //     color: FxColors.primary,
+          //     color: context.primary,
           //   ),
           // ),
         ],

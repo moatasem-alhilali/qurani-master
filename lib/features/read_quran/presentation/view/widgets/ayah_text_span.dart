@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 
 TextSpan ayahTextSpan({
@@ -40,7 +40,7 @@ TextSpan ayahTextSpan({
           fontSize: fontSize,
           height: 2,
           letterSpacing: 30,
-          color: context.currentThemeData.colorScheme.inversePrimary,
+          color: context.quranTheme.colorScheme.inversePrimary,
           backgroundColor: Colors.transparent,
         ),
         recognizer: recognizer,
@@ -53,13 +53,13 @@ TextSpan ayahTextSpan({
           height: 2,
           letterSpacing: 5,
           // wordSpacing: wordSpacing + 10,
-          color: context.currentThemeData.colorScheme.inversePrimary,
+          color: context.quranTheme.colorScheme.inversePrimary,
           backgroundColor: context
                   .read<BookmarkBloc>()
                   .hasBookmarkAyahSelect(surahNum, ayahNum)
               ? const Color(0xffCD9974).withOpacity(.4)
               : isSelected
-                  ? FxColors.primary
+                  ? context.primaryScheme
                   : Colors.transparent,
         ),
         recognizer: recognizer,
@@ -73,13 +73,13 @@ TextSpan ayahTextSpan({
         fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
-        color: context.currentThemeData.colorScheme.inversePrimary,
+        color: context.quranTheme.colorScheme.inversePrimary,
         backgroundColor: context
                 .read<BookmarkBloc>()
                 .hasBookmarkAyahSelect(surahNum, ayahNum)
             ? const Color(0xffCD9974).withOpacity(.4)
             : isSelected
-                ? FxColors.primary
+                ? context.primaryScheme
                 : Colors.transparent,
       ),
       recognizer: recognizer,
@@ -95,14 +95,14 @@ TextSpan ayahTextSpan({
         color: context
                 .read<BookmarkBloc>()
                 .hasBookmarkAyahSelect(surahNum, ayahNum)
-            ? context.currentThemeData.colorScheme.inversePrimary
+            ? context.quranTheme.colorScheme.inversePrimary
             : const Color(0xff77554B),
         backgroundColor: context
                 .read<BookmarkBloc>()
                 .hasBookmarkAyahSelect(surahNum, ayahNum)
             ? const Color(0xffCD9974).withOpacity(.4)
             : isSelected
-                ? context.currentThemeData.highlightColor
+                ? context.quranTheme.highlightColor
                 : Colors.transparent,
       ),
       recognizer: recognizer,

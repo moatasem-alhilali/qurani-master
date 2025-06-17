@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
@@ -15,7 +16,7 @@ Future<void> showMyBottomSheetFunction({
 }) async {
   showModalBottomSheet(
     context: context,
-    backgroundColor: backgroundColor ?? FxColors.background,
+    backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
     isScrollControlled: true,
     isDismissible: true,
     enableDrag: true,
@@ -35,7 +36,6 @@ Future<void> showMyBottomSheetFunction({
         curve: Curves.easeOut,
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               const HeaderStyle(),
@@ -43,7 +43,7 @@ Future<void> showMyBottomSheetFunction({
                 SingleChildScrollView(
                   child: child.animate().fade(duration: 1.seconds),
                 ),
-              if (!isScroll) child
+              if (!isScroll) child,
             ],
           ),
         ),
@@ -58,7 +58,6 @@ class HeaderStyle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.center,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -142,7 +141,7 @@ Future<void> showMyExitDialogFunction({
                 children: [
                   const HeaderStyle(),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       'هل أنت متأكد من الخروج',
                       style: titleMedium(context)
@@ -161,7 +160,8 @@ Future<void> showMyExitDialogFunction({
                             alignment: Alignment.center,
                             width: double.infinity,
                             padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(color: FxColors.primary),
+                            decoration:
+                                BoxDecoration(color: context.primaryScheme),
                             child: Text(
                               'تراجع',
                               style: titleMedium(context)

@@ -87,7 +87,7 @@ class _PrayerTimeWidgetState extends State<PrayerTimeWidget> {
           context,
           textAlign: TextAlign.center,
           fontSize: 12.sp,
-          color: Colors.grey,
+          // color: context.onPrimary,
         );
       },
     );

@@ -15,7 +15,7 @@ class BookmarkPageTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: context.currentThemeData.colorScheme.background,
+        color: context.quranTheme.colorScheme.background,
       ),
       child: ListView.builder(
         padding: EdgeInsets.zero,
@@ -34,7 +34,7 @@ class BookmarkPageTab extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                         color: (index % 2 == 0
-                            ? context.currentThemeData.colorScheme.primary
+                            ? context.quranTheme.colorScheme.primary
                                 .withOpacity(.15)
                             : Colors.transparent),
                         borderRadius: const BorderRadius.all(
@@ -57,8 +57,8 @@ class BookmarkPageTab extends StatelessWidget {
                                       width: 40,
                                       child: SvgPicture.asset(
                                         'assets/svg/sora_num.svg',
-                                        color: context.currentThemeData
-                                            .colorScheme.primary,
+                                        color: context
+                                            .quranTheme.colorScheme.primary,
                                       ),
                                     ),
                                     Transform.translate(
@@ -68,8 +68,7 @@ class BookmarkPageTab extends StatelessWidget {
                                         // convertNumbers(
                                         //     surah.surahNumber.toString()),
                                         style: TextStyle(
-                                          color: context
-                                              .currentThemeData.hintColor,
+                                          color: context.quranTheme.hintColor,
                                           fontFamily: 'kufi',
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -91,13 +90,13 @@ class BookmarkPageTab extends StatelessWidget {
                                     surah.sorahName ?? '',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: context.currentThemeData.hintColor,
+                                      color: context.quranTheme.hintColor,
                                     ),
                                   ),
                                   Text(
                                     surah.lastRead ?? '',
                                     style: TextStyle(
-                                      color: context.currentThemeData.hintColor,
+                                      color: context.quranTheme.hintColor,
                                       fontSize: 12,
                                     ),
                                   ),
@@ -127,8 +126,8 @@ class BookmarkPageTab extends StatelessWidget {
                                           style: TextStyle(
                                             fontFamily: 'uthman',
                                             fontSize: 13,
-                                            color: context.currentThemeData
-                                                .colorScheme.surface,
+                                            color: context
+                                                .quranTheme.colorScheme.surface,
                                           ),
                                         ),
                                         Text(
@@ -137,8 +136,8 @@ class BookmarkPageTab extends StatelessWidget {
                                             fontFamily: 'kufi',
                                             fontSize: 13,
                                             fontWeight: FontWeight.bold,
-                                            color: context.currentThemeData
-                                                .colorScheme.surface,
+                                            color: context
+                                                .quranTheme.colorScheme.surface,
                                           ),
                                         ),
                                       ],
@@ -162,8 +161,8 @@ class BookmarkPageTab extends StatelessWidget {
                     },
                   ),
                   hDivider(
-                    color: context.currentThemeData.colorScheme.primary
-                        .withOpacity(0.2),
+                    color:
+                        context.quranTheme.colorScheme.primary.withOpacity(0.2),
                   ),
                 ],
               ),

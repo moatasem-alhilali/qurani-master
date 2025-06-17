@@ -91,10 +91,10 @@
 //                   circleId: CircleId("Circle"),
 //                   radius: 10,
 //                   center: position,
-//                   fillColor: Theme.of(context).primaryColorLight.withAlpha(100),
+//                   fillColor: context.primaryLight.withAlpha(100),
 //                   strokeWidth: 1,
 //                   strokeColor:
-//                       Theme.of(context).primaryColorDark.withAlpha(100),
+//                       context.primaryDark.withAlpha(100),
 //                   zIndex: 3,
 //                 )
 //               ]),
@@ -102,7 +102,7 @@
 //                 Polyline(
 //                   polylineId: PolylineId("Line"),
 //                   points: [position, QiblahMaps.meccaLatLong],
-//                   color: Theme.of(context).primaryColor,
+//                   color: context.primary,
 //                   width: 5,
 //                   zIndex: 4,
 //                 )

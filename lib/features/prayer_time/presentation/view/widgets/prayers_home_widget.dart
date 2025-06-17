@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_header.dart';
+import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/location_enable_screen.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -28,7 +30,7 @@ class PrayersHomeWidget extends StatelessWidget {
 
         return Column(
           children: [
-            const BaseHeder(text: 'اوقات الصلاة'),
+            const BaseHederWidget(text: 'اوقات الصلاة'),
             SizedBox(
               width: double.infinity,
               height: context.getHight(15),
@@ -49,6 +51,8 @@ class PrayersHomeWidget extends StatelessWidget {
                         physics: const BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
                         itemCount: prayers.length,
+                        // padding: const EdgeInsets.symmetric(horizontal: 10),
+
                         itemBuilder: (context, index) {
                           final data = prayers[index];
                           final isCurrent = data.type == currentType;
@@ -116,17 +120,10 @@ class _ItemPrayerState extends State<_ItemPrayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CardWidget(
       width: 95.w,
       margin: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
       padding: EdgeInsets.symmetric(horizontal: 1.sp, vertical: 8.sp),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).primaryColor,
-        border: widget.nextCurrent
-            ? Border.all(color: Colors.white, width: 1.5)
-            : null,
-      ),
       child: InkWell(
         onTap: () {
           context.push(const PrayerTimeScreen());
@@ -175,7 +172,7 @@ class _Loading extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).primaryColor,
+                color: context.primaryScheme,
               ),
               child: Column(
                 children: [

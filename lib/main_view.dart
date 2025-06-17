@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/AppLocalizations/AppLocalizations.dart';
+import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
                   onGenerateRoute: RouterGenerator.getRoute,
                   initialRoute: RoutesManager.main,
                   // darkTheme: getDarkMode(),
-                  darkTheme: getDarkTheme(),
+                  darkTheme: context.themeApp,
                   theme: getLightMode(),
                   title: 'طمأنينة',
                   themeMode: ThemeMode.dark,

@@ -1,105 +1,10 @@
 import 'package:flutter/material.dart';
 
-ThemeData getDarkMode() {
-  return ThemeData(
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: FxColors.primary,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-    iconTheme: const IconThemeData(
-      color: Colors.white,
-    ),
-
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: FxColors.secondary,
-      prefixStyle: const TextStyle(
-        color: Colors.white,
-      ),
-      prefixIconColor: Colors.white,
-      iconColor: Colors.white,
-    ),
-    fontFamily: 'ios-1',
-
-    progressIndicatorTheme: ProgressIndicatorThemeData(
-      color: FxColors.primary,
-    ),
-
-    //
-    scaffoldBackgroundColor: const Color(0xff1e1e1e), //customScaffoldColor,
-    splashColor: const Color(0xff252525), //customBackGroundBody
-    primaryColor: const Color(0xff2f2f2f), //custom main
-    shadowColor: FxColors.secondary,
-
-    //
-    textTheme: const TextTheme(
-      displaySmall: TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w500,
-        overflow: TextOverflow.ellipsis,
-      ),
-      displayMedium: TextStyle(
-        color: Colors.white,
-        fontSize: 25,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w500,
-        overflow: TextOverflow.ellipsis,
-      ),
-      displayLarge: TextStyle(
-        color: Colors.white,
-        fontSize: 30,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w600,
-        overflow: TextOverflow.ellipsis,
-      ),
-      headlineSmall: TextStyle(
-        color: Colors.white,
-        fontSize: 13,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w400,
-        overflow: TextOverflow.ellipsis,
-      ),
-      headlineMedium: TextStyle(
-        color: Colors.white,
-        fontSize: 15,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w400,
-        overflow: TextOverflow.ellipsis,
-      ),
-      headlineLarge: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontFamily: 'ios-3',
-        overflow: TextOverflow.ellipsis,
-      ),
-      titleSmall: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontFamily: 'ios-1',
-        // overflow: TextOverflow.ellipsis,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 22,
-        fontFamily: 'ios-1',
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-        // overflow: TextOverflow.ellipsis,
-      ),
-      titleLarge: TextStyle(
-        color: Colors.white,
-        fontSize: 25,
-        fontFamily: 'ios-2',
-        fontWeight: FontWeight.bold,
-        // overflow: TextOverflow.ellipsis,
-      ),
-    ),
-  );
-}
+Color _background = const Color(0xff1e1e1e);
+Color _secondary = const Color(0xff353535);
+Color _third = const Color(0xff2c2c2c);
+Color _primary = const Color(0xff42796c);
+Color _primarySecondary = const Color(0xff364945);
 
 ThemeData getLightMode() {
   return ThemeData(
@@ -112,7 +17,7 @@ ThemeData getLightMode() {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: FxColors.secondary,
+      fillColor: _secondary,
       prefixStyle: const TextStyle(
         color: Colors.white,
       ),
@@ -125,7 +30,7 @@ ThemeData getLightMode() {
         const Color.fromARGB(255, 89, 88, 88), //customScaffoldColor,
     splashColor: Colors.white, //customBackGroundBody
     primaryColor: const Color.fromARGB(255, 206, 205, 205), //custom main
-    shadowColor: FxColors.secondary,
+    shadowColor: _secondary,
     //
 
     //
@@ -173,12 +78,12 @@ ThemeData getLightMode() {
       ),
       titleSmall: TextStyle(
         color: Colors.black,
-        fontSize: 16,
+        fontSize: 12,
         fontFamily: 'ios-1',
         // overflow: TextOverflow.ellipsis,
       ),
       titleMedium: TextStyle(
-        fontSize: 22,
+        fontSize: 14,
         fontFamily: 'ios-1',
         fontWeight: FontWeight.w500,
         color: Colors.black,
@@ -186,7 +91,7 @@ ThemeData getLightMode() {
       ),
       titleLarge: TextStyle(
         color: Colors.black,
-        fontSize: 25,
+        fontSize: 16,
         fontFamily: 'ios-2',
         fontWeight: FontWeight.bold,
         // overflow: TextOverflow.ellipsis,
@@ -210,12 +115,8 @@ TextStyle titleLarge(BuildContext context) {
 class FxColors {
   //custom
 
-  static Color background = const Color(0xff1e1e1e);
-  static Color secondary = const Color(0xff353535);
-  static Color third = const Color(0xff2c2c2c);
   //
-  static Color primary = const Color(0xff42796c);
-  static Color primarySecondary = const Color(0xff364945);
+
   // gray colors
   static Color gray1 = const Color(0xff808080);
   static Color gray2 = const Color(0xffa9a9a9);

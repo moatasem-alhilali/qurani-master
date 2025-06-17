@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
@@ -190,7 +191,7 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
       fontSize: fontSize,
       height: 2,
       letterSpacing: 2,
-      color: context.currentThemeData.colorScheme.inversePrimary,
+      color: context.quranTheme.colorScheme.inversePrimary,
       shadows: const [
         Shadow(
           blurRadius: 0.5,
@@ -231,20 +232,34 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
     VoidCallback? onClose,
   }) {
     final ayah = ayahs[ayahIndex];
-    showAyahMenuActionButton(
-      quranCtrl.getSurahNumberFromPage(widget.pageIndex),
-      ayah.ayahNumber,
-      ayah.code_v2,
-      widget.pageIndex,
-      ayah.text,
-      ayah.ayahUQNumber,
-      quranCtrl.getSurahNameFromPage(widget.pageIndex),
-      ayahIndex,
-      details: details,
-      myContext: context,
-      ayahUrl: ayah.audio,
-      context: context,
-      onClose: onClose,
+    context.showSmoothSheetStyle(
+      
+      child: MenuActionWidget(
+        ayahNum: ayah.ayahNumber,
+        surahName: quranCtrl.getSurahNameFromPage(widget.pageIndex),
+        ayahTextNormal: ayah.text,
+        cancel: onClose,
+        ayahUQNum: ayah.ayahUQNumber,
+        pageIndex: widget.pageIndex,
+        surahNum: quranCtrl.getSurahNumberFromPage(widget.pageIndex),
+        ayahUrl: ayah.audio,
+        myContext: context,
+      ),
     );
+    // showAyahMenuActionButton(
+    //   quranCtrl.getSurahNumberFromPage(widget.pageIndex),
+    //   ayah.ayahNumber,
+    //   ayah.code_v2,
+    //   widget.pageIndex,
+    //   ayah.text,
+    //   ayah.ayahUQNumber,
+    //   quranCtrl.getSurahNameFromPage(widget.pageIndex),
+    //   ayahIndex,
+    //   details: details,
+    //   myContext: context,
+    //   ayahUrl: ayah.audio,
+    //   context: context,
+    //   onClose: onClose,
+    // );
   }
 }

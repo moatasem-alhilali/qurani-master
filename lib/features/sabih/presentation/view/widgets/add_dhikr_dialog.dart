@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
@@ -115,7 +115,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
                   child: ProgressButtonState(
                     onPressed: _isLoading ? null : _submitForm,
                     text: isEditing ? 'تحديث' : 'إضافة',
-                    defaultColor: FxColors.primary,
+                    defaultColor: context.primaryScheme,
                   ),
                 ),
               ],

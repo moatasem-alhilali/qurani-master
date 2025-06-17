@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/ruqia_text.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -11,7 +12,7 @@ class RuqiaShareiahScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      title: "الرقية الشرعية",
+      title: 'الرقية الشرعية',
       body: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -24,7 +25,7 @@ class RuqiaShareiahScreen extends StatelessWidget {
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).primaryColor,
+                color: context.primaryScheme,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -65,7 +66,8 @@ class RuqiaShareiahScreen extends StatelessWidget {
                   Text(
                     ruqiaText[index]['zekr'] as String,
                     style: const TextStyle(
-                        color: Color.fromARGB(255, 210, 209, 209)),
+                      color: Color.fromARGB(255, 210, 209, 209),
+                    ),
                   ),
                   const SizedBox(
                     height: 5,

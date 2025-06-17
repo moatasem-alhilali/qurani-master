@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
-import 'package:quran_app/core/components/base_header.dart';
+import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_screen.dart';
@@ -18,7 +19,7 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const BaseHeder(text: 'القرأن الكريم وعلومه'),
+        const BaseHederWidget(text: 'القرأن الكريم وعلومه'),
         SizedBox(
           height: context.getHight(25),
           child: Padding(
@@ -112,9 +113,9 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
         ),
-        const BaseHeder(text: 'تصنيفات '),
+        const BaseHederWidget(text: 'تصنيفات '),
         const CategorySection(),
-        const BaseHeder(text: 'الاقسام '),
+        const BaseHederWidget(text: 'الاقسام '),
         GridView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -219,6 +220,7 @@ class _ITem extends StatelessWidget {
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   minFontSize: 10,
+                  color: context.onPrimary,
                 ),
               ),
             ),

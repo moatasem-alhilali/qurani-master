@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/widgets/animated_tasbih_widget.dart';
@@ -32,7 +33,7 @@ class DhikrCardWidget extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: FxColors.secondary,
+              color: context.secondary,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -73,8 +74,8 @@ class DhikrCardWidget extends StatelessWidget {
                     child: AnimatedTasbihWidget(
                       // initialCount: count,
                       onCountChanged: (_) => onTap(),
-                      primaryColor: FxColors.primary,
-                      secondaryColor: FxColors.primarySecondary,
+                      primaryColor: context.primaryScheme,
+                      secondaryColor: context.primarySecondary,
                     ),
                   ),
                 ),
@@ -85,12 +86,12 @@ class DhikrCardWidget extends StatelessWidget {
                   onPressed: onReset,
                   icon: Icon(
                     Icons.refresh,
-                    color: FxColors.primary,
+                    color: context.primaryScheme,
                   ),
                   label: Text(
                     'إعادة تعيين الذكر',
                     style: titleMedium(context).copyWith(
-                      color: FxColors.primary,
+                      color: context.primaryScheme,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -105,7 +106,7 @@ class DhikrCardWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: FxColors.secondary,
+              color: context.secondary,
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Row(

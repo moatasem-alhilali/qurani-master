@@ -9,7 +9,7 @@ import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 class SettingThemeSheet extends StatelessWidget {
   SettingThemeSheet({super.key});
 
-  final List<String> titles = ["أزرق", "بني", "أخضر", "الداكن"];
+  final List<String> titles = ['أزرق', 'بني', 'أخضر', 'الداكن'];
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +38,11 @@ class SettingThemeSheet extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(8),
                         child: theme(
-                            height: context.getHight(15), theme: '${i + 1}'),
+                          height: context.getHight(15),
+                          theme: '${i + 1}',
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -48,16 +50,16 @@ class SettingThemeSheet extends StatelessWidget {
                           Text(
                             titles[i],
                             style: TextStyle(
-                                color: context.currentThemeData.cardColor),
+                              color: context.quranTheme.cardColor,
+                            ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: CircleAvatar(
                               radius: 10,
                               backgroundColor: isSelected
-                                  ? context.currentThemeData.cardColor
-                                  : context
-                                      .currentThemeData.colorScheme.surface,
+                                  ? context.quranTheme.cardColor
+                                  : context.quranTheme.colorScheme.surface,
                               child: isSelected
                                   ? const Icon(Icons.check, size: 14)
                                   : null,

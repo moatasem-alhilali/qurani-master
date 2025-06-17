@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
-class ItemDetailOffline extends StatelessWidget {
-  ItemDetailOffline({
+class ItemDetailOfflineWidget extends StatelessWidget {
+  ItemDetailOfflineWidget({
     required this.current,
     super.key,
     this.onTap,
@@ -21,7 +22,7 @@ class ItemDetailOffline extends StatelessWidget {
         margin: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Theme.of(context).primaryColor,
+          color: context.primaryScheme,
         ),
         child: Padding(
           padding: const EdgeInsets.all(8),

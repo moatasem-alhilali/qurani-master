@@ -32,12 +32,12 @@ class SearchAyah extends StatelessWidget {
                 builder: (context, state) {
                   return MyTextFormField(
                     hintStyle: TextStyle(
-                      color: context.currentThemeData.colorScheme.surface,
+                      color: context.quranTheme.colorScheme.surface,
                       fontSize: 14,
                     ),
                     hintText: 'ادخل اسم الايه',
                     style: TextStyle(
-                      color: context.currentThemeData.cardColor,
+                      color: context.quranTheme.cardColor,
                     ),
                     onChanged: (text) {
                       BlocProvider.of<SearchBloc>(context)
@@ -72,11 +72,9 @@ class SearchAyah extends StatelessWidget {
                               children: <Widget>[
                                 Container(
                                   color: (index % 2 == 0
-                                      ? context
-                                          .currentThemeData.colorScheme.surface
+                                      ? context.quranTheme.colorScheme.surface
                                           .withOpacity(.05)
-                                      : context
-                                          .currentThemeData.colorScheme.surface
+                                      : context.quranTheme.colorScheme.surface
                                           .withOpacity(.1)),
                                   child: ListTile(
                                     onTap: () {
@@ -84,7 +82,8 @@ class SearchAyah extends StatelessWidget {
                                           .read<ReadQuranBloc>()
                                           .pageController
                                           .jumpToPage(
-                                              (search.pageNum as int) - 1);
+                                            (search.pageNum as int) - 1,
+                                          );
                                       context.pop();
                                       context.pop();
                                     },
@@ -96,8 +95,7 @@ class SearchAyah extends StatelessWidget {
                                           fontFamily: 'uthmanic2',
                                           fontWeight: FontWeight.normal,
                                           fontSize: 22,
-                                          color: context
-                                              .currentThemeData.hintColor,
+                                          color: context.quranTheme.hintColor,
                                         ),
                                       ),
                                       // child: RichText(
@@ -119,7 +117,7 @@ class SearchAyah extends StatelessWidget {
                                       height: 20,
                                       decoration: BoxDecoration(
                                         color: context
-                                            .currentThemeData.primaryColorLight,
+                                            .quranTheme.primaryColorLight,
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(4),
                                         ),
@@ -131,7 +129,7 @@ class SearchAyah extends StatelessWidget {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 color: (index % 2 == 0
-                                                    ? context.currentThemeData
+                                                    ? context.quranTheme
                                                         .colorScheme.primary
                                                         .withOpacity(.15)
                                                     : Colors.transparent),
@@ -147,8 +145,7 @@ class SearchAyah extends StatelessWidget {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: context
-                                                      .currentThemeData
-                                                      .canvasColor,
+                                                      .quranTheme.canvasColor,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -157,8 +154,8 @@ class SearchAyah extends StatelessWidget {
                                           Expanded(
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                color: context.currentThemeData
-                                                    .primaryColor,
+                                                color: context
+                                                    .quranTheme.primaryColor,
                                                 borderRadius:
                                                     const BorderRadius.only(
                                                   topLeft: Radius.circular(4),
@@ -171,8 +168,7 @@ class SearchAyah extends StatelessWidget {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: context
-                                                      .currentThemeData
-                                                      .canvasColor,
+                                                      .quranTheme.canvasColor,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -181,8 +177,8 @@ class SearchAyah extends StatelessWidget {
                                           Expanded(
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                color: context.currentThemeData
-                                                    .primaryColor,
+                                                color: context
+                                                    .quranTheme.primaryColor,
                                                 borderRadius:
                                                     const BorderRadius.only(
                                                   topLeft: Radius.circular(4),
@@ -195,8 +191,7 @@ class SearchAyah extends StatelessWidget {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: context
-                                                      .currentThemeData
-                                                      .canvasColor,
+                                                      .quranTheme.canvasColor,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -207,7 +202,7 @@ class SearchAyah extends StatelessWidget {
                                     ),
                                     leading: context.surahNameWidget(
                                       search.surahNum.toString(),
-                                      context.currentThemeData.hintColor!,
+                                      context.quranTheme.hintColor!,
                                     ),
                                   ),
                                 ),

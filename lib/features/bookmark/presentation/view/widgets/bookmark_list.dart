@@ -12,7 +12,7 @@ class BookMarkList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       child: DefaultTabController(
         length: 2,
         child: Column(
@@ -20,10 +20,10 @@ class BookMarkList extends StatelessWidget {
             const Gap(6),
             Container(
               height: 40,
-              padding: const EdgeInsets.all(4.0),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(4),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: context.currentThemeData.colorScheme.primary,
+                color: context.quranTheme.colorScheme.primary,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
@@ -33,7 +33,7 @@ class BookMarkList extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 labelStyle: TextStyle(
-                  color: context.currentThemeData.hintColor,
+                  color: context.quranTheme.hintColor,
                   fontFamily: 'kufi',
                   fontSize: 11,
                 ),
@@ -41,15 +41,15 @@ class BookMarkList extends StatelessWidget {
                   borderRadius: const BorderRadius.all(
                     Radius.circular(8),
                   ),
-                  color: context.currentThemeData.colorScheme.background
-                      .withOpacity(.3),
+                  color:
+                      context.quranTheme.colorScheme.background.withOpacity(.3),
                 ),
                 tabs: [
                   Tab(
                     child: Text(
                       'الصفحات',
                       style: TextStyle(
-                        color: context.currentThemeData.canvasColor,
+                        color: context.quranTheme.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -59,7 +59,7 @@ class BookMarkList extends StatelessWidget {
                     child: Text(
                       'الايات',
                       style: TextStyle(
-                        color: context.currentThemeData.canvasColor,
+                        color: context.quranTheme.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -75,7 +75,7 @@ class BookMarkList extends StatelessWidget {
                   BookmarkAyahTab(),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -34,7 +34,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
         final quranCtrl = context.read<ReadQuranBloc>().quranRH;
 
         return Scaffold(
-          backgroundColor: context.currentThemeData.colorScheme.background,
+          backgroundColor: context.quranTheme.colorScheme.background,
           body: SafeArea(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,

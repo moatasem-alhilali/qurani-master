@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/services/download_service.dart';
@@ -11,16 +15,16 @@ import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dar
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
-class AllSurahAudio extends StatefulWidget {
-  const AllSurahAudio({
+class AllSurahAudioWidget extends StatefulWidget {
+  const AllSurahAudioWidget({
     super.key,
   });
 
   @override
-  State<AllSurahAudio> createState() => _AllSurahAudioState();
+  State<AllSurahAudioWidget> createState() => _AllSurahAudioWidgetState();
 }
 
-class _AllSurahAudioState extends State<AllSurahAudio> {
+class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BaseBloc, BaseState>(
@@ -29,10 +33,12 @@ class _AllSurahAudioState extends State<AllSurahAudio> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Text(
-                "سور أخرى",
-                style: titleMedium(context),
+                'سور أخرى',
+                style: titleMedium(context).copyWith(
+                  fontSize: 16.sp,
+                ),
               ),
             ),
             ListView.builder(
@@ -40,18 +46,14 @@ class _AllSurahAudioState extends State<AllSurahAudio> {
               physics: const BouncingScrollPhysics(),
               itemCount: context.read<ReadQuranBloc>().quranRH.surahs.length,
               itemBuilder: (context, index) {
-                var data = context.read<ReadQuranBloc>().quranRH.surahs[index];
-                return Container(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                final data =
+                    context.read<ReadQuranBloc>().quranRH.surahs[index];
+                return CardWidget(
                   height: context.getHight(10),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Theme.of(context).primaryColor,
-                  ),
                   child: _ItemDownloaded(
                     data: data,
                     indexSurah: index,
@@ -67,7 +69,7 @@ class _AllSurahAudioState extends State<AllSurahAudio> {
 }
 
 class _ItemDownloaded extends StatefulWidget {
-  _ItemDownloaded({Key? key, this.data, this.indexSurah}) : super(key: key);
+  _ItemDownloaded({super.key, this.data, this.indexSurah});
   Surah? data;
   int? indexSurah;
 
@@ -93,30 +95,32 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          '${widget.indexSurah! + 1}',
-          style: const TextStyle(
-            color: Colors.grey,
-          ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Row(
           children: [
             Text(
-              widget.data!.arabicName,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
+              '${widget.indexSurah! + 1}',
+              style: titleSmall(context).copyWith(
+                fontSize: 16.sp,
               ),
             ),
-            Text(
-              "${widget.data!.ayahs.length}",
-              style: const TextStyle(
-                color: Colors.grey,
-              ),
+            const Gap(10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.data!.arabicName,
+                  style: titleSmall(context).copyWith(
+                    fontSize: 16.sp,
+                  ),
+                ),
+                Text(
+                  '${widget.data!.ayahs.length}',
+                  style: titleSmall(context).copyWith(),
+                ),
+              ],
             ),
           ],
         ),
@@ -129,14 +133,14 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                 if (state is LoadingInitAudioPlayerState) {
                   return CircleAvatar(
                     radius: 18,
-                    backgroundColor: FxColors.primary,
+                    backgroundColor: context.primaryScheme,
                     child: const Icon(Icons.play_arrow_rounded),
                   );
                 }
                 if (state is NextPlayAudioLoadingState) {
                   return CircleAvatar(
                     radius: 18,
-                    backgroundColor: FxColors.primary,
+                    backgroundColor: context.primaryScheme,
                     child: const Icon(Icons.play_arrow_rounded),
                   );
                 }
@@ -158,9 +162,9 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                 setState(() {
                   current = widget.indexSurah;
                 });
-                var currentAudioData = AudioPlayerRepo.currentAudioData;
+                final currentAudioData = AudioPlayerRepo.currentAudioData;
 
-                CurrentAudioModel updateCurrent = CurrentAudioModel(
+                final updateCurrent = CurrentAudioModel(
                   countSurahVerse: surahs[widget.indexSurah!].ayahs.length,
                   imageReader: currentAudioData.imageReader,
                   nameReader: currentAudioData.nameReader,
@@ -177,7 +181,10 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                   current = null;
                 });
               },
-              icon: const Icon(Icons.download),
+              icon: Icon(
+                Icons.download,
+                color: context.primaryScheme,
+              ),
             ),
           ],
         ),
@@ -186,24 +193,24 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
   }
 
   Future<void> downloadAudio() async {
-    String urlAudioReader = "https://cdn.islamic.network/quran/audio-surah/128";
+    const urlAudioReader = 'https://cdn.islamic.network/quran/audio-surah/128';
     //url
-    String url =
-        "$urlAudioReader/${AudioPlayerRepo.currentAudioData.identifier}/${AudioPlayerRepo.currentAudioData.indexSurah}.mp3";
+    final url =
+        '$urlAudioReader/${AudioPlayerRepo.currentAudioData.identifier}/${AudioPlayerRepo.currentAudioData.indexSurah}.mp3';
 
-    final description = AudioPlayerRepo.currentAudioData.nameReader ?? "";
+    final description = AudioPlayerRepo.currentAudioData.nameReader ?? '';
     downloadService.download(url, description);
   }
 }
 
 class BaseActionProgress extends StatefulWidget {
   const BaseActionProgress({
-    Key? key,
     required this.audioPlayer,
     required this.currentIndex,
     required this.itemIndex,
     required this.surah,
-  }) : super(key: key);
+    super.key,
+  });
 
   final AudioPlayer audioPlayer;
   final int currentIndex;
@@ -231,7 +238,7 @@ class _BaseActionProgressState extends State<BaseActionProgress> {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: FittedBox(
                   child: IconButton(
                     onPressed: () {
@@ -239,9 +246,9 @@ class _BaseActionProgressState extends State<BaseActionProgress> {
                           .seek(Duration.zero, index: widget.itemIndex);
                       widget.audioPlayer.play();
 
-                      var currentAudioData = AudioPlayerRepo.currentAudioData;
+                      final currentAudioData = AudioPlayerRepo.currentAudioData;
 
-                      CurrentAudioModel updateCurrent = CurrentAudioModel(
+                      final updateCurrent = CurrentAudioModel(
                         countSurahVerse: widget.surah.ayahs.length,
                         imageReader: currentAudioData.imageReader,
                         nameReader: currentAudioData.nameReader,
@@ -278,7 +285,7 @@ class _BaseActionProgressState extends State<BaseActionProgress> {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

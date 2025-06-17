@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -48,7 +49,7 @@ class OfflineScreen extends StatelessWidget {
                               child: Text(
                                 'التنزيلات',
                                 style: titleMedium(context)
-                                    .copyWith(color: FxColors.primary),
+                                    .copyWith(color: context.primaryScheme),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -115,7 +116,7 @@ class _Item extends StatelessWidget {
                     child: Text(
                       type['title'] as String,
                       style: titleMedium(context)
-                          .copyWith(color: FxColors.primary),
+                          .copyWith(color: context.primaryScheme),
                     ),
                   ),
                   Row(
@@ -132,7 +133,7 @@ class _Item extends StatelessWidget {
                       ),
                       Icon(
                         Icons.folder_open_rounded,
-                        color: FxColors.primary,
+                        color: context.primaryScheme,
                       ),
                     ],
                   ),

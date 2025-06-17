@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
 class BaseBookItem extends StatelessWidget {
-  const BaseBookItem(this.title, this.onTap, {super.key, this.type = ""});
+  const BaseBookItem(this.title, this.onTap, {super.key, this.type = ''});
   final dynamic title;
   final String type;
   final void Function()? onTap;
@@ -27,7 +27,7 @@ class BaseBookItem extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   const BaseFadeImageAsset(
-                    image: "assets/logo/card.jpg",
+                    image: 'assets/logo/card.jpg',
                     fit: BoxFit.cover,
                   ),
                   Container(
@@ -37,7 +37,7 @@ class BaseBookItem extends StatelessWidget {
                         begin: FractionalOffset.topCenter,
                         end: FractionalOffset.bottomCenter,
                         colors: [
-                          Colors.grey.withOpacity(0.0),
+                          Colors.grey.withOpacity(0),
                           Colors.black,
                         ],
                         stops: const [
@@ -47,8 +47,8 @@ class BaseBookItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (type != "category" &&
-                      type != "" &&
+                  if (type != 'category' &&
+                      type != '' &&
                       type != 'multicategories')
                     Positioned(
                       top: 10,
@@ -57,7 +57,7 @@ class BaseBookItem extends StatelessWidget {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: FxColors.primary,
+                          color: context.primaryScheme,
                         ),
                         child: type.autoSize(context, fontSize: 14),
                       ),
@@ -66,7 +66,9 @@ class BaseBookItem extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 12),
+                        horizontal: 8,
+                        vertical: 12,
+                      ),
                       child: title.toString().autoSize(
                             context,
                             maxLines: 5,

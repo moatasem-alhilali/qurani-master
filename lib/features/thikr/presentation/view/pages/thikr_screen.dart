@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/constant.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
@@ -88,18 +90,18 @@ class _Item extends StatelessWidget {
       onTap: onPressed,
       child: Column(
         children: [
-          Container(
+          CardWidget(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: FxColors.secondary,
-            ),
+            // decoration: BoxDecoration(
+            //   borderRadius: BorderRadius.circular(12),
+            //   color: context.secondary,
+            // ),
             child: Icon(
               icon,
               size: 40,
-              // color: DarkColors.customPrimary,
+              color: context.primaryScheme,
             ),
           ),
           // if (isSvgImage)

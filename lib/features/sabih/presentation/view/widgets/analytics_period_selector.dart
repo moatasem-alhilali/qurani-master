@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 
@@ -22,7 +23,6 @@ class _AnalyticsPeriodSelectorState extends State<AnalyticsPeriodSelector> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
-     
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -67,10 +67,10 @@ class _AnalyticsPeriodSelectorState extends State<AnalyticsPeriodSelector> {
             });
           }
         },
-        backgroundColor: FxColors.third,
-        selectedColor: FxColors.primary,
+        backgroundColor: context.onPrimaryContainer,
+        selectedColor: context.primaryScheme,
         labelStyle: TextStyle(
-          color: isSelected ? FxColors.secondary : null,
+          color: isSelected ? context.secondary : null,
           fontWeight: isSelected ? FontWeight.bold : null,
         ),
       ),

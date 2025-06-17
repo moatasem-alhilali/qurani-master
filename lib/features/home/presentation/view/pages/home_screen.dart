@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/base_header.dart';
+import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/current_prayer_home_widget.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayers_home_widget.dart';
@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
         CurrentPrayerHomeWidget(),
         PrayersHomeWidget(),
         SurahAudioOnly(),
-        BaseHeder(text: "المميزات"),
+        BaseHederWidget(text: 'المميزات'),
         AnotherFeatures(),
       ],
     );

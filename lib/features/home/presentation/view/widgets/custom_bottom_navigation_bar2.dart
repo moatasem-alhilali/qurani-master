@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 int currentPage = 0;
 
@@ -16,16 +16,17 @@ class CustomBottomNavigationBar extends StatefulWidget {
 }
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  var currentIndex = 0;
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CardWidget(
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-        color: Color(0xff252525),
-      ),
-      height: context.getHight(12),
+      margin: const EdgeInsets.all(10),
+      // decoration: BoxDecoration(
+      //   color: context.secondary,
+      // ),
+      // height: context.getHight(12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -84,7 +85,7 @@ class _IconItem extends StatelessWidget {
   final void Function() onTap;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return BlocBuilder<BaseBloc, BaseState>(
       builder: (context, state) {
@@ -100,7 +101,7 @@ class _IconItem extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: index == currentPage ? FxColors.secondary : null,
+                  color: index == currentPage ? context.secondary : null,
                 ),
                 child: Column(
                   children: [
@@ -108,15 +109,15 @@ class _IconItem extends StatelessWidget {
                       icon,
                       size: size.width * .076,
                       color: index == currentPage
-                          ? FxColors.primary
-                          : FxColors.primary.withOpacity(0.8),
+                          ? context.primaryScheme
+                          : context.gray1,
                     ),
                     Text(
                       title,
                       style: TextStyle(
                         color: index == currentPage
-                            ? FxColors.primary
-                            : FxColors.primary.withOpacity(0.8),
+                            ? context.primaryScheme
+                            : context.gray1,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -126,19 +127,13 @@ class _IconItem extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 1500),
                 curve: Curves.fastLinearToSlowEaseIn,
-                // margin: EdgeInsets.only(
-                //   right: size.width * .0422,
-                //   left: size.width * .0422,
-                //   top: 4,
-                // ),
                 width: size.width * .10,
                 height: index == currentPage ? size.width * .014 : 0,
                 decoration: BoxDecoration(
-                  color: FxColors.primary,
+                  color: context.primaryScheme,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              // if (index != currentPage) SizedBox(height: size.width * .03),
             ],
           ),
         );

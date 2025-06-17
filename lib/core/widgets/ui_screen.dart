@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
 class BaseUiScreen extends StatelessWidget {
@@ -42,21 +42,21 @@ class BaseUiScreen extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
-      backgroundColor: FxColors.third,
+      backgroundColor: context.onPrimaryContainer,
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
               toolbarHeight: toolbarHeight,
               expandedHeight: expandedHeight ?? 130,
-              backgroundColor: FxColors.third,
+              backgroundColor: context.onPrimaryContainer,
               leading: leading ?? const SizedBox(),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: CircleAvatar(
                     radius: 18,
-                    backgroundColor: FxColors.primary,
+                    backgroundColor: context.primaryScheme,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () {
@@ -110,8 +110,8 @@ class BaseUiScreen extends StatelessWidget {
                           begin: FractionalOffset.bottomCenter,
                           end: FractionalOffset.topCenter,
                           colors: [
-                            FxColors.third,
-                            FxColors.primarySecondary.withOpacity(0.5),
+                            context.onPrimaryContainer,
+                            context.primarySecondary.withOpacity(0.5),
                           ],
                           stops: const [
                             0.1,
@@ -129,7 +129,7 @@ class BaseUiScreen extends StatelessWidget {
           body: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             decoration: BoxDecoration(
-              color: FxColors.secondary.withOpacity(0.8),
+              color: context.secondary.withOpacity(0.8),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(25),
                 topRight: Radius.circular(20),

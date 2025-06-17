@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class DoaItem extends StatelessWidget {
-  DoaItem(
-      {super.key,
-      this.title,
-      this.content,
-      this.number,
-      this.onLongPress,
-      this.onTap,
-      required this.color,
-      this.fontFamily,
-      required this.childPageNumber,
-      this.text});
+  DoaItem({
+    required this.color,
+    required this.childPageNumber,
+    super.key,
+    this.title,
+    this.content,
+    this.number,
+    this.onLongPress,
+    this.onTap,
+    this.fontFamily,
+    this.text,
+  });
   String? title;
   Widget? titleWidget;
   String? content;
@@ -63,19 +65,19 @@ class DoaItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       number!,
                       textDirection: TextDirection.rtl,
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontFamily: fontFamily ?? 'ios-1',
-                        color: FxColors.primary,
+                        color: context.primaryScheme,
                         fontSize: fontSizeAthkar,
                       ),
                     ),
                   ),
-                  childPageNumber
+                  childPageNumber,
                 ],
               ),
             ],

@@ -3,16 +3,19 @@ import 'dart:ui';
 
 // import 'package:ecommerce_project/core/components/bottom_sheet/smooth_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_sheets/smooth_sheets.dart';
 // import 'package:smooth_sheets/smooth_sheets.dart';
 // import '/core/components/bottom_sheet/base_component_show.dart';
-import 'smooth_sheet.dart';
+import 'package:quran_app/core/components/bottom_sheet/smooth_sheet.dart';
+import 'package:smooth_sheets/smooth_sheets.dart';
 
 extension ExtensionSheet on BuildContext {
-  void showBlurBottomSheet(
-      {Widget Function(BuildContext context, ScrollController scrollController)?
-          builder}) {
-    showModalBottomSheet(
+  void showBlurBottomSheet({
+    required Widget Function(
+      BuildContext context,
+      ScrollController scrollController,
+    ) builder,
+  }) {
+    showModalBottomSheet<void>(
       context: this,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -40,9 +43,9 @@ extension ExtensionSheet on BuildContext {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.85, // Adjust width
+                width: MediaQuery.of(context).size.width, // Adjust width
                 decoration: BoxDecoration(
-                  // color: Colors.black,
+                  color: Colors.white,
                   border: Border.all(
                     color: Colors.grey,
                     width: 0.5,
@@ -57,59 +60,15 @@ extension ExtensionSheet on BuildContext {
                   // ],
                 ),
                 child: DraggableScrollableSheet(
-                  initialChildSize: 0.33, // Default visible height (40%)
-                  minChildSize: 0.2, // Minimum height (20%)
-                  maxChildSize: 0.8, // Maximum height (80%)
-                  expand: false, // Prevents taking full screen
-                  builder: builder ??
-                      (context, scrollController) {
-                        return SingleChildScrollView(
-                          controller: scrollController,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              children: List.generate(
-                                20,
-                                (index) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Text("Item ${index + 1}",
-                                      style: const TextStyle(fontSize: 16)),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                  initialChildSize: 0.33,
+                  minChildSize: 0.2,
+                  maxChildSize: 0.8,
+                  expand: false,
+                  snap: true,
+                  builder: builder,
                 ),
               ),
             ),
-            // Bottom Sheet Content
-            // DraggableScrollableSheet(
-            //   initialChildSize: 0.4,
-            //   minChildSize: 0.2,
-            //   maxChildSize: 0.8,
-            //   builder:builder?? (context, scrollController) {
-            //     return  Container(
-            //       decoration: const BoxDecoration(
-            //         color: Colors.white,
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(20)),
-            //       ),
-            //       padding: const EdgeInsets.all(16),
-            //       child: ListView(
-            //         controller: scrollController,
-            //         children: const [
-            //           Text("This is a blurred bottom sheet",
-            //               style: TextStyle(
-            //                   fontSize: 18, fontWeight: FontWeight.bold)),
-            //           SizedBox(height: 10),
-            //           Text("You can add any content here."),
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // ),
           ],
         );
       },
@@ -147,4 +106,3 @@ extension ExtensionSheet on BuildContext {
     );
   }
 }
-

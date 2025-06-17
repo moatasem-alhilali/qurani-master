@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -161,7 +162,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                               margin: const EdgeInsets.symmetric(horizontal: 2),
                               decoration: BoxDecoration(
                                 color: i == _currentPage
-                                    ? Theme.of(context).primaryColor
+                                    ? context.primaryScheme
                                     : Colors.grey.shade300,
                                 borderRadius: BorderRadius.circular(4),
                               ),
@@ -249,7 +250,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
         child: const AddDhikrDialog(),
       ),
       title: 'إضافة ذكر مخصص',
-      backgroundColor: FxColors.background,
+      backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 
@@ -260,7 +261,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
         child: AddDhikrDialog(subihToEdit: subih),
       ),
       title: 'تعديل الذكر',
-      backgroundColor: FxColors.background,
+      backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 

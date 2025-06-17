@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
@@ -62,7 +63,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         color: index % 2 == 0
-                            ? Theme.of(context).primaryColor
+                            ? context.primaryScheme
                             : Colors.transparent,
                       ),
                       child: Row(
@@ -74,8 +75,8 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                           ),
                           CircleAvatar(
                             backgroundColor: index % 2 == 0
-                                ? FxColors.primary
-                                : FxColors.primarySecondary,
+                                ? context.primaryScheme
+                                : context.primarySecondary,
                             radius: 18,
                             child: Text('${index + 1}'),
                           ),

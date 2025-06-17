@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/theme/app_themes.dart';
 import 'package:quran_app/core/widgets/drawer_slide/juz_page.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
 
@@ -13,7 +12,7 @@ class SurahJuzList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       child: DefaultTabController(
         length: 2,
         child: Column(
@@ -21,10 +20,10 @@ class SurahJuzList extends StatelessWidget {
             const Gap(6),
             Container(
               height: 40,
-              padding: const EdgeInsets.all(4.0),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(4),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: context.currentThemeData.colorScheme.primary,
+                color: context.quranTheme.colorScheme.primary,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
@@ -34,7 +33,7 @@ class SurahJuzList extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 labelStyle: TextStyle(
-                  color: context.currentThemeData.hintColor,
+                  color: context.quranTheme.hintColor,
                   fontFamily: 'kufi',
                   fontSize: 11,
                 ),
@@ -43,14 +42,14 @@ class SurahJuzList extends StatelessWidget {
                     Radius.circular(8),
                   ),
                   color:
-                      context.currentThemeData.colorScheme.background.withOpacity(.3),
+                      context.quranTheme.colorScheme.background.withOpacity(.3),
                 ),
                 tabs: [
                   Tab(
                     child: Text(
                       'السور',
                       style: TextStyle(
-                        color: context.currentThemeData.canvasColor,
+                        color: context.quranTheme.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -60,7 +59,7 @@ class SurahJuzList extends StatelessWidget {
                     child: Text(
                       'الاجزاء',
                       style: TextStyle(
-                        color:context. currentThemeData.canvasColor,
+                        color: context.quranTheme.canvasColor,
                         fontSize: 12,
                         fontFamily: 'kufi',
                       ),
@@ -76,7 +75,7 @@ class SurahJuzList extends StatelessWidget {
                   QuranJuz(),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -64,3 +64,8 @@ Future<void> setupTimezone() async {
 
   tz.setLocalLocation(location);
 }
+
+
+
+// https://vercel-pdf-proxy.vercel.app/proxy?url=https://www.archive.org/download/waq79565/79565.pdf
+// https://waqfeya.net/

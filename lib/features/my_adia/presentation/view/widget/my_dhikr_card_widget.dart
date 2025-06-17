@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -29,19 +31,16 @@ class MyDhikrCardWidget extends StatelessWidget {
       width: double.infinity,
       child: Column(
         children: [
-          Container(
+          CardWidget(
             width: double.infinity,
             margin: const EdgeInsets.only(
               top: 8,
               left: 16,
               right: 16,
             ),
-            decoration: BoxDecoration(
-              color: FxColors.secondary,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
             ),
             child: Column(
               children: [
@@ -88,18 +87,15 @@ class MyDhikrCardWidget extends StatelessWidget {
               ],
             ),
           ),
-          Container(
+          CardWidget(
             margin: const EdgeInsets.only(
               bottom: 8,
               left: 16,
               right: 16,
             ),
-            decoration: BoxDecoration(
-              color: FxColors.background,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,7 +112,7 @@ class MyDhikrCardWidget extends StatelessWidget {
                   onPressed: onReset,
                   icon: Icon(
                     Icons.refresh,
-                    color: FxColors.primary,
+                    color: context.primaryScheme,
                   ),
                 ),
                 // Delete button for custom dhikr

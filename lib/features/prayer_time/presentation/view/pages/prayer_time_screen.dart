@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
@@ -134,7 +135,7 @@ class _ShimmerEffect extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).primaryColor,
+                color: context.primaryScheme,
               ),
             ),
           ),

@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../../../core/shared/export/export-shared.dart';
-
 class ProgressWithController extends StatelessWidget {
   const ProgressWithController({
-    super.key,
     required this.countVerse,
+    super.key,
   });
   final String countVerse;
 
@@ -24,19 +24,19 @@ class ProgressWithController extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
+            horizontal: 20,
           ),
           child: StreamBuilder<PositionData>(
             stream: positionDataStreamOfOnlineListing,
             builder: (context, snapshot) {
               final positionData = snapshot.data;
               return ProgressBar(
-                progressBarColor: Colors.red,
-                baseBarColor: Colors.white.withOpacity(0.24),
-                bufferedBarColor: Colors.white.withOpacity(0.24),
-                thumbColor: Colors.white,
-                barHeight: 8.0,
-                thumbRadius: 5.0,
+                progressBarColor: context.primaryScheme,
+                baseBarColor: context.primaryScheme.withOpacity(0.24),
+                bufferedBarColor: context.primaryScheme.withOpacity(0.24),
+                thumbColor: context.primaryScheme,
+                barHeight: 8,
+                thumbRadius: 5,
                 timeLabelTextStyle: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -65,7 +65,7 @@ class ProgressWithController extends StatelessWidget {
         //icon controller
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -82,10 +82,10 @@ class ProgressWithController extends StatelessWidget {
                             AudioCubit.get(context)
                                 .playAudioNextOrPrevious(isNext: true);
                             //current
-                            var currentAudioData =
+                            final currentAudioData =
                                 AudioPlayerRepo.currentAudioData;
                             //update
-                            CurrentAudioModel updateCurrent = CurrentAudioModel(
+                            final updateCurrent = CurrentAudioModel(
                               countSurahVerse: currentAudioData.countSurahVerse,
                               imageReader: currentAudioData.imageReader,
                               nameReader: currentAudioData.nameReader,
@@ -141,11 +141,10 @@ class ProgressWithController extends StatelessWidget {
                                     .audioPlayerOnlineListen.currentIndex !=
                                 0) {
                               //current
-                              var currentAudioData =
+                              final currentAudioData =
                                   AudioPlayerRepo.currentAudioData;
                               //update
-                              CurrentAudioModel updateCurrent =
-                                  CurrentAudioModel(
+                              final updateCurrent = CurrentAudioModel(
                                 countSurahVerse:
                                     currentAudioData.countSurahVerse,
                                 imageReader: currentAudioData.imageReader,
@@ -194,11 +193,11 @@ Stream<PositionData> get positionDataStreamOfOnlineListing =>
 
 class _ActionProgress extends StatelessWidget {
   const _ActionProgress({
-    Key? key,
     required this.audioPlayer,
     required this.currentIndex,
     required this.itemIndex,
-  }) : super(key: key);
+    super.key,
+  });
 
   final AudioPlayer audioPlayer;
   final int currentIndex;
@@ -219,12 +218,10 @@ class _ActionProgress extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: FittedBox(
                   child: IconButton(
-                    onPressed: () {
-                      audioPlayer.play();
-                    },
+                    onPressed: audioPlayer.play,
                     icon: const Icon(Icons.play_arrow_outlined),
                   ),
                 ),
@@ -245,7 +242,7 @@ class _ActionProgress extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: FxColors.primary,
+                backgroundColor: context.primaryScheme,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

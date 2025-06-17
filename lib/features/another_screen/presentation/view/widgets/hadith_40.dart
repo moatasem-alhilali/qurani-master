@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/hadith_text.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -29,7 +30,7 @@ class Hadith40 extends StatelessWidget {
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).primaryColor,
+                color: context.primaryScheme,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,8 +61,8 @@ class Hadith40 extends StatelessWidget {
                   ),
                   Text(
                     'شرح الحديث',
-                    style:
-                        titleMedium(context).copyWith(color: FxColors.primary),
+                    style: titleMedium(context)
+                        .copyWith(color: context.primaryScheme),
                   ),
                   const SizedBox(
                     height: 15,

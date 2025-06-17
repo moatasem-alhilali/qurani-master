@@ -91,7 +91,8 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
   void initState() {
     try {
       widget.controller?.selection = TextSelection.fromPosition(
-          TextPosition(offset: widget.controller!.text.length));
+        TextPosition(offset: widget.controller!.text.length),
+      );
     } catch (e) {
       // logger.e('error selection controller $e  ');
     }
@@ -102,11 +103,11 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
       child: TextFormField(
         inputFormatters: [
           if (widget.numberFormatter)
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            FilteringTextInputFormatter.allow(RegExp('[0-9]')),
           if (widget.oneLengthNumberFormatter)
             LengthLimitingTextInputFormatter(1),
           if (widget.numberCountFormatter)
@@ -117,12 +118,13 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
           if (widget.englishFormatter)
             FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
           if (widget.phoneFormatter)
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+            FilteringTextInputFormatter.allow(RegExp('[0-9+]')),
           if (widget.numberWithEnglishFormatter)
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9a-zA-Z]')),
+            FilteringTextInputFormatter.allow(RegExp('[0-9a-zA-Z]')),
           if (widget.emailFormatter)
             FilteringTextInputFormatter.allow(
-                RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')),
+              RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+'),
+            ),
           if (widget.threeWordArabicFormatter) _ThreeWordsInputFormatter(),
           if (widget.oneWordArabicFormatter) _OneWordsInputFormatter(),
           if (widget.denyArabicFormatter)
@@ -160,8 +162,8 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         style: widget.style,
         decoration: InputDecoration(
           errorText: widget.statusText ? widget.successText : widget.errorText,
-          suffixIconColor: Theme.of(context).primaryColorLight,
-          prefixIconColor: Theme.of(context).primaryColorLight,
+          // suffixIconColor: context.primaryLight,
+          // prefixIconColor: context.primaryLight,
           labelText: widget.labelText ?? widget.hintText,
           labelStyle: widget.hintStyle,
           hintText: widget.hintText,
@@ -209,9 +211,11 @@ class NoSpaceFormatter extends TextInputFormatter {
 class _ThreeWordsInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    String trimmedText = newValue.text.replaceAll(RegExp(r'\s+'), ' ');
-    List<String> words = trimmedText.split(' ');
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var trimmedText = newValue.text.replaceAll(RegExp(r'\s+'), ' ');
+    var words = trimmedText.split(' ');
 
     if (words.length > 3) {
       // Remove extra words
@@ -220,8 +224,8 @@ class _ThreeWordsInputFormatter extends TextInputFormatter {
     }
 
     // Keep the selection at the end of the text
-    int selectionIndex = newValue.selection.end;
-    int newSelectionIndex =
+    final selectionIndex = newValue.selection.end;
+    final newSelectionIndex =
         selectionIndex - (newValue.text.length - trimmedText.length);
 
     return TextEditingValue(
@@ -234,9 +238,11 @@ class _ThreeWordsInputFormatter extends TextInputFormatter {
 class _OneWordsInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    String trimmedText = newValue.text.replaceAll(RegExp(r'\s+'), ' ');
-    List<String> words = trimmedText.split(' ');
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var trimmedText = newValue.text.replaceAll(RegExp(r'\s+'), ' ');
+    var words = trimmedText.split(' ');
 
     if (words.length > 1) {
       // Remove extra words
@@ -245,8 +251,8 @@ class _OneWordsInputFormatter extends TextInputFormatter {
     }
 
     // Keep the selection at the end of the text
-    int selectionIndex = newValue.selection.end;
-    int newSelectionIndex =
+    final selectionIndex = newValue.selection.end;
+    final newSelectionIndex =
         selectionIndex - (newValue.text.length - trimmedText.length);
 
     return TextEditingValue(

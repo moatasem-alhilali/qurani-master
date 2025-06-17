@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
@@ -46,19 +44,25 @@ class BaseHome extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
-      backgroundColor: FxColors.background,
+      backgroundColor: context.background,
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             if (back)
               SliverAppBar(
                 expandedHeight: 50.h,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: context.background,
+                // snap: true,
+                // floating: true,
+                pinned: true,
+                elevation: 0,
+                foregroundColor: Colors.transparent,
+                
                 leading: Padding(
                   padding: const EdgeInsets.all(12),
                   child: CircleAvatar(
                     radius: 18,
-                    backgroundColor: FxColors.primary,
+                    backgroundColor: context.primaryScheme,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () {
@@ -77,7 +81,7 @@ class BaseHome extends StatelessWidget {
             SliverAppBar(
               toolbarHeight: toolbarHeight,
               expandedHeight: 90.h,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: context.background,
               leading: leading ?? const SizedBox(),
               actions: const [],
               bottom: bottom,
@@ -109,8 +113,8 @@ class BaseHome extends StatelessWidget {
                             begin: FractionalOffset.bottomCenter,
                             end: FractionalOffset.topCenter,
                             colors: [
-                              FxColors.background.withOpacity(0.8),
-                              FxColors.background.withOpacity(0.1),
+                              context.scaffoldBackgroundColor.withOpacity(0.8),
+                              context.scaffoldBackgroundColor.withOpacity(0.1),
                             ],
                             stops: const [
                               1,
@@ -119,22 +123,22 @@ class BaseHome extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                          child: SizedBox(
-                            height: 80.h,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ),
+                      // ClipRRect(
+                      //   borderRadius: BorderRadius.circular(15),
+                      //   child: BackdropFilter(
+                      //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                      //     child: SizedBox(
+                      //       height: 80.h,
+                      //       width: double.infinity,
+                      //     ),
+                      //   ),
+                      // ),
                       Center(
                         child: titleWidget ??
                             title!.autoSize(
                               context,
                               maxLines: 4,
-                              color: Colors.grey,
+                              // color: context.onPrimary,
                             ),
                       ),
                     ],
@@ -146,9 +150,12 @@ class BaseHome extends StatelessWidget {
           ],
           body: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            margin: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 10.sp),
+            margin: EdgeInsets.symmetric(
+              // horizontal: 10.sp,
+              vertical: 10.sp,
+            ),
             decoration: BoxDecoration(
-              color: Theme.of(context).splashColor,
+              // color: context.onBackground,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(

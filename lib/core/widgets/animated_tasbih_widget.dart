@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 /// A custom animated Tasbih (Muslim prayer beads) widget that provides
 /// a realistic, interactive prayer bead counting experience
@@ -332,7 +332,7 @@ class _AnimatedTasbihWidgetState extends State<AnimatedTasbihWidget>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = widget.primaryColor ?? FxColors.primary;
+    final primaryColor = widget.primaryColor ?? context.primaryScheme;
     final secondaryColor =
         widget.secondaryColor ?? primaryColor.withOpacity(0.7);
     final stringColor = widget.stringColor ?? const Color(0xFF8B4513); // Brown

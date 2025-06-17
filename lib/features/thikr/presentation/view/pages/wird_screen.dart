@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/doa_item.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/wird.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
+import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -60,11 +60,11 @@ class _WirdScreenState extends State<WirdScreen> {
                         childPageNumber: Text(
                           '${wird.length - 1}/$current',
                           style: titleSmall(context).copyWith(
-                            color: FxColors.primary,
+                            color: context.primaryScheme,
                           ),
                         ),
                         fontFamily: 'ios-1',
-                        color: Theme.of(context).primaryColor,
+                        color: context.primaryScheme,
                         content: datathikr['content'] as String?,
                         text: datathikr['text'] as String,
                         number: 'التكرار :  ${datathikr['counter']} ',
@@ -87,7 +87,7 @@ class _WirdScreenState extends State<WirdScreen> {
             effect: ExpandingDotsEffect(
               spacing: 15,
               radius: 10,
-              activeDotColor: FxColors.primary,
+              activeDotColor: context.primaryScheme,
               dotHeight: 15,
               dotWidth: 15,
             ),

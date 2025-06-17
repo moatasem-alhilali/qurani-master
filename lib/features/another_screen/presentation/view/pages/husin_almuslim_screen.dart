@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -51,7 +52,7 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: index % 2 == 0
-                            ? Theme.of(context).primaryColor
+                            ? context.primaryScheme
                             : Colors.transparent,
                       ),
                       child: Row(
@@ -62,8 +63,8 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                                   Text(item.title, style: titleSmall(context))),
                           CircleAvatar(
                             backgroundColor: index % 2 == 0
-                                ? FxColors.primary
-                                : FxColors.primarySecondary,
+                                ? context.primaryScheme
+                                : context.primarySecondary,
                             radius: 18,
                             child: Text("${index + 1}"),
                           ),
