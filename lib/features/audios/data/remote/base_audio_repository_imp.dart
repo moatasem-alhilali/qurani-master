@@ -4,8 +4,15 @@ import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/services/api_serves.dart';
 import 'package:quran_app/core/services/audio_service.dart';
-import 'package:quran_app/features/audios/data/remote/base_audio_repository.dart';
 import 'package:quran_app/main.dart';
+
+abstract class BaseAudioRepository {
+  Future<Either<Failure, List<dynamic>>> famousReader(String id);
+  Future<Either<Failure, List<dynamic>>> famousReaderDetail(String id);
+  Future<Either<Failure, AudioPlayer>> initAudio(List url);
+
+  //
+}
 
 class BaseAudioRepositoryImpl implements BaseAudioRepository {
   @override

@@ -10,7 +10,7 @@ final ThemeData greenThemeData = ThemeData(
     onPrimary: Colors.white,
     secondary: Colors.white,
     onSecondary: Color(0xffCDAD80),
-    background: Color(0xffFFFFFF),
+    background: Color(0xfff1f2f4),
     onBackground: Color(0xfff3efdf),
     surface: Color(0xffCDAD80),
     onSurface: Color(0xffE0E1E0),

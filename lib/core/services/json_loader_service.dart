@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 class JsonLoaderService {
   // constants
   static const String allahNamesPath = 'assets/json/allah_names.json';
+  static const String mostReaderPath = 'assets/json/most_reader.json';
+  static const String surahInfoPath = 'assets/json/surah_info.json';
 
   /// Loads and decodes a JSON list from an asset file.
   ///

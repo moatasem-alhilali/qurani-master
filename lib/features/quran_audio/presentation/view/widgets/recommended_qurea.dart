@@ -4,12 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/core/jsons/moast_reader_text.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
-import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 
 class RecommendedQureaWidget extends StatefulWidget {
   const RecommendedQureaWidget({
@@ -45,80 +44,93 @@ class _RecommendedQureaWidgetState extends State<RecommendedQureaWidget> {
         //list of qurea
         SizedBox(
           height: context.getHight(22),
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, indexOfQarea) {
-              final data = mostReaderData[indexOfQarea];
+          child: BlocBuilder<QuranAudioBloc, QuranAudioState>(
+            builder: (context, state) {
+              switch (state.loadState) {
+                case RequestState.initial:
+                  return const SizedBox.shrink();
+                case RequestState.loading:
+                  return const SizedBox.shrink();
+                case RequestState.success:
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, indexOfQarea) {
+                      final data = state.mostReaderData[indexOfQarea];
 
-              return BlocBuilder<AudioCubit, AudioState>(
-                builder: (context, state) {
-                  final cubit = AudioCubit.get(context);
-                  return InkWell(
-                    onTap: () async {
-                      //current
-                      final currentAudioData = AudioPlayerRepo.currentAudioData;
-                      //update
-                      final updateCurrent = CurrentAudioModel(
-                        countSurahVerse: currentAudioData.countSurahVerse,
-                        imageReader: data['image'] as String,
-                        nameReader: data['name'] as String,
-                        nameSurah: currentAudioData.nameSurah,
-                        identifier: data['identifier'] as String,
-                        indexSurah: currentAudioData.indexSurah,
-                      );
-                      //save
-                      AudioPlayerRepo.currentAudioData = updateCurrent;
-                      AudioPlayerRepo.audioPlayerOnlineListen.stop();
+                      return BlocBuilder<QuranAudioBloc, QuranAudioState>(
+                        builder: (context, state) {
+                          final bloc = context.read<QuranAudioBloc>();
+                          return InkWell(
+                            onTap: () async {
+                              //update
+                              final updateCurrent = CurrentQuranAudioModel(
+                                countSurahVerse:
+                                    state.currentAudioData!.countSurahVerse,
+                                imageReader: data.image,
+                                nameReader: data.name,
+                                nameSurah: state.currentAudioData!.nameSurah,
+                                identifier: data.identifier,
+                                indexSurah: state.currentAudioData!.indexSurah,
+                              );
 
-                      AudioCubit.get(context).initAudioPlayer();
+                              //change the index
+                              bloc.add(
+                                ChangeCurrentAudioDataEvent(
+                                  currentAudioData: updateCurrent,
+                                  reInitialize: true,
+                                ),
+                              );
+                            },
+                            child: CardWidget(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              width: context.getWidth(22),
+                              padding: const EdgeInsets.all(4),
+                              borderRadius: BorderRadius.circular(20),
+                              color: state.currentAudioData!.identifier ==
+                                      data.identifier
+                                  ? context.primaryScheme
+                                  : null,
+                              // decoration: BoxDecoration(
 
-                      //change the index
-                      cubit.changeIndex(indexOfQarea);
-                    },
-                    child: CardWidget(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      width: context.getWidth(22),
-                      padding: const EdgeInsets.all(4),
-                      borderRadius: BorderRadius.circular(20),
-                      color: cubit.currentReader == indexOfQarea
-                          ? context.primaryScheme
-                          : null,
-                      // decoration: BoxDecoration(
-
-                      // ),
-                      // duration: const Duration(milliseconds: 500),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: SvgPicture.asset(
-                                data['image'] as String,
-                                height: context.getHight(10),
-                                fit: BoxFit.cover,
+                              // ),
+                              // duration: const Duration(milliseconds: 500),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: SvgPicture.asset(
+                                        data.image ?? '',
+                                        height: context.getHight(10),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      data.name ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: titleSmall(context),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              data['name'] as String,
-                              textAlign: TextAlign.center,
-                              style: titleSmall(context),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          );
+                        },
+                      );
+                    },
+                    itemCount: state.mostReaderData.length,
                   );
-                },
-              );
+                case RequestState.error:
+                  return const SizedBox.shrink();
+              }
             },
-            itemCount: mostReaderData.length,
           ),
         ),
       ],

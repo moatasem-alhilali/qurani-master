@@ -6,12 +6,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/quran_audio/data/remote/audio_player_repo.dart';
-import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
@@ -21,124 +21,112 @@ class SurahAudioOnly extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReadQuranBloc, ReadQuranState>(
-      builder: (context, state) {
-        switch (state.loadQuranState) {
-          case RequestState.initial:
-            return const SizedBox();
+      builder: (context, stateQuran) {
+        return stateQuran.loadQuranState.handle(
+          onInitial: const SizedBox(),
+          onLoading: const CircularProgressIndicator(),
+          onError: const SizedBox(),
+          onSuccess: () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const BaseHederWidget(text: 'الاستماع الى القرأن'),
+              BlocBuilder<QuranAudioBloc, QuranAudioState>(
+                builder: (context, state) {
+                  return state.loadState.handle(
+                    onInitial: const SizedBox(),
+                    onLoading: const CircularProgressIndicator(),
+                    onError: const SizedBox(),
+                    onSuccess: () {
+                      final currentAudioData = state.currentAudioData;
 
-          case RequestState.loading:
-            return const SizedBox();
-
-          case RequestState.error:
-            return const SizedBox();
-          case RequestState.success:
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const BaseHederWidget(text: 'الاستماع الى القرأن'),
-                InkWell(
-                  onTap: () {
-                    navigateTo(const AudioQuranScreen(), context);
-                  },
-                  child: BlocBuilder<BaseBloc, BaseState>(
-                    builder: (context, state) {
-                      return BlocBuilder<AudioCubit, AudioState>(
-                        builder: (context, state) {
-                          return CardWidget(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: SvgPicture.asset(
-                                            AudioPlayerRepo
-                                                .currentAudioData.imageReader!,
-                                            fit: BoxFit.cover,
-                                            height: context.getHight(8),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              AudioPlayerRepo
-                                                  .currentAudioData.nameReader!,
-                                              style: titleMedium(context),
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            BlocBuilder<AudioCubit, AudioState>(
-                                              builder: (context, state) {
-                                                return Text(
-                                                  context
-                                                      .read<ReadQuranBloc>()
-                                                      .quranRH
-                                                      .surahs[AudioPlayerRepo
-                                                          .currentSurah]
-                                                      .arabicName,
-                                                  style: titleSmall(context),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    BlocBuilder<AudioCubit, AudioState>(
-                                      builder: (context, state) {
-                                        if (state
-                                            is LoadingInitAudioPlayerState) {
-                                          return const SizedBox();
-                                        }
-                                        if (state
-                                            is NextPlayAudioLoadingState) {
-                                          return const SizedBox();
-                                        }
-
-                                        return _ActionProgress(
-                                          currentIndex: 0,
-                                          itemIndex: 0,
-                                          audioPlayer: AudioPlayerRepo
-                                              .audioPlayerOnlineListen,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-
-                                //
-                              ],
-                            ),
-                          );
+                      return InkWell(
+                        onTap: () {
+                          context.push(const AudioQuranScreen());
                         },
+                        child: CardWidget(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: SvgPicture.asset(
+                                          currentAudioData?.imageReader ?? '',
+                                          fit: BoxFit.cover,
+                                          height: context.getHight(8),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            currentAudioData?.nameReader ?? '',
+                                            style: titleMedium(context),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            context
+                                                .read<ReadQuranBloc>()
+                                                .quranRH
+                                                .surahs[currentAudioData
+                                                        ?.indexSurah ??
+                                                    0]
+                                                .arabicName,
+                                            style: titleSmall(context),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Builder(
+                                    builder: (context) {
+                                      if (state.loadAudioSourceState ==
+                                          RequestState.loading) {
+                                        return const SizedBox();
+                                      }
+
+                                      return _ActionProgress(
+                                        currentIndex: 0,
+                                        itemIndex: 0,
+                                        audioPlayer: state.audioPlayerSource ??
+                                            AudioPlayer(),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
-                  ),
-                ),
-              ],
-            );
-        }
+                  );
+                },
+              ),
+            ],
+          ),
+        );
       },
     ).animate().fade();
   }

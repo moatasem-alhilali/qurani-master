@@ -33,7 +33,7 @@ class QuranReadHelper {
 
     for (final surah in surahs) {
       allAyahs.addAll(surah.ayahs);
-      log('Added ${surah.arabicName} ayahs');
+      // log('Added ${surah.arabicName} ayahs');
       // update();
     }
     List.generate(604, (pageIndex) {

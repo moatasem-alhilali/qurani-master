@@ -11,7 +11,7 @@ import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_list.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/setting_theme_sheet.dart';
-import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah.dart';
+import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah_widget.dart';
 
 class OptionQuranDialog extends StatelessWidget {
   const OptionQuranDialog({super.key});
@@ -129,12 +129,11 @@ class _BottomOption extends StatelessWidget {
               _BottomAction(
                 icon: search_icon,
                 label: 'البحث',
-                widget: SearchAyah(),
+                widget: SearchAyahWidget(),
               ),
               InkWell(
                 onTap: () {
                   context.showBottomSheet(
-                    backgroundColor: theme.background,
                     child: SettingThemeSheet(),
                   );
                 },
@@ -173,7 +172,6 @@ class _BottomAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => context.showBottomSheet(
-        backgroundColor: context.quranTheme.colorScheme.background,
         child: SizedBox(
           height: context.getHight(80),
           child: widget,
@@ -202,8 +200,9 @@ class _QuickExitButton extends StatelessWidget {
     return InkWell(
       onTap: () {
         CacheConfig.saveLastPageRead();
-        context.pop();
-        context.pop();
+        context
+          ..pop()
+          ..pop();
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

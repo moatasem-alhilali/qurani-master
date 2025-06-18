@@ -917,14 +917,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
-  shimmer:
+  skeletonizer:
     dependency: "direct main"
     description:
-      name: shimmer
-      sha256: "1f1009b5845a1f88f1c5630212279540486f97409e9fc3f63883e71070d107bf"
+      name: skeletonizer
+      sha256: "0dcacc51c144af4edaf37672072156f49e47036becbc394d7c51850c5c1e884b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "1.4.3"
   sky_engine:
     dependency: transitive
     description: flutter

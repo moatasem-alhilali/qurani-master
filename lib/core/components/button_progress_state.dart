@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 // import 'package:ecommerce_project/core/themes/extension_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
@@ -91,6 +92,7 @@ class ProgressButtonState extends StatelessWidget {
     return StyleButtonWrap(
       onTap: () {
         if (state == RequestState.initial || state == RequestState.error) {
+          HapticFeedback.lightImpact();
           onPressed?.call();
         }
       },
@@ -322,6 +324,7 @@ class _StyleButtonWrapState extends State<StyleButtonWrap>
   Future<void> _handleTap() async {
     await _animationController.forward();
     await _animationController.reverse();
+    HapticFeedback.lightImpact();
     widget.onTap?.call();
   }
 
@@ -365,7 +368,10 @@ class BaseOnTap extends StatelessWidget {
       borderRadius: BorderRadius.circular(8.r),
       overlayColor:
           MaterialStatePropertyAll(context.primaryScheme.withOpacity(0.1)),
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap?.call();
+      },
       child: child,
     );
   }

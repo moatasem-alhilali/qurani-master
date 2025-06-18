@@ -4,8 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
-import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProgressAudio extends StatelessWidget {
@@ -66,8 +67,11 @@ class ProgressAudio extends StatelessWidget {
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () async {
-                          AudioCubit.get(context)
-                              .playAudioNextOrPrevious(isNext: true);
+                          context.read<QuranAudioBloc>().add(
+                                PlayAudioNextOrPreviousEvent(
+                                  isNext: true,
+                                ),
+                              );
                         },
                         icon: const Icon(
                           Icons.skip_next_outlined,
@@ -87,12 +91,14 @@ class ProgressAudio extends StatelessWidget {
                     ),
                   //!Controller audio
                   if (!isOffline)
-                    BlocBuilder<AudioCubit, AudioState>(
+                    BlocBuilder<QuranAudioBloc, QuranAudioState>(
                       builder: (context, state) {
-                        if (state is LoadingInitAudioPlayerState) {
+                        if (state.loadAudioSourceState ==
+                            RequestState.loading) {
                           return const CircularProgressIndicator();
                         }
-                        if (state is NextPlayAudioLoadingState) {
+                        if (state.loadAudioSourceState ==
+                            RequestState.loading) {
                           return const CircularProgressIndicator();
                         }
 
@@ -114,8 +120,11 @@ class ProgressAudio extends StatelessWidget {
                       child: IconButton(
                         onPressed: () async {
                           if (audioPlayer.currentIndex != 0) {
-                            AudioCubit.get(context)
-                                .playAudioNextOrPrevious(isNext: false);
+                            context.read<QuranAudioBloc>().add(
+                                  PlayAudioNextOrPreviousEvent(
+                                    isNext: false,
+                                  ),
+                                );
                           }
                         },
                         icon: const Icon(

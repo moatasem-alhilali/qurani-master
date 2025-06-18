@@ -12,6 +12,8 @@ import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
@@ -76,9 +78,14 @@ Future<void> setupServiceLocator() async {
       DatabaseSabihService(),
     )
 
+    // ─────────────────────── QURAN AUDIO ───────────────────────
+    ..registerSingleton<QuranAudioPlayerRepo>(QuranAudioPlayerRepoImpl())
+
     // ─────────────────────── BLOC ───────────────────────
     ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
-    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()));
+    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()))
+    ..registerFactory<QuranAudioBloc>(
+        () => QuranAudioBloc(quranAudioPlayerRepo: sl()));
 
   // ─────────────────────── DATABASE ───────────────────────
   await _initDatabaseClient();

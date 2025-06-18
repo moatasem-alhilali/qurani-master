@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/doa_item.dart';
-import 'package:quran_app/core/components/shimmer_base.dart';
+import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/wird.dart';
 import 'package:quran_app/core/services/clip_board_services.dart';

@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_component_show.dart';
 import 'package:quran_app/core/components/my_dialogs.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_loading.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
 
 //=================================Navigator===============================
 extension MyNavigator on BuildContext {
   dynamic customOrientation(var n1, var n2) {
-    Orientation orientation = MediaQuery.of(this).orientation;
+    final orientation = MediaQuery.of(this).orientation;
     return orientation == Orientation.portrait ? n1 : n2;
   }
 
 //show loading Dialog
   showLoading() {
-    showMyDialogFunction(context: this, child: myLoading(), back: false);
+    showMyDialogFunction(context: this, child: myLoading());
   }
 
 //show  Dialog
@@ -37,17 +38,17 @@ extension MyNavigator on BuildContext {
   }
 
 //show bottomsheet
-  showBottomSheet({
+  Future<void> showBottomSheet({
     required Widget child,
     FutureOr<void> Function()? whenCompleted,
     bool isScroll = true,
     Color? backgroundColor,
-  }) {
-    showMyBottomSheetFunction(
+  }) async {
+    await showMyBottomSheetFunction(
       context: this,
       child: child,
       isScroll: isScroll,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? background,
       whenCompleted: whenCompleted,
     );
   }
@@ -74,7 +75,7 @@ extension SizeHelper on BuildContext {
 }
 
 String convertNumbers(String inputStr) {
-  Map<String, Map<String, String>> numberSets = {
+  final numberSets = <String, Map<String, String>>{
     'العربية': {
       '0': '٠',
       '1': '١',

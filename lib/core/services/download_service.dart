@@ -6,14 +6,14 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
-import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
 import 'package:quran_app/features/offline/data/database/database_offline_service.dart';
+import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
   final ReceivePort _port = ReceivePort();
   final DatabaseOfflineService _offlineService = DatabaseOfflineService();
-
+  static const String portName = 'downloader_send_port';
   void init() {
     _bindBackgroundIsolate();
 
@@ -23,7 +23,7 @@ class DownloadService {
   void _bindBackgroundIsolate() {
     final isSuccess = IsolateNameServer.registerPortWithName(
       _port.sendPort,
-      'downloader_send_port',
+      portName,
     );
     if (!isSuccess) {
       remove();
@@ -43,7 +43,7 @@ class DownloadService {
   }
 
   void remove() {
-    IsolateNameServer.removePortNameMapping('downloader_audio_send_port');
+    IsolateNameServer.removePortNameMapping(portName);
   }
 
   @pragma('vm:entry-point')
@@ -57,11 +57,10 @@ class DownloadService {
       'task ($id) is in status ($status) and process ($progress)',
     );
 
-    IsolateNameServer.lookupPortByName('downloader_send_port')
-        ?.send([id, status, progress]);
+    IsolateNameServer.lookupPortByName(portName)?.send([id, status, progress]);
   }
 
-  void download(String url, String description) async {
+  Future<void> download(String url, String description) async {
     try {
       await _permission();
 
@@ -70,23 +69,20 @@ class DownloadService {
       // final dir =
       //     await Directory('${externalDirectory!.path}/Download').create();
       final di = await getDownloadPath();
-      String extension = url.split("/").last.split(".").last;
-      String fileName =
-          "${DateTime.now().millisecondsSinceEpoch.toString() + description}.$extension";
-      ToastServes.showToast(message: "التنزيل بدأ");
+      final extension = url.split('/').last.split('.').last;
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch.toString() + description}.$extension';
+      ToastServes.showToast(message: 'التنزيل بدأ');
 
       await FlutterDownloader.enqueue(
         url: url,
         // savedDir: dir.path,
         savedDir: di!,
-        showNotification: true,
-        allowCellular: true,
         saveInPublicStorage: true,
         fileName: fileName,
-        openFileFromNotification: true,
       ).then((value) => logger.i(value));
       try {
-        ToastServes.showToast(message: "تم التنزيل");
+        ToastServes.showToast(message: 'تم التنزيل');
 
         await _offlineService.insert(
           OfflineFileModel(
@@ -127,7 +123,7 @@ Future<String?> getDownloadPath() async {
       directory = await getExternalStorageDirectory();
     }
   } catch (err) {
-    print("Cannot get download folder path");
+    print('Cannot get download folder path');
   }
   return directory?.path;
 }

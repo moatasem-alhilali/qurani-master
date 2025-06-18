@@ -4,19 +4,25 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/features/search/data/model/aya.dart';
 import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
-class SearchAyah extends StatelessWidget {
-  SearchAyah({
+class SearchAyahWidget extends StatefulWidget {
+  const SearchAyahWidget({
     super.key,
   });
 
+  @override
+  State<SearchAyahWidget> createState() => _SearchAyahWidgetState();
+}
+
+class _SearchAyahWidgetState extends State<SearchAyahWidget> {
   final searchTextEditing = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -50,7 +56,15 @@ class SearchAyah extends StatelessWidget {
                 builder: (context, state) {
                   switch (state.ayahState) {
                     case RequestState.initial:
-                      return const SizedBox();
+                      return SizedBox(
+                        height: context.getHight(50),
+                        child: Center(
+                          child: Text(
+                            'قم بالبحث عن الايه',
+                            style: titleLarge(context),
+                          ),
+                        ),
+                      );
 
                     case RequestState.loading:
                       return const SizedBox();
@@ -59,6 +73,15 @@ class SearchAyah extends StatelessWidget {
                       return const SizedBox();
                     case RequestState.success:
                       final ayahList = state.ayaData;
+
+                      if (ayahList.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'لا يوجد نتائج',
+                            style: titleMedium(context),
+                          ),
+                        );
+                      }
 
                       return Expanded(
                         child: ListView.builder(
@@ -70,13 +93,16 @@ class SearchAyah extends StatelessWidget {
 
                             return Column(
                               children: <Widget>[
-                                Container(
-                                  color: (index % 2 == 0
-                                      ? context.quranTheme.colorScheme.surface
-                                          .withOpacity(.05)
-                                      : context.quranTheme.colorScheme.surface
-                                          .withOpacity(.1)),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    // vertical: 12.sp,
+                                  ),
                                   child: ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    // tileColor: context.background,
                                     onTap: () {
                                       context
                                           .read<ReadQuranBloc>()
@@ -84,8 +110,9 @@ class SearchAyah extends StatelessWidget {
                                           .jumpToPage(
                                             (search.pageNum as int) - 1,
                                           );
-                                      context.pop();
-                                      context.pop();
+                                      context
+                                        ..pop()
+                                        ..pop();
                                     },
                                     title: Padding(
                                       padding: const EdgeInsets.all(8),

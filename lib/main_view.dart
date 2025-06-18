@@ -12,7 +12,6 @@ import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/theme/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/custom_bottom_navigation_bar2.dart';
@@ -20,7 +19,7 @@ import 'package:quran_app/features/home/presentation/view/widgets/next_player.da
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/quran_audio/presentation/cubit/audio_cubit.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class MyApp extends StatelessWidget {
@@ -44,13 +43,17 @@ class MyApp extends StatelessWidget {
               sl<ConnectivityBloc>()..add(const ConnectivityStarted()),
         ),
 
-        ///audio
-        BlocProvider(create: (context) => AudioCubit()..initAudioPlayer()),
-
         ///theme
         BlocProvider(
           create: (context) =>
               ThemeBloc()..add(ChangeThemeEvent(theme: currentThemeType)),
+        ),
+
+        ///quran audio
+        BlocProvider(
+          create: (context) =>
+              sl<QuranAudioBloc>()..add(InitQuranPlayerDataEvent()),
+          lazy: false,
         ),
 
         ///base

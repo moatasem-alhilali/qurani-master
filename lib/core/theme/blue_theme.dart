@@ -10,7 +10,7 @@ final ThemeData blueThemeData = ThemeData(
     onPrimary: Colors.white,
     secondary: Colors.white,
     onSecondary: Color(0xffCDAD80),
-    background: Color(0xffFFFFFF),
+    background: Color(0xfff1f2f4),
     onBackground: Color(0xfff3efdf),
     surface: Color(0xffCDAD80),
     onSurface: Color(0xffE0E1E0),
@@ -18,7 +18,6 @@ final ThemeData blueThemeData = ThemeData(
     onError: Color(0xffE0E1E0),
     inversePrimary: Color(0xff000000),
     inverseSurface: Color(0xffCD9974),
-    
   ),
   primaryColor: const Color(0xFFFFFFFF),
   primaryColorLight: const Color(0xff53618c),
@@ -34,9 +33,7 @@ final ThemeData blueThemeData = ThemeData(
   hintColor: const Color(0xff404C6E),
   focusColor: const Color(0xffE0E1E0),
   secondaryHeaderColor: const Color(0xff53618c),
-  cardColor: const Color(0xff404C6E),
-
-  
+  cardColor: Colors.white,
 
   //
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -64,6 +61,11 @@ final ThemeData blueThemeData = ThemeData(
   progressIndicatorTheme: const ProgressIndicatorThemeData(
       // color: _primary,
       ),
+
+  listTileTheme: const ListTileThemeData(
+    tileColor: Colors.white,
+    
+  ),
 
   //
   splashColor: Colors.white, //customBackGroundBody

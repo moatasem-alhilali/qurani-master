@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 
 class ItemPrayerWidget extends StatefulWidget {
   const ItemPrayerWidget({
@@ -29,11 +31,14 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
       border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
-      child: InkWell(
+      child: StyleButtonWrap(
         onTap: () {
-          setState(() {
-            isMaxLine = !isMaxLine;
-          });
+          context.push(
+            const PrayerTimeScreen(),
+          );
+          // setState(() {
+          //   isMaxLine = !isMaxLine;
+          // });
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

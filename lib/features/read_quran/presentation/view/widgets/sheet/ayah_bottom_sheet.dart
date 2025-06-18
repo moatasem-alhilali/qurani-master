@@ -1,7 +1,9 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:quran_app/core/bloc/audio/share_audio_bloc.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
@@ -11,13 +13,11 @@ import 'package:rxdart/rxdart.dart';
 class AyahBottomSheet extends StatelessWidget {
   AyahBottomSheet({
     required this.verseNumber,
-    required this.audioPlayer,
     required this.surahNumber,
     required this.ayah,
     super.key,
     this.text,
   });
-  final AudioPlayer audioPlayer;
 
   final int verseNumber;
   final int surahNumber;
@@ -26,69 +26,75 @@ class AyahBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 5),
-        Text(
-          'السماع',
-          style: titleMedium(context).copyWith(
-            fontSize: 16.sp,
-          ),
-        ),
-        const SizedBox(height: 10),
-        CardWidget(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: SliderAudio(audioPlayer: audioPlayer),
-        ),
-        Text(
-          'الايه',
-          style: titleMedium(context).copyWith(
-            fontSize: 16.sp,
-          ),
-        ),
-        const SizedBox(height: 10),
-        CardWidget(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          padding: EdgeInsets.all(8.sp),
-          width: double.infinity,
-          child: Text(
-            ayah ?? '',
-            textAlign: TextAlign.right,
-            style: titleMedium(context).copyWith(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'quran',
+    return BlocBuilder<ShareAudioBloc, ShareAudioState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 5),
+            Text(
+              'السماع',
+              style: titleMedium(context).copyWith(
+                fontSize: 16.sp,
+              ),
             ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            'تفسير الأية',
-            style: titleMedium(context).copyWith(
-              fontSize: 16.sp,
+            const SizedBox(height: 10),
+            CardWidget(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: SliderAudio(
+                audioPlayer: state.audioPlayer ?? AudioPlayer(),
+              ),
             ),
-          ),
-        ),
-        const Divider(),
-        CardWidget(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          padding: const EdgeInsets.all(8),
-          child: Text(
-            text ?? '',
-            textAlign: TextAlign.right,
-            style: titleMedium(context).copyWith(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
+            Text(
+              'الايه',
+              style: titleMedium(context).copyWith(
+                fontSize: 16.sp,
+              ),
             ),
-          ),
-        ),
-      ],
+            const SizedBox(height: 10),
+            CardWidget(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.all(8.sp),
+              width: double.infinity,
+              child: Text(
+                ayah ?? '',
+                textAlign: TextAlign.right,
+                style: titleMedium(context).copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'quran',
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                'تفسير الأية',
+                style: titleMedium(context).copyWith(
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
+            const Divider(),
+            CardWidget(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                text ?? '',
+                textAlign: TextAlign.right,
+                style: titleMedium(context).copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

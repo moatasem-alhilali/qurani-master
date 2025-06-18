@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 class MyTextFormField extends StatefulWidget {
   MyTextFormField({
@@ -161,15 +162,27 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         onTap: widget.onTap,
         style: widget.style,
         decoration: InputDecoration(
+          fillColor: context.background,
+          filled: true,
           errorText: widget.statusText ? widget.successText : widget.errorText,
-          // suffixIconColor: context.primaryLight,
-          // prefixIconColor: context.primaryLight,
           labelText: widget.labelText ?? widget.hintText,
           labelStyle: widget.hintStyle,
           hintText: widget.hintText,
           helperStyle: Theme.of(context).textTheme.headlineSmall,
           suffixIcon: widget.suffixIcon,
           prefixIcon: widget.prefixIcon,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              color: context.primaryScheme,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              color: context.primaryScheme,
+            ),
+          ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(

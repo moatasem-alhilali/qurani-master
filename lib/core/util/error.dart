@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
-import '../components/shimmer_base.dart';
-
 class BaseNoData extends StatelessWidget {
-  const BaseNoData({super.key, required this.text});
+  const BaseNoData({required this.text, super.key});
 
   final String text;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: BaseShimmer(
-        child: Text(
-          text.toUpperCase(),
-          textAlign: TextAlign.center,
-          // style: titleMedium(context).copyWith(fontSize: 22),
-        ),
+      child: Text(
+        text.toUpperCase(),
+        textAlign: TextAlign.center,
+        // style: titleMedium(context).copyWith(fontSize: 22),
       ),
     ).animate().fade();
   }
@@ -50,7 +46,7 @@ class BaseErrorRobot extends StatelessWidget {
             textAlign: TextAlign.center,
             style: titleMedium(context)
                 .copyWith(fontWeight: FontWeight.bold, color: Colors.red),
-          )
+          ),
         ],
       ),
     ).animate().fade();
