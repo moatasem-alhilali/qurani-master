@@ -5,11 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 
 Future<bool?> showDeleteConfirmationDialog<T>(
   BuildContext context, {
   String? message,
   String? title,
+  Widget? icon,
 }) async {
   return showGeneralDialog<bool?>(
     context: context,
@@ -39,7 +41,7 @@ Future<bool?> showDeleteConfirmationDialog<T>(
           child: FadeTransition(
             opacity: fadeAnimation,
             child: AlertDialog(
-              backgroundColor: context.scaffoldBackgroundColor,
+              backgroundColor: context.secondary,
               elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -49,6 +51,7 @@ Future<bool?> showDeleteConfirmationDialog<T>(
                 animation: animation,
                 title: title,
                 message: message,
+                icon: icon,
               ),
             ),
           ),
@@ -63,11 +66,12 @@ class _AnimatedDialogContent extends StatelessWidget {
     required this.animation,
     this.title,
     this.message,
+    this.icon,
   });
   final Animation<double> animation;
   final String? title;
   final String? message;
-
+  final Widget? icon;
   @override
   Widget build(BuildContext context) {
     // Staggered animations for content elements
@@ -91,86 +95,93 @@ class _AnimatedDialogContent extends StatelessWidget {
       curve: const Interval(0.4, 0.9, curve: Curves.easeOut),
     );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FadeTransition(
-          opacity: iconAnimation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, -0.5),
-              end: Offset.zero,
-            ).animate(iconAnimation),
-            child: Icon(
-              Icons.close,
-              color: FxColors.error,
-              size: 48.h,
+    return SizedBox(
+      width: context.fullWidth,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FadeTransition(
+            opacity: iconAnimation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, -0.5),
+                end: Offset.zero,
+              ).animate(iconAnimation),
+              child: icon ??
+                  Icon(
+                    Icons.close,
+                    color: FxColors.error,
+                    size: 48.h,
+                  ),
             ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        FadeTransition(
-          opacity: titleAnimation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0.5, 0),
-              end: Offset.zero,
-            ).animate(titleAnimation),
-            child: Text(
-              title ?? 'حذف الذكر؟',
-              style: titleMedium(context).copyWith(
-                color: context.secondary,
+          SizedBox(height: 16.h),
+          FadeTransition(
+            opacity: titleAnimation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.5, 0),
+                end: Offset.zero,
+              ).animate(titleAnimation),
+              child: Text(
+                title ?? 'حذف الذكر؟',
+                style: titleMedium(context).copyWith(
+                  // color: context.secondary,
+                  fontSize: 18.sp,
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 8.h),
-        FadeTransition(
-          opacity: messageAnimation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(-0.5, 0),
-              end: Offset.zero,
-            ).animate(messageAnimation),
-            child: Text(
-              message ?? 'هل أنت متأكد من حذف الذكر؟',
-              style: titleMedium(context).copyWith(
-                color: FxColors.gray1,
+          SizedBox(height: 8.h),
+          FadeTransition(
+            opacity: messageAnimation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(-0.5, 0),
+                end: Offset.zero,
+              ).animate(messageAnimation),
+              child: Text(
+                message ?? 'هل أنت متأكد من حذف الذكر؟',
+                style: titleMedium(context).copyWith(
+                  color: FxColors.gray1,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        FadeTransition(
-          opacity: buttonAnimation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.5),
-              end: Offset.zero,
-            ).animate(buttonAnimation),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ProgressButtonState(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    text: 'إلغاء',
+          SizedBox(height: 16.h),
+          FadeTransition(
+            opacity: buttonAnimation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.5),
+                end: Offset.zero,
+              ).animate(buttonAnimation),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ProgressButtonState(
+                      defaultColor: Colors.transparent,
+                      onPressed: () => Navigator.of(context).pop(false),
+                      text: 'إلغاء',
+                      colorText: context.primaryScheme,
+                    ),
                   ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: ProgressButtonState(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    text: 'حذف',
-                    defaultColor: FxColors.error,
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: ProgressButtonState(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      text: 'نعم',
+                      defaultColor: FxColors.error,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,14 +1,13 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProgressWithControllerWidget extends StatelessWidget {
@@ -116,17 +115,15 @@ class ProgressWithControllerWidget extends StatelessWidget {
                             );
                           }
 
-                          return _ActionProgress(
-                            currentIndex: 0,
-                            itemIndex: 0,
+                          return IconPlayToggleAudioWidget(
+                            // currentIndex: 0,
+                            // itemIndex: 0,
                             audioPlayer: state.audioPlayerSource!,
                           );
                         },
                       ),
 
-                      const SizedBox(
-                        width: 20,
-                      ),
+                      const SizedBox(width: 20),
 
                       //back
                       _AnimatedControlButton(
@@ -321,187 +318,3 @@ Stream<PositionData> positionDataStreamOfOnlineListing(QuranAudioState state) =>
         );
       },
     );
-
-class _ActionProgress extends StatefulWidget {
-  const _ActionProgress({
-    required this.audioPlayer,
-    required this.currentIndex,
-    required this.itemIndex,
-    super.key,
-  });
-
-  final AudioPlayer audioPlayer;
-  final int currentIndex;
-  final int itemIndex;
-
-  @override
-  State<_ActionProgress> createState() => _ActionProgressState();
-}
-
-class _ActionProgressState extends State<_ActionProgress>
-    with TickerProviderStateMixin {
-  late AnimationController _iconController;
-  late AnimationController _colorController;
-  late AnimationController _scaleController;
-  late Animation<double> _iconRotation;
-  late Animation<Color?> _colorAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _iconController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-    _colorController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-
-    _iconRotation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(
-      CurvedAnimation(
-        parent: _iconController,
-        curve: Curves.elasticOut,
-      ),
-    );
-
-    _scaleAnimation = Tween<double>(
-      begin: 1,
-      end: 0.9,
-    ).animate(
-      CurvedAnimation(
-        parent: _scaleController,
-        curve: Curves.easeInOut,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _iconController.dispose();
-    _colorController.dispose();
-    _scaleController.dispose();
-    super.dispose();
-  }
-
-  void _handlePlayPause() {
-    _iconController.forward().then((_) => _iconController.reverse());
-    _scaleController.forward().then((_) => _scaleController.reverse());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _colorAnimation = ColorTween(
-      begin: context.primaryScheme,
-      end: Colors.redAccent,
-    ).animate(_colorController);
-
-    return BlocBuilder<BaseBloc, BaseState>(
-      builder: (context, state) {
-        return StreamBuilder<PlayerState>(
-          stream: widget.audioPlayer.playerStateStream,
-          builder: (context, snapshot) {
-            final playerState = snapshot.data;
-            final processingState = playerState?.processingState;
-            final playing = playerState?.playing;
-            final currentPlaying = widget.currentIndex == widget.itemIndex;
-
-            // Update color animation based on playing state
-            if (playing == true && currentPlaying) {
-              _colorController.forward();
-            } else {
-              _colorController.reverse();
-            }
-
-            return AnimatedBuilder(
-              animation: Listenable.merge([
-                _iconController,
-                _colorController,
-                _scaleController,
-              ]),
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Transform.rotate(
-                    angle: _iconRotation.value * 0.1,
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: _colorAnimation.value,
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        transitionBuilder:
-                            (Widget child, Animation<double> animation) {
-                          return RotationTransition(
-                            turns: animation,
-                            child: FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            ),
-                          );
-                        },
-                        child: _buildIconButton(
-                          playing,
-                          currentPlaying,
-                          processingState,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildIconButton(
-    bool? playing,
-    bool currentPlaying,
-    ProcessingState? processingState,
-  ) {
-    if (!(playing ?? false) || !currentPlaying) {
-      return IconButton(
-        key: const ValueKey('play'),
-        onPressed: () {
-          _handlePlayPause();
-          widget.audioPlayer.play();
-        },
-        icon: const Icon(
-          Icons.play_arrow_outlined,
-          color: Colors.white,
-          size: 28,
-        ),
-      );
-    } else if (processingState != ProcessingState.completed) {
-      return IconButton(
-        key: const ValueKey('pause'),
-        onPressed: () {
-          _handlePlayPause();
-          widget.audioPlayer.pause();
-        },
-        icon: const Icon(
-          Icons.pause_outlined,
-          color: Colors.white,
-          size: 28,
-        ),
-      );
-    } else {
-      return const Icon(
-        Icons.play_arrow_rounded,
-        color: Colors.white,
-        size: 28,
-        key: ValueKey('completed'),
-      );
-    }
-  }
-}

@@ -13,6 +13,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class SurahAudioOnly extends StatelessWidget {
@@ -106,11 +107,10 @@ class SurahAudioOnly extends StatelessWidget {
                                         return const SizedBox();
                                       }
 
-                                      return _ActionProgress(
-                                        currentIndex: 0,
-                                        itemIndex: 0,
+                                      return IconPlayToggleAudioWidget(
                                         audioPlayer: state.audioPlayerSource ??
                                             AudioPlayer(),
+                                        radius: 18,
                                       );
                                     },
                                   ),

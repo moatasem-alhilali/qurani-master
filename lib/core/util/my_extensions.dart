@@ -72,6 +72,10 @@ extension SizeHelper on BuildContext {
   double getWidth(int value) => (MediaQuery.of(this).size.width / 100) * value;
   double getScreenWidth() => MediaQuery.of(this).size.width;
   double getScreenHeight() => MediaQuery.of(this).size.height;
+
+  // get full width
+  double get fullWidth => MediaQuery.of(this).size.width;
+  double get fullHeight => MediaQuery.of(this).size.height;
 }
 
 String convertNumbers(String inputStr) {
