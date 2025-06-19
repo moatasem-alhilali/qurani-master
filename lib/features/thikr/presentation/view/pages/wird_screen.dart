@@ -4,10 +4,9 @@ import 'package:quran_app/core/components/doa_item.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/wird.dart';
-import 'package:quran_app/core/services/clip_board_services.dart';
+import 'package:quran_app/core/services/copy_service.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -69,10 +68,9 @@ class _WirdScreenState extends State<WirdScreen> {
                         text: datathikr['text'] as String,
                         number: 'التكرار :  ${datathikr['counter']} ',
                         onLongPress: () async {
-                          await ClipBoardServices.copyText(
-                            text: datathikr['text'] as String,
+                          await CopyService.copyToClipboard(
+                            datathikr['text'] as String,
                           );
-                          ToastServes.showToast(message: 'تم النسخ بنجاح');
                         },
                       ),
                     ],

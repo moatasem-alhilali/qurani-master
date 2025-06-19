@@ -33,18 +33,6 @@ class CardWidget extends StatelessWidget {
         borderRadius: borderRadius ?? BorderRadius.circular(12),
         color: color ?? context.secondary,
         border: border,
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.1),
-        //     blurRadius: 1,
-        //     offset: const Offset(0, 1),
-        //   ),
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.1),
-        //     blurRadius: 1,
-        //     offset: const Offset(1, 0),
-        //   ),
-        // ],
       ),
       child: child,
     );

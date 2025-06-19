@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/copy_icon_widget.dart';
+import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/ruqia_text.dart';
-import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class RuqiaShareiahScreen extends StatelessWidget {
@@ -41,18 +42,12 @@ class RuqiaShareiahScreen extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.share_sharp),
+                          IconShareWidget(
+                            text: ruqiaText[index]['zekr'] as String,
+                            subject: 'الرقية الشرعية',
                           ),
-                          IconButton(
-                            onPressed: () async {
-                              await ClipBoardServices.copyText(
-                                text: ruqiaText[index]['zekr'] as String,
-                                message: 'تم النسخ بنجاح',
-                              );
-                            },
-                            icon: const Icon(Icons.copy_outlined),
+                          CopyIconWidget(
+                            text: ruqiaText[index]['zekr'] as String,
                           ),
                         ],
                       ),

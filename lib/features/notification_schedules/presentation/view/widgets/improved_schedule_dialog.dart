@@ -12,7 +12,7 @@ Future<void> showImprovedScheduleDialog(
   NotificationScheduleCustomModel model,
   void Function(NotificationScheduleCustomModel result) onSave,
 ) async {
-  await showDialog(
+  await showDialog<NotificationScheduleCustomModel>(
     context: context,
     barrierDismissible: false,
     builder: (context) => _ScheduleDialog(

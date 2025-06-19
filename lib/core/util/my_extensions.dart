@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_component_show.dart';
-import 'package:quran_app/core/components/my_dialogs.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/core/util/my_loading.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
 
 //=================================Navigator===============================
@@ -12,29 +10,6 @@ extension MyNavigator on BuildContext {
   dynamic customOrientation(var n1, var n2) {
     final orientation = MediaQuery.of(this).orientation;
     return orientation == Orientation.portrait ? n1 : n2;
-  }
-
-//show loading Dialog
-  showLoading() {
-    showMyDialogFunction(context: this, child: myLoading());
-  }
-
-//show  Dialog
-  showDialog({
-    required Widget child,
-    bool animate = true,
-    bool back = false,
-    double? height,
-    double? width,
-  }) {
-    showMyDialogStyleFunction(
-      context: this,
-      child: child,
-      back: back,
-      animate: animate,
-      height: height,
-      width: width,
-    );
   }
 
 //show bottomsheet

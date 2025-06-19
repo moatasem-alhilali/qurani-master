@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/components/copy_icon_widget.dart';
+import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/post_prayer_azkar.dart';
-import 'package:quran_app/core/services/clip_board_services.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class AzkarAfterPray extends StatelessWidget {
@@ -24,13 +25,9 @@ class AzkarAfterPray extends StatelessWidget {
 
           return BaseAnimate(
             index: 0,
-            child: Container(
+            child: CardWidget(
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: context.primaryScheme,
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -78,18 +75,12 @@ class AzkarAfterPray extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.share_sharp),
+                      IconShareWidget(
+                        text: data['zekr'] as String,
+                        subject: 'أذكار بعد الصلاة',
                       ),
-                      IconButton(
-                        onPressed: () async {
-                          await ClipBoardServices.copyText(
-                            text: '${data['hadith']} : ${data['description']}',
-                            message: 'تم النسخ بنجاح',
-                          );
-                        },
-                        icon: const Icon(Icons.copy_outlined),
+                      CopyIconWidget(
+                        text: '${data['hadith']} : ${data['description']}',
                       ),
                     ],
                   ),
