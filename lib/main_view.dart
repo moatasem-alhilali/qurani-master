@@ -21,6 +21,7 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/setting/presentation/bloc/setting_notification_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -148,13 +149,18 @@ class _App extends StatelessWidget {
       // child: ,
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
-          return BaseHome(
-            titleWidget: currentPage == 0 ? const NextTimePrayerRemain() : null,
-            back: false,
-            title: 'طمأنينة',
-            isScroll: currentPage == 2 ? false : true,
-            bottomNavigationBar: const CustomBottomNavigationBar(),
-            body: screens[currentPage],
+          return BlocProvider(
+            create: (context) =>
+                SettingNotificationBloc(sl())..add(LoadNotificationSettings()),
+            child: BaseHome(
+              titleWidget:
+                  currentPage == 0 ? const NextTimePrayerRemain() : null,
+              back: false,
+              title: 'طمأنينة',
+              isScroll: currentPage == 2 ? false : true,
+              bottomNavigationBar: const CustomBottomNavigationBar(),
+              body: screens[currentPage],
+            ),
           );
         },
       ),

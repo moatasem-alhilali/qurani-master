@@ -1,23 +1,28 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:quran_app/core/notification/channel/notification_channel.dart';
-import 'package:quran_app/core/notification/channel/channel_initializer.dart';
 
 class NotificationService {
-  final FlutterLocalNotificationsPlugin _plugin =
-      FlutterLocalNotificationsPlugin();
+  NotificationService() : plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin plugin;
 
   final BehaviorSubject<String> selectNotificationSubject =
       BehaviorSubject<String>();
 
   Future<void> initialize() async {
     tz.initializeTimeZones();
+
+    final localTimezone = await FlutterTimezone.getLocalTimezone();
+    final location = tz.getLocation(localTimezone);
+
+    tz.setLocalLocation(location);
     await _configureLocalTimeZone();
 
     const androidSettings =
@@ -34,7 +39,7 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    await _plugin.initialize(
+    await plugin.initialize(
       settings,
       onSelectNotification: (payload) async {
         if (payload != null) {
@@ -43,11 +48,30 @@ class NotificationService {
       },
     );
 
-    await initAllAndroidChannels(plugin: _plugin);
+    await initAllAndroidChannels();
 
     _configureSelectNotificationSubject();
 
     logger.d('Notification service initialized');
+  }
+
+  Future<void> initAllAndroidChannels() async {
+    final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    for (final channel in NotificationChannel.values) {
+      final data = channel.data;
+
+      final androidChannel = AndroidNotificationChannel(
+        data.id,
+        data.name,
+        description: 'Channel for ${data.name}',
+        importance: Importance.max,
+        sound: RawResourceAndroidNotificationSound(data.sound),
+      );
+
+      await androidPlugin?.createNotificationChannel(androidChannel);
+    }
   }
 
   Future<void> showInstantNotification({
@@ -56,7 +80,7 @@ class NotificationService {
     NotificationChannel channel = NotificationChannel.defaultChannel,
   }) async {
     final details = await _buildNotificationDetails(channel);
-    await _plugin.show(
+    await plugin.show(
       DateTime.now().millisecondsSinceEpoch % 100000, // unique ID
       title,
       body,
@@ -77,7 +101,7 @@ class NotificationService {
     final details = await _buildNotificationDetails(channel);
     final time = _nextInstanceOf(hour: hour, minute: minute);
 
-    await _plugin.zonedSchedule(
+    await plugin.zonedSchedule(
       id,
       title,
       body,
@@ -92,8 +116,8 @@ class NotificationService {
     // logger.i('Notification service scheduled at $time');
   }
 
-  Future<void> cancel({required int id}) async => _plugin.cancel(id);
-  Future<void> cancelAll() async => _plugin.cancelAll();
+  Future<void> cancel({required int id}) async => plugin.cancel(id);
+  Future<void> cancelAll() async => plugin.cancelAll();
 
   // ================== Internals ==================
 

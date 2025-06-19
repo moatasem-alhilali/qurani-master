@@ -10,10 +10,9 @@ import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/features/setting/data/seed/notification_settings_seeder.dart';
+import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/main_view.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+
 
 // ✅ Logger instance used globally for debugging and logging
 Logger logger = Logger();
@@ -23,7 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 🌐 Initialize timezone support to handle local timezones correctly
-  await setupTimezone();
+  await TimeZoneService().setupTimezone();
 
   // 📥 Initialize the FlutterDownloader for background downloading support
   await FlutterDownloader.initialize();
@@ -46,9 +45,6 @@ void main() async {
   // 💾 Initialize local cache (e.g., SharedPreferences)
   await CacheConfig.init();
 
-  // 🔄 Load initial app state from local cache (e.g., last read page, theme type
-  await NotificationSettingsSeeder().runIfNeeded();
-
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await PermissionService.init();
 
@@ -56,14 +52,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-Future<void> setupTimezone() async {
-  tz.initializeTimeZones();
-
-  final localTimezone = await FlutterTimezone.getLocalTimezone();
-  final location = tz.getLocation(localTimezone);
-
-  tz.setLocalLocation(location);
-}
 
 
 

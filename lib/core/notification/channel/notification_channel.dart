@@ -1,13 +1,12 @@
 class NotificationChannelData {
-  final String id;
-  final String name;
-  final String sound;
-
   const NotificationChannelData({
     required this.id,
     required this.name,
     required this.sound,
   });
+  final String id;
+  final String name;
+  final String sound;
 }
 
 enum NotificationChannel {

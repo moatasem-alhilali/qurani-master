@@ -2,14 +2,16 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
+import 'package:quran_app/core/notification/advanced_notification_service.dart';
+import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
-import 'package:quran_app/core/notification/tasks_notification.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart';
 import 'package:quran_app/features/bookmark/data/remote/book_mark_repository_imp.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
+import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
@@ -20,7 +22,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/search/data/remote/aya_repository.dart';
 import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
-import 'package:quran_app/features/setting/data/remote/manage_notification_repo.dart';
+import 'package:quran_app/features/setting/data/repo/setting_notification_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -32,26 +34,36 @@ Future<void> setupServiceLocator() async {
     )
     ..registerSingleton<CacheService>(CacheService())
     ..registerSingleton<Connectivity>(Connectivity())
-
-    // ─────────────────────── MANAGE NOTIFICATION REPO ───────────────────────
-    ..registerSingleton<ManageNotificationRepo>(
-      ManageNotificationRepo(
-        settingDb: sl.get(),
+    // ─────────────────────── NOTIFICATION ───────────────────────
+    ..registerSingleton<NotificationService>(NotificationService())
+    ..registerSingleton<AdvancedNotificationService>(
+      AdvancedNotificationService(sl.get<NotificationService>().plugin),
+    )
+    ..registerSingleton<NotificationSchedulesRepo>(
+      NotificationSchedulesRepo(
+        notifyService: sl.get(),
+      ),
+    )
+    ..registerSingleton<AdhanPrayerTimeService>(AdhanPrayerTimeService())
+    ..registerSingleton<SettingNotificationRepo>(
+      SettingNotificationRepo(
+        advancedNotificationService: sl.get(),
+      ),
+    )
+    ..registerSingleton<NotificationOrchestratorService>(
+      NotificationOrchestratorService(
+        advancedNotificationService: sl.get(),
+        settingRepo: sl.get(),
+        notificationSchedulesRepo: sl.get(),
+        adhanPrayerTimeService: sl.get(),
       ),
     )
 
-    // ─────────────────────── NOTIFICATION ───────────────────────
-    ..registerSingleton<NotificationService>(NotificationService());
+    // ─────────────────────── MANAGE NOTIFICATION REPO ───────────────────────
+    // sl.get<ManageNotificationRepo>().tasksNotification = tasksNotification;
 
-  // ─────────────────────── TASKS NOTIFICATION ───────────────────────
-  final tasksNotification = TasksNotification();
-  sl.registerSingleton<TasksNotification>(tasksNotification);
+    // ─────────────────────── REPOSITORIES ───────────────────────
 
-  // ─────────────────────── MANAGE NOTIFICATION REPO ───────────────────────
-  sl.get<ManageNotificationRepo>().tasksNotification = tasksNotification;
-
-  // ─────────────────────── REPOSITORIES ───────────────────────
-  sl
     ..registerSingleton<OfflineRepositoryImpl>(OfflineRepositoryImpl())
     ..registerSingleton<BookRepositoryImpl>(BookRepositoryImpl())
     ..registerSingleton<BaseAudioRepositoryImpl>(BaseAudioRepositoryImpl())
@@ -85,7 +97,8 @@ Future<void> setupServiceLocator() async {
     ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
     ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()))
     ..registerFactory<QuranAudioBloc>(
-        () => QuranAudioBloc(quranAudioPlayerRepo: sl()));
+      () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
+    );
 
   // ─────────────────────── DATABASE ───────────────────────
   await _initDatabaseClient();

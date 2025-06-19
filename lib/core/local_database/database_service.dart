@@ -1,5 +1,7 @@
 import 'package:path/path.dart';
+import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
+import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -63,10 +65,11 @@ class DatabaseService {
     await db.execute(_bookmarkTable);
     await db.execute(_coordinates);
     await db.execute(_doua);
-    await db.execute(_notificationSettings);
+    await db.execute(DatabaseNotificationSettingService.notificationSettings);
     await db.execute(DatabaseSabihService.subihTable);
     await db.execute(DatabaseSabihService.subihLogsTable);
     await db.execute(DatabaseSabihService.subihSummaryTable);
+    await db.execute(DatabaseNotificationSchedulesService.notificationSchedules);
 
     logger.i('✅ Database initialized and tables created.');
   }
@@ -133,16 +136,7 @@ class DatabaseService {
       content TEXT NOT NULL
     );
   ''';
-  static const String _notificationSettings = '''
-  CREATE TABLE notification_settings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    key TEXT NOT NULL UNIQUE,
-    value INTEGER NOT NULL DEFAULT 0,
-    label TEXT,
-    updated_at TEXT,
-    time TEXT
-  );
-''';
+
 
   // ──────────────────────────────────────────────────────────────────────────────
   // 🔁 Generic CRUD Methods

@@ -1,9 +1,26 @@
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 
 /// Provides initial dhikr items for the app
 class SubihSeeder {
+  factory SubihSeeder() => _instance;
+
+  SubihSeeder._internal();
+  static final SubihSeeder _instance = SubihSeeder._internal();
+
+  static const String _hasSeededKey = 'has_seeded_sabih_data';
+
+  Future<void> runIfNeeded() async {
+    final alreadySeeded = CacheService().getBool(_hasSeededKey) ?? false;
+
+    if (alreadySeeded) return;
+
+    await seedIfEmpty();
+    await CacheService().setBool(_hasSeededKey, true);
+  }
+
   /// Returns a list of common dhikr items
   static List<SubihModel> getDefaultDhikrItems() {
     return [

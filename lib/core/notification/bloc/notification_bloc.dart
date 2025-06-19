@@ -1,29 +1,30 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
-import 'package:quran_app/core/notification/tasks_notification.dart';
+import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 
 part 'notification_event.dart';
 part 'notification_state.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
-  final NotificationService _notificationService = NotificationService();
-  final TasksNotification _tasksNotification = TasksNotification();
-
   NotificationBloc() : super(NotificationInitial()) {
     on<InitializeNotificationEvent>(_onInitializeNotification);
     on<SchedulePrayerNotificationEvent>(_onSchedulePrayerNotification);
     on<ShowInstantNotificationEvent>(_onShowInstantNotification);
   }
+  final NotificationService _notificationService = sl();
+  final NotificationOrchestratorService _tasksNotification = sl();
 
   Future<void> _onInitializeNotification(
     InitializeNotificationEvent event,
     Emitter<NotificationState> emit,
   ) async {
     await _notificationService.initialize();
-    await _tasksNotification.sendNotification();
+    await _tasksNotification.rescheduleAllNotifications();
     emit(NotificationInitialized());
   }
 

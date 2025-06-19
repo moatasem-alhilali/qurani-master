@@ -22,7 +22,7 @@ class PrayerInfoModel {
   final String time12;
   final String time24;
 
- static List<PrayerInfoModel> dummy() => [
+  static List<PrayerInfoModel> dummy() => [
         PrayerInfoModel(
           id: 1,
           type: Prayer.fajr,

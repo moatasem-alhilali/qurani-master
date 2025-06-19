@@ -44,6 +44,10 @@ class MyTextFormField extends StatefulWidget {
     this.numberCountIntFormatter = 1,
     this.onFieldSubmitted,
     this.style,
+    this.suffixText,
+    this.prefixText,
+    this.initialValue,
+
   });
   String? hintText;
   String? Function(String?)? validator;
@@ -83,6 +87,9 @@ class MyTextFormField extends StatefulWidget {
   final TextStyle? hintStyle;
   TextStyle? style;
   void Function(String)? onFieldSubmitted;
+  final String? suffixText;
+  final String? prefixText;
+  final String? initialValue;
   @override
   State<MyTextFormField> createState() => _MyTextFormFieldState();
 }
@@ -147,7 +154,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         keyboardType: widget.keyboardType,
         textAlign: widget.textAlign!,
         maxLines: widget.maxLines,
-
+        initialValue: widget.initialValue,
         obscureText: widget.obscureText,
         onEditingComplete: widget.onEditingComplete,
         onSaved: (newValue) {
@@ -162,6 +169,8 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         onTap: widget.onTap,
         style: widget.style,
         decoration: InputDecoration(
+          suffixText: widget.suffixText,
+          prefixText: widget.prefixText,
           fillColor: context.background,
           filled: true,
           errorText: widget.statusText ? widget.successText : widget.errorText,

@@ -1,29 +1,42 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/setting/data/remote/manage_notification_repo.dart';
-import 'package:quran_app/features/setting/presentation/bloc/setting_notification_event.dart';
-import 'package:quran_app/features/setting/presentation/bloc/setting_notification_state.dart';
+import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
+import 'package:quran_app/features/setting/data/repo/setting_notification_repo.dart';
+
+part 'setting_notification_event.dart';
+part 'setting_notification_state.dart';
 
 class SettingNotificationBloc
     extends Bloc<SettingNotificationEvent, SettingNotificationState> {
-  final ManageNotificationRepo repo;
-
   SettingNotificationBloc(this.repo)
       : super(SettingNotificationState.initial()) {
     on<LoadNotificationSettings>(_onLoad);
     on<ToggleNotification>(_onToggle);
+    on<EditNotificationSchedule>(_onEditSchedule);
   }
+  final SettingNotificationRepo repo;
 
   Future<void> _onLoad(
     LoadNotificationSettings event,
     Emitter<SettingNotificationState> emit,
   ) async {
     try {
-      emit(state.copyWith(loading: LoadState.loading));
-      final settings = await repo.loadAll();
-      emit(state.copyWith(settings: settings, loading: LoadState.success));
+      if (event.changeState) {
+        emit(state.copyWith(loading: LoadState.loading));
+      }
+      final settingsList = await repo.getAllSettings();
+      final settingsMap = {for (final e in settingsList) e.key: e};
+      if (event.changeState) {
+        emit(state.copyWith(settings: settingsMap, loading: LoadState.success));
+      } else {
+        emit(state.copyWith(settings: settingsMap));
+      }
     } catch (e) {
-      emit(state.copyWith(loading: LoadState.error));
+      if (event.changeState) {
+        emit(state.copyWith(loading: LoadState.error));
+      } else {
+        emit(state.copyWith());
+      }
       rethrow;
     }
   }
@@ -33,12 +46,20 @@ class SettingNotificationBloc
     Emitter<SettingNotificationState> emit,
   ) async {
     try {
+      await repo.toggle(event.key, event.value);
+      add(LoadNotificationSettings(changeState: false));
+    } catch (e) {
       emit(state.copyWith());
-      final updated = await repo.toggle(event.key, event.value);
+    }
+  }
 
-      emit(state.copyWith(settings: updated));
-
-      add(LoadNotificationSettings());
+  Future<void> _onEditSchedule(
+    EditNotificationSchedule event,
+    Emitter<SettingNotificationState> emit,
+  ) async {
+    try {
+      await repo.updateSchedule(event.key, event.updatedModel);
+      add(LoadNotificationSettings(changeState: false));
     } catch (e) {
       emit(state.copyWith());
     }
