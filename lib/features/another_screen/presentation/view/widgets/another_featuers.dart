@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -34,7 +33,7 @@ class AnotherFeatures extends StatelessWidget {
     return GridView(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
-        childAspectRatio: 1 / 1.6,
+        childAspectRatio: 1 / 1.2,
         crossAxisSpacing: 5,
         mainAxisSpacing: 10,
       ),
@@ -196,7 +195,7 @@ class _Item extends StatelessWidget {
           CardWidget(
             child: Icon(
               icon,
-              size: 40.sp,
+              size: 30.sp,
               color: context.primaryScheme,
               // color: DarkColors.customPrimary,
             ),
@@ -208,7 +207,7 @@ class _Item extends StatelessWidget {
             context,
             maxLines: 3,
             minFontSize: 10,
-            fontSize: 12.sp,
+            fontSize: 11.sp,
             textAlign: TextAlign.center,
           ),
         ],

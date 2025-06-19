@@ -369,9 +369,10 @@ class _SettingScreenState extends State<SettingScreen>
                       children: [
                         Row(
                           children: [
-                            Container(
-                              width: 32.w,
-                              height: 32.w,
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 28.w,
+                              height: 28.w,
                               decoration: BoxDecoration(
                                 color: setting.enabled
                                     ? context.primaryScheme
@@ -383,7 +384,7 @@ class _SettingScreenState extends State<SettingScreen>
                                 color: setting.enabled
                                     ? CupertinoColors.white
                                     : CupertinoColors.systemGrey,
-                                size: 18.sp,
+                                size: 16.sp,
                               ),
                             ),
                             SizedBox(width: 12.w),
@@ -391,7 +392,7 @@ class _SettingScreenState extends State<SettingScreen>
                               child: Text(
                                 title,
                                 style: TextStyle(
-                                  fontSize: 16.sp,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
                                   color: setting.enabled
                                       ? CupertinoColors.label
@@ -436,7 +437,7 @@ class _SettingScreenState extends State<SettingScreen>
                             child: Text(
                               _subtitleFromSchedule(setting),
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 12.sp,
                                 color: context.primaryScheme,
                                 fontWeight: FontWeight.w500,
                               ),

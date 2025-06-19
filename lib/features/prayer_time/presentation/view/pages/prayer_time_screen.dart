@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/next_time_prayer_remain_widget.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
@@ -24,7 +24,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseHome(
-      titleWidget: const NextTimePrayerRemain(),
+      titleWidget: const NextTimePrayerRemainWidget(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

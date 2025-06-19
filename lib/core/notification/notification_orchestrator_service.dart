@@ -1,7 +1,7 @@
 import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/core/notification/seed/notification_data_const.dart';
+import 'package:quran_app/core/notification/data/notification_data_const.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';

@@ -3,8 +3,8 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_type_all.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/item.dart';
 
-class CategorySection extends StatelessWidget {
-  const CategorySection({super.key});
+class CategorySectionWidget extends StatelessWidget {
+  const CategorySectionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

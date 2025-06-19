@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/jsons/ruqia_text.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
@@ -21,47 +21,23 @@ class RuqiaShareiahScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           return BaseAnimate(
             index: 0,
-            child: Container(
+            child: CardWidget(
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: context.primaryScheme,
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          ruqiaText[index]['category'] as String,
-                          style: titleMedium(context),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          IconShareWidget(
-                            text: ruqiaText[index]['zekr'] as String,
-                            subject: 'الرقية الشرعية',
-                          ),
-                          CopyIconWidget(
-                            text: ruqiaText[index]['zekr'] as String,
-                          ),
-                        ],
-                      ),
-                    ],
+                  Text(
+                    ruqiaText[index]['category'] as String,
+                    style: titleMedium(context),
                   ),
                   const SizedBox(
                     height: 5,
                   ),
-                  //
-
-                  Text(
+                  SelectableText(
                     ruqiaText[index]['zekr'] as String,
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 210, 209, 209),
+                    style: titleSmall(context).copyWith(
+                      color: Colors.grey,
                     ),
                   ),
                   const SizedBox(
@@ -69,7 +45,24 @@ class RuqiaShareiahScreen extends StatelessWidget {
                   ),
                   Text(
                     "المرجع : ${ruqiaText[index]['reference'] == "" ? "القرأن الكريم" : ruqiaText[index]['reference']}",
-                    style: const TextStyle(color: Colors.grey),
+                    style: titleSmall(context).copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Divider(),
+                  Row(
+                    children: [
+                      IconShareWidget(
+                        text: ruqiaText[index]['zekr'] as String,
+                        subject: 'الرقية الشرعية',
+                      ),
+                      CopyIconWidget(
+                        text: ruqiaText[index]['zekr'] as String,
+                      ),
+                    ],
                   ),
                 ],
               ),

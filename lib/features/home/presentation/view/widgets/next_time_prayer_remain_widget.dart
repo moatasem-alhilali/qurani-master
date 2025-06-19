@@ -7,8 +7,8 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 
-class NextTimePrayerRemain extends StatelessWidget {
-  const NextTimePrayerRemain({super.key});
+class NextTimePrayerRemainWidget extends StatelessWidget {
+  const NextTimePrayerRemainWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

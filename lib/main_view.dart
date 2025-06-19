@@ -14,8 +14,8 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/custom_bottom_navigation_bar2.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/next_player.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/next_time_prayer_remain_widget.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
@@ -154,11 +154,11 @@ class _App extends StatelessWidget {
                 SettingNotificationBloc(sl())..add(LoadNotificationSettings()),
             child: BaseHome(
               titleWidget:
-                  currentPage == 0 ? const NextTimePrayerRemain() : null,
+                  currentPage == 0 ? const NextTimePrayerRemainWidget() : null,
               back: false,
               title: 'طمأنينة',
               isScroll: currentPage == 2 ? false : true,
-              bottomNavigationBar: const CustomBottomNavigationBar(),
+              bottomNavigationBar: const CustomBottomNavigationBarWidget(),
               body: screens[currentPage],
             ),
           );

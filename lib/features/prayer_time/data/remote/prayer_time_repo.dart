@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/extensions/list_extension.dart';
-import 'package:quran_app/core/notification/seed/notification_data_const.dart';
+import 'package:quran_app/core/notification/data/notification_data_const.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';

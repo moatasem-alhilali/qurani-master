@@ -133,7 +133,7 @@ class NotificationSettingsSeeder {
       NotificationSettingSeedData(
         key: NotificationKeys.isNotificationMohammed,
         label: 'الصلاة على محمد ﷺ',
-        enabled: true,
+        enabled: false,
         scheduleType: ScheduleType.hourly,
         minute: 10, // every hour at 10min
       ),
@@ -141,7 +141,7 @@ class NotificationSettingsSeeder {
       NotificationSettingSeedData(
         key: NotificationKeys.isNotificationRandomThikr,
         label: 'أذكار عشوائية',
-        enabled: true,
+        enabled: false,
         scheduleType: ScheduleType.everyNMinutes,
         intervalMinutes: 10,
       ),
