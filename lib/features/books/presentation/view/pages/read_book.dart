@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+// import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class ReadBook extends StatelessWidget {
   const ReadBook({super.key, this.url = ""});
@@ -29,12 +29,12 @@ class ReadBook extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: Colors.grey),
         ),
-        child: SfPdfViewer.network(
-          url,
-          canShowPaginationDialog: true,
-          canShowScrollStatus: true,
-          interactionMode: PdfInteractionMode.pan,
-        ),
+          // child: PdfView.network(
+            // url,
+            // canShowPaginationDialog: true,
+            // canShowScrollStatus: true,
+            // interactionMode: PdfInteractionMode.pan,
+          // ),
       ),
     );
   }

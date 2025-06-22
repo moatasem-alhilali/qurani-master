@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/share_service.dart';
 
@@ -122,6 +123,7 @@ class _IconShareWidgetState extends State<IconShareWidget>
                 _isShared ? CupertinoIcons.check_mark : CupertinoIcons.share,
                 key: ValueKey(_isShared),
                 color: _isShared ? Colors.green : context.primaryScheme,
+                size: 20.sp,
               ),
             ),
             onPressed: _handleShare,

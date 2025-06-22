@@ -33,7 +33,7 @@ class DatabaseService {
   static Database? _db;
 
   /// Database file name
-  static const _dbName = 'quran_app.db';
+  static const _dbName = 'quran_app_test1.db';
 
   /// Database version (used for future upgrades)
   static const _dbVersion = 1;

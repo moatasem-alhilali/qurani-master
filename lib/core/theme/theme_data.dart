@@ -8,6 +8,7 @@ Color _primarySecondary = const Color(0xff364945);
 
 ThemeData getLightMode() {
   return ThemeData(
+    useMaterial3: true,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,

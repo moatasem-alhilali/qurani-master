@@ -10,14 +10,13 @@ part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
-  final Connectivity connectivity = sl.get<Connectivity>();
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
-
   ConnectivityBloc() : super(const ConnectivityInitial(isConnected: false)) {
     on<ConnectivityStarted>(_onStarted);
     on<ConnectivityChanged>(_onConnectivityChanged);
     on<ForceCheckConnectivity>(_onForceCheck);
   }
+  final Connectivity connectivity = sl.get<Connectivity>();
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   @override
   Future<void> close() {
@@ -25,20 +24,22 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     return super.close();
   }
 
-  void _onStarted(
-      ConnectivityStarted event, Emitter<ConnectivityState> emit) async {
+  Future<void> _onStarted(
+    ConnectivityStarted event,
+    Emitter<ConnectivityState> emit,
+  ) async {
     emit(const ConnectivityLoading());
 
     // Set up continuous connectivity monitoring
     _connectivitySubscription =
         connectivity.onConnectivityChanged.listen((result) {
-      add(ConnectivityChanged(connectivityResult: [result]));
+      add(ConnectivityChanged(connectivityResult: result));
     });
 
     // Initial connectivity check
     try {
       final connectivityResult = await connectivity.checkConnectivity();
-      _updateConnectivityStatus([connectivityResult]);
+      _updateConnectivityStatus(connectivityResult);
       emit(ConnectivitySuccess(isConnected: ISCONNECTED));
     } catch (e) {
       logger.e('Error checking initial connectivity: $e');
@@ -47,18 +48,22 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   }
 
   void _onConnectivityChanged(
-      ConnectivityChanged event, Emitter<ConnectivityState> emit) {
+    ConnectivityChanged event,
+    Emitter<ConnectivityState> emit,
+  ) {
     _updateConnectivityStatus(event.connectivityResult);
     emit(ConnectivitySuccess(isConnected: ISCONNECTED));
   }
 
   Future<void> _onForceCheck(
-      ForceCheckConnectivity event, Emitter<ConnectivityState> emit) async {
+    ForceCheckConnectivity event,
+    Emitter<ConnectivityState> emit,
+  ) async {
     emit(const ConnectivityLoading());
 
     try {
       final connectivityResult = await connectivity.checkConnectivity();
-      _updateConnectivityStatus([connectivityResult]);
+      _updateConnectivityStatus(connectivityResult);
       emit(ConnectivitySuccess(isConnected: ISCONNECTED));
     } catch (e) {
       logger.e('Error during force connectivity check: $e');
@@ -67,7 +72,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   }
 
   void _updateConnectivityStatus(List<ConnectivityResult> connectivityResult) {
-    final bool previousState = ISCONNECTED;
+    final previousState = ISCONNECTED;
 
     if (connectivityResult.contains(ConnectivityResult.mobile) ||
         connectivityResult.contains(ConnectivityResult.wifi) ||

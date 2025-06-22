@@ -2,8 +2,11 @@ import 'package:adhan/src/prayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
+import 'package:quran_app/core/components/timeline_list_item.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/next_time_prayer_remain_widget.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
@@ -11,7 +14,7 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
-import 'package:timelines/timelines.dart';
+// import 'package:timelines/timelines.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
@@ -23,7 +26,7 @@ class PrayerTimeScreen extends StatefulWidget {
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   @override
   Widget build(BuildContext context) {
-    return BaseHome(
+    return BaseHomeWidget(
       titleWidget: const NextTimePrayerRemainWidget(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +35,8 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
             builder: (context, state) {
               if (state.prayerState != RequestState.success) {
                 return ShimmerWidget(
-                  child: _buildList(PrayerInfoModel.dummy(), null, null),
+                  child:
+                      _buildTimelineList(PrayerInfoModel.dummy(), null, null),
                 );
               }
 
@@ -40,12 +44,115 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
               final currentType = state.currentPrayer?.type;
               final nextType = state.nextPrayer?.type;
 
-              return _buildList(list, currentType, nextType);
+              return _buildTimelineList(list, currentType, nextType);
             },
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildTimelineList(
+    List<PrayerInfoModel> list,
+    Prayer? currentType,
+    Prayer? nextType,
+  ) {
+    final timelineItems = list.asMap().entries.map((entry) {
+      final index = entry.key;
+      final data = entry.value;
+      final isCurrent = currentType == data.type;
+      final isNext = nextType == data.type;
+      final isPassed = _isPrayerPassed(data, currentType, list);
+
+      // Determine timeline status
+      TimelineItemStatus status;
+      if (isPassed) {
+        status = TimelineItemStatus.completed;
+      } else if (isCurrent) {
+        status = TimelineItemStatus.active;
+      } else if (isNext) {
+        status = TimelineItemStatus.upcoming;
+      } else {
+        status = TimelineItemStatus.upcoming;
+      }
+
+      return TimelineListItem(
+        title: data.name,
+        subtitle: data.description,
+        time: data.time12,
+        iconWidget: Image.asset(
+          data.type.imageAsset,
+          width: 20.w,
+          height: 20.h,
+        ),
+        status: status,
+        isFirst: index == 0,
+        isLast: index == list.length - 1,
+        iconColor: _getPrayerColor(data),
+        iconBackgroundColor: Colors.transparent,
+        backgroundColor: context.secondary,
+        // iconBackgroundColor: _getPrayerColor(data),
+        onTap: () {
+          // Handle prayer item tap if needed
+        },
+      );
+    }).toList();
+
+    return BaseAnimate(
+      index: 2,
+      child: TimelineList(items: timelineItems),
+    );
+  }
+
+  bool _isPrayerPassed(
+    PrayerInfoModel prayer,
+    Prayer? currentType,
+    List<PrayerInfoModel> allPrayers,
+  ) {
+    if (currentType == null) return false;
+
+    final currentIndex = allPrayers.indexWhere((p) => p.type == currentType);
+    final prayerIndex = allPrayers.indexWhere((p) => p.type == prayer.type);
+
+    return prayerIndex < currentIndex;
+  }
+
+  IconData _getPrayerIcon(PrayerInfoModel data) {
+    switch (data.type) {
+      case Prayer.fajr:
+        return Icons.wb_twilight;
+      case Prayer.sunrise:
+        return Icons.wb_sunny;
+      case Prayer.dhuhr:
+        return Icons.wb_sunny_outlined;
+      case Prayer.asr:
+        return Icons.wb_cloudy;
+      case Prayer.maghrib:
+        return Icons.wb_incandescent;
+      case Prayer.isha:
+        return Icons.nights_stay;
+      default:
+        return Icons.access_time;
+    }
+  }
+
+  Color _getPrayerColor(PrayerInfoModel data) {
+    switch (data.type) {
+      case Prayer.fajr:
+        return Colors.blue;
+      case Prayer.sunrise:
+        return Colors.orange;
+      case Prayer.dhuhr:
+        return Colors.amber;
+      case Prayer.asr:
+        return Colors.deepOrange;
+      case Prayer.maghrib:
+        return Colors.red;
+      case Prayer.isha:
+        return Colors.indigo;
+      default:
+        return Colors.grey;
+    }
   }
 
   ListView _buildList(
@@ -62,66 +169,30 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         final isCurrent = currentType == data.type;
         final isNext = nextType == data.type;
 
-        return Row(
-          children: [
-            Column(
-              children: [
-                if (index != 0)
-                  const SizedBox(
-                    height: 20,
-                    child: SolidLineConnector(
-                      color: Colors.grey,
-                    ),
-                  ),
-                if (isCurrent)
-                  const DotIndicator(
-                    color: Colors.blue,
-                    size: 20,
-                  )
-                else
-                  const OutlinedDotIndicator(
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                if (index != list.length - 1)
-                  const SizedBox(
-                    height: 20,
-                    child: SolidLineConnector(
-                      color: Colors.grey,
-                    ),
-                  ),
-              ],
-            ).animate().fadeIn(),
-
-            // 📦 المحتوى الجانبي
-            Expanded(
-              child: BaseAnimate(
-                index: index + 2,
-                child: ItemPrayerWidget(
-                  currentPrayer: TimePrayerModel(
-                    id: 200 + index,
-                    type: data.type,
+        return BaseAnimate(
+          index: index + 2,
+          child: ItemPrayerWidget(
+            currentPrayer: TimePrayerModel(
+              id: 200 + index,
+              type: data.type,
+              title: data.name,
+              time: data.time12,
+              content: data.type.description,
+              image: data.type.imageAsset,
+              color: isCurrent ? Colors.blue : Colors.grey.shade300,
+            ),
+            nextPray: isNext
+                ? TimePrayerModel(
                     title: data.name,
                     time: data.time12,
-                    content: data.type.description,
-                    image: data.type.imageAsset,
-                    color: isCurrent ? Colors.blue : Colors.grey.shade300,
-                  ),
-                  nextPray: isNext
-                      ? TimePrayerModel(
-                          title: data.name,
-                          time: data.time12,
-                          content: '',
-                          image: '',
-                          color: Colors.blue,
-                          id: -1,
-                          type: data.type,
-                        )
-                      : null,
-                ),
-              ),
-            ),
-          ],
+                    content: '',
+                    image: '',
+                    color: Colors.blue,
+                    id: -1,
+                    type: data.type,
+                  )
+                : null,
+          ),
         );
       },
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -37,7 +37,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BaseHome(
+    return BaseHomeWidget(
       isScroll: false,
       title: 'الإحصائيات',
       body: BlocBuilder<SabihBloc, SabihState>(

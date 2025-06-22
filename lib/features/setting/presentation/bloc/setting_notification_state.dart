@@ -2,15 +2,15 @@ part of 'setting_notification_bloc.dart';
 
 class SettingNotificationState {
   const SettingNotificationState({
-    required this.settings,
-    this.loading = LoadState.initial,
+    this.settings = const {},
+    this.loading = RequestState.initial,
   });
   final Map<String, NotificationSettingModel> settings;
-  final LoadState loading;
+  final RequestState loading;
 
   SettingNotificationState copyWith({
     Map<String, NotificationSettingModel>? settings,
-    LoadState? loading,
+    RequestState? loading,
   }) {
     return SettingNotificationState(
       settings: settings ?? this.settings,
@@ -18,6 +18,5 @@ class SettingNotificationState {
     );
   }
 
-  static SettingNotificationState initial() =>
-      const SettingNotificationState(settings: {});
+ 
 }

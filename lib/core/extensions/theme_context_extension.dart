@@ -11,6 +11,8 @@ extension ThemeContextExtension on BuildContext {
   TextStyle get headlineLarge => testStyles.headlineLarge!;
   TextStyle get bodyMedium => testStyles.bodyMedium!;
   TextStyle get titleSmall => testStyles.titleSmall!;
+  TextStyle get titleMedium => testStyles.titleMedium!;
+  
 }
 
 extension ThemeColorExtension on BuildContext {

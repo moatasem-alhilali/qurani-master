@@ -37,8 +37,9 @@ class ActionProgress extends StatelessWidget {
                 child: FittedBox(
                   child: IconButton(
                     onPressed: () {
-                      audioPlayer.seek(Duration.zero, index: itemIndex);
-                      audioPlayer.play();
+                      audioPlayer
+                        ..seek(Duration.zero, index: itemIndex)
+                        ..play();
                       onPressed();
                     },
                     icon: const Icon(Icons.play_arrow_outlined),

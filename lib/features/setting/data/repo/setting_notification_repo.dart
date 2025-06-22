@@ -6,6 +6,7 @@ import 'package:quran_app/features/setting/data/constant/notification_keys.dart'
 import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting/data/seed/notification_settings_seeder.dart';
+import 'package:quran_app/main.dart';
 
 // This class manages notification settings and applies changes to the advanced notification scheduler
 class SettingNotificationRepo {
@@ -17,7 +18,6 @@ class SettingNotificationRepo {
 
   /// Get NotificationSettingModel by key
   Future<NotificationSettingModel?> getSetting(String key) async {
-    await NotificationSettingsSeeder().runIfNeeded();
     return DatabaseNotificationSettingService().getByKey(key);
   }
 
@@ -240,15 +240,25 @@ class SettingNotificationRepo {
 
   /// Get all settings
   Future<List<NotificationSettingModel>> getAllSettings() async {
-    await NotificationSettingsSeeder().runIfNeeded();
-    return DatabaseNotificationSettingService().getAll();
+    try {
+      await NotificationSettingsSeeder().runIfNeeded();
+      return await DatabaseNotificationSettingService().getAll();
+    } catch (e) {
+      logger.e('error getting all settings $e');
+      return [];
+    }
   }
 
   /// Get all settings as a Map (useful for displaying all toggles in settings UI)
   Future<Map<String, NotificationSettingModel>> loadAll() async {
-    await NotificationSettingsSeeder().runIfNeeded();
-    final all = await DatabaseNotificationSettingService().getAll();
-    return {for (final e in all) e.key: e};
+    try {
+      await NotificationSettingsSeeder().runIfNeeded();
+      final all = await DatabaseNotificationSettingService().getAll();
+      return {for (final e in all) e.key: e};
+    } catch (e) {
+      logger.e('error loading all settings $e');
+      return {};
+    }
   }
 
   /// UI utility: show time picker dialog and return (hour, minute)

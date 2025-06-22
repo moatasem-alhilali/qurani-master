@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_data_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/item.dart';
@@ -12,7 +12,7 @@ class CategoryViewAll extends StatelessWidget {
   final dynamic title;
   @override
   Widget build(BuildContext context) {
-    return BaseHome(
+    return BaseHomeWidget(
       title: title as String,
       body: Column(
         children: [

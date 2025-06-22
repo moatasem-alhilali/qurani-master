@@ -10,11 +10,13 @@ class ItemPrayerWidget extends StatefulWidget {
   const ItemPrayerWidget({
     required this.currentPrayer,
     this.nextPray,
+    this.isNavigate = false,
     super.key,
   });
 
   final TimePrayerModel currentPrayer;
   final TimePrayerModel? nextPray;
+  final bool isNavigate;
 
   @override
   State<ItemPrayerWidget> createState() => _ItemPrayerWidgetState();
@@ -27,19 +29,22 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
   Widget build(BuildContext context) {
     final isNext = widget.nextPray?.id == widget.currentPrayer.id;
 
-    return CardWidget(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-      border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
-      child: StyleButtonWrap(
-        onTap: () {
+    return StyleButtonWrap(
+      onTap: () {
+        if (widget.isNavigate) {
           context.push(
             const PrayerTimeScreen(),
           );
-          // setState(() {
-          //   isMaxLine = !isMaxLine;
-          // });
-        },
+        } else {
+          setState(() {
+            isMaxLine = !isMaxLine;
+          });
+        }
+      },
+      child: CardWidget(
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+        border: isNext ? Border.all(color: Colors.white, width: 1.5) : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

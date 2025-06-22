@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
 import 'package:quran_app/core/components/base_smooth_page_indicator.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
@@ -9,7 +10,6 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/books/presentation/bloc/book_bloc.dart';
 import 'package:quran_app/features/books/presentation/view/pages/read_book.dart';
@@ -27,15 +27,10 @@ class BookDetail extends StatelessWidget {
       ),
       child: BlocBuilder<BookBloc, BookState>(
         builder: (context, state) {
-          return BaseUiScreen(
-            onRefresh: () async {},
-            title: data['title'].toString().autoSize(
-                  context,
-                  maxLines: 2,
-                  fontSize: 14,
-                  textAlign: TextAlign.center,
-                ),
-            child: SingleChildScrollView(
+          return BaseHomeWidget(
+            isScroll: false,
+            title: data['title'].toString(),
+            body: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(

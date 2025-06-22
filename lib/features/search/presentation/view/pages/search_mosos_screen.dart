@@ -1,7 +1,7 @@
-import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
+// import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -22,7 +22,7 @@ class SearchMosoaaScreen extends StatelessWidget {
       )..add(GetHistoryMosoaaEvent()),
       child: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
-          return BaseHome(
+          return BaseHomeWidget(
             leading: const SizedBox(),
             title: "الذكاء الاصطناعي",
             bottomNavigationBar: MyTextFormField(
@@ -140,20 +140,20 @@ class _Item extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          BubbleSpecialThree(
-                            text: data['question'] as String,
-                            color: const Color(0xFF6e57dd),
-                            tail: true,
-                            textStyle: const TextStyle(
-                                color: Colors.white, fontSize: 16),
-                          ),
-                          BubbleSpecialThree(
-                            text: data['answer'] as String,
-                            color: const Color(0xFF283643),
-                            isSender: false,
-                            textStyle: const TextStyle(
-                                color: Colors.white, fontSize: 16),
-                          ),
+                          // BubbleSpecialThree(
+                          //   text: data['question'] as String,
+                          //   color: const Color(0xFF6e57dd),
+                          //   tail: true,
+                          //   textStyle: const TextStyle(
+                          //       color: Colors.white, fontSize: 16),
+                          // ),
+                          // BubbleSpecialThree(
+                          //   text: data['answer'] as String,
+                          //   color: const Color(0xFF283643),
+                          //   isSender: false,
+                          //   textStyle: const TextStyle(
+                          //       color: Colors.white, fontSize: 16),
+                          // ),
                         ],
                       ),
                     ),

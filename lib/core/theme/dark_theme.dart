@@ -32,8 +32,6 @@ ThemeData darkThemeData = ThemeData(
     onPrimary: Colors.white,
     secondary: Color(0xff353535),
     onSecondary: Color(0xff2c2c2c),
-    background: Color(0xff1e1e1e),
-    onBackground: Color(0xff252525),
     surface: Color(0xffCDAD80),
     onSurface: Color(0xff404C6E),
     error: Color(0xffe74c3c),
@@ -89,7 +87,7 @@ ThemeData darkThemeData = ThemeData(
   ),
 
   ///tab Bar Theme
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     labelStyle: const TextStyle(
       color: Colors.white,
       fontFamily: FxFonts.ios1,
@@ -240,7 +238,7 @@ ThemeData darkThemeData = ThemeData(
     ),
   ),
   //dialog Theme
-  dialogTheme: DialogTheme(
+  dialogTheme: DialogThemeData(
     backgroundColor: const Color(0xff1F222A),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12),

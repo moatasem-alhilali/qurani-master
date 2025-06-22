@@ -26,7 +26,9 @@ class HisnMuslimBloc extends Bloc<HisnMuslimEvent, HisnMuslimState> {
 
       final sections = jsonMap.entries.map((entry) {
         return HisnMuslimModel.fromJson(
-            entry.key, entry.value as Map<String, dynamic>);
+          entry.key,
+          entry.value as Map<String, dynamic>,
+        );
       }).toList();
 
       emit(HisnMuslimLoaded(sections));

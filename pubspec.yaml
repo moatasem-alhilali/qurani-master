@@ -5,7 +5,8 @@ publish_to: "none"
 version: 1.0.18+18
 
 environment:
-  sdk: ">=3.3.3 <4.0.0"
+  # sdk: ">=3.3.3 <4.0.0"
+  sdk: ^3.6.0
 
 dependencies:
   flutter:
@@ -13,55 +14,57 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons:
-  flutter_local_notifications:
+  flutter_local_notifications: ^19.2.1
+  # platforms:
+  #   linux:
+  #     default_package: none
   intl:
   rxdart:
   flutter_bloc:
   flutter_svg:
-  shared_preferences:
-  scrollable_positioned_list:
-  geolocator:
-  lottie:
-  fluttertoast:
-  sqflite:
-  # pdfx:
-  just_audio:
-  path_provider:
-  dio:
-  audio_video_progress_bar:
-  connectivity_plus:
-  adhan:
-  adhan_dart:
+
+  sqflite: ^2.4.2
+  geolocator: ^13.0.4
+  shared_preferences: ^2.5.3
+
+  pdfx: ^2.9.2
+  just_audio: ^0.10.4
+  path_provider: ^2.1.5
+  dio: ^5.8.0+1
+  audio_video_progress_bar: ^2.0.3
+  connectivity_plus: ^6.1.4
+  adhan: ^2.0.0+1
+  adhan_dart: ^1.1.2
   smooth_page_indicator:
-  timelines:
+  # timelines:
   carousel_slider:
-  readmore:
   flutter_animate:
   # shimmer:
-  url_launcher:
+  url_launcher: ^6.3.1
   auto_size_text:
   animated_text_kit:
   logger:
   flutter_islamic_icons:
-  syncfusion_flutter_pdfviewer:
+  # syncfusion_flutter_pdfviewer:
   dartz:
   get_it:
-  flutter_downloader:
-  permission_handler:
-  video_player:
-  chat_bubbles:
-  in_app_update:
+  flutter_downloader: ^1.12.0
+  permission_handler: ^12.0.0+1
+  video_player: ^2.10.0
+  # chat_bubbles:
+  # in_app_update:
   gap:
-  bot_toast:
+  # bot_toast:
   cached_network_image: ^3.3.0
   flutter_screenutil: ^5.9.0
-  restart_app:
-  flutter_timezone: ^1.0.8
-  flutter_qiblah: ^3.0.3
+  # restart_app:
+  flutter_timezone: ^4.1.1
+  flutter_qiblah: ^3.1.0+1
   equatable: ^2.0.7
   smooth_sheets: ^0.10.2
-  skeletonizer: ^1.4.3
-  share_plus: ^10.0.0
+  share_plus: ^11.0.0
+  fluttertoast: ^8.2.12
+  skeletonizer: ^2.0.1
   # ---------------------------------------
 
 dev_dependencies:

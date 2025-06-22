@@ -100,6 +100,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
               maxLines: null,
             ),
             const SizedBox(height: 16),
+            const Spacer(),
             Row(
               children: [
                 Expanded(

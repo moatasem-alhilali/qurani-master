@@ -7,8 +7,8 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 
 class SettingThemeSheet extends StatelessWidget {
-  SettingThemeSheet({super.key});
-
+  SettingThemeSheet({super.key, this.shouldPop = true});
+  final bool shouldPop;
   final List<String> titles = ['أزرق', 'بني', 'أخضر', 'الداكن'];
 
   @override
@@ -31,8 +31,10 @@ class SettingThemeSheet extends StatelessWidget {
                     await CacheService()
                         .setInt('currentThemeType', currentThemeType);
                     if (context.mounted) {
-                      context.pop();
-                      context.pop();
+                      if (shouldPop) {
+                        context..pop()
+                        ..pop();
+                      }
                     }
                   },
                   child: Column(

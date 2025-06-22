@@ -1,4 +1,3 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,7 +6,7 @@ import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -92,11 +91,6 @@ class MyApp extends StatelessWidget {
                 minTextAdapt: true,
                 splitScreenMode: true,
                 builder: (_, child) => MaterialApp(
-                  builder: BotToastInit(), //1. call BotToastInit
-                  navigatorObservers: [
-                    BotToastNavigatorObserver(),
-                  ], //2. registered route observer
-
                   locale: const Locale('ar'),
                   localizationsDelegates: const [
                     AppLocalizations.delegate,
@@ -121,6 +115,14 @@ class MyApp extends StatelessWidget {
                   theme: getLightMode(),
                   title: 'طمأنينة',
                   themeMode: ThemeMode.dark,
+                  themeAnimationCurve: Curves.decelerate,
+                  themeAnimationDuration: const Duration(milliseconds: 300),
+                  themeAnimationStyle: const AnimationStyle(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.decelerate,
+                    reverseCurve: Curves.decelerate,
+                    reverseDuration: Duration(milliseconds: 300),
+                  ),
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
                   home: const _App(),
@@ -149,18 +151,14 @@ class _App extends StatelessWidget {
       // child: ,
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
-          return BlocProvider(
-            create: (context) =>
-                SettingNotificationBloc(sl())..add(LoadNotificationSettings()),
-            child: BaseHome(
-              titleWidget:
-                  currentPage == 0 ? const NextTimePrayerRemainWidget() : null,
-              back: false,
-              title: 'طمأنينة',
-              isScroll: currentPage == 2 ? false : true,
-              bottomNavigationBar: const CustomBottomNavigationBarWidget(),
-              body: screens[currentPage],
-            ),
+          return BaseHomeWidget(
+            titleWidget:
+                currentPage == 0 ? const NextTimePrayerRemainWidget() : null,
+            back: false,
+            title: 'طمأنينة',
+            isScroll: currentPage == 2 ? false : true,
+            bottomNavigationBar: const CustomBottomNavigationBarWidget(),
+            body: screens[currentPage],
           );
         },
       ),

@@ -9,6 +9,16 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+final BehaviorSubject<String> selectNotificationSubject =
+    BehaviorSubject<String>();
+
+@pragma('vm:entry-point')
+Future<void> backgroundNotificationHandler(
+  NotificationResponse response,
+) async {
+  selectNotificationSubject.add(response.payload ?? '');
+}
+
 class NotificationService {
   NotificationService() : plugin = FlutterLocalNotificationsPlugin();
   final FlutterLocalNotificationsPlugin plugin;
@@ -27,25 +37,25 @@ class NotificationService {
 
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    final iosSettings = IOSInitializationSettings(
+    const iosSettings = DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
-      onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
+
+      // onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
     );
 
-    final settings = InitializationSettings(
+    const settings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
 
     await plugin.initialize(
       settings,
-      onSelectNotification: (payload) async {
-        if (payload != null) {
-          selectNotificationSubject.add(payload);
-        }
+      onDidReceiveNotificationResponse: (payload) async {
+        selectNotificationSubject.add(payload.payload ?? '');
       },
+      onDidReceiveBackgroundNotificationResponse: backgroundNotificationHandler,
     );
 
     await initAllAndroidChannels();
@@ -108,9 +118,7 @@ class NotificationService {
       time,
       details,
       payload: payload ?? '$title|$body',
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
     // logger.i('Notification service scheduled at $time');
@@ -135,7 +143,7 @@ class NotificationService {
       importance: Importance.max,
     );
 
-    const ios = IOSNotificationDetails();
+    const ios = DarwinNotificationDetails();
 
     return NotificationDetails(android: android, iOS: ios);
   }

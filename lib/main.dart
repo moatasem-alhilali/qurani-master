@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
+// import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logger/logger.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
@@ -12,7 +12,6 @@ import 'package:quran_app/core/services/permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/main_view.dart';
-
 
 // ✅ Logger instance used globally for debugging and logging
 Logger logger = Logger();
@@ -57,3 +56,8 @@ void main() async {
 
 // https://vercel-pdf-proxy.vercel.app/proxy?url=https://www.archive.org/download/waq79565/79565.pdf
 // https://waqfeya.net/
+
+
+// https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions.json
+
+// https://www.jsdelivr.com/package/gh/fawazahmed0/quran-api

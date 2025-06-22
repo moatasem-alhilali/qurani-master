@@ -9,7 +9,7 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
 import 'package:quran_app/features/setting/data/repo/setting_notification_repo.dart';
 
-// orchestrator: يعيد جدولة جميع أنواع الإشعارات حسب المنظومة الجديدة
+/// orchestrator: يعيد جدولة جميع أنواع الإشعارات حسب المنظومة الجديدة
 class NotificationOrchestratorService {
   NotificationOrchestratorService({
     required this.advancedNotificationService,

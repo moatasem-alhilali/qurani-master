@@ -9,6 +9,7 @@ class NotificationSettingModel {
     required this.enabled,
     required this.scheduleType,
     this.id,
+    this.onlySetting = false,
     this.hour,
     this.minute,
     this.intervalMinutes,
@@ -42,6 +43,7 @@ class NotificationSettingModel {
       ),
       hour: map['hour'] as int?,
       minute: map['minute'] as int?,
+      onlySetting: map['only_setting'] == 1,
       intervalMinutes: map['interval_minutes'] as int?,
       weekdays: parseWeekdays(map['weekdays'] as String?),
       customDates: parseCustomDates(map['custom_dates'] as String?),
@@ -54,6 +56,7 @@ class NotificationSettingModel {
   final ScheduleType scheduleType;
   final int? hour;
   final int? minute;
+  final bool onlySetting;
   final int? intervalMinutes;
   final List<int>? weekdays;
   final List<DateTime>? customDates;
@@ -64,6 +67,7 @@ class NotificationSettingModel {
         'key': key,
         'label': label,
         'value': enabled ? 1 : 0,
+        'only_setting': onlySetting ? 1 : 0,
         'schedule_type': scheduleType.name,
         'hour': hour,
         'minute': minute,
@@ -74,6 +78,7 @@ class NotificationSettingModel {
             : jsonEncode(customDates!.map((d) => d.toIso8601String()).toList()),
         'updated_at': DateTime.now().toIso8601String(),
       };
+
 
   /// Converts back to NotificationScheduleModel (to use with scheduling service)
   NotificationScheduleModel get schedule {
@@ -108,11 +113,13 @@ class NotificationSettingModel {
     int? intervalMinutes,
     List<int>? weekdays,
     List<DateTime>? customDates,
+    bool? onlySetting,
   }) {
     return NotificationSettingModel(
       id: id ?? this.id,
       key: key ?? this.key,
       label: label ?? this.label,
+      onlySetting: onlySetting ?? this.onlySetting,
       enabled: enabled ?? this.enabled,
       scheduleType: scheduleType ?? this.scheduleType,
       hour: hour ?? this.hour,

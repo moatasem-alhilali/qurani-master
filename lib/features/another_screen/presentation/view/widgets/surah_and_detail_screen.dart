@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -10,87 +10,78 @@ import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/s
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_event.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_state.dart';
 
-class SurahWithAllDetailScreen extends StatefulWidget {
+class SurahWithAllDetailScreen extends StatelessWidget {
   const SurahWithAllDetailScreen({super.key});
 
   @override
-  State<SurahWithAllDetailScreen> createState() =>
-      _SurahWithAllDetailScreenState();
-}
-
-class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<SurahInfoBloc>().add(LoadSurahInfoEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BaseHome(
-      title: 'معلومات حول السور',
-      body: BlocBuilder<SurahInfoBloc, SurahInfoState>(
-        builder: (context, state) {
-          if (state is SurahInfoLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    return BlocProvider(
+      create: (context) => SurahInfoBloc()..add(LoadSurahInfoEvent()),
+      child: BaseHomeWidget(
+        title: 'معلومات حول السور',
+        body: BlocBuilder<SurahInfoBloc, SurahInfoState>(
+          builder: (context, state) {
+            if (state is SurahInfoLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is SurahInfoError) {
-            return Center(child: Text(state.message));
-          }
+            if (state is SurahInfoError) {
+              return Center(child: Text(state.message));
+            }
 
-          if (state is SurahInfoLoaded) {
-            final dataList = state.data;
+            if (state is SurahInfoLoaded) {
+              final dataList = state.data;
 
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: dataList.length,
-              itemBuilder: (context, index) {
-                final data = dataList[index];
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: dataList.length,
+                itemBuilder: (context, index) {
+                  final data = dataList[index];
 
-                return BaseAnimate(
-                  index: index,
-                  child: InkWell(
-                    onTap: () {
-                      context.showBottomSheet(
-                        child: _BottomSheet(data: data),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: index % 2 == 0
-                            ? context.primaryScheme
-                            : Colors.transparent,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'إسم السورة : ${data.surah}',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                          CircleAvatar(
-                            backgroundColor: index % 2 == 0
-                                ? context.primaryScheme
-                                : context.primarySecondary,
-                            radius: 18,
-                            child: Text('${index + 1}'),
-                          ),
-                        ],
+                  return BaseAnimate(
+                    index: index,
+                    child: InkWell(
+                      onTap: () {
+                        context.showBottomSheet(
+                          child: _BottomSheet(data: data),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: index % 2 == 0
+                              ? context.primaryScheme
+                              : Colors.transparent,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'إسم السورة : ${data.surah}',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            CircleAvatar(
+                              backgroundColor: index % 2 == 0
+                                  ? context.primaryScheme
+                                  : context.primarySecondary,
+                              radius: 18,
+                              child: Text('${index + 1}'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          }
+                  );
+                },
+              );
+            }
 
-          return const SizedBox();
-        },
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

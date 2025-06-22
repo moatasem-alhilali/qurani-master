@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_audio_bloc/download_quran_audio_bloc.dart';
@@ -21,7 +21,7 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DownloadQuranAudioBloc(),
-      child: BaseHome(
+      child: BaseHomeWidget(
         titleWidget: 'واذا قرئ القران فاستمعوا له وانصتوا'.autoSize(
           context,
           fontSize: 12,

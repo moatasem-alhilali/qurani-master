@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
@@ -28,19 +30,19 @@ class DoaItem extends StatelessWidget {
   final Widget childPageNumber;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onLongPress: onLongPress,
+    return StyleButtonWrap(
       onTap: onTap,
-      child: Container(
+      onLongPress: onLongPress,
+      child: CardWidget(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        padding: const EdgeInsets.only(bottom: 8, left: 12, top: 12, right: 5),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          color: color,
-        ),
+        // padding: const EdgeInsets.only(bottom: 8, left: 12, top: 12, right: 5),
+        // decoration: BoxDecoration(
+        //   borderRadius: const BorderRadius.only(
+        //     topLeft: Radius.circular(20),
+        //     topRight: Radius.circular(20),
+        //   ),
+        //   color: color,
+        // ),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(

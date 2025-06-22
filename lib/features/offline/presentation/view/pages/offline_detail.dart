@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/offline/presentation/bloc/offline_bloc.dart';
 import 'package:quran_app/features/offline/presentation/view/widgets/audio_offline_sheet.dart';
@@ -26,15 +26,10 @@ class OfflineDetail extends StatelessWidget {
       create: (context) => OfflineBloc(
         repositoryImpl: sl.get<OfflineRepositoryImpl>(),
       )..add(InitOfflinePlayerEvent(data['type'] as String)),
-      child: BaseUiScreen(
-        onRefresh: () async {},
-        title: data['title'].toString().autoSize(
-              context,
-              maxLines: 2,
-              fontSize: 14,
-              textAlign: TextAlign.center,
-            ),
-        child: BlocBuilder<OfflineBloc, OfflineState>(
+      child: BaseHomeWidget(
+        isScroll: false,
+        title: data['title'].toString(),
+        body: BlocBuilder<OfflineBloc, OfflineState>(
           builder: (context, state) {
             switch (state.getState) {
               case RequestState.initial:

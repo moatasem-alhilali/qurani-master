@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
@@ -73,7 +73,7 @@ class NotificationSchedulesScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return BaseHome(
+          return BaseHomeWidget(
             title: 'إدارة مواعيد الإشعار',
             floatingActionButton: _buildFAB(context, state),
             isScroll: false,

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/base_item_book.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
+import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
@@ -20,26 +21,17 @@ class CategoryTypeDetail extends StatelessWidget {
   TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BaseUiScreen(
-      title: data['title'].toString().autoSize(context),
-      child: BlocProvider(
+    return BaseHomeWidget(
+      isScroll: false,
+      title: data['title'].toString(),
+      body: BlocProvider(
         create: (context) => CategoryBloc(
           repositoryImpl: sl.get<CategoryRepositoryImpl>(),
         )..add(GetQuranBookEvent(data['api_url'] as String)),
         child: BlocBuilder<CategoryBloc, CategoryState>(
           builder: (context, state) {
-            switch (state.quranBooksState) {
-              case RequestState.initial:
-                return const Center(child: CircularProgressIndicator());
-              case RequestState.loading:
-                return const Center(child: CircularProgressIndicator());
-
-              case RequestState.error:
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.red),
-                );
-
-              case RequestState.success:
+            return state.quranBooksState.handle<List<dynamic>>(
+              onSuccess: () {
                 final allData = state.quranBooksDetailSearch;
 
                 return Column(
@@ -99,7 +91,8 @@ class CategoryTypeDetail extends StatelessWidget {
                     ),
                   ],
                 );
-            }
+              },
+            );
           },
         ),
       ),

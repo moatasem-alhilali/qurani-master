@@ -4,7 +4,7 @@ import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/thikr/presentation/view/pages/wird_screen.dart';
+import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
 
 class ThikrSlider extends StatelessWidget {
   const ThikrSlider({
@@ -45,9 +45,9 @@ class _item extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (DateTime.now().hour >= 17) {
-          navigateTo(const WirdScreen(), context);
+          context.push(const WirdScreen(isMorning: false));
         } else {
-          navigateTo(const WirdScreen(), context);
+          context.push(const WirdScreen(isMorning: true));
         }
       },
       child: Padding(

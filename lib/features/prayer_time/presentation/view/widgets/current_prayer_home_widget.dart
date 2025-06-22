@@ -43,6 +43,7 @@ class _CurrentPrayerHomeWidgetState extends State<CurrentPrayerHomeWidget> {
                 index: 0,
                 child: ItemPrayerWidget(
                   currentPrayer: state.currentPrayerModel!,
+                  isNavigate: true,
                 ),
               ),
             ],
@@ -69,6 +70,7 @@ class _CurrentPrayerHomeWidgetState extends State<CurrentPrayerHomeWidget> {
                 index: 0,
                 child: ItemPrayerWidget(
                   currentPrayer: state.nextPrayerModel!,
+                  isNavigate: true,
                 ),
               ),
             ],

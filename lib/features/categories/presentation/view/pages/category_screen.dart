@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
@@ -21,7 +23,7 @@ class CategoryScreen extends StatelessWidget {
       children: [
         const BaseHederWidget(text: 'القرأن الكريم وعلومه'),
         SizedBox(
-          height: context.getHight(25),
+          height: context.getHight(15),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: ListView(
@@ -120,7 +122,7 @@ class CategoryScreen extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             crossAxisSpacing: 5,
             mainAxisSpacing: 10,
           ),
@@ -175,56 +177,28 @@ class _ITem extends StatelessWidget {
   final String? title;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return StyleButtonWrap(
       onTap: onTap,
-      child: Container(
+      child: CardWidget(
+        border: Border.all(color: context.primaryScheme),
         margin: const EdgeInsets.symmetric(horizontal: 5),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        height: context.getHight(25),
-        width: context.getWidth(25),
-        child: Stack(
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(8),
+        // ),
+        // height: context.getHight(25),
+        width: context.getWidth(30),
+        child: Align(
           alignment: Alignment.bottomCenter,
-          fit: StackFit.expand,
-          children: [
-            const BaseFadeImageAsset(
-              image: 'assets/image/card-2.jpg',
-              fit: BoxFit.cover,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            child: title!.autoSize(
+              context,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              minFontSize: 10,
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                gradient: LinearGradient(
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [
-                    Colors.grey.withOpacity(0),
-                    Colors.black,
-                  ],
-                  stops: const [
-                    0.20,
-                    1,
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: title!.autoSize(
-                  context,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  minFontSize: 10,
-                  color: context.onPrimary,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

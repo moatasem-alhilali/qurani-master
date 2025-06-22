@@ -86,7 +86,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog>
             maxWidth: 500.w,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).dialogBackgroundColor,
+            color: context.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
@@ -100,6 +100,7 @@ class _ScheduleDialogState extends State<_ScheduleDialog>
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildHeader(),
+              const SizedBox(height: 10),
               Expanded(child: widget.child),
             ],
           ),

@@ -7,6 +7,11 @@ class JsonLoaderService {
   static const String allahNamesPath = 'assets/json/allah_names.json';
   static const String mostReaderPath = 'assets/json/most_reader.json';
   static const String surahInfoPath = 'assets/json/surah_info.json';
+  static const String wirdsPath = 'assets/json/wird_night_morning.json';
+  static const String hadith40Path = 'assets/json/hadith_40.json';
+  static const String zkarAfterPrayPath = 'assets/json/zkar-after-pray.json';
+  static const String ruqiaShareiaPath = 'assets/json/ruqia_shareia.json';
+  static const String hisnMuslimPath = 'assets/json/hisn_muslim.json';
 
   /// Loads and decodes a JSON list from an asset file.
   ///

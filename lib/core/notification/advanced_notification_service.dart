@@ -31,10 +31,10 @@ class AdvancedNotificationService {
             nextInstanceOf,
             details,
             payload: payload,
-            androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime,
-            matchDateTimeComponents: DateTimeComponents.time, // daily
+
+            matchDateTimeComponents: DateTimeComponents.time,
+            androidScheduleMode:
+                AndroidScheduleMode.exactAllowWhileIdle, // daily
           );
         } catch (e) {
           logger.e(
@@ -56,10 +56,8 @@ class AdvancedNotificationService {
               nextInstanceOf,
               details,
               payload: payload,
-              androidAllowWhileIdle: true,
-              uiLocalNotificationDateInterpretation:
-                  UILocalNotificationDateInterpretation.absoluteTime,
               matchDateTimeComponents: DateTimeComponents.time,
+              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
             );
           } catch (e) {
             logger.e(
@@ -91,9 +89,7 @@ class AdvancedNotificationService {
                 dateTime,
                 details,
                 payload: payload,
-                androidAllowWhileIdle: true,
-                uiLocalNotificationDateInterpretation:
-                    UILocalNotificationDateInterpretation.absoluteTime,
+                androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
               );
             } catch (e) {
               logger.e(
@@ -120,9 +116,8 @@ class AdvancedNotificationService {
               scheduled,
               details,
               payload: payload,
-              androidAllowWhileIdle: true,
-              uiLocalNotificationDateInterpretation:
-                  UILocalNotificationDateInterpretation.absoluteTime,
+              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+
               matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
             );
           } catch (e) {
@@ -148,9 +143,7 @@ class AdvancedNotificationService {
               dateTime,
               details,
               payload: payload,
-              androidAllowWhileIdle: true,
-              uiLocalNotificationDateInterpretation:
-                  UILocalNotificationDateInterpretation.absoluteTime,
+              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
             );
           } catch (e) {
             logger.e(
@@ -193,7 +186,7 @@ class AdvancedNotificationService {
       importance: Importance.max,
     );
 
-    const ios = IOSNotificationDetails();
+    const ios = DarwinNotificationDetails();
 
     return NotificationDetails(android: android, iOS: ios);
   }
@@ -229,4 +222,16 @@ class AdvancedNotificationService {
       await cancelNotification(id: notifKey.hashCode.abs() + i);
     }
   }
+
+  // get pending notifications
+  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    return _plugin.pendingNotificationRequests();
+  }
+
+  // get scheduled notifications
+  Future<List<ActiveNotification>> getActiveNotifications() async {
+    return _plugin.getActiveNotifications();
+  }
+
+  // get completed notifications
 }

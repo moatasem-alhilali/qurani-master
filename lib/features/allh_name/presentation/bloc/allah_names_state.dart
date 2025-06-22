@@ -1,17 +1,24 @@
-import 'package:quran_app/features/allh_name/data/models/allah_name_model.dart';
+part of 'allah_names_bloc.dart';
 
-abstract class AllahNamesState {}
+@immutable
+class AllahNamesState extends Equatable {
+  const AllahNamesState({
+    this.data = const [],
+    this.state = RequestState.initial,
+  });
+  final List<AllahNameModel>? data;
+  final RequestState state;
 
-class AllahNamesInitial extends AllahNamesState {}
+  AllahNamesState copyWith({
+    List<AllahNameModel>? data,
+    RequestState? state,
+  }) {
+    return AllahNamesState(
+      data: data ?? this.data,
+      state: state ?? this.state,
+    );
+  }
 
-class AllahNamesLoading extends AllahNamesState {}
-
-class AllahNamesLoaded extends AllahNamesState {
-  final List<AllahNameModel> data;
-  AllahNamesLoaded(this.data);
-}
-
-class AllahNamesError extends AllahNamesState {
-  final String message;
-  AllahNamesError(this.message);
+  @override
+  List<Object?> get props => [data, state];
 }

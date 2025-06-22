@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
 import 'package:quran_app/features/allh_name/data/models/allah_name_model.dart';
-import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_event.dart';
-import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_state.dart';
+
+part 'allah_names_event.dart';
+part 'allah_names_state.dart';
 
 class AllahNamesBloc extends Bloc<AllahNamesEvent, AllahNamesState> {
-  AllahNamesBloc() : super(AllahNamesInitial()) {
+  AllahNamesBloc() : super(const AllahNamesState()) {
     on<LoadAllahNamesEvent>(_onLoad);
   }
 
@@ -15,7 +19,7 @@ class AllahNamesBloc extends Bloc<AllahNamesEvent, AllahNamesState> {
     LoadAllahNamesEvent event,
     Emitter<AllahNamesState> emit,
   ) async {
-    emit(AllahNamesLoading());
+    emit(state.copyWith(state: RequestState.loading));
 
     try {
       final list = await JsonLoaderService.loadJsonList(
@@ -24,9 +28,9 @@ class AllahNamesBloc extends Bloc<AllahNamesEvent, AllahNamesState> {
 
       final names = list.map(AllahNameModel.fromJson).toList();
 
-      emit(AllahNamesLoaded(names));
+      emit(state.copyWith(data: names, state: RequestState.success));
     } catch (e) {
-      emit(AllahNamesError('Failed to load Allah names.'));
+      emit(state.copyWith(state: RequestState.error));
     }
   }
 }

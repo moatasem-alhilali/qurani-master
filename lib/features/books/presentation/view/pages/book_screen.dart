@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/books/presentation/bloc/book_bloc.dart';
 import 'package:quran_app/features/books/presentation/view/pages/book_deatil.dart';
@@ -21,10 +21,10 @@ class BookScreen extends StatelessWidget {
       )..add(GetBookEvent()),
       child: BlocBuilder<BookBloc, BookState>(
         builder: (context, state) {
-          return BaseUiScreen(
-            onRefresh: () async {},
-            title: const Text("كتب"),
-            child: BlocConsumer<BookBloc, BookState>(
+          return BaseHomeWidget(
+            isScroll: false,
+            title: "كتب",
+            body: BlocConsumer<BookBloc, BookState>(
               listener: (context, state) {},
               builder: (context, state) {
                 switch (state.getState) {

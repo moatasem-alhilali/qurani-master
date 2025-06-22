@@ -11,6 +11,7 @@ class NotificationSettingSeedData {
     this.minute,
     this.intervalMinutes,
     this.weekdays,
+    this.onlySetting = false,
     this.customDates,
   });
   final String key;
@@ -20,6 +21,7 @@ class NotificationSettingSeedData {
   final int? hour;
   final int? minute;
   final int? intervalMinutes;
+  final bool onlySetting;
   final List<int>? weekdays;
   final List<DateTime>? customDates;
 
@@ -34,6 +36,7 @@ class NotificationSettingSeedData {
       intervalMinutes: intervalMinutes,
       weekdays: weekdays,
       customDates: customDates,
+      onlySetting: onlySetting,
     );
   }
 }

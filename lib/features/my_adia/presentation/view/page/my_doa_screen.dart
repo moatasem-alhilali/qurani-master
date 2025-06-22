@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
+import 'package:quran_app/core/components/dialog/style_dialog_widget.dart';
+import 'package:quran_app/core/components/enhanced_spiritual_loading_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
@@ -43,7 +47,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHome(
+    return BaseHomeWidget(
       title: 'أدعيتي',
       isScroll: false,
       body: BlocConsumer<SabihBloc, SabihState>(
@@ -59,16 +63,50 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
           }
         },
         buildWhen: (previous, current) =>
-            previous.loadState != current.loadState ||
-            previous.subihList != current.subihList ||
-            previous.countsMap != current.countsMap,
+            previous.loadState != current.loadState,
         builder: (context, state) {
           if (state.loadState == LoadState.initial) {
-            return const Center(child: Text('ابدأ رحلة ذكرك'));
+            return Column(
+              children: [
+                const EnhancedSpiritualLoadingWidget(
+                  showText: false,
+                  size: 250,
+                  // showParticles: false,
+                ),
+                SizedBox(height: 16.h),
+                Center(
+                  child: Text(
+                    'ابدأ رحلة ذكرك',
+                    style: context.titleMedium.copyWith(
+                      color: context.gray1,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
 
           if (state.loadState == LoadState.loading && state.subihList.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return Column(
+              children: [
+                const EnhancedSpiritualLoadingWidget(
+                  showText: false,
+                  size: 250,
+                  // showParticles: false,
+                ),
+                SizedBox(height: 16.h),
+                Center(
+                  child: Text(
+                    'جاري تحميل ...',
+                    style: context.titleMedium.copyWith(
+                      color: context.gray1,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
 
           if (state.loadState == LoadState.error) {
@@ -76,8 +114,11 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(state.errorMessage ?? 'حدث خطأ'),
-                  const SizedBox(height: 16),
+                  const EnhancedSpiritualLoadingWidget(
+                    showText: false,
+                    size: 250,
+                    // showParticles: false,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       context.read<SabihBloc>().add(LoadAllSubihEvent());
@@ -88,17 +129,26 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
               ),
             );
           }
+          final subihList = state.subihList.where((e) => e.isCustom).toList();
 
-          if (state.subihList.isEmpty) {
+          if (subihList.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('لم يتم العثور على عناصر أدعيتي'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _showAddDhikrDialog,
-                    child: const Text('أضف أدعيتك الأول'),
+                  const EnhancedSpiritualLoadingWidget(
+                    showText: false,
+                    size: 250,
+                    // showParticles: false,
+                  ),
+                  Center(
+                    child: Text(
+                      'لا يوجد أدعية مخصصة',
+                      style: context.titleMedium.copyWith(
+                        color: context.gray1,
+                        fontSize: 16.sp,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -106,7 +156,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
           }
 
           return ListView.builder(
-            itemCount: state.subihList.length,
+            itemCount: subihList.length,
             // shrinkWrap: true,
             itemBuilder: (context, index) {
               final subih = state.subihList[index];
@@ -155,24 +205,26 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
   }
 
   void _showAddDhikrDialog() {
-    context.showSmoothSheetStyle(
+    context.showImprovedScheduleDialog(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: const AddDhikrDialog(),
       ),
       title: 'إضافة أدعية مخصصة',
-      backgroundColor: context.scaffoldBackgroundColor,
+      subtitle: 'أدعية مخصصة هي أدعية يمكنك إضافتها لتصبح أدعيتك الأولى',
+      // backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 
   void _showEditDhikrDialog(SubihModel subih) {
-    context.showSmoothSheetStyle(
+    context.showImprovedScheduleDialog(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),
       ),
       title: 'تعديل أدعية مخصصة',
-      backgroundColor: context.scaffoldBackgroundColor,
+      subtitle: 'أدعية مخصصة هي أدعية يمكنك إضافتها لتصبح أدعيتك الأولى',
+      // backgroundColor: context.scaffoldBackgroundColor,
     );
   }
 

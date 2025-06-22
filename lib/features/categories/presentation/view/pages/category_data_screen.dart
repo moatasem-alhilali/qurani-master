@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/base_item_book.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/core/widgets/ui_screen.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
-import 'package:quran_app/main.dart';
 
 class CategoryDataScreen extends StatelessWidget {
   CategoryDataScreen({
@@ -35,19 +33,14 @@ class CategoryDataScreen extends StatelessWidget {
       )..add(GetCategoryEvent(id, url)),
       child: BlocBuilder<CategoryBloc, CategoryState>(
         builder: (context, state) {
-          return BaseUiScreen(
-            title: title.autoSize(context),
-            child: BlocConsumer<CategoryBloc, CategoryState>(
+          return BaseHomeWidget(
+            isScroll: false,
+            title: title,
+            body: BlocConsumer<CategoryBloc, CategoryState>(
               listener: (context, state) {},
               builder: (context, state) {
-                switch (state.categoryState) {
-                  case RequestState.initial:
-                    return const SizedBox();
-                  case RequestState.loading:
-                    return const CircularProgressIndicator();
-                  case RequestState.error:
-                    return const SizedBox();
-                  case RequestState.success:
+                return state.categoryState.handle<dynamic>(
+                  onSuccess: () {
                     return Column(
                       children: [
                         MyTextFormField(
@@ -103,7 +96,8 @@ class CategoryDataScreen extends StatelessWidget {
                         ),
                       ],
                     );
-                }
+                  },
+                );
               },
             ),
           );

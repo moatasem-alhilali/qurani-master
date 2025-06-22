@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/copy_service.dart';
 
@@ -108,6 +109,7 @@ class _CopyIconWidgetState extends State<CopyIconWidget>
                     : CupertinoIcons.doc_on_clipboard,
                 key: ValueKey(_isCopied),
                 color: _isCopied ? Colors.green : context.primaryScheme,
+                size: 20.sp,
               ),
             ),
             onPressed: _handleCopy,

@@ -281,11 +281,13 @@ class ProgressButtonState extends StatelessWidget {
 class StyleButtonWrap extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const StyleButtonWrap({
     required this.child,
     super.key,
     this.onTap,
+    this.onLongPress,
   });
 
   @override
@@ -334,6 +336,10 @@ class _StyleButtonWrapState extends State<StyleButtonWrap>
       onTap: _handleTap,
       onTapDown: (_) => _animationController.forward(),
       onTapCancel: () => _animationController.reverse(),
+      onLongPress: () {
+        HapticFeedback.lightImpact();
+        widget.onLongPress?.call();
+      },
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {
@@ -367,7 +373,7 @@ class BaseOnTap extends StatelessWidget {
       splashColor: Colors.red,
       borderRadius: BorderRadius.circular(8.r),
       overlayColor:
-          MaterialStatePropertyAll(context.primaryScheme.withOpacity(0.1)),
+          WidgetStatePropertyAll(context.primaryScheme.withOpacity(0.1)),
       onTap: () {
         HapticFeedback.lightImpact();
         onTap?.call();
