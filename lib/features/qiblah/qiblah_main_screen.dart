@@ -34,6 +34,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   // Direction tracking
   double _currentDirection = 0;
   double _qiblaDirection = 0;
+  double _qiblaDirection2 = 0;
   bool _wasAligned = false; // Track alignment state for haptic feedback
 
   // Performance optimization - reduce rebuilds
@@ -217,6 +218,10 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       _qiblahStream = FlutterQiblah.qiblahStream.listen(
         (QiblahDirection direction) {
           if (mounted) {
+            // logger.d(
+            //   'direction: ${direction.direction}, qiblah: ${direction.qiblah}',
+            // );
+
             // Performance optimization - only update if significant change
             final currentDiff = (_currentDirection - direction.direction).abs();
             final qiblaDiff = (_qiblaDirection - direction.qiblah).abs();
@@ -225,6 +230,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
               setState(() {
                 _currentDirection = direction.direction;
                 _qiblaDirection = direction.qiblah;
+                _qiblaDirection2 = normalizeDegree(direction.qiblah);
                 _isLoading = false;
               });
 
@@ -283,13 +289,6 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       _alignmentNotifier.value = _cachedIsAligned;
     }
 
-    // Debug logging (remove in production)
-    if (_debugMode) {
-      logger.d(
-        'Current: $_currentDirection°, Qibla: $_qiblaDirection°, Diff: ${difference.toStringAsFixed(1)}°, Aligned: $_cachedIsAligned',
-      );
-    }
-
     return _cachedIsAligned;
   }
 
@@ -299,7 +298,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
 
     if (isAligned && !_wasAligned) {
       // User just became aligned - provide haptic feedback
-      HapticFeedback.lightImpact();
+      HapticFeedback.heavyImpact();
       _wasAligned = true;
     } else if (!isAligned && _wasAligned) {
       // User moved away from alignment
@@ -382,6 +381,32 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     );
   }
 
+  static const double _alignmentThreshold = 10; // عدل حسب ما تحب
+
+  bool get isAligned {
+    if (_currentPosition == null) return false;
+    var diff = (_qiblaDirection2 - _currentDirection + 360) % 360;
+    if (diff > 180) diff = 360 - diff;
+    return diff <= _alignmentThreshold;
+  }
+
+  String get directionInstruction {
+    if (isAligned) return 'متوجه للقبلة ✓';
+
+    // احسب الفرق الدائري بين اتجاه الجهاز والقبلة
+    final angleDiff = (_qiblaDirection2 - _currentDirection + 360) % 360;
+    logger.d(
+      '_qiblaDirection: $_qiblaDirection2 , _currentDirection: $_currentDirection',
+    );
+    if (angleDiff < 180) {
+      // القبلة تقع في الجهة اليمنى
+      return 'استدر يميناً ${angleDiff.toInt()}°';
+    } else {
+      // القبلة تقع في الجهة اليسرى
+      return 'استدر يساراً ${(360 - angleDiff).toInt()}°';
+    }
+  }
+
   Widget _buildAnimatedCompass() {
     // Don't rotate the entire compass - let the internal needle handle rotation
     return DetailedQiblaCompass(
@@ -393,20 +418,24 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     );
   }
 
+  double normalizeDegree(double degree) {
+    return ((degree % 360) + 360) % 360;
+  }
+
   Widget _buildDirectionIndicator() {
-    final isAligned = _calculateAlignment();
+    // final isAligned = _calculateAlignment();
     // Calculate the direction to turn
-    String directionText;
-    if (isAligned) {
-      directionText = 'متوجه للقبلة ✓';
-    } else {
-      final normalizedDiff = (_qiblaDirection - _currentDirection + 360) % 360;
-      if (normalizedDiff <= 180) {
-        directionText = 'استدر يميناً ${normalizedDiff.toInt()}°';
-      } else {
-        directionText = 'استدر يساراً ${(360 - normalizedDiff).toInt()}°';
-      }
-    }
+    // String directionText;
+    // if (isAligned) {
+    //   directionText = 'متوجه للقبلة ✓';
+    // } else {
+    //   final normalizedDiff = (_qiblaDirection - _currentDirection + 360) % 360;
+    //   if (normalizedDiff <= 180) {
+    //     directionText = 'استدر يميناً ${normalizedDiff.toInt()}°';
+    //   } else {
+    //     directionText = 'استدر يساراً ${(360 - normalizedDiff).toInt()}°';
+    //   }
+    // }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -459,7 +488,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 ),
                 SizedBox(height: 5.h),
                 Text(
-                  directionText,
+                  directionInstruction,
                   style: context.titleSmall.copyWith(
                     color: isAligned ? Colors.green : Colors.orange,
                     fontWeight: FontWeight.w600,

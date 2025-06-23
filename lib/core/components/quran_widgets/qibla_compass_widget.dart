@@ -17,6 +17,7 @@ class QiblaCompassWidget extends StatefulWidget {
     this.cityName,
     this.onDirectionChange,
     this.showAnimation,
+    this.showDirectionIndicator = false,
     super.key,
   });
 
@@ -31,7 +32,7 @@ class QiblaCompassWidget extends StatefulWidget {
   final String? cityName;
   final Function(double direction)? onDirectionChange;
   final bool? showAnimation;
-
+  final bool showDirectionIndicator;
   @override
   State<QiblaCompassWidget> createState() => _QiblaCompassWidgetState();
 }
@@ -151,6 +152,14 @@ class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
     widget.onDirectionChange?.call(qibla); // Pass the qibla direction instead
   }
 
+  bool isUserFacingQibla(double current, double qibla) {
+    current = current % 360;
+    qibla = qibla % 360;
+    var diff = (qibla - current).abs();
+    if (diff > 180) diff = 360 - diff;
+    return diff <= 10.0;
+  }
+
   @override
   void dispose() {
     _needleController.dispose();
@@ -262,62 +271,65 @@ class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
           ),
 
           // Fixed direction indicator (doesn't rotate)
-          Positioned(
-            top: size * 0.1,
-            child: Column(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                  decoration: BoxDecoration(
-                    color: _isAligned
-                        ? Colors.green.withOpacity(0.9)
-                        : Colors.orange.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                      color: _isAligned ? Colors.green : Colors.orange,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (_isAligned ? Colors.green : Colors.orange)
-                            .withOpacity(0.3),
-                        blurRadius: 8,
-                        spreadRadius: 2,
+          if (widget.showDirectionIndicator == true)
+            Positioned(
+              top: size * 0.1,
+              child: Column(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: _isAligned
+                          ? Colors.green.withOpacity(0.9)
+                          : Colors.orange.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(20.r),
+                      border: Border.all(
+                        color: _isAligned ? Colors.green : Colors.orange,
+                        width: 2,
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    _isAligned ? 'متجه للقبلة ✓' : 'ابحث عن القبلة',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 2,
+                      boxShadow: [
+                        BoxShadow(
+                          color: (_isAligned ? Colors.green : Colors.orange)
+                              .withOpacity(0.3),
+                          blurRadius: 8,
+                          spreadRadius: 2,
                         ),
                       ],
                     ),
-                  ),
-                ),
-                if (widget.cityName != null)
-                  Padding(
-                    padding: EdgeInsets.only(top: 4.h),
                     child: Text(
-                      widget.cityName!,
+                      isUserFacingQibla(
+                        widget.currentDirection ?? 0.0,
+                        widget.qiblaDirection ?? 0.0,
+                      )
+                          ? 'متجه للقبلة ✓'
+                          : 'ابحث عن القبلة',
                       style: TextStyle(
-                        color: context.onBackground,
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 2,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-              ],
+                  SizedBox(height: 10.h),
+                  if (widget.cityName != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 4.h),
+                      child: Text(
+                        widget.cityName!,
+                        style: context.titleMedium,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
 
           // Fixed distance info (doesn't rotate)
           if (widget.showDistance == true && widget.distance != null)
