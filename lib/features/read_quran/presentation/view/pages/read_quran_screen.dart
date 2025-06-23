@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/constant.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/dialog/option_quran_dialog.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/header_read_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/read_quran_page_widget.dart';
-import 'package:quran_app/main.dart';
 
 class ReadQuranScreen extends StatefulWidget {
   const ReadQuranScreen({super.key});
@@ -34,7 +34,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
         final quranCtrl = context.read<ReadQuranBloc>().quranRH;
 
         return Scaffold(
-          backgroundColor: context.quranTheme.colorScheme.background,
+          backgroundColor: context.scaffoldBackgroundColor,
           body: SafeArea(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -85,7 +85,6 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                                       if (width > 400) {
                                         horizontal = 25.0;
                                       }
-                                      logger.d(width.round());
 
                                       return Padding(
                                         padding: EdgeInsets.symmetric(
@@ -108,7 +107,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                                         22.0,
                                       ) as double,
                                       fontFamily: 'naskh',
-                                      color: const Color(0xff77554B),
+                                      color: context.primaryScheme,
                                     ),
                                   ),
                                 ),

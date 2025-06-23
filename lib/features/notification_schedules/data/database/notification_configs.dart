@@ -1,5 +1,5 @@
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
-import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 
 class NotificationConfig {
   const NotificationConfig({

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 // import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logger/logger.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
-import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
+import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
@@ -23,9 +22,7 @@ void main() async {
   // 🌐 Initialize timezone support to handle local timezones correctly
   await TimeZoneService().setupTimezone();
 
-  // 📥 Initialize the FlutterDownloader for background downloading support
-  await FlutterDownloader.initialize();
-
+  await DownloadService().initialize();
   // 🧩 Register dependencies using service locator (e.g., GetIt)
   setupServiceLocator();
 
@@ -39,10 +36,7 @@ void main() async {
   await DatabaseService().database;
 
   // 💾 Initialize local cache (e.g., SharedPreferences)
-  await CacheService.init();
-
-  // 💾 Initialize local cache (e.g., SharedPreferences)
-  await CacheConfig.init();
+  await CacheConfig.loadConfig();
 
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await PermissionService.init();

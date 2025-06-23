@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/components/dialog/style_dialog_widget.dart';
-import 'package:quran_app/core/components/enhanced_spiritual_loading_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
@@ -130,6 +128,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
             );
           }
           final subihList = state.subihList.where((e) => e.isCustom).toList();
+          // log('subihList: ${subihList.length}');
 
           if (subihList.isEmpty) {
             return Center(
@@ -159,9 +158,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
             itemCount: subihList.length,
             // shrinkWrap: true,
             itemBuilder: (context, index) {
-              final subih = state.subihList[index];
+              final subih = subihList[index];
               final count = state.getCountForSubih(subih.id ?? -1);
-              if (!subih.isCustom) return const SizedBox();
               return MyDhikrCardWidget(
                 subih: subih,
                 count: count,

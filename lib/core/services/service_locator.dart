@@ -21,8 +21,8 @@ import 'package:quran_app/features/sabih/data/database/database_sabih_service.da
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/search/data/remote/aya_repository.dart';
 import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
-import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
-import 'package:quran_app/features/setting/data/repo/setting_notification_repo.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 
 final sl = GetIt.instance;
 

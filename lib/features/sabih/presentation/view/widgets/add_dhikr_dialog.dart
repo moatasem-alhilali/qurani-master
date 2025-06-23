@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
+import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
@@ -77,12 +78,10 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(
+            MyTextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'نص الذكر',
-                hintText: 'مثال: سبحان الله',
-              ),
+              labelText: 'نص الذكر',
+              hintText: 'مثال: سبحان الله',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'يرجى إدخال نص الذكر';
@@ -91,13 +90,10 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            MyTextFormField(
               controller: _contentController,
-              decoration: const InputDecoration(
-                labelText: 'الوصف (اختياري)',
-                hintText: 'مثال: الفرصة الطيبة أو الشرح',
-              ),
-              maxLines: null,
+              labelText: 'الوصف (اختياري)',
+              hintText: 'مثال: الفرصة الطيبة أو الشرح',
             ),
             const SizedBox(height: 16),
             const Spacer(),

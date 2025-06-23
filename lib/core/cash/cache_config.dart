@@ -10,10 +10,9 @@ class CacheConfig {
   static bool hasInitLocal = false;
 
   /// Initializes global settings stored in local cache (theme, last page, etc).
-  static Future<void> init() async {
+  static Future<void> loadConfig() async {
     await CacheService.init();
     await _loadLastPageRead();
-    await _loadCurrentThemeType();
     await _loadInitFlag();
   }
 
@@ -23,10 +22,6 @@ class CacheConfig {
 
   static Future<void> _loadLastPageRead() async {
     lastPageRead = CacheService().getInt('lastPageRead') ?? 0;
-  }
-
-  static Future<void> _loadCurrentThemeType() async {
-    currentThemeType = CacheService().getInt('currentThemeType') ?? 0;
   }
 
   static Future<void> _loadInitFlag() async {
@@ -39,10 +34,6 @@ class CacheConfig {
 
   static Future<void> saveLastPageRead() async {
     await CacheService().setInt('lastPageRead', lastPageRead);
-  }
-
-  static Future<void> saveCurrentThemeType() async {
-    await CacheService().setInt('currentThemeType', currentThemeType);
   }
 
   static Future<void> markInitDone() async {

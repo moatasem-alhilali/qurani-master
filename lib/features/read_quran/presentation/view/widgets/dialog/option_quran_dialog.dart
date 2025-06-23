@@ -4,13 +4,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/drawer_slide/surah_juz_list.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
+import 'package:quran_app/core/widgets/theme_widget.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_list.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/setting_theme_sheet.dart';
 import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah_widget.dart';
 
 class OptionQuranDialog extends StatelessWidget {
@@ -37,7 +39,7 @@ class OptionQuranDialog extends StatelessWidget {
 class _TopSettingsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = context.quranTheme.colorScheme;
+    // final theme = context.quranTheme.colorScheme;
 
     return Align(
       alignment: Alignment.topLeft,
@@ -46,14 +48,14 @@ class _TopSettingsBar extends StatelessWidget {
         margin: EdgeInsets.all(8.sp),
         // width: double.infinity,
         decoration: BoxDecoration(
-          color: theme.background,
+          color: context.scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               offset: const Offset(0, -2),
               blurRadius: 3,
               spreadRadius: 3,
-              color: theme.primary.withOpacity(.15),
+              color: context.primaryScheme.withOpacity(.15),
             ),
           ],
         ),
@@ -93,24 +95,12 @@ class _BottomOption extends StatelessWidget {
       builder: (context, state) {
         final theme = context.quranTheme.colorScheme;
 
-        return Container(
+        return CardWidget(
           padding: const EdgeInsets.all(8),
           width: double.infinity,
           margin: EdgeInsets.symmetric(
             horizontal: 8.sp,
             vertical: 8.sp,
-          ),
-          decoration: BoxDecoration(
-            color: theme.background,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                offset: const Offset(0, -2),
-                blurRadius: 3,
-                spreadRadius: 3,
-                color: theme.primary.withOpacity(.15),
-              ),
-            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,7 +116,7 @@ class _BottomOption extends StatelessWidget {
                 label: 'المحفوظ',
                 widget: BookMarkList(),
               ),
-              _BottomAction(
+              const _BottomAction(
                 icon: search_icon,
                 label: 'البحث',
                 widget: SearchAyahWidget(),
@@ -134,7 +124,10 @@ class _BottomOption extends StatelessWidget {
               InkWell(
                 onTap: () {
                   context.showBottomSheet(
-                    child: SettingThemeSheet(),
+                    backgroundColor: context.scaffoldBackgroundColor,
+                    child: ThemeWidget(
+                      onTap: () => context.pop(),
+                    ),
                   );
                 },
                 child: Column(
@@ -172,6 +165,7 @@ class _BottomAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => context.showBottomSheet(
+        backgroundColor: context.scaffoldBackgroundColor,
         child: SizedBox(
           height: context.getHight(80),
           child: widget,

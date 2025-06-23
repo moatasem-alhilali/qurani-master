@@ -9,8 +9,8 @@ import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/pages/notification_schedules_screen.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:quran_app/features/setting/presentation/bloc/setting_notification_bloc.dart';
-import 'package:quran_app/features/setting/presentation/view/widgets/show_edit_schedule_dialog.dart';
+import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
+import 'package:quran_app/features/setting_notification/presentation/view/widgets/show_edit_schedule_dialog.dart';
 
 class NotificationSettingItemWidget extends StatefulWidget {
   const NotificationSettingItemWidget({

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -47,28 +49,32 @@ class SurahWithAllDetailScreen extends StatelessWidget {
                           child: _BottomSheet(data: data),
                         );
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
+                      child: CardWidget(
+                        // padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: index % 2 == 0
-                              ? context.primaryScheme
-                              : Colors.transparent,
-                        ),
+                        // decoration: BoxDecoration(
+                        //   borderRadius: BorderRadius.circular(12),
+                        //   color: index % 2 == 0
+                        //       ? context.primaryScheme
+                        //       : Colors.transparent,
+                        // ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               'إسم السورة : ${data.surah}',
-                              style: const TextStyle(color: Colors.grey),
+                              style: titleSmall(context).copyWith(
+                                  // color: context.gray2,
+                                  ),
                             ),
                             CircleAvatar(
                               backgroundColor: index % 2 == 0
                                   ? context.primaryScheme
                                   : context.primarySecondary,
-                              radius: 18,
-                              child: Text('${index + 1}'),
+                              radius: 12.r,
+                              child: FittedBox(
+                                child: Text('${index + 1}'),
+                              ),
                             ),
                           ],
                         ),

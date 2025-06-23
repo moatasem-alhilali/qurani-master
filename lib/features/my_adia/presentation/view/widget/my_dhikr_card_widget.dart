@@ -90,7 +90,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
     showMenu<String>(
       context: context,
       position: position,
-      color: context.scaffoldBackgroundColor,
+      color: context.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

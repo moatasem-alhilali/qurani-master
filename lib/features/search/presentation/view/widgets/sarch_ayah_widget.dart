@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -38,7 +39,7 @@ class _SearchAyahWidgetState extends State<SearchAyahWidget> {
                 builder: (context, state) {
                   return MyTextFormField(
                     hintStyle: TextStyle(
-                      color: context.quranTheme.colorScheme.surface,
+                      color: context.primaryScheme,
                       fontSize: 14,
                     ),
                     hintText: 'ادخل اسم الايه',

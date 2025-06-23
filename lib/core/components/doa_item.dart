@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
@@ -35,14 +36,6 @@ class DoaItem extends StatelessWidget {
       onLongPress: onLongPress,
       child: CardWidget(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        // padding: const EdgeInsets.only(bottom: 8, left: 12, top: 12, right: 5),
-        // decoration: BoxDecoration(
-        //   borderRadius: const BorderRadius.only(
-        //     topLeft: Radius.circular(20),
-        //     topRight: Radius.circular(20),
-        //   ),
-        //   color: color,
-        // ),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -56,8 +49,8 @@ class DoaItem extends StatelessWidget {
                 style: TextStyle(
                   wordSpacing: 3,
                   fontFamily: fontFamily ?? 'ios-1',
-                  color: const Color.fromARGB(255, 218, 217, 217),
-                  fontSize: 20,
+                  color: context.gray2,
+                  fontSize: 13.sp,
                 ),
               ),
               const SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class MyTextFormField extends StatefulWidget {
   MyTextFormField({
@@ -47,7 +48,6 @@ class MyTextFormField extends StatefulWidget {
     this.suffixText,
     this.prefixText,
     this.initialValue,
-
   });
   String? hintText;
   String? Function(String?)? validator;
@@ -163,15 +163,18 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
         onTapOutside: (event) {
           FocusScope.of(context).unfocus();
           if (widget.onEditingComplete != null) {
-            widget.onEditingComplete!();
+            widget.onEditingComplete?.call();
           }
         },
         onTap: widget.onTap,
-        style: widget.style,
+        style: widget.style ??
+            titleSmall(context).copyWith(
+              color: context.primaryScheme,
+            ),
         decoration: InputDecoration(
           suffixText: widget.suffixText,
           prefixText: widget.prefixText,
-          fillColor: context.background,
+          fillColor: context.scaffoldBackgroundColor,
           filled: true,
           errorText: widget.statusText ? widget.successText : widget.errorText,
           labelText: widget.labelText ?? widget.hintText,

@@ -20,7 +20,7 @@ class SmoothSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sheetShape = ShapeDecoration(
-      color: context.background,
+      color: backgroundColor ?? context.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),

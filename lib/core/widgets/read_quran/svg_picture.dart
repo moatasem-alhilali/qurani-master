@@ -316,6 +316,7 @@ Widget bookmark_list({double? height, double? width}) {
     'assets/svg/bookmark_list.svg',
     width: width,
     height: height ?? 35,
+    
   );
 }
 

@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/features/setting_notification/data/seed/notification_settings_seeder.dart';
 import 'package:quran_app/main.dart';
 
 part 'notification_event.dart';
@@ -16,8 +15,9 @@ part 'notification_state.dart';
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationState()) {
     on<InitializeNotificationEvent>(_onInitializeNotification);
-    on<SchedulePrayerNotificationEvent>(_onSchedulePrayerNotification);
-    on<ShowInstantNotificationEvent>(_onShowInstantNotification);
+    on<RescheduleNotificationEvent>(_onRescheduleNotification);
+    on<CancelPendingNotificationEvent>(_onCancelPendingNotification);
+
     on<GetPendingNotificationsEvent>(_onGetPendingNotifications);
     on<GetActiveNotificationsEvent>(_onGetActiveNotifications);
   }
@@ -29,37 +29,34 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) async {
     await _notificationService.initialize();
+    await NotificationSettingsSeeder().runIfNeeded();
+
     await _tasksNotification.rescheduleAllNotifications();
     emit(state.copyWith(state: RequestState.success));
     add(GetPendingNotificationsEvent());
     add(GetActiveNotificationsEvent());
   }
 
-  Future<void> _onSchedulePrayerNotification(
-    SchedulePrayerNotificationEvent event,
+  Future<void> _onRescheduleNotification(
+    RescheduleNotificationEvent event,
     Emitter<NotificationState> emit,
   ) async {
-    await _notificationService.scheduleNotification(
-      id: event.id,
-      hour: event.time.hour,
-      minute: event.time.minute,
-      title: event.title,
-      body: event.body,
-      channel: event.channel,
-    );
-    emit(state.copyWith(state: RequestState.success));
+    await _tasksNotification.rescheduleAllNotifications();
   }
 
-  Future<void> _onShowInstantNotification(
-    ShowInstantNotificationEvent event,
+  Future<void> _onCancelPendingNotification(
+    CancelPendingNotificationEvent event,
     Emitter<NotificationState> emit,
   ) async {
-    await _notificationService.showInstantNotification(
-      title: event.title,
-      body: event.body,
-      channel: event.channel,
-    );
-    emit(state.copyWith(state: RequestState.success));
+    try {
+      await _tasksNotification.advancedNotificationService
+          .cancelNotification(id: event.id);
+      emit(state.copyWith(state: RequestState.success));
+      add(GetPendingNotificationsEvent());
+    } catch (e) {
+      emit(state.copyWith(state: RequestState.error));
+      logger.e('error in cancel pending notification: $e');
+    }
   }
 
   Future<void> _onGetPendingNotifications(
@@ -67,13 +64,20 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) async {
     try {
+      emit(state.copyWith(pendingNotificationsState: RequestState.loading));
       final pendingNotifications = await _tasksNotification
           .advancedNotificationService
           .getPendingNotifications();
 
       // logger.d(pendingNotifications);
-      emit(state.copyWith(pendingNotifications: pendingNotifications));
+      emit(
+        state.copyWith(
+          pendingNotifications: pendingNotifications,
+          pendingNotificationsState: RequestState.success,
+        ),
+      );
     } catch (e) {
+      emit(state.copyWith(pendingNotificationsState: RequestState.error));
       logger.e('error in get pending notifications: $e');
     }
   }
@@ -83,6 +87,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) async {
     try {
+      emit(state.copyWith(activeNotificationsState: RequestState.loading));
       final activeNotifications = await _tasksNotification
           .advancedNotificationService
           .getActiveNotifications();
@@ -90,8 +95,14 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         logger.d(element.title);
       }
       // logger.d(activeNotifications);
-      emit(state.copyWith(activeNotifications: activeNotifications));
+      emit(
+        state.copyWith(
+          activeNotifications: activeNotifications,
+          activeNotificationsState: RequestState.success,
+        ),
+      );
     } catch (e) {
+      emit(state.copyWith(activeNotificationsState: RequestState.error));
       logger.e('error in get active notifications: $e');
     }
   }

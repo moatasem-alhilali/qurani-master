@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:quran_app/features/setting/data/repo/setting_notification_repo.dart';
+import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 import 'package:quran_app/main.dart';
 
 part 'setting_notification_event.dart';

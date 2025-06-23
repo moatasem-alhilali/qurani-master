@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
@@ -161,13 +162,14 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
           context: context,
           isFirstAyah: isFirstAyah,
           text: isFirstAyah
-              ? "${ayah.code_v2[0]}${ayah.code_v2.substring(1)}"
+              ? '${ayah.code_v2[0]}${ayah.code_v2.substring(1)}'
               : ayah.code_v2,
           pageIndex: widget.pageIndex,
           isSelected: selectedAyahUQNumber == ayah.ayahUQNumber,
           fontSize: fontSize,
           surahNum: surahNum,
-          ayahNum: ayah.ayahUQNumber,
+          ayahUQNum: ayah.ayahUQNumber,
+          ayahNum: ayah.ayahNumber,
           onLongPressStart: (details) {
             onSelect?.call(ayah.ayahUQNumber);
 
@@ -191,7 +193,7 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
       fontSize: fontSize,
       height: 2,
       letterSpacing: 2,
-      color: context.quranTheme.colorScheme.inversePrimary,
+      color: context.primaryScheme,
       shadows: const [
         Shadow(
           blurRadius: 0.5,
@@ -233,7 +235,6 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
   }) {
     final ayah = ayahs[ayahIndex];
     context.showSmoothSheetStyle(
-      
       child: MenuActionWidget(
         ayahNum: ayah.ayahNumber,
         surahName: quranCtrl.getSurahNameFromPage(widget.pageIndex),
@@ -245,6 +246,7 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
         ayahUrl: ayah.audio,
         myContext: context,
       ),
+      backgroundColor: context.scaffoldBackgroundColor,
     );
     // showAyahMenuActionButton(
     //   quranCtrl.getSurahNumberFromPage(widget.pageIndex),

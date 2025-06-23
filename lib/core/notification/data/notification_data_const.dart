@@ -4,12 +4,12 @@ import 'package:quran_app/core/notification/model/time_notification_data_model.d
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 
 /// ✅ Singleton + Seeder
-class NotificationDataConst {
-  factory NotificationDataConst() => _instance;
-  NotificationDataConst._internal();
+class NotificationDataConstSeed {
+  factory NotificationDataConstSeed() => _instance;
+  NotificationDataConstSeed._internal();
 
-  static final NotificationDataConst _instance =
-      NotificationDataConst._internal();
+  static final NotificationDataConstSeed _instance =
+      NotificationDataConstSeed._internal();
 
   //
   TimeNotificationDataModel get middleNight => TimeNotificationDataModel(

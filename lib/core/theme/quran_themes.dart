@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/theme/blue_theme.dart';
-import 'package:quran_app/core/theme/brown_theme.dart';
-import 'package:quran_app/core/theme/dark_theme.dart';
-import 'package:quran_app/core/theme/green_theme.dart';
 
 class MyColorTheme {
   MyColorTheme({
@@ -51,8 +47,6 @@ final MyColorTheme blueTheme = MyColorTheme(
     onSecondary: Color(0xffCDAD80),
     error: Color(0xffE0E1E0),
     onError: Color(0xffE0E1E0),
-    background: Color(0xffFFFFFF),
-    onBackground: Color(0xfff3efdf),
     surface: Color(0xffCDAD80),
     onSurface: Color(0xffE0E1E0),
     inversePrimary: Color(0xff000000),
@@ -85,8 +79,6 @@ final MyColorTheme brownTheme = MyColorTheme(
     onSecondary: Color(0xffFFEEDC),
     error: Color(0xffCD9974),
     onError: Color(0xffCD9974),
-    background: Color(0xffFFFBF8),
-    onBackground: Color(0xffFFFBF8),
     surface: Color(0xffCD9974),
     onSurface: Color(0xffCD9974),
     inversePrimary: Color(0xff000000),
@@ -118,8 +110,6 @@ final MyColorTheme greenTheme = MyColorTheme(
     onSecondary: Color(0xff91a57d),
     error: Color(0xffE0E1E0),
     onError: Color(0xffE0E1E0),
-    background: Color(0xfff3efdf),
-    onBackground: Color(0xfff3efdf),
     surface: Color(0xff91a57d),
     onSurface: Color(0xffE0E1E0),
     inversePrimary: Color(0xff000000),
@@ -151,8 +141,6 @@ final MyColorTheme darkTheme = MyColorTheme(
     onSecondary: Color(0xff373737),
     error: Color(0xff404C6E),
     onError: Color(0xff404C6E),
-    background: Color(0xff1E1E1E),
-    onBackground: Color(0xff1E1E1E),
     surface: Color(0xffCDAD80),
     onSurface: Color(0xff404C6E),
     inversePrimary: Color(0xffffffff),
@@ -174,35 +162,3 @@ final MyColorTheme darkTheme = MyColorTheme(
   secondaryHeaderColor: const Color(0xff404C6E),
   cardColor: const Color(0xffF6F6EE),
 );
-
-class ThemeManager {
-  static MyColorTheme getThemeByType(int type) {
-    switch (type) {
-      case 1:
-        return blueTheme;
-      case 2:
-        return brownTheme;
-      case 3:
-        return greenTheme;
-      case 4:
-        return darkTheme;
-      default:
-        return blueTheme;
-    }
-  }
-
-  static ThemeData getThemeApp(int type) {
-    switch (type) {
-      case 1:
-        return blueThemeData;
-      case 2:
-        return brownThemeData;
-      case 3:
-        return greenThemeData;
-      case 4:
-        return darkThemeData;
-      default:
-        return blueThemeData;
-    }
-  }
-}

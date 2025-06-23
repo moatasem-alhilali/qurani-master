@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A high-level service for accessing shared preferences with typed helpers.
 /// This is a singleton service to ensure centralized, safe access to local cache.
 class CacheService {
-  static final CacheService _instance = CacheService._internal();
   factory CacheService() => _instance;
   CacheService._internal();
+  static final CacheService _instance = CacheService._internal();
 
   static SharedPreferences? _prefs;
 
@@ -32,7 +32,11 @@ class CacheService {
   // ─────────────────────────────────────────────
   // 🧾 Getters
   // ─────────────────────────────────────────────
-  String? getString(String key) => _prefs?.getString(key);
+  String? getString(String key) {
+    final value = _prefs?.getString(key);
+    return value?.toString();
+  }
+
   bool? getBool(String key) => _prefs?.getBool(key);
   int? getInt(String key) => _prefs?.getInt(key);
   double? getDouble(String key) => _prefs?.getDouble(key);

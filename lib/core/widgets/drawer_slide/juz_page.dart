@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/theme/quran_themes.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
 class QuranJuz extends StatelessWidget {
   QuranJuz({super.key});
@@ -18,7 +16,7 @@ class QuranJuz extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: context.quranTheme.colorScheme.background,
+        color: context.quranTheme.colorScheme.surface,
       ),
       child: ListView.builder(
         padding: EdgeInsets.zero,

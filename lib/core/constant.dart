@@ -5,7 +5,6 @@ import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart
 import 'package:quran_app/features/offline/presentation/view/pages/offline_screen.dart';
 import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
-import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 const String ayah =
@@ -72,4 +71,3 @@ List<Widget> screens = [
 
 //
 int lastPageRead = 0;
-int currentThemeType = 0;

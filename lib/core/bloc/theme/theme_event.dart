@@ -4,6 +4,8 @@ part of 'theme_bloc.dart';
 abstract class ThemeEvent {}
 
 class ChangeThemeEvent extends ThemeEvent {
-  int theme;
+  String theme;
   ChangeThemeEvent({required this.theme});
 }
+
+class InitThemeEvent extends ThemeEvent {}

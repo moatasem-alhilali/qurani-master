@@ -65,6 +65,7 @@ dependencies:
   share_plus: ^11.0.0
   fluttertoast: ^8.2.12
   skeletonizer: ^2.0.1
+  geocoding: ^4.0.0
   # ---------------------------------------
 
 dev_dependencies:

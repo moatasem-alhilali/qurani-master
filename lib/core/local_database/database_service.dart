@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
-import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -50,7 +50,7 @@ class DatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, _dbName);
 
-    return await openDatabase(
+    return openDatabase(
       path,
       version: _dbVersion,
       onCreate: _onCreate,
@@ -69,7 +69,8 @@ class DatabaseService {
     await db.execute(DatabaseSabihService.subihTable);
     await db.execute(DatabaseSabihService.subihLogsTable);
     await db.execute(DatabaseSabihService.subihSummaryTable);
-    await db.execute(DatabaseNotificationSchedulesService.notificationSchedules);
+    await db
+        .execute(DatabaseNotificationSchedulesService.notificationSchedules);
 
     logger.i('✅ Database initialized and tables created.');
   }
@@ -137,7 +138,6 @@ class DatabaseService {
     );
   ''';
 
-
   // ──────────────────────────────────────────────────────────────────────────────
   // 🔁 Generic CRUD Methods
   // ──────────────────────────────────────────────────────────────────────────────
@@ -164,7 +164,7 @@ class DatabaseService {
     String? having,
   }) async {
     final db = await database;
-    return await db.query(
+    return db.query(
       table,
       columns: columns,
       where: where,
@@ -196,7 +196,7 @@ class DatabaseService {
     ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
   }) async {
     final db = await database;
-    return await db.insert(
+    return db.insert(
       table,
       values,
       conflictAlgorithm: conflictAlgorithm,
@@ -221,7 +221,7 @@ class DatabaseService {
     ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
   }) async {
     final db = await database;
-    return await db.update(
+    return db.update(
       table,
       values,
       where: 'id = ?',
@@ -240,7 +240,7 @@ class DatabaseService {
   /// ```
   Future<int> delete(String table, int id) async {
     final db = await database;
-    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+    return db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<List<Map<String, Object?>>> rawQuery(

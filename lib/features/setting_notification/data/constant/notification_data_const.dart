@@ -1,76 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
-import 'package:quran_app/core/notification/model/notification_ids.dart';
-import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
-import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/core/notification/data/notification_data_const.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:quran_app/features/setting/data/seed/notification_settings_seeder.dart';
-import 'package:quran_app/main.dart';
 
 // This class manages notification settings and applies changes to the advanced notification scheduler
-class SettingNotificationRepo {
-  SettingNotificationRepo({
-    required this.advancedNotificationService,
-  });
-
-  final AdvancedNotificationService advancedNotificationService;
-
-  /// Get NotificationSettingModel by key
-  Future<NotificationSettingModel?> getSetting(String key) async {
-    return DatabaseNotificationSettingService().getByKey(key);
-  }
-
-  /// Get enabled/disabled value
-  Future<bool> getBool(String key) async {
-    final setting = await DatabaseNotificationSettingService().getByKey(key);
-    return setting?.enabled ?? false;
-  }
-
-  /// Update enabled/disabled value (toggle switch in settings)
-  Future<void> toggle(String key, bool val) async {
-    final setting = await DatabaseNotificationSettingService().getByKey(key);
-    if (setting == null) return;
-    final updated = setting.copyWith(enabled: val);
-    await DatabaseNotificationSettingService().upsert(updated);
-    await _applyNotificationChange(updated);
-  }
-
-  /// Update full schedule (when user changes timing/mode in settings)
-  Future<void> updateSchedule(
-    String key,
-    NotificationSettingModel newSchedule,
-  ) async {
-    await DatabaseNotificationSettingService().upsert(newSchedule);
-    await _applyNotificationChange(newSchedule);
-  }
-
-  /// Apply any notification change (enable/disable/schedule update)
-  Future<void> _applyNotificationChange(
-    NotificationSettingModel setting,
-  ) async {
-    final id = _resolveNotificationId(setting.key);
-
-    // Cancel any previous notifications for this setting
-    await advancedNotificationService.cancelNotification(
-      id: id,
-      range: _resolveIdRange(setting),
-    );
-
-    if (setting.enabled) {
-      // Only schedule if enabled
-      await advancedNotificationService.scheduleNotification(
-        id: id,
-        title: setting.label,
-        body: _resolveNotificationBody(setting),
-        channel: _resolveChannel(setting.key),
-        schedule: setting.schedule,
-      );
-    }
-  }
-
+class NotificationDataConst {
   /// Example: Map key to notification channel
-  NotificationChannel _resolveChannel(String key) {
+  static NotificationChannel resolveChannel(String key) {
     switch (key) {
       case NotificationKeys.isNotificationThikrMorning:
         return NotificationChannel.morning;
@@ -108,20 +43,18 @@ class SettingNotificationRepo {
   }
 
   /// Example: Map key to notification ID (use NotificationIds class)
-  int _resolveNotificationId(String key) {
+  static int resolveNotificationId(String key) {
     switch (key) {
-      case NotificationKeys.isNotificationThikrMorning:
+   case NotificationKeys.isNotificationThikrMorning:
         return NotificationIds.thikrMorning;
       case NotificationKeys.isNotificationThikrNight:
         return NotificationIds.thikrNight;
       case NotificationKeys.isNotificationMiddleNight:
         return NotificationIds.middleNight;
       case NotificationKeys.isNotificationMohammed:
-        return NotificationIds.mohammedPrayer(
-          0,
-        ); // استخدم الساعة المطلوبة كـ parameter
+        return NotificationIds.mohammedPrayer;
       case NotificationKeys.isNotificationRandomThikr:
-        return NotificationIds.randomThikr(0);
+        return NotificationIds.randomThikr;
       case NotificationKeys.isNotificationReadQuran:
         return NotificationIds.readQuran;
       case NotificationKeys.isNotificationReadSurahMulk:
@@ -131,17 +64,15 @@ class SettingNotificationRepo {
       case NotificationKeys.isNotificationWridGetup:
         return NotificationIds.thikrGetup;
       case NotificationKeys.isNotificationReadSurah:
-        return NotificationIds.userScheduledThikr(
-          1,
-        ); // مثال، استخدم ID خاص بكل جدولة يحددها المستخدم
+        return NotificationIds.userScheduledThikr;
       case NotificationKeys.isNotificationReadSurahAlkahf:
-        return NotificationIds.userScheduledThikr(2);
+        return NotificationIds.userScheduledThikr;
       case NotificationKeys.isNotificationFasting:
-        return NotificationIds.userScheduledThikr(3);
+        return NotificationIds.userScheduledThikr;
       case NotificationKeys.isNotificationFastingMonday:
-        return NotificationIds.userScheduledThikr(4);
+        return NotificationIds.userScheduledThikr;
       case NotificationKeys.isNotificationFastingThursday:
-        return NotificationIds.userScheduledThikr(5);
+        return NotificationIds.userScheduledThikr;
       case NotificationKeys.isNotificationAthanFagr:
         return NotificationIds.athanFajr;
       case NotificationKeys.isNotificationAthanDuhr:
@@ -160,7 +91,7 @@ class SettingNotificationRepo {
   }
 
   /// Some notifications (like random thikr) might schedule multiple notifications, so you may want to cancel a range
-  int? _resolveIdRange(NotificationSettingModel setting) {
+  static int? resolveIdRange(NotificationSettingModel setting) {
     switch (setting.key) {
       case NotificationKeys.isNotificationRandomThikr:
         // Allow up to 100 random thikr notifications per day
@@ -195,9 +126,48 @@ class SettingNotificationRepo {
     }
   }
 
+  /// جلب عنوان الإشعار الافتراضي حسب المفتاح (لو ما كان معرف)
+  static String resolveTitle(String key) {
+    final seeder = NotificationDataConstSeed();
+    switch (key) {
+      case NotificationKeys.isNotificationThikrMorning:
+        return seeder.thikrMorning.title;
+      case NotificationKeys.isNotificationThikrNight:
+        return seeder.thikrNight.title;
+      case NotificationKeys.isNotificationMohammed:
+        return seeder.notificationMohummed.title;
+      case NotificationKeys.isNotificationRandomThikr:
+        return 'ذكر عشوائي';
+      case NotificationKeys.isNotificationReadQuran:
+        return seeder.readQuran.title;
+      case NotificationKeys.isNotificationReadSurahMulk:
+        return seeder.readSurahMulk.title;
+      case NotificationKeys.isNotificationMiddleNight:
+        return seeder.middleNight.title;
+      case NotificationKeys.isNotificationWridSleep:
+        return seeder.thikrSleep.title;
+      case NotificationKeys.isNotificationWridGetup:
+        return seeder.thikrGetup.title;
+      case NotificationKeys.isNotificationAllAthan:
+        return 'أذان الصلاة';
+      case NotificationKeys.isNotificationAthanFagr:
+        return 'أذان الفجر';
+      case NotificationKeys.isNotificationAthanDuhr:
+        return 'أذان الظهر';
+      case NotificationKeys.isNotificationAthanAsr:
+        return 'أذان ا لعصر';
+      case NotificationKeys.isNotificationAthanMagrib:
+        return 'أذان المغرب';
+      case NotificationKeys.isNotificationAthanIsha:
+        return 'أذان العشاء';
+      default:
+        return key;
+    }
+  }
+
   /// You can customize notification body per key
-  String _resolveNotificationBody(NotificationSettingModel setting) {
-    switch (setting.key) {
+  static String resolveNotificationBody(String key) {
+    switch (key) {
       case NotificationKeys.isNotificationThikrMorning:
         return 'لا تنس أذكار الصباح!';
       case NotificationKeys.isNotificationThikrNight:
@@ -234,58 +204,134 @@ class SettingNotificationRepo {
       case NotificationKeys.isNotificationAthanIsha:
         return 'حان الآن موعد الأذان.';
       default:
-        return setting.label; // fallback
+        return key; // fallback
     }
   }
+}
 
-  /// Get all settings
-  Future<List<NotificationSettingModel>> getAllSettings() async {
-    try {
-      await NotificationSettingsSeeder().runIfNeeded();
-      return await DatabaseNotificationSettingService().getAll();
-    } catch (e) {
-      logger.e('error getting all settings $e');
-      return [];
-    }
-  }
+// This class provides centralized static notification IDs for all types of app notifications.
+// It prevents accidental duplication and makes it easy to manage notification identifiers from a single place.
 
-  /// Get all settings as a Map (useful for displaying all toggles in settings UI)
-  Future<Map<String, NotificationSettingModel>> loadAll() async {
-    try {
-      await NotificationSettingsSeeder().runIfNeeded();
-      final all = await DatabaseNotificationSettingService().getAll();
-      return {for (final e in all) e.key: e};
-    } catch (e) {
-      logger.e('error loading all settings $e');
-      return {};
-    }
-  }
+class NotificationIds {
+  // Midnight prayer notification ID
+  static const int middleNight = 101;
 
-  /// UI utility: show time picker dialog and return (hour, minute)
-  static Future<TimeOfDay?> pickTime(
-    BuildContext context, {
-    TimeOfDay? initialTime,
-  }) async {
-    final res = await showTimePicker(
-      initialEntryMode: TimePickerEntryMode.dialOnly,
-      context: context,
-      cancelText: 'رجوع',
-      confirmText: 'اختيار',
-      initialTime: initialTime ?? TimeOfDay.now(),
-    );
-    return res;
-  }
+  // Morning Azkar notification ID
+  static const int thikrMorning = 102;
 
-  /// Lock/unlock all notifications (master switch)
-  Future<void> unlockAllNotifications(bool enable) async {
-    final all = await DatabaseNotificationSettingService().getAll();
-    for (final setting in all) {
-      final updated = setting.copyWith(enabled: enable);
-      await DatabaseNotificationSettingService().upsert(updated);
-      await _applyNotificationChange(updated);
-    }
-    debugPrint(
-      enable ? '🔔 Notifications enabled.' : '🔕 Notifications disabled.',
-    );
-  }
+  // Night Azkar notification ID
+  static const int thikrNight = 103;
+
+  // Daily Quran reading notification ID
+  static const int readQuran = 104;
+
+  // Surah Mulk reading notification ID
+  static const int readSurahMulk = 105;
+
+  // Sleep Azkar notification ID
+  static const int thikrSleep = 106;
+
+  // Wake-up Azkar notification ID
+  static const int thikrGetup = 107;
+
+  // Prayer Athan notification IDs (these match the order in your PrayerInfoModel list)
+  static const int athanFajr = 200; // Fajr Athan
+  static const int athanSunrise = 201; // Sunrise Athan
+  static const int athanDhuhr = 202; // Dhuhr Athan
+  static const int athanAsr = 203; // Asr Athan
+  static const int athanMaghrib = 204; // Maghrib Athan
+  static const int athanIsha = 205; // Isha Athan
+  static const List<int> athanIds = [
+    athanFajr,
+    athanSunrise,
+    athanDhuhr,
+    athanAsr,
+    athanMaghrib,
+    athanIsha,
+  ];
+  // "Send Salawat on the Prophet" notification ID (recurring every hour in the day)
+  // Usage: NotificationIds.mohammedPrayer(hour) -> 3001 = 1AM, 3023 = 11PM
+  static const int mohammedPrayer = 3000;
+
+  // Random Thikr notifications (used for repeated or user-scheduled Thikr)
+  // Each scheduled random Thikr can use an index to avoid conflicts
+  static const int randomThikr = 4000;
+
+  // User-scheduled Thikr notifications, each gets its unique ID based on a user-controlled scheduleId
+  static const int userScheduledThikr = 5000;
+
+  // You can add more generators here for custom notifications as needed
+}
+
+class NotificationKeys {
+  static const athanKeys = [
+    NotificationKeys.isNotificationAthanFagr,
+    NotificationKeys.isNotificationAthanDuhr,
+    NotificationKeys.isNotificationAthanAsr,
+    NotificationKeys.isNotificationAthanMagrib,
+    NotificationKeys.isNotificationAthanIsha,
+  ];
+
+  /// تفعيل جميع الإشعارات
+  static const isNotify = 'ISNOTIFY';
+
+  /// إشعارات الأذان
+  static const isNotificationAllAthan = 'isNotificationAllAthan';
+
+  /// إشعارات الأذان الفجر
+  static const isNotificationAthanFagr = 'isNotificationAthanFagr';
+
+  /// إشعارات الأذان الظهر
+  static const isNotificationAthanDuhr = 'isNotificationAthanDuhr';
+
+  /// إشعارات الأذان العصر
+  static const isNotificationAthanAsr = 'isNotificationAthanAsr';
+
+  /// إشعارات الأذان المغرب
+  static const isNotificationAthanMagrib = 'isNotificationAthanMagrib';
+
+  /// إشعارات الأذان العشاء
+  static const isNotificationAthanIsha = 'isNotificationAthanIsha';
+
+  /// إشعارات الأذان المنتصف الليل
+  static const isNotificationMiddleNight = 'isNotificationMiddleNight';
+
+  /// إشعارات الأذكار الصباح
+  static const isNotificationThikrMorning = 'isNotificationThikrMorning';
+
+  /// إشعارات الأذكار الليل
+  static const isNotificationThikrNight = 'isNotificationThikrNight';
+
+  /// إشعارات الصلاة على محمد ﷺ
+  static const isNotificationMohammed = 'isNotificationMohammed';
+
+  /// إشعارات الأذكار العشوائية
+  static const isNotificationRandomThikr = 'isNotificationRandomThikr';
+
+  /// إشعارات القراءة القرآنية اليومية
+  static const isNotificationReadQuran = 'isNotificationReadQuran';
+
+  /// إشعارات قراءة سورة الملك
+  static const isNotificationReadSurahMulk = 'isNotificationReadSurahMulk';
+
+  /// إشعارات النوم
+  static const isNotificationWridSleep = 'isNotificationWridSleep';
+
+  /// إشعارات القراءة القرآنية اليومية
+  static const isNotificationWridGetup = 'isNotificationWridGetup';
+
+  /// إشعارات قراءة سورة الملك
+  static const isNotificationReadSurah = 'isNotificationReadSurah';
+
+  /// إشعارات قراءة سورة الكهف
+  static const isNotificationReadSurahAlkahf = 'isNotificationReadSurahAlkahf';
+
+  /// إشعارات الصوم
+  static const isNotificationFasting = 'isNotificationFasting';
+
+  /// إشعارات الصوم الاثنين
+  static const isNotificationFastingMonday = 'isNotificationFastingMonday';
+
+  /// إشعارات الصوم الخميس
+  static const isNotificationFastingThursday = 'isNotificationFastingThursday';
 }

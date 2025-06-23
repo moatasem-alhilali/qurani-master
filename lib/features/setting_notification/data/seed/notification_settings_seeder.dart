@@ -1,8 +1,7 @@
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
-import 'package:quran_app/features/setting/data/database/database_notification_setting_service.dart';
-import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:quran_app/features/setting/data/model/notification_setting_seed_data.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/features/setting_notification/data/model/notification_setting_seed_data.dart';
 import 'package:quran_app/main.dart';
 
 class NotificationSettingsSeeder {
@@ -11,8 +10,7 @@ class NotificationSettingsSeeder {
   static final NotificationSettingsSeeder _instance =
       NotificationSettingsSeeder._internal();
 
-  Future<void> runIfNeeded(
-  ) async {
+  Future<void> runIfNeeded() async {
     final all = await DatabaseNotificationSettingService().getAll();
 
     if (all.isNotEmpty) return;
@@ -33,7 +31,7 @@ class NotificationSettingsSeeder {
         // Master enable/disable (بدون جدولة)
         NotificationSettingSeedData(
           key: NotificationKeys.isNotify,
-          label: 'تشغيل الإشعارات',
+          label: 'اشعارات التطبيق',
           enabled: true,
           scheduleType: ScheduleType.daily,
           hour: 0,
@@ -141,16 +139,16 @@ class NotificationSettingsSeeder {
           key: NotificationKeys.isNotificationMohammed,
           label: 'الصلاة على محمد ﷺ',
           enabled: false,
-          scheduleType: ScheduleType.hourly,
-          minute: 10, // every hour at 10min
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 10,
         ),
         // Random Thikr every 10 minutes as an example
         // NotificationSettingSeedData(
         //   key: NotificationKeys.isNotificationRandomThikr,
         //   label: 'أذكار عشوائية',
         //   enabled: false,
-        //   scheduleType: ScheduleType.everyNMinutes,
-        //   intervalMinutes: 10,
+          // scheduleType: ScheduleType.everyNMinutes,
+          // intervalMinutes: 10,
         // ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationReadQuran,
@@ -217,7 +215,6 @@ class NotificationSettingsSeeder {
 
       for (final seed in seeds) {
         final exists = await db.getByKey(seed.key);
-        logger.d('exists: $exists');
         if (exists == null) {
           await db.upsert(seed.toSettingModel());
         }

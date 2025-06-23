@@ -28,8 +28,9 @@ class AdhanPrayerTimeService implements PrayerTimeService {
       ..madhab = Madhab.shafi;
 
     _prayerTimes = PrayerTimes.today(coordinates, params);
-    _prayerInfoList = NotificationDataConst().prayerInfoListSeed(_prayerTimes);
-    return NotificationDataConst().prayerInfoListSeed(_prayerTimes);
+    _prayerInfoList =
+        NotificationDataConstSeed().prayerInfoListSeed(_prayerTimes);
+    return NotificationDataConstSeed().prayerInfoListSeed(_prayerTimes);
   }
 
   @override

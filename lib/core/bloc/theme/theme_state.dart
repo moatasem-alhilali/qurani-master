@@ -3,13 +3,13 @@ part of 'theme_bloc.dart';
 
 @immutable
 class ThemeState {
-  final int currentThemeType;
+  final String currentThemeType;
   const ThemeState({
-    this.currentThemeType = 1,
+    this.currentThemeType = ThemeManager.blue,
   });
 
   ThemeState copyWith({
-    int? currentThemeType,
+    String? currentThemeType,
   }) {
     return ThemeState(
       currentThemeType: currentThemeType ?? this.currentThemeType,

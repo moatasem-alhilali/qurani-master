@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_widget.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
@@ -12,7 +13,7 @@ import 'package:quran_app/features/another_screen/presentation/view/widgets/sura
 import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
-import 'package:quran_app/features/qiblah/qiblah_main.dart';
+import 'package:quran_app/features/qiblah/qiblah_main_screen.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/hadith_40_screen.dart';
@@ -28,7 +29,7 @@ class AnotherFeatures extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+        crossAxisCount: 3,
         childAspectRatio: 1 / 1.2,
         crossAxisSpacing: 5,
         mainAxisSpacing: 10,
@@ -38,6 +39,7 @@ class AnotherFeatures extends StatelessWidget {
       children: [
         _Item(
           onPressed: () {
+            // context.push(const FantasticWidgetsShowcase());
             context.push(const ReadQuranScreen());
           },
           text: 'القرآن الكريم',
@@ -52,7 +54,7 @@ class AnotherFeatures extends StatelessWidget {
         ),
         _Item(
           onPressed: () {
-            context.push(QiblahMain());
+            context.push(QiblahMainScreen());
           },
           text: 'القبلة',
           icon: FlutterIslamicIcons.qibla,
@@ -167,30 +169,26 @@ class _Item extends StatelessWidget {
   final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Column(
-        children: [
-          CardWidget(
-            child: Icon(
-              icon,
-              size: 30.sp,
-              color: context.primaryScheme,
-              // color: DarkColors.customPrimary,
-            ),
+    final shapeType =
+        CardShapeType.values[Random().nextInt(CardShapeType.values.length)];
+    return Column(
+      children: [
+        Expanded(
+          child: FeatureCardWidget(
+            onTap: onPressed,
+            icon: Icon(icon, size: 30.sp),
+            shapeType: shapeType,
           ),
-          // if (isSvgImage)
-
-          SizedBox(height: 5.h),
-          text.autoSize(
-            context,
-            maxLines: 3,
-            minFontSize: 10,
-            fontSize: 11.sp,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+        ),
+        SizedBox(height: 5.h),
+        text.autoSize(
+          context,
+          maxLines: 3,
+          minFontSize: 10,
+          fontSize: 11.sp,
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

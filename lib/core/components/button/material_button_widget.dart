@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 class MaterialButtonWidget extends StatelessWidget {
   const MaterialButtonWidget({
@@ -12,9 +14,9 @@ class MaterialButtonWidget extends StatelessWidget {
     this.disabledColor,
     this.shape,
     this.elevation,
-    this.focusElevation = 0,
-    this.highlightElevation = 0,
-    this.hoverElevation = 0,
+    this.focusElevation,
+    this.highlightElevation,
+    this.hoverElevation,
     super.key,
   });
 
@@ -43,11 +45,18 @@ class MaterialButtonWidget extends StatelessWidget {
       padding: padding,
       color: color,
       disabledColor: disabledColor,
-      shape: shape,
-      elevation: elevation,
-      hoverElevation: hoverElevation,
-      focusElevation: focusElevation,
-      highlightElevation: highlightElevation,
+      shape: shape ??
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+      elevation: elevation ?? 0,
+      hoverColor: context.primaryScheme.withOpacity(0.1),
+      highlightColor: context.primaryScheme.withOpacity(0.1),
+      focusColor: context.primaryScheme.withOpacity(0.1),
+      splashColor: context.primaryScheme.withOpacity(0.1),
+      hoverElevation: hoverElevation ?? 0,
+      focusElevation: focusElevation ?? 0,
+      highlightElevation: highlightElevation ?? 0,
       child: child,
     );
   }

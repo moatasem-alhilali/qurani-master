@@ -26,7 +26,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
     on<SetStateBookmarkEvent>(
       (event, emit) {
-        emit(const BookmarkState(setState: RequestState.success));
+        emit(state.copyWith(setState: RequestState.success));
       },
     );
   }
@@ -171,16 +171,21 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
 
   // ─────────────────────── AYAH BOOKMARKS ───────────────────────
   bool hasBookmarkAyahSelect(int surahNum, int ayahNum) {
-    return state.ayahBookmarkList.any(
+    final res = state.ayahBookmarkList.any(
       (bookmark) =>
           bookmark.surahNumber == surahNum && bookmark.ayahNumber == ayahNum,
     );
+    return res;
   }
 
   bool hasBookmarkAyah(int surahNum, int ayahNum) {
     return state.ayahBookmarkList.any(
-      (bookmark) =>
-          bookmark.surahNumber == surahNum && bookmark.ayahNumber == ayahNum,
+      (bookmark) {
+        final bool =
+            bookmark.surahNumber == surahNum && bookmark.ayahNumber == ayahNum;
+        // log('bookmark: ${bookmark.ayahUQNumber} ${bookmark.ayahNumber}');
+        return bool;
+      },
     );
   }
 

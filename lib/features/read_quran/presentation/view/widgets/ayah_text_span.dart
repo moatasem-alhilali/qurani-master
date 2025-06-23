@@ -11,12 +11,17 @@ TextSpan ayahTextSpan({
   required bool isSelected,
   required int surahNum,
   required int ayahNum,
+  required int ayahUQNum,
   required bool isFirstAyah,
   required BuildContext context,
   double? fontSize,
   LongPressStartDetailsFunction? onLongPressStart,
   VoidCallback? onTapUp,
 }) {
+  final hasBookmarkAyahSelect =
+      context.read<BookmarkBloc>().hasBookmarkAyah(surahNum, ayahNum);
+  // log('surahNum: $surahNum, ayahNum: $ayahNum, hasBookmarkAyahSelect: $hasBookmarkAyahSelect');
+
   final recognizer =
       LongPressGestureRecognizer(duration: const Duration(milliseconds: 500))
         ..onLongPressStart = onLongPressStart
@@ -54,10 +59,8 @@ TextSpan ayahTextSpan({
           letterSpacing: 5,
           // wordSpacing: wordSpacing + 10,
           color: context.quranTheme.colorScheme.inversePrimary,
-          backgroundColor: context
-                  .read<BookmarkBloc>()
-                  .hasBookmarkAyahSelect(surahNum, ayahNum)
-              ? const Color(0xffCD9974).withOpacity(.4)
+          backgroundColor: hasBookmarkAyahSelect
+              ? context.primaryScheme.withOpacity(.4)
               : isSelected
                   ? context.primaryScheme
                   : Colors.transparent,
@@ -74,10 +77,8 @@ TextSpan ayahTextSpan({
         height: 2,
         letterSpacing: 5,
         color: context.quranTheme.colorScheme.inversePrimary,
-        backgroundColor: context
-                .read<BookmarkBloc>()
-                .hasBookmarkAyahSelect(surahNum, ayahNum)
-            ? const Color(0xffCD9974).withOpacity(.4)
+        backgroundColor: hasBookmarkAyahSelect
+            ? context.primaryScheme.withOpacity(.4)
             : isSelected
                 ? context.primaryScheme
                 : Colors.transparent,
@@ -92,17 +93,13 @@ TextSpan ayahTextSpan({
         fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
-        color: context
-                .read<BookmarkBloc>()
-                .hasBookmarkAyahSelect(surahNum, ayahNum)
+        color: hasBookmarkAyahSelect
             ? context.quranTheme.colorScheme.inversePrimary
-            : const Color(0xff77554B),
-        backgroundColor: context
-                .read<BookmarkBloc>()
-                .hasBookmarkAyahSelect(surahNum, ayahNum)
-            ? const Color(0xffCD9974).withOpacity(.4)
+            : context.primaryScheme,
+        backgroundColor: hasBookmarkAyahSelect
+            ? context.primaryScheme.withOpacity(.4)
             : isSelected
-                ? context.quranTheme.highlightColor
+                ? context.primaryScheme.withOpacity(.2)
                 : Colors.transparent,
       ),
       recognizer: recognizer,

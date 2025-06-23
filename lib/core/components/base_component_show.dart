@@ -14,7 +14,7 @@ Future<void> showMyBottomSheetFunction({
   bool isScroll = true,
   FutureOr<void> Function()? whenCompleted,
 }) async {
-  showModalBottomSheet(
+  showModalBottomSheet<void>(
     context: context,
     backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
     isScrollControlled: true,

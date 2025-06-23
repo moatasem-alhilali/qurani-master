@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
@@ -15,20 +20,44 @@ class BookmarkAyahTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
-        final bookmarkTextList = state.ayahBookmarkList;
+        final ayahBookmarkList = state.ayahBookmarkList;
         final quranRH = context.read<ReadQuranBloc>().quranRH;
+        if (ayahBookmarkList.isEmpty) {
+          return Center(
+            child: Column(
+              children: [
+                const EnhancedSpiritualLoadingWidget(
+                  showText: false,
+                  size: 250,
+                  // showParticles: false,
+                ),
+                SizedBox(height: 16.h),
+                Center(
+                  child: Text(
+                    'لا يوجد صفحات محفوظة',
+                    style: context.titleMedium.copyWith(
+                      color: context.gray1,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
-            color: context.quranTheme.colorScheme.background,
+            color: context.scaffoldBackgroundColor,
           ),
           child: ListView.builder(
             padding: EdgeInsets.zero,
             physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: bookmarkTextList.length,
+            itemCount: ayahBookmarkList.length,
             // controller: sl<GeneralController>().surahListController,
             itemBuilder: (_, index) {
-              final bookmark = bookmarkTextList[index];
+              final bookmark = ayahBookmarkList[index];
+              // log('ayahNumber: ${bookmark.ayahNumber} surahNum: ${bookmark.surahNumber}');
               final ayah = quranRH.allAyahs.firstWhere(
                 (a) => a.ayahUQNumber == bookmark.ayahUQNumber,
               );
@@ -83,8 +112,8 @@ class BookmarkAyahTab extends StatelessWidget {
                                               (index + 1).toString(),
                                             ),
                                             style: TextStyle(
-                                              color:
-                                                  context.quranTheme.hintColor,
+                                              color: context.primaryScheme
+                                                  .withOpacity(.7),
                                               fontFamily: 'kufi',
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -106,7 +135,8 @@ class BookmarkAyahTab extends StatelessWidget {
                                       Text(
                                         ayah.text,
                                         style: TextStyle(
-                                          color: context.quranTheme.hintColor,
+                                          color: context.primaryScheme
+                                              .withOpacity(.7),
                                           fontFamily: 'uthmanic2',
                                           fontSize: 20,
                                           height: 2,
@@ -119,13 +149,12 @@ class BookmarkAyahTab extends StatelessWidget {
                                         padding:
                                             const EdgeInsets.only(right: 8),
                                         child: Text(
-                                          '${bookmarkTextList[index].lastRead} :  ${'الايه'}  ${convertNumbers(bookmarkTextList[index].ayahNumber.toString())}  -  ${'الصفحه'} ${bookmarkTextList[index].pageNumber! + 1}',
+                                          '${ayahBookmarkList[index].lastRead} :  ${'الايه'}  ${convertNumbers(ayahBookmarkList[index].ayahNumber.toString())}  -  ${'الصفحه'} ${ayahBookmarkList[index].pageNumber! + 1}',
                                           style: TextStyle(
                                             fontFamily: 'naskh',
                                             fontWeight: FontWeight.w600,
                                             fontSize: 12,
-                                            color: context
-                                                .quranTheme.colorScheme.surface,
+                                            color: context.primaryScheme,
                                           ),
                                         ),
                                       ),
@@ -143,8 +172,9 @@ class BookmarkAyahTab extends StatelessWidget {
                           .read<ReadQuranBloc>()
                           .pageController
                           .jumpToPage(ayah.page - 1);
-                      context.pop();
-                      context.pop();
+                      context
+                        ..pop()
+                        ..pop();
                       // quranCtrl.changeSurahListOnTap(juz.page);
                     },
                   ),

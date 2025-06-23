@@ -1,24 +1,19 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/dialog/style_dialog_widget.dart';
+import 'package:quran_app/core/components/button/material_button_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/next_time_prayer_remain_widget.dart';
-import 'package:quran_app/features/notification_schedules/presentation/view/pages/notification_schedules_screen.dart';
-import 'package:quran_app/features/setting/data/constant/notification_keys.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:quran_app/features/setting/presentation/bloc/setting_notification_bloc.dart';
-import 'package:quran_app/features/setting/presentation/view/widgets/notification_setting_item_widget.dart';
-import 'package:quran_app/features/setting/presentation/view/widgets/show_edit_schedule_dialog.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
+import 'package:quran_app/features/setting_notification/presentation/view/pages/system_notification_screen.dart';
+import 'package:quran_app/features/setting_notification/presentation/view/widgets/notification_setting_item_widget.dart';
 
 class SettingNotificationScreen extends StatefulWidget {
   const SettingNotificationScreen({super.key});
@@ -101,7 +96,8 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
       lazy: false,
       child: BaseHomeWidget(
         title: 'اعدادات الاشعارات',
-        titleWidget: const NextTimePrayerRemainWidget(),
+
+        // titleWidget: const NextTimePrayerRemainWidget(),
         body: BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
           builder: (context, state) {
             return state.loading.handle<NotificationSettingModel>(
@@ -117,7 +113,28 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                       padding: EdgeInsets.all(16.w),
                       child: Column(
                         children: [
-                          _buildHeader(),
+                          MaterialButtonWidget(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              context.push(const SystemNotificationScreen());
+                            },
+                            child: CardWidget(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'رؤية اشعارات النظام',
+                                    style: titleMedium(context),
+                                  ),
+                                  Icon(
+                                    CupertinoIcons.bell_fill,
+                                    size: 20.sp,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           _buildSection(
                             0,
                             'الأذان',
@@ -234,41 +251,6 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 24.h),
-      child: Column(
-        children: [
-          Container(
-            width: 80.w,
-            height: 80.w,
-            decoration: BoxDecoration(
-              color: context.primaryScheme.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Icon(
-              CupertinoIcons.settings,
-              color: context.primaryScheme,
-              size: 40.sp,
-            ),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'إعدادات التنبيهات',
-            style: titleLarge(context),
-          ),
-          // SizedBox(height: 8.h),
-          // Text(
-          //   'تخصيص مواعيد وأنواع الإشعارات الإسلامية',
-          //   style: titleMedium(context),
-          //   textAlign: TextAlign.center,
-          // ),
-        ],
       ),
     );
   }

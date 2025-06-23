@@ -11,6 +11,16 @@ import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
+  Future<void> initialize() async {
+    try {
+      // 📥 Initialize the FlutterDownloader for background downloading support
+      await FlutterDownloader.initialize();
+    } catch (e) {
+      logger.e("error in download service: $e");
+    }
+  }
+
+  //
   final ReceivePort _port = ReceivePort();
   final DatabaseOfflineService _offlineService = DatabaseOfflineService();
   static const String portName = 'downloader_send_port';
