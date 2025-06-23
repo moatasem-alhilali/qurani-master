@@ -4,6 +4,7 @@ import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
+import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart';
@@ -38,6 +39,9 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<NotificationService>(NotificationService())
     ..registerSingleton<AdvancedNotificationService>(
       AdvancedNotificationService(sl.get<NotificationService>().plugin),
+    )
+    ..registerSingleton<NotificationPermissionsService>(
+      NotificationPermissionsService(sl.get<NotificationService>().plugin),
     )
     ..registerSingleton<NotificationSchedulesRepo>(
       NotificationSchedulesRepo(

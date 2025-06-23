@@ -387,6 +387,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     if (_currentPosition == null) return false;
     var diff = (_qiblaDirection2 - _currentDirection + 360) % 360;
     if (diff > 180) diff = 360 - diff;
+    print('Qibla: $_qiblaDirection2, Current: $_currentDirection, Diff: $diff');
     return diff <= _alignmentThreshold;
   }
 
@@ -408,13 +409,15 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   }
 
   Widget _buildAnimatedCompass() {
-    // Don't rotate the entire compass - let the internal needle handle rotation
-    return DetailedQiblaCompass(
+    // Use the new stream-based compass that works like the old code
+    return QiblaCompassWidgetWithStream(
       size: 280.w,
-      qiblaDirection: _qiblaDirection,
-      currentDirection: _currentDirection,
       distance: _distanceToMecca,
       cityName: _cityName,
+      showDistance: true,
+      primaryColor: context.primaryScheme,
+      kaabaColor: Colors.green,
+      showAnimation: true,
     );
   }
 

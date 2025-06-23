@@ -1,9 +1,10 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
-import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/constant.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/main.dart';
 
 part 'connectivity_event.dart';
@@ -28,16 +29,15 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     ConnectivityStarted event,
     Emitter<ConnectivityState> emit,
   ) async {
-    emit(const ConnectivityLoading());
-
-    // Set up continuous connectivity monitoring
-    _connectivitySubscription =
-        connectivity.onConnectivityChanged.listen((result) {
-      add(ConnectivityChanged(connectivityResult: result));
-    });
-
     // Initial connectivity check
     try {
+      emit(const ConnectivityLoading());
+
+      // Set up continuous connectivity monitoring
+      _connectivitySubscription =
+          connectivity.onConnectivityChanged.listen((result) {
+        add(ConnectivityChanged(connectivityResult: result));
+      });
       final connectivityResult = await connectivity.checkConnectivity();
       _updateConnectivityStatus(connectivityResult);
       emit(ConnectivitySuccess(isConnected: ISCONNECTED));
@@ -72,25 +72,29 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   }
 
   void _updateConnectivityStatus(List<ConnectivityResult> connectivityResult) {
-    final previousState = ISCONNECTED;
+    try {
+      final previousState = ISCONNECTED;
 
-    if (connectivityResult.contains(ConnectivityResult.mobile) ||
-        connectivityResult.contains(ConnectivityResult.wifi) ||
-        connectivityResult.contains(ConnectivityResult.ethernet) ||
-        connectivityResult.contains(ConnectivityResult.vpn) ||
-        connectivityResult.contains(ConnectivityResult.bluetooth)) {
-      ISCONNECTED = true;
-    } else {
-      ISCONNECTED = false;
-    }
-
-    // Log only when connectivity state changes
-    if (ISCONNECTED != previousState) {
-      if (!ISCONNECTED) {
-        logger.w('Connectivity lost - Switched to offline mode');
+      if (connectivityResult.contains(ConnectivityResult.mobile) ||
+          connectivityResult.contains(ConnectivityResult.wifi) ||
+          connectivityResult.contains(ConnectivityResult.ethernet) ||
+          connectivityResult.contains(ConnectivityResult.vpn) ||
+          connectivityResult.contains(ConnectivityResult.bluetooth)) {
+        ISCONNECTED = true;
       } else {
-        logger.i('Connectivity restored - Switched to online mode');
+        ISCONNECTED = false;
       }
+
+      // Log only when connectivity state changes
+      if (ISCONNECTED != previousState) {
+        if (!ISCONNECTED) {
+          logger.w('Connectivity lost - Switched to offline mode');
+        } else {
+          logger.i('Connectivity restored - Switched to online mode');
+        }
+      }
+    } catch (e) {
+      logger.e('Error updating connectivity status: $e');
     }
   }
 }

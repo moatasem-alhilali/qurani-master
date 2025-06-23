@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/main.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
@@ -19,86 +20,160 @@ Future<void> backgroundNotificationHandler(
   selectNotificationSubject.add(response.payload ?? '');
 }
 
-class NotificationService {
-  NotificationService() : plugin = FlutterLocalNotificationsPlugin();
-  final FlutterLocalNotificationsPlugin plugin;
+class NotificationService extends BaseNotificationService {
+  NotificationService() : super(FlutterLocalNotificationsPlugin());
 
   final BehaviorSubject<String> selectNotificationSubject =
       BehaviorSubject<String>();
 
+  /// Check if notifications are enabled on the device
+  @override
+  Future<bool> areNotificationsEnabled() async {
+    if (Platform.isAndroid) {
+      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      return await androidPlugin?.areNotificationsEnabled() ?? false;
+    } else if (Platform.isIOS) {
+      final iOSPlugin = plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      final permissions = await iOSPlugin?.checkPermissions();
+      if (permissions == null) return false;
+      return permissions.isEnabled;
+    }
+    return false;
+  }
+
+  /// Request notification permissions (required for Android 13+ and iOS)
+  Future<bool> requestPermissions() async {
+    if (Platform.isAndroid) {
+      // For Android 13+, request notification permission
+      if (await Permission.notification.isDenied) {
+        final status = await Permission.notification.request();
+        if (status != PermissionStatus.granted) {
+          return false;
+        }
+      }
+
+      // Request exact alarm permission for scheduled notifications
+      final exactAlarmPermission = await requestExactAlarmPermission();
+      logger.d('Exact alarm permission: $exactAlarmPermission');
+
+      return areNotificationsEnabled();
+    } else if (Platform.isIOS) {
+      return requestNotificationPermissions();
+    }
+    return false;
+  }
+
   Future<void> initialize() async {
-    tz.initializeTimeZones();
+    // Initialize timezone using base class method
+    await configureLocalTimeZone();
 
-    final localTimezone = await FlutterTimezone.getLocalTimezone();
-    final location = tz.getLocation(localTimezone);
+    // Android initialization settings with proper configuration
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
-    tz.setLocalLocation(location);
-    await _configureLocalTimeZone();
-
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    // iOS initialization settings with proper permissions
     const iosSettings = DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
-
-      // onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
     );
 
-    const settings = InitializationSettings(
+    // Linux settings (if supporting desktop)
+    final linuxSettings = LinuxInitializationSettings(
+      defaultActionName: 'Open notification',
+      defaultIcon: AssetsLinuxIcon('assets/image/beads_icon.png'),
+    );
+
+    final settings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
+      linux: linuxSettings,
     );
 
     await plugin.initialize(
       settings,
-      onDidReceiveNotificationResponse: (payload) async {
-        selectNotificationSubject.add(payload.payload ?? '');
-      },
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: backgroundNotificationHandler,
     );
 
     await initAllAndroidChannels();
-
     _configureSelectNotificationSubject();
 
-    logger.d('Notification service initialized');
+    logger.d('Notification service initialized successfully');
   }
 
+  /// Initialize all Android notification channels with enhanced configuration
   Future<void> initAllAndroidChannels() async {
-    final androidPlugin = plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    try {
+      if (!Platform.isAndroid) return;
 
-    for (final channel in NotificationChannel.values) {
-      final data = channel.data;
+      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
 
-      final androidChannel = AndroidNotificationChannel(
-        data.id,
-        data.name,
-        description: 'Channel for ${data.name}',
-        importance: Importance.max,
-        sound: RawResourceAndroidNotificationSound(data.sound),
+      for (final channel in NotificationChannel.values) {
+        final data = channel.data;
+
+        final androidChannel = AndroidNotificationChannel(
+          data.id,
+          data.name,
+          description: 'قناة ${data.name} للإشعارات الإسلامية',
+          importance: Importance.max,
+          sound: RawResourceAndroidNotificationSound(data.sound),
+          vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+          enableLights: true,
+          ledColor: const Color.fromARGB(255, 0, 255, 0),
+          groupId: 'islamic_notifications',
+        );
+
+        await androidPlugin?.createNotificationChannel(androidChannel);
+      }
+
+      // Create notification channel group for better organization
+      const channelGroup = AndroidNotificationChannelGroup(
+        'islamic_notifications',
+        'الإشعارات الإسلامية',
+        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
       );
 
-      await androidPlugin?.createNotificationChannel(androidChannel);
+      await androidPlugin?.createNotificationChannelGroup(channelGroup);
+      logger.d('Android notification channels initialized');
+    } catch (e, stackTrace) {
+      logger
+        ..e('Error initializing Android notification channels: $e')
+        ..e('Error initializing Android notification channels: $stackTrace');
     }
   }
 
+  /// Show instant notification with enhanced features
   Future<void> showInstantNotification({
     required String title,
     required String body,
     NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? payload,
+    String? largeIcon,
+    List<AndroidNotificationAction>? actions,
+    String? groupKey,
+    bool setAsGroupSummary = false,
   }) async {
-    final details = await _buildNotificationDetails(channel);
-    await plugin.show(
-      DateTime.now().millisecondsSinceEpoch % 100000, // unique ID
-      title,
-      body,
-      details,
-      payload: '$title|$body',
+    final id = DateTime.now().millisecondsSinceEpoch % 100000;
+
+    await showNotificationWithId(
+      id: id,
+      title: title,
+      body: body,
+      channel: channel,
+      payload: payload ?? '$title|$body',
+      largeIcon: largeIcon,
+      groupKey: groupKey,
+      setAsGroupSummary: setAsGroupSummary,
+      actions: actions,
     );
   }
 
+  /// Schedule notification with enhanced scheduling options
   Future<void> scheduleNotification({
     required int id,
     required int hour,
@@ -107,9 +182,20 @@ class NotificationService {
     required String body,
     NotificationChannel channel = NotificationChannel.defaultChannel,
     String? payload,
+    String? largeIcon,
+    List<AndroidNotificationAction>? actions,
+    String? groupKey,
+    AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle,
+    DateTimeComponents? matchDateTimeComponents,
   }) async {
-    final details = await _buildNotificationDetails(channel);
-    final time = _nextInstanceOf(hour: hour, minute: minute);
+    final details = await buildNotificationDetails(
+      channel,
+      largeIcon: largeIcon,
+      actions: actions,
+      groupKey: groupKey,
+    );
+
+    final time = nextInstanceOf(hour: hour, minute: minute);
 
     await plugin.zonedSchedule(
       id,
@@ -118,64 +204,148 @@ class NotificationService {
       time,
       details,
       payload: payload ?? '$title|$body',
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
+      androidScheduleMode: scheduleMode,
+      matchDateTimeComponents:
+          matchDateTimeComponents ?? DateTimeComponents.time,
     );
-    // logger.i('Notification service scheduled at $time');
   }
 
-  Future<void> cancel({required int id}) async => plugin.cancel(id);
-  Future<void> cancelAll() async => plugin.cancelAll();
-
-  // ================== Internals ==================
-
-  Future<NotificationDetails> _buildNotificationDetails(
-    NotificationChannel channel,
-  ) async {
-    final data = channel.data;
-
-    final android = AndroidNotificationDetails(
-      data.id,
-      data.name,
-      channelDescription: 'Channel for ${data.name}',
-      sound: RawResourceAndroidNotificationSound(data.sound),
-      priority: Priority.high,
-      importance: Importance.max,
+  /// Show progress notification (useful for download progress)
+  Future<void> showProgressNotificationCompat({
+    required int id,
+    required String title,
+    required int progress,
+    required int maxProgress,
+    NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? body,
+    bool indeterminate = false,
+  }) async {
+    await super.showProgressNotification(
+      id: id,
+      title: title,
+      progress: progress,
+      maxProgress: maxProgress,
+      body: body,
+      indeterminate: indeterminate,
+      channel: channel,
     );
-
-    const ios = DarwinNotificationDetails();
-
-    return NotificationDetails(android: android, iOS: ios);
   }
 
-  tz.TZDateTime _nextInstanceOf({required int hour, required int minute}) {
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
-    return scheduled;
+  /// Show big text notification
+  Future<void> showBigTextNotificationCompat({
+    required int id,
+    required String title,
+    required String body,
+    required String bigText,
+    NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? payload,
+  }) async {
+    await super.showBigTextNotification(
+      id: id,
+      title: title,
+      body: body,
+      bigText: bigText,
+      channel: channel,
+      payload: payload,
+    );
   }
 
-  Future<void> _configureLocalTimeZone() async {
-    final timeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZone));
+  /// Show notification with image attachment
+  Future<void> showNotificationWithImageCompat({
+    required int id,
+    required String title,
+    required String body,
+    required String imagePath,
+    NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? payload,
+  }) async {
+    await super.showNotificationWithImage(
+      id: id,
+      title: title,
+      body: body,
+      imagePath: imagePath,
+      channel: channel,
+      payload: payload,
+    );
   }
+
+  /// Get pending notifications
+  @override
+  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    return super.getPendingNotifications();
+  }
+
+  /// Get active notifications
+  @override
+  Future<List<ActiveNotification>> getActiveNotifications() async {
+    return super.getActiveNotifications();
+  }
+
+  /// Cancel notification by ID
+  Future<void> cancel({required int id}) async =>
+      cancelNotificationById(id: id);
+
+  /// Cancel all notifications
+  @override
+  Future<void> cancelAll() async => super.cancelAll();
+
+  // ================== Internal Methods ==================
 
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((payload) {
       debugPrint('Notification tapped with payload: $payload');
-      // Navigate or handle inside app
+      _handleNotificationTap(payload);
     });
   }
 
-  Future<void> _onDidReceiveLocalNotification(
-    int id,
-    String? title,
-    String? body,
-    String? payload,
+  void _handleNotificationTap(String payload) {
+    // Handle notification tap based on payload
+    // This can be extended to navigate to specific screens
+    logger.d('Handling notification tap: $payload');
+  }
+
+  Future<void> _onDidReceiveNotificationResponse(
+    NotificationResponse response,
   ) async {
-    debugPrint('Legacy iOS notification received: $title');
+    selectNotificationSubject.add(response.payload ?? '');
+  }
+
+  /// Setup notification actions for iOS
+  Future<void> setupNotificationActions() async {
+    if (Platform.isIOS) {
+      final iosPlugin = plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+
+      final actions = [
+        DarwinNotificationAction.plain(
+          'mark_as_read',
+          'تم القراءة',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'remind_later',
+          'تذكير لاحقاً',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+      ];
+
+      final category = DarwinNotificationCategory(
+        'islamic_notifications',
+        actions: actions,
+        options: <DarwinNotificationCategoryOption>{
+          DarwinNotificationCategoryOption.allowInCarPlay,
+        },
+      );
+
+      await iosPlugin?.initialize(
+        DarwinInitializationSettings(
+          notificationCategories: [category],
+        ),
+      );
+    }
   }
 }

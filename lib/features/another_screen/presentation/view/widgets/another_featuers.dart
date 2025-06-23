@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
@@ -29,10 +29,10 @@ class AnotherFeatures extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1 / 1.2,
+        crossAxisCount: 4,
+        childAspectRatio: 1 / 1.4,
         crossAxisSpacing: 5,
-        mainAxisSpacing: 10,
+        mainAxisSpacing: 5,
       ),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -54,7 +54,7 @@ class AnotherFeatures extends StatelessWidget {
         ),
         _Item(
           onPressed: () {
-            context.push(QiblahMainScreen());
+            context.push(const QiblahMainScreen());
           },
           text: 'القبلة',
           icon: FlutterIslamicIcons.qibla,
@@ -174,16 +174,19 @@ class _Item extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: FeatureCardWidget(
+          child: FeatureCardIconWidget(
             onTap: onPressed,
-            icon: Icon(icon, size: 30.sp),
+            icon: Icon(
+              icon,
+              size: 40.sp,
+            ),
             shapeType: shapeType,
           ),
         ),
         SizedBox(height: 5.h),
         text.autoSize(
           context,
-          maxLines: 3,
+          maxLines: 1,
           minFontSize: 10,
           fontSize: 11.sp,
           textAlign: TextAlign.center,

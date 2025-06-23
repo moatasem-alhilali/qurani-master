@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_screen.dart';
 import 'package:quran_app/features/categories/data/json/quran_json.dart';
 import 'package:quran_app/features/categories/data/json/serah_json.dart';
@@ -18,13 +19,13 @@ class CategoryScreen extends StatelessWidget {
       children: [
         const BaseHederWidget(text: 'القرأن الكريم وعلومه'),
         SizedBox(
-          height: context.getHight(27),
+          height: context.getHight(20),
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                FeatureCardWidget(
+                FeatureCardIconWidget(
                   title: 'تلاوات مشهوره',
                   icon: const Icon(Icons.volume_up_rounded),
                   onTap: () {
@@ -35,10 +36,11 @@ class CategoryScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  width: context.getWidth(35),
+                  maxLines: 1,
+                  width: context.getWidth(30),
                   height: context.getHight(18),
                 ),
-                FeatureCardWidget(
+                FeatureCardIconWidget(
                   title: 'تعليم اطفال',
                   icon: const Icon(Icons.child_care_rounded),
                   onTap: () {
@@ -49,12 +51,13 @@ class CategoryScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  maxLines: 1,
                   shapeType: CardShapeType.stars,
                   width: context.getWidth(35),
                   height: context.getHight(18),
                 ),
-                FeatureCardWidget(
-                  title: 'تلاوات بروايات وقراءات',
+                FeatureCardIconWidget(
+                  title: 'تلاوات بروايات',
                   icon: const Icon(Icons.library_books_rounded),
                   onTap: () {
                     context.push(
@@ -64,11 +67,12 @@ class CategoryScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  maxLines: 1,
                   shapeType: CardShapeType.diamonds,
                   width: context.getWidth(35),
                   height: context.getHight(18),
                 ),
-                FeatureCardWidget(
+                FeatureCardIconWidget(
                   title: 'مصاحف الحرمين',
                   icon: const Icon(Icons.mosque_rounded),
                   onTap: () {
@@ -79,11 +83,12 @@ class CategoryScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  maxLines: 1,
                   shapeType: CardShapeType.hexagons,
                   width: context.getWidth(35),
                   height: context.getHight(18),
                 ),
-                FeatureCardWidget(
+                FeatureCardIconWidget(
                   title: 'مصاحف مترجمة معانيها',
                   icon: const Icon(Icons.translate_rounded),
                   onTap: () {
@@ -95,12 +100,14 @@ class CategoryScreen extends StatelessWidget {
                     );
                   },
                   shapeType: CardShapeType.triangles,
+                  maxLines: 1,
                   width: context.getWidth(35),
                   height: context.getHight(18),
                 ),
-                FeatureCardWidget(
+                FeatureCardIconWidget(
                   title: 'مصاحف مترجمة',
                   icon: const Icon(Icons.g_translate_rounded),
+                  maxLines: 1,
                   onTap: () {
                     context.push(
                       BaseAudioScreen(
@@ -122,8 +129,9 @@ class CategoryScreen extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
+            crossAxisCount: 4,
+            childAspectRatio: 1 / 1.3,
+            crossAxisSpacing: 5,
             mainAxisSpacing: 10,
           ),
           children: [
@@ -198,8 +206,9 @@ class CategoryScreen extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
+            crossAxisCount: 4,
+            childAspectRatio: 1 / 1.3,
+            crossAxisSpacing: 5,
             mainAxisSpacing: 10,
           ),
           children: [
@@ -301,49 +310,75 @@ class CategorySectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FeatureCardWidget(
-      title: title,
-      icon: icon,
-      onTap: () {
-        context.push(
-          CategoryTypeDetail(
-            data: data,
+    return Column(
+      children: [
+        Expanded(
+          child: FeatureCardIconWidget(
+            icon: icon,
+            onTap: () {
+              context.push(
+                CategoryTypeDetail(
+                  data: data,
+                ),
+              );
+            },
+            shapeType: shapeType,
           ),
-        );
-      },
-      shapeType: shapeType,
-    ).animate().fade();
+        ),
+        SizedBox(height: 5.h),
+        title.autoSize(
+          context,
+          maxLines: 3,
+          minFontSize: 10,
+          fontSize: 11.sp,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
   }
 }
 
 class QuranCategory extends StatelessWidget {
   const QuranCategory({
+    required this.title,
     super.key,
     this.data,
-    this.title,
     this.icon,
     this.shapeType = CardShapeType.circles,
   });
   final dynamic data;
-  final dynamic title;
+  final String title;
   final Widget? icon;
   final CardShapeType shapeType;
 
   @override
   Widget build(BuildContext context) {
-    return FeatureCardWidget(
-      title: title as String,
-      icon: icon ?? const Icon(Icons.category_rounded),
-      onTap: () {
-        context.push(
-          CategoryViewAll(
-            data: data,
-            title: title,
+    return Column(
+      children: [
+        Expanded(
+          child: FeatureCardIconWidget(
+            icon: icon ?? const Icon(Icons.category_rounded),
+            onTap: () {
+              context.push(
+                CategoryViewAll(
+                  data: data,
+                  title: title,
+                ),
+              );
+            },
+            shapeType: shapeType,
           ),
-        );
-      },
-      shapeType: shapeType,
-    ).animate().fade();
+        ),
+        SizedBox(height: 5.h),
+        title.autoSize(
+          context,
+          maxLines: 3,
+          minFontSize: 10,
+          fontSize: 11.sp,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
   }
 }
 

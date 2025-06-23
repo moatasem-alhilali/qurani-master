@@ -1,3 +1,4 @@
+import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/data/notification_data_const.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
@@ -21,6 +22,10 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationReadSurahMulk:
       case NotificationKeys.isNotificationReadSurah:
       case NotificationKeys.isNotificationReadSurahAlkahf:
+      case NotificationKeys.isNotificationAstgferAllh:
+      case NotificationKeys.isNotificationHasbnaAllh:
+      case NotificationKeys.isNotificationLahawlaWlaquoah:
+      case NotificationKeys.isNotificationSubhanAllh:
         return NotificationChannel.defaultChannel;
       case NotificationKeys.isNotificationWridSleep:
         return NotificationChannel.sleep;
@@ -42,52 +47,11 @@ class NotificationDataConst {
     }
   }
 
-  /// Example: Map key to notification ID (use NotificationIds class)
+  /// Unified notification ID management using NotificationIdManager
+  /// This replaces the hardcoded IDs with a unified system for better management
   static int resolveNotificationId(String key) {
-    switch (key) {
-   case NotificationKeys.isNotificationThikrMorning:
-        return NotificationIds.thikrMorning;
-      case NotificationKeys.isNotificationThikrNight:
-        return NotificationIds.thikrNight;
-      case NotificationKeys.isNotificationMiddleNight:
-        return NotificationIds.middleNight;
-      case NotificationKeys.isNotificationMohammed:
-        return NotificationIds.mohammedPrayer;
-      case NotificationKeys.isNotificationRandomThikr:
-        return NotificationIds.randomThikr;
-      case NotificationKeys.isNotificationReadQuran:
-        return NotificationIds.readQuran;
-      case NotificationKeys.isNotificationReadSurahMulk:
-        return NotificationIds.readSurahMulk;
-      case NotificationKeys.isNotificationWridSleep:
-        return NotificationIds.thikrSleep;
-      case NotificationKeys.isNotificationWridGetup:
-        return NotificationIds.thikrGetup;
-      case NotificationKeys.isNotificationReadSurah:
-        return NotificationIds.userScheduledThikr;
-      case NotificationKeys.isNotificationReadSurahAlkahf:
-        return NotificationIds.userScheduledThikr;
-      case NotificationKeys.isNotificationFasting:
-        return NotificationIds.userScheduledThikr;
-      case NotificationKeys.isNotificationFastingMonday:
-        return NotificationIds.userScheduledThikr;
-      case NotificationKeys.isNotificationFastingThursday:
-        return NotificationIds.userScheduledThikr;
-      case NotificationKeys.isNotificationAthanFagr:
-        return NotificationIds.athanFajr;
-      case NotificationKeys.isNotificationAthanDuhr:
-        return NotificationIds.athanDhuhr;
-      case NotificationKeys.isNotificationAthanAsr:
-        return NotificationIds.athanAsr;
-      case NotificationKeys.isNotificationAthanMagrib:
-        return NotificationIds.athanMaghrib;
-      case NotificationKeys.isNotificationAthanIsha:
-        return NotificationIds.athanIsha;
-      case NotificationKeys.isNotificationAllAthan:
-        return 210; // مجموعة الأذان (للجدولة/الحذف الجماعي فقط)
-      default:
-        return 99999;
-    }
+    // Use the unified ID manager to generate consistent IDs based on keys
+    return NotificationIdManager.generateNotificationId(key);
   }
 
   /// Some notifications (like random thikr) might schedule multiple notifications, so you may want to cancel a range
@@ -160,6 +124,9 @@ class NotificationDataConst {
         return 'أذان المغرب';
       case NotificationKeys.isNotificationAthanIsha:
         return 'أذان العشاء';
+      case NotificationKeys.isNotificationAthanSunrise:
+        return 'أذان الشروق';
+
       default:
         return key;
     }
@@ -175,7 +142,7 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationMiddleNight:
         return 'حان وقت قيام الليل، استغل الثلث الأخير من الليل.';
       case NotificationKeys.isNotificationMohammed:
-        return 'صلِّ على النبي ﷺ تسعد في يومك.';
+        return 'صلِّ على النبي ﷺ تسعد في يومك.';
       case NotificationKeys.isNotificationRandomThikr:
         return 'اذكر الله يذكرك!';
       case NotificationKeys.isNotificationReadQuran:
@@ -203,44 +170,98 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationAthanMagrib:
       case NotificationKeys.isNotificationAthanIsha:
         return 'حان الآن موعد الأذان.';
+      case NotificationKeys.isNotificationAstgferAllh:
+        return 'استغفر الله';
+      case NotificationKeys.isNotificationHasbnaAllh:
+        return 'أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم';
+      case NotificationKeys.isNotificationLahawlaWlaquoah:
+        return 'لا حول ولا قوة الا بالله العلي العظيم';
+      case NotificationKeys.isNotificationSubhanAllh:
+        return 'سبحان الله والحمدلله ولا اله الا الله والله اكبر';
+      case NotificationKeys.isNotificationAthanSunrise:
+        return 'أذان الشروق';
       default:
         return key; // fallback
     }
   }
 }
 
-// This class provides centralized static notification IDs for all types of app notifications.
-// It prevents accidental duplication and makes it easy to manage notification identifiers from a single place.
+// =====================================================================
+// Legacy NotificationIds class - kept for backward compatibility
+// New implementations should use NotificationIdManager.generateNotificationId(key)
+// =====================================================================
 
 class NotificationIds {
-  // Midnight prayer notification ID
+  // Legacy ID constants - these are now managed by NotificationIdManager
+  // but kept for any existing code that might reference them directly
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationMiddleNight") instead',
+  )
   static const int middleNight = 101;
 
-  // Morning Azkar notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationThikrMorning") instead',
+  )
   static const int thikrMorning = 102;
 
-  // Night Azkar notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationThikrNight") instead',
+  )
   static const int thikrNight = 103;
 
-  // Daily Quran reading notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationReadQuran") instead',
+  )
   static const int readQuran = 104;
 
-  // Surah Mulk reading notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationReadSurahMulk") instead',
+  )
   static const int readSurahMulk = 105;
 
-  // Sleep Azkar notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationWridSleep") instead',
+  )
   static const int thikrSleep = 106;
 
-  // Wake-up Azkar notification ID
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationWridGetup") instead',
+  )
   static const int thikrGetup = 107;
 
-  // Prayer Athan notification IDs (these match the order in your PrayerInfoModel list)
-  static const int athanFajr = 200; // Fajr Athan
-  static const int athanSunrise = 201; // Sunrise Athan
-  static const int athanDhuhr = 202; // Dhuhr Athan
-  static const int athanAsr = 203; // Asr Athan
-  static const int athanMaghrib = 204; // Maghrib Athan
-  static const int athanIsha = 205; // Isha Athan
+  // Prayer Athan notification IDs
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationAthanFagr") instead',
+  )
+  static const int athanFajr = 200;
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("athanSunrise") instead',
+  )
+  static const int athanSunrise = 201;
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationAthanDuhr") instead',
+  )
+  static const int athanDhuhr = 202;
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationAthanAsr") instead',
+  )
+  static const int athanAsr = 203;
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationAthanMagrib") instead',
+  )
+  static const int athanMaghrib = 204;
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationAthanIsha") instead',
+  )
+  static const int athanIsha = 205;
+
+  @Deprecated('Use NotificationIdManager with individual athan keys instead')
   static const List<int> athanIds = [
     athanFajr,
     athanSunrise,
@@ -249,23 +270,27 @@ class NotificationIds {
     athanMaghrib,
     athanIsha,
   ];
-  // "Send Salawat on the Prophet" notification ID (recurring every hour in the day)
-  // Usage: NotificationIds.mohammedPrayer(hour) -> 3001 = 1AM, 3023 = 11PM
+
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationMohammed") instead',
+  )
   static const int mohammedPrayer = 3000;
 
-  // Random Thikr notifications (used for repeated or user-scheduled Thikr)
-  // Each scheduled random Thikr can use an index to avoid conflicts
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId("isNotificationRandomThikr") instead',
+  )
   static const int randomThikr = 4000;
 
-  // User-scheduled Thikr notifications, each gets its unique ID based on a user-controlled scheduleId
+  @Deprecated(
+    'Use NotificationIdManager.generateNotificationId with specific keys instead',
+  )
   static const int userScheduledThikr = 5000;
-
-  // You can add more generators here for custom notifications as needed
 }
 
 class NotificationKeys {
   static const athanKeys = [
     NotificationKeys.isNotificationAthanFagr,
+    NotificationKeys.isNotificationAthanSunrise,
     NotificationKeys.isNotificationAthanDuhr,
     NotificationKeys.isNotificationAthanAsr,
     NotificationKeys.isNotificationAthanMagrib,
@@ -280,6 +305,9 @@ class NotificationKeys {
 
   /// إشعارات الأذان الفجر
   static const isNotificationAthanFagr = 'isNotificationAthanFagr';
+
+  /// إشعارات الأذان الشروق
+  static const isNotificationAthanSunrise = 'isNotificationAthanSunrise';
 
   /// إشعارات الأذان الظهر
   static const isNotificationAthanDuhr = 'isNotificationAthanDuhr';
@@ -334,4 +362,16 @@ class NotificationKeys {
 
   /// إشعارات الصوم الخميس
   static const isNotificationFastingThursday = 'isNotificationFastingThursday';
+
+  /// إشعارات الأذكار العشوائية
+  static const isNotificationAstgferAllh = 'isNotificationAstgferAllh';
+
+  /// إشعارات الأذكار العشوائية
+  static const isNotificationHasbnaAllh = 'isNotificationHasbnaAllh';
+
+  /// إشعارات الأذكار العشوائية
+  static const isNotificationLahawlaWlaquoah = 'isNotificationLahawlaWlaquoah';
+
+  /// إشعارات الأذكار العشوائية
+  static const isNotificationSubhanAllh = 'isNotificationSubhanAllh';
 }

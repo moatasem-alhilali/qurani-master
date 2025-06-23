@@ -25,17 +25,20 @@ extension MyTextAuto on String {
     double fontSize = 18,
     double minFontSize = 12,
     TextAlign? textAlign,
+    TextStyle? style,
+    TextOverflow? overflow,
   }) {
     return AutoSizeText(
       this,
-      style: titleMedium(context).copyWith(
-        fontSize: fontSize,
-        color: color,
-      ),
+      style: style ??
+          titleMedium(context).copyWith(
+            fontSize: fontSize,
+            color: color,
+          ),
       minFontSize: minFontSize,
       maxLines: maxLines,
       textAlign: textAlign ?? TextAlign.right,
-      overflow: TextOverflow.ellipsis,
+      overflow: overflow ?? TextOverflow.ellipsis,
     ).animate().fade();
   }
 }

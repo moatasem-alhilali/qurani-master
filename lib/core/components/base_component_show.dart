@@ -16,10 +16,8 @@ Future<void> showMyBottomSheetFunction({
 }) async {
   showModalBottomSheet<void>(
     context: context,
-    backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
+    backgroundColor: context.scaffoldBackgroundColor,
     isScrollControlled: true,
-    isDismissible: true,
-    enableDrag: true,
     elevation: 0,
     useSafeArea: true,
     shape: const RoundedRectangleBorder(
@@ -120,7 +118,6 @@ Future<void> showMyExitDialogFunction({
 }) async {
   showGeneralDialog(
     context: context,
-    useRootNavigator: true,
     transitionDuration: 500.milliseconds,
     pageBuilder: (context, animation, secondaryAnimation) {
       return Scaffold(
@@ -202,4 +199,3 @@ Future<void> showMyExitDialogFunction({
 }
 
 //-------------------------EXIT---------------------------
-

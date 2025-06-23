@@ -1,15 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/base_item_book.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
@@ -34,6 +34,9 @@ class CategoryTypeDetail extends StatelessWidget {
               onSuccess: () {
                 final allData = state.quranBooksDetailSearch;
 
+                final randomShapeType = CardShapeType
+                    .values[Random().nextInt(CardShapeType.values.length)];
+
                 return Column(
                   children: [
                     MyTextFormField(
@@ -57,20 +60,19 @@ class CategoryTypeDetail extends StatelessWidget {
                       },
                     ),
                     Expanded(
-                      child: GridView.builder(
+                      child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemCount: _onSearchTextChanged(allData).length,
                         shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1 / 1.5,
-                        ),
                         itemBuilder: (context, index) {
                           final data = _onSearchTextChanged(allData)[index];
-                          return BaseBookItem(
-                            data['title'],
-                            () {
+                          return FeatureCardIconWidget(
+                            title: data['title'].toString(),
+                            icon: Text(data['type'].toString()),
+                            height: 100.h,
+                            width: double.infinity,
+                            shapeType: randomShapeType,
+                            onTap: () {
                               data['apiurl'] = data['api_url'];
                               if (data['type'] == 'audios') {
                                 context.showBottomSheet(
@@ -83,7 +85,6 @@ class CategoryTypeDetail extends StatelessWidget {
                                 );
                               }
                             },
-                            type: data['type'] as String,
                           );
                           //  _Item(allData);
                         },
@@ -112,39 +113,4 @@ class CategoryTypeDetail extends StatelessWidget {
   }
 }
 
-class _ItemDownloaded extends StatelessWidget {
-  _ItemDownloaded({super.key});
-
-  dynamic data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      // height: context.getHight(8),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: context.primaryScheme,
-      ),
-      child: Column(
-        children: [
-          if (data['description'] != null)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: data['description']
-                      .toString()
-                      .autoSize(context, maxLines: 5),
-                ),
-                const SizedBox(height: 10),
-                const Divider(),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-}
+//

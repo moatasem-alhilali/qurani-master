@@ -1,63 +1,64 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
-class QiblaCompassWidget extends StatefulWidget {
-  const QiblaCompassWidget({
+// Main Qibla compass widget that works with stream (follows old working code pattern)
+class QiblaCompassWidgetWithStream extends StatefulWidget {
+  const QiblaCompassWidgetWithStream({
     this.size,
-    this.qiblaDirection,
-    this.currentDirection,
     this.primaryColor,
     this.secondaryColor,
     this.kaabaColor,
     this.showDistance,
     this.distance,
     this.cityName,
-    this.onDirectionChange,
     this.showAnimation,
     this.showDirectionIndicator = false,
     super.key,
   });
 
   final double? size;
-  final double? qiblaDirection; // Direction to Qibla in degrees
-  final double? currentDirection; // Current device direction in degrees
   final Color? primaryColor;
   final Color? secondaryColor;
   final Color? kaabaColor;
   final bool? showDistance;
-  final double? distance; // Distance to Mecca in km
+  final double? distance;
   final String? cityName;
-  final Function(double direction)? onDirectionChange;
   final bool? showAnimation;
   final bool showDirectionIndicator;
+
   @override
-  State<QiblaCompassWidget> createState() => _QiblaCompassWidgetState();
+  State<QiblaCompassWidgetWithStream> createState() =>
+      _QiblaCompassWidgetWithStreamState();
 }
 
-class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
-    with TickerProviderStateMixin {
-  late AnimationController _needleController;
+// Global variables exactly like the old working code
+Animation<double>? animation;
+AnimationController? _animationController;
+double begin = 0;
+
+class _QiblaCompassWidgetWithStreamState
+    extends State<QiblaCompassWidgetWithStream> with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _kaabaController;
-
-  late Animation<double> _needleAnimation;
   late Animation<double> _pulseAnimation;
   late Animation<double> _kaabaAnimation;
-
-  double _previousDirection = 0;
   bool _isAligned = false;
 
   @override
   void initState() {
     super.initState();
 
-    _needleController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+    // Initialize exactly like the old code
+    _animationController = AnimationController(
       vsync: this,
+      duration: const Duration(milliseconds: 700),
     );
+
+    animation = Tween<double>(begin: 0, end: 0).animate(_animationController!);
 
     _pulseController = AnimationController(
       duration: const Duration(seconds: 2),
@@ -67,16 +68,6 @@ class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
     _kaabaController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
-    );
-
-    _needleAnimation = Tween<double>(
-      begin: 0,
-      end: 0,
-    ).animate(
-      CurvedAnimation(
-        parent: _needleController,
-        curve: Curves.easeInOut,
-      ),
     );
 
     _pulseAnimation = Tween<double>(
@@ -100,69 +91,11 @@ class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
     );
 
     _pulseController.repeat(reverse: true);
-
-    _updateDirection();
-  }
-
-  @override
-  void didUpdateWidget(QiblaCompassWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentDirection != widget.currentDirection ||
-        oldWidget.qiblaDirection != widget.qiblaDirection) {
-      _updateDirection();
-    }
-  }
-
-  void _updateDirection() {
-    final qibla = widget.qiblaDirection ?? 0.0;
-    final current = widget.currentDirection ?? 0.0;
-
-    // Use qibla direction directly for rotation (like the old working code)
-    // Convert to radians and apply negative rotation for correct direction
-    final targetDirection = qibla * (math.pi / 180) * -1;
-
-    // Check if aligned - when device direction matches qibla direction
-    // Calculate the angular difference between device heading and qibla direction
-    var difference = (current - qibla).abs();
-    if (difference > 180) {
-      difference = 360 - difference;
-    }
-    final isAligned = difference <= 10.0; // Within 10 degrees for better UX
-
-    setState(() {
-      _isAligned = isAligned;
-    });
-
-    // Animate compass rotation smoothly (like the old working code)
-    _needleAnimation = Tween<double>(
-      begin: _previousDirection,
-      end: targetDirection,
-    ).animate(_needleController);
-
-    _previousDirection = targetDirection;
-    _needleController.forward(from: 0);
-
-    // Trigger alignment animation if aligned
-    if (_isAligned && widget.showAnimation != false) {
-      _kaabaController.forward().then((_) {
-        _kaabaController.reverse();
-      });
-    }
-
-    widget.onDirectionChange?.call(qibla); // Pass the qibla direction instead
-  }
-
-  bool isUserFacingQibla(double current, double qibla) {
-    current = current % 360;
-    qibla = qibla % 360;
-    var diff = (qibla - current).abs();
-    if (diff > 180) diff = 360 - diff;
-    return diff <= 10.0;
   }
 
   @override
   void dispose() {
-    _needleController.dispose();
+    _animationController?.dispose();
     _pulseController.dispose();
     _kaabaController.dispose();
     super.dispose();
@@ -172,213 +105,243 @@ class _QiblaCompassWidgetState extends State<QiblaCompassWidget>
   Widget build(BuildContext context) {
     final size = widget.size ?? 250.w;
 
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Background circle with Islamic pattern
-          Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  (widget.primaryColor ?? context.primaryScheme)
-                      .withOpacity(0.1),
-                  (widget.primaryColor ?? context.primaryScheme)
-                      .withOpacity(0.05),
-                  Colors.transparent,
-                ],
+    return StreamBuilder(
+      stream: FlutterQiblah.qiblahStream,
+      builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                widget.primaryColor ?? context.primaryScheme,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                ),
-              ],
             ),
-          ),
+          );
+        }
 
-          // Fixed compass ring (doesn't rotate)
-          CustomPaint(
-            size: Size(size, size),
-            painter: CompassRingPainter(
-              primaryColor: widget.primaryColor ?? context.primaryScheme,
-              secondaryColor: widget.secondaryColor ??
-                  context.primaryScheme.withOpacity(0.3),
-            ),
-          ),
+        // Follow the EXACT same pattern as the old code
+        final qiblahDirection = snapshot.data!;
 
-          // Animated rotating compass (entire compass rotates)
-          AnimatedBuilder(
-            animation: _needleAnimation,
-            builder: (context, child) {
-              return Transform.rotate(
-                angle: _needleAnimation.value,
-                child: CustomPaint(
-                  size: Size(size, size),
-                  painter: QiblaCompassPainter(
-                    qiblaColor: widget.kaabaColor ?? Colors.green,
-                    isAligned: _isAligned,
-                    primaryColor: widget.primaryColor ?? context.primaryScheme,
-                  ),
-                ),
-              );
-            },
-          ),
+        // Create animation exactly like the old code
+        animation = Tween<double>(
+          begin: begin,
+          end: qiblahDirection.qiblah * (math.pi / 180) * -1,
+        ).animate(_animationController!);
 
-          // Fixed Kaaba in center (doesn't rotate)
-          AnimatedBuilder(
-            animation: Listenable.merge([_pulseAnimation, _kaabaAnimation]),
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _isAligned
-                    ? _pulseAnimation.value * (1 + _kaabaAnimation.value * 0.3)
-                    : _pulseAnimation.value,
-                child: Container(
-                  width: size * 0.15,
-                  height: size * 0.15,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _isAligned
-                        ? Colors.green.withOpacity(0.9)
-                        : (widget.kaabaColor ?? Colors.green).withOpacity(0.7),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (_isAligned
-                                ? Colors.green
-                                : (widget.kaabaColor ?? Colors.green))
-                            .withOpacity(0.5),
-                        blurRadius: _isAligned ? 25 : 15,
-                        spreadRadius: _isAligned ? 5 : 2,
-                      ),
+        // Update begin exactly like the old code
+        begin = qiblahDirection.qiblah * (math.pi / 180) * -1;
+        _animationController!.forward(from: 0);
+
+        // Check alignment
+        var difference =
+            (qiblahDirection.direction - qiblahDirection.qiblah).abs();
+        if (difference > 180) {
+          difference = 360 - difference;
+        }
+        final isAligned = difference <= 10.0;
+
+        if (isAligned != _isAligned) {
+          _isAligned = isAligned;
+          if (_isAligned && widget.showAnimation != false) {
+            _kaabaController.forward().then((_) {
+              _kaabaController.reverse();
+            });
+          }
+        }
+
+        return SizedBox(
+          width: size,
+          height: size,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Background circle
+              Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      (widget.primaryColor ?? context.primaryScheme)
+                          .withOpacity(0.1),
+                      (widget.primaryColor ?? context.primaryScheme)
+                          .withOpacity(0.05),
+                      Colors.transparent,
                     ],
                   ),
-                  child: Center(
-                    child: Icon(
-                      Icons.location_on,
-                      color: Colors.white,
-                      size: size * 0.08,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-
-          // Fixed direction indicator (doesn't rotate)
-          if (widget.showDirectionIndicator == true)
-            Positioned(
-              top: size * 0.1,
-              child: Column(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                    decoration: BoxDecoration(
-                      color: _isAligned
-                          ? Colors.green.withOpacity(0.9)
-                          : Colors.orange.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: _isAligned ? Colors.green : Colors.orange,
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: (_isAligned ? Colors.green : Colors.orange)
-                              .withOpacity(0.3),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      isUserFacingQibla(
-                        widget.currentDirection ?? 0.0,
-                        widget.qiblaDirection ?? 0.0,
-                      )
-                          ? 'متجه للقبلة ✓'
-                          : 'ابحث عن القبلة',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  if (widget.cityName != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 4.h),
-                      child: Text(
-                        widget.cityName!,
-                        style: context.titleMedium,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-
-          // Fixed distance info (doesn't rotate)
-          if (widget.showDistance == true && widget.distance != null)
-            Positioned(
-              bottom: size * 0.1,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'المسافة إلى مكة',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 10.sp,
-                      ),
-                    ),
-                    Text(
-                      '${widget.distance!.toInt()} كم',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
               ),
-            ),
 
-          // Alignment indicator effect
-          if (_isAligned)
-            Positioned.fill(
-              child: CustomPaint(
-                painter: AlignmentIndicatorPainter(
-                  color: Colors.green.withOpacity(0.3),
-                  animation: _kaabaAnimation,
+              // Fixed compass ring
+              CustomPaint(
+                size: Size(size, size),
+                painter: CompassRingPainter(
+                  primaryColor: widget.primaryColor ?? context.primaryScheme,
+                  secondaryColor: widget.primaryColor?.withOpacity(0.3) ??
+                      context.primaryScheme.withOpacity(0.3),
                 ),
               ),
-            ),
-        ],
-      ),
+
+              // Animated rotating compass - EXACTLY like the old code
+              AnimatedBuilder(
+                animation: animation!,
+                builder: (context, child) => Transform.rotate(
+                  angle: animation!.value,
+                  child: CustomPaint(
+                    size: Size(size, size),
+                    painter: QiblaCompassPainter(
+                      qiblaColor: widget.kaabaColor ?? Colors.green,
+                      isAligned: _isAligned,
+                      primaryColor:
+                          widget.primaryColor ?? context.primaryScheme,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Fixed Kaaba in center
+              AnimatedBuilder(
+                animation: Listenable.merge([_pulseAnimation, _kaabaAnimation]),
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _isAligned
+                        ? _pulseAnimation.value *
+                            (1 + _kaabaAnimation.value * 0.3)
+                        : _pulseAnimation.value,
+                    child: Container(
+                      width: size * 0.15,
+                      height: size * 0.15,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _isAligned
+                            ? Colors.green.withOpacity(0.9)
+                            : (widget.kaabaColor ?? Colors.green)
+                                .withOpacity(0.7),
+                        boxShadow: [
+                          BoxShadow(
+                            color: (_isAligned
+                                    ? Colors.green
+                                    : (widget.kaabaColor ?? Colors.green))
+                                .withOpacity(0.5),
+                            blurRadius: _isAligned ? 25 : 15,
+                            spreadRadius: _isAligned ? 5 : 2,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.white,
+                          size: size * 0.08,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              // Direction indicator
+              if (widget.showDirectionIndicator == true)
+                Positioned(
+                  top: size * 0.1,
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _isAligned
+                              ? Colors.green.withOpacity(0.9)
+                              : Colors.orange.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(20.r),
+                          border: Border.all(
+                            color: _isAligned ? Colors.green : Colors.orange,
+                            width: 2,
+                          ),
+                        ),
+                        child: Text(
+                          _isAligned ? 'متجه للقبلة ✓' : 'ابحث عن القبلة',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      if (widget.cityName != null)
+                        Padding(
+                          padding: EdgeInsets.only(top: 4.h),
+                          child: Text(
+                            widget.cityName!,
+                            style: context.titleMedium,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+              // Distance info
+              if (widget.showDistance == true && widget.distance != null)
+                Positioned(
+                  bottom: size * 0.1,
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(15.r),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'المسافة إلى مكة',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 10.sp,
+                          ),
+                        ),
+                        Text(
+                          '${widget.distance!.toInt()} كم',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Alignment indicator effect
+              if (_isAligned)
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: AlignmentIndicatorPainter(
+                      color: Colors.green.withOpacity(0.3),
+                      animation: _kaabaAnimation,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
+// Custom painters for the compass
 class CompassRingPainter extends CustomPainter {
   CompassRingPainter({
     required this.primaryColor,
@@ -440,9 +403,7 @@ class CompassRingPainter extends CustomPainter {
             ),
           ),
           textDirection: TextDirection.ltr,
-        );
-
-        textPainter.layout();
+        )..layout();
 
         final labelRadius = radius + 20;
         final labelX =
@@ -486,74 +447,6 @@ class CompassRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class CompassNeedlePainter extends CustomPainter {
-  CompassNeedlePainter({
-    required this.qiblaColor,
-    required this.isAligned,
-  });
-  final Color qiblaColor;
-  final bool isAligned;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final needleLength = size.width * 0.35;
-
-    // Qibla needle (pointing up when aligned)
-    final needlePaint = Paint()
-      ..color = isAligned ? Colors.green : qiblaColor
-      ..strokeWidth = 4
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    // Glow effect when aligned
-    if (isAligned) {
-      final glowPaint = Paint()
-        ..color = Colors.green.withOpacity(0.4)
-        ..strokeWidth = 8
-        ..strokeCap = StrokeCap.round
-        ..style = PaintingStyle.stroke
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-
-      canvas.drawLine(
-        center,
-        Offset(center.dx, center.dy - needleLength),
-        glowPaint,
-      );
-    }
-
-    // Main needle
-    canvas.drawLine(
-      center,
-      Offset(center.dx, center.dy - needleLength),
-      needlePaint,
-    );
-
-    // Needle tip
-    final tipPaint = Paint()
-      ..color = isAligned ? Colors.green : qiblaColor
-      ..style = PaintingStyle.fill;
-
-    final tipPath = Path();
-    tipPath.moveTo(center.dx, center.dy - needleLength - 10);
-    tipPath.lineTo(center.dx - 8, center.dy - needleLength + 5);
-    tipPath.lineTo(center.dx + 8, center.dy - needleLength + 5);
-    tipPath.close();
-
-    canvas.drawPath(tipPath, tipPaint);
-
-    // Center dot
-    final centerPaint = Paint()
-      ..color = isAligned ? Colors.green : qiblaColor
-      ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(center, 6, centerPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 class AlignmentIndicatorPainter extends CustomPainter {
@@ -665,7 +558,7 @@ class QiblaCompassPainter extends CustomPainter {
 
     canvas.drawCircle(center, 8, centerPaint);
 
-    // Add "N" marking at the top of the needle
+    // Add "القبلة" text at the top of the needle
     final textPainter = TextPainter(
       text: TextSpan(
         text: 'القبلة',
@@ -686,63 +579,4 @@ class QiblaCompassPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-// Predefined Qibla compass widgets
-class SimpleQiblaCompass extends StatelessWidget {
-  const SimpleQiblaCompass({
-    this.size,
-    this.qiblaDirection,
-    this.currentDirection,
-    super.key,
-  });
-
-  final double? size;
-  final double? qiblaDirection;
-  final double? currentDirection;
-
-  @override
-  Widget build(BuildContext context) {
-    return QiblaCompassWidget(
-      size: size,
-      qiblaDirection: qiblaDirection,
-      currentDirection: currentDirection,
-      primaryColor: Colors.green.shade600,
-      kaabaColor: Colors.green,
-      showDistance: false,
-      showAnimation: true,
-    );
-  }
-}
-
-class DetailedQiblaCompass extends StatelessWidget {
-  const DetailedQiblaCompass({
-    this.size,
-    this.qiblaDirection,
-    this.currentDirection,
-    this.distance,
-    this.cityName,
-    super.key,
-  });
-
-  final double? size;
-  final double? qiblaDirection;
-  final double? currentDirection;
-  final double? distance;
-  final String? cityName;
-
-  @override
-  Widget build(BuildContext context) {
-    return QiblaCompassWidget(
-      size: size,
-      qiblaDirection: qiblaDirection,
-      currentDirection: currentDirection,
-      distance: distance,
-      cityName: cityName,
-      primaryColor: Colors.teal.shade600,
-      kaabaColor: Colors.orange,
-      showDistance: true,
-      showAnimation: true,
-    );
-  }
 }

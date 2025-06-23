@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons:
-  flutter_local_notifications: ^19.2.1
+  flutter_local_notifications: ^19.3.0
   # platforms:
   #   linux:
   #     default_package: none

@@ -6,9 +6,8 @@ import 'package:quran_app/core/components/quran_widgets/animated_progress_ring_w
 import 'package:quran_app/core/components/quran_widgets/animated_tasbih_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/breathing_animation_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/expanding_fab_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/flip_card_3d_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/verse_of_day_widget.dart';
 
 class FantasticWidgetsShowcase extends StatefulWidget {
@@ -39,27 +38,27 @@ class _FantasticWidgetsShowcaseState extends State<FantasticWidgetsShowcase> {
             // Section 1: Feature Cards with Geometric Shapes
             _buildSectionTitle('1. بطاقات الميزات مع الأشكال الهندسية'),
             SizedBox(height: 16.h),
-            FeatureCardWidget(
+            FeatureCardIconWidget(
               title: 'القرآن الكريم',
               icon: const Icon(Icons.menu_book),
               primaryColor: FeatureCardColors.teal,
               onTap: () => _showSnackBar('تم النقر على القرآن الكريم'),
             ),
-            FeatureCardWidget(
+            FeatureCardIconWidget(
               title: 'الأذكار',
               icon: const Icon(Icons.favorite),
               primaryColor: FeatureCardColors.blue,
               shapeType: CardShapeType.waves,
               onTap: () => _showSnackBar('تم النقر على الأذكار'),
             ),
-            FeatureCardWidget(
+            FeatureCardIconWidget(
               title: 'مواقيت الصلاة',
               icon: const Icon(Icons.access_time),
               primaryColor: FeatureCardColors.purple,
               shapeType: CardShapeType.stars,
               onTap: () => _showSnackBar('تم النقر على مواقيت الصلاة'),
             ),
-            FeatureCardWidget(
+            FeatureCardIconWidget(
               title: 'التسبيح',
               icon: const Icon(Icons.radio_button_checked),
               primaryColor: FeatureCardColors.orange,
@@ -279,35 +278,35 @@ class _FantasticWidgetsShowcaseState extends State<FantasticWidgetsShowcase> {
             // Section 8: Qibla Compass
             _buildSectionTitle('8. بوصلة القبلة'),
             SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    SimpleQiblaCompass(
-                      size: 150.w,
-                      qiblaDirection: 45,
-                      currentDirection: progressValue * 360,
-                    ),
-                    SizedBox(height: 8.h),
-                    const Text('بوصلة بسيطة'),
-                  ],
-                ),
-                Column(
-                  children: [
-                    DetailedQiblaCompass(
-                      size: 150.w,
-                      qiblaDirection: 45,
-                      currentDirection: progressValue * 360,
-                      distance: 1500,
-                      cityName: 'القاهرة',
-                    ),
-                    SizedBox(height: 8.h),
-                    const Text('بوصلة مفصلة'),
-                  ],
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     Column(
+            //       children: [
+            //         SimpleQiblaCompass(
+            //           size: 150.w,
+            //           qiblaDirection: 45,
+            //           currentDirection: progressValue * 360,
+            //         ),
+            //         SizedBox(height: 8.h),
+            //         const Text('بوصلة بسيطة'),
+            //       ],
+            //     ),
+            //     Column(
+            //       children: [
+            //         DetailedQiblaCompass(
+            //           size: 150.w,
+            //           qiblaDirection: 45,
+            //           currentDirection: progressValue * 360,
+            //           distance: 1500,
+            //           cityName: 'القاهرة',
+            //         ),
+            //         SizedBox(height: 8.h),
+            //         const Text('بوصلة مفصلة'),
+            //       ],
+            //     ),
+            //   ],
+            // ),
 
             SizedBox(height: 40.h),
 
@@ -411,7 +410,7 @@ class ExampleUsageWidget extends StatelessWidget {
       body: Column(
         children: [
           // Simple feature card
-          FeatureCardWidget(
+          FeatureCardIconWidget(
             title: 'مثال بسيط',
             icon: const Icon(Icons.star),
             primaryColor: FeatureCardColors.amber,

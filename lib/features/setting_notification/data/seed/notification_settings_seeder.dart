@@ -21,14 +21,14 @@ class NotificationSettingsSeeder {
     try {
       final db = DatabaseNotificationSettingService();
 
-      // مرونة في جدولة كل إشعار:
-      // - daily: يحتاج hour/minute
-      // - everyNMinutes: يحتاج intervalMinutes
-      // - weekly: يحتاج weekdays/hour/minute
-      // - customDates: يحتاج customDates
-      // - others: scheduleType فقط
+      // Seed notification settings with flexible scheduling options
+      // Each notification type can have different schedule requirements:
+      // - daily: requires hour/minute
+      // - everyNMinutes: requires intervalMinutes
+      // - weekly: requires weekdays/hour/minute
+      // - customDates: requires customDates
       final seeds = <NotificationSettingSeedData>[
-        // Master enable/disable (بدون جدولة)
+        // Master enable/disable (settings only)
         NotificationSettingSeedData(
           key: NotificationKeys.isNotify,
           label: 'اشعارات التطبيق',
@@ -38,7 +38,8 @@ class NotificationSettingsSeeder {
           minute: 0,
           onlySetting: true,
         ),
-        // Athan notifications
+
+        // Athan notifications master toggle
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAllAthan,
           label: 'إشعارات جميع الأذان',
@@ -48,6 +49,8 @@ class NotificationSettingsSeeder {
           minute: 0,
           onlySetting: true,
         ),
+
+        // Individual Athan notifications
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAthanFagr,
           label: 'أذان الفجر',
@@ -55,7 +58,16 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.daily,
           hour: 4,
           minute: 20,
-          onlySetting: true,
+          onlySetting: true, // Managed by prayer time service
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationAthanSunrise,
+          label: 'أذان الشروق',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 6,
+          minute: 0,
+          onlySetting: true, // Managed by prayer time service
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAthanDuhr,
@@ -64,7 +76,7 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.daily,
           hour: 12,
           minute: 0,
-          onlySetting: true,
+          onlySetting: true, // Managed by prayer time service
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAthanAsr,
@@ -73,7 +85,7 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.daily,
           hour: 15,
           minute: 30,
-          onlySetting: true,
+          onlySetting: true, // Managed by prayer time service
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAthanMagrib,
@@ -82,7 +94,7 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.daily,
           hour: 18,
           minute: 15,
-          onlySetting: true,
+          onlySetting: true, // Managed by prayer time service
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationAthanIsha,
@@ -91,9 +103,10 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.daily,
           hour: 19,
           minute: 30,
-          onlySetting: true,
+          onlySetting: true, // Managed by prayer time service
         ),
-        // Azkar & other reminders
+
+        // Daily Islamic reminders
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationMiddleNight,
           label: 'قيام الليل',
@@ -134,22 +147,17 @@ class NotificationSettingsSeeder {
           hour: 20,
           minute: 0,
         ),
-        // Mohammed Salawat every hour example (can be more advanced)
+
+        // Frequent reminders
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationMohammed,
           label: 'الصلاة على محمد ﷺ',
           enabled: false,
           scheduleType: ScheduleType.everyNMinutes,
-          intervalMinutes: 10,
+          intervalMinutes: 60, // Every hour
         ),
-        // Random Thikr every 10 minutes as an example
-        // NotificationSettingSeedData(
-        //   key: NotificationKeys.isNotificationRandomThikr,
-        //   label: 'أذكار عشوائية',
-        //   enabled: false,
-          // scheduleType: ScheduleType.everyNMinutes,
-          // intervalMinutes: 10,
-        // ),
+
+        // Quran reading reminders
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationReadQuran,
           label: 'الورد القرآني اليومي',
@@ -174,6 +182,8 @@ class NotificationSettingsSeeder {
           hour: 21,
           minute: 0,
         ),
+
+        // Weekly reminders
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationReadSurahAlkahf,
           label: 'قراءة سورة الكهف',
@@ -181,9 +191,10 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.weekly,
           hour: 10,
           minute: 30,
-          weekdays: [5], // الجمعة
+          weekdays: [5], // Friday
         ),
-        // Fasting notifications
+
+        // Fasting reminders
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationFasting,
           label: 'تذكير بالصيام',
@@ -191,7 +202,7 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.weekly,
           hour: 20,
           minute: 30,
-          weekdays: [1, 4], // الاثنين والخميس
+          weekdays: [1, 4], // Monday and Thursday
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationFastingMonday,
@@ -200,7 +211,7 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.weekly,
           hour: 20,
           minute: 30,
-          weekdays: [1], // الاثنين
+          weekdays: [1], // Monday
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationFastingThursday,
@@ -209,18 +220,51 @@ class NotificationSettingsSeeder {
           scheduleType: ScheduleType.weekly,
           hour: 20,
           minute: 30,
-          weekdays: [4], // الخميس
+          weekdays: [4], // Thursday
         ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationAstgferAllh,
+          label: 'استغفر الله',
+          enabled: false,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 60, // Every hour
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationHasbnaAllh,
+          label: 'أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم',
+          enabled: false,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 60, // Every hour
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationLahawlaWlaquoah,
+          label: 'لا حول ولا قوة الا بالله العلي العظيم',
+          enabled: false,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 60, // Every hour
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationSubhanAllh,
+          label: 'سبحان الله والحمدلله ولا اله الا الله والله اكبر',
+          enabled: false,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 60, // Every hour
+        ),
+     
       ];
 
+      // Insert seed data if it doesn't exist
       for (final seed in seeds) {
         final exists = await db.getByKey(seed.key);
         if (exists == null) {
           await db.upsert(seed.toSettingModel());
+          logger.d('Seeded notification setting: ${seed.key}');
         }
       }
+
+      logger.d('Notification settings seeding completed successfully');
     } catch (e) {
-      logger.e('error seeding notification settings $e');
+      logger.e('Error seeding notification settings: $e');
     }
   }
 }
