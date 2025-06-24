@@ -35,7 +35,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     emit(state.copyWith(state: RequestState.success));
     add(GetPendingNotificationsEvent());
     add(GetActiveNotificationsEvent());
-    
   }
 
   Future<void> _onRescheduleNotification(
@@ -50,8 +49,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) async {
     try {
-      await _tasksNotification.advancedNotificationService
-          .cancelNotification(id: event.id);
+      await _tasksNotification.notificationService
+          .cancelNotificationById(id: event.id);
       emit(state.copyWith(state: RequestState.success));
       add(GetPendingNotificationsEvent());
     } catch (e) {
@@ -67,7 +66,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       emit(state.copyWith(pendingNotificationsState: RequestState.loading));
       final pendingNotifications = await _tasksNotification
-          .advancedNotificationService
+          .notificationService
           .getPendingNotifications();
 
       // logger.d(pendingNotifications);
@@ -90,7 +89,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       emit(state.copyWith(activeNotificationsState: RequestState.loading));
       final activeNotifications = await _tasksNotification
-          .advancedNotificationService
+          .notificationService
           .getActiveNotifications();
       for (final element in activeNotifications) {
         logger.d(element.title);

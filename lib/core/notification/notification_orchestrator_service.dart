@@ -1,7 +1,7 @@
-import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
@@ -14,13 +14,13 @@ import 'package:quran_app/main.dart';
 /// Manages Athan notifications, static reminders, and custom schedules
 class NotificationOrchestratorService {
   NotificationOrchestratorService({
-    required this.advancedNotificationService,
+    required this.notificationService,
     required this.settingRepo,
     required this.notificationSchedulesRepo,
     required this.adhanPrayerTimeService,
   });
 
-  final AdvancedNotificationService advancedNotificationService;
+  final NotificationService notificationService;
   final SettingNotificationRepo settingRepo;
   final NotificationSchedulesRepo notificationSchedulesRepo;
   final AdhanPrayerTimeService adhanPrayerTimeService;
@@ -50,7 +50,7 @@ class NotificationOrchestratorService {
         // Cancel all Athan notifications if main toggle is disabled
         for (final key in NotificationKeys.athanKeys) {
           final id = NotificationIdManager.generateNotificationId(key);
-          await advancedNotificationService.cancelNotification(id: id);
+          await notificationService.cancelNotificationById(id: id);
         }
         logger.d('Cancelled all Athan notifications (main toggle disabled)');
         return;
@@ -79,7 +79,7 @@ class NotificationOrchestratorService {
 
         if (enabled) {
           final success =
-              await advancedNotificationService.scheduleNotification(
+              await notificationService.scheduleNotificationCompatType(
             id: id,
             title: info.name,
             body: info.description,
@@ -98,7 +98,7 @@ class NotificationOrchestratorService {
             logger.w('Failed to schedule Athan notification: ${info.name}');
           }
         } else {
-          await advancedNotificationService.cancelNotification(id: id);
+          await notificationService.cancelNotificationById(id: id);
           logger.d('Cancelled Athan notification: ${info.name} (disabled)');
         }
       }
@@ -149,7 +149,7 @@ class NotificationOrchestratorService {
         final id = NotificationIdManager.generateNotificationId(setting.key);
 
         if (!setting.enabled || setting.onlySetting) {
-          await advancedNotificationService.cancelNotification(id: id);
+          await notificationService.cancelNotificationById(id: id);
 
           logger.d(
             'Cancelled notification: ${setting.key} setting.onlySetting ${setting.onlySetting} (disabled or settings-only)',
@@ -157,7 +157,7 @@ class NotificationOrchestratorService {
           continue;
         }
 
-        final success = await advancedNotificationService.scheduleNotification(
+        final success = await notificationService.scheduleNotificationCompatType(
           id: id,
           title: setting.label,
           body: NotificationDataConst.resolveNotificationBody(setting.key),
@@ -210,7 +210,7 @@ class NotificationOrchestratorService {
 
             if (schedule.enabled) {
               final success =
-                  await advancedNotificationService.scheduleNotification(
+                  await notificationService.scheduleNotificationCompatType(
                 id: id,
                 title:
                     schedule.label ?? NotificationDataConst.resolveTitle(key),
@@ -227,7 +227,7 @@ class NotificationOrchestratorService {
                     .w('Failed to schedule custom notification for key: $key');
               }
             } else {
-              await advancedNotificationService.cancelNotification(id: id);
+              await notificationService.cancelNotificationById(id: id);
               logger
                   .d('Cancelled custom notification for key: $key (disabled)');
             }
@@ -274,7 +274,7 @@ class NotificationOrchestratorService {
 
       for (final key in keysToCancel) {
         final id = NotificationIdManager.generateNotificationId(key);
-        await advancedNotificationService.cancelNotification(id: id);
+        await notificationService.cancelNotificationById(id: id);
       }
 
       logger.d('Cancelled all notifications for category: $category');

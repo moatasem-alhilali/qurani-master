@@ -1,6 +1,6 @@
-import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 
@@ -9,7 +9,7 @@ class NotificationSchedulesRepo {
     required this.notifyService,
   });
 
-  final AdvancedNotificationService notifyService;
+  final NotificationService notifyService;
 
   // Cache for better performance
   final Map<String, List<NotificationScheduleCustomModel>> _cache = {};
@@ -124,7 +124,7 @@ class NotificationSchedulesRepo {
 
     // Schedule new notifications if enabled
     if (newSchedule.enabled && newSchedule.id != null) {
-      await notifyService.scheduleNotification(
+      await notifyService.scheduleNotificationCompatType(
         id: _buildNotificationId(newSchedule.notifKey, newSchedule.id!),
         title: title,
         body: body,
@@ -141,7 +141,7 @@ class NotificationSchedulesRepo {
     if (schedule.id != null) {
       final notificationId =
           _buildNotificationId(schedule.notifKey, schedule.id!);
-      await notifyService.cancelNotification(id: notificationId);
+      await notifyService.cancelNotificationById(id: notificationId);
     }
   }
 
@@ -162,7 +162,7 @@ class NotificationSchedulesRepo {
 
     for (final schedule in enabledSchedules) {
       try {
-        await notifyService.scheduleNotification(
+        await notifyService.scheduleNotificationCompatType(
           id: _buildNotificationId(notifKey, schedule.id!),
           title: title,
           body: body,

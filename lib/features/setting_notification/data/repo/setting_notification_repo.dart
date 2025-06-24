@@ -1,5 +1,5 @@
-import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
@@ -9,10 +9,10 @@ import 'package:quran_app/main.dart';
 /// Uses the new unified notification system with BaseNotificationService
 class SettingNotificationRepo {
   SettingNotificationRepo({
-    required this.advancedNotificationService,
+    required this.notificationService,
   });
 
-  final AdvancedNotificationService advancedNotificationService;
+  final NotificationService notificationService;
 
   /// Get NotificationSettingModel by key
   Future<NotificationSettingModel?> getSetting(String key) async {
@@ -78,14 +78,15 @@ class SettingNotificationRepo {
       final id = NotificationIdManager.generateNotificationId(setting.key);
 
       // Cancel any previous notifications for this setting
-      await advancedNotificationService.cancelNotification(
+      await notificationService.cancelNotificationById(
         id: id,
         range: NotificationDataConst.resolveIdRange(setting),
       );
 
       // Only schedule if enabled and not a settings-only notification
       if (setting.enabled && !setting.onlySetting) {
-        final success = await advancedNotificationService.scheduleNotification(
+        final success =
+            await notificationService.scheduleNotificationCompatType(
           id: id,
           title: setting.label,
           body: NotificationDataConst.resolveNotificationBody(setting.key),
@@ -130,7 +131,7 @@ class SettingNotificationRepo {
   /// Cancel all notifications for a specific key using the new unified system
   Future<void> cancelNotificationsForKey(String key, {int count = 50}) async {
     try {
-      await advancedNotificationService.cancelAllForKey(key, count: count);
+      await notificationService.cancelAllForKey(key, count: count);
       logger.d('Cancelled all notifications for key: $key');
     } catch (e) {
       logger.e('Error cancelling notifications for key $key: $e');

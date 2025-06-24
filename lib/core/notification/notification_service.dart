@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
+import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/main.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 final BehaviorSubject<String> selectNotificationSubject =
     BehaviorSubject<String>();
@@ -25,126 +23,6 @@ class NotificationService extends BaseNotificationService {
 
   final BehaviorSubject<String> selectNotificationSubject =
       BehaviorSubject<String>();
-
-  /// Check if notifications are enabled on the device
-  @override
-  Future<bool> areNotificationsEnabled() async {
-    if (Platform.isAndroid) {
-      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      return await androidPlugin?.areNotificationsEnabled() ?? false;
-    } else if (Platform.isIOS) {
-      final iOSPlugin = plugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
-      final permissions = await iOSPlugin?.checkPermissions();
-      if (permissions == null) return false;
-      return permissions.isEnabled;
-    }
-    return false;
-  }
-
-  /// Request notification permissions (required for Android 13+ and iOS)
-  Future<bool> requestPermissions() async {
-    if (Platform.isAndroid) {
-      // For Android 13+, request notification permission
-      if (await Permission.notification.isDenied) {
-        final status = await Permission.notification.request();
-        if (status != PermissionStatus.granted) {
-          return false;
-        }
-      }
-
-      // Request exact alarm permission for scheduled notifications
-      final exactAlarmPermission = await requestExactAlarmPermission();
-      logger.d('Exact alarm permission: $exactAlarmPermission');
-
-      return areNotificationsEnabled();
-    } else if (Platform.isIOS) {
-      return requestNotificationPermissions();
-    }
-    return false;
-  }
-
-  Future<void> initialize() async {
-    // Initialize timezone using base class method
-    await configureLocalTimeZone();
-
-    // Android initialization settings with proper configuration
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-
-    // iOS initialization settings with proper permissions
-    const iosSettings = DarwinInitializationSettings(
-      requestSoundPermission: false,
-      requestBadgePermission: false,
-      requestAlertPermission: false,
-    );
-
-    // Linux settings (if supporting desktop)
-    final linuxSettings = LinuxInitializationSettings(
-      defaultActionName: 'Open notification',
-      defaultIcon: AssetsLinuxIcon('assets/image/beads_icon.png'),
-    );
-
-    final settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-      linux: linuxSettings,
-    );
-
-    await plugin.initialize(
-      settings,
-      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
-      onDidReceiveBackgroundNotificationResponse: backgroundNotificationHandler,
-    );
-
-    await initAllAndroidChannels();
-    _configureSelectNotificationSubject();
-
-    logger.d('Notification service initialized successfully');
-  }
-
-  /// Initialize all Android notification channels with enhanced configuration
-  Future<void> initAllAndroidChannels() async {
-    try {
-      if (!Platform.isAndroid) return;
-
-      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      // Create notification channel group for better organization
-      const channelGroup = AndroidNotificationChannelGroup(
-        'islamic_notifications',
-        'الإشعارات الإسلامية',
-        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
-      );
-
-      await androidPlugin?.createNotificationChannelGroup(channelGroup);
-      logger.d('Android notification channels initialized');
-
-      for (final channel in NotificationChannel.values) {
-        final data = channel.data;
-
-        final androidChannel = AndroidNotificationChannel(
-          data.id,
-          data.name,
-          description: 'قناة ${data.name} للإشعارات الإسلامية',
-          importance: Importance.max,
-          sound: RawResourceAndroidNotificationSound(data.sound),
-          vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
-          enableLights: true,
-          ledColor: const Color.fromARGB(255, 0, 255, 0),
-          groupId: 'islamic_notifications',
-        );
-
-        await androidPlugin?.createNotificationChannel(androidChannel);
-      }
-    } catch (e, stackTrace) {
-      logger
-        ..e('Error initializing Android notification channels: $e')
-        ..e('Error initializing Android notification channels: $stackTrace');
-    }
-  }
 
   /// Show instant notification with enhanced features
   Future<void> showInstantNotification({
@@ -268,83 +146,271 @@ class NotificationService extends BaseNotificationService {
     );
   }
 
-  /// Get pending notifications
-  @override
-  Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-    return super.getPendingNotifications();
-  }
-
-  /// Get active notifications
-  @override
-  Future<List<ActiveNotification>> getActiveNotifications() async {
-    return super.getActiveNotifications();
-  }
-
-  /// Cancel notification by ID
-  Future<void> cancel({required int id}) async =>
-      cancelNotificationById(id: id);
-
-  /// Cancel all notifications
-  @override
-  Future<void> cancelAll() async => super.cancelAll();
-
-  // ================== Internal Methods ==================
-
-  void _configureSelectNotificationSubject() {
-    selectNotificationSubject.stream.listen((payload) {
-      debugPrint('Notification tapped with payload: $payload');
-      _handleNotificationTap(payload);
-    });
-  }
-
-  void _handleNotificationTap(String payload) {
-    // Handle notification tap based on payload
-    // This can be extended to navigate to specific screens
-    logger.d('Handling notification tap: $payload');
-  }
-
-  Future<void> _onDidReceiveNotificationResponse(
-    NotificationResponse response,
+  Future<bool> scheduleDailyNotification(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    NotificationScheduleModel schedule,
+    String? payload,
   ) async {
-    selectNotificationSubject.add(response.payload ?? '');
+    try {
+      final nextInstanceOf = this.nextInstanceOf(
+        hour: schedule.hour!,
+        minute: schedule.minute!,
+      );
+
+      await plugin.zonedSchedule(
+        id,
+        title,
+        body,
+        nextInstanceOf,
+        details,
+        payload: payload,
+        matchDateTimeComponents: DateTimeComponents.time,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error scheduling daily notification: $e');
+      return false;
+    }
   }
 
-  /// Setup notification actions for iOS
-  Future<void> setupNotificationActions() async {
-    if (Platform.isIOS) {
-      final iosPlugin = plugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
+  Future<bool> scheduleHourlyNotification(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    String? payload,
+  ) async {
+    try {
+      await plugin.periodicallyShow(
+        id,
+        title,
+        body,
+        RepeatInterval.hourly,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error scheduling hourly notification: $e');
+      return false;
+    }
+  }
 
-      final actions = [
-        DarwinNotificationAction.plain(
-          'mark_as_read',
-          'تم القراءة',
-          options: <DarwinNotificationActionOption>{
-            DarwinNotificationActionOption.destructive,
-          },
-        ),
-        DarwinNotificationAction.plain(
-          'remind_later',
-          'تذكير لاحقاً',
-          options: <DarwinNotificationActionOption>{
-            DarwinNotificationActionOption.foreground,
-          },
-        ),
-      ];
+  Future<bool> scheduleCustomIntervalNotification(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    NotificationScheduleModel schedule,
+    String? payload,
+  ) async {
+    try {
+      await plugin.periodicallyShowWithDuration(
+        id,
+        title,
+        body,
+        Duration(minutes: schedule.intervalMinutes!),
+        details,
+        payload: payload,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error scheduling custom interval notification: $e');
+      return false;
+    }
+  }
 
-      final category = DarwinNotificationCategory(
-        'islamic_notifications',
-        actions: actions,
-        options: <DarwinNotificationCategoryOption>{
-          DarwinNotificationCategoryOption.allowInCarPlay,
-        },
+  Future<bool> scheduleMinutelyNotification(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    String? payload,
+  ) async {
+    try {
+      await plugin.periodicallyShow(
+        id,
+        title,
+        body,
+        RepeatInterval.everyMinute,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error scheduling minutely notification: $e');
+      return false;
+    }
+  }
+
+  Future<bool> scheduleWeeklyNotifications(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    NotificationScheduleModel schedule,
+    String? payload,
+  ) async {
+    try {
+      var successCount = 0;
+      for (final weekday in schedule.weekdays!) {
+        try {
+          final scheduled = nextInstanceOfWeekday(
+            weekday,
+            hour: schedule.hour!,
+            minute: schedule.minute!,
+          );
+
+          await plugin.zonedSchedule(
+            id + weekday,
+            title,
+            body,
+            scheduled,
+            details,
+            payload: payload,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+          );
+          successCount++;
+        } catch (e) {
+          logger.e(
+            'Error scheduling weekly notification for weekday $weekday: $e',
+          );
+        }
+      }
+      return successCount > 0;
+    } catch (e) {
+      logger.e('Error in _scheduleWeeklyNotifications: $e');
+      return false;
+    }
+  }
+
+  Future<bool> scheduleCustomDateNotifications(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    NotificationScheduleModel schedule,
+    String? payload,
+  ) async {
+    try {
+      var successCount = 0;
+      for (var i = 0; i < schedule.customDates!.length; i++) {
+        try {
+          final dateTime =
+              tz.TZDateTime.from(schedule.customDates![i], tz.local);
+          await plugin.zonedSchedule(
+            id + i,
+            title,
+            body,
+            dateTime,
+            details,
+            payload: payload,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          );
+          successCount++;
+        } catch (e) {
+          logger.e('Error scheduling custom date notification $i: $e');
+        }
+      }
+      return successCount > 0;
+    } catch (e) {
+      logger.e('Error in _scheduleCustomDateNotifications: $e');
+      return false;
+    }
+  }
+
+  /// Schedule a notification based on a flexible schedule model
+  /// This method provides backward compatibility while using the unified base class
+  Future<bool> scheduleNotificationCompatType({
+    required int id,
+    required String title,
+    required String body,
+    required NotificationChannel channel,
+    required NotificationScheduleModel schedule,
+    String? payload,
+    String? largeIcon,
+    String? groupKey,
+    bool setAsGroupSummary = false,
+  }) async {
+    try {
+      final details = await buildNotificationDetails(
+        channel,
+        largeIcon: largeIcon,
+        groupKey: groupKey,
+        setAsGroupSummary: setAsGroupSummary,
       );
 
-      await iosPlugin?.initialize(
-        DarwinInitializationSettings(
-          notificationCategories: [category],
-        ),
-      );
+      switch (schedule.type) {
+        case ScheduleType.daily:
+          return await scheduleDailyNotification(
+            id,
+            title,
+            body,
+            details,
+            schedule,
+            payload,
+          );
+
+        case ScheduleType.hourly:
+          return await scheduleHourlyNotification(
+            id,
+            title,
+            body,
+            details,
+            payload,
+          );
+
+        case ScheduleType.everyNMinutes:
+          if (schedule.intervalMinutes == 1) {
+            return await scheduleMinutelyNotification(
+              id,
+              title,
+              body,
+              details,
+              payload,
+            );
+          } else {
+            return await scheduleCustomIntervalNotification(
+              id,
+              title,
+              body,
+              details,
+              schedule,
+              payload,
+            );
+          }
+
+        case ScheduleType.weekly:
+          return await scheduleWeeklyNotifications(
+            id,
+            title,
+            body,
+            details,
+            schedule,
+            payload,
+          );
+
+        case ScheduleType.customDates:
+          return await scheduleCustomDateNotifications(
+            id,
+            title,
+            body,
+            details,
+            schedule,
+            payload,
+          );
+      }
+    } catch (e) {
+      logger.e('Error in scheduleNotification: $e');
+      return false;
     }
   }
 }

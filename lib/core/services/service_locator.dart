@@ -2,7 +2,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
-import 'package:quran_app/core/notification/advanced_notification_service.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
@@ -37,9 +36,6 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<Connectivity>(Connectivity())
     // ─────────────────────── NOTIFICATION ───────────────────────
     ..registerSingleton<NotificationService>(NotificationService())
-    ..registerSingleton<AdvancedNotificationService>(
-      AdvancedNotificationService(sl.get<NotificationService>().plugin),
-    )
     ..registerSingleton<NotificationPermissionsService>(
       NotificationPermissionsService(sl.get<NotificationService>().plugin),
     )
@@ -51,12 +47,12 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<AdhanPrayerTimeService>(AdhanPrayerTimeService())
     ..registerSingleton<SettingNotificationRepo>(
       SettingNotificationRepo(
-        advancedNotificationService: sl.get(),
+        notificationService: sl.get(),
       ),
     )
     ..registerSingleton<NotificationOrchestratorService>(
       NotificationOrchestratorService(
-        advancedNotificationService: sl.get(),
+        notificationService: sl.get(),
         settingRepo: sl.get(),
         notificationSchedulesRepo: sl.get(),
         adhanPrayerTimeService: sl.get(),

@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
+import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -56,6 +57,147 @@ abstract class BaseNotificationService {
   BaseNotificationService(this.plugin);
 
   final FlutterLocalNotificationsPlugin plugin;
+
+  Future<void> initialize() async {
+    // Initialize timezone using base class method
+    await configureLocalTimeZone();
+
+    // Android initialization settings with proper configuration
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+
+    // iOS initialization settings with proper permissions
+    const iosSettings = DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+
+    // Linux settings (if supporting desktop)
+    final linuxSettings = LinuxInitializationSettings(
+      defaultActionName: 'Open notification',
+      defaultIcon: AssetsLinuxIcon('assets/image/beads_icon.png'),
+    );
+
+    final settings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+      linux: linuxSettings,
+    );
+
+    await plugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: backgroundNotificationHandler,
+    );
+
+    await initAllAndroidChannels();
+    _configureSelectNotificationSubject();
+
+    logger.d('Notification service initialized successfully');
+  }
+
+  /// Initialize all Android notification channels with enhanced configuration
+  Future<void> initAllAndroidChannels() async {
+    try {
+      if (!Platform.isAndroid) return;
+
+      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      // Create notification channel group for better organization
+      const channelGroup = AndroidNotificationChannelGroup(
+        'islamic_notifications',
+        'الإشعارات الإسلامية',
+        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
+      );
+
+      await androidPlugin?.createNotificationChannelGroup(channelGroup);
+      logger.d('Android notification channels initialized');
+
+      for (final channel in NotificationChannel.values) {
+        final data = channel.data;
+
+        final androidChannel = AndroidNotificationChannel(
+          data.id,
+          data.name,
+          description: 'قناة ${data.name} للإشعارات الإسلامية',
+          importance: Importance.max,
+          sound: RawResourceAndroidNotificationSound(data.sound),
+          vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+          enableLights: true,
+          ledColor: const Color.fromARGB(255, 0, 255, 0),
+          groupId: 'islamic_notifications',
+        );
+
+        await androidPlugin?.createNotificationChannel(androidChannel);
+      }
+    } catch (e, stackTrace) {
+      logger
+        ..e('Error initializing Android notification channels: $e')
+        ..e('Error initializing Android notification channels: $stackTrace');
+    }
+  }
+
+  /// Setup notification actions for iOS
+  Future<void> setupNotificationActions() async {
+    if (Platform.isIOS) {
+      final iosPlugin = plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+
+      final actions = [
+        DarwinNotificationAction.plain(
+          'mark_as_read',
+          'تم القراءة',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.destructive,
+          },
+        ),
+        DarwinNotificationAction.plain(
+          'remind_later',
+          'تذكير لاحقاً',
+          options: <DarwinNotificationActionOption>{
+            DarwinNotificationActionOption.foreground,
+          },
+        ),
+      ];
+
+      final category = DarwinNotificationCategory(
+        'islamic_notifications',
+        actions: actions,
+        options: <DarwinNotificationCategoryOption>{
+          DarwinNotificationCategoryOption.allowInCarPlay,
+        },
+      );
+
+      await iosPlugin?.initialize(
+        DarwinInitializationSettings(
+          notificationCategories: [category],
+        ),
+      );
+    }
+  }
+
+  // ================== Internal Methods ==================
+
+  void _configureSelectNotificationSubject() {
+    selectNotificationSubject.stream.listen((payload) {
+      debugPrint('Notification tapped with payload: $payload');
+      _handleNotificationTap(payload);
+    });
+  }
+
+  void _handleNotificationTap(String payload) {
+    // Handle notification tap based on payload
+    // This can be extended to navigate to specific screens
+    logger.d('Handling notification tap: $payload');
+  }
+
+  Future<void> _onDidReceiveNotificationResponse(
+    NotificationResponse response,
+  ) async {
+    selectNotificationSubject.add(response.payload ?? '');
+  }
 
   // ================== Shared Permission Methods ==================
 
@@ -560,5 +702,4 @@ abstract class BaseNotificationService {
       return [];
     }
   }
-
 }
