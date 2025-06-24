@@ -203,7 +203,7 @@ class _CustomBottomNavigationBarWidgetState
             onTap: () => _onItemTapped(index),
             child: Container(
               padding: EdgeInsets.symmetric(
-                vertical: _getCompactValue(screenWidth, screenHeight, 4, 6, 8),
+                vertical: _getCompactValue(screenWidth, screenHeight, 8, 10, 8),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -376,7 +376,6 @@ final List<NavigationItem> _navigationItems = [
     icon: CupertinoIcons.collections,
     title: 'الاقسام',
   ),
- 
   const NavigationItem(
     icon: CupertinoIcons.settings_solid,
     title: 'الإعدادات',
