@@ -21,6 +21,8 @@ class BaseHomeWidget extends StatelessWidget {
     this.back = true,
     this.isScroll = true,
     this.toolbarHeight = kToolbarHeight,
+    this.actions,
+    this.showBackground = true,
   });
   final Widget body;
   final Future<void> Function()? onRefresh;
@@ -33,7 +35,9 @@ class BaseHomeWidget extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final double? expandedHeight;
   final PreferredSizeWidget? bottom;
+  final List<Widget>? actions;
   final double toolbarHeight;
+  final bool showBackground;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   final Widget? floatingActionButton;
@@ -56,96 +60,109 @@ class BaseHomeWidget extends StatelessWidget {
                 // floating: true,
                 pinned: true,
                 elevation: 0,
+                actions: actions ?? const [],
+                bottom: bottom,
 
-                leading: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundColor: context.primaryScheme,
-                    child: FittedBox(
-                      child: IconButton(
-                        onPressed: () {
-                          context.pop();
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          color: Colors.white,
-                          size: 25,
+                title: showBackground
+                    ? null
+                    : titleWidget ??
+                        title!.autoSize(
+                          context,
+                          maxLines: 4,
+                          // color: context.onPrimary,
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            SliverAppBar(
-              toolbarHeight: toolbarHeight,
-              expandedHeight: 90.h,
-              backgroundColor: context.scaffoldBackgroundColor,
-              leading: leading ?? const SizedBox(),
-              actions: const [],
-              bottom: bottom,
-              flexibleSpace: Container(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: FlexibleSpaceBar(
-                  background: Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: Image.asset(
-                          'assets/logo/bg.jpg',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 80.h,
-                          // height: double.infinity,
-                        ),
-                      ),
-                      Container(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: LinearGradient(
-                            begin: FractionalOffset.bottomCenter,
-                            end: FractionalOffset.topCenter,
-                            colors: [
-                              context.scaffoldBackgroundColor.withOpacity(0.8),
-                              context.scaffoldBackgroundColor.withOpacity(0.1),
-                            ],
-                            stops: const [
-                              1,
-                              1,
-                            ],
+                centerTitle: !showBackground,
+
+                leading: leading ??
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: context.primaryScheme,
+                        child: FittedBox(
+                          child: IconButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                              size: 25,
+                            ),
                           ),
                         ),
                       ),
-                      // ClipRRect(
-                      //   borderRadius: BorderRadius.circular(15),
-                      //   child: BackdropFilter(
-                      //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                      //     child: SizedBox(
-                      //       height: 80.h,
-                      //       width: double.infinity,
-                      //     ),
-                      //   ),
-                      // ),
-                      Center(
-                        child: titleWidget ??
-                            title!.autoSize(
-                              context,
-                              maxLines: 4,
-                              // color: context.onPrimary,
-                            ),
-                      ),
-                    ],
+                    ),
+              ),
+            if (showBackground)
+              SliverAppBar(
+                toolbarHeight: toolbarHeight,
+                expandedHeight: 90.h,
+                backgroundColor: context.scaffoldBackgroundColor,
+                flexibleSpace: Container(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  // centerTitle: true,
+                  padding: const EdgeInsets.all(8),
+                  child: FlexibleSpaceBar(
+                    background: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Image.asset(
+                            'assets/logo/bg.jpg',
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 80.h,
+                            // height: double.infinity,
+                          ),
+                        ),
+                        Container(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              begin: FractionalOffset.bottomCenter,
+                              end: FractionalOffset.topCenter,
+                              colors: [
+                                context.scaffoldBackgroundColor
+                                    .withOpacity(0.8),
+                                context.scaffoldBackgroundColor
+                                    .withOpacity(0.1),
+                              ],
+                              stops: const [
+                                1,
+                                1,
+                              ],
+                            ),
+                          ),
+                        ),
+                        // ClipRRect(
+                        //   borderRadius: BorderRadius.circular(15),
+                        //   child: BackdropFilter(
+                        //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                        //     child: SizedBox(
+                        //       height: 80.h,
+                        //       width: double.infinity,
+                        //     ),
+                        //   ),
+                        // ),
+                        Center(
+                          child: titleWidget ??
+                              title!.autoSize(
+                                context,
+                                maxLines: 4,
+                                // color: context.onPrimary,
+                              ),
+                        ),
+                      ],
+                    ),
+                    // centerTitle: true,
+                  ),
                 ),
               ),
-            ),
           ],
           body: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,

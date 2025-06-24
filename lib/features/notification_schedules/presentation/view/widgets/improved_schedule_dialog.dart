@@ -15,28 +15,30 @@ Future<void> showImprovedScheduleDialog(
   await showDialog<NotificationScheduleCustomModel>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => _ScheduleDialog(
+    builder: (context) => CreateOrUpdateScheduleDialog(
       model: model,
       onSave: onSave,
     ),
   );
 }
 
-class _ScheduleDialog extends StatefulWidget {
-  const _ScheduleDialog({
+class CreateOrUpdateScheduleDialog extends StatefulWidget {
+  const CreateOrUpdateScheduleDialog({
     required this.model,
     required this.onSave,
+    super.key,
   });
 
   final NotificationScheduleCustomModel model;
   final void Function(NotificationScheduleCustomModel result) onSave;
 
   @override
-  State<_ScheduleDialog> createState() => _ScheduleDialogState();
+  State<CreateOrUpdateScheduleDialog> createState() =>
+      _CreateOrUpdateScheduleDialogState();
 }
 
-class _ScheduleDialogState extends State<_ScheduleDialog>
-    with TickerProviderStateMixin {
+class _CreateOrUpdateScheduleDialogState
+    extends State<CreateOrUpdateScheduleDialog> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   late final PageController _pageController;
   late final AnimationController _animationController;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_component_show.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
@@ -26,6 +27,110 @@ extension MyNavigator on BuildContext {
       backgroundColor: backgroundColor ?? background,
       whenCompleted: whenCompleted,
     );
+  }
+
+  Future<void> showBottomSheetUIHeader({
+    required Widget child,
+    FutureOr<void> Function()? whenCompleted,
+    Color? backgroundColor,
+    String? title,
+    String? subtitle,
+    IconData? iconHeader,
+  }) async {
+    await showModalBottomSheet<void>(
+      context: this,
+      backgroundColor: scaffoldBackgroundColor,
+      isScrollControlled: true,
+      elevation: 0,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
+        ),
+      ),
+      builder: (context) {
+        return AnimatedPadding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(20.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        context.primaryScheme,
+                        context.primaryScheme.withOpacity(0.8),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.r),
+                      topRight: Radius.circular(20.r),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Icon(
+                          iconHeader ?? Icons.add,
+                          color: Colors.white,
+                          size: 24.sp,
+                        ),
+                      ),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title ?? 'اضافه جديد',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              subtitle ?? 'قم بت خصيص المحتوي',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 24.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                child,
+              ],
+            ),
+          ),
+        );
+      },
+    ).whenComplete(whenCompleted ?? () {});
   }
 
 //--------------------------Navigation---------------------------------

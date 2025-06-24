@@ -120,4 +120,10 @@ class NotificationScheduleModel {
       'customDates': customDates?.map((d) => d.toIso8601String()).toList(),
     };
   }
+
+  // to string
+  @override
+  String toString() {
+    return 'NotificationScheduleModel(type: $type, hour: $hour, minute: $minute, intervalMinutes: $intervalMinutes, weekdays: $weekdays, customDates: $customDates)';
+  }
 }

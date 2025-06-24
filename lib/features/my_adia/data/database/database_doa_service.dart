@@ -13,7 +13,7 @@ class DatabaseDoaService {
   }
 
   Future<int> updateDoa(DoaModel doa) async {
-    return await _db.update(DatabaseTables.doua, doa.toMap(), doa.id!);
+    return await _db.updateById(DatabaseTables.doua, doa.toMap(), doa.id!);
   }
 
   Future<List<DoaModel>> getAllDoa() async {

@@ -16,7 +16,7 @@ class DatabaseBookmarkPageService {
   }
 
   Future<int> updateBookmarkPage(int id, BookmarkPageRequest bookmark) {
-    return _db.update(DatabaseTables.bookmark, bookmark.toJson(), id);
+    return _db.updateById(DatabaseTables.bookmark, bookmark.toJson(), id);
   }
 
   Future<List<BookmarkPageModel>> getAllBookmarksPage() async {
@@ -45,7 +45,7 @@ class DatabaseBookmarkAyahService {
   Future<int> updateAyahBookmark(
     BookmarkAyahRequest request,
   ) {
-    return _db.update(
+    return _db.updateById(
       DatabaseTables.bookmarkText,
       request.toJson(),
       request.id!,

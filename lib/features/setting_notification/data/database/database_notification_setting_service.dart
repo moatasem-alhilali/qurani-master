@@ -1,6 +1,5 @@
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 class DatabaseNotificationSettingService {
   factory DatabaseNotificationSettingService() => _instance;
@@ -30,12 +29,15 @@ CREATE TABLE $table (
 
   /// Upsert: add or update a notification setting (with full scheduling info)
   Future<void> upsert(NotificationSettingModel setting) async {
-    final id = await _db.insert(
+    final count = await _db.update(
       table,
       setting.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'key = ?',
+      whereArgs: [setting.key],
     );
-    // logger.d('inserted id: $id');
+    if (count == 0) {
+      await _db.insert(table, setting.toMap());
+    }
   }
 
   /// Get a single notification setting by key

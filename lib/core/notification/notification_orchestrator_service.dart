@@ -91,7 +91,7 @@ class NotificationOrchestratorService {
           );
 
           if (success) {
-            logger.d(
+            logger.w(
               'Scheduled Athan notification: ${info.name} at ${info.time}',
             );
           } else {
@@ -150,8 +150,9 @@ class NotificationOrchestratorService {
 
         if (!setting.enabled || setting.onlySetting) {
           await advancedNotificationService.cancelNotification(id: id);
+
           logger.d(
-            'Cancelled notification: ${setting.key} (disabled or settings-only)',
+            'Cancelled notification: ${setting.key} setting.onlySetting ${setting.onlySetting} (disabled or settings-only)',
           );
           continue;
         }
@@ -165,9 +166,13 @@ class NotificationOrchestratorService {
         );
 
         if (success) {
-          logger.d('Scheduled static notification: ${setting.key}');
+          logger.w(
+            'Scheduled static notification: ${setting.key} date: ${setting.schedule}',
+          );
         } else {
-          logger.w('Failed to schedule static notification: ${setting.key}');
+          logger.i(
+            'Failed to schedule static notification: ${setting.key} date: ${setting.schedule}',
+          );
         }
       }
 

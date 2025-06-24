@@ -152,9 +152,10 @@ class NotificationSettingsSeeder {
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationMohammed,
           label: 'الصلاة على محمد ﷺ',
-          enabled: false,
-          scheduleType: ScheduleType.everyNMinutes,
-          intervalMinutes: 60, // Every hour
+          enabled: true,
+          scheduleType: ScheduleType.hourly,
+          hour: 0,
+          minute: 0,
         ),
 
         // Quran reading reminders
@@ -226,31 +227,29 @@ class NotificationSettingsSeeder {
           key: NotificationKeys.isNotificationAstgferAllh,
           label: 'استغفر الله',
           enabled: false,
-          scheduleType: ScheduleType.everyNMinutes,
+          scheduleType: ScheduleType.hourly,
           intervalMinutes: 60, // Every hour
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationHasbnaAllh,
           label: 'أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم',
           enabled: false,
-          scheduleType: ScheduleType.everyNMinutes,
+          scheduleType: ScheduleType.hourly,
           intervalMinutes: 60, // Every hour
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationLahawlaWlaquoah,
           label: 'لا حول ولا قوة الا بالله العلي العظيم',
           enabled: false,
-          scheduleType: ScheduleType.everyNMinutes,
+          scheduleType: ScheduleType.hourly,
           intervalMinutes: 60, // Every hour
         ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationSubhanAllh,
           label: 'سبحان الله والحمدلله ولا اله الا الله والله اكبر',
           enabled: false,
-          scheduleType: ScheduleType.everyNMinutes,
-          intervalMinutes: 60, // Every hour
+          scheduleType: ScheduleType.hourly,
         ),
-     
       ];
 
       // Insert seed data if it doesn't exist
@@ -258,11 +257,11 @@ class NotificationSettingsSeeder {
         final exists = await db.getByKey(seed.key);
         if (exists == null) {
           await db.upsert(seed.toSettingModel());
-          logger.d('Seeded notification setting: ${seed.key}');
+          // logger.d('Seeded notification setting: ${seed.key}');
         }
       }
 
-      logger.d('Notification settings seeding completed successfully');
+      logger.t('Notification settings seeding completed successfully');
     } catch (e) {
       logger.e('Error seeding notification settings: $e');
     }

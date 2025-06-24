@@ -112,6 +112,15 @@ class NotificationService extends BaseNotificationService {
 
       final androidPlugin = plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
+      // Create notification channel group for better organization
+      const channelGroup = AndroidNotificationChannelGroup(
+        'islamic_notifications',
+        'الإشعارات الإسلامية',
+        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
+      );
+
+      await androidPlugin?.createNotificationChannelGroup(channelGroup);
+      logger.d('Android notification channels initialized');
 
       for (final channel in NotificationChannel.values) {
         final data = channel.data;
@@ -130,16 +139,6 @@ class NotificationService extends BaseNotificationService {
 
         await androidPlugin?.createNotificationChannel(androidChannel);
       }
-
-      // Create notification channel group for better organization
-      const channelGroup = AndroidNotificationChannelGroup(
-        'islamic_notifications',
-        'الإشعارات الإسلامية',
-        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
-      );
-
-      await androidPlugin?.createNotificationChannelGroup(channelGroup);
-      logger.d('Android notification channels initialized');
     } catch (e, stackTrace) {
       logger
         ..e('Error initializing Android notification channels: $e')

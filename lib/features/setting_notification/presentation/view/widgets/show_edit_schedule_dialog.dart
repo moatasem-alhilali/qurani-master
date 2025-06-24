@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
+import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
+import 'package:quran_app/main.dart';
 
 class ShowEditScheduleDialog extends StatefulWidget {
   const ShowEditScheduleDialog({
@@ -196,7 +200,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
     }
   }
 
-  void _saveSchedule() {
+  void _saveSchedule(BuildContext ctx) {
     _validate();
     if (validationError == null) {
       final updated = widget.model.copyWith(
@@ -215,8 +219,15 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
         customDates:
             selectedType == ScheduleType.customDates ? customDates : null,
       );
-      Navigator.pop(context);
-      widget.onSave(updated);
+      logger.d(updated);
+      context.read<SettingNotificationBloc>().add(
+            EditNotificationSchedule(
+              updated.key,
+              updated,
+            ),
+          );
+      widget.onSave.call(updated);
+      ctx.pop();
     }
   }
 
@@ -234,13 +245,18 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                 maxHeight: MediaQuery.of(context).size.height * 0.8,
                 maxWidth: 500.w,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildProgressIndicator(),
-                  Expanded(child: _buildPageView()),
-                  _buildFooter(),
-                ],
+              child: BlocBuilder<SettingNotificationBloc,
+                  SettingNotificationState>(
+                builder: (context, state) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildProgressIndicator(),
+                      Expanded(child: _buildPageView()),
+                      _buildFooter(),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -867,8 +883,11 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
           Expanded(
             flex: 2,
             child: ElevatedButton(
-              onPressed:
-                  currentPage == totalPages - 1 ? _saveSchedule : _nextPage,
+              onPressed: () {
+                currentPage == totalPages - 1
+                    ? _saveSchedule(context)
+                    : _nextPage();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primaryScheme,
                 foregroundColor: Colors.white,

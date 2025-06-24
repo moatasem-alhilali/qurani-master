@@ -22,7 +22,7 @@ class DatabaseOfflineService {
 
   /// Update a file by id
   Future<int> update(int id, OfflineFileModel file) async {
-    return await _db.update(DatabaseTables.offlines, file.toJson(), id);
+    return await _db.updateById(DatabaseTables.offlines, file.toJson(), id);
   }
 
   /// Get all files filtered by type (e.g. mp3, pdf)

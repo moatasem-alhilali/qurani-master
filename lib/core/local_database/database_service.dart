@@ -33,7 +33,7 @@ class DatabaseService {
   static Database? _db;
 
   /// Database file name
-  static const _dbName = 'quran_app_test1.db';
+  static const _dbName = 'quran_app_test4.db';
 
   /// Database version (used for future upgrades)
   static const _dbVersion = 1;
@@ -214,7 +214,7 @@ class DatabaseService {
   ///   'lastRead': DateTime.now().toString(),
   /// }, 1);
   /// ```
-  Future<int> update(
+  Future<int> updateById(
     String table,
     Map<String, dynamic> values,
     int id, {
@@ -226,6 +226,24 @@ class DatabaseService {
       values,
       where: 'id = ?',
       whereArgs: [id],
+      conflictAlgorithm: conflictAlgorithm,
+    );
+  }
+
+   Future<int> update(
+    String table,
+    Map<String, dynamic> values,
+    {
+    ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
+    String? where,
+    List<Object?>? whereArgs,
+  }) async {
+    final db = await database;
+    return db.update(
+      table,
+      values,
+      where: where,
+      whereArgs: whereArgs,
       conflictAlgorithm: conflictAlgorithm,
     );
   }

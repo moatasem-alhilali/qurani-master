@@ -16,7 +16,7 @@ class DownloadService {
       // 📥 Initialize the FlutterDownloader for background downloading support
       await FlutterDownloader.initialize();
     } catch (e) {
-      logger.e("error in download service: $e");
+      logger.e('error in download service: $e');
     }
   }
 

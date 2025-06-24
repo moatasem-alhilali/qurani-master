@@ -48,7 +48,7 @@ CREATE TABLE $subihSummary (
   }
 
   static Future<int> updateSubihItem(int id, SubihRequest request) {
-    return _db.update(subih, request.toJson(), id);
+    return _db.updateById(subih, request.toJson(), id);
   }
 
   static Future<List<SubihModel>> getAllSubihItems() async {
@@ -116,7 +116,7 @@ CREATE TABLE $subihSummary (
     if (existing.isNotEmpty) {
       final id = existing.first['id']! as int;
       final count = existing.first['count']! as int;
-      await _db.update(subihSummary, {'count': count + 1}, id);
+      await _db.updateById(subihSummary, {'count': count + 1}, id);
     } else {
       await _db.insert(subihSummary, {
         'subih_id': subihId,

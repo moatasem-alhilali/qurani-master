@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/components/dialog/style_dialog_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
@@ -203,7 +203,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
   }
 
   void _showAddDhikrDialog() {
-    context.showImprovedScheduleDialog(
+    context.showBottomSheetUIHeader(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: const AddDhikrDialog(),
@@ -215,7 +215,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
   }
 
   void _showEditDhikrDialog(SubihModel subih) {
-    context.showImprovedScheduleDialog(
+    context.showBottomSheetUIHeader(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),

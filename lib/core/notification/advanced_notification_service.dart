@@ -41,24 +41,33 @@ class AdvancedNotificationService extends BaseNotificationService {
           );
 
         case ScheduleType.hourly:
-          return await _scheduleHourlyNotifications(
+          return await _scheduleHourlyNotification(
             id,
             title,
             body,
             details,
-            schedule,
             payload,
           );
 
         case ScheduleType.everyNMinutes:
-          return await _scheduleIntervalNotifications(
-            id,
-            title,
-            body,
-            details,
-            schedule,
-            payload,
-          );
+          if (schedule.intervalMinutes == 1) {
+            return await _scheduleMinutelyNotification(
+              id,
+              title,
+              body,
+              details,
+              payload,
+            );
+          } else {
+            return await _scheduleCustomIntervalNotification(
+              id,
+              title,
+              body,
+              details,
+              schedule,
+              payload,
+            );
+          }
 
         case ScheduleType.weekly:
           return await _scheduleWeeklyNotifications(
@@ -203,46 +212,31 @@ class AdvancedNotificationService extends BaseNotificationService {
     }
   }
 
-  Future<bool> _scheduleHourlyNotifications(
+  Future<bool> _scheduleHourlyNotification(
     int id,
     String title,
     String body,
     NotificationDetails details,
-    NotificationScheduleModel schedule,
     String? payload,
   ) async {
     try {
-      var successCount = 0;
-      for (var hour = 0; hour < 24; hour++) {
-        try {
-          final nextInstanceOf = this.nextInstanceOf(
-            hour: hour,
-            minute: schedule.minute!,
-          );
-
-          await plugin.zonedSchedule(
-            id + hour,
-            title,
-            body,
-            nextInstanceOf,
-            details,
-            payload: payload,
-            matchDateTimeComponents: DateTimeComponents.time,
-            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          );
-          successCount++;
-        } catch (e) {
-          logger.e('Error scheduling hourly notification for hour $hour: $e');
-        }
-      }
-      return successCount > 0;
+      await plugin.periodicallyShow(
+        id,
+        title,
+        body,
+        RepeatInterval.hourly,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      );
+      return true;
     } catch (e) {
-      logger.e('Error in _scheduleHourlyNotifications: $e');
+      logger.e('Error scheduling hourly notification: $e');
       return false;
     }
   }
 
-  Future<bool> _scheduleIntervalNotifications(
+  Future<bool> _scheduleCustomIntervalNotification(
     int id,
     String title,
     String body,
@@ -251,36 +245,42 @@ class AdvancedNotificationService extends BaseNotificationService {
     String? payload,
   ) async {
     try {
-      final now = tz.TZDateTime.now(tz.local);
-      final interval = schedule.intervalMinutes!;
-      final minutesPastMidnight = now.hour * 60 + now.minute;
-      final nextMinute = ((minutesPastMidnight ~/ interval) + 1) * interval;
-      final todayMidnight =
-          tz.TZDateTime(tz.local, now.year, now.month, now.day);
-
-      var successCount = 0;
-      for (var m = nextMinute; m < 24 * 60; m += interval) {
-        try {
-          final dateTime = todayMidnight.add(Duration(minutes: m));
-          if (dateTime.isAfter(now)) {
-            await plugin.zonedSchedule(
-              id + m,
-              title,
-              body,
-              dateTime,
-              details,
-              payload: payload,
-              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-            );
-            successCount++;
-          }
-        } catch (e) {
-          logger.e('Error scheduling interval notification at minute $m: $e');
-        }
-      }
-      return successCount > 0;
+      await plugin.periodicallyShowWithDuration(
+        id,
+        title,
+        body,
+        Duration(minutes: schedule.intervalMinutes!),
+        details,
+        payload: payload,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+      return true;
     } catch (e) {
-      logger.e('Error in _scheduleIntervalNotifications: $e');
+      logger.e('Error scheduling custom interval notification: $e');
+      return false;
+    }
+  }
+
+  Future<bool> _scheduleMinutelyNotification(
+    int id,
+    String title,
+    String body,
+    NotificationDetails details,
+    String? payload,
+  ) async {
+    try {
+      await plugin.periodicallyShow(
+        id,
+        title,
+        body,
+        RepeatInterval.everyMinute,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error scheduling minutely notification: $e');
       return false;
     }
   }

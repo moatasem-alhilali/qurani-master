@@ -7,7 +7,8 @@ import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
-import 'package:quran_app/core/services/permission_service.dart';
+import 'package:quran_app/core/services/permission/location_permission_service.dart';
+import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/main_view.dart';
@@ -39,7 +40,9 @@ void main() async {
   await CacheConfig.loadConfig();
 
   // 🔐 Request critical permissions (e.g., storage, notifications)
-  await PermissionService.init();
+  await LocationPermissionService.init();
+  //
+  await NotificationPermissionService.handelNotification();
 
   // 🚀 Launch the root of the Flutter application
   runApp(const MyApp());
@@ -55,3 +58,8 @@ void main() async {
 // https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions.json
 
 // https://www.jsdelivr.com/package/gh/fawazahmed0/quran-api
+
+
+// flutter build apk --release --split-per-abi
+// flutter build apk --release --analyze-size --target-platform=android-arm64
+

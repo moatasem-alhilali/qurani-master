@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/dialog/style_dialog_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -104,10 +103,30 @@ class _NotificationSettingItemWidgetState
                                 ),
                               ),
                             ),
-                            if (widget.setting!.enabled) ...[
+                            if (isEnabled) ...[
                               GestureDetector(
-                                onTap: () =>
-                                    _showActionMenu(context, widget.setting!),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  context.showBottomSheetUIHeader(
+                                    child: BlocProvider.value(
+                                      value: context
+                                          .read<SettingNotificationBloc>(),
+                                      child: ShowEditScheduleDialog(
+                                        model: widget.setting!,
+                                        onSave: (updated) {
+                                          if (context.mounted) {
+                                            context
+                                                .read<SettingNotificationBloc>()
+                                                .add(
+                                                  LoadNotificationSettings(),
+                                                );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                  // _showActionMenu(context, widget.setting!);
+                                },
                                 child: Container(
                                   padding: EdgeInsets.all(8.w),
                                   child: Icon(
@@ -212,17 +231,19 @@ class _NotificationSettingItemWidgetState
           CupertinoActionSheetAction(
             onPressed: () {
               Navigator.pop(context);
-              context.showImprovedScheduleDialog(
-                child: ShowEditScheduleDialog(
-                  model: setting,
-                  onSave: (updated) {
-                    context.read<SettingNotificationBloc>().add(
-                          EditNotificationSchedule(
-                            setting.key,
-                            updated,
-                          ),
-                        );
-                  },
+              context.showBottomSheetUIHeader(
+                child: BlocProvider.value(
+                  value: context.read<SettingNotificationBloc>(),
+                  child: ShowEditScheduleDialog(
+                    model: setting,
+                    onSave: (updated) {
+                      if (context.mounted) {
+                        context.read<SettingNotificationBloc>().add(
+                              LoadNotificationSettings(),
+                            );
+                      }
+                    },
+                  ),
                 ),
               );
             },

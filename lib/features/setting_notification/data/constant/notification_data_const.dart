@@ -290,7 +290,6 @@ class NotificationIds {
 class NotificationKeys {
   static const athanKeys = [
     NotificationKeys.isNotificationAthanFagr,
-    NotificationKeys.isNotificationAthanSunrise,
     NotificationKeys.isNotificationAthanDuhr,
     NotificationKeys.isNotificationAthanAsr,
     NotificationKeys.isNotificationAthanMagrib,

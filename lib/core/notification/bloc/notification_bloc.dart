@@ -35,6 +35,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     emit(state.copyWith(state: RequestState.success));
     add(GetPendingNotificationsEvent());
     add(GetActiveNotificationsEvent());
+    
   }
 
   Future<void> _onRescheduleNotification(
