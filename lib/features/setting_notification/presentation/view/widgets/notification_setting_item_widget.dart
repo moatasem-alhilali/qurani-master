@@ -106,7 +106,6 @@ class _NotificationSettingItemWidgetState
                             if (isEnabled) ...[
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pop(context);
                                   context.showBottomSheetUIHeader(
                                     child: BlocProvider.value(
                                       value: context
@@ -114,13 +113,14 @@ class _NotificationSettingItemWidgetState
                                       child: ShowEditScheduleDialog(
                                         model: widget.setting!,
                                         onSave: (updated) {
-                                          if (context.mounted) {
-                                            context
-                                                .read<SettingNotificationBloc>()
-                                                .add(
-                                                  LoadNotificationSettings(),
-                                                );
-                                          }
+                                          context
+                                              .read<SettingNotificationBloc>()
+                                              .add(
+                                                EditNotificationSchedule(
+                                                  widget.setting!.key,
+                                                  updated,
+                                                ),
+                                              );
                                         },
                                       ),
                                     ),

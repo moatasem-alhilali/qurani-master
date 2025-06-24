@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/main.dart';
@@ -219,15 +219,13 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
         customDates:
             selectedType == ScheduleType.customDates ? customDates : null,
       );
-      logger.d(updated);
-      context.read<SettingNotificationBloc>().add(
-            EditNotificationSchedule(
-              updated.key,
-              updated,
-            ),
-          );
+
+      // Check if widget is still mounted before adding event
+      // If BLoC event fails, still call onSave and close dialog manually
       widget.onSave.call(updated);
-      ctx.pop();
+      if (ctx.mounted) {
+        Navigator.of(ctx).pop();
+      }
     }
   }
 
@@ -245,18 +243,13 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                 maxHeight: MediaQuery.of(context).size.height * 0.8,
                 maxWidth: 500.w,
               ),
-              child: BlocBuilder<SettingNotificationBloc,
-                  SettingNotificationState>(
-                builder: (context, state) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildProgressIndicator(),
-                      Expanded(child: _buildPageView()),
-                      _buildFooter(),
-                    ],
-                  );
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildProgressIndicator(),
+                  Expanded(child: _buildPageView()),
+                  _buildFooter(),
+                ],
               ),
             ),
           ),

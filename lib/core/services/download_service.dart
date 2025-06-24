@@ -6,8 +6,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
-import 'package:quran_app/features/offline/data/database/database_offline_service.dart';
-import 'package:quran_app/features/offline/data/models/offline_file_model.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
@@ -22,7 +20,6 @@ class DownloadService {
 
   //
   final ReceivePort _port = ReceivePort();
-  final DatabaseOfflineService _offlineService = DatabaseOfflineService();
   static const String portName = 'downloader_send_port';
   void init() {
     _bindBackgroundIsolate();
@@ -93,17 +90,6 @@ class DownloadService {
       ).then((value) => logger.i(value));
       try {
         ToastServes.showToast(message: 'تم التنزيل');
-
-        await _offlineService.insert(
-          OfflineFileModel(
-            path: '/storage/emulated/0/Download/$fileName',
-            type: extension,
-            title: description,
-            url: url,
-            description: description,
-            time: DateTime.now().toString(),
-          ),
-        );
       } catch (e) {
         logger.e(e);
       }

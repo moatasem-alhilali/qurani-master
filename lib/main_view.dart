@@ -8,8 +8,6 @@ import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
-import 'package:quran_app/core/notification/notification_permissions_service.dart';
-import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -22,7 +20,6 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/main.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -147,8 +144,6 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> {
-
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -160,8 +155,7 @@ class _AppState extends State<_App> {
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
           return BaseHomeWidget(
-            titleWidget:
-                currentPage == 0 ? const NextTimePrayerRemainWidget() : null,
+            titleWidget: const NextTimePrayerRemainWidget(),
             back: false,
             title: 'طمأنينة',
             isScroll: currentPage == 2 ? false : true,

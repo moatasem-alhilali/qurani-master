@@ -64,6 +64,7 @@ class SettingNotificationBloc
     Emitter<SettingNotificationState> emit,
   ) async {
     try {
+      logger.d(event.updatedModel.toMap());
       await repo.updateSchedule(event.key, event.updatedModel);
       add(LoadNotificationSettings(changeState: false));
     } catch (e) {

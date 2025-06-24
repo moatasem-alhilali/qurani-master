@@ -376,10 +376,7 @@ final List<NavigationItem> _navigationItems = [
     icon: CupertinoIcons.collections,
     title: 'الاقسام',
   ),
-  const NavigationItem(
-    icon: CupertinoIcons.cloud_download,
-    title: 'التنزيلات',
-  ),
+ 
   const NavigationItem(
     icon: CupertinoIcons.settings_solid,
     title: 'الإعدادات',

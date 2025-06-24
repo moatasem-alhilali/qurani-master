@@ -12,7 +12,6 @@ import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
-import 'package:quran_app/features/offline/data/remote/offline_repository_imp.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
@@ -64,7 +63,6 @@ Future<void> setupServiceLocator() async {
 
     // ─────────────────────── REPOSITORIES ───────────────────────
 
-    ..registerSingleton<OfflineRepositoryImpl>(OfflineRepositoryImpl())
     ..registerSingleton<BookRepositoryImpl>(BookRepositoryImpl())
     ..registerSingleton<BaseAudioRepositoryImpl>(BaseAudioRepositoryImpl())
     ..registerSingleton<CategoryRepositoryImpl>(CategoryRepositoryImpl())
