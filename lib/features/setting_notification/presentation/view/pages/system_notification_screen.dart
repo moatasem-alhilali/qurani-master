@@ -103,7 +103,7 @@ class _SystemNotificationScreenState extends State<SystemNotificationScreen>
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        'اشعارات النظام المنتظمة',
+                        'اشعارات النظام المجدولة',
                         style: titleMedium(context),
                       ),
                     ),

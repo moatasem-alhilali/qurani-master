@@ -152,10 +152,8 @@ class NotificationSettingsSeeder {
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationMohammed,
           label: 'الصلاة على محمد ﷺ',
-          enabled: true,
+          enabled: false,
           scheduleType: ScheduleType.hourly,
-          hour: 0,
-          minute: 0,
         ),
 
         // Quran reading reminders

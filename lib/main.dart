@@ -41,6 +41,7 @@ void main() async {
 
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await LocationPermissionService.init();
+
   //
   await NotificationPermissionService.handelNotification();
 

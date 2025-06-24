@@ -65,8 +65,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       emit(state.copyWith(pendingNotificationsState: RequestState.loading));
-      final pendingNotifications = await _tasksNotification
-          .notificationService
+      final pendingNotifications = await _tasksNotification.notificationService
           .getPendingNotifications();
 
       // logger.d(pendingNotifications);
@@ -88,13 +87,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     try {
       emit(state.copyWith(activeNotificationsState: RequestState.loading));
-      final activeNotifications = await _tasksNotification
-          .notificationService
-          .getActiveNotifications();
-      for (final element in activeNotifications) {
-        logger.d(element.title);
-      }
-      // logger.d(activeNotifications);
+      final activeNotifications =
+          await _tasksNotification.notificationService.getActiveNotifications();
+
       emit(
         state.copyWith(
           activeNotifications: activeNotifications,

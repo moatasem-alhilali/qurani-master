@@ -157,7 +157,8 @@ class NotificationOrchestratorService {
           continue;
         }
 
-        final success = await notificationService.scheduleNotificationCompatType(
+        final success =
+            await notificationService.scheduleNotificationCompatType(
           id: id,
           title: setting.label,
           body: NotificationDataConst.resolveNotificationBody(setting.key),
@@ -177,8 +178,9 @@ class NotificationOrchestratorService {
       }
 
       logger.d('Completed static notification rescheduling');
-    } catch (e) {
+    } catch (e, track) {
       logger.e('Error in _rescheduleStaticNotifications: $e');
+      logger.e('Error in _rescheduleStaticNotifications: $track');
     }
   }
 

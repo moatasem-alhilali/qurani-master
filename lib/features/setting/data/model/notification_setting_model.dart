@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/main.dart';
 
 class NotificationSettingModel {
   NotificationSettingModel({
