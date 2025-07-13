@@ -8,23 +8,27 @@ class ReadQuranState {
     this.surahs = const [],
     this.pages = const [],
     this.allAyahs = const [],
+    this.minusHeight = 300,
   });
   final RequestState loadQuranState;
   final List<Surah> surahs;
   final List<List<Ayah>> pages;
   final List<Ayah> allAyahs;
+  final double minusHeight;
 
   ReadQuranState copyWith({
     RequestState? loadQuranState,
     List<Surah>? surahs,
     List<List<Ayah>>? pages,
     List<Ayah>? allAyahs,
+    double? minusHeight,
   }) {
     return ReadQuranState(
       loadQuranState: loadQuranState ?? this.loadQuranState,
       surahs: surahs ?? this.surahs,
       pages: pages ?? this.pages,
       allAyahs: allAyahs ?? this.allAyahs,
+      minusHeight: minusHeight ?? this.minusHeight,
     );
   }
 
@@ -35,7 +39,8 @@ class ReadQuranState {
     return other.loadQuranState == loadQuranState &&
         other.surahs == surahs &&
         other.pages == pages &&
-        other.allAyahs == allAyahs;
+        other.allAyahs == allAyahs &&
+        other.minusHeight == minusHeight;
   }
 
   @override
@@ -43,5 +48,6 @@ class ReadQuranState {
       loadQuranState.hashCode ^
       surahs.hashCode ^
       pages.hashCode ^
-      allAyahs.hashCode;
+      allAyahs.hashCode ^
+      minusHeight.hashCode;
 }

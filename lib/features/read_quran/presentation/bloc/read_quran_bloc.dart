@@ -6,6 +6,7 @@ import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
+import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 
 part 'read_quran_event.dart';
@@ -18,9 +19,12 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     on<SetStateRBlocEvent>(_emitState);
     on<SetLastPageReadEvent>(_setLastPageRead);
     on<JumpToPageEvent>(_jumpToPage);
+    on<ToggleBoxEvent>(_toggleBox);
+    on<ToggleHighBoxEvent>(_toggleHighBox);
   }
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final PageController pageController = PageController();
+  final BoxController boxController = BoxController();
 
   final QuranReadHelper quranRH = QuranReadHelper();
 
@@ -34,7 +38,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     emit(state.copyWith(loadQuranState: RequestState.loading));
     try {
       await quranRH.loadQuran();
-     
+
       emit(
         state.copyWith(
           loadQuranState: RequestState.success,
@@ -56,7 +60,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
 
   /// Emits a fresh state manually
   void _emitState(SetStateRBlocEvent event, Emitter<ReadQuranState> emit) {
-    emit(state.copyWith(loadQuranState: RequestState.success));
+    emit(state.copyWith());
   }
 
   void _setLastPageRead(
@@ -69,8 +73,23 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   }
 
   void _jumpToPage(JumpToPageEvent event, Emitter<ReadQuranState> emit) {
-    if (lastPageRead != 0) {
-      pageController.jumpToPage(lastPageRead);
+    if (event.page != null) {
+      pageController.jumpToPage(event.page!);
+      add(ToggleBoxEvent());
+    } else {
+      if (lastPageRead != 0) {
+        pageController.jumpToPage(lastPageRead);
+      }
     }
+  }
+
+  void _toggleBox(ToggleBoxEvent event, Emitter<ReadQuranState> emit) {
+    boxController.isBoxOpen
+        ? boxController.closeBox()
+        : boxController.openBox();
+  }
+
+  void _toggleHighBox(ToggleHighBoxEvent event, Emitter<ReadQuranState> emit) {
+    emit(state.copyWith(minusHeight: event.minusHeight));
   }
 }

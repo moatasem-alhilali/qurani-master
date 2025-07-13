@@ -9,6 +9,11 @@ class ToggleEvent extends ReadQuranEvent {}
 
 class SetStateRBlocEvent extends ReadQuranEvent {}
 
+class ToggleHighBoxEvent extends ReadQuranEvent {
+  ToggleHighBoxEvent({this.minusHeight = 300});
+  final double minusHeight;
+}
+
 //set page
 class SetLastPageReadEvent extends ReadQuranEvent {
   SetLastPageReadEvent({required this.page});
@@ -17,5 +22,9 @@ class SetLastPageReadEvent extends ReadQuranEvent {
 
 // Jump to page
 class JumpToPageEvent extends ReadQuranEvent {
-  JumpToPageEvent();
+  JumpToPageEvent({this.page});
+  final int? page;
 }
+
+// toggle box
+class ToggleBoxEvent extends ReadQuranEvent {}

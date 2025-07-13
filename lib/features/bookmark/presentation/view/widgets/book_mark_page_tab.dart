@@ -45,10 +45,12 @@ class BookmarkPageTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.scaffoldBackgroundColor,
           ),
-          child: ListView.builder(
+          child: ListView.separated(
             padding: EdgeInsets.zero,
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: bookmarksList.length,
+            shrinkWrap: true,
+            separatorBuilder: (_, __) => SizedBox(height: 12.h),
             itemBuilder: (_, index) {
               final surah = bookmarksList[index];
 
@@ -153,20 +155,20 @@ class BookmarkPageTab extends StatelessWidget {
                                             Text(
                                               'رقم الصفحة',
                                               style: TextStyle(
-                                                fontFamily: 'uthman',
+                                                // fontFamily: 'uthman',
                                                 fontSize: 13,
                                                 color: context.quranTheme
-                                                    .colorScheme.surface,
+                                                    .colorScheme.primary,
                                               ),
                                             ),
                                             Text(
                                               surah.pageNum.toString(),
                                               style: TextStyle(
-                                                fontFamily: 'kufi',
+                                                // fontFamily: 'kufi',
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.bold,
                                                 color: context.quranTheme
-                                                    .colorScheme.surface,
+                                                    .colorScheme.primary,
                                               ),
                                             ),
                                           ],
@@ -182,16 +184,11 @@ class BookmarkPageTab extends StatelessWidget {
                         onTap: () {
                           context
                               .read<ReadQuranBloc>()
-                              .pageController
-                              .jumpToPage(surah.pageNum! - 1);
+                              .add(JumpToPageEvent(page: surah.pageNum));
                           context.pop();
-                          context.pop();
+                          // context.pop();
                           // quranCtrl.changeSurahListOnTap(surah.ayahs.first.page);
                         },
-                      ),
-                      hDivider(
-                        color: context.quranTheme.colorScheme.primary
-                            .withOpacity(0.2),
                       ),
                     ],
                   ),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -54,6 +52,7 @@ class BookmarkAyahTab extends StatelessWidget {
             padding: EdgeInsets.zero,
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: ayahBookmarkList.length,
+            shrinkWrap: true,
             // controller: sl<GeneralController>().surahListController,
             itemBuilder: (_, index) {
               final bookmark = ayahBookmarkList[index];
@@ -170,12 +169,8 @@ class BookmarkAyahTab extends StatelessWidget {
                     onTap: () {
                       context
                           .read<ReadQuranBloc>()
-                          .pageController
-                          .jumpToPage(ayah.page - 1);
-                      context
-                        ..pop()
-                        ..pop();
-                      // quranCtrl.changeSurahListOnTap(juz.page);
+                          .add(JumpToPageEvent(page: ayah.page - 1));
+                      context.pop();
                     },
                   ),
                   hDivider(

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -9,17 +10,15 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchRepositoryImpl repositoryImpl;
-  ScrollController scrollController = ScrollController();
-  String text = "";
-  int pageNumber = 1;
-  int pageSize = 10;
   SearchBloc({required this.repositoryImpl}) : super(SearchState()) {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
         add(FetchAyaMoreEvent(text));
       }
+    });
+    textEditingController.addListener(() {
+      add(SearchQuranEvent(textEditingController.text));
     });
 
     on<FetchAyaMoreEvent>(fetchAyaMore);
@@ -34,10 +33,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
     );
   }
+  SearchRepositoryImpl repositoryImpl;
+  ScrollController scrollController = ScrollController();
+  String text = '';
+  int pageNumber = 1;
+  int pageSize = 10;
+  TextEditingController textEditingController = TextEditingController();
 
   FutureOr<void> searchMossos(event, emit) async {
     emit(state.copyWith(searchMossoState: RequestState.loading));
-    var result = await repositoryImpl.searchMosoaa(event.text as String);
+    final result = await repositoryImpl.searchMosoaa(event.text as String);
     result.fold(
       (l) {
         emit(state.copyWith(searchMossoState: RequestState.error));
@@ -54,7 +59,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   FutureOr<void> historySearchMosooaa(event, emit) async {
     // emit(state.copyWith(searchMossoState: RequestState.loading));
-    var result = await repositoryImpl.historySearchMosoaa();
+    final result = await repositoryImpl.historySearchMosoaa();
     result.fold(
       (l) {
         emit(state.copyWith(searchMossoState: RequestState.error));
@@ -76,7 +81,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   FutureOr<void> searchQuran(event, emit) async {
     emit(state.copyWith(ayahState: RequestState.loading));
     text = event.text as String;
-    var result = await repositoryImpl.searchQuran(
+    final result = await repositoryImpl.searchQuran(
       event.text as String,
       pageSize,
       pageNumber,
@@ -101,7 +106,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     pageNumber++;
 
     emit(state.copyWith(loadAyahState: RequestState.loading));
-    var result = await repositoryImpl.searchQuran(text, pageSize, pageNumber);
+    final result = await repositoryImpl.searchQuran(text, pageSize, pageNumber);
     result.fold(
       (l) {
         emit(state.copyWith(loadAyahState: RequestState.error));

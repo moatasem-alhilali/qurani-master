@@ -24,9 +24,9 @@ class SearchMosoaaScreen extends StatelessWidget {
         builder: (context, state) {
           return BaseHomeWidget(
             leading: const SizedBox(),
-            title: "الذكاء الاصطناعي",
-            bottomNavigationBar: MyTextFormField(
-              hintText: "ابحث هنا",
+            title: 'الذكاء الاصطناعي',
+            bottomNavigationBar: MyTextFormFieldWidget(
+              hintText: 'ابحث هنا',
               controller: search,
               suffixIcon: BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
@@ -45,7 +45,7 @@ class SearchMosoaaScreen extends StatelessWidget {
 
                     case RequestState.loading:
                       return const Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8),
                         child: CircleAvatar(
                           radius: 15,
                           backgroundColor: Colors.transparent,
@@ -117,7 +117,9 @@ class _Item extends StatelessWidget {
         }
         if (state.searchMossoState == RequestState.error) {
           SnackBarMessage.show(
-              context: context, title: "لقد انتهى الحد اليومي لعدد الاسئلة");
+            context: context,
+            title: 'لقد انتهى الحد اليومي لعدد الاسئلة',
+          );
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 500),
@@ -131,31 +133,14 @@ class _Item extends StatelessWidget {
           shrinkWrap: true,
           itemCount: state.historySearchMosoaa.length,
           itemBuilder: (context, index) {
-            var data = state.historySearchMosoaa[index];
+            final data = state.historySearchMosoaa[index];
             return state.historySearchMosoaa.isEmpty
                 ? const SizedBox()
                 : BaseAnimate(
                     index: index,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          // BubbleSpecialThree(
-                          //   text: data['question'] as String,
-                          //   color: const Color(0xFF6e57dd),
-                          //   tail: true,
-                          //   textStyle: const TextStyle(
-                          //       color: Colors.white, fontSize: 16),
-                          // ),
-                          // BubbleSpecialThree(
-                          //   text: data['answer'] as String,
-                          //   color: const Color(0xFF283643),
-                          //   isSender: false,
-                          //   textStyle: const TextStyle(
-                          //       color: Colors.white, fontSize: 16),
-                          // ),
-                        ],
-                      ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Column(),
                     ),
                   );
           },

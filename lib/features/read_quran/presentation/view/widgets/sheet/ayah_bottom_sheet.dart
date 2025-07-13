@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/audio/share_audio_bloc.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
@@ -108,39 +109,43 @@ class SliderAudio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        // vertical: 20,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          StreamBuilder<PositionData>(
-            stream: _positionDataStream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              return ProgressBar(
-                progressBarColor: context.primaryScheme,
-                baseBarColor: context.primaryScheme.withOpacity(0.24),
-                bufferedBarColor: context.primaryScheme.withOpacity(0.24),
-                thumbColor: context.primaryScheme,
-                barHeight: 10,
-                timeLabelTextStyle: titleMedium(context).copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                progress: positionData?.position ?? Duration.zero,
-                buffered: positionData?.bufferedPosition ?? Duration.zero,
-                total: positionData?.duration ?? Duration.zero,
-                onSeek: audioPlayer.seek,
-              );
-            },
-          ),
-          ControllerReader(
-            audioPlayer: audioPlayer,
-          ),
-        ],
+    return SizedBox(
+      width: double.infinity,
+      // height: 70.h,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          // vertical: 8,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            StreamBuilder<PositionData>(
+              stream: _positionDataStream,
+              builder: (context, snapshot) {
+                final positionData = snapshot.data;
+                return ProgressBar(
+                  progressBarColor: context.primaryScheme,
+                  baseBarColor: context.primaryScheme.withOpacity(0.24),
+                  bufferedBarColor: context.primaryScheme.withOpacity(0.24),
+                  thumbColor: context.primaryScheme,
+                  barHeight: 10,
+                  timeLabelTextStyle: titleMedium(context).copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  progress: positionData?.position ?? Duration.zero,
+                  buffered: positionData?.bufferedPosition ?? Duration.zero,
+                  total: positionData?.duration ?? Duration.zero,
+                  onSeek: audioPlayer.seek,
+                );
+              },
+            ),
+            ControllerReader(
+              audioPlayer: audioPlayer,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -165,6 +170,7 @@ class SliderAudio extends StatelessWidget {
 class ControllerReader extends StatelessWidget {
   const ControllerReader({required this.audioPlayer, super.key});
   final AudioPlayer audioPlayer;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<PlayerState>(
@@ -172,29 +178,51 @@ class ControllerReader extends StatelessWidget {
         final playerState = snapshot.data;
         final processingState = playerState?.processingState;
         final playing = playerState?.playing;
+
         if (!(playing ?? false)) {
-          return IconButton(
-            onPressed: audioPlayer.play,
-            icon: Icon(
-              Icons.play_arrow,
-              size: 40,
-              color: context.primaryScheme,
+          return BaseOnTap(
+            onTap: audioPlayer.play,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(scale: animation, child: child);
+              },
+              child: Icon(
+                Icons.play_arrow,
+                key: const ValueKey('play'),
+                size: 40,
+                color: context.primaryScheme,
+              ),
             ),
           );
         } else if (processingState != ProcessingState.completed) {
-          return IconButton(
-            onPressed: audioPlayer.pause,
-            icon: Icon(
-              Icons.pause,
-              size: 40,
-              color: context.primaryScheme,
+          return BaseOnTap(
+            onTap: audioPlayer.pause,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return ScaleTransition(scale: animation, child: child);
+              },
+              child: Icon(
+                Icons.pause,
+                key: const ValueKey('pause'),
+                size: 40,
+                color: context.primaryScheme,
+              ),
             ),
           );
         } else {
-          return Icon(
-            Icons.play_arrow_rounded,
-            size: 40,
-            color: context.primaryScheme,
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(scale: animation, child: child);
+            },
+            child: Icon(
+              Icons.play_arrow_rounded,
+              key: const ValueKey('completed'),
+              size: 40,
+              color: context.primaryScheme,
+            ),
           );
         }
       },

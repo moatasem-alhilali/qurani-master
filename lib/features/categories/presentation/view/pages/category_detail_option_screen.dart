@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -42,7 +43,7 @@ class CategoryDetailOptionScreen extends StatelessWidget {
 
                 return Column(
                   children: [
-                    MyTextFormField(
+                    MyTextFormFieldWidget(
                       controller: search,
                       hintText: 'بحث',
                       suffixIcon: search.text.isNotEmpty

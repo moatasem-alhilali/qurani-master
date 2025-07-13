@@ -577,6 +577,7 @@ class _SlidingBoxState extends State<SlidingBox> with TickerProviderStateMixin {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
+                    // duration: const Duration(milliseconds: 300),
                     margin: EdgeInsets.only(top: _isSearchBoxVisible ? 65 : 0),
                     width: _boxWidth,
                     height: _animationController.value *
@@ -692,7 +693,8 @@ class _SlidingBoxState extends State<SlidingBox> with TickerProviderStateMixin {
                                   : null,
                               child: FadeTransition(
                                 opacity: _fadeAnimationReverse,
-                                child: Container(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
                                   color: widget.color,
                                   child: widget.collapsedBody,
                                 ),

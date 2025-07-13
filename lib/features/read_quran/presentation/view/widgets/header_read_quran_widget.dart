@@ -39,14 +39,6 @@ class HeaderReadQuranWidget extends StatelessWidget {
                   color: context.primaryScheme,
                 ),
               ),
-              // Text(
-              //   '${'الجزء'}: ${convertNumbers(quranCtrl.getJuzByPage(index).juz.toString())}',
-              //   style: TextStyle(
-              //     fontSize: context.customOrientation(18.0, 22.0) as double,
-              //     // fontFamily: 'naskh',
-              //     color: const Color(0xff77554B),
-              //   ),
-              // ),
               const Spacer(),
               Text(
                 quranCtrl.getSurahNameFromPage(index),

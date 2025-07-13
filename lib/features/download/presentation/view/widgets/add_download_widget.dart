@@ -46,7 +46,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                MyTextFormField(
+                MyTextFormFieldWidget(
                   controller: _urlController,
                   labelText: 'رابط التحميل',
                   hintText: 'أدخل رابط الملف للتحميل',
@@ -67,7 +67,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   keyboardType: TextInputType.url,
                 ),
                 const SizedBox(height: 16),
-                MyTextFormField(
+                MyTextFormFieldWidget(
                   controller: _fileNameController,
                   labelText: 'اسم الملف (اختياري)',
                   hintText: 'اسم الملف المخصص',

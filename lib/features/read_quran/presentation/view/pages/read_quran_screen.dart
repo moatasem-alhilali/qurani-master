@@ -6,9 +6,11 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/dialog/option_quran_dialog.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/header_read_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/read_quran_page_widget.dart';
+import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
+import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah_list_widget.dart';
 
 class ReadQuranScreen extends StatefulWidget {
   const ReadQuranScreen({super.key});
@@ -18,78 +20,96 @@ class ReadQuranScreen extends StatefulWidget {
 }
 
 class _ReadQuranScreenState extends State<ReadQuranScreen> {
-  BoxController boxController = BoxController();
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // if (lastPageRead != 0) {
-      //   context.read<ReadQuranBloc>().pageController.jumpToPage(lastPageRead);
-      // }
-      boxController.closeBox();
+      context.read<ReadQuranBloc>().add(JumpToPageEvent());
+      context.read<ReadQuranBloc>().add(ToggleBoxEvent());
     });
+
     super.initState();
   }
 
-  TextEditingController textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: context.scaffoldBackgroundColor,
-          body: SlidingBox(
-            minHeight: 50,
-            // collapsed: true,
-            // style: BoxStyle.shadow,
-            maxHeight: MediaQuery.of(context).size.height - 200,
-            controller: boxController,
-            backdrop: Backdrop(
-              fading: true,
-              appBar: BackdropAppBar(
-                searchBox: SearchBox(
-                  controller: textEditingController,
-                  color: Theme.of(context).colorScheme.surface,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 18,
-                  ),
-                  body: Center(
-                    child: Text(
-                      'Search Result',
+        return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+          builder: (context, state) {
+            final boxController = context.read<ReadQuranBloc>().boxController;
+            return Scaffold(
+              backgroundColor: context.scaffoldBackgroundColor,
+              body: SlidingBox(
+                minHeight: 50,
+                onSearchBoxHide: () {
+                  context.read<ReadQuranBloc>().add(
+                        ToggleHighBoxEvent(),
+                      );
+                },
+                onSearchBoxShow: () {
+                  context.read<ReadQuranBloc>().add(
+                        ToggleHighBoxEvent(
+                          minusHeight: 0,
+                        ),
+                      );
+                },
+                maxHeight:
+                    MediaQuery.of(context).size.height - state.minusHeight,
+                controller: boxController,
+                color: context.scaffoldBackgroundColor,
+                backdrop: Backdrop(
+                  fading: true,
+                  color: context.scaffoldBackgroundColor,
+                  appBar: BackdropAppBar(
+                    searchBox: SearchBox(
+                      controller:
+                          context.read<SearchBloc>().textEditingController,
+                      color: context.primaryScheme,
+                      inputDecoration: InputDecoration(
+                        hintText: 'ابحث عن الايه',
+                        hintStyle: TextStyle(
+                          color: context.scaffoldBackgroundColor,
+                        ),
+                        filled: true,
+                        fillColor: context.primaryScheme.withValues(alpha: 0.1),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: context.primaryScheme,
+                          ),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: context.primaryScheme,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: context.primaryScheme,
+                          ),
+                        ),
+                      ),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
+                      body: const SearchAyahListWidget(),
+                    ),
+                  ),
+                  body: const _BodyQuran(),
+                ),
+                collapsedBody: Center(
+                  child: Text(
+                    'اسحب هنا للاعلي',
+                    style: TextStyle(
+                      color: context.primaryScheme,
                     ),
                   ),
                 ),
+                draggableIconColor: context.primaryScheme,
+                body: const BackdropOptionQuranWidget(),
               ),
-              body: const _BodyQuran(),
-            ),
-            body: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                  child: SizedBox.fromSize(
-                    size: const Size.fromRadius(25),
-                    child: IconButton(
-                      iconSize: 27,
-                      icon: Icon(
-                        Icons.search_rounded,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () {
-                        textEditingController.text = '';
-                        boxController.showSearchBox();
-                      },
-                    ),
-                  ),
-                ),
-                const OptionQuranDialog(),
-              ],
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -151,9 +171,9 @@ class _BodyQuran extends StatelessWidget {
                                   }
 
                                   return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: horizontal,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        // horizontal: horizontal,
+                                        ),
                                     child: ReadQuranPageWidget(
                                       pageIndex: index,
                                     ),

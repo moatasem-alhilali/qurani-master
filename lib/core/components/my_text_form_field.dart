@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
-class MyTextFormField extends StatefulWidget {
-  MyTextFormField({
+class MyTextFormFieldWidget extends StatefulWidget {
+  MyTextFormFieldWidget({
     super.key,
     this.hintText,
     this.labelText,
@@ -91,10 +91,10 @@ class MyTextFormField extends StatefulWidget {
   final String? prefixText;
   final String? initialValue;
   @override
-  State<MyTextFormField> createState() => _MyTextFormFieldState();
+  State<MyTextFormFieldWidget> createState() => _MyTextFormFieldWidgetState();
 }
 
-class _MyTextFormFieldState extends State<MyTextFormField> {
+class _MyTextFormFieldWidgetState extends State<MyTextFormFieldWidget> {
   @override
   void initState() {
     try {

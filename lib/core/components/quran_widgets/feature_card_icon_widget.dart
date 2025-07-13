@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
@@ -227,14 +228,14 @@ class FeatureCardIconWidget extends StatelessWidget {
   }
 }
 
-enum CardShapeType {
-  circles,
-  triangles,
-  diamonds,
-  hexagons,
-  stars,
-  waves,
-}
+// enum CardShapeType {
+//   circles,
+//   triangles,
+//   diamonds,
+//   hexagons,
+//   stars,
+//   waves,
+// }
 
 class GeometricShapePainter extends CustomPainter {
   GeometricShapePainter({

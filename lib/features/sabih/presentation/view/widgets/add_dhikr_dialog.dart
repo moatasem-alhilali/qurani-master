@@ -78,7 +78,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            MyTextFormField(
+            MyTextFormFieldWidget(
               controller: _titleController,
               labelText: 'نص الذكر',
               hintText: 'مثال: سبحان الله',
@@ -90,7 +90,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
               },
             ),
             const SizedBox(height: 16),
-            MyTextFormField(
+            MyTextFormFieldWidget(
               controller: _contentController,
               labelText: 'الوصف (اختياري)',
               hintText: 'مثال: الفرصة الطيبة أو الشرح',

@@ -37,7 +37,7 @@ class _SearchAyahWidgetState extends State<SearchAyahWidget> {
             children: [
               BlocBuilder<SearchBloc, SearchState>(
                 builder: (context, state) {
-                  return MyTextFormField(
+                  return MyTextFormFieldWidget(
                     hintStyle: TextStyle(
                       color: context.primaryScheme,
                       fontSize: 14,
@@ -105,15 +105,12 @@ class _SearchAyahWidgetState extends State<SearchAyahWidget> {
                                     ),
                                     // tileColor: context.background,
                                     onTap: () {
-                                      context
-                                          .read<ReadQuranBloc>()
-                                          .pageController
-                                          .jumpToPage(
-                                            (search.pageNum as int) - 1,
+                                      context.read<ReadQuranBloc>().add(
+                                            JumpToPageEvent(
+                                              page: (search.pageNum as int) - 1,
+                                            ),
                                           );
-                                      context
-                                        ..pop()
-                                        ..pop();
+                                      context.pop();
                                     },
                                     title: Padding(
                                       padding: const EdgeInsets.all(8),

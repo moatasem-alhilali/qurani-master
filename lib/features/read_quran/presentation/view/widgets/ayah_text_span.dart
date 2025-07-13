@@ -15,19 +15,13 @@ TextSpan ayahTextSpan({
   required bool isFirstAyah,
   required BuildContext context,
   double? fontSize,
-  LongPressStartDetailsFunction? onLongPressStart,
-  VoidCallback? onTapUp,
+  VoidCallback? onTap,
 }) {
   final hasBookmarkAyahSelect =
       context.read<BookmarkBloc>().hasBookmarkAyah(surahNum, ayahNum);
   // log('surahNum: $surahNum, ayahNum: $ayahNum, hasBookmarkAyahSelect: $hasBookmarkAyahSelect');
 
-  final recognizer =
-      LongPressGestureRecognizer(duration: const Duration(milliseconds: 500))
-        ..onLongPressStart = onLongPressStart
-        ..onLongPressEnd = (_) {
-          if (onTapUp != null) onTapUp();
-        };
+  final recognizer = TapGestureRecognizer()..onTap = onTap;
 
   if (text.isNotEmpty) {
     final partOne = text.length < 3 ? text[0] : text[0] + text[1];

@@ -20,6 +20,8 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
+import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -75,6 +77,13 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               NotificationBloc()..add(InitializeNotificationEvent()),
+          lazy: false,
+        ),
+
+        ///search
+        BlocProvider(
+          create: (context) =>
+              SearchBloc(repositoryImpl: sl<SearchRepositoryImpl>()),
           lazy: false,
         ),
       ],

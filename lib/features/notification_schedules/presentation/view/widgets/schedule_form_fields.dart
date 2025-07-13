@@ -239,7 +239,7 @@ class IntervalMinutesField extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          MyTextFormField(
+          MyTextFormFieldWidget(
             labelText: 'كل كم دقيقة؟',
             hintText: 'مثال: 30',
             suffixText: 'دقيقة',
@@ -273,7 +273,7 @@ class LabelField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyTextFormField(
+    return MyTextFormFieldWidget(
       initialValue: value,
       labelText: 'وصف اختياري',
       hintText: 'أضف وصفاً لهذا الموعد',

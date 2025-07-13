@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
+import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/ayah_text_span.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/menu_action_buttons.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/menu_action_buttons.dart';
 
 class ReadQuranPageWidget extends StatefulWidget {
   const ReadQuranPageWidget({required this.pageIndex, super.key});
@@ -23,6 +23,14 @@ class ReadQuranPageWidget extends StatefulWidget {
 class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
   int? selectedAyahUQNumber;
 
+  // Cache expensive calculations
+  double? _cachedFontSize;
+  double? _cachedWidth;
+  EdgeInsets? _cachedPadding;
+  EdgeInsets? _cachedMargin;
+  List<List<Ayah>>? _cachedAyahsData;
+  int? _cachedDataVersion;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
@@ -33,83 +41,48 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
 
             return LayoutBuilder(
               builder: (context, constraints) {
-                final fontSize = _calculateFontSize(constraints.maxWidth);
-                final padding = _getPagePadding(context);
-                final margin = _getPageMargin(context);
+                // Cache font size calculation
+                final fontSize = _getCachedFontSize(constraints.maxWidth);
 
                 return BlocBuilder<ThemeBloc, ThemeState>(
                   builder: (context, state) {
+                    // Cache ayahs data
                     final currentPageAyahsSeparatedForBasmalah =
-                        quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(
-                      widget.pageIndex,
-                    );
-                    return Container(
-                      padding: padding,
-                      margin: margin,
-                      child: quranCtrl.pages.isEmpty
-                          ? const Center(
-                              child: CircularProgressIndicator.adaptive(),
-                            )
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: List.generate(
-                                  currentPageAyahsSeparatedForBasmalah.length,
-                                  (i) {
-                                final ayahs =
-                                    currentPageAyahsSeparatedForBasmalah[i];
-                                return Column(
-                                  children: [
-                                    context.surahBannerFirstPlace(
-                                      widget.pageIndex,
-                                      i,
-                                      context,
+                        _getCachedAyahsData(quranCtrl);
+
+                    return RepaintBoundary(
+                      child: Container(
+                        padding: _getCachedPadding(context),
+                        margin: _getCachedMargin(context),
+                        child: quranCtrl.pages.isEmpty
+                            ? const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              )
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List.generate(
+                                    currentPageAyahsSeparatedForBasmalah.length,
+                                    (i) {
+                                  final ayahs =
+                                      currentPageAyahsSeparatedForBasmalah[i];
+                                  return _AyahGroupWidget(
+                                    key: ValueKey('${widget.pageIndex}_$i'),
+                                    pageIndex: widget.pageIndex,
+                                    groupIndex: i,
+                                    ayahs: ayahs,
+                                    fontSize: fontSize,
+                                    selectedAyahUQNumber: selectedAyahUQNumber,
+                                    onAyahSelect: (uq) => setState(
+                                      () => selectedAyahUQNumber = uq,
                                     ),
-                                    _buildBasmalahIfNeeded(
-                                      quranCtrl,
-                                      ayahs,
-                                      context,
+                                    onAyahUnselect: () => setState(
+                                      () => selectedAyahUQNumber = null,
                                     ),
-                                    BlocBuilder<BookmarkBloc, BookmarkState>(
-                                      builder: (context, state) {
-                                        return FittedBox(
-                                          fit: BoxFit.fitWidth,
-                                          child: RichText(
-                                            text: TextSpan(
-                                              style: _getTextStyle(
-                                                fontSize,
-                                                context,
-                                              ),
-                                              children: _buildAyahSpans(
-                                                context,
-                                                quranCtrl,
-                                                ayahs,
-                                                fontSize,
-                                                selectedAyahUQNumber,
-                                                (uq) => setState(
-                                                  () =>
-                                                      selectedAyahUQNumber = uq,
-                                                ),
-                                                () => setState(
-                                                  () => selectedAyahUQNumber =
-                                                      null,
-                                                ),
-                                              ),
-                                            ),
-                                            textDirection: TextDirection.rtl,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    context.surahBannerLastPlace(
-                                      widget.pageIndex,
-                                      i,
-                                      context,
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ),
+                                    quranCtrl: quranCtrl,
+                                  );
+                                }),
+                              ),
+                      ),
                     );
                   },
                 );
@@ -118,6 +91,128 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
           },
         );
       },
+    );
+  }
+
+  double _getCachedFontSize(double width) {
+    if (_cachedFontSize == null || _cachedWidth != width) {
+      _cachedWidth = width;
+      _cachedFontSize = _calculateFontSize(width);
+    }
+    return _cachedFontSize!;
+  }
+
+  EdgeInsets _getCachedPadding(BuildContext context) {
+    _cachedPadding ??= _getPagePadding(context);
+    return _cachedPadding!;
+  }
+
+  EdgeInsets _getCachedMargin(BuildContext context) {
+    _cachedMargin ??= _getPageMargin(context);
+    return _cachedMargin!;
+  }
+
+  List<List<Ayah>> _getCachedAyahsData(QuranReadHelper quranCtrl) {
+    // Simple cache invalidation based on data version
+    final currentDataVersion = quranCtrl.pages.length;
+    if (_cachedAyahsData == null || _cachedDataVersion != currentDataVersion) {
+      _cachedDataVersion = currentDataVersion;
+      _cachedAyahsData =
+          quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(widget.pageIndex);
+    }
+    return _cachedAyahsData!;
+  }
+
+  EdgeInsets _getPagePadding(BuildContext context) {
+    return widget.pageIndex == 0 || widget.pageIndex == 1
+        ? EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.13,
+          )
+        : const EdgeInsets.symmetric(horizontal: 16);
+  }
+
+  EdgeInsets _getPageMargin(BuildContext context) {
+    return widget.pageIndex == 0 || widget.pageIndex == 1
+        ? EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.width * 0.34,
+          )
+        : const EdgeInsets.symmetric(vertical: 32);
+  }
+
+  double _calculateFontSize(double width) {
+    if (width <= 480) return 100;
+    if (width > 480 && width <= 960) return 90;
+    return 100;
+  }
+
+  // void _showAyahMenu(
+  //   BuildContext context,
+  //   QuranReadHelper quranCtrl,
+  //   List<Ayah> ayahs,
+  //   int ayahIndex,
+  //   LongPressStartDetails details, {
+  //   VoidCallback? onClose,
+  // }) {
+  //   final ayah = ayahs[ayahIndex];
+  //   context.showSmoothSheetStyle(
+  //     child: MenuActionWidget(
+  //       ayahNum: ayah.ayahNumber,
+  //       surahName: quranCtrl.getSurahNameFromPage(widget.pageIndex),
+  //       ayahTextNormal: ayah.text,
+  //       cancel: onClose,
+  //       ayahUQNum: ayah.ayahUQNumber,
+  //       pageIndex: widget.pageIndex,
+  //       surahNum: quranCtrl.getSurahNumberFromPage(widget.pageIndex),
+  //       ayahUrl: ayah.audio,
+  //       myContext: context,
+  //     ),
+  //     backgroundColor: context.scaffoldBackgroundColor,
+  //   );
+  // }
+}
+
+// Extract ayah group to separate widget to reduce rebuild scope
+class _AyahGroupWidget extends StatelessWidget {
+  const _AyahGroupWidget({
+    required this.pageIndex,
+    required this.groupIndex,
+    required this.ayahs,
+    required this.fontSize,
+    required this.selectedAyahUQNumber,
+    required this.onAyahSelect,
+    required this.onAyahUnselect,
+    required this.quranCtrl,
+    super.key,
+  });
+
+  final int pageIndex;
+  final int groupIndex;
+  final List<Ayah> ayahs;
+  final double fontSize;
+  final int? selectedAyahUQNumber;
+  final void Function(int) onAyahSelect;
+  final VoidCallback onAyahUnselect;
+  final QuranReadHelper quranCtrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        context.surahBannerFirstPlace(pageIndex, groupIndex, context),
+        _buildBasmalahIfNeeded(quranCtrl, ayahs, context),
+        RepaintBoundary(
+          child: _AyahTextWidget(
+            pageIndex: pageIndex,
+            ayahs: ayahs,
+            fontSize: fontSize,
+            selectedAyahUQNumber: selectedAyahUQNumber,
+            onAyahSelect: onAyahSelect,
+            onAyahUnselect: onAyahUnselect,
+            quranCtrl: quranCtrl,
+          ),
+        ),
+        context.surahBannerLastPlace(pageIndex, groupIndex, context),
+      ],
     );
   }
 
@@ -140,6 +235,78 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
           ? besmAllah2(context)
           : besmAllah(context),
     );
+  }
+}
+
+// Extract ayah text to separate widget for better performance
+class _AyahTextWidget extends StatefulWidget {
+  const _AyahTextWidget({
+    required this.pageIndex,
+    required this.ayahs,
+    required this.fontSize,
+    required this.selectedAyahUQNumber,
+    required this.onAyahSelect,
+    required this.onAyahUnselect,
+    required this.quranCtrl,
+    super.key,
+  });
+
+  final int pageIndex;
+  final List<Ayah> ayahs;
+  final double fontSize;
+  final int? selectedAyahUQNumber;
+  final void Function(int) onAyahSelect;
+  final VoidCallback onAyahUnselect;
+  final QuranReadHelper quranCtrl;
+
+  @override
+  State<_AyahTextWidget> createState() => _AyahTextWidgetState();
+}
+
+class _AyahTextWidgetState extends State<_AyahTextWidget> {
+  List<TextSpan>? _cachedTextSpans;
+  int? _cachedSelectedAyah;
+  double? _cachedFontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BookmarkBloc, BookmarkState>(
+      builder: (context, state) {
+        final textSpans = _getCachedTextSpans(context);
+
+        return FittedBox(
+          fit: BoxFit.fitWidth,
+          child: RichText(
+            text: TextSpan(
+              style: _getTextStyle(widget.fontSize, context),
+              children: textSpans,
+            ),
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+
+  List<TextSpan> _getCachedTextSpans(BuildContext context) {
+    // Cache text spans only if selection or font size changes
+    if (_cachedTextSpans == null ||
+        _cachedSelectedAyah != widget.selectedAyahUQNumber ||
+        _cachedFontSize != widget.fontSize) {
+      _cachedSelectedAyah = widget.selectedAyahUQNumber;
+      _cachedFontSize = widget.fontSize;
+      _cachedTextSpans = _buildAyahSpans(
+        context,
+        widget.quranCtrl,
+        widget.ayahs,
+        widget.fontSize,
+        widget.selectedAyahUQNumber,
+        widget.onAyahSelect,
+        widget.onAyahUnselect,
+      );
+    }
+    return _cachedTextSpans!;
   }
 
   List<TextSpan> _buildAyahSpans(
@@ -170,18 +337,16 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
           surahNum: surahNum,
           ayahUQNum: ayah.ayahUQNumber,
           ayahNum: ayah.ayahNumber,
-          onLongPressStart: (details) {
-            onSelect?.call(ayah.ayahUQNumber);
+          onTap: () {
+            final boxController = context.read<ReadQuranBloc>().boxController;
+            if (boxController.isBoxOpen) {
+              boxController.closeBox();
+            } else {
+              onSelect?.call(ayah.ayahUQNumber);
 
-            _showAyahMenu(
-              context,
-              quranCtrl,
-              ayahs,
-              ayahIndex,
-              details,
-            );
+              _showAyahMenu(context, quranCtrl, ayahs, ayahIndex, null);
+            }
           },
-          onTapUp: () => onUnselect?.call(),
         );
       },
     );
@@ -203,38 +368,15 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
     );
   }
 
-  EdgeInsets _getPagePadding(BuildContext context) {
-    return widget.pageIndex == 0 || widget.pageIndex == 1
-        ? EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.13,
-          )
-        : const EdgeInsets.symmetric(horizontal: 16);
-  }
-
-  EdgeInsets _getPageMargin(BuildContext context) {
-    return widget.pageIndex == 0 || widget.pageIndex == 1
-        ? EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.width * 0.34,
-          )
-        : const EdgeInsets.symmetric(vertical: 32);
-  }
-
-  double _calculateFontSize(double width) {
-    if (width <= 480) return 100;
-    if (width > 480 && width <= 960) return 90;
-    return 100;
-  }
-
   void _showAyahMenu(
     BuildContext context,
     QuranReadHelper quranCtrl,
     List<Ayah> ayahs,
     int ayahIndex,
-    LongPressStartDetails details, {
     VoidCallback? onClose,
-  }) {
+  ) {
     final ayah = ayahs[ayahIndex];
-    context.showSmoothSheetStyle(
+    context.showAnimatedBottomSheet(
       child: MenuActionWidget(
         ayahNum: ayah.ayahNumber,
         surahName: quranCtrl.getSurahNameFromPage(widget.pageIndex),
@@ -248,20 +390,5 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
       ),
       backgroundColor: context.scaffoldBackgroundColor,
     );
-    // showAyahMenuActionButton(
-    //   quranCtrl.getSurahNumberFromPage(widget.pageIndex),
-    //   ayah.ayahNumber,
-    //   ayah.code_v2,
-    //   widget.pageIndex,
-    //   ayah.text,
-    //   ayah.ayahUQNumber,
-    //   quranCtrl.getSurahNameFromPage(widget.pageIndex),
-    //   ayahIndex,
-    //   details: details,
-    //   myContext: context,
-    //   ayahUrl: ayah.audio,
-    //   context: context,
-    //   onClose: onClose,
-    // );
   }
 }

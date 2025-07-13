@@ -7,6 +7,7 @@ import 'package:quran_app/core/components/quran_widgets/animated_tasbih_widget.d
 import 'package:quran_app/core/components/quran_widgets/breathing_animation_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/expanding_fab_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/flip_card_3d_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/verse_of_day_widget.dart';
 

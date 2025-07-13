@@ -37,7 +37,7 @@ class BaseAudioScreen extends StatelessWidget {
                 return state.famousBaseAudioState.handle<dynamic>(
                   onSuccess: () => Column(
                     children: [
-                      MyTextFormField(
+                      MyTextFormFieldWidget(
                         controller: search,
                         hintText: 'بحث',
                         suffixIcon: search.text.isNotEmpty
