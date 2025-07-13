@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_component_show.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
+import 'package:quran_app/core/widgets/auto_text.dart';
 
 //=================================Navigator===============================
 extension MyNavigator on BuildContext {
@@ -81,34 +82,46 @@ extension MyNavigator on BuildContext {
                         padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
-                        child: Icon(
-                          iconHeader ?? Icons.add,
-                          color: Colors.white,
-                          size: 24.sp,
-                        ),
+                        child: iconHeader != null
+                            ? Icon(
+                                iconHeader,
+                                color: Colors.white,
+                                size: 24.sp,
+                              )
+                            : const Padding(
+                                padding: EdgeInsets.all(8),
+                                child: SizedBox(),
+                              ),
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              title ?? 'اضافه جديد',
-                              style: TextStyle(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                            (title ?? 'اضافه جديد').autoSize(
+                              context,
+                              fontSize: 13.sp,
+                              minFontSize: 10,
+                              color: Colors.white,
                             ),
+                            // Text(
+                            // title ?? 'اضافه جديد',
+                            // style: TextStyle(
+                            //     fontSize: 20.sp,
+                            //     fontWeight: FontWeight.bold,
+                            //     color: Colors.white,
+                            //   ),
+                            //   maxLines: 1,
+                            //   overflow: TextOverflow.ellipsis,
+                            // ),
                             SizedBox(height: 4.h),
-                            Text(
-                              subtitle ?? 'قم بت خصيص المحتوي',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.white.withOpacity(0.8),
-                              ),
+                            (subtitle ?? 'قم بت خصيص المحتوي').autoSize(
+                              context,
+                              fontSize: 10.sp,
+                              minFontSize: 8,
+                              color: Colors.grey,
                             ),
                           ],
                         ),

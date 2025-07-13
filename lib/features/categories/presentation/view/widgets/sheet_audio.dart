@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/download_service.dart';
@@ -11,11 +12,11 @@ import 'package:quran_app/core/widgets/audio/custom_progress.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
+import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 
 class SheetAudios extends StatelessWidget {
-  const SheetAudios({super.key, this.baseData});
-  final dynamic baseData;
-
+  const SheetAudios({required this.baseData, super.key});
+  final CategoryDetailModel baseData;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -23,7 +24,7 @@ class SheetAudios extends StatelessWidget {
       child: BlocProvider(
         create: (context) => BaseAudioBloc(
           repositoryImpl: sl.get<BaseAudioRepositoryImpl>(),
-        )..add(BaseAudioDetailEvent(baseData['api_url'] as String)),
+        )..add(BaseAudioDetailEvent(baseData.apiUrl ?? '')),
         child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
           builder: (context, state) {
             switch (state.famousBaseAudioState) {
@@ -42,7 +43,7 @@ class SheetAudios extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: baseData['title'].toString().autoSize(
+                      child: baseData.title.toString().autoSize(
                             context,
                             fontSize: 20,
                             maxLines: 2,
@@ -51,16 +52,15 @@ class SheetAudios extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: baseData['description'].toString().autoSize(
+                      child: baseData.description.toString().autoSize(
                             context,
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                     ),
                     const SizedBox(height: 10),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Divider(color: Colors.grey),
+                    Divider(
+                      color: context.primaryScheme,
                     ),
                     ProgressAudio(
                       audioPlayer: state.audioPlayer ?? AudioPlayer(),
@@ -94,27 +94,22 @@ class SheetAudios extends StatelessWidget {
 class _ItemDownloaded extends StatelessWidget {
   _ItemDownloaded({
     required this.current,
+    required this.baseData,
     super.key,
     this.data,
     this.audioPlayer,
-    this.baseData,
   });
   dynamic data;
-  dynamic baseData;
+  CategoryDetailModel baseData;
   int current;
   AudioPlayer? audioPlayer;
   @override
   Widget build(BuildContext context) {
     // logger.d(data);
-    return Container(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      // height: context.getHight(8),
+    return CardWidget(
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: context.primaryScheme,
-      ),
+      // shapeType: CardShapeType.circle,
       child: Column(
         children: [
           if (data['description'] != null)
@@ -214,7 +209,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
         child: Container(
           height: context.getHight(6),
           decoration: BoxDecoration(
-            color: context.secondary,
+            color: context.primaryScheme,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -232,7 +227,10 @@ class _BtnDownloadState extends State<_BtnDownload> {
                     bottomLeft: Radius.circular(8),
                   ),
                 ),
-                child: const Icon(Icons.download),
+                child: const Icon(
+                  Icons.download,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),

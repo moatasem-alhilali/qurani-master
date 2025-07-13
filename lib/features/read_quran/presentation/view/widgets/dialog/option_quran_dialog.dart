@@ -20,18 +20,16 @@ class OptionQuranDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          _TopSettingsBar(),
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: _BottomOption(),
-          ),
-          _CloseDialogArea(),
-        ],
-      ),
+    return const Column(
+      children: [
+        SizedBox(height: 100),
+        // _TopSettingsBar(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: _BottomOption(),
+        ),
+        // _CloseDialogArea(),
+      ],
     );
   }
 }

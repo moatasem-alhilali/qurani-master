@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/base_item_book.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
+import 'package:quran_app/features/categories/data/model/category_section_model.dart';
+import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
 
 class CategoryDataScreen extends StatelessWidget {
   CategoryDataScreen({
@@ -30,12 +32,13 @@ class CategoryDataScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => CategoryBloc(
         repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-      )..add(GetCategoryEvent(id, url)),
+      )..add(GetCategoriesEvent(id, url)),
       child: BlocBuilder<CategoryBloc, CategoryState>(
         builder: (context, state) {
           return BaseHomeWidget(
             isScroll: false,
             title: title,
+            showBackground: false,
             body: BlocConsumer<CategoryBloc, CategoryState>(
               listener: (context, state) {},
               builder: (context, state) {
@@ -62,7 +65,7 @@ class CategoryDataScreen extends StatelessWidget {
                                 ).animate().fade()
                               : null,
                           onChanged: (text) {
-                            _onSearchTextChanged(state.category);
+                            _onSearchTextChanged(state.categories);
                             context.read<CategoryBloc>().add(SetStateEvent());
                           },
                         ),
@@ -71,23 +74,22 @@ class CategoryDataScreen extends StatelessWidget {
                             shrinkWrap: true,
                             physics: const BouncingScrollPhysics(),
                             itemCount:
-                                _onSearchTextChanged(state.category).length,
+                                _onSearchTextChanged(state.categories).length,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              childAspectRatio: 1 / 1.5,
+                              childAspectRatio: 1 / 1.1,
                             ),
                             itemBuilder: (context, index) {
                               final allData =
-                                  _onSearchTextChanged(state.category)[index];
+                                  _onSearchTextChanged(state.categories)[index];
                               return BaseAnimate(
-                                index: index,
-                                child: BaseBookItem(
-                                  allData['title'],
-                                  () {
+                                index: 0,
+                                child: FeatureCardTextWidget(
+                                  title: allData.title ?? '',
+                                  onTap: () {
                                     _onTap(allData, context);
                                   },
-                                  type: allData['datatype'].toString(),
                                 ),
                               );
                               //  _Item(allData);
@@ -106,10 +108,12 @@ class CategoryDataScreen extends StatelessWidget {
     );
   }
 
-  List<dynamic> _onSearchTextChanged(List data) {
+  List<CategorySectionModel> _onSearchTextChanged(
+    List<CategorySectionModel> data,
+  ) {
     final res = data
         .where(
-          (data) => data['title']
+          (data) => data.title
               .toString()
               .toLowerCase()
               .contains(search.text.toLowerCase()),
@@ -118,36 +122,38 @@ class CategoryDataScreen extends StatelessWidget {
     return res;
   }
 
-  void _onTap(allData, BuildContext context) {
-    // logger.d(allData);
-
-    if (allData['datatype'] == 'multicategories') {
+  void _onTap(CategorySectionModel allData, BuildContext context) {
+    if (allData.dataType == 'multicategories') {
       context.push(
         CategoryDataScreen(
-          id: allData['id'] as int,
-          title: allData['title'] as String,
-          url: allData['apiurl'] as String,
+          id: allData.id!,
+          title: allData.title!,
+          url: allData.apiUrl,
         ),
       );
       return;
     }
-    if (allData['datatype'] != 'category') {
-      if (allData['datatype'] == 'quran') {
-        allData['api_url'] = allData['apiurl'];
+    if (allData.dataType != 'category') {
+      if (allData.dataType == 'quran') {
         context.push(BaseAudioDetail(data: allData));
       } else {
-        context.showBottomSheet(
-          child: QuranBooksDetail(data: allData),
+        context.push(
+          CategoryDetailScreen(
+            category: CategoryDetailModel(
+              apiUrl: allData.apiUrl,
+              title: allData.title,
+            ),
+          ),
         );
       }
       return;
     }
-    if (allData['datatype'] == 'category') {
+    if (allData.dataType == 'category') {
       context.push(
         CategoryDataScreen(
-          id: allData['id'] as int,
+          id: allData.id!,
           title: title,
-          url: allData['apiurl'] as String,
+          url: allData.apiUrl,
         ),
       );
       return;

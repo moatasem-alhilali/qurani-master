@@ -14,3 +14,8 @@ class SetLastPageReadEvent extends ReadQuranEvent {
   SetLastPageReadEvent({required this.page});
   final int page;
 }
+
+// Jump to page
+class JumpToPageEvent extends ReadQuranEvent {
+  JumpToPageEvent();
+}

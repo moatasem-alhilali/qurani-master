@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/features/bookmark/data/request/bookmark_page_request.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
@@ -30,12 +29,11 @@ class BookmarkIconWidget extends StatelessWidget {
             button: true,
             enabled: true,
             label: 'Add Bookmark Page ${pageNumber + 1}',
-            child: SvgPicture.asset(
+            child: Icon(
               bookmarksController.hasBookmarkPage(pageNumber + 1)
-                  ? 'assets/svg/bookmarked.svg'
-                  : 'assets/svg/bookmark.svg',
-              width: width,
-              height: height,
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         );

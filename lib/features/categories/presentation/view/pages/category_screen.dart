@@ -7,8 +7,10 @@ import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_screen.dart';
 import 'package:quran_app/features/categories/data/json/quran_json.dart';
 import 'package:quran_app/features/categories/data/json/serah_json.dart';
-import 'package:quran_app/features/categories/presentation/view/pages/category_type_all.dart';
-import 'package:quran_app/features/categories/presentation/view/pages/category_view_all.dart';
+import 'package:quran_app/features/categories/data/model/category_section_model.dart';
+import 'package:quran_app/features/categories/data/model/section_type_model.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_detail_option_screen.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_view_all_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
@@ -305,7 +307,7 @@ class CategorySectionItem extends StatelessWidget {
 
   final String title;
   final Widget icon;
-  final Map<String, dynamic> data;
+  final CategorySectionModel data;
   final CardShapeType shapeType;
 
   @override
@@ -317,8 +319,8 @@ class CategorySectionItem extends StatelessWidget {
             icon: icon,
             onTap: () {
               context.push(
-                CategoryTypeDetail(
-                  data: data,
+                CategoryDetailOptionScreen(
+                  category: data,
                 ),
               );
             },
@@ -341,12 +343,12 @@ class CategorySectionItem extends StatelessWidget {
 class QuranCategory extends StatelessWidget {
   const QuranCategory({
     required this.title,
+    required this.data,
     super.key,
-    this.data,
     this.icon,
     this.shapeType = CardShapeType.circles,
   });
-  final dynamic data;
+  final List<Map<String, dynamic>> data;
   final String title;
   final Widget? icon;
   final CardShapeType shapeType;
@@ -357,11 +359,15 @@ class QuranCategory extends StatelessWidget {
       children: [
         Expanded(
           child: FeatureCardIconWidget(
-            icon: icon ?? const Icon(Icons.category_rounded),
+            icon: icon ??
+                const Icon(
+                  Icons.category_rounded,
+                  color: Colors.red,
+                ),
             onTap: () {
               context.push(
-                CategoryViewAll(
-                  data: data,
+                CategoryViewAllScreen(
+                  data: data.map(SectionTypeModel.fromJson).toList(),
                   title: title,
                 ),
               );
@@ -382,84 +388,84 @@ class QuranCategory extends StatelessWidget {
   }
 }
 
-List<Map<String, dynamic>> _getCategorySectionData() {
+List<CategorySectionModel> _getCategorySectionData() {
   return [
-    {
-      'title': 'فيديوهات',
-      'type': 'section',
-      'items_count': 1010,
-      'api_url':
+    CategorySectionModel(
+      title: 'فيديوهات',
+      type: 'section',
+      itemsCount: 1010,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/videos/ar/ar/1/25/json',
-    },
-    {
-      'title': 'كتب',
-      'type': 'section',
-      'items_count': 4984,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'كتب',
+      type: 'section',
+      itemsCount: 4984,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/books/ar/ar/1/25/json',
-    },
-    {
-      'title': 'قصص',
-      'type': 'section',
-      'items_count': 1703,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'قصص',
+      type: 'section',
+      itemsCount: 1703,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/articles/ar/ar/1/25/json',
-    },
-    {
-      'title': 'اصوات',
-      'type': 'section',
-      'items_count': 4057,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'اصوات',
+      type: 'section',
+      itemsCount: 4057,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/audios/ar/ar/1/25/json',
-    },
-    {
-      'title': 'فتاوي',
-      'type': 'section',
-      'items_count': 527,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'فتاوي',
+      type: 'section',
+      itemsCount: 527,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/fatwa/ar/ar/1/25/json',
-    },
-    {
-      'title': 'قرأن',
-      'type': 'section',
-      'items_count': 164,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'قرأن',
+      type: 'section',
+      itemsCount: 164,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/quran/ar/ar/1/25/json',
-    },
-    {
-      'title': 'عروض تقديميه',
-      'type': 'section',
-      'items_count': 5,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'عروض تقديميه',
+      type: 'section',
+      itemsCount: 5,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/cards/ar/ar/1/25/json',
-    },
-    {
-      'title': 'اخبار',
-      'type': 'section',
-      'items_count': 1,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'اخبار',
+      type: 'section',
+      itemsCount: 1,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/news/ar/ar/1/25/json',
-    },
-    {
-      'title': 'مقالات',
-      'type': 'section',
-      'items_count': 275,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'مقالات',
+      type: 'section',
+      itemsCount: 275,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/poster/ar/ar/1/25/json',
-    },
-    {
-      'title': 'تطبيقات',
-      'type': 'section',
-      'items_count': 55,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'تطبيقات',
+      type: 'section',
+      itemsCount: 55,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/apps/ar/ar/1/25/json',
-    },
-    {
-      'title': 'خطب',
-      'type': 'section',
-      'items_count': 288,
-      'api_url':
+    ),
+    CategorySectionModel(
+      title: 'خطب',
+      type: 'section',
+      itemsCount: 288,
+      apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/khotab/ar/ar/1/25/json',
-    },
+    ),
   ];
 }

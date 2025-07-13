@@ -5,22 +5,23 @@ abstract class CategoryEvent {}
 
 class SetStateEvent extends CategoryEvent {}
 
-class GetCategoryEvent extends CategoryEvent {
-    final int id;
-    final String url;
-  GetCategoryEvent(this.id,this.url);
-}
-
-
-
-
-
-
-class GetQuranBookEvent extends CategoryEvent {
+class GetCategoriesEvent extends CategoryEvent {
+  GetCategoriesEvent(this.id, this.url);
+  final int id;
   final String url;
-  GetQuranBookEvent(this.url);
 }
+
+class GetCategoryDetailEvent extends CategoryEvent {
+  GetCategoryDetailEvent(this.url);
+  final String url;
+}
+
 class SearchCategoryEvent extends CategoryEvent {
-  final String text;
   SearchCategoryEvent(this.text);
+  final String text;
+}
+
+class GetCategoryOptionEvent extends CategoryEvent {
+  GetCategoryOptionEvent(this.url);
+  final String url;
 }

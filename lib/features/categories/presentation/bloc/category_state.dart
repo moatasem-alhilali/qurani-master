@@ -2,47 +2,47 @@ part of 'category_bloc.dart';
 
 @immutable
 class CategoryState {
-  List<dynamic> category;
-  dynamic categoryDetail;
+  CategoryState({
+    this.categoryState = RequestState.initial,
+    this.categories = const <CategorySectionModel>[],
+    this.categoryDetail,
+    this.categoriesOptions = const [],
+    //
+    this.quranBooksState = RequestState.initial,
+    this.categoriesOptionsSearch = const [],
+  });
+  List<CategorySectionModel> categories;
+  CategoryDetailModel? categoryDetail;
   RequestState categoryState;
 
   //
-  Map<String, dynamic> quranBooksDetail;
-  List<dynamic> quranBooksDetailSearch;
+
+  List<CategoryDetailModel> categoriesOptions;
+  List<CategoryDetailModel> categoriesOptionsSearch;
   RequestState quranBooksState;
 
-  CategoryState({
-    this.categoryState = RequestState.initial,
-    this.category = const [],
-    this.categoryDetail = const [],
-    this.quranBooksDetailSearch = const [],
-    //
-    this.quranBooksState = RequestState.initial,
-    this.quranBooksDetail = const {},
-  });
-
   CategoryState copyWith({
-    RequestState? famousCategoryState,
-    List<dynamic>? famousCategory,
-    dynamic? categoryDetail,
+    RequestState? categoryState,
+    List<CategorySectionModel>? categories,
+    CategoryDetailModel? categoryDetail,
 
     //
     RequestState? quranBooksState,
-    Map<String, dynamic>? quranBooksDetail,
-    List<dynamic>? quranBooksDetailSearch,
+    List<CategoryDetailModel>? categoriesOptions,
+    List<CategoryDetailModel>? categoriesOptionsSearch,
   }) {
     return CategoryState(
       //famous Category
 
-      category: famousCategory ?? category,
+      categories: categories ?? this.categories,
       categoryDetail: categoryDetail ?? this.categoryDetail,
-      categoryState: famousCategoryState ?? categoryState,
+      categoryState: categoryState ?? this.categoryState,
 
       //
-      quranBooksDetail: quranBooksDetail ?? this.quranBooksDetail,
       quranBooksState: quranBooksState ?? this.quranBooksState,
-      quranBooksDetailSearch:
-          quranBooksDetailSearch ?? this.quranBooksDetailSearch,
+      categoriesOptions: categoriesOptions ?? this.categoriesOptions,
+      categoriesOptionsSearch:
+          categoriesOptionsSearch ?? this.categoriesOptionsSearch,
     );
   }
 }

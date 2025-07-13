@@ -1,50 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/features/categories/data/model/category_video_model.dart';
+import 'package:quran_app/features/categories/data/model/section_type_model.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_data_screen.dart';
-import 'package:quran_app/features/categories/presentation/view/widgets/item.dart';
-import 'package:quran_app/features/categories/presentation/view/widgets/quran_sheet.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
 
-class CategoryViewAll extends StatelessWidget {
-  const CategoryViewAll({super.key, this.data, this.title});
-  final dynamic data;
-  final dynamic title;
+class CategoryViewAllScreen extends StatelessWidget {
+  const CategoryViewAllScreen({
+    required this.data,
+    required this.title,
+    super.key,
+  });
+  final List<SectionTypeModel> data;
+  final String title;
+
   @override
   Widget build(BuildContext context) {
     return BaseHomeWidget(
-      title: title as String,
+      title: title,
+      showBackground: false,
       body: Column(
         children: [
           GridView.builder(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
-            itemCount: data.length as int,
+            itemCount: data.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 5,
               mainAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
-              return ItemCategory(
+              return FeatureCardTextWidget(
                 onTap: () {
-                  final url = data[index]['apiurl'].toString();
+                  final url = data[index].apiUrl;
                   if (url.contains('get-item')) {
                     context.showBottomSheet(
-                      child: QuranBooksDetail(data: data[index]),
+                      child: CategoryDetailScreen(
+                        category: CategoryDetailModel(
+                          apiUrl: data[index].apiUrl,
+                          title: data[index].title,
+                        ),
+                      ),
                     );
                     return;
                   } else {
                     context.push(
                       CategoryDataScreen(
-                        id: data[index]['id'] as int,
-                        title: data[index]['title'] as String,
-                        url: data[index]['apiurl'] as String,
+                        id: data[index].id!,
+                        title: data[index].title!,
+                        url: data[index].apiUrl,
                       ),
                     );
                   }
                 },
-                title: data[index]['title'] as String,
+                title: data[index].title ?? '',
               ).animate().fade();
             },
           ),

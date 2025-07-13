@@ -5,17 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 
 part 'read_quran_event.dart';
 part 'read_quran_state.dart';
 
 class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
-  ReadQuranBloc() : super(ReadQuranState()) {
+  ReadQuranBloc() : super(const ReadQuranState()) {
     on<LoadQuranEvent>(_loadQuran);
     on<ToggleEvent>(_toggle);
     on<SetStateRBlocEvent>(_emitState);
     on<SetLastPageReadEvent>(_setLastPageRead);
+    on<JumpToPageEvent>(_jumpToPage);
   }
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final PageController pageController = PageController();
@@ -32,7 +34,15 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     emit(state.copyWith(loadQuranState: RequestState.loading));
     try {
       await quranRH.loadQuran();
-      emit(state.copyWith(loadQuranState: RequestState.success));
+     
+      emit(
+        state.copyWith(
+          loadQuranState: RequestState.success,
+          surahs: quranRH.surahs,
+          pages: quranRH.pages,
+          allAyahs: quranRH.allAyahs,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(loadQuranState: RequestState.error));
     }
@@ -56,5 +66,11 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     lastPageRead = event.page;
     CacheConfig.saveLastPageRead();
     emit(state.copyWith(loadQuranState: RequestState.success));
+  }
+
+  void _jumpToPage(JumpToPageEvent event, Emitter<ReadQuranState> emit) {
+    if (lastPageRead != 0) {
+      pageController.jumpToPage(lastPageRead);
+    }
   }
 }

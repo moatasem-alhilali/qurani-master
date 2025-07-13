@@ -74,6 +74,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ),
         ),
+        SizedBox(height: 12.h),
         StyleButtonWrap(
           onTap: () {
             context.push(const DownloadScreen());

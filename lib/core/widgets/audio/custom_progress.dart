@@ -30,16 +30,13 @@ class ProgressAudio extends StatelessWidget {
             builder: (context, snapshot) {
               final positionData = snapshot.data;
               return ProgressBar(
-                progressBarColor: Colors.red,
-                baseBarColor: Colors.white.withOpacity(0.24),
-                bufferedBarColor: Colors.white.withOpacity(0.24),
+                progressBarColor: context.primaryScheme,
+                baseBarColor: context.primaryScheme,
+                bufferedBarColor: context.primaryScheme,
                 thumbColor: Colors.white,
                 barHeight: 8,
                 thumbRadius: 5,
-                timeLabelTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+                timeLabelTextStyle: context.titleMedium,
                 timeLabelLocation: TimeLabelLocation.sides,
                 progress: positionData?.position ?? Duration.zero,
                 buffered: positionData?.bufferedPosition ?? Duration.zero,
@@ -63,7 +60,7 @@ class ProgressAudio extends StatelessWidget {
                 children: [
                   //next
                   CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.primaryScheme,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () async {
@@ -115,7 +112,7 @@ class ProgressAudio extends StatelessWidget {
 
                   //back
                   CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.primaryScheme,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () async {

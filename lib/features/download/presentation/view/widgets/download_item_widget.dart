@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/download/data/models/download_task_model.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 
@@ -14,9 +16,8 @@ class DownloadItemWidget extends StatelessWidget {
       builder: (context, state) {
         final progress = state.getProgressForTask(task.taskId);
 
-        return Card(
+        return CardWidget(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          elevation: 2,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -30,9 +31,8 @@ class DownloadItemWidget extends StatelessWidget {
                         children: [
                           Text(
                             task.fileName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                            style: context.titleMedium.copyWith(
+                              color: context.primaryScheme,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
