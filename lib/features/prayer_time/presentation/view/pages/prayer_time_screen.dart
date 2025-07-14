@@ -1,8 +1,6 @@
 import 'package:adhan/src/prayer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/timeline_list_item.dart';
@@ -14,6 +12,7 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 // import 'package:timelines/timelines.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
@@ -80,10 +79,10 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         title: data.name,
         subtitle: data.description,
         time: data.time12,
-        iconWidget: Image.asset(
-          data.type.imageAsset,
-          width: 20.w,
-          height: 20.h,
+        iconWidget: PrayerTimeAnimationWidget(
+          prayerType: data.type,
+          size: 30,
+          isActive: isCurrent || isNext,
         ),
         status: status,
         isFirst: index == 0,

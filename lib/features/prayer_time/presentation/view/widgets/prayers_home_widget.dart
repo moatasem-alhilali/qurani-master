@@ -16,6 +16,7 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 
 class PrayersHomeWidget extends StatelessWidget {
   const PrayersHomeWidget({super.key});
@@ -119,9 +120,10 @@ class _ItemPrayerState extends State<_ItemPrayer> {
         child: Column(
           children: [
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(widget.data.image),
+              child: PrayerTimeAnimationWidget(
+                prayerType: widget.data.type,
+                size: 60,
+                isActive: widget.data.color == Colors.white,
               ),
             ),
             const SizedBox(height: 10),

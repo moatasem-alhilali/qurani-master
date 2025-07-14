@@ -5,6 +5,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 
 class ItemPrayerWidget extends StatefulWidget {
   const ItemPrayerWidget({
@@ -53,12 +54,10 @@ class _ItemPrayerWidgetState extends State<ItemPrayerWidget> {
               children: [
                 Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        widget.currentPrayer.image,
-                        height: context.getHight(4),
-                      ),
+                    PrayerTimeAnimationWidget(
+                      prayerType: widget.currentPrayer.type,
+                      size: context.getHight(4),
+                      isActive: isNext,
                     ),
                     const SizedBox(width: 5),
                     Text(
