@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
-import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
@@ -267,6 +267,7 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
   List<TextSpan>? _cachedTextSpans;
   int? _cachedSelectedAyah;
   double? _cachedFontSize;
+  int? _cachedBookmarkStateHash;
 
   @override
   Widget build(BuildContext context) {
@@ -290,12 +291,17 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
   }
 
   List<TextSpan> _getCachedTextSpans(BuildContext context) {
-    // Cache text spans only if selection or font size changes
+    // Generate hash of current bookmark state for this ayah group
+    final currentBookmarkStateHash = _generateBookmarkStateHash(context);
+
+    // Cache text spans only if selection, font size, or bookmark state changes
     if (_cachedTextSpans == null ||
         _cachedSelectedAyah != widget.selectedAyahUQNumber ||
-        _cachedFontSize != widget.fontSize) {
+        _cachedFontSize != widget.fontSize ||
+        _cachedBookmarkStateHash != currentBookmarkStateHash) {
       _cachedSelectedAyah = widget.selectedAyahUQNumber;
       _cachedFontSize = widget.fontSize;
+      _cachedBookmarkStateHash = currentBookmarkStateHash;
       _cachedTextSpans = _buildAyahSpans(
         context,
         widget.quranCtrl,
@@ -307,6 +313,20 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
       );
     }
     return _cachedTextSpans!;
+  }
+
+  int _generateBookmarkStateHash(BuildContext context) {
+    // Generate a hash based on bookmark state of all ayahs in this group
+    final bookmarkBloc = context.read<BookmarkBloc>();
+    var hash = 0;
+    for (final ayah in widget.ayahs) {
+      final surahNum = widget.quranCtrl.getSurahNumberByAyah(ayah);
+      final isBookmarked =
+          bookmarkBloc.hasBookmarkAyah(surahNum, ayah.ayahNumber);
+      // Simple hash combining ayah unique number and bookmark state
+      hash = hash ^ (ayah.ayahUQNumber * 31 + (isBookmarked ? 1 : 0));
+    }
+    return hash;
   }
 
   List<TextSpan> _buildAyahSpans(
@@ -323,7 +343,8 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
       (ayahIndex) {
         final ayah = ayahs[ayahIndex];
         final isFirstAyah = ayahIndex == 0;
-        final surahNum = quranCtrl.getSurahNumberFromPage(widget.pageIndex);
+        // Fix: Get surah number for the specific ayah, not the page
+        final surahNum = quranCtrl.getSurahNumberByAyah(ayah);
 
         return ayahTextSpan(
           context: context,
@@ -384,7 +405,7 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
         cancel: onClose,
         ayahUQNum: ayah.ayahUQNumber,
         pageIndex: widget.pageIndex,
-        surahNum: quranCtrl.getSurahNumberFromPage(widget.pageIndex),
+        surahNum: quranCtrl.getSurahNumberByAyah(ayah),
         ayahUrl: ayah.audio,
         myContext: context,
       ),

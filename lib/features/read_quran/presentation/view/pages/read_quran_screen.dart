@@ -172,9 +172,9 @@ class _BodyQuran extends StatelessWidget {
                                   }
 
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        // horizontal: horizontal,
-                                        ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: horizontal,
+                                    ),
                                     child: ReadQuranPageWidget(
                                       pageIndex: index,
                                     ),
