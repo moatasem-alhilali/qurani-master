@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -39,6 +41,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Widget build(BuildContext context) {
     return BaseHomeWidget(
       isScroll: false,
+      showBackground: false,
       title: 'الإحصائيات',
       body: BlocBuilder<SabihBloc, SabihState>(
         buildWhen: (previous, current) =>
@@ -100,11 +103,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'الأذكار الأكثر استخداماً',
-          style: TextStyle(
-            fontSize: 20,
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
           ),
         ),
         const SizedBox(height: 16),
@@ -153,7 +156,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     required SubihModel? subih,
     required int count,
   }) {
-    return Card(
+    return CardWidget(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -162,9 +165,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+              style: context.bodyMedium.copyWith(
+                fontWeight: FontWeight.w500,
+                color: context.primaryScheme,
+                fontSize: 16.sp,
               ),
             ),
             const SizedBox(height: 8),
@@ -177,9 +181,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       children: [
                         Text(
                           subih.title,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                          style: context.bodyMedium.copyWith(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                            color: context.primaryScheme,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -187,8 +192,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                           subih.content,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.grey[600],
+                          style: context.bodyMedium.copyWith(
+                            color: context.gray1,
                           ),
                         ),
                       ],
@@ -203,10 +208,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     ),
                     child: Text(
                       count.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                      style: context.bodyMedium.copyWith(
+                        color: context.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.sp,
                       ),
                     ),
                   ),
@@ -230,11 +235,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'إجمالي عدد الأذكار',
-          style: TextStyle(
-            fontSize: 20,
+          style: context.bodyMedium.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: 16.sp,
           ),
         ),
         const SizedBox(height: 16),
@@ -256,25 +261,26 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   Widget _buildTotalCountCard(String title, int count) {
     return Expanded(
-      child: Card(
-        margin: const EdgeInsets.all(8),
+      child: CardWidget(
+        margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                style: context.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: context.primaryScheme,
+                  fontSize: 16.sp,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 count.toString(),
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: context.primaryScheme,
+                style: context.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: context.gray1,
                 ),
               ),
             ],

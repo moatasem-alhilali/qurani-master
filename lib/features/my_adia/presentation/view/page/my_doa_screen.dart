@@ -194,10 +194,14 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddDhikrDialog,
-        tooltip: 'إضافة أدعية مخصصة',
-        child: const Icon(Icons.add),
+      floatingActionButton: BlocBuilder<SabihBloc, SabihState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            onPressed: _showAddDhikrDialog,
+            tooltip: 'إضافة أدعية مخصصة',
+            child: const Icon(Icons.add),
+          );
+        },
       ),
     );
   }

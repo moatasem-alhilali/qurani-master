@@ -6,7 +6,6 @@ import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/models/app_version_model.dart';
-import 'package:quran_app/features/manage_version/data/models/download_link_model.dart';
 import 'package:quran_app/main.dart';
 
 /// Abstract repository for version management
@@ -17,7 +16,6 @@ abstract class VersionRepository {
   });
   Future<Either<Failure, AppVersionModel?>> getCachedVersionInfo();
   Future<Either<Failure, String>> getCurrentAppVersion();
-  Future<Either<Failure, DownloadLinkModel>> getDownloadLink(String url);
   Future<Either<Failure, void>> markVersionAsSkipped(String version);
   Future<Either<Failure, bool>> hasUserSkippedVersion(String version);
   Future<Either<Failure, void>> clearSkippedVersion();
@@ -143,16 +141,6 @@ class VersionRepositoryImpl implements VersionRepository {
       return right(version);
     } catch (e) {
       return left(ServerFailure('فشل في الحصول على نسخة التطبيق: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, DownloadLinkModel>> getDownloadLink(String url) async {
-    try {
-      if (url.isEmpty) return left(ServerFailure('رابط التحميل فارغ'));
-      return right(DownloadLinkModel.fromUrl(url));
-    } catch (e) {
-      return left(ServerFailure('فشل في معالجة رابط التحميل: $e'));
     }
   }
 

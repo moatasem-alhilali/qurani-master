@@ -96,7 +96,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
               hintText: 'مثال: الفرصة الطيبة أو الشرح',
             ),
             const SizedBox(height: 16),
-            const Spacer(),
+            // const Spacer(),
             Row(
               children: [
                 Expanded(

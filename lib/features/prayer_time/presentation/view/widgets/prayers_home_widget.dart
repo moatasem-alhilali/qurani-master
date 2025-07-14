@@ -34,7 +34,7 @@ class PrayersHomeWidget extends StatelessWidget {
             const BaseHederWidget(text: 'اوقات الصلاة'),
             SizedBox(
               width: double.infinity,
-              height: context.getHight(15),
+              height: context.getHight(18),
               child: Builder(
                 builder: (context) {
                   switch (state.prayerState) {

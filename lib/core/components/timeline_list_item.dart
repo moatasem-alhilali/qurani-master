@@ -255,11 +255,11 @@ class TimelineListItem extends StatelessWidget {
   Color _getTitleColor(BuildContext context) {
     switch (status) {
       case TimelineItemStatus.active:
-        return context.onBackground;
+        return context.primaryScheme;
       case TimelineItemStatus.completed:
         return context.gray1;
       case TimelineItemStatus.upcoming:
-        return context.onBackground;
+        return context.primaryScheme;
       case TimelineItemStatus.inactive:
         return context.gray2;
     }

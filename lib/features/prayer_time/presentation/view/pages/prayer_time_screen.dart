@@ -11,7 +11,6 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 // import 'package:timelines/timelines.dart';
 
@@ -32,35 +31,35 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
-            builder: (context, state) {
-              if (state.prayerState == RequestState.success &&
-                  state.nextPrayer != null) {
-                // Calculate remaining time
-                final remainingTime =
-                    state.nextPrayer!.time.difference(DateTime.now());
-                final safeRemainingTime =
-                    remainingTime.isNegative ? Duration.zero : remainingTime;
+          // BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+          //   builder: (context, state) {
+          //     if (state.prayerState == RequestState.success &&
+          //         state.nextPrayer != null) {
+          //       // Calculate remaining time
+          //       final remainingTime =
+          //           state.nextPrayer!.time.difference(DateTime.now());
+          //       final safeRemainingTime =
+          //           remainingTime.isNegative ? Duration.zero : remainingTime;
 
-                // Create TimePrayerModel from the next prayer
-                final nextPrayerModel = TimePrayerModel(
-                  id: 999,
-                  title: state.nextPrayer!.name,
-                  time: state.nextPrayer!.time12,
-                  type: state.nextPrayer!.type,
-                  image: state.nextPrayer!.type.imageAsset,
-                  content: state.nextPrayer!.description,
-                  color: Colors.blue,
-                );
+          //       // Create TimePrayerModel from the next prayer
+          //       final nextPrayerModel = TimePrayerModel(
+          //         id: 999,
+          //         title: state.nextPrayer!.name,
+          //         time: state.nextPrayer!.time12,
+          //         type: state.nextPrayer!.type,
+          //         image: state.nextPrayer!.type.imageAsset,
+          //         content: state.nextPrayer!.description,
+          //         color: Colors.blue,
+          //       );
 
-                return NextPrayerCountdownWidget(
-                  nextPrayer: nextPrayerModel,
-                  remainingTime: safeRemainingTime,
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+          //       return NextPrayerCountdownWidget(
+          //         nextPrayer: nextPrayerModel,
+          //         remainingTime: safeRemainingTime,
+          //       );
+          //     }
+          //     return const SizedBox();
+          //   },
+          // ),
           BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
             builder: (context, state) {
               if (state.prayerState != RequestState.success) {
