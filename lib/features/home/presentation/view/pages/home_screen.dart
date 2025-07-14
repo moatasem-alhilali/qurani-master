@@ -6,7 +6,6 @@ import 'package:quran_app/features/another_screen/presentation/view/widgets/anot
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/widgets/current_prayer_home_widget.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/surah_audio_only.dart';
 
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
           },
         ),
 
-        const CurrentPrayerHomeWidget(),
+        // const CurrentPrayerHomeWidget(),
         // PrayersHomeWidget(),
 
         const SurahAudioOnly(),

@@ -163,9 +163,10 @@ class _AppState extends State<_App> {
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
           return BaseHomeWidget(
-            titleWidget: const SizedBox(),
+            // titleWidget: const SizedBox(),
             back: false,
             title: 'طمأنينة',
+            showBackground: currentPage == 0 ? false : true,
             isScroll: currentPage == 2 ? false : true,
             bottomNavigationBar: const CustomBottomNavigationBarWidget(),
             body: screens[currentPage],

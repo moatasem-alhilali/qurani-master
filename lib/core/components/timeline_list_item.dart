@@ -59,7 +59,10 @@ class TimelineListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? EdgeInsets.symmetric(horizontal: 16.w),
+      margin: margin ??
+          EdgeInsets.symmetric(
+            horizontal: 8.w,
+          ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -391,7 +394,7 @@ class TimelineItemVariants {
       iconColor: iconColor,
       iconWidget: iconWidget,
       iconBackgroundColor: iconBackgroundColor,
-        );
+    );
   }
 
   static TimelineListItem event({
