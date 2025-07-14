@@ -15,10 +15,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+<uses-permission android:name="android.permission.CAMERA"/>
+<uses-feature android:name="android.hardware.sensor.compass"/>
+<uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+
+
     <application
                android:label="طمأنينة"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"

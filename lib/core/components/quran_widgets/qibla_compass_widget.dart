@@ -389,7 +389,7 @@ class CompassRingPainter extends CustomPainter {
 
       // Direction labels
       if (isMainDirection) {
-        final labels = ['N', 'E', 'S', 'W'];
+        final labels = ['شرق', 'جنوب', 'غرب', 'شمال'];
         final labelIndex = (i / 90).round() % 4;
         final label = labels[labelIndex];
 

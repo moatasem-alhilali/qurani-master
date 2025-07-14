@@ -9,7 +9,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/main.dart';
 
 class QiblahMainScreen extends StatefulWidget {
   const QiblahMainScreen({super.key});
@@ -42,11 +41,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
 
   // Performance optimization - cache alignment calculation
   bool _cachedIsAligned = false;
-  double _lastCurrentDirection = -1;
   double _lastQiblaDirection = -1;
-
-  // Debug flag - set to true to see direction values
-  static const bool _debugMode = false;
 
   // Animation controllers
   late AnimationController _fadeController;
@@ -267,22 +262,27 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   // Performance-optimized alignment calculation with caching
   bool _calculateAlignment() {
     // Only recalculate if values have changed
-    if (_currentDirection == _lastCurrentDirection &&
-        _qiblaDirection == _lastQiblaDirection) {
+    if (_qiblaDirection2 == _lastQiblaDirection) {
       return _cachedIsAligned;
     }
 
     // Update cache
-    _lastCurrentDirection = _currentDirection;
-    _lastQiblaDirection = _qiblaDirection;
+    _lastQiblaDirection = _qiblaDirection2;
 
-    // Calculate the angular difference correctly
-    var difference = (_currentDirection - _qiblaDirection).abs();
+    // Calculate alignment based on _qiblaDirection2 being close to 0
+    // When facing Qibla correctly, _qiblaDirection2 becomes 0
+    var difference = _qiblaDirection2;
     if (difference > 180) {
       difference = 360 - difference;
     }
 
-    _cachedIsAligned = difference <= 10.0; // Within 10 degrees
+    _cachedIsAligned =
+        difference <= _alignmentThreshold; // Use the same threshold
+
+    // Debug logging
+    print(
+      'QiblaDirection2: $_qiblaDirection2°, Difference from 0: ${difference.toInt()}°, Aligned: $_cachedIsAligned',
+    );
 
     // Update alignment notifier for performance
     if (_alignmentNotifier.value != _cachedIsAligned) {
@@ -304,6 +304,9 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       // User moved away from alignment
       _wasAligned = false;
     }
+
+    // Force UI update to reflect alignment changes
+    setState(() {});
 
     // You can add additional logic here for when direction changes
     // For example, logging or other UI updates
@@ -385,26 +388,25 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
 
   bool get isAligned {
     if (_currentPosition == null) return false;
-    var diff = (_qiblaDirection2 - _currentDirection + 360) % 360;
-    if (diff > 180) diff = 360 - diff;
-    print('Qibla: $_qiblaDirection2, Current: $_currentDirection, Diff: $diff');
-    return diff <= _alignmentThreshold;
+    return _calculateAlignment();
   }
 
   String get directionInstruction {
+    if (_currentPosition == null) return 'جاري تحديد الموقع...';
+
     if (isAligned) return 'متوجه للقبلة ✓';
 
-    // احسب الفرق الدائري بين اتجاه الجهاز والقبلة
-    final angleDiff = (_qiblaDirection2 - _currentDirection + 360) % 360;
-    logger.d(
-      '_qiblaDirection: $_qiblaDirection2 , _currentDirection: $_currentDirection',
-    );
-    if (angleDiff < 180) {
-      // القبلة تقع في الجهة اليمنى
-      return 'استدر يميناً ${angleDiff.toInt()}°';
+    // Base instruction on _qiblaDirection2 value
+    // When _qiblaDirection2 is 0, you're facing Qibla
+    // When _qiblaDirection2 is > 0 and < 180, turn left
+    // When _qiblaDirection2 is > 180, turn right
+
+    if (_qiblaDirection2 <= 180) {
+      // Turn left to reach 0
+      return 'استدر يساراً ${_qiblaDirection2.toInt()}°';
     } else {
-      // القبلة تقع في الجهة اليسرى
-      return 'استدر يساراً ${(360 - angleDiff).toInt()}°';
+      // Turn right to reach 0
+      return 'استدر يميناً ${(360 - _qiblaDirection2).toInt()}°';
     }
   }
 
@@ -426,20 +428,6 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   }
 
   Widget _buildDirectionIndicator() {
-    // final isAligned = _calculateAlignment();
-    // Calculate the direction to turn
-    // String directionText;
-    // if (isAligned) {
-    //   directionText = 'متوجه للقبلة ✓';
-    // } else {
-    //   final normalizedDiff = (_qiblaDirection - _currentDirection + 360) % 360;
-    //   if (normalizedDiff <= 180) {
-    //     directionText = 'استدر يميناً ${normalizedDiff.toInt()}°';
-    //   } else {
-    //     directionText = 'استدر يساراً ${(360 - normalizedDiff).toInt()}°';
-    //   }
-    // }
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -509,7 +497,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 style: context.titleSmall,
               ),
               Text(
-                '${_qiblaDirection.toInt()}°',
+                '${_qiblaDirection2.toInt()}°',
                 style: context.titleMedium.copyWith(
                   color: isAligned ? Colors.green : Colors.orange,
                   fontWeight: FontWeight.bold,
@@ -601,40 +589,6 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             // Direction indicator
             _buildDirectionIndicator(),
 
-            // Debug information (only shown when _debugMode is true)
-            if (_debugMode)
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                padding: EdgeInsets.all(15.w),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(15.r),
-                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'معلومات التصحيح:',
-                      style: context.titleMedium,
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      'الاتجاه الحالي: ${_currentDirection.toStringAsFixed(2)}°',
-                      style: context.titleSmall,
-                    ),
-                    Text(
-                      'اتجاه القبلة: ${_qiblaDirection.toStringAsFixed(2)}°',
-                      style: context.titleSmall,
-                    ),
-                    Text(
-                      'الفرق: ${(_qiblaDirection - _currentDirection).abs().toStringAsFixed(2)}°',
-                      style: context.titleSmall,
-                    ),
-                  ],
-                ),
-              ),
-
             SizedBox(height: 10.h),
 
             // Refresh button
@@ -715,14 +669,6 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       textDirection: TextDirection.rtl,
       child: BaseHomeWidget(
         title: 'القبلة',
-        // isScroll: false,
-        //  actions: [
-        //   IconButton(
-        //     onPressed: _refreshQiblah,
-        //     icon: const Icon(Icons.refresh),
-        //     tooltip: 'تحديث',
-        //   ),
-        // ],
         body: _errorMessage != null
             ? _buildErrorWidget()
             : _isLoading
