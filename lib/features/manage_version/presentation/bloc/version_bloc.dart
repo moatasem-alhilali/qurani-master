@@ -366,13 +366,14 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
         ),
       );
 
-      switch (event.downloadLink.downloadApproach) {
-        case DownloadApproach.direct:
-        case DownloadApproach.processedDirect:
-          await _startDirectDownload(event.downloadLink, event.fileName, emit);
-        case DownloadApproach.webView:
-          await _startWebViewDownload(event.downloadLink, emit);
-      }
+      // switch (event.downloadLink.downloadApproach) {
+      //   case DownloadApproach.direct:
+      //   case DownloadApproach.processedDirect:
+      //     await _startDirectDownload(event.downloadLink, event.fileName, emit);
+      //   case DownloadApproach.webView:
+      //     await _startWebViewDownload(event.downloadLink, emit);
+      // }
+      await _startWebViewDownload(event.downloadLink, emit);
     } catch (e) {
       emit(
         state.copyWith(
