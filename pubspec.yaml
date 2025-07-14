@@ -66,6 +66,9 @@ dependencies:
   fluttertoast: ^8.2.12
   skeletonizer: ^2.0.1
   geocoding: ^4.0.0
+  firebase_core: ^3.15.1
+  firebase_remote_config: ^5.4.7
+  package_info_plus: ^8.3.0
   # ---------------------------------------
 
 dev_dependencies:

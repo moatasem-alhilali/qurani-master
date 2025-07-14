@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_timezone/flutter_timezone.dart';
@@ -11,6 +12,7 @@ import 'package:quran_app/core/services/permission/location_permission_service.d
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
+import 'package:quran_app/firebase_options.dart';
 import 'package:quran_app/main_view.dart';
 
 // ✅ Logger instance used globally for debugging and logging
@@ -42,6 +44,14 @@ void main() async {
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await LocationPermissionService.init();
 
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    logger.e('Firebase initialization failed: $e');
+  }
+
   //
   await NotificationPermissionService.handelNotification();
 
@@ -62,5 +72,9 @@ void main() async {
 
 
 // flutter build apk --release --split-per-abi
+// flutter build apk --release --target-platform android-arm,android-arm64 --split-per-abi
+// flutter build apk --release --target-platform android-arm
+// flutter build apk --release --target-platform android-arm64
+
 // flutter build apk --release --analyze-size --target-platform=android-arm64
 

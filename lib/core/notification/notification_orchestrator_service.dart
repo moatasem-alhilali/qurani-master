@@ -91,15 +91,15 @@ class NotificationOrchestratorService {
           );
 
           if (success) {
-            logger.w(
-              'Scheduled Athan notification: ${info.name} at ${info.time}',
-            );
+            // logger.w(
+            //   'Scheduled Athan notification: ${info.name} at ${info.time}',
+            // );
           } else {
-            logger.w('Failed to schedule Athan notification: ${info.name}');
+            // logger.w('Failed to schedule Athan notification: ${info.name}');
           }
         } else {
           await notificationService.cancelNotificationById(id: id);
-          logger.d('Cancelled Athan notification: ${info.name} (disabled)');
+          // logger.d('Cancelled Athan notification: ${info.name} (disabled)');
         }
       }
 
@@ -151,9 +151,9 @@ class NotificationOrchestratorService {
         if (!setting.enabled || setting.onlySetting) {
           await notificationService.cancelNotificationById(id: id);
 
-          logger.d(
-            'Cancelled notification: ${setting.key} setting.onlySetting ${setting.onlySetting} (disabled or settings-only)',
-          );
+          // logger.d(
+          //   'Cancelled notification: ${setting.key} setting.onlySetting ${setting.onlySetting} (disabled or settings-only)',
+          // );
           continue;
         }
 
@@ -167,17 +167,17 @@ class NotificationOrchestratorService {
         );
 
         if (success) {
-          logger.w(
-            'Scheduled static notification: ${setting.key} date: ${setting.schedule}',
-          );
+          // logger.w(
+          //   'Scheduled static notification: ${setting.key} date: ${setting.schedule}',
+          // );
         } else {
-          logger.i(
-            'Failed to schedule static notification: ${setting.key} date: ${setting.schedule}',
-          );
+          // logger.i(
+          //   'Failed to schedule static notification: ${setting.key} date: ${setting.schedule}',
+          // );
         }
       }
 
-      logger.d('Completed static notification rescheduling');
+      // logger.d('Completed static notification rescheduling');
     } catch (e, track) {
       logger.e('Error in _rescheduleStaticNotifications: $e');
       logger.e('Error in _rescheduleStaticNotifications: $track');
@@ -202,9 +202,9 @@ class NotificationOrchestratorService {
       for (final key in multiScheduleKeys) {
         try {
           final schedules = await notificationSchedulesRepo.getSchedules(key);
-          logger.d(
-            'Processing ${schedules.length} custom schedules for key: $key',
-          );
+          // logger.d(
+          //   'Processing ${schedules.length} custom schedules for key: $key',
+          // );
 
           for (final schedule in schedules) {
             // Use new NotificationIdManager for consistent ID generation
@@ -223,15 +223,15 @@ class NotificationOrchestratorService {
               );
 
               if (success) {
-                logger.d('Scheduled custom notification for key: $key');
+                // logger.d('Scheduled custom notification for key: $key');
               } else {
-                logger
-                    .w('Failed to schedule custom notification for key: $key');
+                // logger
+                //     .w('Failed to schedule custom notification for key: $key');
               }
             } else {
               await notificationService.cancelNotificationById(id: id);
-              logger
-                  .d('Cancelled custom notification for key: $key (disabled)');
+              // logger
+              //     .d('Cancelled custom notification for key: $key (disabled)');
             }
           }
         } catch (e) {

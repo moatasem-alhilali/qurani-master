@@ -14,6 +14,10 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
+import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
+import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
+import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
+import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
@@ -29,6 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+
         ///prayer time
         BlocProvider(
           create: (context) => PrayerTimeCubit(
@@ -41,8 +46,20 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               sl<ConnectivityBloc>()..add(const ConnectivityStarted()),
+          lazy: false,
         ),
 
+        ///version management
+        BlocProvider(
+          create: (context) => VersionBloc(
+            versionRepository: VersionRepositoryImpl(
+              remoteDataSource: VersionRemoteDataSourceImpl(),
+              cacheDataSource: VersionCacheDataSourceImpl(),
+            ),
+            connectivityBloc: context.read<ConnectivityBloc>(),
+          )..add(InitializeVersionManagementEvent()),
+          lazy: false,
+        ),
         ///theme
         BlocProvider(
           create: (context) => ThemeBloc()..add(InitThemeEvent()),
