@@ -176,52 +176,65 @@ String removeDiacritics(String input) {
   return buffer.toString();
 }
 
-List<TextSpan> highlightLine(String line, String searchTextEditing) {
+List<TextSpan> highlightLine(String line, String searchTextEditing,
+    {TextStyle? defaultStyle, TextStyle? highlightStyle}) {
+  if (searchTextEditing.isEmpty) {
+    return [TextSpan(text: line, style: defaultStyle)];
+  }
+
   final spans = <TextSpan>[];
   var start = 0;
 
   final lineWithoutDiacritics = removeDiacritics(line);
   final searchTermWithoutDiacritics = removeDiacritics(searchTextEditing);
-  spans.add(TextSpan(text: line));
-  while (start < lineWithoutDiacritics.length) {
+
+  while (start < line.length) {
     final startIndex =
         lineWithoutDiacritics.indexOf(searchTermWithoutDiacritics, start);
+
     if (startIndex == -1) {
-      spans.add(
-        TextSpan(
-          text: line.substring(start),
-        ),
-      ); // Modified to use start directly.
+      // No more matches, add the rest of the text
+      if (start < line.length) {
+        spans.add(
+          TextSpan(
+            text: line.substring(start),
+            style: defaultStyle,
+          ),
+        );
+      }
       break;
     }
 
+    // Add text before the match
     if (startIndex > start) {
       spans.add(
         TextSpan(
-          text: line.substring(
-            start,
-            startIndex,
-          ),
+          text: line.substring(start, startIndex),
+          style: defaultStyle,
         ),
-      ); // Simplified by removing indexMapping.
+      );
     }
 
+    // Add the highlighted match
     var endIndex = startIndex + searchTermWithoutDiacritics.length;
     endIndex = endIndex <= line.length ? endIndex : line.length;
 
     spans.add(
       TextSpan(
         text: line.substring(startIndex, endIndex),
-        style: const TextStyle(
-          color: Color(0xffa24308),
-          fontWeight: FontWeight.bold,
-        ),
+        style: highlightStyle ??
+            const TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.bold,
+              backgroundColor: Colors.yellow,
+            ),
       ),
     );
 
-    start = endIndex; // Move past the end of the current match.
+    start = endIndex;
   }
-  return spans;
+
+  return spans.isNotEmpty ? spans : [TextSpan(text: line, style: defaultStyle)];
 }
 
 String convertArabicToEnglishNumbers(String input) {

@@ -5,10 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
+import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/widgets/drawer_slide/juz_page.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
-import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_aya_tab.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
@@ -118,7 +118,9 @@ class BackdropOptionQuranWidget extends StatelessWidget {
                 title: 'المحفوظات من السور',
                 onTap: () {
                   context.showAnimatedBottomSheet(
+                    // isExpanded: false,
                     child: const BookmarkPageTab(),
+                    // isScrollable: false,
                   );
                 },
                 height: 80.h,
@@ -131,7 +133,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
                 height: 80.h,
                 onTap: () {
                   context.showAnimatedBottomSheet(
-                    child: BookmarkAyahTab(),
+                    child: const BookmarkAyahTab(),
                   );
                 },
               ),

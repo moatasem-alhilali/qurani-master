@@ -2,18 +2,6 @@ part of 'search_bloc.dart';
 
 @immutable
 class SearchState {
-  //
-  Map<String, dynamic> result;
-  RequestState searchMossoState;
-  //
-  List<dynamic> historySearchMosoaa;
-  RequestState historyState;
-
-  //
-  List<Aya> ayaData;
-  RequestState ayahState;
-  RequestState loadAyahState;
-
   SearchState({
     //
     this.searchMossoState = RequestState.initial,
@@ -26,7 +14,20 @@ class SearchState {
     this.ayahState = RequestState.initial,
     this.loadAyahState = RequestState.initial,
     this.ayaData = const [],
+    this.currentSearchTerm = '',
   });
+  //
+  Map<String, dynamic> result;
+  RequestState searchMossoState;
+  //
+  List<dynamic> historySearchMosoaa;
+  RequestState historyState;
+
+  //
+  List<Aya> ayaData;
+  RequestState ayahState;
+  RequestState loadAyahState;
+  String currentSearchTerm;
 
   SearchState copyWith({
     RequestState? searchMossoState,
@@ -39,6 +40,7 @@ class SearchState {
     List<Aya>? ayaData,
     RequestState? ayahState,
     RequestState? loadAyahState,
+    String? currentSearchTerm,
   }) {
     return SearchState(
       result: result ?? this.result,
@@ -51,6 +53,7 @@ class SearchState {
       ayaData: ayaData ?? this.ayaData,
       ayahState: ayahState ?? this.ayahState,
       loadAyahState: loadAyahState ?? this.loadAyahState,
+      currentSearchTerm: currentSearchTerm ?? this.currentSearchTerm,
     );
   }
 }

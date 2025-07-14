@@ -40,9 +40,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   int pageSize = 10;
   TextEditingController textEditingController = TextEditingController();
 
-  FutureOr<void> searchMossos(event, emit) async {
+  FutureOr<void> searchMossos(
+      SearchMosoaaEvent event, Emitter<SearchState> emit) async {
     emit(state.copyWith(searchMossoState: RequestState.loading));
-    final result = await repositoryImpl.searchMosoaa(event.text as String);
+    final result = await repositoryImpl.searchMosoaa(event.text);
     result.fold(
       (l) {
         emit(state.copyWith(searchMossoState: RequestState.error));
@@ -57,7 +58,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
-  FutureOr<void> historySearchMosooaa(event, emit) async {
+  FutureOr<void> historySearchMosooaa(
+    GetHistoryMosoaaEvent event,
+    Emitter<SearchState> emit,
+  ) async {
     // emit(state.copyWith(searchMossoState: RequestState.loading));
     final result = await repositoryImpl.historySearchMosoaa();
     result.fold(
@@ -78,11 +82,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
-  FutureOr<void> searchQuran(event, emit) async {
+  FutureOr<void> searchQuran(
+      SearchQuranEvent event, Emitter<SearchState> emit) async {
     emit(state.copyWith(ayahState: RequestState.loading));
-    text = event.text as String;
+    text = event.text;
     final result = await repositoryImpl.searchQuran(
-      event.text as String,
+      event.text,
       pageSize,
       pageNumber,
     );
@@ -95,6 +100,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.copyWith(
             ayahState: RequestState.success,
             ayaData: r,
+            currentSearchTerm: event.text,
           ),
         );
         // logger.d(r.length);
@@ -102,7 +108,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
-  FutureOr<void> fetchAyaMore(event, emit) async {
+  FutureOr<void> fetchAyaMore(
+      FetchAyaMoreEvent event, Emitter<SearchState> emit) async {
     pageNumber++;
 
     emit(state.copyWith(loadAyahState: RequestState.loading));
@@ -117,6 +124,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             state.copyWith(
               loadAyahState: RequestState.success,
               ayaData: [...state.ayaData, ...r],
+              currentSearchTerm: text,
             ),
           );
         }

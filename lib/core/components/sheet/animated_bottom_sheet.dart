@@ -12,6 +12,9 @@ extension AnimatedBottomSheet on BuildContext {
     bool enableDrag = true,
     Color? backgroundColor,
     Color? barrierColor,
+    Widget? header,
+    bool isScrollable = true,
+    bool isExpanded = true,
     VoidCallback? onDismissed,
     Duration animationDuration = const Duration(milliseconds: 400),
   }) {
@@ -33,6 +36,10 @@ extension AnimatedBottomSheet on BuildContext {
           backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
           onDismissed: onDismissed,
           animationDuration: animationDuration,
+          header: header,
+          isScrollable: isScrollable,
+          isExpanded: isExpanded,
+          isDismissible: isDismissible,
           child: child,
         );
       },
@@ -43,6 +50,7 @@ extension AnimatedBottomSheet on BuildContext {
 class AnimatedBottomSheetContent extends StatefulWidget {
   const AnimatedBottomSheetContent({
     required this.child,
+    this.header,
     super.key,
     this.initialHeight = 0.4,
     this.minHeight = 0.2,
@@ -50,15 +58,21 @@ class AnimatedBottomSheetContent extends StatefulWidget {
     this.backgroundColor,
     this.onDismissed,
     this.animationDuration = const Duration(milliseconds: 400),
+    this.isScrollable = true,
+    this.isExpanded = true,
+    this.isDismissible = true,
   });
   final Widget child;
+  final Widget? header;
   final double initialHeight;
   final double minHeight;
   final double maxHeight;
   final Color? backgroundColor;
   final VoidCallback? onDismissed;
   final Duration animationDuration;
-
+  final bool isScrollable;
+  final bool isExpanded;
+  final bool isDismissible;
   @override
   State<AnimatedBottomSheetContent> createState() =>
       _AnimatedBottomSheetContentState();
@@ -149,7 +163,7 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
                   initialChildSize: widget.initialHeight,
                   minChildSize: widget.minHeight,
                   maxChildSize: widget.maxHeight,
-                  expand: false,
+                  expand: widget.isExpanded,
                   snap: true,
                   snapSizes: [
                     widget.minHeight,
@@ -191,12 +205,16 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
                               ),
                             ),
                           ),
+                          if (widget.header != null) widget.header!,
+
                           // Content
                           Expanded(
-                            child: SingleChildScrollView(
-                              controller: scrollController,
-                              child: widget.child,
-                            ),
+                            child: widget.isScrollable
+                                ? SingleChildScrollView(
+                                    controller: scrollController,
+                                    child: widget.child,
+                                  )
+                                : widget.child,
                           ),
                         ],
                       ),

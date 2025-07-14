@@ -4,6 +4,7 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/text_highlighting_util.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
@@ -18,8 +19,6 @@ class SearchAyahListWidget extends StatefulWidget {
 }
 
 class _SearchAyahListWidgetState extends State<SearchAyahListWidget> {
-  final searchTextEditing = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchBloc, SearchState>(
@@ -55,7 +54,7 @@ class _SearchAyahListWidgetState extends State<SearchAyahListWidget> {
 
             return ListView.builder(
               itemCount: ayahList.length,
-              controller: BlocProvider.of<SearchBloc>(context).scrollController,
+              controller: context.read<SearchBloc>().scrollController,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 final search = ayahList[index];
@@ -82,29 +81,24 @@ class _SearchAyahListWidgetState extends State<SearchAyahListWidget> {
                         },
                         title: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: Text(
+                          child: TextHighlightingUtil.createHighlightedText(
                             search.searchText,
-                            style: TextStyle(
+                            state.currentSearchTerm,
+                            defaultStyle: TextStyle(
                               fontFamily: 'uthmanic2',
                               fontWeight: FontWeight.normal,
                               fontSize: 22,
                               color: context.quranTheme.hintColor,
                             ),
+                            highlightStyle: TextStyle(
+                              fontFamily: 'uthmanic2',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.red,
+                              backgroundColor: Colors.yellow.withOpacity(0.3),
+                            ),
+                            textAlign: TextAlign.justify,
                           ),
-                          // child: RichText(
-                          //   text: TextSpan(
-                          //     children: highlightLine(
-                          //         search.searchText,
-                          //         searchTextEditing.text),
-                          // style: TextStyle(
-                          //   fontFamily: "uthmanic2",
-                          //   fontWeight: FontWeight.normal,
-                          //   fontSize: 22,
-                          //   color: currentThemeData.hintColor,
-                          // ),
-                          //   ),
-                          //   textAlign: TextAlign.justify,
-                          // ),
                         ),
                         subtitle: Container(
                           height: 20,

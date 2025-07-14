@@ -58,7 +58,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                 controller: boxController,
                 color: context.scaffoldBackgroundColor,
                 backdrop: Backdrop(
-                  // fading: true,
+                  fading: true,
                   color: context.scaffoldBackgroundColor,
                   appBar: BackdropAppBar(
                     searchBox: SearchBox(
