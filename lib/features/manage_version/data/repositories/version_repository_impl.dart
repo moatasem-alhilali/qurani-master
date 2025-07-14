@@ -23,10 +23,6 @@ abstract class VersionRepository {
   Future<Either<Failure, void>> clearSkippedVersion();
   Future<Either<Failure, void>> clearVersionCache();
   Future<Either<Failure, void>> initialize();
-  Future<Either<Failure, bool>> shouldShowUpdateDialog(
-    AppVersionModel versionModel, {
-    bool isManualCheck = false,
-  });
   Stream<AppVersionModel> watchConfigChanges();
   Future<Either<Failure, void>> startListening();
   Future<Either<Failure, void>> stopListening();
@@ -57,16 +53,21 @@ class VersionRepositoryImpl implements VersionRepository {
     bool isManualCheck = false,
   }) async {
     try {
-      // If offline, use cache only
-      if (!ISCONNECTED) {
+      // For manual checks, always try to connect regardless of global connectivity state
+      // For automatic checks, respect the connectivity state
+      final shouldUseRemote = ISCONNECTED || isManualCheck;
+
+      if (!shouldUseRemote) {
+        // Only for automatic checks when offline - use cache only
         final cached = await _cacheDataSource.getCachedVersionInfo();
         if (cached != null) return right(cached);
         return left(
-            ServerFailure('لا توجد معلومات محفوظة. يرجى الاتصال بالإنترنت.'));
+          ServerFailure('لا توجد معلومات محفوظة. يرجى الاتصال بالإنترنت.'),
+        );
       }
 
-      // Online: Check cache first unless forcing refresh
-      if (!forceRefresh) {
+      // Check cache first unless forcing refresh or manual check
+      if (!forceRefresh && !isManualCheck) {
         final hasValidCache = await _cacheDataSource.hasValidCache();
         if (hasValidCache) {
           final cached = await _cacheDataSource.getCachedVersionInfo();
@@ -74,22 +75,52 @@ class VersionRepositoryImpl implements VersionRepository {
         }
       }
 
-      // Fetch from remote
-      final versionModel = await _remoteDataSource.checkForUpdates(
-        forceRefresh: forceRefresh,
-      );
+      // Attempt to fetch from remote (this might fail if actually offline)
+      try {
+        final versionModel = await _remoteDataSource.checkForUpdates(
+          forceRefresh: forceRefresh,
+          isManualCheck: isManualCheck,
+        );
 
-      // Cache the result
-      await _cacheDataSource.cacheVersionInfo(versionModel);
-      return right(versionModel);
+        // Cache the result if successful
+        await _cacheDataSource.cacheVersionInfo(versionModel);
+        return right(versionModel);
+      } catch (e) {
+        logger.e('Remote fetch failed: $e');
+
+        // For manual checks that fail, try fallback to cache with a different message
+        if (isManualCheck) {
+          final cached = await _cacheDataSource.getCachedVersionInfo();
+          if (cached != null) {
+            return right(
+              cached.copyWith(
+                lastChecked: DateTime.now(), // Update last checked time
+              ),
+            );
+          }
+          return left(
+            ServerFailure(
+              'فشل في الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.',
+            ),
+          );
+        }
+
+        // For automatic checks, fallback to cache silently
+        final cached = await _cacheDataSource.getCachedVersionInfo();
+        if (cached != null) return right(cached);
+
+        return left(ServerFailure('فشل في التحقق من التحديثات: $e'));
+      }
     } catch (e) {
-      logger.e('Failed to check for updates: $e');
+      logger.e('Unexpected error in checkForUpdates: $e');
 
-      // Fallback to cache
+      // Last resort fallback to cache
       try {
         final cached = await _cacheDataSource.getCachedVersionInfo();
         if (cached != null) return right(cached);
-      } catch (_) {}
+      } catch (cacheError) {
+        logger.e('Cache fallback also failed: $cacheError');
+      }
 
       return left(ServerFailure('فشل في التحقق من التحديثات: $e'));
     }
@@ -174,28 +205,6 @@ class VersionRepositoryImpl implements VersionRepository {
       return right(null);
     } catch (e) {
       return left(ServerFailure('فشل في تهيئة إدارة النسخ: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> shouldShowUpdateDialog(
-    AppVersionModel versionModel, {
-    bool isManualCheck = false,
-  }) async {
-    try {
-      if (!versionModel.isUpdateAvailable) return right(false);
-      if (versionModel.isUpdateRequired) return right(true);
-      if (isManualCheck) return right(true);
-
-      final hasSkippedResult =
-          await hasUserSkippedVersion(versionModel.latestVersion);
-      if (hasSkippedResult.isLeft())
-        return hasSkippedResult.fold(left, (r) => right(false));
-
-      final hasSkipped = hasSkippedResult.fold((l) => false, (r) => r);
-      return right(!hasSkipped);
-    } catch (e) {
-      return left(ServerFailure('فشل في التحقق من عرض نافذة التحديث: $e'));
     }
   }
 

@@ -39,8 +39,6 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     on<SkipVersionEvent>(_onSkipVersion);
     on<ClearSkippedVersionEvent>(_onClearSkippedVersion);
     on<ClearVersionCacheEvent>(_onClearVersionCache);
-    on<ShowUpdateDialogEvent>(_onShowUpdateDialog);
-    on<DismissUpdateDialogEvent>(_onDismissUpdateDialog);
     on<DownloadProgressUpdateEvent>(_onDownloadProgressUpdate);
     on<DownloadStatusUpdateEvent>(_onDownloadStatusUpdate);
     on<OpenDownloadedFileEvent>(_onOpenDownloadedFile);
@@ -196,11 +194,6 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
         versionCheckState: RequestState.success,
       ),
     );
-
-    // Show update dialog if needed (automatic check)
-    if (event.versionModel.isUpdateAvailable) {
-      _checkAndShowUpdateDialog(event.versionModel);
-    }
   }
 
   Future<void> _onCheckForUpdates(
@@ -208,6 +201,12 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     Emitter<VersionState> emit,
   ) async {
     try {
+      logger.d('=== Starting update check ===');
+      logger.d('Force refresh: ${event.forceRefresh}');
+      logger.d('Is manual check: ${event.isManualCheck}');
+      logger.d('Current ISCONNECTED: $ISCONNECTED');
+      logger.d('Current state has update: ${state.hasUpdateAvailable}');
+
       emit(
         state.copyWith(
           versionCheckState: RequestState.loading,
@@ -219,8 +218,10 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
         forceRefresh: event.forceRefresh,
         isManualCheck: event.isManualCheck,
       );
-      result.fold(
-        (failure) {
+
+      await result.fold(
+        (failure) async {
+          logger.e('Update check failed: ${failure.message}');
           emit(
             state.copyWith(
               versionCheckState: RequestState.error,
@@ -229,7 +230,8 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
             ),
           );
         },
-        (versionModel) {
+        (versionModel) async {
+          logger.d('Update check successful!');
           emit(
             state.copyWith(
               versionCheckState: RequestState.success,
@@ -238,18 +240,26 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
               isConnected: ISCONNECTED,
             ),
           );
-          logger.d(versionModel.toString());
 
-          // Show update dialog if needed
+          logger.d('Version check result: $versionModel');
+          logger.d('Update available: ${versionModel.isUpdateAvailable}');
+          logger.d('Current version: ${versionModel.currentVersion}');
+          logger.d('Latest version: ${versionModel.latestVersion}');
+
+          // No dialog logic needed - version management screen will handle display
           if (versionModel.isUpdateAvailable) {
-            _checkAndShowUpdateDialog(
-              versionModel,
-              isManualCheck: event.isManualCheck,
+            logger.d(
+              'Update is available - can be viewed in version management screen',
             );
+          } else {
+            logger.d('No update available');
           }
         },
       );
+
+      logger.d('=== Update check completed ===');
     } catch (e) {
+      logger.e('Unexpected error in _onCheckForUpdates: $e');
       emit(
         state.copyWith(
           versionCheckState: RequestState.error,
@@ -257,32 +267,6 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
           isConnected: ISCONNECTED,
         ),
       );
-    }
-  }
-
-  Future<void> _checkAndShowUpdateDialog(
-    AppVersionModel versionModel, {
-    bool isManualCheck = false,
-  }) async {
-    try {
-      // Don't show dialog if it's already visible
-      if (state.isUpdateDialogVisible) return;
-
-      final shouldShowResult = await _versionRepository.shouldShowUpdateDialog(
-        versionModel,
-        isManualCheck: isManualCheck,
-      );
-
-      shouldShowResult.fold(
-        (failure) => logger.e('Failed to check dialog: ${failure.message}'),
-        (shouldShow) {
-          if (shouldShow && !state.isUpdateDialogVisible) {
-            add(ShowUpdateDialogEvent(versionModel: versionModel));
-          }
-        },
-      );
-    } catch (e) {
-      logger.e('Error checking update dialog: $e');
     }
   }
 
@@ -366,14 +350,13 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
         ),
       );
 
-      // switch (event.downloadLink.downloadApproach) {
-      //   case DownloadApproach.direct:
-      //   case DownloadApproach.processedDirect:
-      //     await _startDirectDownload(event.downloadLink, event.fileName, emit);
-      //   case DownloadApproach.webView:
-      //     await _startWebViewDownload(event.downloadLink, emit);
-      // }
-      await _startWebViewDownload(event.downloadLink, emit);
+      switch (event.downloadLink.downloadApproach) {
+        case DownloadApproach.direct:
+        case DownloadApproach.processedDirect:
+          await _startDirectDownload(event.downloadLink, event.fileName, emit);
+        case DownloadApproach.webView:
+          await _startWebViewDownload(event.downloadLink, emit);
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -471,7 +454,7 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     final result = await _versionRepository.markVersionAsSkipped(event.version);
     result.fold(
       (failure) => emit(state.copyWith(errorMessage: failure.message)),
-      (_) => add(DismissUpdateDialogEvent()),
+      (_) => null, // No dialog to dismiss
     );
   }
 
@@ -495,25 +478,6 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
       (failure) => emit(state.copyWith(errorMessage: failure.message)),
       (_) => emit(state.copyWith(versionCheckState: RequestState.initial)),
     );
-  }
-
-  void _onShowUpdateDialog(
-    ShowUpdateDialogEvent event,
-    Emitter<VersionState> emit,
-  ) {
-    emit(
-      state.copyWith(
-        isUpdateDialogVisible: true,
-        latestVersionInfo: event.versionModel,
-      ),
-    );
-  }
-
-  void _onDismissUpdateDialog(
-    DismissUpdateDialogEvent event,
-    Emitter<VersionState> emit,
-  ) {
-    emit(state.copyWith(isUpdateDialogVisible: false));
   }
 
   void _onDownloadProgressUpdate(

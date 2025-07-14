@@ -60,16 +60,6 @@ class ClearSkippedVersionEvent extends VersionEvent {}
 /// Event to clear version cache
 class ClearVersionCacheEvent extends VersionEvent {}
 
-/// Event to show update dialog
-class ShowUpdateDialogEvent extends VersionEvent {
-  ShowUpdateDialogEvent({required this.versionModel});
-
-  final AppVersionModel versionModel;
-}
-
-/// Event to dismiss update dialog
-class DismissUpdateDialogEvent extends VersionEvent {}
-
 /// Event to initialize version management
 class InitializeVersionManagementEvent extends VersionEvent {}
 

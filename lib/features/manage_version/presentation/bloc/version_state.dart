@@ -14,7 +14,6 @@ class VersionState {
     this.totalBytes = 0,
     this.downloadFilePath,
     this.errorMessage,
-    this.isUpdateDialogVisible = false,
     this.isConnected = true,
     this.isListening = false,
   });
@@ -30,7 +29,6 @@ class VersionState {
   final int totalBytes;
   final String? downloadFilePath;
   final String? errorMessage;
-  final bool isUpdateDialogVisible;
   final bool isConnected;
   final bool isListening;
 
@@ -46,7 +44,6 @@ class VersionState {
     int? totalBytes,
     String? downloadFilePath,
     String? errorMessage,
-    bool? isUpdateDialogVisible,
     bool? isConnected,
     bool? isListening,
   }) {
@@ -62,8 +59,6 @@ class VersionState {
       totalBytes: totalBytes ?? this.totalBytes,
       downloadFilePath: downloadFilePath ?? this.downloadFilePath,
       errorMessage: errorMessage,
-      isUpdateDialogVisible:
-          isUpdateDialogVisible ?? this.isUpdateDialogVisible,
       isConnected: isConnected ?? this.isConnected,
       isListening: isListening ?? this.isListening,
     );
@@ -99,7 +94,6 @@ class VersionState {
         totalBytes,
         downloadFilePath,
         errorMessage,
-        isUpdateDialogVisible,
         isConnected,
         isListening,
       ];

@@ -8,7 +8,8 @@ import 'package:quran_app/main.dart';
 
 /// Remote data source for version management using Firebase Remote Config
 abstract class VersionRemoteDataSource {
-  Future<AppVersionModel> checkForUpdates({bool forceRefresh = false});
+  Future<AppVersionModel> checkForUpdates(
+      {bool forceRefresh = false, bool isManualCheck = false});
   Future<String> getCurrentAppVersion();
   Future<void> initialize();
   Stream<AppVersionModel> watchConfigChanges();
@@ -85,8 +86,11 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
   }
 
   @override
-  Future<AppVersionModel> checkForUpdates({bool forceRefresh = false}) async {
-    if (!ISCONNECTED) {
+  Future<AppVersionModel> checkForUpdates(
+      {bool forceRefresh = false, bool isManualCheck = false}) async {
+    // For manual checks, attempt to connect regardless of global connectivity state
+    // For automatic checks, respect the connectivity state
+    if (!ISCONNECTED && !isManualCheck) {
       throw Exception('Device is offline');
     }
 
@@ -125,6 +129,14 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
       );
     } catch (e) {
       logger.e('Failed to check for updates: $e');
+
+      // For manual checks, provide a more informative error
+      if (isManualCheck) {
+        throw Exception(
+            'فشل في الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.');
+      }
+
+      // For automatic checks, fall back to current version
       final currentVersion = await getCurrentAppVersion();
       return AppVersionModel(
         latestVersion: currentVersion,

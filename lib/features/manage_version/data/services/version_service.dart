@@ -81,26 +81,6 @@ class VersionService {
     }
   }
 
-  /// Check if an update should be shown to the user
-  Future<bool> shouldShowUpdateDialog(
-    AppVersionModel versionModel, {
-    bool isManualCheck = false,
-  }) async {
-    try {
-      final result = await _versionRepository.shouldShowUpdateDialog(
-        versionModel,
-        isManualCheck: isManualCheck,
-      );
-
-      return result.fold(
-        (failure) => false,
-        (shouldShow) => shouldShow,
-      );
-    } catch (e) {
-      return false;
-    }
-  }
-
   /// Mark a version as skipped by the user
   Future<bool> skipVersion(String version) async {
     try {

@@ -22,6 +22,7 @@ typedef DownloadStatusCallback = void Function(
   DownloadTaskStatus status,
 );
 
+@pragma('vm:entry-point')
 class DownloadRepo {
   //
   final ReceivePort _port = ReceivePort();
@@ -84,16 +85,44 @@ class DownloadRepo {
   Future<String?> download({
     required String url,
     String? fileName,
-    bool saveInPublicStorage = true,
+    bool saveInPublicStorage =
+        false, // Changed default to false for app-specific storage
     bool allowCellular = true,
     bool openFileFromNotification = false,
   }) async {
     try {
-      await StoragePermissionService.manageExternalStorage();
+      // Only request storage permissions if using public storage
+      if (saveInPublicStorage) {
+        await StoragePermissionService.manageExternalStorage();
 
-      final di = await DirectoryService.getExternalStoragePath();
-      if (di == null) {
-        throw Exception('Could not get external storage path');
+        // Try to get public downloads path
+        final publicPath = await DirectoryService.getPublicDownloadsPath();
+        if (publicPath != null) {
+          final extension = url.split('/').last.split('.').last;
+          final finalFileName =
+              fileName ?? '${DateTime.now().millisecondsSinceEpoch}.$extension';
+
+          final taskId = await FlutterDownloader.enqueue(
+            url: url,
+            savedDir: publicPath,
+            saveInPublicStorage: true,
+            fileName: finalFileName,
+            allowCellular: allowCellular,
+            openFileFromNotification: openFileFromNotification,
+          );
+
+          logger.i('Download started with taskId: $taskId (public storage)');
+          return taskId;
+        } else {
+          logger.w(
+              'Could not access public storage, falling back to app-specific storage');
+        }
+      }
+
+      // Use app-specific storage (default and fallback)
+      final appStoragePath = await DirectoryService.getExternalStoragePath();
+      if (appStoragePath == null) {
+        throw Exception('Could not get any storage path');
       }
 
       final extension = url.split('/').last.split('.').last;
@@ -102,14 +131,13 @@ class DownloadRepo {
 
       final taskId = await FlutterDownloader.enqueue(
         url: url,
-        savedDir: di,
-        saveInPublicStorage: saveInPublicStorage,
+        savedDir: appStoragePath,
         fileName: finalFileName,
         allowCellular: allowCellular,
         openFileFromNotification: openFileFromNotification,
       );
 
-      logger.i('Download started with taskId: $taskId');
+      logger.i('Download started with taskId: $taskId (app-specific storage)');
       return taskId;
     } catch (e) {
       logger.e('Error during download: $e');

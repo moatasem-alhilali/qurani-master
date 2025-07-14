@@ -139,26 +139,44 @@ class AppVersionModel extends Equatable {
   static bool _isVersionNewer(String newVersion, String currentVersion) {
     if (newVersion.isEmpty || currentVersion.isEmpty) return false;
 
-    final newParts = newVersion.split('.').map(int.tryParse).toList();
-    final currentParts = currentVersion.split('.').map(int.tryParse).toList();
+    // Handle identical versions quickly
+    if (newVersion == currentVersion) return false;
 
-    // Ensure both lists have the same length
-    final maxLength = newParts.length > currentParts.length
-        ? newParts.length
-        : currentParts.length;
+    try {
+      // Split and parse version parts, handling non-numeric parts
+      final newParts = newVersion.split('.').map((part) {
+        final parsed = int.tryParse(part.trim());
+        return parsed ?? 0; // Default to 0 for non-numeric parts
+      }).toList();
 
-    while (newParts.length < maxLength) newParts.add(0);
-    while (currentParts.length < maxLength) currentParts.add(0);
+      final currentParts = currentVersion.split('.').map((part) {
+        final parsed = int.tryParse(part.trim());
+        return parsed ?? 0; // Default to 0 for non-numeric parts
+      }).toList();
 
-    for (var i = 0; i < maxLength; i++) {
-      final newPart = newParts[i] ?? 0;
-      final currentPart = currentParts[i] ?? 0;
+      // Ensure both lists have the same length by padding with zeros
+      final maxLength = newParts.length > currentParts.length
+          ? newParts.length
+          : currentParts.length;
 
-      if (newPart > currentPart) return true;
-      if (newPart < currentPart) return false;
+      while (newParts.length < maxLength) newParts.add(0);
+      while (currentParts.length < maxLength) currentParts.add(0);
+
+      // Compare each part from left to right
+      for (var i = 0; i < maxLength; i++) {
+        final newPart = newParts[i];
+        final currentPart = currentParts[i];
+
+        if (newPart > currentPart) return true;
+        if (newPart < currentPart) return false;
+        // If equal, continue to next part
+      }
+
+      return false; // All parts are equal
+    } catch (e) {
+      // If comparison fails, fall back to string comparison
+      return newVersion.compareTo(currentVersion) > 0;
     }
-
-    return false; // Versions are equal
   }
 
   @override
@@ -174,6 +192,19 @@ class AppVersionModel extends Equatable {
         downloadSize,
         lastChecked,
       ];
+
+  @override
+  String toString() {
+    return 'AppVersionModel('
+        'current: $currentVersion, '
+        'latest: $latestVersion, '
+        'updateAvailable: $isUpdateAvailable, '
+        'updateRequired: $isUpdateRequired, '
+        'priority: ${updatePriority.name}, '
+        'downloadUrl: ${downloadUrl.isNotEmpty ? "present" : "empty"}, '
+        'lastChecked: $lastChecked'
+        ')';
+  }
 }
 
 /// Update priority levels
