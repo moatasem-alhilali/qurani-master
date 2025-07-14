@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logger/logger.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
@@ -21,7 +22,7 @@ Logger logger = Logger();
 void main() async {
   // 🧠 Ensures binding is initialized before running async code (important for plugins)
   WidgetsFlutterBinding.ensureInitialized();
-
+  await PackageInfo.fromPlatform();
   // 🌐 Initialize timezone support to handle local timezones correctly
   await TimeZoneService().setupTimezone();
 

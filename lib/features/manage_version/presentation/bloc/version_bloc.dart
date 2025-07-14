@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/features/manage_version/data/models/app_version_model.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
 import 'package:quran_app/main.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 part 'version_event.dart';
 part 'version_state.dart';
@@ -258,13 +258,16 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     Emitter<VersionState> emit,
   ) async {
     try {
-      final uri = Uri.parse(event.downloadUrl);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (await UrlLauncherUtils.canLaunchWebUrl(event.downloadUrl)) {
+        await UrlLauncherUtils.launchWebUrl(event.downloadUrl);
         emit(state.copyWith(downloadFilePath: event.downloadUrl));
       } else {
-        emit(state.copyWith(
-            errorMessage: 'لا يمكن فتح الرابط: ${event.downloadUrl}'));
+        logger.d('لا يمكن فتح الرابط: ${event.downloadUrl}');
+        emit(
+          state.copyWith(
+            errorMessage: 'لا يمكن فتح الرابط: ${event.downloadUrl}',
+          ),
+        );
       }
     } catch (e) {
       emit(state.copyWith(errorMessage: 'فشل في فتح الرابط: $e'));

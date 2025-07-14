@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -28,19 +29,9 @@ class _VersionManagementScreenState extends State<VersionManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'إدارة الإصدارات',
-          style: titleMedium(context).copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+    return BaseHomeWidget(
+      title: 'إدارة الإصدارات',
+      showBackground: false,
       body: BlocConsumer<VersionBloc, VersionState>(
         listener: (context, state) {
           // Handle error messages
@@ -67,8 +58,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen> {
                     ),
                   );
             },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
               padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

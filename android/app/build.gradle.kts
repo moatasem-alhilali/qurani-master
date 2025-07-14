@@ -35,8 +35,8 @@ android {
         minSdk = 23
         targetSdk = 35
 
-        versionCode = project.findProperty("VERSION_CODE")?.toString()?.toInt() ?: 1
-        versionName = project.findProperty("VERSION_NAME")?.toString() ?: "1.0.0"
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
         multiDexEnabled = true
     }
 
