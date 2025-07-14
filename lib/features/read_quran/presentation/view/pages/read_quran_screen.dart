@@ -58,7 +58,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                 controller: boxController,
                 color: context.scaffoldBackgroundColor,
                 backdrop: Backdrop(
-                  fading: true,
+                  // fading: true,
                   color: context.scaffoldBackgroundColor,
                   appBar: BackdropAppBar(
                     searchBox: SearchBox(
@@ -132,6 +132,7 @@ class _BodyQuran extends StatelessWidget {
               const EdgeInsets.symmetric(vertical: 8),
               EdgeInsets.zero,
             ) as EdgeInsetsGeometry,
+            color: context.primaryScheme.withValues(alpha: 0.1),
             height: context.getScreenHeight(),
             child: state.loadQuranState == RequestState.loading
                 ? const Center(

@@ -28,6 +28,9 @@ class _SettingScreenState extends State<SettingScreen> {
           },
           child: CardWidget(
             padding: EdgeInsets.all(16.w),
+            margin: EdgeInsets.symmetric(
+              horizontal: 10.sp,
+            ),
             child: Row(
               children: [
                 Column(
@@ -80,6 +83,9 @@ class _SettingScreenState extends State<SettingScreen> {
             context.push(const DownloadScreen());
           },
           child: CardWidget(
+            margin: EdgeInsets.symmetric(
+              horizontal: 10.sp,
+            ),
             padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
