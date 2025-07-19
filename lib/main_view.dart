@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-
         ///prayer time
         BlocProvider(
           create: (context) => PrayerTimeCubit(
@@ -60,6 +59,7 @@ class MyApp extends StatelessWidget {
           )..add(InitializeVersionManagementEvent()),
           lazy: false,
         ),
+
         ///theme
         BlocProvider(
           create: (context) => ThemeBloc()..add(InitThemeEvent()),
@@ -98,9 +98,10 @@ class MyApp extends StatelessWidget {
 
         ///search
         BlocProvider(
-          create: (context) =>
-              SearchBloc(repositoryImpl: sl<SearchRepositoryImpl>()),
-          lazy: false,
+          create: (context) => SearchBloc(
+            repositoryImpl: sl<SearchRepositoryImpl>(),
+          ),
+          // lazy: false,
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(

@@ -7,8 +7,8 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/bookmark_page_icon_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
 
-class HeaderReadQuranWidget extends StatelessWidget {
-  const HeaderReadQuranWidget({
+class HeaderReadQuranHorizontalWidget extends StatelessWidget {
+  const HeaderReadQuranHorizontalWidget({
     required this.index,
     super.key,
   });

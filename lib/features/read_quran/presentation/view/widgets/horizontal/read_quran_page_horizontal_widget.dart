@@ -9,18 +9,20 @@ import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/ayah_text_span.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/menu_action_buttons.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/ayah_text_span_horizontal_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/menu_action_buttons_widget.dart';
 
-class ReadQuranPageWidget extends StatefulWidget {
-  const ReadQuranPageWidget({required this.pageIndex, super.key});
+class ReadQuranPageHorizontalWidget extends StatefulWidget {
+  const ReadQuranPageHorizontalWidget({required this.pageIndex, super.key});
   final int pageIndex;
 
   @override
-  State<ReadQuranPageWidget> createState() => _ReadQuranPageWidgetState();
+  State<ReadQuranPageHorizontalWidget> createState() =>
+      _ReadQuranPageHorizontalWidgetState();
 }
 
-class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
+class _ReadQuranPageHorizontalWidgetState
+    extends State<ReadQuranPageHorizontalWidget> {
   int? selectedAyahUQNumber;
 
   // Cache expensive calculations
@@ -28,7 +30,7 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
   double? _cachedWidth;
   EdgeInsets? _cachedPadding;
   EdgeInsets? _cachedMargin;
-  List<List<Ayah>>? _cachedAyahsData;
+  List<List<AyahQuranModel>>? _cachedAyahsData;
   int? _cachedDataVersion;
 
   @override
@@ -112,7 +114,7 @@ class _ReadQuranPageWidgetState extends State<ReadQuranPageWidget> {
     return _cachedMargin!;
   }
 
-  List<List<Ayah>> _getCachedAyahsData(QuranReadHelper quranCtrl) {
+  List<List<AyahQuranModel>> _getCachedAyahsData(QuranReadHelper quranCtrl) {
     // Simple cache invalidation based on data version
     final currentDataVersion = quranCtrl.pages.length;
     if (_cachedAyahsData == null || _cachedDataVersion != currentDataVersion) {
@@ -187,7 +189,7 @@ class _AyahGroupWidget extends StatelessWidget {
 
   final int pageIndex;
   final int groupIndex;
-  final List<Ayah> ayahs;
+  final List<AyahQuranModel> ayahs;
   final double fontSize;
   final int? selectedAyahUQNumber;
   final void Function(int) onAyahSelect;
@@ -218,7 +220,7 @@ class _AyahGroupWidget extends StatelessWidget {
 
   Widget _buildBasmalahIfNeeded(
     QuranReadHelper quranCtrl,
-    List<Ayah> ayahs,
+    List<AyahQuranModel> ayahs,
     BuildContext context,
   ) {
     final surahNumber = quranCtrl.getSurahNumberByAyah(ayahs.first);
@@ -252,7 +254,7 @@ class _AyahTextWidget extends StatefulWidget {
   });
 
   final int pageIndex;
-  final List<Ayah> ayahs;
+  final List<AyahQuranModel> ayahs;
   final double fontSize;
   final int? selectedAyahUQNumber;
   final void Function(int) onAyahSelect;
@@ -332,7 +334,7 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
   List<TextSpan> _buildAyahSpans(
     BuildContext context,
     QuranReadHelper quranCtrl,
-    List<Ayah> ayahs,
+    List<AyahQuranModel> ayahs,
     double fontSize,
     int? selectedAyahUQNumber,
     void Function(int)? onSelect,
@@ -346,7 +348,7 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
         // Fix: Get surah number for the specific ayah, not the page
         final surahNum = quranCtrl.getSurahNumberByAyah(ayah);
 
-        return ayahTextSpan(
+        return ayahTextSpanHorizontalWidget(
           context: context,
           isFirstAyah: isFirstAyah,
           text: isFirstAyah
@@ -392,13 +394,13 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
   void _showAyahMenu(
     BuildContext context,
     QuranReadHelper quranCtrl,
-    List<Ayah> ayahs,
+    List<AyahQuranModel> ayahs,
     int ayahIndex,
     VoidCallback? onClose,
   ) {
     final ayah = ayahs[ayahIndex];
     context.showAnimatedBottomSheet(
-      child: MenuActionWidget(
+      child: MenuActionButtonWidget(
         ayahNum: ayah.ayahNumber,
         surahName: quranCtrl.getSurahNameFromPage(widget.pageIndex),
         ayahTextNormal: ayah.text,

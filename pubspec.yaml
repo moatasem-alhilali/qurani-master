@@ -21,7 +21,6 @@ dependencies:
   intl:
   rxdart:
   flutter_bloc:
-  flutter_svg:
 
   sqflite: ^2.4.2
   geolocator: ^13.0.4
@@ -69,6 +68,8 @@ dependencies:
   firebase_core: ^3.15.1
   firebase_remote_config: ^5.4.7
   package_info_plus: ^8.3.0
+  # vector_graphics: ^1.1.19
+  flutter_svg: ^2.2.0
   # ---------------------------------------
 
 dev_dependencies:
@@ -76,32 +77,45 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   very_good_analysis: ^5.1.0
-  flutter_native_splash: ^2.4.6
+  flutter_gen_runner: ^5.11.0
+  build_runner: ^2.6.0
+  # flutter_native_splash: ^2.4.6
 
-flutter_native_splash:
-  color: "#ffffff" # خلفية شاشة البداية
-  image: assets/logo/splash_icon.png # لوجو التطبيق (مقاس 512x512 أو 1024x1024 png)
-  # branding: assets/branding.png     # شعار فرعي (اختياري - أسفل الشاشة)
-  # branding_mode: bottom             # وضع الشعار الفرعي (bottom أو center)
-  color_dark: "#000000" # خلفية للشاشة في المود الداكن
-  image_dark: assets/logo/splash_icon_dark.png # لوجو الوضع الداكن (اختياري)
-  # branding_dark: assets/branding_dark.png  # شعار فرعي داكن (اختياري)
-  android: true # تفعيل للأندرويد
-  ios: true # تفعيل للآيفون
-  android_gravity: center # محاذاة صورة اللوجو
-  ios_content_mode: scaleAspectFill # نمط ملء صورة اللوجو في iOS
-  fullscreen: true # لجعل الشاشة بالكامل Splash بدون status bar
-  web: false # عادة لا ينصح بتفعيل الويب مع المكتبة
-  android_12:
-    image: assets/logo/splash_icon.png
-    icon_background_color: "#ffffff"
-    image_dark: assets/logo/splash_icon_dark.png
-    icon_background_color_dark: "#000000"
-    # branding: assets/branding.png
-    # branding_dark: assets/branding_dark.png
-    color: "#ffffff"
-    color_dark: "#000000"
-    fullscreen: true
+# flutter_native_splash:
+#   color: "#ffffff" # خلفية شاشة البداية
+#   image: assets/logo/splash_icon.png # لوجو التطبيق (مقاس 512x512 أو 1024x1024 png)
+#   # branding: assets/branding.png     # شعار فرعي (اختياري - أسفل الشاشة)
+#   # branding_mode: bottom             # وضع الشعار الفرعي (bottom أو center)
+#   color_dark: "#000000" # خلفية للشاشة في المود الداكن
+#   image_dark: assets/logo/splash_icon_dark.png # لوجو الوضع الداكن (اختياري)
+#   # branding_dark: assets/branding_dark.png  # شعار فرعي داكن (اختياري)
+#   android: true # تفعيل للأندرويد
+#   ios: true # تفعيل للآيفون
+#   android_gravity: center # محاذاة صورة اللوجو
+#   ios_content_mode: scaleAspectFill # نمط ملء صورة اللوجو في iOS
+#   fullscreen: true # لجعل الشاشة بالكامل Splash بدون status bar
+#   web: false # عادة لا ينصح بتفعيل الويب مع المكتبة
+#   android_12:
+#     image: assets/logo/splash_icon.png
+#     icon_background_color: "#ffffff"
+#     image_dark: assets/logo/splash_icon_dark.png
+#     icon_background_color_dark: "#000000"
+#     # branding: assets/branding.png
+#     # branding_dark: assets/branding_dark.png
+#     color: "#ffffff"
+#     color_dark: "#000000"
+#     fullscreen: true
+
+flutter_gen:
+  output: lib/gen/ 
+  line_length: 80 
+  integrations:
+    image: true
+    flutter_svg: true
+    lottie: true
+  assets:
+    exclude: 
+      - assets/raw/**
 
 flutter:
   assets:
@@ -120,25 +134,17 @@ flutter:
     - assets/json/
 
   fonts:
-    - family: quran
-      fonts:
-        - asset: assets/fonts/lpmq.otf
-
-    - family: quran2
-      fonts:
-        - asset: assets/fonts/tfont.ttf
-
     - family: ios-1
       fonts:
-        - asset: assets/fonts/fontone.ttf
+        - asset: assets/fonts/ios-1.ttf
 
     - family: ios-2
       fonts:
-        - asset: assets/fonts/fonttow.ttf
+        - asset: assets/fonts/ios-2.ttf
 
     - family: ios-3
       fonts:
-        - asset: assets/fonts/fontthree.otf
+        - asset: assets/fonts/ios-3.otf
     - family: uthmanic
       fonts:
         - asset: assets/fonts/UthmanTN1_Ver10.otf
@@ -160,16 +166,13 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoNaskhArabic-VariableFont_wght.ttf
 
-    - family: urdu
+    - family: amiri_quran
       fonts:
-        - asset: assets/fonts/NotoNastaliqUrdu.ttf
+        - asset: assets/fonts/amiri-quran-regular.ttf
 
-    - family: bn
+    - family: Scheherazade
       fonts:
-        - asset: assets/fonts/NotoSerifBengali.ttf
-    - family: QuranUnified
-      fonts:
-        - asset: assets/fonts/QuranUnified.ttf
+        - asset: assets/fonts/scheherazade-new-regular.ttf
 
     - family: page1
       fonts:

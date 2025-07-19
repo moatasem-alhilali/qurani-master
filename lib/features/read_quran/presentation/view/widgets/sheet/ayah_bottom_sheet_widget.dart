@@ -11,8 +11,8 @@ import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AyahBottomSheet extends StatelessWidget {
-  AyahBottomSheet({
+class AyahBottomSheetWidget extends StatelessWidget {
+  AyahBottomSheetWidget({
     required this.verseNumber,
     required this.surahNumber,
     required this.ayah,

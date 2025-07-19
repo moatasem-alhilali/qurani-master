@@ -12,7 +12,10 @@ abstract class SearchRepository {
   Future<Either<Failure, dynamic>> searchMosoaa(String text);
   Future<Either<Failure, List<dynamic>>> historySearchMosoaa();
   Future<Either<Failure, List<Aya>>> searchQuran(
-      String text, int limit, int offset);
+    String text,
+    int limit,
+    int offset,
+  );
   Future<Either<Failure, List<Aya>>> searchSurah(String text);
 }
 
@@ -61,7 +64,10 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<Either<Failure, List<Aya>>> searchQuran(
-      String text, int limit, int offset) async {
+    String text,
+    int limit,
+    int offset,
+  ) async {
     try {
       final convertedText = convertArabicToEnglishNumbers(text);
       final ayaRepository = sl.get<AyaRepository>();

@@ -10,7 +10,7 @@ part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc({required this.repositoryImpl}) : super(SearchState()) {
+  SearchBloc({required this.repositoryImpl}) : super(const SearchState()) {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -33,7 +33,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
     );
   }
-  SearchRepositoryImpl repositoryImpl;
+  final SearchRepositoryImpl repositoryImpl;
   ScrollController scrollController = ScrollController();
   String text = '';
   int pageNumber = 1;
@@ -41,7 +41,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   TextEditingController textEditingController = TextEditingController();
 
   FutureOr<void> searchMossos(
-      SearchMosoaaEvent event, Emitter<SearchState> emit) async {
+    SearchMosoaaEvent event,
+    Emitter<SearchState> emit,
+  ) async {
     emit(state.copyWith(searchMossoState: RequestState.loading));
     final result = await repositoryImpl.searchMosoaa(event.text);
     result.fold(
@@ -83,14 +85,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   FutureOr<void> searchQuran(
-      SearchQuranEvent event, Emitter<SearchState> emit) async {
+    SearchQuranEvent event,
+    Emitter<SearchState> emit,
+  ) async {
     emit(state.copyWith(ayahState: RequestState.loading));
     text = event.text;
+
     final result = await repositoryImpl.searchQuran(
       event.text,
       pageSize,
       pageNumber,
     );
+
     result.fold(
       (l) {
         emit(state.copyWith(ayahState: RequestState.error));
@@ -103,13 +109,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             currentSearchTerm: event.text,
           ),
         );
-        // logger.d(r.length);
       },
     );
   }
 
   FutureOr<void> fetchAyaMore(
-      FetchAyaMoreEvent event, Emitter<SearchState> emit) async {
+    FetchAyaMoreEvent event,
+    Emitter<SearchState> emit,
+  ) async {
     pageNumber++;
 
     emit(state.copyWith(loadAyahState: RequestState.loading));
@@ -128,7 +135,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             ),
           );
         }
-        // logger.d(state.ayaData.length);
       },
     );
     emit(state.copyWith(loadAyahState: RequestState.initial));

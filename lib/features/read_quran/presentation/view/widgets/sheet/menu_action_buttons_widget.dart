@@ -10,10 +10,10 @@ import 'package:quran_app/core/package/arabic_convert.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/add_bookmark_ayah_button.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/ayah_bottom_sheet.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/ayah_bottom_sheet_widget.dart';
 
-class MenuActionWidget extends StatefulWidget {
-  const MenuActionWidget({
+class MenuActionButtonWidget extends StatefulWidget {
+  const MenuActionButtonWidget({
     required this.ayahNum,
     required this.surahName,
     required this.ayahTextNormal,
@@ -36,10 +36,10 @@ class MenuActionWidget extends StatefulWidget {
   final BuildContext myContext;
 
   @override
-  State<MenuActionWidget> createState() => _MenuActionWidgetState();
+  State<MenuActionButtonWidget> createState() => _MenuActionButtonWidgetState();
 }
 
-class _MenuActionWidgetState extends State<MenuActionWidget> {
+class _MenuActionButtonWidgetState extends State<MenuActionButtonWidget> {
   @override
   void initState() {
     super.initState();
@@ -110,7 +110,7 @@ class _MenuActionWidgetState extends State<MenuActionWidget> {
             ),
             const Gap(6),
             const Divider(),
-            AyahBottomSheet(
+            AyahBottomSheetWidget(
               ayah: widget.ayahTextNormal,
               verseNumber: widget.ayahNum,
               text: tafsirAyah(),

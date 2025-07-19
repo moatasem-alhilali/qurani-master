@@ -38,6 +38,6 @@ class FxFonts {
   static const ios1 = 'ios-1';
   static const ios2 = 'ios-2';
   static const ios3 = 'ios-3';
-  static const quran2 = 'quran2';
-  static const quran = 'quran';
+  // static const quran2 = 'quran2';
+  // static const quran = 'quran';
 }

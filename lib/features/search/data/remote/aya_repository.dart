@@ -15,7 +15,7 @@ class AyaRepository {
     }
   }
 
-  Future<List<Aya>> search(String text, pageSize, pageNumber) async {
+  Future<List<Aya>> search(String text, int pageSize, int pageNumber) async {
     final database = await getDatabase();
     if (database == null) throw DatabaseException('Database is not available');
 
@@ -38,8 +38,8 @@ class AyaRepository {
           '%$searchTextReplaceReverse%',
           '%$text%',
         ],
-        limit: pageSize as int,
-        offset: (pageNumber - 1) * pageSize as int,
+        limit: pageSize,
+        offset: (pageNumber - 1) * pageSize,
       );
       for (final result in results) {
         ayaList.add(Aya.fromMap(result));
@@ -176,8 +176,12 @@ String removeDiacritics(String input) {
   return buffer.toString();
 }
 
-List<TextSpan> highlightLine(String line, String searchTextEditing,
-    {TextStyle? defaultStyle, TextStyle? highlightStyle}) {
+List<TextSpan> highlightLine(
+  String line,
+  String searchTextEditing, {
+  TextStyle? defaultStyle,
+  TextStyle? highlightStyle,
+}) {
   if (searchTextEditing.isEmpty) {
     return [TextSpan(text: line, style: defaultStyle)];
   }

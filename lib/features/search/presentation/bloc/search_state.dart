@@ -2,7 +2,7 @@ part of 'search_bloc.dart';
 
 @immutable
 class SearchState {
-  SearchState({
+  const SearchState({
     //
     this.searchMossoState = RequestState.initial,
     this.result = const {},
@@ -17,17 +17,17 @@ class SearchState {
     this.currentSearchTerm = '',
   });
   //
-  Map<String, dynamic> result;
-  RequestState searchMossoState;
+  final Map<String, dynamic> result;
+  final RequestState searchMossoState;
   //
-  List<dynamic> historySearchMosoaa;
-  RequestState historyState;
+  final List<dynamic> historySearchMosoaa;
+  final RequestState historyState;
 
   //
-  List<Aya> ayaData;
-  RequestState ayahState;
-  RequestState loadAyahState;
-  String currentSearchTerm;
+  final List<Aya> ayaData;
+  final RequestState ayahState;
+  final RequestState loadAyahState;
+  final String currentSearchTerm;
 
   SearchState copyWith({
     RequestState? searchMossoState,

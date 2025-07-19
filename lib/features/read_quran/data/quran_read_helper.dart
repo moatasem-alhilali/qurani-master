@@ -8,8 +8,8 @@ import 'package:quran_app/core/models_public/surahs_model.dart';
 class QuranReadHelper {
   bool isSelected = false;
   List<Surah> surahs = [];
-  List<List<Ayah>> pages = [];
-  List<Ayah> allAyahs = [];
+  List<List<AyahQuranModel>> pages = [];
+  List<AyahQuranModel> allAyahs = [];
 
   //
   static String getTafsirAyah({required int ayah, required int surahNumber}) {
@@ -42,12 +42,13 @@ class QuranReadHelper {
     log('Pages Length: ${pages.length}', name: 'Quran Controller');
   }
 
-  List<List<Ayah>> getCurrentPageAyahsSeparatedForBasmalah(int pageIndex) =>
+  List<List<AyahQuranModel>> getCurrentPageAyahsSeparatedForBasmalah(
+          int pageIndex) =>
       pages[pageIndex]
           .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
           .toList();
 
-  List<Ayah> getCurrentPageAyahs(int pageIndex) => pages[pageIndex];
+  List<AyahQuranModel> getCurrentPageAyahs(int pageIndex) => pages[pageIndex];
 
   int getSurahNumberFromPage(int pageNumber) => surahs
       .firstWhere(
@@ -71,13 +72,14 @@ class QuranReadHelper {
     }
   }
 
-  int getSurahNumberByAyah(Ayah ayah) =>
+  int getSurahNumberByAyah(AyahQuranModel ayah) =>
       surahs.firstWhere((s) => s.ayahs.contains(ayah)).surahNumber;
 
   Surah getSurahDataByAyahUQ(int ayah) =>
       surahs.firstWhere((s) => s.ayahs.any((a) => a.ayahUQNumber == ayah));
 
-  Ayah getJuzByPage(int page) => allAyahs.firstWhere((a) => a.page == page + 1);
+  AyahQuranModel getJuzByPage(int page) =>
+      allAyahs.firstWhere((a) => a.page == page + 1);
 
   String getSurahByAyahUQ(int ayah) => surahs
       .firstWhere((s) => s.ayahs.any((a) => a.ayahUQNumber == ayah))

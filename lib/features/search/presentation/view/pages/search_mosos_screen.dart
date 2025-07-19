@@ -5,9 +5,7 @@ import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/snack_bar.dart';
-import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class SearchMosoaaScreen extends StatelessWidget {
@@ -16,86 +14,81 @@ class SearchMosoaaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SearchBloc(
-        repositoryImpl: sl.get<SearchRepositoryImpl>(),
-      )..add(GetHistoryMosoaaEvent()),
-      child: BlocBuilder<SearchBloc, SearchState>(
-        builder: (context, state) {
-          return BaseHomeWidget(
-            leading: const SizedBox(),
-            title: 'الذكاء الاصطناعي',
-            bottomNavigationBar: MyTextFormFieldWidget(
-              hintText: 'ابحث هنا',
-              controller: search,
-              suffixIcon: BlocBuilder<SearchBloc, SearchState>(
-                builder: (context, state) {
-                  switch (state.searchMossoState) {
-                    case RequestState.initial:
-                      return IconButton(
-                        onPressed: () {
-                          if (search.text.isNotEmpty) {
-                            context
-                                .read<SearchBloc>()
-                                .add(SearchMosoaaEvent(search.text));
-                          }
-                        },
-                        icon: const Icon(Icons.send),
-                      );
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        return BaseHomeWidget(
+          leading: const SizedBox(),
+          title: 'الذكاء الاصطناعي',
+          bottomNavigationBar: MyTextFormFieldWidget(
+            hintText: 'ابحث هنا',
+            controller: search,
+            suffixIcon: BlocBuilder<SearchBloc, SearchState>(
+              builder: (context, state) {
+                switch (state.searchMossoState) {
+                  case RequestState.initial:
+                    return IconButton(
+                      onPressed: () {
+                        if (search.text.isNotEmpty) {
+                          context
+                              .read<SearchBloc>()
+                              .add(SearchMosoaaEvent(search.text));
+                        }
+                      },
+                      icon: const Icon(Icons.send),
+                    );
 
-                    case RequestState.loading:
-                      return const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.transparent,
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
+                  case RequestState.loading:
+                    return const Padding(
+                      padding: EdgeInsets.all(8),
+                      child: CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.transparent,
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
 
-                    case RequestState.error:
-                      return IconButton(
-                        onPressed: () {
-                          if (search.text.isNotEmpty) {
-                            context
-                                .read<SearchBloc>()
-                                .add(SearchMosoaaEvent(search.text));
-                          }
-                        },
-                        icon: const Icon(Icons.send),
-                      );
-                    case RequestState.success:
-                      return IconButton(
-                        onPressed: () {
-                          if (search.text.isNotEmpty) {
-                            context
-                                .read<SearchBloc>()
-                                .add(SearchMosoaaEvent(search.text));
-                          }
-                        },
-                        icon: const Icon(Icons.send),
-                      );
+                  case RequestState.error:
+                    return IconButton(
+                      onPressed: () {
+                        if (search.text.isNotEmpty) {
+                          context
+                              .read<SearchBloc>()
+                              .add(SearchMosoaaEvent(search.text));
+                        }
+                      },
+                      icon: const Icon(Icons.send),
+                    );
+                  case RequestState.success:
+                    return IconButton(
+                      onPressed: () {
+                        if (search.text.isNotEmpty) {
+                          context
+                              .read<SearchBloc>()
+                              .add(SearchMosoaaEvent(search.text));
+                        }
+                      },
+                      icon: const Icon(Icons.send),
+                    );
+                }
+              },
+            ),
+          ),
+          body: Column(
+            children: [
+              BlocConsumer<SearchBloc, SearchState>(
+                listener: (context, state) {
+                  if (state.searchMossoState == RequestState.success) {
+                    search.clear();
                   }
                 },
+                builder: (context, state) {
+                  return _Item();
+                },
               ),
-            ),
-            body: Column(
-              children: [
-                BlocConsumer<SearchBloc, SearchState>(
-                  listener: (context, state) {
-                    if (state.searchMossoState == RequestState.success) {
-                      search.clear();
-                    }
-                  },
-                  builder: (context, state) {
-                    return _Item();
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

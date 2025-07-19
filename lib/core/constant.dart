@@ -33,8 +33,8 @@ bool isLightMode = false;
 //masbah state
 int masbahSize = 0;
 //font name
-String quran = 'quran';
-String quran2 = 'quran2';
+// String quran = 'quran';
+// String quran2 = 'quran2';
 String fontMain = 'ios-1';
 String? defaultNameQuran;
 //font size

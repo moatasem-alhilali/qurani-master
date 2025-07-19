@@ -1,12 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
+import 'package:quran_app/gen/fonts.gen.dart';
 
-TextSpan ayahTextSpan({
+TextSpan ayahTextSpanVerticalWidget({
   required String text,
   required int pageIndex,
   required bool isSelected,
@@ -31,13 +31,13 @@ TextSpan ayahTextSpan({
     final lastCharacter = text.substring(text.length - 1);
     TextSpan? first;
     TextSpan? second;
-    final fontFamily = 'page${pageIndex + 1}';
+    const fontFamily = FontFamily.amiriQuran;
     if (isFirstAyah) {
       first = TextSpan(
         text: partOne,
         style: TextStyle(
           fontFamily: fontFamily,
-          fontSize: fontSize?.sp,
+          fontSize: fontSize,
           height: 2,
           letterSpacing: 30,
           color: context.quranTheme.colorScheme.inversePrimary,
@@ -49,7 +49,7 @@ TextSpan ayahTextSpan({
         text: partTwo,
         style: TextStyle(
           fontFamily: fontFamily,
-          fontSize: fontSize?.sp,
+          fontSize: fontSize,
           height: 2,
           letterSpacing: 5,
           // wordSpacing: wordSpacing + 10,
@@ -68,7 +68,7 @@ TextSpan ayahTextSpan({
       text: initialPart,
       style: TextStyle(
         fontFamily: fontFamily,
-        fontSize: fontSize?.sp,
+        fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
         color: context.quranTheme.colorScheme.inversePrimary,
@@ -85,7 +85,7 @@ TextSpan ayahTextSpan({
       text: lastCharacter,
       style: TextStyle(
         fontFamily: fontFamily,
-        fontSize: fontSize?.sp,
+        fontSize: fontSize,
         height: 2,
         letterSpacing: 5,
         color: hasBookmarkAyahSelect

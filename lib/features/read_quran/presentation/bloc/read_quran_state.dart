@@ -12,15 +12,15 @@ class ReadQuranState {
   });
   final RequestState loadQuranState;
   final List<Surah> surahs;
-  final List<List<Ayah>> pages;
-  final List<Ayah> allAyahs;
+  final List<List<AyahQuranModel>> pages;
+  final List<AyahQuranModel> allAyahs;
   final double minusHeight;
 
   ReadQuranState copyWith({
     RequestState? loadQuranState,
     List<Surah>? surahs,
-    List<List<Ayah>>? pages,
-    List<Ayah>? allAyahs,
+    List<List<AyahQuranModel>>? pages,
+    List<AyahQuranModel>? allAyahs,
     double? minusHeight,
   }) {
     return ReadQuranState(

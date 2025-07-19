@@ -10,7 +10,7 @@ class Surah {
   factory Surah.fromJson(Map<String, dynamic> json) {
     final ayahsFromJson = json['ayahs'] as List;
     final ayahsList = ayahsFromJson
-        .map((i) => Ayah.fromJson(i as Map<String, dynamic>))
+        .map((i) => AyahQuranModel.fromJson(i as Map<String, dynamic>))
         .toList();
 
     return Surah(
@@ -25,11 +25,11 @@ class Surah {
   final String arabicName;
   final String englishName;
   final String revelationType;
-  final List<Ayah> ayahs;
+  final List<AyahQuranModel> ayahs;
 }
 
-class Ayah {
-  Ayah({
+class AyahQuranModel {
+  AyahQuranModel({
     required this.ayahUQNumber,
     required this.ayahNumber,
     required this.text,
@@ -41,8 +41,8 @@ class Ayah {
     required this.audio,
   });
 
-  factory Ayah.fromJson(Map<String, dynamic> json) {
-    return Ayah(
+  factory AyahQuranModel.fromJson(Map<String, dynamic> json) {
+    return AyahQuranModel(
       ayahUQNumber: json['number'] as int,
       ayahNumber: json['numberInSurah'] as int,
       text: json['text'] as String,
