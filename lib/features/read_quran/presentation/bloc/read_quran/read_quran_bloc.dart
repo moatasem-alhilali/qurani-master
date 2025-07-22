@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
-import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
+import 'package:quran_app/features/read_quran/data/QuranReadHelperSqlite.dart';
+import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 
 part 'read_quran_event.dart';
 part 'read_quran_state.dart';
@@ -26,7 +26,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   final PageController pageController = PageController();
   final BoxController boxController = BoxController();
 
-  final QuranReadHelper quranRH = QuranReadHelper();
+  final QuranReadHelperSqlite quranReadHelperSqlite = QuranReadHelperSqlite();
 
   bool toggle = false;
 
@@ -37,14 +37,16 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   ) async {
     emit(state.copyWith(loadQuranState: RequestState.loading));
     try {
-      await quranRH.loadQuran();
+      final surahs = await quranReadHelperSqlite.getAllSurahs();
+      final pages = await quranReadHelperSqlite.getAllPages();
+      final allAyahs = await quranReadHelperSqlite.getAllAyahs();
 
       emit(
         state.copyWith(
           loadQuranState: RequestState.success,
-          surahs: quranRH.surahs,
-          pages: quranRH.pages,
-          allAyahs: quranRH.allAyahs,
+          surahs: surahs,
+          pages: pages,
+          allAyahs: allAyahs,
         ),
       );
     } catch (e) {
@@ -89,7 +91,10 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
         : boxController.openBox();
   }
 
-  void _toggleHighBox(ToggleHighBoxEvent event, Emitter<ReadQuranState> emit) {
+  void _toggleHighBox(
+    ToggleHighBoxEvent event,
+    Emitter<ReadQuranState> emit,
+  ) {
     emit(state.copyWith(minusHeight: event.minusHeight));
   }
 }

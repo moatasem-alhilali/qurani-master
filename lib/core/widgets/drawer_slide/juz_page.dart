@@ -6,7 +6,7 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class QuranJuz extends StatelessWidget {
   QuranJuz({super.key});
@@ -14,7 +14,7 @@ class QuranJuz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
     return ListView.builder(
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
@@ -142,7 +142,7 @@ class QuranJuz extends StatelessWidget {
               ),
               onTap: () {
                 context
-                    .read<ReadQuranBloc>()
+                    .read<OldReadQuranBloc>()
                     .pageController
                     .jumpToPage(juz.page - 1);
                 context.pop();

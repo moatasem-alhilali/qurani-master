@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/vertical/read_quran_page_vertical_widget.dart';
 
 class BodyReadQuranVerticalWidget extends StatelessWidget {
@@ -13,9 +13,9 @@ class BodyReadQuranVerticalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+    return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
       builder: (context, state) {
-        final pageController = context.read<ReadQuranBloc>().pageController;
+        final pageController = context.read<OldReadQuranBloc>().pageController;
         return SafeArea(
           child: Container(
             padding: context.customOrientation(
@@ -33,8 +33,8 @@ class BodyReadQuranVerticalWidget extends StatelessWidget {
                     controller: pageController,
                     padEnds: false,
                     onPageChanged: (val) async {
-                      context.read<ReadQuranBloc>().add(
-                            SetLastPageReadEvent(page: val),
+                      context.read<OldReadQuranBloc>().add(
+                            OldSetLastPageReadEvent(page: val),
                           );
                     },
                     // physics: const ClampingScrollPhysics(),

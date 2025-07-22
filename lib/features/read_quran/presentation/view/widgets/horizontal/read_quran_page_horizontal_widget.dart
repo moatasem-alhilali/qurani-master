@@ -8,7 +8,7 @@ import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/ayah_text_span_horizontal_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/menu_action_buttons_widget.dart';
 
@@ -37,9 +37,9 @@ class _ReadQuranPageHorizontalWidgetState
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
-        return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+        return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
           builder: (context, state) {
-            final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+            final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
             return LayoutBuilder(
               builder: (context, constraints) {
@@ -361,7 +361,8 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
           ayahUQNum: ayah.ayahUQNumber,
           ayahNum: ayah.ayahNumber,
           onTap: () {
-            final boxController = context.read<ReadQuranBloc>().boxController;
+            final boxController =
+                context.read<OldReadQuranBloc>().boxController;
             if (boxController.isBoxOpen) {
               boxController.closeBox();
             } else {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
+import 'package:quran_app/features/read_quran/data/data_source/old_data_client.dart';
 import 'package:quran_app/features/search/data/model/aya.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -9,7 +9,7 @@ class AyaRepository {
     try {
       // DataBaseClient dataBaseClient = DataBaseClient();
 
-      return await sl.get<DataBaseClient>().database;
+      return await sl.get<OldDataBaseClient>().database;
     } catch (e) {
       throw DatabaseException('Database connection failed: $e');
     }
@@ -55,7 +55,7 @@ class AyaRepository {
 
   Future<List<Aya>> surahSearch(String text) async {
     // Attempt to get a database instance.
-    final database = await sl.get<DataBaseClient>().database;
+    final database = await sl.get<OldDataBaseClient>().database;
     if (database == null) {
       throw DatabaseException('Database connection failed.');
     }
@@ -89,7 +89,7 @@ class AyaRepository {
   }
 
   Future<List<Aya>> fetchAyahsByPage(int offset, int limit) async {
-    final database = await sl.get<DataBaseClient>().database;
+    final database = await sl.get<OldDataBaseClient>().database;
     final ayaList = <Aya>[];
 
     // This SQL query will fetch a limited number of Ayahs, starting from an offset.

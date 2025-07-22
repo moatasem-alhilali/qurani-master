@@ -7,7 +7,7 @@ import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/bookmark/data/request/bookmark_ayah_request.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class AddBookmarkAyahButton extends StatefulWidget {
   const AddBookmarkAyahButton({
@@ -143,6 +143,6 @@ class _AddBookmarkAyahButtonState extends State<AddBookmarkAyahButton>
         ),
       );
     }
-    context.read<ReadQuranBloc>().add(SetStateRBlocEvent());
+    context.read<OldReadQuranBloc>().add(OldSetStateRBlocEvent());
   }
 }

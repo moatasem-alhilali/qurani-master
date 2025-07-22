@@ -11,7 +11,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_ayah.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class BookmarkAyahTab extends StatefulWidget {
   const BookmarkAyahTab({super.key});
@@ -131,7 +131,7 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
       builder: (context, state) {
         final ayahBookmarkList = state.ayahBookmarkList;
         final filteredBookmarks = _filterBookmarks(ayahBookmarkList);
-        final quranRH = context.read<ReadQuranBloc>().quranRH;
+        final quranRH = context.read<OldReadQuranBloc>().quranRH;
 
         if (ayahBookmarkList.isEmpty) {
           return Center(
@@ -305,8 +305,8 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                           ),
                           onTap: () {
                             context
-                                .read<ReadQuranBloc>()
-                                .add(JumpToPageEvent(page: ayah.page - 1));
+                                .read<OldReadQuranBloc>()
+                                .add(OldJumpToPageEvent(page: ayah.page - 1));
                             context.pop();
                           },
                         ),

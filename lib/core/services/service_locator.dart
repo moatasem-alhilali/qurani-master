@@ -15,8 +15,9 @@ import 'package:quran_app/features/notification_schedules/data/repo/notification
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
-import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
+import 'package:quran_app/features/read_quran/data/data_source/old_data_client.dart';
+import 'package:quran_app/features/read_quran/data/data_source/new/full_quran_data_client.dart';
+  import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/search/data/remote/aya_repository.dart';
 import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
@@ -100,7 +101,16 @@ Future<void> setupServiceLocator() async {
 
   // ─────────────────────── DATABASE ───────────────────────
   await _initDatabaseClient();
+  await _initDatabaseClientFullQuran();
 }
 
-Future<void> _initDatabaseClient() async => sl
-    .registerSingleton<DataBaseClient>(DataBaseClient.instance..initDatabase());
+Future<void> _initDatabaseClient() async =>
+    sl.registerSingleton<OldDataBaseClient>(
+        OldDataBaseClient.instance..initDatabase());
+
+
+
+
+Future<void> _initDatabaseClientFullQuran() async =>
+    sl.registerSingleton<FullQuranDataClient>(
+        FullQuranDataClient.instance..initDatabase());

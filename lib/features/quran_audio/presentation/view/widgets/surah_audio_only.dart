@@ -14,14 +14,14 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class SurahAudioOnly extends StatelessWidget {
   const SurahAudioOnly({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+    return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
       builder: (context, stateQuran) {
         return stateQuran.loadQuranState.handle(
           onInitial: const SizedBox(),
@@ -88,7 +88,7 @@ class SurahAudioOnly extends StatelessWidget {
                                           ),
                                           Text(
                                             context
-                                                .read<ReadQuranBloc>()
+                                                .read<OldReadQuranBloc>()
                                                 .quranRH
                                                 .surahs[currentAudioData
                                                         ?.indexSurah ??

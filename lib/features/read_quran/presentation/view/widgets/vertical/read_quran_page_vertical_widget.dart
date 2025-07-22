@@ -7,7 +7,7 @@ import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
 
 class ReadQuranPageVerticalWidget extends StatefulWidget {
@@ -34,9 +34,9 @@ class _ReadQuranPageVerticalWidgetState
   Widget build(BuildContext context) {
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
-        return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+        return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
           builder: (context, state) {
-            final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+            final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
             return LayoutBuilder(
               builder: (context, constraints) {

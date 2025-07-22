@@ -6,7 +6,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/text_highlighting_util.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class SearchAyahListWidget extends StatefulWidget {
@@ -72,8 +72,8 @@ class _SearchAyahListWidgetState extends State<SearchAyahListWidget> {
                         ),
                         // tileColor: context.background,
                         onTap: () {
-                          context.read<ReadQuranBloc>().add(
-                                JumpToPageEvent(
+                          context.read<OldReadQuranBloc>().add(
+                                OldJumpToPageEvent(
                                   page: (search.pageNum as int) - 1,
                                 ),
                               );

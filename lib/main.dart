@@ -79,3 +79,6 @@ void main() async {
 
 // flutter build apk --release --analyze-size --target-platform=android-arm64
 
+
+
+// استخدم في حق القرأن صوت نفس البتوم شيت حق قراءة قرأن

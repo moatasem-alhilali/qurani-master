@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/features/bookmark/data/request/bookmark_page_request.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/main.dart';
 
 class BookmarkIconWidget extends StatefulWidget {
@@ -56,7 +56,7 @@ class _BookmarkIconWidgetState extends State<BookmarkIconWidget>
     return BlocBuilder<BookmarkBloc, BookmarkState>(
       builder: (context, state) {
         final bookmarksController = context.read<BookmarkBloc>();
-        final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+        final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
         final isBookmarked =
             bookmarksController.hasBookmarkPage(widget.pageNumber + 1);
 

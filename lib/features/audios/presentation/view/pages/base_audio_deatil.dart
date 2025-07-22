@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
@@ -14,10 +13,9 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/audio/action_progress.dart';
 import 'package:quran_app/core/widgets/audio/custom_progress.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class BaseAudioDetail extends StatelessWidget {
   BaseAudioDetail({super.key, this.data});
@@ -48,7 +46,7 @@ class BaseAudioDetail extends StatelessWidget {
                       itemCount: state.baseAudioDetail.length,
                       itemBuilder: (context, index) {
                         final surahs =
-                            context.read<ReadQuranBloc>().quranRH.surahs;
+                            context.read<OldReadQuranBloc>().quranRH.surahs;
 
                         final data = surahs[index];
 

@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/bookmark_page_icon_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class HeaderReadQuranHorizontalWidget extends StatelessWidget {
   const HeaderReadQuranHorizontalWidget({
@@ -15,7 +15,7 @@ class HeaderReadQuranHorizontalWidget extends StatelessWidget {
   final int index;
   @override
   Widget build(BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),

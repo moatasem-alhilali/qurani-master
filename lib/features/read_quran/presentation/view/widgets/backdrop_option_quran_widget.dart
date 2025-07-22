@@ -11,7 +11,7 @@ import 'package:quran_app/core/widgets/drawer_slide/juz_page.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/bookmark_aya_tab.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class BackdropOptionQuranWidget extends StatelessWidget {
@@ -49,7 +49,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
           ),
           onTap: () {
             context.read<SearchBloc>().textEditingController.clear();
-            context.read<ReadQuranBloc>().boxController.showSearchBox();
+            context.read<OldReadQuranBloc>().boxController.showSearchBox();
           },
         ),
         Padding(

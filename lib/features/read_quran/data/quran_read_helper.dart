@@ -11,17 +11,7 @@ class QuranReadHelper {
   List<List<AyahQuranModel>> pages = [];
   List<AyahQuranModel> allAyahs = [];
 
-  //
-  static String getTafsirAyah({required int ayah, required int surahNumber}) {
-    var ayahTafsir = '';
-    for (final element in tafsir) {
-      //
-      if (element['aya'] == ayah && element['sura'] == surahNumber) {
-        ayahTafsir = element['text'] as String;
-      }
-    }
-    return ayahTafsir;
-  }
+
 
   Future<void> loadQuran() async {
     final jsonString = await rootBundle.loadString('assets/json/quranV2.json');
@@ -42,8 +32,21 @@ class QuranReadHelper {
     log('Pages Length: ${pages.length}', name: 'Quran Controller');
   }
 
+    //
+  static String getTafsirAyah({required int ayah, required int surahNumber}) {
+    var ayahTafsir = '';
+    for (final element in tafsir) {
+      //
+      if (element['aya'] == ayah && element['sura'] == surahNumber) {
+        ayahTafsir = element['text'] as String;
+      }
+    }
+    return ayahTafsir;
+  }
+
   List<List<AyahQuranModel>> getCurrentPageAyahsSeparatedForBasmalah(
-          int pageIndex) =>
+    int pageIndex,
+  ) =>
       pages[pageIndex]
           .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
           .toList();
@@ -84,6 +87,8 @@ class QuranReadHelper {
   String getSurahByAyahUQ(int ayah) => surahs
       .firstWhere((s) => s.ayahs.any((a) => a.ayahUQNumber == ayah))
       .arabicName;
+
+      
   List<int> downThePageIndex = [
     75,
     206,

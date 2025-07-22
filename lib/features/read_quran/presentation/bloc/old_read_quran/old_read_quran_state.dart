@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-part of 'read_quran_bloc.dart';
+part of 'old_read_quran_bloc.dart';
 
 @immutable
-class ReadQuranState {
-  const ReadQuranState({
+class OldReadQuranState {
+  const OldReadQuranState({
     this.loadQuranState = RequestState.initial,
     this.surahs = const [],
     this.pages = const [],
@@ -16,14 +16,14 @@ class ReadQuranState {
   final List<AyahQuranModel> allAyahs;
   final double minusHeight;
 
-  ReadQuranState copyWith({
+  OldReadQuranState copyWith({
     RequestState? loadQuranState,
     List<Surah>? surahs,
     List<List<AyahQuranModel>>? pages,
     List<AyahQuranModel>? allAyahs,
     double? minusHeight,
   }) {
-    return ReadQuranState(
+    return OldReadQuranState(
       loadQuranState: loadQuranState ?? this.loadQuranState,
       surahs: surahs ?? this.surahs,
       pages: pages ?? this.pages,
@@ -33,7 +33,7 @@ class ReadQuranState {
   }
 
   @override
-  bool operator ==(covariant ReadQuranState other) {
+  bool operator ==(covariant OldReadQuranState other) {
     if (identical(this, other)) return true;
 
     return other.loadQuranState == loadQuranState &&

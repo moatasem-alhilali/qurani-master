@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class QuranSurahList extends StatefulWidget {
   const QuranSurahList({super.key});
@@ -26,7 +26,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
 
   @override
   Widget build(BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
     // Filter surahs based on search query
     final filteredSurahs = quranCtrl.surahs.where((surah) {
@@ -278,8 +278,8 @@ class _QuranSurahListState extends State<QuranSurahList> {
                             onTap: () {
                               final page = surah.ayahs.first.page - 1;
                               context
-                                  .read<ReadQuranBloc>()
-                                  .add(JumpToPageEvent(page: page));
+                                  .read<OldReadQuranBloc>()
+                                  .add(OldJumpToPageEvent(page: page));
                               context.pop();
                             },
                           ),

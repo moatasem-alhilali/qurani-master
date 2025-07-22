@@ -13,7 +13,7 @@ import 'package:quran_app/features/another_screen/data/models/surah_info_model.d
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/download_surah_aduio_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 class AllSurahAudioWidget extends StatefulWidget {
   const AllSurahAudioWidget({
@@ -44,10 +44,10 @@ class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
             ListView.builder(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: context.read<ReadQuranBloc>().quranRH.surahs.length,
+              itemCount: context.read<OldReadQuranBloc>().quranRH.surahs.length,
               itemBuilder: (context, index) {
                 final data =
-                    context.read<ReadQuranBloc>().quranRH.surahs[index];
+                    context.read<OldReadQuranBloc>().quranRH.surahs[index];
                 return CardWidget(
                   height: context.getHight(10),
                   margin:

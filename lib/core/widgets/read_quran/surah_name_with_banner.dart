@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 
 extension CustomSurahNameWithBannerExtension on BuildContext {
   Widget surahNameWidget(
@@ -60,7 +60,7 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
   }
 
   Widget surahAyahBannerFirstPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
     final ayahs =
         quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
@@ -96,7 +96,7 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
   }
 
   Widget surahBannerLastPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
     final ayahs =
         quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
     return quranCtrl.downThePageIndex.contains(pageIndex)
@@ -108,7 +108,7 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
   }
 
   Widget surahBannerFirstPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<ReadQuranBloc>().quranRH;
+    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
 
     final ayahs =
         quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
