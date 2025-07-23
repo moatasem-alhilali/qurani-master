@@ -6,7 +6,6 @@ import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/models_public/surahs_model.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -15,7 +14,8 @@ import 'package:quran_app/core/widgets/audio/action_progress.dart';
 import 'package:quran_app/core/widgets/audio/custom_progress.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class BaseAudioDetail extends StatelessWidget {
   BaseAudioDetail({super.key, this.data});
@@ -31,37 +31,38 @@ class BaseAudioDetail extends StatelessWidget {
       child: BaseHomeWidget(
         isScroll: false,
         title: data['title'].toString(),
-        body: BlocBuilder<BaseAudioBloc, BaseAudioState>(
-          builder: (context, state) {
-            return state.famousBaseAudioState.handle<dynamic>(
-              onSuccess: () => Column(
-                children: [
-                  ProgressAudio(
-                    audioPlayer: state.audioPlayer ?? AudioPlayer(),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.baseAudioDetail.length,
-                      itemBuilder: (context, index) {
-                        final surahs =
-                            context.read<OldReadQuranBloc>().quranRH.surahs;
+        body: BlocBuilder<ReadQuranBloc, ReadQuranState>(
+          builder: (context, readQuranState) {
+            return BlocBuilder<BaseAudioBloc, BaseAudioState>(
+              builder: (context, state) {
+                return state.famousBaseAudioState.handle<dynamic>(
+                  onSuccess: () => Column(
+                    children: [
+                      ProgressAudio(
+                        audioPlayer: state.audioPlayer ?? AudioPlayer(),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: state.baseAudioDetail.length,
+                          itemBuilder: (context, index) {
+                            final data = readQuranState.surahs[index];
 
-                        final data = surahs[index];
-
-                        final dataSurah = state.baseAudioDetail[index];
-                        return _ItemDownloaded(
-                          audioPlayer: state.audioPlayer,
-                          data: data,
-                          current: index,
-                          dataSurah: dataSurah,
-                        );
-                      },
-                    ),
+                            final dataSurah = state.baseAudioDetail[index];
+                            return _ItemDownloaded(
+                              audioPlayer: state.audioPlayer,
+                              data: data,
+                              current: index,
+                              dataSurah: dataSurah,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         ),
@@ -78,7 +79,7 @@ class _ItemDownloaded extends StatelessWidget {
     this.audioPlayer,
     super.key,
   });
-  final Surah? data;
+  final NewSurahModel? data;
   final dynamic dataSurah;
   final int current;
   final AudioPlayer? audioPlayer;
@@ -127,7 +128,7 @@ class _ItemDownloaded extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  data!.arabicName,
+                  data!.nameAr,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -138,7 +139,7 @@ class _ItemDownloaded extends StatelessWidget {
                   style: TextStyle(color: Colors.grey),
                 ),
                 Text(
-                  '${data!.ayahs.length}',
+                  '${data!.ayahCount}',
                   style: const TextStyle(
                     color: Colors.grey,
                   ),
@@ -146,7 +147,7 @@ class _ItemDownloaded extends StatelessWidget {
               ],
             ),
           ),
-          _BtnDownload(data: dataSurah, title: data!.arabicName),
+          _BtnDownload(data: dataSurah, title: data!.nameAr),
         ],
       ),
     );

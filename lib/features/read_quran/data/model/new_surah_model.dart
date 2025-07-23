@@ -3,6 +3,7 @@ import 'dart:convert';
 class NewSurahModel {
   NewSurahModel({
     required this.id,
+    required this.surahNumber,
     required this.nameAr,
     required this.ayahCount,
     this.nameEn,
@@ -12,6 +13,7 @@ class NewSurahModel {
 
   factory NewSurahModel.fromMap(Map<String, dynamic> map) => NewSurahModel(
         id: map['id'] as int,
+        surahNumber: map['number'] as int,
         nameAr: map['name_ar'] as String,
         nameEn: map['name_en'] as String?,
         translation: map['translation'] as String?,
@@ -19,6 +21,7 @@ class NewSurahModel {
         ayahCount: map['ayah_count'] as int,
       );
   final int id;
+  final int surahNumber;
   final String nameAr;
   final String? nameEn;
   final String? translation;
@@ -67,8 +70,7 @@ class NewAyahModel {
         audio: map['audio'] as String?,
         audioSecondary: map['audio_secondary'] != null
             ? List<String>.from(
-                jsonDecode(map['audio_secondary'] as String)
-                    as Iterable<String>,
+                (jsonDecode(map['audio_secondary'] as String) as List<dynamic>).map((e) => e.toString()),
               )
             : null,
         tafsir: map['tafsir'] as String?,

@@ -28,7 +28,7 @@ void main() async {
 
   await DownloadService().initialize();
   // 🧩 Register dependencies using service locator (e.g., GetIt)
-  setupServiceLocator();
+ await setupServiceLocator();
 
   // 👁️ Set a custom Bloc observer to monitor Bloc events and transitions globally
   Bloc.observer = MyBlocObserver();

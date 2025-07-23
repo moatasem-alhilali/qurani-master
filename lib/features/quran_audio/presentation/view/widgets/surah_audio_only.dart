@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
@@ -14,16 +13,16 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class SurahAudioOnly extends StatelessWidget {
   const SurahAudioOnly({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
-      builder: (context, stateQuran) {
-        return stateQuran.loadQuranState.handle(
+    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+      builder: (context, readQuranState) {
+        return readQuranState.loadQuranState.handle(
           onInitial: const SizedBox(),
           onLoading: const CircularProgressIndicator(),
           onError: const SizedBox(),
@@ -33,7 +32,7 @@ class SurahAudioOnly extends StatelessWidget {
               const BaseHederWidget(text: 'الاستماع الى القرأن'),
               BlocBuilder<QuranAudioBloc, QuranAudioState>(
                 builder: (context, state) {
-                  return state.loadState.handle(
+                  return state.loadAudioSourceState.handle(
                     onInitial: const SizedBox(),
                     onLoading: const CircularProgressIndicator(),
                     onError: const SizedBox(),
@@ -87,13 +86,11 @@ class SurahAudioOnly extends StatelessWidget {
                                             height: 5,
                                           ),
                                           Text(
-                                            context
-                                                .read<OldReadQuranBloc>()
-                                                .quranRH
+                                            readQuranState
                                                 .surahs[currentAudioData
                                                         ?.indexSurah ??
                                                     0]
-                                                .arabicName,
+                                                .nameAr,
                                             style: titleSmall(context),
                                           ),
                                         ],
@@ -146,7 +143,7 @@ class _ActionProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BaseBloc, BaseState>(
+    return BlocBuilder<QuranAudioBloc, QuranAudioState>(
       builder: (context, state) {
         return StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,

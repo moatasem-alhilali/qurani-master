@@ -1,8 +1,5 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quran_app/core/notification/notification_permissions_service.dart';
-import 'package:quran_app/core/notification/notification_service.dart';
-import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/services_location.dart';
 
 class LocationPermissionService {
@@ -10,8 +7,6 @@ class LocationPermissionService {
     await _requestLocationGeolocator();
     await _requestLocation();
     serviceEnabled = await locationEnabled();
-
-  
   }
 
   static Future<void> _requestLocation() async {

@@ -7,7 +7,7 @@ import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/all_surah_aduio_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/play_suarh_audio_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/recommended_qurea.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class AudioQuranScreen extends StatefulWidget {
   const AudioQuranScreen({super.key});
@@ -37,7 +37,7 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
             const RecommendedQureaWidget(),
 
             //another surah
-            BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
+            BlocBuilder<ReadQuranBloc, ReadQuranState>(
               builder: (context, state) {
                 switch (state.loadQuranState) {
                   case RequestState.initial:

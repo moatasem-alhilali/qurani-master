@@ -1,16 +1,22 @@
+import 'package:quran_app/features/read_quran/data/data_source/new/full_quran_data_client.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AyahDataSource {
-  AyahDataSource(this.db);
-  final Database db;
+  AyahDataSource(this.fullQuranDataClient);
+  final FullQuranDataClient fullQuranDataClient;
+
+  // get database
+  Future<Database?> get db async {
+    return fullQuranDataClient.database;
+  }
 
   Future<List<NewAyahModel>> getAyahsBySurah(
     int surahId, {
     int? limit,
     int? offset,
   }) async {
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: 'surah_id = ?',
       whereArgs: [surahId],
@@ -22,7 +28,7 @@ class AyahDataSource {
   }
 
   Future<NewAyahModel?> getAyah(int surahId, int ayahNumber) async {
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: 'surah_id = ? AND ayah_number = ?',
       whereArgs: [surahId, ayahNumber],
@@ -31,7 +37,7 @@ class AyahDataSource {
   }
 
   Future<NewAyahModel?> getAyahById(int id) async {
-    final result = await db.query('ayahs', where: 'id = ?', whereArgs: [id]);
+    final result = await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [id]);
     return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
   }
 
@@ -42,7 +48,7 @@ class AyahDataSource {
     int? offset,
   }) async {
     final col = inTafsir ? 'tafsir' : 'text';
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: '$col LIKE ?',
       whereArgs: ['%$query%'],
@@ -54,7 +60,7 @@ class AyahDataSource {
   }
 
   Future<int> getAyahCountBySurah(int surahId) async {
-    final res = await db.rawQuery(
+    final res = await (await db)!.rawQuery(
       'SELECT COUNT(*) as c FROM ayahs WHERE surah_id=?',
       [surahId],
     );
@@ -62,21 +68,21 @@ class AyahDataSource {
   }
 
   Future<int> getTotalAyahCount() async {
-    final res = await db.rawQuery('SELECT COUNT(*) as c FROM ayahs');
+    final res = await (await db)!.rawQuery('SELECT COUNT(*) as c FROM ayahs');
     return res.isNotEmpty ? (res.first['c']! as int) : 0;
   }
 
   /// جلب آية بناء على رقمها المطلق في القرآن (من 1 إلى 6236)
   Future<NewAyahModel?> getAyahByGlobalIndex(int globalIndex) async {
     final result =
-        await db.query('ayahs', where: 'id = ?', whereArgs: [globalIndex]);
+        await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [globalIndex]);
     return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
   }
 
   /// جلب آيات حسب الصفحة
   Future<List<NewAyahModel>> getAyahsByPage(int page,
       {int? limit, int? offset}) async {
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: 'page = ?',
       whereArgs: [page],
@@ -90,7 +96,7 @@ class AyahDataSource {
   /// جلب آيات حسب الجزء
   Future<List<NewAyahModel>> getAyahsByJuz(int juz,
       {int? limit, int? offset}) async {
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: 'juz = ?',
       whereArgs: [juz],
@@ -103,7 +109,7 @@ class AyahDataSource {
 
   /// جلب كل الآيات التي فيها سجدة
   Future<List<NewAyahModel>> getAyahsWithSajda() async {
-    final result = await db.query(
+    final result = await (await db)!.query(
       'ayahs',
       where: 'sajda > 0',
       orderBy: 'surah_id ASC, ayah_number ASC',

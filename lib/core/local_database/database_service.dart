@@ -230,10 +230,9 @@ class DatabaseService {
     );
   }
 
-   Future<int> update(
+  Future<int> update(
     String table,
-    Map<String, dynamic> values,
-    {
+    Map<String, dynamic> values, {
     ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.abort,
     String? where,
     List<Object?>? whereArgs,

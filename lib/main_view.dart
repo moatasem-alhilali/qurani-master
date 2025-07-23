@@ -24,7 +24,7 @@ import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cu
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
-import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class MyApp extends StatelessWidget {
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
         ///search
         BlocProvider(
           create: (context) => SearchBloc(
-            repositoryImpl: sl<SearchRepositoryImpl>(),
+            repositoryImpl: sl<QuranSearchDataSource>(),
           ),
           // lazy: false,
         ),

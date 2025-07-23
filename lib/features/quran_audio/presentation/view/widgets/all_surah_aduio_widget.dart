@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
@@ -13,7 +12,9 @@ import 'package:quran_app/features/another_screen/data/models/surah_info_model.d
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/download_surah_aduio_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/read_quran_page_horizontal_widget.dart';
 
 class AllSurahAudioWidget extends StatefulWidget {
   const AllSurahAudioWidget({
@@ -27,8 +28,8 @@ class AllSurahAudioWidget extends StatefulWidget {
 class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BaseBloc, BaseState>(
-      builder: (context, state) {
+    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+      builder: (context, readQuranState) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,10 +45,9 @@ class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
             ListView.builder(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: context.read<OldReadQuranBloc>().quranRH.surahs.length,
+              itemCount: readQuranState.surahs.length,
               itemBuilder: (context, index) {
-                final data =
-                    context.read<OldReadQuranBloc>().quranRH.surahs[index];
+                final data = readQuranState.surahs[index];
                 return CardWidget(
                   height: context.getHight(10),
                   margin:
@@ -70,7 +70,7 @@ class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
 
 class _ItemDownloaded extends StatefulWidget {
   _ItemDownloaded({super.key, this.data, this.indexSurah});
-  Surah? data;
+  NewSurahModel? data;
   int? indexSurah;
 
   @override
@@ -102,13 +102,13 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.data!.arabicName,
+                      widget.data!.nameAr,
                       style: titleSmall(context).copyWith(
                         fontSize: 16.sp,
                       ),
                     ),
                     Text(
-                      '${widget.data!.ayahs.length}',
+                      '${widget.data!.ayahCount}',
                       style: titleSmall(context).copyWith(),
                     ),
                   ],

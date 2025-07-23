@@ -48,6 +48,7 @@ class QuranReadHelperSqlite {
   /// جلب كل صفحات المصحف بشكل كسول (على حسب الحاجة فقط)
   Future<List<List<NewAyahModel>>> getAllPages() async {
     final pages = <List<NewAyahModel>>[];
+
     for (var page = 1; page <= 604; page++) {
       pages.add(await getAyahsByPage(page));
     }
@@ -106,7 +107,8 @@ class QuranReadHelperSqlite {
   /// جلب كل آيات القرآن (مثالي للبحث فقط، تجنب تحميل الكل للذاكرة في الاستخدام اليومي)
   Future<List<NewAyahModel>> getAllAyahs() async {
     final db = await getDatabase();
-    final data = await db?.query(NewAyahModel.tableName, orderBy: 'number_global');
+    final data =
+        await db?.query(NewAyahModel.tableName, orderBy: 'number_global');
     return data?.map(NewAyahModel.fromMap).toList() ?? [];
   }
 

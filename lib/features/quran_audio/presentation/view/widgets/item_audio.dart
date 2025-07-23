@@ -3,7 +3,7 @@ import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
-import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
+import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 
 class StyleContainerWidget extends StatelessWidget {
   StyleContainerWidget({required this.child, super.key});
@@ -26,7 +26,7 @@ class StyleContainerWidget extends StatelessWidget {
 
 class ItemDownloaded extends StatelessWidget {
   ItemDownloaded({super.key, this.data, this.indexSurah});
-  SurahModel? data;
+  NewSurahModel? data;
   int? indexSurah;
 
   @override
@@ -43,14 +43,14 @@ class ItemDownloaded extends StatelessWidget {
         Column(
           children: [
             Text(
-              data!.titleAr!,
+              data!.nameAr!,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
               ),
             ),
             Text(
-              '${data!.count!}',
+              '${data!.ayahCount}',
               style: const TextStyle(
                 color: Colors.grey,
               ),

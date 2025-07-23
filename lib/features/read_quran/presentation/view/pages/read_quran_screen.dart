@@ -4,6 +4,7 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/body_read_quran_horizontal_widget.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
@@ -20,8 +21,8 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<OldReadQuranBloc>().add(OldJumpToPageEvent());
-      context.read<OldReadQuranBloc>().add(OldToggleBoxEvent());
+      context.read<ReadQuranBloc>().add(JumpToPageEvent());
+      context.read<ReadQuranBloc>().add(ToggleBoxEvent());
     });
 
     super.initState();
@@ -31,22 +32,22 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
-        return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
+        return BlocBuilder<ReadQuranBloc, ReadQuranState>(
           builder: (context, state) {
             final boxController =
-                context.read<OldReadQuranBloc>().boxController;
+                context.read<ReadQuranBloc>().boxController;
             return Scaffold(
               backgroundColor: context.scaffoldBackgroundColor,
               body: SlidingBox(
                 minHeight: 50,
                 onSearchBoxHide: () {
-                  context.read<OldReadQuranBloc>().add(
-                        OldToggleHighBoxEvent(),
+                  context.read<ReadQuranBloc>().add(
+                        ToggleHighBoxEvent(),
                       );
                 },
                 onSearchBoxShow: () {
-                  context.read<OldReadQuranBloc>().add(
-                        OldToggleHighBoxEvent(
+                  context.read<ReadQuranBloc>().add(
+                        ToggleHighBoxEvent(
                           minusHeight: 0,
                         ),
                       );

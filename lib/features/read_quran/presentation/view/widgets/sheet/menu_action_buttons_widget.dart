@@ -10,6 +10,7 @@ import 'package:quran_app/core/package/arabic_convert.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/add_bookmark_ayah_button.dart';
 import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/sheet/ayah_bottom_sheet_widget.dart';
 
 class MenuActionButtonWidget extends StatefulWidget {
@@ -42,14 +43,11 @@ class MenuActionButtonWidget extends StatefulWidget {
 class _MenuActionButtonWidgetState extends State<MenuActionButtonWidget> {
   @override
   void initState() {
+    context.read<ReadQuranBloc>().add(GetTafsirAyahEvent(
+          ayah: widget.ayahNum,
+          surahNumber: widget.surahNum,
+        ));
     super.initState();
-  }
-
-  String tafsirAyah() {
-    return QuranReadHelper.getTafsirAyah(
-      ayah: widget.ayahNum,
-      surahNumber: widget.surahNum,
-    );
   }
 
   @override
@@ -110,11 +108,15 @@ class _MenuActionButtonWidgetState extends State<MenuActionButtonWidget> {
             ),
             const Gap(6),
             const Divider(),
-            AyahBottomSheetWidget(
-              ayah: widget.ayahTextNormal,
-              verseNumber: widget.ayahNum,
-              text: tafsirAyah(),
-              surahNumber: widget.surahNum,
+            BlocBuilder<ReadQuranBloc, ReadQuranState>(
+              builder: (context, state) {
+                return AyahBottomSheetWidget(
+                  ayah: widget.ayahTextNormal,
+                  verseNumber: widget.ayahNum,
+                  text: state.tafsirAyah ?? '',
+                  surahNumber: widget.surahNum,
+                );
+              },
             ),
           ],
         ),

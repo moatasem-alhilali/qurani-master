@@ -5,6 +5,12 @@ abstract class ReadQuranEvent {}
 
 class LoadQuranEvent extends ReadQuranEvent {}
 
+class GetTafsirAyahEvent extends ReadQuranEvent {
+  GetTafsirAyahEvent({required this.ayah, required this.surahNumber});
+  final int ayah;
+  final int surahNumber;
+}
+
 class ToggleEvent extends ReadQuranEvent {}
 
 class SetStateRBlocEvent extends ReadQuranEvent {}

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 extension CustomSurahNameWithBannerExtension on BuildContext {
   Widget surahNameWidget(
@@ -60,10 +60,9 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
   }
 
   Widget surahAyahBannerFirstPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
+    final state = context.read<ReadQuranBloc>().state;
 
-    final ayahs =
-        quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
+    final ayahs = state.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
     return ayahs.first.ayahNumber == 1
         ? Container(
             margin: const EdgeInsets.only(top: 16, right: 8, left: 8),
@@ -76,15 +75,15 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
             child: Column(
               children: [
                 surahAyahBannerWidget(
-                  quranCtrl.getSurahNumberByAyah(ayahs.first).toString(),
+                  state.getSurahNumberByAyah(ayahs.first).toString(),
                 ),
-                if (quranCtrl.getSurahNumberByAyah(ayahs.first) == 9 ||
-                    quranCtrl.getSurahNumberByAyah(ayahs.first) == 1)
+                if (state.getSurahNumberByAyah(ayahs.first) == 9 ||
+                    state.getSurahNumberByAyah(ayahs.first) == 1)
                   const SizedBox.shrink()
                 else
                   ayahs.first.ayahNumber == 1
-                      ? (quranCtrl.getSurahNumberByAyah(ayahs.first) == 95 ||
-                              quranCtrl.getSurahNumberByAyah(ayahs.first) == 97)
+                      ? (state.getSurahNumberByAyah(ayahs.first) == 95 ||
+                              state.getSurahNumberByAyah(ayahs.first) == 97)
                           ? besmAllah2(context)
                           : besmAllah(context)
                       : const SizedBox.shrink(),
@@ -96,27 +95,25 @@ extension CustomSurahNameWithBannerExtension on BuildContext {
   }
 
   Widget surahBannerLastPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
-    final ayahs =
-        quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
-    return quranCtrl.downThePageIndex.contains(pageIndex)
+    final state = context.read<ReadQuranBloc>().state;
+    final ayahs = state.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
+    return state.downThePageIndex.contains(pageIndex)
         ? surahBannerWidget(
-            (quranCtrl.getSurahNumberByAyah(ayahs.first) + 1).toString(),
+            (state.getSurahNumberByAyah(ayahs.first) + 1).toString(),
             context,
           )
         : const SizedBox.shrink();
   }
 
   Widget surahBannerFirstPlace(int pageIndex, int i, BuildContext context) {
-    final quranCtrl = context.read<OldReadQuranBloc>().quranRH;
+    final state = context.read<ReadQuranBloc>().state;
 
-    final ayahs =
-        quranCtrl.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
+    final ayahs = state.getCurrentPageAyahsSeparatedForBasmalah(pageIndex)[i];
     return ayahs.first.ayahNumber == 1
-        ? quranCtrl.topOfThePageIndex.contains(pageIndex)
+        ? state.topOfThePageIndex.contains(pageIndex)
             ? const SizedBox.shrink()
             : surahBannerWidget(
-                quranCtrl.getSurahNumberByAyah(ayahs.first).toString(),
+                state.getSurahNumberByAyah(ayahs.first).toString(),
                 context,
               )
         : const SizedBox.shrink();
