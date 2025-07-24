@@ -194,20 +194,6 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
         gradient: gradient,
         color: context.secondary,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: elevated
-            ? [
-                BoxShadow(
-                  color: context.primaryScheme.withOpacity(0.1),
-                  blurRadius: 20.r,
-                  offset: Offset(0, 8.h),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10.r,
-                  offset: Offset(0, 2.h),
-                ),
-              ]
-            : null,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
@@ -291,7 +277,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     child: Container(
                       padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
-                        color: context.primaryScheme.withOpacity(0.1),
+                        color: context.primaryScheme,
                         shape: BoxShape.circle,
                       ),
                       child: SizedBox(
@@ -323,7 +309,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: context.primaryScheme.withOpacity(0.1),
+                color: context.primaryScheme.withAlpha(20),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -351,7 +337,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme.withOpacity(0.1),
+                      color: context.primaryScheme.withAlpha(20),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
@@ -486,7 +472,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
               duration: const Duration(milliseconds: 300),
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.2),
+                color: statusColor.withAlpha(20),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -515,10 +501,10 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
+                      color: statusColor.withAlpha(20),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: statusColor.withOpacity(0.3),
+                        color: statusColor.withAlpha(30),
                       ),
                     ),
                     child: Text(
@@ -543,7 +529,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     child: Container(
                       padding: EdgeInsets.all(6.w),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.2),
+                        color: Colors.red.withAlpha(20),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -721,17 +707,17 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        context.primaryScheme.withOpacity(0.05),
-                        context.primaryScheme.withOpacity(0.02),
+                        context.primaryScheme.withAlpha(5),
+                        context.primaryScheme.withAlpha(2),
                       ],
                     )
                   : null,
-              color: onTap != null ? null : context.gray6.withOpacity(0.3),
+              color: onTap != null ? null : context.gray6.withAlpha(30),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: onTap != null
-                    ? context.primaryScheme.withOpacity(0.2)
-                    : context.gray1.withOpacity(0.2),
+                    ? context.primaryScheme.withAlpha(20)
+                    : context.gray1.withAlpha(20),
                 width: 1.5,
               ),
               boxShadow: onTap != null

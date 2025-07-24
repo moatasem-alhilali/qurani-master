@@ -55,25 +55,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme.withOpacity(0.1),
+                      color: context.primaryScheme,
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(color: context.primaryScheme),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, 10.h),
-                        ),
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, -10.h),
-                        ),
-                      ],
                     ),
                     child: Icon(
                       CupertinoIcons.bell,
-                      color: context.primaryScheme,
+                      // color: context.primaryScheme,
                       size: 24.sp,
                     ),
                   ),
@@ -111,25 +99,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme.withOpacity(0.1),
+                      color: context.primaryScheme,
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(color: context.primaryScheme),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, 10.h),
-                        ),
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, -10.h),
-                        ),
-                      ],
                     ),
                     child: Icon(
                       CupertinoIcons.arrow_down_to_line,
-                      color: context.primaryScheme,
+                      // color: context.white,
                       size: 24.sp,
                     ),
                   ),
@@ -167,25 +143,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme.withOpacity(0.1),
+                      color: context.primaryScheme,
                       borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(color: context.primaryScheme),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, 10.h),
-                        ),
-                        BoxShadow(
-                          color: context.primaryScheme.withOpacity(0.1),
-                          blurRadius: 10.r,
-                          offset: Offset(0, -10.h),
-                        ),
-                      ],
                     ),
                     child: Icon(
                       CupertinoIcons.arrow_up_circle,
-                      color: context.primaryScheme,
+                      // color: context.primaryScheme,
                       size: 24.sp,
                     ),
                   ),
