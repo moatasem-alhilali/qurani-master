@@ -49,3 +49,15 @@ class ChangeCurrentAudioDataEvent extends QuranAudioEvent {
   final bool reInitialize;
   final CurrentQuranAudioModel currentAudioData;
 }
+
+class ToggleShuffleEvent extends QuranAudioEvent {
+  ToggleShuffleEvent();
+}
+
+class CycleLoopModeEvent extends QuranAudioEvent {
+  CycleLoopModeEvent(); // off ➜ one ➜ all ➜ off
+}
+
+class ToggleMuteEvent extends QuranAudioEvent {
+  ToggleMuteEvent();
+}

@@ -1,19 +1,16 @@
-import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
+part of 'surah_info_bloc.dart';
 
-abstract class SurahInfoState {}
-
-class SurahInfoInitial extends SurahInfoState {}
-
-class SurahInfoLoading extends SurahInfoState {}
-
-class SurahInfoLoaded extends SurahInfoState {
+class SurahInfoState {
+  final RequestState state;
   final List<SurahInfoModel> data;
+  SurahInfoState({this.state = RequestState.initial, this.data = const []});
 
-  SurahInfoLoaded(this.data);
+  SurahInfoState copyWith({
+    RequestState? state,
+    List<SurahInfoModel>? data,
+  }) {
+    return SurahInfoState(state: state ?? this.state, data: data ?? this.data);
+  }
 }
 
-class SurahInfoError extends SurahInfoState {
-  final String message;
 
-  SurahInfoError(this.message);
-}

@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
+import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_event.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_state.dart';
 
 class HisnMuslimScreen extends StatelessWidget {
   const HisnMuslimScreen({super.key});
@@ -20,65 +19,62 @@ class HisnMuslimScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HisnMuslimBloc()..add(LoadHisnMuslimEvent()),
-      child: BaseHomeWidget(
+      child: AppScaffoldWidget(
         title: 'حصن المسلم',
-        isScroll: false,
-        body: BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
-          builder: (context, state) {
-            if (state is HisnMuslimLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        slivers: [
+          BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
+            builder: (context, state) {
+              return state.state.whenSliver<HisnMuslimModel>(
+                onSuccess: () {
+                  final data = state.hisnMuslim;
 
-            if (state is HisnMuslimLoaded) {
-              final data = state.hisnMuslim;
-
-              return ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final item = data[index];
-                  return BaseAnimate(
-                    index: 0,
-                    child: InkWell(
-                      onTap: () => _showDetailBottomSheet(context, item),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: index % 2 == 0
-                              ? context.secondary
-                              : context.secondary.withOpacity(0.8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child:
-                                  Text(item.title, style: titleSmall(context)),
+                  return SliverList.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final item = data[index];
+                      return BaseAnimate(
+                        index: 0,
+                        child: InkWell(
+                          onTap: () => _showDetailBottomSheet(context, item),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: index % 2 == 0
+                                  ? context.secondary
+                                  : context.secondary.withOpacity(0.8),
                             ),
-                            CircleAvatar(
-                              backgroundColor: index % 2 == 0
-                                  ? context.primaryScheme
-                                  : context.primarySecondary,
-                              radius: 18,
-                              child: Text('${index + 1}'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    item.title,
+                                    style: titleSmall(context),
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  backgroundColor: index % 2 == 0
+                                      ? context.primaryScheme
+                                      : context.primarySecondary,
+                                  radius: 18,
+                                  child: Text('${index + 1}'),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
+                context: context,
+                sliverList: state.hisnMuslim,
               );
-            }
-
-            if (state is HisnMuslimError) {
-              return Center(child: Text(state.message));
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
+            },
+          ),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_page_model.dart';
@@ -142,7 +143,7 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                 Center(
                   child: Text(
                     'لا يوجد صفحات محفوظة',
-                    style: context.titleMedium.copyWith(
+                    style: context.titleMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 16.sp,
                     ),
@@ -165,7 +166,7 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                 Center(
                   child: Text(
                     'لا توجد نتائج للبحث عن "$_searchQuery"',
-                    style: context.titleMedium.copyWith(
+                    style: context.titleMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 16.sp,
                     ),

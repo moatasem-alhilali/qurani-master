@@ -6,12 +6,7 @@ extension ThemeContextExtension on BuildContext {
 
   ColorScheme get colorScheme => theme.colorScheme;
 
-  TextTheme get testStyles => theme.textTheme;
-
-  TextStyle get headlineLarge => testStyles.headlineLarge!;
-  TextStyle get bodyMedium => testStyles.bodyMedium!;
-  TextStyle get titleSmall => testStyles.titleSmall!;
-  TextStyle get titleMedium => testStyles.titleMedium!;
+ 
   
 }
 

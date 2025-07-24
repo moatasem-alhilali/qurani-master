@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
@@ -101,7 +102,7 @@ extension RequestStateSliverX on RequestState {
                       children: [
                         Text(
                           'لا يوجد بيانات للعرض',
-                          style: context?.bodyMedium.copyWith(
+                          style: context?.bodyMedium?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),
                         ),

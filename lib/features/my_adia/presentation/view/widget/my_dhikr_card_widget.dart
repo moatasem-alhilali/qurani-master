@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -109,7 +110,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
                 SizedBox(width: 12.w),
                 Text(
                   'تعديل',
-                  style: context.titleMedium.copyWith(
+                  style: context.titleMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -128,7 +129,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
               SizedBox(width: 12.w),
               Text(
                 'إعادة تعيين',
-                style: context.titleMedium.copyWith(
+                style: context.titleMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -148,7 +149,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
                 SizedBox(width: 12.w),
                 Text(
                   'حذف',
-                  style: context.titleMedium.copyWith(
+                  style: context.titleMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.red,
                   ),
@@ -199,7 +200,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
                               // Title with enhanced styling
                               Text(
                                 widget.subih.title,
-                                style: titleMedium(context).copyWith(
+                                style: context.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.sp,
                                   color: context.primaryScheme,
@@ -210,7 +211,7 @@ class _MyDhikrCardWidgetState extends State<MyDhikrCardWidget>
                               // Content preview
                               Text(
                                 widget.subih.content,
-                                style: context.bodyMedium.copyWith(
+                                style: context.bodyMedium?.copyWith(
                                   color: FxColors.gray1,
                                   fontSize: 14.sp,
                                   height: 1.4,

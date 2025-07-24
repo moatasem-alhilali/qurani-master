@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/constant.dart';
@@ -16,7 +17,7 @@ class MainThikrScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'الا بذكر الله تطمئن القلوب',
       body: Column(
         children: [

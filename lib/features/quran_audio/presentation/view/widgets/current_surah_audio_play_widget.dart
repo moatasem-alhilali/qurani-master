@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
@@ -95,7 +96,7 @@ class _ItemWidget extends StatelessWidget {
                         radius: 20,
                         child: Text(
                           currentAudioData?.nameReader?.substring(0, 1) ?? '',
-                          style: context.titleMedium.copyWith(
+                          style: context.titleMedium?.copyWith(
                             color: context.colorScheme.onSurface,
                           ),
                         ),
@@ -107,14 +108,14 @@ class _ItemWidget extends StatelessWidget {
                         children: [
                           Text(
                             currentAudioData?.nameReader ?? '',
-                            style: context.titleMedium.copyWith(
+                            style: context.titleMedium?.copyWith(
                               color: Colors.white,
                             ),
                           ),
                           // const Gap(5),
                           Text(
                             currentAudioData?.nameSurah ?? '',
-                            style: context.titleSmall.copyWith(
+                            style: context.titleSmall?.copyWith(
                               color: Colors.white,
                             ),
                           ),

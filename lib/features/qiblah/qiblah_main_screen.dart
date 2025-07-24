@@ -8,6 +8,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 class QiblahMainScreen extends StatefulWidget {
@@ -371,12 +372,16 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
           SizedBox(height: 20.h),
           Text(
             'جاري تحديد اتجاه القبلة...',
-            style: context.titleMedium,
+            style: context.titleMedium?.copyWith(
+              color: context.primaryScheme,
+            ),
           ),
           SizedBox(height: 10.h),
           Text(
             'تأكد من تفعيل GPS والسماح بأذونات الموقع',
-            style: context.titleSmall,
+            style: context.titleSmall?.copyWith(
+              color: context.primaryScheme,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -457,11 +462,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             children: [
               Text(
                 'الاتجاه الحالي',
-                style: context.titleSmall,
+                style: context.titleSmall?.copyWith(
+                  color: context.primaryScheme,
+                ),
               ),
               Text(
                 '${_currentDirection.toInt()}°',
-                style: context.titleMedium.copyWith(
+                style: context.titleMedium?.copyWith(
                   color: isAligned ? Colors.green : Colors.orange,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
@@ -480,7 +487,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 SizedBox(height: 5.h),
                 Text(
                   directionInstruction,
-                  style: context.titleSmall.copyWith(
+                  style: context.titleSmall?.copyWith(
                     color: isAligned ? Colors.green : Colors.orange,
                     fontWeight: FontWeight.w600,
                   ),
@@ -494,11 +501,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             children: [
               Text(
                 'اتجاه القبلة',
-                style: context.titleSmall,
+                style: context.titleSmall?.copyWith(
+                  color: context.primaryScheme,
+                ),
               ),
               Text(
                 '${_qiblaDirection2.toInt()}°',
-                style: context.titleMedium.copyWith(
+                style: context.titleMedium?.copyWith(
                   color: isAligned ? Colors.green : Colors.orange,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
@@ -552,11 +561,15 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                         children: [
                           Text(
                             'موقعك الحالي',
-                            style: context.titleSmall,
+                            style: context.titleSmall?.copyWith(
+                              color: context.primaryScheme,
+                            ),
                           ),
                           Text(
                             _cityName ?? 'يتم تحديد الموقع...',
-                            style: context.titleMedium,
+                            style: context.titleMedium?.copyWith(
+                              color: context.primaryScheme,
+                            ),
                           ),
                         ],
                       ),
@@ -567,7 +580,9 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                         children: [
                           Text(
                             'المسافة',
-                            style: context.titleSmall,
+                                style: context.titleSmall?.copyWith(
+                              color: context.primaryScheme,
+                            ),
                           ),
                           Text(
                             '${_distanceToMecca!.toInt()} كم',

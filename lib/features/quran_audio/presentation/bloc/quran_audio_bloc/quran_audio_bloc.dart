@@ -25,6 +25,38 @@ class QuranAudioBloc extends Bloc<QuranAudioEvent, QuranAudioState> {
     on<SeekToAudioPlayerSourceEvent>(_seekToAudioPlayerSourceEvent);
     on<ChangeCurrentAudioDataEvent>(_changeCurrentAudioDataEvent);
     on<PlayAudioNextOrPreviousEvent>(_playAudioNextOrPreviousEvent);
+    on<ToggleShuffleEvent>((event, emit) async {
+      final player = state.audioPlayerSource;
+      if (player == null) return;
+
+      final newShuffle = !state.isShuffleEnabled;
+      await player.setShuffleModeEnabled(newShuffle);
+      if (newShuffle) await player.shuffle(); // reorder the queue
+      emit(state.copyWith(isShuffleEnabled: newShuffle));
+    });
+
+    on<CycleLoopModeEvent>((event, emit) async {
+      final player = state.audioPlayerSource;
+      if (player == null) return;
+
+      // navigate between Off → One → All
+      final next = switch (state.loopMode) {
+        LoopMode.off => LoopMode.one,
+        LoopMode.one => LoopMode.all,
+        _ => LoopMode.off,
+      };
+
+      await player.setLoopMode(next);
+      emit(state.copyWith(loopMode: next));
+    }); // quran_audio_bloc.dart
+    on<ToggleMuteEvent>((event, emit) async {
+      final player = state.audioPlayerSource;
+      if (player == null) return;
+      final newMuted = !state.isMuted;
+      // mute: setVolume(0) | unmute: setVolume(1)
+      await player.setVolume(newMuted ? 0.0 : 1.0);
+      emit(state.copyWith(isMuted: newMuted));
+    });
   }
   final QuranAudioPlayerRepo quranAudioPlayerRepo;
 
@@ -155,36 +187,40 @@ class QuranAudioBloc extends Bloc<QuranAudioEvent, QuranAudioState> {
 
       // get current index
       final currentIndex = state.audioPlayerSource!.currentIndex!;
-      
+
       // Calculate target index
       final targetIndex = event.isNext ? currentIndex + 1 : currentIndex - 1;
-      
+
       // Validate bounds
       if (targetIndex < 0 || targetIndex >= state.surahInfoData.length) {
-        logger.w('Invalid index: $targetIndex. Bounds: 0-${state.surahInfoData.length - 1}');
+        logger.w(
+          'Invalid index: $targetIndex. Bounds: 0-${state.surahInfoData.length - 1}',
+        );
         return;
       }
 
       // Get target surah data
       final targetSurahData = state.surahInfoData[targetIndex];
-      
+
       // Seek to target index
       await state.audioPlayerSource?.seek(
         Duration.zero,
         index: targetIndex,
       );
-      
+
       // Update current audio data with correct target information
       final updateCurrent = state.currentAudioData!.copyWith(
         indexSurah: targetIndex,
         nameSurah: targetSurahData.surah,
         countSurahVerse: targetSurahData.ayaatiha,
       );
-      
+
       emit(state.copyWith(currentAudioData: updateCurrent));
-      
-      logger.i('Navigated from index $currentIndex to $targetIndex (${event.isNext ? 'next' : 'previous'})');
-      
+
+      logger.i(
+        'Navigated from index $currentIndex to $targetIndex (${event.isNext ? 'next' : 'previous'})',
+      );
+
       // Start playing
       await state.audioPlayerSource?.play();
     } catch (e) {

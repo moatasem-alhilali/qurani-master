@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
-import 'package:quran_app/features/read_quran/data/data_source/new/surah_verse_reader_data_source.dart';
+import 'package:quran_app/features/read_quran/data/data_source/surah_verse_reader_data_source.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 
 class SurahVerseReaderDataRepo {

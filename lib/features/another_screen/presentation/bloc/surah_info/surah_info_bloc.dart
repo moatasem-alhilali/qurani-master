@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_event.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_state.dart';
+part 'surah_info_event.dart';
+part 'surah_info_state.dart';
+
 
 class SurahInfoBloc extends Bloc<SurahInfoEvent, SurahInfoState> {
-  SurahInfoBloc() : super(SurahInfoInitial()) {
+  SurahInfoBloc() : super(SurahInfoState()) {
     on<LoadSurahInfoEvent>(_onLoad);
   }
 
@@ -15,7 +17,7 @@ class SurahInfoBloc extends Bloc<SurahInfoEvent, SurahInfoState> {
     LoadSurahInfoEvent event,
     Emitter<SurahInfoState> emit,
   ) async {
-    emit(SurahInfoLoading());
+    emit(state.copyWith(state: RequestState.loading));
     try {
       final jsonStr =
           await rootBundle.loadString('assets/json/surah_info.json');
@@ -24,9 +26,9 @@ class SurahInfoBloc extends Bloc<SurahInfoEvent, SurahInfoState> {
       for (final element in jsonMap) {
         models.add(SurahInfoModel.fromJson(element as Map<String, dynamic>));
       }
-      emit(SurahInfoLoaded(models));
+      emit(state.copyWith(state: RequestState.success, data: models));
     } catch (e) {
-      emit(SurahInfoError('Failed to load surah info'));
+      emit(state.copyWith(state: RequestState.error, data: []));
     }
   }
 }

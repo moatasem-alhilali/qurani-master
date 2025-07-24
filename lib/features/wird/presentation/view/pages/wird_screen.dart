@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/doa_item.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
+import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/copy_service.dart';
@@ -17,19 +18,18 @@ class WirdScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => WirdBloc()..add(LoadWirdEvent()),
-      child: BaseHomeWidget(
+      child: AppScaffoldWidget(
         title: isMorning ? 'الورد الصباحي' : 'الورد المساءي',
-        body: BlocBuilder<WirdBloc, WirdState>(
+        slivers: [BlocBuilder<WirdBloc, WirdState>(
           builder: (context, state) {
-            return state.state.handle<WirdModel>(
+            return state.state.whenSliver<WirdModel>(
               onSuccess: () {
                 final data = state.data ?? [];
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                return SliverList.builder(
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final item = data[index];
+
                     return BaseAnimate(
                       index: 0,
                       child: Column(
@@ -58,10 +58,13 @@ class WirdScreen extends StatelessWidget {
                   },
                 );
               },
-              list: state.data,
+              context: context,
+              sliverList: state.data,
+              // list: state.data,
             );
-          },
-        ),
+            },
+          ),
+        ],
       ),
     );
   }

@@ -1,19 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_audio_bloc/download_quran_audio_bloc.dart';
-import 'package:quran_app/features/quran_audio/presentation/view/widgets/new/surah_aduio_list_widget.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/surah_aduio_list_widget.dart';
 
-class BackdropMusicBodyWidget extends StatelessWidget {
-  const BackdropMusicBodyWidget({super.key});
+class BackdropSurahListAudioBodyWidget extends StatelessWidget {
+  const BackdropSurahListAudioBodyWidget({
+    required this.boxController,
+    super.key,
+  });
+  final BoxController boxController;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DownloadQuranAudioBloc(),
       child: Container(
-        margin: const EdgeInsets.only(top: 70),
+        margin: EdgeInsets.only(top: 75.h),
         child: Column(
           children: [
             Container(
@@ -24,8 +35,8 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {},
                     child: Text(
-                      'Tracks',
-                      style: context.titleMedium.copyWith(
+                      'اونلاين',
+                      style: context.titleMedium?.copyWith(
                         fontSize: 22,
                       ),
                     ),
@@ -33,8 +44,8 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {},
                     child: Text(
-                      'Playlists',
-                      style: context.titleMedium.copyWith(
+                      'محفوظ',
+                      style: context.titleMedium?.copyWith(
                         fontSize: 14,
                       ),
                     ),
@@ -42,8 +53,8 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {},
                     child: Text(
-                      'Favorites',
-                      style: context.titleMedium.copyWith(
+                      'محفوظ',
+                      style: context.titleMedium?.copyWith(
                         fontSize: 14,
                       ),
                     ),
@@ -51,8 +62,8 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {},
                     child: Text(
-                      'Folders',
-                      style: context.titleMedium.copyWith(
+                      'محفوظ',
+                      style: context.titleMedium?.copyWith(
                         fontSize: 14,
                       ),
                     ),
@@ -107,16 +118,25 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                                     Radius.circular(30),
                                   ),
                                 ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  highlightColor: context.colorScheme.onSurface
-                                      .withAlpha(50),
-                                  icon: const Icon(
-                                    CupertinoIcons.shuffle,
-                                    size: 16,
-                                    // color:
-                                    //     Theme.of(context).colorScheme.onSurface,
-                                  ),
+                                child: BlocBuilder<QuranAudioBloc,
+                                    QuranAudioState>(
+                                  buildWhen: (p, c) =>
+                                      p.isShuffleEnabled != c.isShuffleEnabled,
+                                  builder: (context, state) {
+                                    return IconButton(
+                                      iconSize: 16,
+                                      tooltip: 'Shuffle',
+                                      onPressed: () => context
+                                          .read<QuranAudioBloc>()
+                                          .add(ToggleShuffleEvent()),
+                                      icon: Icon(
+                                        CupertinoIcons.shuffle,
+                                        color: state.isShuffleEnabled
+                                            ? context.primaryScheme
+                                            : Colors.white,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                               Container(
@@ -130,16 +150,21 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                                     Radius.circular(30),
                                   ),
                                 ),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  highlightColor: context.colorScheme.onSurface
-                                      .withAlpha(50),
-                                  icon: const Icon(
-                                    CupertinoIcons.play_arrow_solid,
-                                    size: 16,
-                                    // color:
-                                    //     Theme.of(context).colorScheme.onSurface,
-                                  ),
+                                child: BlocBuilder<QuranAudioBloc,
+                                    QuranAudioState>(
+                                  builder: (context, state) {
+                                    if (state.loadAudioSourceState ==
+                                        RequestState.loading) {
+                                      return const SizedBox();
+                                    }
+
+                                    return IconPlayToggleAudioWidget(
+                                      audioPlayer: state.audioPlayerSource ??
+                                          AudioPlayer(),
+                                      radius: 16,
+                                      backgroundColor: Colors.transparent,
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -147,7 +172,11 @@ class BackdropMusicBodyWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Expanded(child: SurahAudioListWidget()),
+                    Expanded(
+                      child: SurahAudioListWidget(
+                        boxController: boxController,
+                      ),
+                    ),
                   ],
                 ),
               ),

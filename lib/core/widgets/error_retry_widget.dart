@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 class ErrorRetryWidget extends StatelessWidget {
@@ -45,16 +46,16 @@ class ErrorRetryWidget extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 title!,
-                style: context.titleMedium
-                    .copyWith(color: iconColor, fontWeight: FontWeight.bold),
+                style: context.titleMedium?.copyWith(
+                    color: iconColor, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ],
             const SizedBox(height: 8),
             Text(
               message,
-              style: context.bodyMedium
-                  .copyWith(color: iconColor, fontWeight: FontWeight.w500),
+              style: context.bodyMedium?.copyWith(
+                  color: iconColor, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
             if (statusCode != null) ...[
@@ -65,8 +66,8 @@ class ErrorRetryWidget extends StatelessWidget {
                   if (statusCode != null)
                     Text(
                       'الحالة: $statusCode',
-                      style: context.titleMedium
-                          .copyWith(color: iconColor.withValues(alpha: 0.7)),
+                      style: context.titleMedium?.copyWith(
+                          color: iconColor.withValues(alpha: 0.7)),
                     ),
                 ],
               ),

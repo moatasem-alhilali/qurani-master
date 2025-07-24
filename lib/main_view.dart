@@ -6,13 +6,13 @@ import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
+import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
@@ -108,6 +108,12 @@ class MyApp extends StatelessWidget {
           ),
           // lazy: false,
         ),
+
+        ///home
+        BlocProvider(
+          create: (context) => sl<RandomAyahBloc>()..add(GetRandomAyahEvent()),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
@@ -185,14 +191,22 @@ class _AppState extends State<_App> {
       // child: ,
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
-          return BaseHomeWidget(
+          return Scaffold(
             // titleWidget: const SizedBox(),
-            back: false,
-            title: 'طمأنينة',
-            showBackground: currentPage == 0 ? false : true,
-            isScroll: currentPage == 2 ? false : true,
-            bottomNavigationBar: const CustomBottomNavigationBarWidget(),
-            body: screens[currentPage],
+            // back: false,
+            // title: 'طمأنينة',
+            // showBackground: currentPage == 0 ? false : true,
+            // isScroll: currentPage == 2 ? false : true,
+            bottomNavigationBar: const IntrinsicHeight(
+              child: ColoredBox(
+                color: Colors.transparent,
+                child: SafeArea(
+                  top: false,
+                  child: CustomBottomNavigationBarWidget(),
+                ),
+              ),
+            ),
+            body: SafeArea(child: screens[currentPage]),
           );
         },
       ),

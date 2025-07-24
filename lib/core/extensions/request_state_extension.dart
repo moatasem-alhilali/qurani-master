@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -100,7 +101,7 @@ extension RequestStateWidget on RequestState {
                   Center(
                     child: Text(
                       'لا يوجد بيانات',
-                      style: context?.titleMedium.copyWith(
+                      style: context?.titleMedium?.copyWith(
                         color: context.gray1,
                         fontSize: 16.sp,
                       ),

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
 // Main Qibla compass widget that works with stream (follows old working code pattern)
@@ -283,7 +284,9 @@ class _QiblaCompassWidgetWithStreamState
                           padding: EdgeInsets.only(top: 4.h),
                           child: Text(
                             widget.cityName!,
-                            style: context.titleMedium,
+                            style: context.titleMedium?.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                     ],

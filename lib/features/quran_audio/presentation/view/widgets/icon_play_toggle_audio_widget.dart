@@ -9,12 +9,14 @@ class IconPlayToggleAudioWidget extends StatefulWidget {
     required this.audioPlayer,
     this.radius = 22,
     this.onPressed,
+    this.backgroundColor,
     super.key,
   });
 
   final AudioPlayer audioPlayer;
   final double radius;
   final VoidCallback? onPressed;
+  final Color? backgroundColor;
 
   @override
   State<IconPlayToggleAudioWidget> createState() =>
@@ -75,7 +77,8 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
 
         return CircleAvatar(
           radius: widget.radius,
-          backgroundColor: playing ? Colors.redAccent : context.primaryScheme,
+          backgroundColor: widget.backgroundColor ??
+              (playing ? Colors.redAccent : context.primaryScheme),
           child: _buildIconButton(playing, processingState),
         );
       },

@@ -94,75 +94,75 @@ class BaseHomeWidget extends StatelessWidget {
                       ),
                     ),
               ),
-            if (showBackground)
-              SliverAppBar(
-                toolbarHeight: toolbarHeight,
-                expandedHeight: 90.h,
-                backgroundColor: context.scaffoldBackgroundColor,
-                flexibleSpace: Container(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: FlexibleSpaceBar(
-                    background: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: Image.asset(
-                            'assets/logo/bg.jpg',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 80.h,
-                            // height: double.infinity,
-                          ),
-                        ),
-                        Container(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            gradient: LinearGradient(
-                              begin: FractionalOffset.bottomCenter,
-                              end: FractionalOffset.topCenter,
-                              colors: [
-                                context.scaffoldBackgroundColor
-                                    .withOpacity(0.8),
-                                context.scaffoldBackgroundColor
-                                    .withOpacity(0.1),
-                              ],
-                              stops: const [
-                                1,
-                                1,
-                              ],
-                            ),
-                          ),
-                        ),
-                        // ClipRRect(
-                        //   borderRadius: BorderRadius.circular(15),
-                        //   child: BackdropFilter(
-                        //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                        //     child: SizedBox(
-                        //       height: 80.h,
-                        //       width: double.infinity,
-                        //     ),
-                        //   ),
-                        // ),
-                        Center(
-                          child: titleWidget ??
-                              title!.autoSize(
-                                context,
-                                maxLines: 4,
-                                // color: context.onPrimary,
-                              ),
-                        ),
-                      ],
-                    ),
-                    // centerTitle: true,
-                  ),
-                ),
-              ),
+            // if (showBackground)
+            //   SliverAppBar(
+            //     toolbarHeight: toolbarHeight,
+            //     expandedHeight: 90.h,
+            //     backgroundColor: context.scaffoldBackgroundColor,
+            //     flexibleSpace: Container(
+            //       clipBehavior: Clip.antiAliasWithSaveLayer,
+            //       decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(12),
+            //       ),
+            //       padding: const EdgeInsets.all(8),
+            //       child: FlexibleSpaceBar(
+            //         background: Stack(
+            //           children: [
+            //             ClipRRect(
+            //               borderRadius: BorderRadius.circular(12),
+            //               clipBehavior: Clip.antiAliasWithSaveLayer,
+            //               child: Image.asset(
+            //                 'assets/logo/bg.jpg',
+            //                 fit: BoxFit.cover,
+            //                 width: double.infinity,
+            //                 height: 80.h,
+            //                 // height: double.infinity,
+            //               ),
+            //             ),
+            //             Container(
+            //               clipBehavior: Clip.antiAliasWithSaveLayer,
+            //               decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(12),
+            //                 gradient: LinearGradient(
+            //                   begin: FractionalOffset.bottomCenter,
+            //                   end: FractionalOffset.topCenter,
+            //                   colors: [
+            //                     context.scaffoldBackgroundColor
+            //                         .withOpacity(0.8),
+            //                     context.scaffoldBackgroundColor
+            //                         .withOpacity(0.1),
+            //                   ],
+            //                   stops: const [
+            //                     1,
+            //                     1,
+            //                   ],
+            //                 ),
+            //               ),
+            //             ),
+            //             // ClipRRect(
+            //             //   borderRadius: BorderRadius.circular(15),
+            //             //   child: BackdropFilter(
+            //             //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+            //             //     child: SizedBox(
+            //             //       height: 80.h,
+            //             //       width: double.infinity,
+            //             //     ),
+            //             //   ),
+            //             // ),
+            //             Center(
+            //               child: titleWidget ??
+            //                   title!.autoSize(
+            //                     context,
+            //                     maxLines: 4,
+            //                     // color: context.onPrimary,
+            //                   ),
+            //             ),
+            //           ],
+            //         ),
+            //         // centerTitle: true,
+            //       ),
+            //     ),
+            //   ),
           ],
           body: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,

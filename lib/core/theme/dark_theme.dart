@@ -1,45 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
+import 'package:quran_app/gen/fonts.gen.dart';
 
 enum ToolAppThemeType { light, dark }
 
 Color _background = const Color(0xff1e1e1e);
+Color _scaffoldBackgroundColor = const Color(0xff1e1e1e);
 Color _secondary = const Color(0xff353535);
 Color _third = const Color(0xff2c2c2c);
 Color _primary = const Color(0xff42796c);
-Color _primarySecondary = const Color(0xff364945);
+Color _splashColor = const Color(0xff252525);
+Color _primaryColorDark = const Color(0xff364945);
+Color _onPrimary = Colors.white;
+//
+Color _surface = const Color(0xffCDAD80);
+Color _onSurface = const Color(0xff404C6E);
+Color textPrimary = Colors.white;
 ThemeData darkThemeData = ThemeData(
   ///Colors
   //
-  scaffoldBackgroundColor: const Color(0xff1e1e1e),
-  splashColor: const Color(0xff252525),
+  scaffoldBackgroundColor: _scaffoldBackgroundColor,
+  splashColor: _splashColor,
 
   //primary
-  primaryColor: const Color(0xff2c2c2c),
+  primaryColor: _third,
   // primarySecondary
-  primaryColorDark: const Color(0xff364945),
+  primaryColorDark: _primaryColorDark,
   // error
 
-  shadowColor: const Color(0xff353535),
+  shadowColor: _secondary,
   brightness: Brightness.dark,
-  fontFamily: FxFonts.ios1,
 
   //
-  colorScheme: const ColorScheme(
+  colorScheme: ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xff42796c),
-    onPrimary: Colors.white,
-    secondary: Color(0xff353535),
-    onSecondary: Color(0xff2c2c2c),
-    surface: Color(0xffCDAD80),
-    onSurface: Color(0xff404C6E),
-    error: Color(0xffe74c3c),
-    onError: Color(0xff404C6E),
-    inversePrimary: Color(0xffffffff),
-    inverseSurface: Color(0xffCD9974),
+    primary: _primary,
+    onPrimary: _onPrimary,
+    secondary: _secondary,
+    onSecondary: _third,
+    surface: _surface,
+    onSurface: _onSurface,
+    error: const Color(0xffe74c3c),
+    onError: const Color(0xff404C6E),
+    inversePrimary: const Color(0xffffffff),
+    inverseSurface: const Color(0xffCD9974),
     //third
-    onPrimaryContainer: Color(0xff2c2c2c),
+    onPrimaryContainer: _third,
     // secondary
   ),
 
@@ -247,68 +254,130 @@ ThemeData darkThemeData = ThemeData(
 
   progressIndicatorTheme:
       ProgressIndicatorThemeData(circularTrackColor: _primary),
-
+  fontFamily: FontFamily.ios1,
   textTheme: TextTheme(
-    displaySmall: const TextStyle(
-      color: Colors.white,
-      fontSize: 20,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      overflow: TextOverflow.ellipsis,
+    // Display Styles (Largest)
+    displayLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 57.sp,
+      height: 1.12,
+      letterSpacing: -0.25,
+      color: textPrimary,
     ),
-    displayMedium: const TextStyle(
-      color: Colors.white,
-      fontSize: 25,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      overflow: TextOverflow.ellipsis,
+    displayMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 45.sp,
+      height: 1.16,
+      color: textPrimary,
     ),
-    displayLarge: const TextStyle(
-      color: Colors.white,
-      fontSize: 30,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w600,
-      overflow: TextOverflow.ellipsis,
+    displaySmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 36.sp,
+      height: 1.22,
+      color: textPrimary,
     ),
-    headlineSmall: const TextStyle(
-      color: Colors.white,
-      fontSize: 13,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w400,
-      overflow: TextOverflow.ellipsis,
+
+    // Headline Styles
+    headlineLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 32.sp,
+      height: 1.25,
+      color: textPrimary,
     ),
-    headlineMedium: const TextStyle(
-      color: Colors.white,
-      fontSize: 15,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w400,
-      overflow: TextOverflow.ellipsis,
+    headlineMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 28.sp,
+      height: 1.29,
+      color: textPrimary,
     ),
-    headlineLarge: const TextStyle(
-      color: Colors.white,
-      fontSize: 18,
-      fontFamily: 'ios-3',
-      overflow: TextOverflow.ellipsis,
+    headlineSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 24.sp,
+      height: 1.33,
+      color: textPrimary,
     ),
-    titleSmall: TextStyle(
-      color: Colors.white,
-      fontSize: 12.sp,
-      fontFamily: 'ios-1',
-      // overflow: TextOverflow.ellipsis,
+
+    // Title Styles
+    titleLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 22.sp,
+      height: 1.27,
+      color: textPrimary,
     ),
     titleMedium: TextStyle(
-      fontSize: 14.sp,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      color: Colors.white,
-      // overflow: TextOverflow.ellipsis,
-    ),
-    titleLarge: TextStyle(
-      color: Colors.white,
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
       fontSize: 16.sp,
-      fontFamily: 'ios-2',
-      fontWeight: FontWeight.bold,
-      // overflow: TextOverflow.ellipsis,
+      height: 1.50,
+      letterSpacing: 0.15,
+      color: textPrimary,
+    ),
+    titleSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.1,
+      color: textPrimary,
+    ),
+
+    // Label Styles
+    labelLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.1,
+      color: textPrimary,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 12.sp,
+      height: 1.33,
+      letterSpacing: 0.5,
+      color: textPrimary,
+    ),
+    labelSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 11.sp,
+      height: 1.45,
+      letterSpacing: 0.5,
+      color: textPrimary,
+    ),
+
+    // Body Styles
+    bodyLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 16.sp,
+      height: 1.50,
+      letterSpacing: 0.15,
+      color: textPrimary,
+    ),
+    bodyMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.25,
+      color: textPrimary,
+    ),
+    bodySmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 12.sp,
+      height: 1.33,
+      letterSpacing: 0.4,
+      color: textPrimary,
     ),
   ),
 );

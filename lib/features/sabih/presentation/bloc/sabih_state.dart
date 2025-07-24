@@ -3,9 +3,9 @@ part of 'sabih_bloc.dart';
 @immutable
 class SabihState extends Equatable {
   const SabihState({
-    this.loadState = LoadState.initial,
+    this.loadState = RequestState.initial,
     this.actionState = RequestState.initial,
-    this.analyticsLoadState = LoadState.initial,
+    this.analyticsLoadState = RequestState.initial,
     this.subihList = const [],
     this.countsMap,
     this.errorMessage,
@@ -21,9 +21,9 @@ class SabihState extends Equatable {
     this.allTimeMostUsed,
   });
 
-  final LoadState loadState;
+  final RequestState loadState;
   final RequestState actionState;
-  final LoadState analyticsLoadState;
+  final RequestState analyticsLoadState;
   final List<SubihModel> subihList;
   final Map<int, int>? countsMap;
   final String? errorMessage;
@@ -41,9 +41,9 @@ class SabihState extends Equatable {
   final int? allTimeMostUsed;
 
   SabihState copyWith({
-    LoadState? loadState,
+    RequestState? loadState,
     RequestState? actionState,
-    LoadState? analyticsLoadState,
+    RequestState? analyticsLoadState,
     List<SubihModel>? subihList,
     Map<int, int>? countsMap,
     String? errorMessage,

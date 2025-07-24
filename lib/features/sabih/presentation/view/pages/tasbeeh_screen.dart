@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -57,7 +58,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'المسبحة (الذكر)',
       body: Column(
         children: [
@@ -79,7 +80,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                   children: [
                     Text(
                       'ملخص الذكر',
-                      style: context.bodyMedium.copyWith(
+                      style: context.bodyMedium?.copyWith(
                         color: context.primaryScheme,
                       ),
                     ),

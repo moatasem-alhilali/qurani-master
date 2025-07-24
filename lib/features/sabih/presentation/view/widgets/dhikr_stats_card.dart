@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 
@@ -33,7 +34,7 @@ class DhikrStatsCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           subih.title,
-                          style: context.bodyMedium.copyWith(
+                          style: context.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                           ),
@@ -51,7 +52,7 @@ class DhikrStatsCard extends StatelessWidget {
                           ),
                           child: Text(
                             'مخصص',
-                            style: context.bodyMedium.copyWith(
+                            style: context.bodyMedium?.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -64,7 +65,7 @@ class DhikrStatsCard extends StatelessWidget {
                     subih.content,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: context.bodyMedium.copyWith(
+                    style: context.bodyMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 14.sp,
                     ),
@@ -93,7 +94,7 @@ class DhikrStatsCard extends StatelessWidget {
       child: Center(
         child: Text(
           count.toString(),
-          style: context.bodyMedium.copyWith(
+          style: context.bodyMedium?.copyWith(
             color: count > 0 ? Colors.white : context.gray2,
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,

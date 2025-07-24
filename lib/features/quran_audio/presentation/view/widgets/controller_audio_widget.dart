@@ -2,6 +2,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -52,7 +53,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           ? positionData?.duration ?? Duration.zero
                           : Duration.zero,
                       onSeek:
-                          ISCONNECTED ? state.audioPlayerSource!.seek : null,
+                          ISCONNECTED ? state.audioPlayerSource?.seek : null,
                     ),
                   );
                 },
@@ -69,12 +70,23 @@ class ProgressWithControllerWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      CupertinoIcons.shuffle,
-                      color: Colors.white,
-                    ),
+                  BlocBuilder<QuranAudioBloc, QuranAudioState>(
+                    buildWhen: (p, c) =>
+                        p.isShuffleEnabled != c.isShuffleEnabled,
+                    builder: (context, state) {
+                      return IconButton(
+                        tooltip: 'Shuffle',
+                        onPressed: () => context
+                            .read<QuranAudioBloc>()
+                            .add(ToggleShuffleEvent()),
+                        icon: Icon(
+                          CupertinoIcons.shuffle,
+                          color: state.isShuffleEnabled
+                              ? context.primaryScheme
+                              : Colors.white,
+                        ),
+                      );
+                    },
                   ),
                   //
                   Row(
@@ -124,9 +136,8 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           }
 
                           return IconPlayToggleAudioWidget(
-                            // currentIndex: 0,
-                            // itemIndex: 0,
-                            audioPlayer: state.audioPlayerSource!,
+                            audioPlayer:
+                                state.audioPlayerSource ?? AudioPlayer(),
                           );
                         },
                       ),
@@ -151,12 +162,25 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     ],
                   ),
 
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      CupertinoIcons.repeat,
-                      color: Colors.white,
-                    ),
+                  BlocBuilder<QuranAudioBloc, QuranAudioState>(
+                    buildWhen: (p, c) => p.loopMode != c.loopMode,
+                    builder: (context, state) {
+                      final isActive = state.loopMode != LoopMode.off;
+                      return IconButton(
+                        tooltip: 'Repeat',
+                        onPressed: () => context
+                            .read<QuranAudioBloc>()
+                            .add(CycleLoopModeEvent()),
+                        icon: Icon(
+                          // show the appropriate icon if in "repeat‑one"
+                          state.loopMode == LoopMode.one
+                              ? CupertinoIcons.repeat_1
+                              : CupertinoIcons.repeat,
+                          color:
+                              isActive ? context.primaryScheme : Colors.white,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

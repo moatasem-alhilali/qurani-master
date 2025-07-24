@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
@@ -45,155 +43,76 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'أدعيتي',
-      isScroll: false,
-      body: BlocConsumer<SabihBloc, SabihState>(
-        listenWhen: (previous, current) =>
-            previous.actionState != current.actionState,
-        listener: (context, state) {
-          if (state.actionState == RequestState.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? 'حدث خطأ'),
-              ),
-            );
-          }
-        },
-        buildWhen: (previous, current) =>
-            previous.loadState != current.loadState,
-        builder: (context, state) {
-          if (state.loadState == LoadState.initial) {
-            return Column(
-              children: [
-                const EnhancedSpiritualLoadingWidget(
-                  showText: false,
-                  size: 250,
-                  // showParticles: false,
+      onRefresh: () async {
+        context.read<SabihBloc>().add(LoadAllSubihEvent());
+        _loadTodayCounts();
+        // return Future.value();
+      },
+      slivers: [
+        BlocConsumer<SabihBloc, SabihState>(
+          listenWhen: (previous, current) =>
+              previous.actionState != current.actionState,
+          listener: (context, state) {
+            if (state.actionState == RequestState.error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage ?? 'حدث خطأ'),
                 ),
-                SizedBox(height: 16.h),
-                Center(
-                  child: Text(
-                    'ابدأ رحلة ذكرك',
-                    style: context.titleMedium.copyWith(
-                      color: context.gray1,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-
-          if (state.loadState == LoadState.loading && state.subihList.isEmpty) {
-            return Column(
-              children: [
-                const EnhancedSpiritualLoadingWidget(
-                  showText: false,
-                  size: 250,
-                  // showParticles: false,
-                ),
-                SizedBox(height: 16.h),
-                Center(
-                  child: Text(
-                    'جاري تحميل ...',
-                    style: context.titleMedium.copyWith(
-                      color: context.gray1,
-                      fontSize: 16.sp,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-
-          if (state.loadState == LoadState.error) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const EnhancedSpiritualLoadingWidget(
-                    showText: false,
-                    size: 250,
-                    // showParticles: false,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<SabihBloc>().add(LoadAllSubihEvent());
-                    },
-                    child: const Text('إعادة المحاولة'),
-                  ),
-                ],
-              ),
-            );
-          }
-          final subihList = state.subihList.where((e) => e.isCustom).toList();
-          // log('subihList: ${subihList.length}');
-
-          if (subihList.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const EnhancedSpiritualLoadingWidget(
-                    showText: false,
-                    size: 250,
-                    // showParticles: false,
-                  ),
-                  Center(
-                    child: Text(
-                      'لا يوجد أدعية مخصصة',
-                      style: context.titleMedium.copyWith(
-                        color: context.gray1,
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: subihList.length,
-            // shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final subih = subihList[index];
-              final count = state.getCountForSubih(subih.id ?? -1);
-              return MyDhikrCardWidget(
-                subih: subih,
-                count: count,
-                onTap: () {
-                  if (subih.id != null) {
-                    context.read<SabihBloc>().add(
-                          PerformSubihTapEvent(subihId: subih.id!),
-                        );
-                  }
-                },
-                onReset: () {
-                  if (subih.id != null) {
-                    context.read<SabihBloc>().add(
-                          ResetTodayCounterEvent(
-                            subihId: subih.id!,
-                          ),
-                        );
-                  }
-                },
-                onEdit: subih.isCustom
-                    ? () {
-                        _showEditDhikrDialog(subih);
-                      }
-                    : null,
-                onDelete: subih.isCustom
-                    ? () {
-                        _showDeleteConfirmation(subih);
-                      }
-                    : null,
               );
-            },
-          );
-        },
-      ),
+            }
+          },
+          buildWhen: (previous, current) =>
+              previous.loadState != current.loadState,
+          builder: (context, state) {
+            return state.loadState.whenSliver<SubihModel>(
+              onSuccess: () {
+                final subihList =
+                    state.subihList.where((e) => e.isCustom).toList();
+
+                return SliverList.builder(
+                  itemCount: subihList.length,
+                  itemBuilder: (context, index) {
+                    final subih = subihList[index];
+                    final count = state.getCountForSubih(subih.id ?? -1);
+                    return MyDhikrCardWidget(
+                      subih: subih,
+                      count: count,
+                      onTap: () {
+                        if (subih.id != null) {
+                          context.read<SabihBloc>().add(
+                                PerformSubihTapEvent(subihId: subih.id!),
+                              );
+                        }
+                      },
+                      onReset: () {
+                        if (subih.id != null) {
+                          context.read<SabihBloc>().add(
+                                ResetTodayCounterEvent(
+                                  subihId: subih.id!,
+                                ),
+                              );
+                        }
+                      },
+                      onEdit: subih.isCustom
+                          ? () {
+                              _showEditDhikrDialog(subih);
+                            }
+                          : null,
+                      onDelete: subih.isCustom
+                          ? () {
+                              _showDeleteConfirmation(subih);
+                            }
+                          : null,
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+      ],
       floatingActionButton: BlocBuilder<SabihBloc, SabihState>(
         builder: (context, state) {
           return FloatingActionButton(

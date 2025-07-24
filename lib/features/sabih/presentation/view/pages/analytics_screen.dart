@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -105,7 +106,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       children: [
         Text(
           'الأذكار الأكثر استخداماً',
-          style: context.bodyMedium.copyWith(
+          style: context.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 16.sp,
           ),
@@ -165,7 +166,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           children: [
             Text(
               title,
-              style: context.bodyMedium.copyWith(
+              style: context.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
                 color: context.primaryScheme,
                 fontSize: 16.sp,
@@ -181,7 +182,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       children: [
                         Text(
                           subih.title,
-                          style: context.bodyMedium.copyWith(
+                          style: context.bodyMedium?.copyWith(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: context.primaryScheme,
@@ -192,7 +193,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                           subih.content,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: context.bodyMedium.copyWith(
+                          style: context.bodyMedium?.copyWith(
                             color: context.gray1,
                           ),
                         ),
@@ -208,7 +209,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     ),
                     child: Text(
                       count.toString(),
-                      style: context.bodyMedium.copyWith(
+                      style: context.bodyMedium?.copyWith(
                         color: context.secondary,
                         fontWeight: FontWeight.w500,
                         fontSize: 16.sp,
@@ -237,7 +238,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       children: [
         Text(
           'إجمالي عدد الأذكار',
-          style: context.bodyMedium.copyWith(
+          style: context.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 16.sp,
           ),
@@ -269,7 +270,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             children: [
               Text(
                 title,
-                style: context.bodyMedium.copyWith(
+                style: context.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: context.primaryScheme,
                   fontSize: 16.sp,
@@ -278,7 +279,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               const SizedBox(height: 8),
               Text(
                 count.toString(),
-                style: context.bodyMedium.copyWith(
+                style: context.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: context.gray1,
                 ),

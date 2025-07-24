@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/download/data/models/download_task_model.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
@@ -31,7 +32,7 @@ class DownloadItemWidget extends StatelessWidget {
                         children: [
                           Text(
                             task.fileName,
-                            style: context.titleMedium.copyWith(
+                            style: context.titleMedium?.copyWith(
                               color: context.primaryScheme,
                             ),
                             maxLines: 2,

@@ -1,4 +1,6 @@
-import 'package:quran_app/features/read_quran/data/data_source/new/full_quran_data_client.dart';
+import 'dart:math';
+
+import 'package:quran_app/features/read_quran/data/data_source/full_quran_data_client.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -37,7 +39,27 @@ class AyahDataSource {
   }
 
   Future<NewAyahModel?> getAyahById(int id) async {
-    final result = await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [id]);
+    final result =
+        await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [id]);
+    return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
+  }
+
+  // get random ayah from database
+  Future<NewAyahModel?> getRandomAyah() async {
+    final dbInstance = await db;
+    final countRes =
+        await dbInstance!.rawQuery('SELECT COUNT(*) as c FROM ayahs');
+    final total = countRes.isNotEmpty ? (countRes.first['c'] as int) : 0;
+    if (total == 0) return null;
+
+    final randomIndex = Random().nextInt(total);
+
+    final result = await dbInstance.query(
+      'ayahs',
+      orderBy: 'id ASC',
+      limit: 1,
+      offset: randomIndex,
+    );
     return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
   }
 
@@ -74,8 +96,8 @@ class AyahDataSource {
 
   /// جلب آية بناء على رقمها المطلق في القرآن (من 1 إلى 6236)
   Future<NewAyahModel?> getAyahByGlobalIndex(int globalIndex) async {
-    final result =
-        await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [globalIndex]);
+    final result = await (await db)!
+        .query('ayahs', where: 'id = ?', whereArgs: [globalIndex]);
     return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
   }
 
