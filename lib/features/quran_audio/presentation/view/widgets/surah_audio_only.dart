@@ -57,16 +57,15 @@ class SurahAudioOnly extends StatelessWidget {
                                 children: [
                                   Row(
                                     children: [
-                                      Container(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: SvgPicture.asset(
-                                          currentAudioData?.imageReader ?? '',
-                                          fit: BoxFit.cover,
-                                          height: context.getHight(8),
+                                      CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 20,
+                                        child: ClipOval(
+                                          child: SvgPicture.asset(
+                                            currentAudioData?.imageReader ?? '',
+                                            fit: BoxFit.cover,
+                                            height: context.getHight(8),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(

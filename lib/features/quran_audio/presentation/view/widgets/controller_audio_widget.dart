@@ -1,4 +1,5 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
@@ -66,8 +67,15 @@ class ProgressWithControllerWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      CupertinoIcons.shuffle,
+                      color: Colors.white,
+                    ),
+                  ),
                   //
                   Row(
                     children: [
@@ -141,6 +149,14 @@ class ProgressWithControllerWidget extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      CupertinoIcons.repeat,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/download_surah_aduio_widget.dart';
@@ -14,52 +14,35 @@ import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_pl
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
-class AllSurahAudioWidget extends StatefulWidget {
-  const AllSurahAudioWidget({
+class SurahAudioListWidget extends StatefulWidget {
+  const SurahAudioListWidget({
     super.key,
   });
 
   @override
-  State<AllSurahAudioWidget> createState() => _AllSurahAudioWidgetState();
+  State<SurahAudioListWidget> createState() => _SurahAudioListWidgetState();
 }
 
-class _AllSurahAudioWidgetState extends State<AllSurahAudioWidget> {
+class _SurahAudioListWidgetState extends State<SurahAudioListWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReadQuranBloc, ReadQuranState>(
       builder: (context, readQuranState) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                'سور أخرى',
-                style: titleMedium(context).copyWith(
-                  fontSize: 16.sp,
-                ),
+        return ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: readQuranState.surahs.length,
+          itemBuilder: (context, index) {
+            final data = readQuranState.surahs[index];
+            return CardWidget(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              borderRadius: BorderRadius.circular(12),
+              child: _ItemDownloaded(
+                data: data,
+                indexSurah: index,
               ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemCount: readQuranState.surahs.length,
-              itemBuilder: (context, index) {
-                final data = readQuranState.surahs[index];
-                return CardWidget(
-                  height: context.getHight(10),
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: _ItemDownloaded(
-                    data: data,
-                    indexSurah: index,
-                  ),
-                );
-              },
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -87,29 +70,18 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${widget.indexSurah! + 1}',
+                  widget.data!.nameAr,
                   style: titleSmall(context).copyWith(
                     fontSize: 16.sp,
                   ),
                 ),
                 const Gap(10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.data!.nameAr,
-                      style: titleSmall(context).copyWith(
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                    Text(
-                      '${widget.data!.ayahCount}',
-                      style: titleSmall(context).copyWith(),
-                    ),
-                  ],
+                Text(
+                  '(${widget.data!.ayahCount})',
+                  style: titleSmall(context).copyWith(),
                 ),
               ],
             ),
@@ -120,7 +92,7 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                   itemIndex: widget.indexSurah ?? 0,
                   surah: surahs[widget.indexSurah!],
                 ),
-                const Gap(5),
+                const Gap(10),
                 DownloadSurahAudioWidget(indexSurah: widget.indexSurah),
               ],
             ),
@@ -155,7 +127,7 @@ class _BaseActionProgressState extends State<_BaseActionProgress> {
         final currentPlaying = widget.currentIndex == widget.itemIndex;
         if (currentPlaying) {
           return IconPlayToggleAudioWidget(
-            audioPlayer: state.audioPlayerSource!,
+            audioPlayer: state.audioPlayerSource ?? AudioPlayer(),
             radius: 18,
           );
         }

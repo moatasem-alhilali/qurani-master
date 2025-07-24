@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 
-extension AnimatedBottomSheet on BuildContext {
-  void showAnimatedBottomSheet({
-    required Widget child,
+extension AnimatedBottomResizeSheet on BuildContext {
+  void showAnimatedBottomResizeSheet({
+    required Widget Function(ScrollController scrollController) builder,
     double initialHeight = 0.4,
     double minHeight = 0.2,
     double maxHeight = 0.9,
@@ -12,9 +12,6 @@ extension AnimatedBottomSheet on BuildContext {
     bool enableDrag = true,
     Color? backgroundColor,
     Color? barrierColor,
-    Widget? header,
-    bool isScrollable = true,
-    bool isExpanded = true,
     VoidCallback? onDismissed,
     Duration animationDuration = const Duration(milliseconds: 400),
   }) {
@@ -27,20 +24,16 @@ extension AnimatedBottomSheet on BuildContext {
       useRootNavigator: true,
       isDismissible: isDismissible,
       enableDrag: enableDrag,
-      barrierColor: barrierColor ?? Colors.black.withOpacity(0.4),
+      barrierColor: barrierColor ?? Colors.black.withValues(alpha: 0.4),
       builder: (context) {
         return AnimatedBottomSheetContent(
           initialHeight: initialHeight,
           minHeight: minHeight,
           maxHeight: maxHeight,
-          backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
+          backgroundColor: backgroundColor,
           onDismissed: onDismissed,
           animationDuration: animationDuration,
-          header: header,
-          isScrollable: isScrollable,
-          isExpanded: isExpanded,
-          isDismissible: isDismissible,
-          child: child,
+          builder: builder,
         );
       },
     );
@@ -49,8 +42,7 @@ extension AnimatedBottomSheet on BuildContext {
 
 class AnimatedBottomSheetContent extends StatefulWidget {
   const AnimatedBottomSheetContent({
-    required this.child,
-    this.header,
+    required this.builder,
     super.key,
     this.initialHeight = 0.4,
     this.minHeight = 0.2,
@@ -58,21 +50,15 @@ class AnimatedBottomSheetContent extends StatefulWidget {
     this.backgroundColor,
     this.onDismissed,
     this.animationDuration = const Duration(milliseconds: 400),
-    this.isScrollable = true,
-    this.isExpanded = true,
-    this.isDismissible = true,
   });
-  final Widget child;
-  final Widget? header;
+  final Widget Function(ScrollController scrollController) builder;
   final double initialHeight;
   final double minHeight;
   final double maxHeight;
   final Color? backgroundColor;
   final VoidCallback? onDismissed;
   final Duration animationDuration;
-  final bool isScrollable;
-  final bool isExpanded;
-  final bool isDismissible;
+
   @override
   State<AnimatedBottomSheetContent> createState() =>
       _AnimatedBottomSheetContentState();
@@ -99,7 +85,7 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeOutCirc,
+        curve: Curves.easeOutBack,
       ),
     );
 
@@ -119,7 +105,7 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
     ).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Curves.easeOut,
+        curve: Curves.easeOutBack,
       ),
     );
 
@@ -127,7 +113,6 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
   }
 
   @override
-
   void dispose() {
     _animationController.dispose();
     super.dispose();
@@ -164,7 +149,7 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
                   initialChildSize: widget.initialHeight,
                   minChildSize: widget.minHeight,
                   maxChildSize: widget.maxHeight,
-                  expand: widget.isExpanded,
+                  expand: false,
                   snap: true,
                   snapSizes: [
                     widget.minHeight,
@@ -174,13 +159,14 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
                   builder: (context, scrollController) {
                     return Container(
                       decoration: BoxDecoration(
-                        color: widget.backgroundColor ?? Colors.white,
+                        color: widget.backgroundColor ??
+                            context.scaffoldBackgroundColor,
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(28.r),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
+                            color: Colors.black.withValues(alpha: 0.15),
                             blurRadius: 30,
                             offset: const Offset(0, -8),
                           ),
@@ -199,23 +185,16 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
                                   width: 50.w,
                                   height: 5.h,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.4),
+                                    color: Colors.grey.withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(2.5.r),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          if (widget.header != null) widget.header!,
-
                           // Content
                           Expanded(
-                            child: widget.isScrollable
-                                ? SingleChildScrollView(
-                                    controller: scrollController,
-                                    child: widget.child,
-                                  )
-                                : widget.child,
+                            child: widget.builder(scrollController),
                           ),
                         ],
                       ),
