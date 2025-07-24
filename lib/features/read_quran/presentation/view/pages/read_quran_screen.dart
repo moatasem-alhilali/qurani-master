@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/body_read_quran_horizontal_widget.dart';
@@ -34,10 +33,9 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
       builder: (context, state) {
         return BlocBuilder<ReadQuranBloc, ReadQuranState>(
           builder: (context, state) {
-            final boxController =
-                context.read<ReadQuranBloc>().boxController;
+            final boxController = context.read<ReadQuranBloc>().boxController;
             return Scaffold(
-              backgroundColor: context.scaffoldBackgroundColor,
+              backgroundColor: const Color(0xFFF1F2F4),
               body: SlidingBox(
                 minHeight: 50,
                 onSearchBoxHide: () {
@@ -55,10 +53,10 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                 maxHeight:
                     MediaQuery.of(context).size.height - state.minusHeight,
                 controller: boxController,
-                color: context.scaffoldBackgroundColor,
+                color: const Color(0xFFF1F2F4),
                 backdrop: Backdrop(
                   fading: true,
-                  color: context.scaffoldBackgroundColor,
+                  color: const Color(0xFFF1F2F4),
                   appBar: BackdropAppBar(
                     searchBox: SearchBox(
                       controller:
@@ -66,8 +64,8 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                       color: context.primaryScheme,
                       inputDecoration: InputDecoration(
                         hintText: 'ابحث عن الايه',
-                        hintStyle: TextStyle(
-                          color: context.scaffoldBackgroundColor,
+                        hintStyle: const TextStyle(
+                          color: Color(0xFFF1F2F4),
                         ),
                         filled: true,
                         fillColor: context.primaryScheme.withValues(alpha: 0.1),
@@ -88,7 +86,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                         ),
                       ),
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: context.colorScheme.onSurface,
                         fontSize: 18,
                       ),
                       body: const SearchAyahListWidget(),

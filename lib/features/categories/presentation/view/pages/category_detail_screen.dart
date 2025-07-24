@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/request_state_extension.dart';
+import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -24,65 +24,82 @@ class CategoryDetailScreen extends StatelessWidget {
   TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
-      isScroll: false,
-      showBackground: false,
-      body: BlocProvider(
-        create: (context) => CategoryBloc(
-          repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-        )..add(GetCategoryDetailEvent(category.apiUrl!)),
-        child: BlocBuilder<CategoryBloc, CategoryState>(
-          builder: (context, state) {
-            return state.quranBooksState.handle<dynamic>(
-              onSuccess: () => Column(
-                children: [
-                  CardWidget(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child:
-                              state.categoryDetail?.title.toString().autoSize(
-                                    context,
-                                    fontSize: 20,
-                                    maxLines: 2,
-                                    minFontSize: 10,
-                                  ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: state.categoryDetail?.description
-                              .toString()
-                              .autoSize(
-                                context,
-                                color: Colors.grey,
-                                maxLines: 20,
-                                fontSize: 14,
-                              ),
-                        ),
-                      ],
+    return BlocProvider(
+      create: (context) => CategoryBloc(
+        repositoryImpl: sl.get<CategoryRepositoryImpl>(),
+      )..add(GetCategoryDetailEvent(category.apiUrl!)),
+      child: BlocBuilder<CategoryBloc, CategoryState>(
+        buildWhen: (previous, current) =>
+            previous.categoryDetail != current.categoryDetail,
+        builder: (context, state) {
+          return AppScaffoldWidget(
+            // isScroll: false,
+            // showBackground: false,
+            onRefresh: () async {
+              context
+                  .read<CategoryBloc>()
+                  .add(GetCategoryDetailEvent(category.apiUrl!));
+            },
+            slivers: [
+              SliverToBoxAdapter(
+                child: BlocBuilder<CategoryBloc, CategoryState>(
+                  builder: (context, state) {
+                    return CardWidget(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child:
+                                state.categoryDetail?.title.toString().autoSize(
+                                      context,
+                                      fontSize: 20,
+                                      maxLines: 2,
+                                      minFontSize: 10,
+                                    ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: state.categoryDetail?.description
+                                .toString()
+                                .autoSize(
+                                  context,
+                                  color: Colors.grey,
+                                  maxLines: 20,
+                                  fontSize: 14,
+                                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Divider(
+                      color: context.primaryScheme,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Divider(
-                    color: context.primaryScheme,
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.categoryDetail!.attachments!.length,
+                  ],
+                ),
+              ),
+              BlocBuilder<CategoryBloc, CategoryState>(
+                builder: (context, state) {
+                  return state.quranBooksState.whenSliver<dynamic>(
+                    onSuccess: () => SliverList.builder(
+                      itemCount: state.categoryDetail?.attachments?.length ?? 0,
                       itemBuilder: (context, index) {
-                        final data = state.categoryDetail!.attachments![index];
-                        return _ItemDownloaded(data: data);
+                        final data = state.categoryDetail?.attachments?[index];
+                        return _ItemDownloaded(data: data!);
                       },
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ],
+          );
+        },
       ),
     );
   }
