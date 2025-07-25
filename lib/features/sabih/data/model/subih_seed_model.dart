@@ -1,7 +1,7 @@
-import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
+import 'package:quran_app/main.dart';
 
 /// Provides initial dhikr items for the app
 class SubihSeeder {
@@ -9,17 +9,6 @@ class SubihSeeder {
 
   SubihSeeder._internal();
   static final SubihSeeder _instance = SubihSeeder._internal();
-
-  static const String _hasSeededKey = 'has_seeded_sabih_data';
-
-  Future<void> runIfNeeded() async {
-    final alreadySeeded = CacheService().getBool(_hasSeededKey) ?? false;
-
-    if (alreadySeeded) return;
-
-    await seedIfEmpty();
-    await CacheService().setBool(_hasSeededKey, true);
-  }
 
   /// Returns a list of common dhikr items
   static List<SubihModel> getDefaultDhikrItems() {
@@ -64,13 +53,15 @@ class SubihSeeder {
   }
 
   /// Seeds the database with initial dhikr items if empty
-  static Future<void> seedIfEmpty() async {
+  static Future<void> runIfNeeded() async {
     try {
       // Check if there are any existing dhikr items
-      final existingItems = await DatabaseSabihService.getAllSubihItems();
+      final existingItemsCount = await DatabaseSabihService.getQueryCount();
+
+      logger.d('existingItemsCount: $existingItemsCount');
 
       // If no items exist, add the default ones
-      if (existingItems.isEmpty) {
+      if (existingItemsCount == 0) {
         final defaultItems = getDefaultDhikrItems();
 
         for (final item in defaultItems) {
@@ -86,7 +77,9 @@ class SubihSeeder {
 
         print('Seeded ${defaultItems.length} default dhikr items');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logger.e(e);
+      logger.e(stackTrace);
       print('Error seeding dhikr items: $e');
     }
   }

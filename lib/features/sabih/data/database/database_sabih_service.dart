@@ -56,6 +56,11 @@ CREATE TABLE $subihSummary (
     return rows.map(SubihModel.fromJson).toList();
   }
 
+  static Future<int> getQueryCount() async {
+    final rows = await _db.rawQuery('SELECT COUNT(*) as count FROM $subih', []);
+    return rows.first['count']! as int;
+  }
+
   // ───────────── تسجيل التسبيحات ─────────────
 
   static Future<int> logSubihTap(int subihId) {

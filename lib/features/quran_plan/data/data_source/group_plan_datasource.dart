@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
-import 'package:quran_app/features/quran_plan/data/UserIdManager.dart';
+import 'package:quran_app/features/quran_plan/data/user_id_manager.dart';
 import 'package:quran_app/features/quran_plan/data/model/plan_group_member.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/read_quran/data/data_source/ayah_data_source.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -26,11 +27,9 @@ class QuranPlanListScreen extends StatelessWidget {
               context.read<QuranPlanBloc>().add(LoadAllPlansEvent());
             },
             floatingActionButton: FloatingActionButton(
+              heroTag: 'add_plan',
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const QuranPlanAddScreen()),
-                );
+                context.push(const QuranPlanAddScreen());
               },
               child: const Icon(Icons.add),
             ),
@@ -39,43 +38,109 @@ class QuranPlanListScreen extends StatelessWidget {
                 builder: (context, state) {
                   return state.requestState.whenSliver<QuranPlan>(
                     onSuccess: () {
-                      return SliverList.separated(
-                        itemCount: state.plans.length,
-                        separatorBuilder: (ctx, i) =>
-                            const SizedBox(height: 16),
-                        itemBuilder: (ctx, i) {
-                          final plan = state.plans[i];
-                          return CardWidget(
-                            margin: const EdgeInsets.only(bottom: 24),
-                            padding: const EdgeInsets.all(18),
-                            child: ListTile(
-                              title: Text(
-                                plan.title,
-                                style: context.bodyMedium,
-                              ),
-                              subtitle: Text(
-                                'من الجزء ${plan.startJuz} إلى ${plan.endJuz} • أيام: ${plan.totalDays}',
-                                style: context.bodyMedium,
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  context
-                                      .read<QuranPlanBloc>()
-                                      .add(DeletePlanEvent(plan.id!));
+                      return SliverPadding(
+                        padding: const EdgeInsets.all(8),
+                        sliver: SliverList.separated(
+                          itemCount: state.plans.length,
+                          separatorBuilder: (ctx, i) =>
+                              const SizedBox(height: 16),
+                          itemBuilder: (ctx, i) {
+                            final plan = state.plans[i];
+                            return CardWidget(
+                              margin: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
+                              child: ListTile(
+                                title: Hero(
+                                  tag: 'plan_title_${plan.id}',
+                                  child: Text(
+                                    plan.title,
+                                    style: context.bodyMedium,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'من الجزء ${plan.startJuz} إلى ${plan.endJuz} • أيام: ${plan.totalDays}',
+                                  style: context.bodyMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    context
+                                        .read<QuranPlanBloc>()
+                                        .add(DeletePlanEvent(plan.id!));
+                                  },
+                                ),
+                                onTap: () {
+                                  context.push(
+                                    QuranPlanSessionScreen(
+                                      planId: plan.id!,
+                                      title: plan.title,
+                                    ),
+                                  );
                                 },
                               ),
-                              onTap: () {
-                                context
-                                    .push(QuranPlanSessionScreen(plan: plan));
-                              },
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       );
                     },
                     context: context,
                     sliverList: state.plans,
+                    onLoading: SliverPadding(
+                      padding: const EdgeInsets.all(8),
+                      sliver: SliverList.separated(
+                        itemCount: 5,
+                        separatorBuilder: (ctx, i) =>
+                            const SizedBox(height: 16),
+                        itemBuilder: (ctx, i) {
+                          final plans = List.generate(
+                            5,
+                            (index) => QuranPlan(
+                              title: 'title',
+                              startJuz: 1,
+                              endJuz: 1,
+                              totalDays: 1,
+                              sessionsCount: 1,
+                              versesPerSession: 1,
+                              ownerId: '1',
+                              createdAt: DateTime.now(),
+                            ),
+                          );
+                          return ShimmerWidget(
+                            child: CardWidget(
+                              margin: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
+                              child: ListTile(
+                                title: Text(
+                                  plans[i].title,
+                                  style: context.bodyMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                subtitle: Text(
+                                  'من الجزء ${plans[i].startJuz} إلى ${plans[i].endJuz} • أيام: ${plans[i].totalDays}',
+                                  style: context.bodyMedium,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                
+                                  },
+                                ),
+                                onTap: () {
+                                  
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               ),

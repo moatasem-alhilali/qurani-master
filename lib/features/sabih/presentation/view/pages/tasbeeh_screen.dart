@@ -227,7 +227,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                           },
                           onEdit: subih.isCustom
                               ? () {
-                                  _showEditDhikrDialog(subih);
+                                  _showEditDhikrDialog(subih, context);
                                 }
                               : null,
                           onDelete: subih.isCustom
@@ -269,8 +269,8 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
     );
   }
 
-  void _showEditDhikrDialog(SubihModel subih) {
-    context.showSmoothSheetStyle(
+  void _showEditDhikrDialog(SubihModel subih, BuildContext context) {
+    context.showBottomSheetUIHeader(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),

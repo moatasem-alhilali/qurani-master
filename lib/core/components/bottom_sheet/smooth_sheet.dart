@@ -51,15 +51,3 @@ class SmoothSheet extends StatelessWidget {
     }
   }
 }
-
-// final bottomBar = StickyBottomBarVisibility(
-//   child: BottomAppBar(
-//     child: Row(
-//       children: [
-//         _FolderSelector(controller),
-//         const Spacer(),
-//         _SubmitButton(controller),
-//       ],
-//     ),
-//   ),
-// );

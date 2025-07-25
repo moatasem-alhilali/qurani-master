@@ -44,10 +44,20 @@ ThemeData darkThemeData = ThemeData(
     error: const Color(0xffe74c3c),
     onError: const Color(0xff404C6E),
     inversePrimary: const Color(0xffffffff),
-    inverseSurface: const Color(0xffCD9974),
+    inverseSurface: _scaffoldBackgroundColor,
     //third
     onPrimaryContainer: _third,
     // secondary
+  ),
+  timePickerTheme: TimePickerThemeData(
+    backgroundColor: _scaffoldBackgroundColor,
+    hourMinuteColor: _primary,
+    hourMinuteTextColor: Colors.white,
+    dayPeriodColor: _primary,
+    dayPeriodTextColor: Colors.white,
+    dialHandColor: _primary,
+    dialBackgroundColor: _scaffoldBackgroundColor,
+    entryModeIconColor: _primary,
   ),
 
   ///dividerTheme

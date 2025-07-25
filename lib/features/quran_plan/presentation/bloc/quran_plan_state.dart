@@ -7,6 +7,8 @@ class QuranPlanState extends Equatable {
     this.plans = const [],
     this.selectedPlan,
     this.sessions = const [],
+    this.nextSession,
+    this.nextSessionState = RequestState.initial,
     this.errorMessage,
     this.analysis,
   });
@@ -14,6 +16,8 @@ class QuranPlanState extends Equatable {
   final List<QuranPlan> plans;
   final QuranPlan? selectedPlan;
   final List<QuranPlanSession> sessions;
+  final QuranPlanSession? nextSession;
+  final RequestState nextSessionState;
   final String? errorMessage;
   final PlanProgressAnalysis? analysis;
 
@@ -22,6 +26,8 @@ class QuranPlanState extends Equatable {
     List<QuranPlan>? plans,
     QuranPlan? selectedPlan,
     List<QuranPlanSession>? sessions,
+    QuranPlanSession? nextSession,
+    RequestState? nextSessionState,
     String? errorMessage,
     PlanProgressAnalysis? analysis,
   }) {
@@ -30,12 +36,22 @@ class QuranPlanState extends Equatable {
       plans: plans ?? this.plans,
       selectedPlan: selectedPlan ?? this.selectedPlan,
       sessions: sessions ?? this.sessions,
+      nextSession: nextSession ?? this.nextSession,
+      nextSessionState: nextSessionState ?? this.nextSessionState,
       errorMessage: errorMessage ?? this.errorMessage,
       analysis: analysis ?? this.analysis,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [requestState, plans, selectedPlan, sessions, errorMessage, analysis];
+  List<Object?> get props => [
+        requestState,
+        plans,
+        selectedPlan,
+        sessions,
+        nextSession,
+        nextSessionState,
+        errorMessage,
+        analysis
+      ];
 }

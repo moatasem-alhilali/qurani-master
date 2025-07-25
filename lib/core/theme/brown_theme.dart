@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/shared/resources/assets_manager.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
 
-
 Color _background = const Color(0xff1e1e1e);
 Color _scaffoldBackgroundColor = const Color(0xff1e1e1e);
 Color _secondary = const Color(0xff353535);
@@ -47,6 +46,16 @@ ThemeData brownThemeData = ThemeData(
     //third
     onPrimaryContainer: _third,
     // secondary
+  ),
+  timePickerTheme: TimePickerThemeData(
+    backgroundColor: _scaffoldBackgroundColor,
+    hourMinuteColor: _primary,
+    hourMinuteTextColor: Colors.white,
+    dayPeriodColor: _primary,
+    dayPeriodTextColor: Colors.white,
+    dialHandColor: _primary,
+    dialBackgroundColor: _scaffoldBackgroundColor,
+    entryModeIconColor: _primary,
   ),
 
   ///dividerTheme

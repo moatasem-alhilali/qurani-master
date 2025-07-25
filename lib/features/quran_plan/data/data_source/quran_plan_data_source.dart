@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS ${DatabaseTables.quranPlan} (
   total_days INTEGER NOT NULL,
   sessions_count INTEGER NOT NULL,
   verses_per_session INTEGER NOT NULL,
-  reminder_time TEXT,         -- صيغة HH:mm أو NULL
+  reminder_time TEXT,         -- format HH:mm or NULL
   progress REAL DEFAULT 0,
   owner_id TEXT NOT NULL,
-  group_invite_code TEXT,     -- كود الدعوة للختم الجماعي (NULL إذا فردي)
+  group_invite_code TEXT,     -- group invite code (NULL if individual)
   is_group INTEGER DEFAULT 0, -- 1=خطة جماعية، 0=فردية
   created_at TEXT NOT NULL,
   updated_at TEXT
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
 
   /// delete plan + notification
   Future<void> deletePlan(int id) async {
-    // أولاً: إلغاء إشعار الخطة
+    // first: cancel the plan notification
     await notificationService.plugin.cancel(id);
-    // ثم حذف الخطة والجلسات
+    // then delete the plan and sessions
     await _db.delete(DatabaseTables.quranPlan, id);
     await _db.delete(DatabaseTables.quranPlanSession, id);
   }
@@ -81,13 +81,13 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
     int toJuz,
     int totalDays,
   ) async {
-    // اجلب جميع الآيات من البداية للنهاية (مرتبة حسب الترتيب العالمي)
+    // get ayahs by juz range
     final ayahs = await getAyahsByJuzRange(fromJuz, toJuz);
     ayahs.sort((a, b) => a.numberGlobal.compareTo(b.numberGlobal));
 
     final totalVerses = ayahs.length;
     final versesPerSession = (totalVerses / totalDays).floor();
-    final remainder = totalVerses % totalDays; // إذا لم يكن التقسيم متساويًا
+    final remainder = totalVerses % totalDays; // if not equal
 
     final planId = await _db.insert(
       DatabaseTables.quranPlan,
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
 
     var currentIndex = 0;
     for (var sessionNum = 1; sessionNum <= totalDays; sessionNum++) {
-      // وزع الزيادة (remainder) على أول الجلسات
+      // distribute the remainder to the first sessions
       final currentSessionCount =
           versesPerSession + (sessionNum <= remainder ? 1 : 0);
       final fromAyah = ayahs[currentIndex];
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
     return planId;
   }
 
-  /// تحديث وقت التذكير أو أي خاصية في الخطة
+  /// update the reminder time or any property in the plan
   Future<void> updatePlan(QuranPlan plan) async {
     await _db.update(
       DatabaseTables.quranPlan,
@@ -138,12 +138,12 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
       where: 'id=?',
       whereArgs: [plan.id],
     );
-    // إعادة جدولة الإشعار عند تحديث الوقت
+    // reschedule the notification when updating the time
     await notificationService.plugin.cancel(plan.id!);
     await _schedulePlanReminder(plan);
   }
 
-  /// جدولة إشعار خطة ختم يومي (خاصية منفصلة للوحدة)
+  /// schedule a daily plan reminder (separate feature for the unit)
   Future<void> _schedulePlanReminder(QuranPlan plan) async {
     if (plan.reminderTime == null || plan.id == null) return;
     final parts = plan.reminderTime!.split(':');
@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
     if (session.isNotEmpty) {
       final planId = session.first['plan_id']! as int;
       await updatePlanProgress(planId);
-      // 👇 اختياري: إذا كل جلسات اليوم اكتملت، يمكنك إلغاء إشعار اليوم لو أردت
+      // optional: if all sessions of the day are completed, you can cancel the day notification if you want
       await _cancelTodayNotificationIfNoSessions(planId);
     }
   }
@@ -237,13 +237,14 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
     return result;
   }
 
-  // 🔥 اختياري - إلغاء إشعار اليوم إذا اكتملت كل جلسات اليوم للخطة (Advanced)
+  // optional - cancel the day notification if all sessions of the day are completed (Advanced)
   Future<void> _cancelTodayNotificationIfNoSessions(int planId) async {
     final today = DateTime.now();
     final sessions = await getSessions(planId);
     final sessionsToday = sessions.where((s) {
-      // بحسب منطقك: يمكن ربط الجلسة بتاريخ اليوم، أو برقم الجلسة/جدولة معينة
-      return !s.completed; // عدل الشرط لو عندك منطق تاريخ محدد للجلسة
+      // according to your logic: you can link the session to a specific date, or a specific session/schedule
+      return !s
+          .completed; // change the condition if you have a specific date logic for the session
     }).toList();
     if (sessionsToday.isEmpty) {
       await notificationService.plugin.cancel(planId);

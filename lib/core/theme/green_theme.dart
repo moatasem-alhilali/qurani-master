@@ -47,6 +47,16 @@ ThemeData greenThemeData = ThemeData(
     onPrimaryContainer: _third,
     // secondary
   ),
+  timePickerTheme: TimePickerThemeData(
+    backgroundColor: _scaffoldBackgroundColor,
+    hourMinuteColor: _primary,
+    hourMinuteTextColor: Colors.white,
+    dayPeriodColor: _primary,
+    dayPeriodTextColor: Colors.white,
+    dialHandColor: _primary,
+    dialBackgroundColor: _scaffoldBackgroundColor,
+    entryModeIconColor: _primary,
+  ),
 
   ///dividerTheme
   dividerColor: Colors.grey.withOpacity(0.5),

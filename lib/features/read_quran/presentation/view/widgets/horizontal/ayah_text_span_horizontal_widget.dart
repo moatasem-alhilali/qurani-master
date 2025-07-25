@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 
@@ -40,7 +39,7 @@ TextSpan ayahTextSpanHorizontalWidget({
           fontSize: fontSize?.sp,
           height: 2,
           letterSpacing: 30,
-          color: context.quranTheme.colorScheme.inversePrimary,
+          color: Colors.black,
           backgroundColor: Colors.transparent,
         ),
         recognizer: recognizer,
@@ -53,7 +52,7 @@ TextSpan ayahTextSpanHorizontalWidget({
           height: 2,
           letterSpacing: 5,
           // wordSpacing: wordSpacing + 10,
-          color: context.quranTheme.colorScheme.inversePrimary,
+          color: Colors.black,
           backgroundColor: hasBookmarkAyahSelect
               ? context.primaryScheme.withOpacity(.4)
               : isSelected
@@ -71,7 +70,7 @@ TextSpan ayahTextSpanHorizontalWidget({
         fontSize: fontSize?.sp,
         height: 2,
         letterSpacing: 5,
-        color: context.quranTheme.colorScheme.inversePrimary,
+        color: Colors.black,
         backgroundColor: hasBookmarkAyahSelect
             ? context.primaryScheme.withOpacity(.4)
             : isSelected
@@ -88,9 +87,7 @@ TextSpan ayahTextSpanHorizontalWidget({
         fontSize: fontSize?.sp,
         height: 2,
         letterSpacing: 5,
-        color: hasBookmarkAyahSelect
-            ? context.quranTheme.colorScheme.inversePrimary
-            : context.primaryScheme,
+        color: hasBookmarkAyahSelect ? Colors.black : context.primaryScheme,
         backgroundColor: hasBookmarkAyahSelect
             ? context.primaryScheme.withOpacity(.4)
             : isSelected

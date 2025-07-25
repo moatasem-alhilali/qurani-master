@@ -21,6 +21,7 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     on<DeletePlanEvent>(_onDeletePlan);
     on<LoadSessionsEvent>(_onLoadSessions);
     on<CompleteSessionEvent>(_onCompleteSession);
+    on<LoadNextSessionEvent>(_onLoadNextSession);
   }
   final QuranPlanDataSource dataSource;
 
@@ -110,9 +111,10 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
   ) async {
     emit(state.copyWith(requestState: RequestState.loading));
     try {
-      final sessions = await dataSource.getSessions(event.plan.id!);
+      final sessions = await dataSource.getSessions(event.planId);
+      final plan = await dataSource.getPlanById(event.planId);
       final analysis = await PlanAnalyticsService().analyzePlan(
-        event.plan,
+        plan!,
         sessions,
       );
       emit(
@@ -120,6 +122,7 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
           requestState: RequestState.success,
           sessions: sessions,
           analysis: analysis,
+          selectedPlan: plan,
         ),
       );
     } catch (e, stackTrace) {
@@ -140,23 +143,43 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     emit(state.copyWith(requestState: RequestState.loading));
     try {
       await dataSource.completeSession(event.sessionId);
-      // reload sessions for current plan if wanted
-      if (state.selectedPlan != null) {
-        final sessions = await dataSource.getSessions(state.selectedPlan!.id!);
-        emit(
-          state.copyWith(
-            requestState: RequestState.success,
-            sessions: sessions,
-          ),
-        );
-      } else {
-        emit(state.copyWith(requestState: RequestState.success));
-        add(LoadSessionsEvent(state.selectedPlan!.id!, state.selectedPlan!));
-      }
+      final sessions = await dataSource.getSessions(event.planId);
+      emit(
+        state.copyWith(
+          requestState: RequestState.success,
+          sessions: sessions,
+        ),
+      );
+      add(LoadSessionsEvent(event.planId));
+      add(LoadNextSessionEvent(event.planId));
     } catch (e) {
+      logger.e(e.toString());
       emit(
         state.copyWith(
           requestState: RequestState.error,
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLoadNextSession(
+    LoadNextSessionEvent event,
+    Emitter<QuranPlanState> emit,
+  ) async {
+    emit(state.copyWith(nextSessionState: RequestState.loading));
+    try {
+      final nextSession = await dataSource.getNextSession(event.planId);
+      emit(
+        state.copyWith(
+          nextSessionState: RequestState.success,
+          nextSession: nextSession,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          nextSessionState: RequestState.error,
           errorMessage: e.toString(),
         ),
       );

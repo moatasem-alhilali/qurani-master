@@ -33,16 +33,23 @@ class DeletePlanEvent extends QuranPlanEvent {
 }
 
 class LoadSessionsEvent extends QuranPlanEvent {
-  const LoadSessionsEvent(this.planId, this.plan);
+  const LoadSessionsEvent(this.planId);
   final int planId;
-  final QuranPlan plan;
   @override
-  List<Object?> get props => [planId, plan];
+  List<Object?> get props => [planId];
 }
 
 class CompleteSessionEvent extends QuranPlanEvent {
-  const CompleteSessionEvent(this.sessionId);
+  const CompleteSessionEvent(this.sessionId, this.planId);
   final int sessionId;
+  final int planId;
   @override
-  List<Object?> get props => [sessionId];
+  List<Object?> get props => [sessionId, planId];
+}
+
+class LoadNextSessionEvent extends QuranPlanEvent {
+  const LoadNextSessionEvent(this.planId);
+  final int planId;
+  @override
+  List<Object?> get props => [planId];
 }

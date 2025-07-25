@@ -132,6 +132,24 @@ class ReadQuranState {
       ..sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
   }
 
+  int? getFirstPageOfSurah(int surahNumber, {int? ayahNumber = 1}) {
+    try {
+      final firstAyah = allAyahs.firstWhere(
+        (a) => a.surahId == surahNumber && a.ayahNumber == ayahNumber,
+        orElse: () => NewAyahModel(
+          id: 0,
+          surahId: 0,
+          numberGlobal: 0,
+          ayahNumber: 0,
+          text: '',
+        ),
+      );
+      return firstAyah.page! - 1;
+    } catch (_) {
+      return null;
+    }
+  }
+
   List<int> get downThePageIndex => [
         75,
         206,

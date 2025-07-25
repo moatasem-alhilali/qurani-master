@@ -137,7 +137,7 @@ extension MyNavigator on BuildContext {
                     ],
                   ),
                 ),
-                child,
+                SafeArea(child: child),
               ],
             ),
           ),

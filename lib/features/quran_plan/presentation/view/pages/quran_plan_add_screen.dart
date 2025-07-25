@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/theme_context_extension.dart';
 import 'package:quran_app/core/services/device_info_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
@@ -29,7 +31,13 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
       child: BlocBuilder<QuranPlanBloc, QuranPlanState>(
         builder: (context, state) {
           return AppScaffoldWidget(
-            title: 'إضافة خطة ختم جديدة',
+            titleWidget: Hero(
+              tag: 'add_plan',
+              child: Text(
+                'إضافة خطة ختم جديدة',
+                style: context.titleMedium,
+              ),
+            ),
             body: Padding(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -105,12 +113,20 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                     ),
                     const SizedBox(height: 16),
                     ListTile(
+                      tileColor: context.secondary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       title: Text(
                         _reminderTime == null
                             ? 'حدد وقت التذكير اليومي'
                             : 'وقت التذكير: ${_reminderTime!.format(context)}',
+                        style: context.bodyMedium,
                       ),
-                      leading: const Icon(Icons.alarm),
+                      leading: const Icon(
+                        Icons.alarm,
+                        color: Colors.white,
+                      ),
                       onTap: () async {
                         final t = await showTimePicker(
                           context: context,
@@ -120,7 +136,9 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                       },
                       trailing: _reminderTime != null
                           ? IconButton(
-                              icon: const Icon(Icons.close),
+                              icon: const Icon(
+                                Icons.close,
+                              ),
                               onPressed: () =>
                                   setState(() => _reminderTime = null),
                             )
