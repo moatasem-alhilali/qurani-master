@@ -1,5 +1,7 @@
 import 'package:path/path.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
+import 'package:quran_app/features/quran_plan/data/data_source/group_plan_datasource.dart';
+import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
@@ -14,6 +16,8 @@ class DatabaseTables {
   static const String offlines = 'offlines';
   static const String coordinates = 'coordinates';
   static const String doua = 'doua';
+  static const String quranPlan = 'quran_plans';
+  static const String quranPlanSession = 'quran_plan_sessions';
 }
 
 /// A singleton service to manage the local SQLite database.
@@ -33,7 +37,7 @@ class DatabaseService {
   static Database? _db;
 
   /// Database file name
-  static const _dbName = 'quran_app_test6.db';
+  static const _dbName = 'quran_app_test7.db';
 
   /// Database version (used for future upgrades)
   static const _dbVersion = 1;
@@ -71,6 +75,15 @@ class DatabaseService {
     await db.execute(DatabaseSabihService.subihSummaryTable);
     await db
         .execute(DatabaseNotificationSchedulesService.notificationSchedules);
+
+    // quran plan tables
+    await db.execute(QuranPlanDataSource.quranPlanTable);
+    await db.execute(QuranPlanDataSource.quranPlanSessionTable);
+
+    // quran plan group tables
+    await db.execute(GroupPlanDataSource.planGroupMemberTable);
+    await db.execute(GroupPlanDataSource.planGroupActivityLogsTable);
+    await db.execute(GroupPlanDataSource.planGroupOfflineActionsTable);
 
     logger.i('✅ Database initialized and tables created.');
   }
@@ -260,11 +273,49 @@ class DatabaseService {
     return db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
+  /// Deletes a record by its [where] and [whereArgs] from the given [table].
+  ///
+  /// Returns number of affected rows.
+  ///
+  /// Example:
+  /// ```dart
+  /// await dbService.delete('bookmarkTable', 1);
+  /// ```
+  Future<int> deleteWhere(
+    String table, {
+    required String where,
+    required List<Object?> whereArgs,
+  }) async {
+    final db = await database;
+    return db.delete(table, where: where, whereArgs: whereArgs);
+  }
+
   Future<List<Map<String, Object?>>> rawQuery(
     String sql,
     List<Object?>? arguments,
   ) async {
     final db = await database;
     return db.rawQuery(sql, arguments);
+  }
+
+  Future<List<Map<String, Object?>>> query(
+    String sql, {
+    List<String>? columns,
+    String? where,
+    List<Object?>? whereArgs,
+    String? orderBy,
+    int? limit,
+    int? offset,
+  }) async {
+    final db = await database;
+    return db.query(
+      sql,
+      columns: columns,
+      where: where,
+      whereArgs: whereArgs,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+    );
   }
 }

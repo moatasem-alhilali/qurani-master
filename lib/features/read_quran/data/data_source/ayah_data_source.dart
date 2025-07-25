@@ -49,7 +49,7 @@ class AyahDataSource {
     final dbInstance = await db;
     final countRes =
         await dbInstance!.rawQuery('SELECT COUNT(*) as c FROM ayahs');
-    final total = countRes.isNotEmpty ? (countRes.first['c'] as int) : 0;
+    final total = countRes.isNotEmpty ? (countRes.first['c']! as int) : 0;
     if (total == 0) return null;
 
     final randomIndex = Random().nextInt(total);
@@ -102,8 +102,11 @@ class AyahDataSource {
   }
 
   /// جلب آيات حسب الصفحة
-  Future<List<NewAyahModel>> getAyahsByPage(int page,
-      {int? limit, int? offset}) async {
+  Future<List<NewAyahModel>> getAyahsByPage(
+    int page, {
+    int? limit,
+    int? offset,
+  }) async {
     final result = await (await db)!.query(
       'ayahs',
       where: 'page = ?',
@@ -116,8 +119,11 @@ class AyahDataSource {
   }
 
   /// جلب آيات حسب الجزء
-  Future<List<NewAyahModel>> getAyahsByJuz(int juz,
-      {int? limit, int? offset}) async {
+  Future<List<NewAyahModel>> getAyahsByJuz(
+    int juz, {
+    int? limit,
+    int? offset,
+  }) async {
     final result = await (await db)!.query(
       'ayahs',
       where: 'juz = ?',
@@ -135,6 +141,17 @@ class AyahDataSource {
       'ayahs',
       where: 'sajda > 0',
       orderBy: 'surah_id ASC, ayah_number ASC',
+    );
+    return result.map(NewAyahModel.fromMap).toList();
+  }
+
+  /// جلب جميع آيات النطاق
+  Future<List<NewAyahModel>> getAyahsByJuzRange(int fromJuz, int toJuz) async {
+    final result = await (await db)!.query(
+      'ayahs',
+      where: 'juz >= ? AND juz <= ?',
+      whereArgs: [fromJuz, toJuz],
+      orderBy: 'id ASC',
     );
     return result.map(NewAyahModel.fromMap).toList();
   }

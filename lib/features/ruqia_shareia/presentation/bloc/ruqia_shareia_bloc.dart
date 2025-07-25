@@ -5,10 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
-import 'package:quran_app/features/allh_name/data/models/allah_name_model.dart';
-import 'package:quran_app/features/hadith_40/data/models/hadith_40_model.dart';
 import 'package:quran_app/features/ruqia_shareia/data/models/ruqia_shareia_model.dart';
-import 'package:quran_app/features/wird/data/models/wird_model.dart';
 
 part 'ruqia_shareia_event.dart';
 part 'ruqia_shareia_state.dart';

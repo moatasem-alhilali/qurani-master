@@ -41,8 +41,6 @@ class RandomAyahState {
 
   @override
   int get hashCode {
-    return loadState.hashCode ^
-        randomAyah.hashCode ^
-        errorMessage.hashCode;
+    return loadState.hashCode ^ randomAyah.hashCode ^ errorMessage.hashCode;
   }
 }

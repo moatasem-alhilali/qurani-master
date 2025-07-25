@@ -71,6 +71,12 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
   final _refreshController = RefreshController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return RefreshWidget(
       controller: _refreshController,

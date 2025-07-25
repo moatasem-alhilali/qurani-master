@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
+import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
@@ -17,6 +18,7 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/quran_audio/data/di/injection_container.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
+import 'package:quran_app/features/quran_plan/data/di/injection_container.dart';
 import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
@@ -35,6 +37,8 @@ Future<void> setupServiceLocator() async {
   await registerHomeDependencies(sl);
 
   ///
+  /// getIt
+
   sl
     ..registerSingleton<DatabaseNotificationSettingService>(
       DatabaseNotificationSettingService(),
@@ -103,6 +107,9 @@ Future<void> setupServiceLocator() async {
     ..registerFactory<QuranAudioBloc>(
       () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
     );
+
+  // ─────────────────────── QURAN PLAN ───────────────────────
+  await registerQuranPlanDependencies(sl);
 }
 
 // Future<void> _initDatabaseClient() async =>

@@ -70,7 +70,8 @@ class NewAyahModel {
         audio: map['audio'] as String?,
         audioSecondary: map['audio_secondary'] != null
             ? List<String>.from(
-                (jsonDecode(map['audio_secondary'] as String) as List<dynamic>).map((e) => e.toString()),
+                (jsonDecode(map['audio_secondary'] as String) as List<dynamic>)
+                    .map((e) => e.toString()),
               )
             : null,
         tafsir: map['tafsir'] as String?,

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_timezone/flutter_timezone.dart';
@@ -9,12 +10,28 @@ import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
+import 'package:quran_app/core/services/firebase_notification.dart';
 import 'package:quran_app/core/services/permission/location_permission_service.dart';
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/firebase_options.dart';
 import 'package:quran_app/main_view.dart';
+
+// Background message handler must be a top-level function
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Initialize Firebase if not already initialized
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Setup local notifications for background processing
+  await FirebaseNotificationService.instance.setupFlutterNotifications();
+
+  // Show the notification
+  await FirebaseNotificationService.instance.showNotification(message);
+}
 
 // ✅ Logger instance used globally for debugging and logging
 Logger logger = Logger();
@@ -45,13 +62,26 @@ void main() async {
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await LocationPermissionService.init();
 
+  // Initialize Firebase first
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    debugPrint('Firebase initialized successfully');
   } catch (e) {
-    logger.e('Firebase initialization failed: $e');
+    debugPrint('Firebase initialization failed: $e');
   }
+
+  // // Set background message handler AFTER Firebase initialization
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // // Initialize notification service
+  // try {
+  //   await FirebaseNotificationService.instance.initialize();
+  //   debugPrint('Notification service initialized successfully');
+  // } catch (e) {
+  //   debugPrint('Notification service initialization failed: $e');
+  // }
 
   //
   await NotificationPermissionService.handelNotification();
