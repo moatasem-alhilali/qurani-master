@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
@@ -111,7 +111,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                   ),
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                   textAlign: TextAlign.right,
                 ),
@@ -229,8 +229,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                     // fontFamily: 'naskh',
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 12.sp,
-                                                    color:
-                                                        context.primaryScheme,
+                                                    color: context.primaryColor,
                                                   ),
                                                 ),
                                               ),
@@ -256,7 +255,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                         // fontFamily: 'uthman',
                                                         fontSize: 13.sp,
                                                         color: context
-                                                            .primaryScheme,
+                                                            .primaryColor,
                                                       ),
                                                     ),
                                                     Text(
@@ -270,7 +269,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         color: context
-                                                            .primaryScheme,
+                                                            .primaryColor,
                                                       ),
                                                     ),
                                                   ],

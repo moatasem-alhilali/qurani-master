@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -35,10 +35,10 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                     child: ProgressBar(
-                      progressBarColor: context.primaryScheme,
-                      baseBarColor: context.primaryScheme.withOpacity(0.24),
-                      bufferedBarColor: context.primaryScheme.withOpacity(0.24),
-                      thumbColor: context.primaryScheme,
+                      progressBarColor: context.primaryColor,
+                      baseBarColor: context.primaryColor.withOpacity(0.24),
+                      bufferedBarColor: context.primaryColor.withOpacity(0.24),
+                      thumbColor: context.primaryColor,
                       barHeight: 8,
                       thumbRadius: 5,
                       timeLabelTextStyle: titleMedium(context),
@@ -82,7 +82,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                         icon: Icon(
                           CupertinoIcons.shuffle,
                           color: state.isShuffleEnabled
-                              ? context.primaryScheme
+                              ? context.primaryColor
                               : Colors.white,
                         ),
                       );
@@ -120,7 +120,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           if (state.loadAudioSourceState ==
                               RequestState.error) {
                             return _AnimatedControlButton(
-                              backgroundColor: context.primaryScheme,
+                              backgroundColor: context.primaryColor,
                               onTap: () {
                                 context.read<QuranAudioBloc>().add(
                                       PlayAudioNextOrPreviousEvent(
@@ -176,8 +176,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           state.loopMode == LoopMode.one
                               ? CupertinoIcons.repeat_1
                               : CupertinoIcons.repeat,
-                          color:
-                              isActive ? context.primaryScheme : Colors.white,
+                          color: isActive ? context.primaryColor : Colors.white,
                         ),
                       );
                     },
@@ -335,7 +334,7 @@ class _AnimatedLoadingIndicatorState extends State<_AnimatedLoadingIndicator>
           scale: _pulseAnimation.value,
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(
-              context.primaryScheme,
+              context.primaryColor,
             ),
           ),
         );

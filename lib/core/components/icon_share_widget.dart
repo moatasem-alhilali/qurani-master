@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/share_service.dart';
 
 class IconShareWidget extends StatefulWidget {
@@ -122,7 +122,7 @@ class _IconShareWidgetState extends State<IconShareWidget>
               child: Icon(
                 _isShared ? CupertinoIcons.check_mark : CupertinoIcons.share,
                 key: ValueKey(_isShared),
-                color: _isShared ? Colors.green : context.primaryScheme,
+                color: _isShared ? Colors.green : context.primaryColor,
                 size: 20.sp,
               ),
             ),

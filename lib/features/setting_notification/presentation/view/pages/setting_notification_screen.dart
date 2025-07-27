@@ -5,7 +5,7 @@ import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/button/material_button_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -281,7 +281,7 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              color: context.secondary,
+              color: context.secondaryColor,
             ),
             child: Column(
               children: items.asMap().entries.map((entry) {

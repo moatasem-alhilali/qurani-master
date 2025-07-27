@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
 enum TimelineItemStatus {
@@ -194,7 +194,7 @@ class TimelineListItem extends StatelessWidget {
                     color: dotColor ?? _getTimelineDotColor(context),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: context.secondary,
+                      color: context.secondaryColor,
                       width: 2.w,
                     ),
                   ),
@@ -225,11 +225,11 @@ class TimelineListItem extends StatelessWidget {
   Color _getBackgroundColor(BuildContext context) {
     switch (status) {
       case TimelineItemStatus.active:
-        return context.primaryScheme.withOpacity(0.1);
+        return context.primaryColor.withOpacity(0.1);
       case TimelineItemStatus.completed:
         return context.gray6;
       case TimelineItemStatus.upcoming:
-        return context.secondary;
+        return context.secondaryColor;
       case TimelineItemStatus.inactive:
         return context.gray6;
     }
@@ -238,11 +238,11 @@ class TimelineListItem extends StatelessWidget {
   Color _getStatusColor(BuildContext context) {
     switch (status) {
       case TimelineItemStatus.active:
-        return context.primaryScheme;
+        return context.primaryColor;
       case TimelineItemStatus.completed:
         return Colors.green;
       case TimelineItemStatus.upcoming:
-        return context.primaryScheme;
+        return context.primaryColor;
       case TimelineItemStatus.inactive:
         return context.gray2;
     }
@@ -255,11 +255,11 @@ class TimelineListItem extends StatelessWidget {
   Color _getTitleColor(BuildContext context) {
     switch (status) {
       case TimelineItemStatus.active:
-        return context.primaryScheme;
+        return context.primaryColor;
       case TimelineItemStatus.completed:
         return context.gray1;
       case TimelineItemStatus.upcoming:
-        return context.primaryScheme;
+        return context.primaryColor;
       case TimelineItemStatus.inactive:
         return context.gray2;
     }
@@ -307,7 +307,7 @@ class TimelineListItem extends StatelessWidget {
   Color _getTimelineDotColor(BuildContext context) {
     switch (status) {
       case TimelineItemStatus.active:
-        return context.primaryScheme;
+        return context.primaryColor;
       case TimelineItemStatus.completed:
         return Colors.green;
       case TimelineItemStatus.upcoming:

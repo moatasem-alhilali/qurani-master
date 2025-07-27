@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/bookmark/data/request/bookmark_ayah_request.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
@@ -91,7 +91,7 @@ class _AddBookmarkAyahButtonState extends State<AddBookmarkAyahButton>
                       hasBookmark ? Icons.bookmark_added : Icons.bookmark_add,
                       key: ValueKey<bool>(hasBookmark),
                       size: 30,
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                   ),
                 ),

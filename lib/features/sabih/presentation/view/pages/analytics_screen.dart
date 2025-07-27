@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -168,7 +168,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               title,
               style: context.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
-                color: context.primaryScheme,
+                color: context.primaryColor,
                 fontSize: 16.sp,
               ),
             ),
@@ -185,7 +185,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                           style: context.bodyMedium?.copyWith(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
-                            color: context.primaryScheme,
+                            color: context.primaryColor,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -204,13 +204,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
                       count.toString(),
                       style: context.bodyMedium?.copyWith(
-                        color: context.secondary,
+                        color: context.secondaryColor,
                         fontWeight: FontWeight.w500,
                         fontSize: 16.sp,
                       ),
@@ -272,7 +272,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 title,
                 style: context.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   fontSize: 16.sp,
                 ),
               ),

@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
-  const CustomVideoPlayer({super.key, required this.url, this.offline = false});
+  const CustomVideoPlayer({required this.url, super.key, this.offline = false});
   final String url;
   final bool offline;
   @override
@@ -58,12 +58,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
             children: [
               // if (!_controller.value.isPlaying)
 
-              _controller.value.isInitialized
-                  ? AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    )
-                  : const CircularProgressIndicator(),
+              if (_controller.value.isInitialized)
+                AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                )
+              else
+                const CircularProgressIndicator(),
               Positioned.fill(
                 child: AnimatedContainer(
                   duration: 500.milliseconds,
@@ -97,9 +98,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
           const SizedBox(height: 10),
           if (_controller.value.isInitialized)
             ProgressBar(
-              baseBarColor: context.primaryScheme.withOpacity(0.5),
-              bufferedBarColor: context.primaryScheme,
-              progressBarColor: context.primaryScheme,
+              baseBarColor: context.primaryColor.withOpacity(0.5),
+              bufferedBarColor: context.primaryColor,
+              progressBarColor: context.primaryColor,
               thumbColor: Colors.red,
               timeLabelType: TimeLabelType.totalTime,
               progress: _controller.value.position,
@@ -122,8 +123,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 }
 
 class DurationState {
-  const DurationState(
-      {required this.progress, required this.buffered, required this.total});
+  const DurationState({
+    required this.progress,
+    required this.buffered,
+    required this.total,
+  });
   final Duration progress;
   final Duration buffered;
   final Duration total;

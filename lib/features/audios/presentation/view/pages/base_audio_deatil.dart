@@ -4,7 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -91,7 +91,7 @@ class _ItemDownloaded extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       // decoration: BoxDecoration(
       //   borderRadius: BorderRadius.circular(12),
-      //   color: context.primaryScheme,
+      //   color: context.primaryColor,
       // ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -205,7 +205,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
               height: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: context.primaryScheme,
+                color: context.primaryColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   bottomLeft: Radius.circular(8),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class DoaItem extends StatelessWidget {
@@ -67,7 +67,7 @@ class DoaItem extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontFamily: fontFamily ?? 'ios-1',
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         fontSize: fontSizeAthkar,
                       ),
                     ),

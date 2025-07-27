@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/notification_schedules/data/database/notification_configs.dart';
@@ -106,7 +106,7 @@ class NotificationSchedulesScreen extends StatelessWidget {
   Widget _buildFAB(BuildContext context, NotificationScheduleState state) {
     return FloatingActionButton.extended(
       onPressed: state.isSubmitting ? null : () => _showAddDialog(context),
-      backgroundColor: context.primaryScheme,
+      backgroundColor: context.primaryColor,
       foregroundColor: Colors.white,
       icon: state.isSubmitting
           ? SizedBox(
@@ -219,7 +219,7 @@ class _LoadingWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(context.primaryScheme),
+            valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
           ),
           SizedBox(height: 16.h),
           Text(
@@ -251,13 +251,13 @@ class _EmptyStateWidget extends StatelessWidget {
               width: 120.w,
               height: 120.w,
               decoration: BoxDecoration(
-                color: context.primaryScheme.withOpacity(0.1),
+                color: context.primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.schedule_outlined,
                 size: 60.sp,
-                color: context.primaryScheme.withOpacity(0.5),
+                color: context.primaryColor.withOpacity(0.5),
               ),
             ),
             SizedBox(height: 24.h),
@@ -284,7 +284,7 @@ class _EmptyStateWidget extends StatelessWidget {
               onPressed: () => const NotificationSchedulesScreen(notifKey: '')
                   ._showAddDialog(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(

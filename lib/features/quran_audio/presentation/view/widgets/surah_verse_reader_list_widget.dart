@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:quran_app/core/bloc/generic/query/query_bloc.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_query_extension.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -78,12 +78,12 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                           CircleAvatar(
                             radius: 22.r,
                             backgroundColor:
-                                context.colorScheme.primary.withOpacity(0.1),
+                                context.primaryColor.withOpacity(0.1),
                             child: Text(
                               reader.name.substring(0, 1),
                               style: context.titleMedium?.copyWith(
                                 color: currentPlaying
-                                    ? context.primaryScheme
+                                    ? context.primaryColor
                                     : Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24.sp,
@@ -99,7 +99,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                   reader.name,
                                   style: context.titleMedium?.copyWith(
                                     color: currentPlaying
-                                        ? context.primaryScheme
+                                        ? context.primaryColor
                                         : Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.sp,
@@ -114,7 +114,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                       icon: Icons.language,
                                       label: reader.language,
                                       color: currentPlaying
-                                          ? context.primaryScheme
+                                          ? context.primaryColor
                                           : Colors.white,
                                     ),
                                     SizedBox(width: 8.w),
@@ -122,7 +122,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                       icon: Icons.audiotrack,
                                       label: reader.format,
                                       color: currentPlaying
-                                          ? context.primaryScheme
+                                          ? context.primaryColor
                                           : Colors.white,
                                     ),
                                     if (reader.bitrate != null &&
@@ -132,7 +132,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                         icon: Icons.speed,
                                         label: reader.bitrate!,
                                         color: currentPlaying
-                                            ? context.primaryScheme
+                                            ? context.primaryColor
                                             : Colors.white,
                                       ),
                                     ],

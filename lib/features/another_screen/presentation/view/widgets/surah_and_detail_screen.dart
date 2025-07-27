@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
@@ -46,7 +46,7 @@ class SurahWithAllDetailScreen extends StatelessWidget {
                             // decoration: BoxDecoration(
                             //   borderRadius: BorderRadius.circular(12),
                             //   color: index % 2 == 0
-                            //       ? context.primaryScheme
+                            //       ? context.primaryColor
                             //       : Colors.transparent,
                             // ),
                             child: Row(
@@ -60,8 +60,8 @@ class SurahWithAllDetailScreen extends StatelessWidget {
                                 ),
                                 CircleAvatar(
                                   backgroundColor: index % 2 == 0
-                                      ? context.primaryScheme
-                                      : context.primarySecondary,
+                                      ? context.primaryColor
+                                      : context.primaryColor.withOpacity(0.8),
                                   radius: 12.r,
                                   child: FittedBox(
                                     child: Text('${index + 1}'),

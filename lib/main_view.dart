@@ -10,7 +10,9 @@ import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
+import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
@@ -145,11 +147,13 @@ class MyApp extends StatelessWidget {
                   supportedLocales: const [Locale('ar'), Locale('en')],
                   onGenerateRoute: RouterGenerator.getRoute,
                   initialRoute: RoutesManager.main,
-                  // darkTheme: getDarkMode(),
-                  darkTheme: context.themeApp,
-                  theme: getLightMode(),
+                  // // darkTheme: getDarkMode(),
+                  // darkTheme: context.themeApp,
+                  // theme: getLightMode(),
+                  darkTheme: darkTheme,
+                  theme: lightTheme,
+                  themeMode: ThemeMode.light,
                   title: 'طمأنينة',
-                  themeMode: ThemeMode.dark,
                   themeAnimationCurve: Curves.decelerate,
                   themeAnimationDuration: const Duration(milliseconds: 300),
                   themeAnimationStyle: const AnimationStyle(

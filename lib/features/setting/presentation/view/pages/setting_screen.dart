@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
@@ -55,13 +55,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                       borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: context.primaryScheme),
+                      border: Border.all(color: context.primaryColor),
                     ),
                     child: Icon(
                       CupertinoIcons.bell,
-                      // color: context.primaryScheme,
+                      // color: context.primaryColor,
                       size: 24.sp,
                     ),
                   ),
@@ -99,9 +99,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                       borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: context.primaryScheme),
+                      border: Border.all(color: context.primaryColor),
                     ),
                     child: Icon(
                       CupertinoIcons.arrow_down_to_line,
@@ -143,13 +143,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                       borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(color: context.primaryScheme),
+                      border: Border.all(color: context.primaryColor),
                     ),
                     child: Icon(
                       CupertinoIcons.arrow_up_circle,
-                      // color: context.primaryScheme,
+                      // color: context.primaryColor,
                       size: 24.sp,
                     ),
                   ),

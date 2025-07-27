@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class FloatButton extends StatelessWidget {
   FloatButton({
@@ -26,7 +26,7 @@ class FloatButton extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            backgroundColor: context.primaryScheme,
+            backgroundColor: context.primaryColor,
             iconColor: Colors.white,
             foregroundColor: Colors.white,
             textStyle: const TextStyle(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
@@ -144,7 +144,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: context.primaryScheme,
+                  primary: context.primaryColor,
                 ),
           ),
           child: child!,
@@ -159,7 +159,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
           return Theme(
             data: Theme.of(context).copyWith(
               colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: context.primaryScheme,
+                    primary: context.primaryColor,
                   ),
             ),
             child: child!,
@@ -277,8 +277,8 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
               decoration: BoxDecoration(
                 color: isActive
                     ? (isCurrent
-                        ? context.primaryScheme
-                        : context.primaryScheme.withOpacity(0.5))
+                        ? context.primaryColor
+                        : context.primaryColor.withOpacity(0.5))
                     : Colors.grey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2.r),
               ),
@@ -331,7 +331,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        border: Border.all(color: context.primaryScheme.withOpacity(0.3)),
+        border: Border.all(color: context.primaryColor.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: DropdownButton<ScheduleType>(
@@ -340,7 +340,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
         underline: const SizedBox(),
         icon: Icon(
           Icons.keyboard_arrow_down,
-          color: context.primaryScheme,
+          color: context.primaryColor,
         ),
         items: ScheduleType.values.map((e) {
           return DropdownMenuItem(
@@ -349,7 +349,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
               children: [
                 Icon(
                   _getScheduleTypeIcon(e),
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   size: 20.sp,
                 ),
                 SizedBox(width: 12.w),
@@ -385,15 +385,15 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: context.primaryScheme.withOpacity(0.1),
+        color: context.primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: context.primaryScheme.withOpacity(0.3)),
+        border: Border.all(color: context.primaryColor.withOpacity(0.3)),
       ),
       child: Row(
         children: [
           Icon(
             Icons.info_outline,
-            color: context.primaryScheme,
+            color: context.primaryColor,
             size: 20.sp,
           ),
           SizedBox(width: 12.w),
@@ -402,7 +402,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
               descriptions[selectedType] ?? '',
               style: TextStyle(
                 fontSize: 14.sp,
-                color: context.primaryScheme,
+                color: context.primaryColor,
                 height: 1.5,
               ),
             ),
@@ -514,7 +514,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
-            border: Border.all(color: context.primaryScheme.withOpacity(0.3)),
+            border: Border.all(color: context.primaryColor.withOpacity(0.3)),
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: DropdownButton<int>(
@@ -610,8 +610,8 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                 child: FilterChip(
                   label: Text(_arabicDayOfWeek(day)),
                   selected: selected,
-                  selectedColor: context.primaryScheme.withOpacity(0.2),
-                  checkmarkColor: context.primaryScheme,
+                  selectedColor: context.primaryColor.withOpacity(0.2),
+                  checkmarkColor: context.primaryColor,
                   backgroundColor: Colors.grey.withOpacity(0.1),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.r),
@@ -660,7 +660,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                 icon: Icon(Icons.add, size: 18.sp),
                 label: Text('إضافة', style: TextStyle(fontSize: 14.sp)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryScheme,
+                  backgroundColor: context.primaryColor,
                   foregroundColor: Colors.white,
                   padding:
                       EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -708,7 +708,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                     children: [
                       Icon(
                         Icons.schedule,
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         size: 20.sp,
                       ),
                       SizedBox(width: 12.w),
@@ -861,13 +861,13 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  side: BorderSide(color: context.primaryScheme),
+                  side: BorderSide(color: context.primaryColor),
                 ),
                 child: Text(
                   'السابق',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                 ),
               ),
@@ -882,7 +882,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
                     : _nextPage();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 shape: RoundedRectangleBorder(

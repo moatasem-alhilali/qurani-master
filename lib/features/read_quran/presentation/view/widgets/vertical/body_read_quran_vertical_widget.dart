@@ -22,7 +22,7 @@
 //               const EdgeInsets.symmetric(vertical: 8),
 //               EdgeInsets.zero,
 //             ) as EdgeInsetsGeometry,
-//             color: context.primaryScheme.withValues(alpha: 0.1),
+//             color: context.primaryColor.withValues(alpha: 0.1),
 //             height: context.getScreenHeight(),
 //             child: state.loadQuranState == RequestState.loading
 //                 ? const Center(

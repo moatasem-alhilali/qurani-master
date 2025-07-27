@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_component_show.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
@@ -25,7 +25,7 @@ extension MyNavigator on BuildContext {
       context: this,
       child: child,
       isScroll: isScroll,
-      backgroundColor: backgroundColor ?? background,
+      backgroundColor: backgroundColor ?? surfaceColor,
       whenCompleted: whenCompleted,
     );
   }
@@ -67,8 +67,8 @@ extension MyNavigator on BuildContext {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        context.primaryScheme,
-                        context.primaryScheme.withOpacity(0.8),
+                        context.primaryColor,
+                        context.primaryColor.withOpacity(0.8),
                       ],
                     ),
                     borderRadius: BorderRadius.only(

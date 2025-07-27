@@ -34,7 +34,7 @@
 //               builder: (context, state) {
 //                 return MyTextFormFieldWidget(
 //                   hintStyle: TextStyle(
-//                     color: context.primaryScheme,
+//                     color: context.primaryColor,
 //                     fontSize: 14,
 //                   ),
 //                   hintText: 'ادخل اسم الايه',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class SchedulesSummaryWidget extends StatelessWidget {
   const SchedulesSummaryWidget({
@@ -24,14 +24,14 @@ class SchedulesSummaryWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            context.primaryScheme,
-            context.primaryScheme.withOpacity(0.8),
+            context.primaryColor,
+            context.primaryColor.withOpacity(0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: context.primaryScheme.withOpacity(0.3),
+            color: context.primaryColor.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

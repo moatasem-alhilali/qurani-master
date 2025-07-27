@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_audio_bloc/download_quran_audio_bloc.dart';
@@ -74,7 +74,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.secondary.withOpacity(0.8),
+                  color: context.secondaryColor.withOpacity(0.8),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -112,8 +112,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
                                 height: 32,
                                 margin: const EdgeInsets.only(right: 10),
                                 decoration: BoxDecoration(
-                                  color: context.colorScheme.onSurface
-                                      .withAlpha(15),
+                                  color: context.onSurfaceColor.withAlpha(15),
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(30),
                                   ),
@@ -132,7 +131,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
                                       icon: Icon(
                                         CupertinoIcons.shuffle,
                                         color: state.isShuffleEnabled
-                                            ? context.primaryScheme
+                                            ? context.primaryColor
                                             : Colors.white,
                                       ),
                                     );
@@ -144,8 +143,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
                                 height: 32,
                                 margin: const EdgeInsets.only(right: 10),
                                 decoration: BoxDecoration(
-                                  color: context.colorScheme.onSurface
-                                      .withAlpha(15),
+                                  color: context.onSurfaceColor.withAlpha(15),
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(30),
                                   ),
@@ -214,8 +212,8 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
 //       child: MaterialButton(
 //         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
 //         height: 75,
-//         splashColor: context.colorScheme.onSurface.withAlpha(50),
-//         highlightColor: context.colorScheme.onSurface.withAlpha(50),
+//         splashColor:  context.onSurfaceColor.withAlpha(50),
+//         highlightColor:  context.onSurfaceColor.withAlpha(50),
 //         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
 //         onPressed: onPressed,
 //         child: Column(
@@ -250,7 +248,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
 //                   onPressed: onMorePressed,
 //                   icon: Icon(
 //                     Icons.more_vert_rounded,
-//                     color: context.colorScheme.onSurface.withAlpha(100),
+//                     color:  context.onSurfaceColor.withAlpha(100),
 //                     size: 22,
 //                   ),
 //                 ),
@@ -259,7 +257,7 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
 //             Container(
 //               margin: const EdgeInsets.fromLTRB(65, 10, 15, 0),
 //               height: 1,
-//               color: context.colorScheme.onSurface.withAlpha(30),
+//               color:  context.onSurfaceColor.withAlpha(30),
 //             ),
 //           ],
 //         ),

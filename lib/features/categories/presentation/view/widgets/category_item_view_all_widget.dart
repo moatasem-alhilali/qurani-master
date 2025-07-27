@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
@@ -16,7 +16,7 @@ class ItemCategory extends StatelessWidget {
       onTap: onTap,
       child: CardWidget(
         margin: const EdgeInsets.symmetric(horizontal: 5),
-        border: Border.all(color: context.primaryScheme),
+        border: Border.all(color: context.primaryColor),
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         // decoration: BoxDecoration(
         //   borderRadius: BorderRadius.circular(8),

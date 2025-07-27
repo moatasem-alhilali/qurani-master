@@ -40,7 +40,7 @@ class ThemeManager {
       case green:
         return greenThemeData;
       case dark:
-        return darkThemeData;
+        return darkXThemeData;
       default:
         return blueThemeData;
     }

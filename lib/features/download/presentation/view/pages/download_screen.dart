@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -57,7 +57,7 @@ class _DownloadScreenState extends State<DownloadScreen>
                 },
                 icon: Icon(
                   Icons.add,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                 ),
               );
             },
@@ -68,7 +68,7 @@ class _DownloadScreenState extends State<DownloadScreen>
                 onSelected: (value) => _handleMenuAction(value, ctx),
                 icon: Icon(
                   Icons.more_vert,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                 ),
                 color: context.scaffoldBackgroundColor,
                 itemBuilder: (context) => [
@@ -76,7 +76,7 @@ class _DownloadScreenState extends State<DownloadScreen>
                     value: 'refresh',
                     child: Row(
                       children: [
-                        Icon(Icons.refresh, color: context.primaryScheme),
+                        Icon(Icons.refresh, color: context.primaryColor),
                         const SizedBox(width: 8),
                         Text('تحديث', style: titleSmall(context)),
                       ],
@@ -103,9 +103,9 @@ class _DownloadScreenState extends State<DownloadScreen>
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
-          labelColor: context.primaryScheme,
+          labelColor: context.primaryColor,
           unselectedLabelColor: context.gray1,
-          indicatorColor: context.primaryScheme,
+          indicatorColor: context.primaryColor,
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
           dividerColor: Colors.transparent,

@@ -3,14 +3,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
 class FeatureCardTextWidget extends StatelessWidget {
   const FeatureCardTextWidget({
     required this.title,
     this.withBackground = true,
-    this.onTap,   
+    this.onTap,
     this.primaryColor,
     this.secondaryColor,
     this.iconColor,
@@ -45,7 +45,7 @@ class FeatureCardTextWidget extends StatelessWidget {
   final int? maxLines;
   @override
   Widget build(BuildContext context) {
-    final cardPrimaryColor = primaryColor ?? context.primaryScheme;
+    final cardPrimaryColor = primaryColor ?? context.primaryColor;
     final cardSecondaryColor =
         secondaryColor ?? cardPrimaryColor.withOpacity(0.3);
 

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
@@ -31,9 +31,9 @@ class ProgressAudio extends StatelessWidget {
             builder: (context, snapshot) {
               final positionData = snapshot.data;
               return ProgressBar(
-                progressBarColor: context.primaryScheme,
-                baseBarColor: context.primaryScheme,
-                bufferedBarColor: context.primaryScheme,
+                progressBarColor: context.primaryColor,
+                baseBarColor: context.primaryColor,
+                bufferedBarColor: context.primaryColor,
                 thumbColor: Colors.white,
                 barHeight: 8,
                 thumbRadius: 5,
@@ -61,7 +61,7 @@ class ProgressAudio extends StatelessWidget {
                 children: [
                   //next
                   CircleAvatar(
-                    backgroundColor: context.primaryScheme,
+                    backgroundColor: context.primaryColor,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () async {
@@ -113,7 +113,7 @@ class ProgressAudio extends StatelessWidget {
 
                   //back
                   CircleAvatar(
-                    backgroundColor: context.primaryScheme,
+                    backgroundColor: context.primaryColor,
                     child: FittedBox(
                       child: IconButton(
                         onPressed: () async {
@@ -185,7 +185,7 @@ class _ActionProgress extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: FittedBox(
                   child: IconButton(
                     onPressed: audioPlayer.play,
@@ -209,7 +209,7 @@ class _ActionProgress extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

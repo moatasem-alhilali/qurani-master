@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_page_model.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
@@ -83,13 +83,13 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
         focusNode: _searchFocusNode,
         textAlign: TextAlign.right,
         style: TextStyle(
-          color: context.primaryScheme,
+          color: context.primaryColor,
           fontSize: 14.sp,
         ),
         decoration: InputDecoration(
           hintText: 'البحث في الصفحات المحفوظة...',
           hintStyle: TextStyle(
-            color: context.primaryScheme.withValues(alpha: 0.6),
+            color: context.primaryColor.withValues(alpha: 0.6),
             fontSize: 14.sp,
           ),
           prefixIcon: Icon(
@@ -231,8 +231,7 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                                                   // convertNumbers(
                                                   //     surah.surahNumber.toString()),
                                                   style: TextStyle(
-                                                    color:
-                                                        context.primaryScheme,
+                                                    color: context.primaryColor,
                                                     fontFamily: 'kufi',
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
@@ -256,13 +255,13 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                                               surah.sorahName ?? '',
                                               style: TextStyle(
                                                 fontSize: 16,
-                                                color: context.primaryScheme,
+                                                color: context.primaryColor,
                                               ),
                                             ),
                                             Text(
                                               surah.lastRead ?? '',
                                               style: TextStyle(
-                                                color: context.primaryScheme,
+                                                color: context.primaryColor,
                                                 fontSize: 12,
                                               ),
                                             ),

@@ -6,7 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
@@ -83,7 +83,7 @@ class _ItemWidget extends StatelessWidget {
             if (boxController.isBoxClosed) boxController.openBox();
           },
           child: ColoredBox(
-            color: context.primaryScheme,
+            color: context.primaryColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
@@ -97,7 +97,7 @@ class _ItemWidget extends StatelessWidget {
                         child: Text(
                           currentAudioData?.nameReader?.substring(0, 1) ?? '',
                           style: context.titleMedium?.copyWith(
-                            color: context.colorScheme.onSurface,
+                            color: context.onSurfaceColor,
                           ),
                         ),
                       ),
@@ -173,7 +173,7 @@ class _ActionProgressWidget extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: FittedBox(
                   child: IconButton(
                     onPressed: audioPlayer.play,
@@ -197,7 +197,7 @@ class _ActionProgressWidget extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

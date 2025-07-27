@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -125,8 +125,8 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                     style: titleSmall(context).copyWith(
                       fontSize: 16.sp,
                       color: !currentPlaying
-                          ? context.onPrimary
-                          : context.primaryScheme,
+                          ? context.onPrimaryColor
+                          : context.primaryColor,
                     ),
                   ),
                   const Gap(10),
@@ -134,8 +134,8 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                     '(${widget.data?.ayahCount})',
                     style: titleSmall(context).copyWith(
                       color: !currentPlaying
-                          ? context.onPrimary
-                          : context.primaryScheme,
+                          ? context.onPrimaryColor
+                          : context.primaryColor,
                     ),
                   ),
                 ],
@@ -155,7 +155,7 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                               message: 'هل تريد تحميل السورة؟',
                               icon: Icon(
                                 Icons.download,
-                                color: context.primaryScheme,
+                                color: context.primaryColor,
                               ),
                             );
                             if ((result ?? false) == true) {
@@ -183,7 +183,7 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                           child: Text(
                             'تحميل السورة',
                             style: context.bodyMedium?.copyWith(
-                              color: context.onPrimary,
+                              color: context.onPrimaryColor,
                             ),
                           ),
                         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BaseSmoothPageIndicator extends StatelessWidget {
@@ -18,7 +18,7 @@ class BaseSmoothPageIndicator extends StatelessWidget {
       effect: ExpandingDotsEffect(
         dotWidth: 10,
         dotHeight: 10,
-        activeDotColor: context.primarySecondary,
+        activeDotColor: context.primaryColor.withOpacity(0.8),
       ),
     );
   }

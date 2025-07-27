@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/generic/query/query_bloc.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/widgets/error_retry_widget.dart';
@@ -99,13 +99,11 @@ extension QueryStateWidgetX<T> on QueryState<T> {
               child: CircularProgressIndicator(),
             );
       case RequestState.error:
-        final failure =
-            this.failure ?? ServerFailure('Unknown error');
+        final failure = this.failure ?? ServerFailure('Unknown error');
         return onError != null
             ? onError(failure, refresh ?? defaultRefresh ?? () {})
             : ErrorRetryWidget(
                 message: failure.message,
-               
                 onRetry: refresh ?? defaultRefresh,
               );
       case RequestState.success:
@@ -114,11 +112,10 @@ extension QueryStateWidgetX<T> on QueryState<T> {
               Center(
                 child: Column(
                   children: [
-                    
                     Text(
                       'لا يوجد بيانات للعرض',
                       style: context?.bodyMedium?.copyWith(
-                        color: context.colorScheme.onSurface,
+                        color: context.onSurfaceColor,
                       ),
                     ),
                   ],

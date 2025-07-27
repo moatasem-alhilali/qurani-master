@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/url_launcher_service.dart';
@@ -79,7 +79,7 @@ class CategoryDetailScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 10),
                     Divider(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                   ],
                 ),
@@ -188,7 +188,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                     child: Container(
                       height: context.getHight(6),
                       decoration: BoxDecoration(
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -197,7 +197,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                             height: double.infinity,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: context.primaryScheme,
+                              color: context.primaryColor,
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(8),
                                 bottomRight: Radius.circular(8),
@@ -237,7 +237,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                     borderRadius: 8,
                     text: titleType(),
                     height: 40.h,
-                    defaultColor: context.primaryScheme,
+                    defaultColor: context.primaryColor,
                     // isBorderColor: true,
                     onPressed: () async {
                       final res = widget.data.extensionType;

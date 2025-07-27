@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/widgets/error_retry_widget.dart';
@@ -125,7 +125,7 @@ extension RequestStateSliverX on RequestState {
                         Text(
                           'لا يوجد بيانات للعرض',
                           style: context?.bodyMedium?.copyWith(
-                            color: context.colorScheme.onSurface,
+                            color: context.onSurfaceColor,
                           ),
                         ),
                       ],

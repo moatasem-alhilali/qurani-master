@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';

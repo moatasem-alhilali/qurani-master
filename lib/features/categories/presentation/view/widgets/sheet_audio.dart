@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -60,7 +60,7 @@ class SheetAudios extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Divider(
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                     ProgressAudio(
                       audioPlayer: state.audioPlayer ?? AudioPlayer(),
@@ -142,7 +142,7 @@ class _ItemDownloaded extends StatelessWidget {
                           height: context.getHight(6),
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: context.primaryScheme,
+                            color: context.primaryColor,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: ActionProgress(
@@ -209,7 +209,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
         child: Container(
           height: context.getHight(6),
           decoration: BoxDecoration(
-            color: context.primaryScheme,
+            color: context.primaryColor,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -221,7 +221,7 @@ class _BtnDownloadState extends State<_BtnDownload> {
                 height: double.infinity,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(8),
                     bottomLeft: Radius.circular(8),

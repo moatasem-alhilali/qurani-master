@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/device_info_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
@@ -113,7 +113,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                     ),
                     const SizedBox(height: 16),
                     ListTile(
-                      tileColor: context.secondary,
+                      tileColor: context.secondaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

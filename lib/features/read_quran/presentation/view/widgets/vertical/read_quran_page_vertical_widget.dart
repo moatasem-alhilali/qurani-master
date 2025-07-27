@@ -228,7 +228,7 @@
 //               fontFamily: FontFamily.scheherazade,
 //               fontSize: fontSize,
 //               height: 1.6,
-//               color: context.primaryScheme,
+//               color: context.primaryColor,
 //             ),
 //           ),
 //         )
@@ -238,7 +238,7 @@
 //             style: TextStyle(
 //               fontFamily: FontFamily.scheherazade,
 //               fontSize: fontSize * 0.4,
-//               color: context.primaryScheme,
+//               color: context.primaryColor,
 //               fontWeight: FontWeight.bold,
 //             ),
 //           ),

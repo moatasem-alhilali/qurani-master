@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class AnimatedProgressRingWidget extends StatefulWidget {
   const AnimatedProgressRingWidget({
@@ -144,8 +144,8 @@ class _AnimatedProgressRingWidgetState extends State<AnimatedProgressRingWidget>
                   strokeWidth: widget.strokeWidth ?? 12.w,
                   progressColors: widget.progressColors ??
                       [
-                        context.primaryScheme,
-                        context.primaryScheme.withOpacity(0.6),
+                        context.primaryColor,
+                        context.primaryColor.withOpacity(0.6),
                       ],
                   glowEffect: widget.glowEffect ?? true,
                   glowIntensity: _glowAnimation.value,
@@ -168,7 +168,7 @@ class _AnimatedProgressRingWidgetState extends State<AnimatedProgressRingWidget>
                     progress: _progressAnimation.value,
                     strokeWidth: widget.strokeWidth ?? 12.w,
                     particleColor:
-                        widget.progressColors?.first ?? context.primaryScheme,
+                        widget.progressColors?.first ?? context.primaryColor,
                     startAngle: widget.startAngle ?? -math.pi / 2,
                   ),
                 );
@@ -191,7 +191,7 @@ class _AnimatedProgressRingWidgetState extends State<AnimatedProgressRingWidget>
                           TextStyle(
                             fontSize: (size * 0.15).sp,
                             fontWeight: FontWeight.bold,
-                            color: context.primaryScheme,
+                            color: context.primaryColor,
                           ),
                     ),
                     if (widget.progress > 0)
@@ -199,7 +199,7 @@ class _AnimatedProgressRingWidgetState extends State<AnimatedProgressRingWidget>
                         'مكتمل',
                         style: TextStyle(
                           fontSize: (size * 0.08).sp,
-                          color: context.onBackground.withOpacity(0.7),
+                          color: context.onSurfaceColor.withOpacity(0.7),
                         ),
                       ),
                   ],
@@ -397,7 +397,7 @@ class QuranReadingProgressRing extends StatelessWidget {
         children: [
           Icon(
             Icons.menu_book,
-            color: context.primaryScheme,
+            color: context.primaryColor,
             size: (size ?? 120.w) * 0.2,
           ),
           SizedBox(height: 4.h),
@@ -406,14 +406,14 @@ class QuranReadingProgressRing extends StatelessWidget {
             style: TextStyle(
               fontSize: (size ?? 120.w) * 0.12,
               fontWeight: FontWeight.bold,
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           ),
           Text(
             'من $totalPages',
             style: TextStyle(
               fontSize: (size ?? 120.w) * 0.08,
-              color: context.onBackground.withOpacity(0.7),
+              color: context.onSurfaceColor.withOpacity(0.7),
             ),
           ),
         ],
@@ -465,7 +465,7 @@ class DhikrCounterRing extends StatelessWidget {
               title!,
               style: TextStyle(
                 fontSize: (size ?? 100.w) * 0.08,
-                color: context.onBackground.withOpacity(0.7),
+                color: context.onSurfaceColor.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
             ),

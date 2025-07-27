@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
@@ -128,13 +128,9 @@ class QuranPlanListScreen extends StatelessWidget {
                                 ),
                                 trailing: IconButton(
                                   icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                
-                                  },
+                                  onPressed: () {},
                                 ),
-                                onTap: () {
-                                  
-                                },
+                                onTap: () {},
                               ),
                             ),
                           );

@@ -7,6 +7,7 @@ import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/CollapsingToolbarDemo.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
@@ -41,7 +42,8 @@ class AnotherFeatures extends StatelessWidget {
       children: [
         _Item(
           onPressed: () {
-            context.push(const ReadQuranScreen());
+            // context.push(const ReadQuranScreen());
+            context.push(const SamsungSettingsHeaderDemo());
           },
           text: 'القرآن الكريم',
           icon: FlutterIslamicIcons.quran2,

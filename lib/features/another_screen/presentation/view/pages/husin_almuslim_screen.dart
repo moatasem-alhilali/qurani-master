@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
@@ -42,8 +42,8 @@ class HisnMuslimScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: index % 2 == 0
-                                  ? context.secondary
-                                  : context.secondary.withOpacity(0.8),
+                                  ? context.secondaryColor
+                                  : context.secondaryColor.withOpacity(0.8),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,8 +56,8 @@ class HisnMuslimScreen extends StatelessWidget {
                                 ),
                                 CircleAvatar(
                                   backgroundColor: index % 2 == 0
-                                      ? context.primaryScheme
-                                      : context.primarySecondary,
+                                      ? context.primaryColor
+                                      : context.primaryColor.withOpacity(0.8),
                                   radius: 18,
                                   child: Text('${index + 1}'),
                                 ),

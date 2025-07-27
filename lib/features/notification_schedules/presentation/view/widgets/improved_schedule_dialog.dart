@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedule_form_fields.dart';
@@ -142,8 +142,8 @@ class _CreateOrUpdateScheduleDialogState
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            context.primaryScheme,
-            context.primaryScheme.withOpacity(0.8),
+            context.primaryColor,
+            context.primaryColor.withOpacity(0.8),
           ],
         ),
         borderRadius: BorderRadius.only(
@@ -221,8 +221,8 @@ class _CreateOrUpdateScheduleDialogState
               decoration: BoxDecoration(
                 color: isActive
                     ? (isCurrent
-                        ? context.primaryScheme
-                        : context.primaryScheme.withOpacity(0.5))
+                        ? context.primaryColor
+                        : context.primaryColor.withOpacity(0.5))
                     : Colors.grey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2.r),
               ),
@@ -392,7 +392,7 @@ class _CreateOrUpdateScheduleDialogState
               onPressed:
                   _currentPage == _totalPages - 1 ? _saveSchedule : _nextPage,
               style: ElevatedButton.styleFrom(
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 shape: RoundedRectangleBorder(
@@ -426,15 +426,15 @@ class _CreateOrUpdateScheduleDialogState
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: context.primaryScheme.withOpacity(0.1),
+        color: context.primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: context.primaryScheme.withOpacity(0.3)),
+        border: Border.all(color: context.primaryColor.withOpacity(0.3)),
       ),
       child: Text(
         descriptions[_scheduleType] ?? '',
         style: TextStyle(
           fontSize: 14.sp,
-          color: context.primaryScheme,
+          color: context.primaryColor,
           height: 1.5,
         ),
       ),

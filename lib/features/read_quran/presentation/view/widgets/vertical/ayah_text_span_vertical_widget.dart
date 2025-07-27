@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
 
@@ -55,9 +55,9 @@ TextSpan ayahTextSpanVerticalWidget({
           // wordSpacing: wordSpacing + 10,
           color: context.quranTheme.colorScheme.inversePrimary,
           backgroundColor: hasBookmarkAyahSelect
-              ? context.primaryScheme.withOpacity(.4)
+              ? context.primaryColor.withOpacity(.4)
               : isSelected
-                  ? context.primaryScheme
+                  ? context.primaryColor
                   : Colors.transparent,
         ),
         recognizer: recognizer,
@@ -73,9 +73,9 @@ TextSpan ayahTextSpanVerticalWidget({
         letterSpacing: 5,
         color: context.quranTheme.colorScheme.inversePrimary,
         backgroundColor: hasBookmarkAyahSelect
-            ? context.primaryScheme.withOpacity(.4)
+            ? context.primaryColor.withOpacity(.4)
             : isSelected
-                ? context.primaryScheme
+                ? context.primaryColor
                 : Colors.transparent,
       ),
       recognizer: recognizer,
@@ -90,11 +90,11 @@ TextSpan ayahTextSpanVerticalWidget({
         letterSpacing: 5,
         color: hasBookmarkAyahSelect
             ? context.quranTheme.colorScheme.inversePrimary
-            : context.primaryScheme,
+            : context.primaryColor,
         backgroundColor: hasBookmarkAyahSelect
-            ? context.primaryScheme.withOpacity(.4)
+            ? context.primaryColor.withOpacity(.4)
             : isSelected
-                ? context.primaryScheme.withOpacity(.2)
+                ? context.primaryColor.withOpacity(.2)
                 : Colors.transparent,
       ),
       recognizer: recognizer,

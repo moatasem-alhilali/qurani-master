@@ -6,7 +6,7 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/drawer_slide/juz_page.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
 import 'package:quran_app/features/bookmark/presentation/view/widgets/book_mark_page_tab.dart';
@@ -30,7 +30,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
           child: Text(
             'ابحث عن الايه',
             style: TextStyle(
-              color: context.primaryScheme.withValues(alpha: 0.6),
+              color: context.primaryColor.withValues(alpha: 0.6),
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -41,7 +41,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
           readOnly: true,
           hintText: 'ادخل اسم الايه',
           hintStyle: TextStyle(
-            color: context.primaryScheme,
+            color: context.primaryColor,
             fontSize: 14,
           ),
           style: TextStyle(
@@ -60,7 +60,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
           child: Text(
             'الصفحات',
             style: TextStyle(
-              color: context.primaryScheme.withValues(alpha: 0.6),
+              color: context.primaryColor.withValues(alpha: 0.6),
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -104,7 +104,7 @@ class BackdropOptionQuranWidget extends StatelessWidget {
           child: Text(
             'المحفوظات',
             style: TextStyle(
-              color: context.primaryScheme.withValues(alpha: 0.6),
+              color: context.primaryColor.withValues(alpha: 0.6),
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),

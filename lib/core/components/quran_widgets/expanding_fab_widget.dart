@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class ExpandingFabWidget extends StatefulWidget {
   const ExpandingFabWidget({
@@ -163,7 +163,7 @@ class _ExpandingFabWidgetState extends State<ExpandingFabWidget>
                 scale: 1.0 + (_expandAnimation.value * 0.1),
                 child: FloatingActionButton(
                   heroTag: 'expanding_fab_main',
-                  backgroundColor: widget.primaryColor ?? context.primaryScheme,
+                  backgroundColor: widget.primaryColor ?? context.primaryColor,
                   onPressed: _toggle,
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
@@ -212,7 +212,7 @@ class _ExpandingFabWidgetState extends State<ExpandingFabWidget>
                   height: widget.childrenSize ?? 50.w,
                   decoration: BoxDecoration(
                     color: action.backgroundColor ??
-                        context.primaryScheme.withOpacity(0.9),
+                        context.primaryColor.withOpacity(0.9),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(

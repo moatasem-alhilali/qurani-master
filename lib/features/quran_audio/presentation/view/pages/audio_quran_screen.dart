@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/backdrop_surah_list_audio_body_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/collapsed_quran_audio_body_widget.dart';
@@ -51,21 +51,19 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness:
-            context.colorScheme.onSurface == ThemeMode.light
-                ? Brightness.dark
-                : Brightness.light,
-        statusBarBrightness: context.colorScheme.onSurface == ThemeMode.light
+        statusBarIconBrightness: context.onSurfaceColor == ThemeMode.light
+            ? Brightness.dark
+            : Brightness.light,
+        statusBarBrightness: context.onSurfaceColor == ThemeMode.light
             ? Brightness.dark
             : Brightness.light,
         systemNavigationBarIconBrightness:
-            context.colorScheme.onSurface == ThemeMode.light
+            context.onSurfaceColor == ThemeMode.light
                 ? Brightness.dark
                 : Brightness.light,
-        systemNavigationBarColor:
-            context.colorScheme.onSurface == ThemeMode.light
-                ? context.colorScheme.onSurface.withAlpha(10)
-                : context.colorScheme.surface,
+        systemNavigationBarColor: context.onSurfaceColor == ThemeMode.light
+            ? context.onSurfaceColor.withAlpha(10)
+            : context.surfaceColor,
       ),
     );
     //
@@ -112,7 +110,7 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
               inputDecoration: InputDecoration(
                 hintText: 'Search',
                 hintStyle: TextStyle(
-                  color: context.colorScheme.onSurface,
+                  color: context.onSurfaceColor,
                   fontSize: 18,
                 ),
                 border: const OutlineInputBorder(
@@ -132,14 +130,14 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
                 ),
               ),
               style: TextStyle(
-                color: context.colorScheme.onSurface,
+                color: context.onSurfaceColor,
                 fontSize: 18,
               ),
               body: Center(
                 child: Text(
                   'Search Result',
                   style: TextStyle(
-                    color: context.colorScheme.onSurface,
+                    color: context.onSurfaceColor,
                     fontSize: 20,
                   ),
                 ),
@@ -151,7 +149,7 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
                 height: 40,
                 margin: const EdgeInsets.only(right: 10, left: 10),
                 decoration: BoxDecoration(
-                  color: context.colorScheme.onSurface.withAlpha(15),
+                  color: context.onSurfaceColor.withAlpha(15),
                   borderRadius: const BorderRadius.all(
                     Radius.circular(30),
                   ),
@@ -160,7 +158,7 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
                   iconSize: 20,
                   icon: const Icon(
                     CupertinoIcons.search,
-                    // color: context.primaryScheme,
+                    // color: context.primaryColor,
                   ),
                   onPressed: () {
                     textEditingController.text = '';

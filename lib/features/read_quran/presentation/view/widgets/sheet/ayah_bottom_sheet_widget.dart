@@ -6,7 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/audio/share_audio_bloc.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:rxdart/rxdart.dart';
@@ -125,10 +125,10 @@ class SliderAudio extends StatelessWidget {
               builder: (context, snapshot) {
                 final positionData = snapshot.data;
                 return ProgressBar(
-                  progressBarColor: context.primaryScheme,
-                  baseBarColor: context.primaryScheme.withOpacity(0.24),
-                  bufferedBarColor: context.primaryScheme.withOpacity(0.24),
-                  thumbColor: context.primaryScheme,
+                  progressBarColor: context.primaryColor,
+                  baseBarColor: context.primaryColor.withOpacity(0.24),
+                  bufferedBarColor: context.primaryColor.withOpacity(0.24),
+                  thumbColor: context.primaryColor,
                   barHeight: 10,
                   timeLabelTextStyle: titleMedium(context).copyWith(
                     fontSize: 14.sp,
@@ -191,7 +191,7 @@ class ControllerReader extends StatelessWidget {
                 Icons.play_arrow,
                 key: const ValueKey('play'),
                 size: 40,
-                color: context.primaryScheme,
+                color: context.primaryColor,
               ),
             ),
           );
@@ -207,7 +207,7 @@ class ControllerReader extends StatelessWidget {
                 Icons.pause,
                 key: const ValueKey('pause'),
                 size: 40,
-                color: context.primaryScheme,
+                color: context.primaryColor,
               ),
             ),
           );
@@ -221,7 +221,7 @@ class ControllerReader extends StatelessWidget {
               Icons.play_arrow_rounded,
               key: const ValueKey('completed'),
               size: 40,
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           );
         }

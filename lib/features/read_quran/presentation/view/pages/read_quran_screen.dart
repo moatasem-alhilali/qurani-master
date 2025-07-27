@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
@@ -42,7 +42,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
             final boxController = context.read<ReadQuranBloc>().boxController;
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
-                statusBarColor: context.primaryScheme,
+                statusBarColor: context.primaryColor,
                 statusBarIconBrightness: Brightness.dark,
                 statusBarBrightness: Brightness.dark,
               ),
@@ -73,7 +73,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                       searchBox: SearchBox(
                         controller:
                             context.read<SearchBloc>().textEditingController,
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         inputDecoration: InputDecoration(
                           hintText: 'ابحث عن الايه',
                           hintStyle: const TextStyle(
@@ -81,25 +81,25 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                           ),
                           filled: true,
                           fillColor:
-                              context.primaryScheme.withValues(alpha: 0.1),
+                              context.primaryColor.withValues(alpha: 0.1),
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: context.primaryScheme,
+                              color: context.primaryColor,
                             ),
                           ),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: context.primaryScheme,
+                              color: context.primaryColor,
                             ),
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: context.primaryScheme,
+                              color: context.primaryColor,
                             ),
                           ),
                         ),
                         style: TextStyle(
-                          color: context.colorScheme.onSurface,
+                          color: context.onSurfaceColor,
                           fontSize: 18,
                         ),
                         body: const SearchAyahListWidget(),
@@ -112,11 +112,11 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                     child: Text(
                       'اسحب هنا للاعلي',
                       style: TextStyle(
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                       ),
                     ),
                   ),
-                  draggableIconColor: context.primaryScheme,
+                  draggableIconColor: context.primaryColor,
                   body: const BackdropOptionQuranWidget(),
                 ),
               ),

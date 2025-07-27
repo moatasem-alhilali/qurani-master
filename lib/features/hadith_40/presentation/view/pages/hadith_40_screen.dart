@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/components/readmore.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/hadith_40/data/models/hadith_40_model.dart';
 import 'package:quran_app/features/hadith_40/presentation/bloc/hadith_40_bloc.dart';
@@ -66,7 +66,7 @@ class Hadith40Screen extends StatelessWidget {
                               Text(
                                 'شرح الحديث',
                                 style: titleMedium(context)
-                                    .copyWith(color: context.primaryScheme),
+                                    .copyWith(color: context.primaryColor),
                               ),
                               const SizedBox(
                                 height: 15,

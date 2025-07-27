@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/drawer_slide/quran_surah_list.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
@@ -112,7 +112,7 @@ class QuranJuz extends StatelessWidget {
                                     Text(
                                       juz.text,
                                       style: TextStyle(
-                                        color: context.primaryScheme,
+                                        color: context.primaryColor,
                                         // fontFamily: 'uthmanic2',
                                         fontSize: 14.sp,
                                         height: 2,
@@ -129,7 +129,7 @@ class QuranJuz extends StatelessWidget {
                                           // fontFamily: 'naskh',
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12.sp,
-                                          color: context.primaryScheme,
+                                          color: context.primaryColor,
                                         ),
                                       ),
                                     ),

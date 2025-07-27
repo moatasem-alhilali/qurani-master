@@ -3,11 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-
-
 
 Future<void> showMyBottomSheetFunction({
   required BuildContext context,
@@ -160,7 +158,7 @@ Future<void> showMyExitDialogFunction({
                             width: double.infinity,
                             padding: const EdgeInsets.all(8),
                             decoration:
-                                BoxDecoration(color: context.primaryScheme),
+                                BoxDecoration(color: context.primaryColor),
                             child: Text(
                               'تراجع',
                               style: titleMedium(context)

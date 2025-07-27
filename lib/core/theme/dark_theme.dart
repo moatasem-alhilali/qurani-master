@@ -17,7 +17,7 @@ Color _onPrimary = Colors.white;
 Color _surface = const Color(0xffCDAD80);
 Color _onSurface = const Color(0xff404C6E);
 Color textPrimary = Colors.white;
-ThemeData darkThemeData = ThemeData(
+ThemeData darkXThemeData = ThemeData(
   ///Colors
   //
   scaffoldBackgroundColor: _scaffoldBackgroundColor,

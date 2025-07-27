@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -46,7 +46,7 @@ class _NotificationSettingItemWidgetState
         if (widget.setting == null) return const SizedBox();
         return Container(
           decoration: BoxDecoration(
-            color: context.secondary,
+            color: context.secondaryColor,
             borderRadius: widget.isLast
                 ? BorderRadius.only(
                     bottomLeft: Radius.circular(12.r),
@@ -79,7 +79,7 @@ class _NotificationSettingItemWidgetState
                               height: 28.w,
                               decoration: BoxDecoration(
                                 color: widget.setting!.enabled
-                                    ? context.primaryScheme
+                                    ? context.primaryColor
                                     : CupertinoColors.systemGrey4,
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
@@ -97,7 +97,7 @@ class _NotificationSettingItemWidgetState
                                 widget.title,
                                 style: titleMedium(context).copyWith(
                                   // color: setting.enabled
-                                  //     ? context.primaryScheme
+                                  //     ? context.primaryColor
                                   //     : CupertinoColors.secondaryLabel,
                                   fontSize: 12.sp,
                                 ),
@@ -131,7 +131,7 @@ class _NotificationSettingItemWidgetState
                                   padding: EdgeInsets.all(8.w),
                                   child: Icon(
                                     CupertinoIcons.ellipsis_circle,
-                                    color: context.primaryScheme,
+                                    color: context.primaryColor,
                                     size: 20.sp,
                                   ),
                                 ),
@@ -140,7 +140,7 @@ class _NotificationSettingItemWidgetState
                             ],
                             CupertinoSwitch(
                               value: isEnabled,
-                              activeTrackColor: context.primaryScheme,
+                              activeTrackColor: context.primaryColor,
                               onChanged: (val) {
                                 setState(() {
                                   isEnabled = val;
@@ -161,7 +161,7 @@ class _NotificationSettingItemWidgetState
                             width: double.infinity,
                             padding: EdgeInsets.all(12.w),
                             decoration: BoxDecoration(
-                              color: context.primaryScheme.withOpacity(0.05),
+                              color: context.primaryColor.withOpacity(0.05),
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Text(
@@ -215,14 +215,14 @@ class _NotificationSettingItemWidgetState
               children: [
                 Icon(
                   CupertinoIcons.time,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   size: 20.sp,
                 ),
                 SizedBox(width: 8.w),
                 Text(
                   'إدارة أوقات التنبيه',
                   style: titleMedium(context).copyWith(
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                 ),
               ],
@@ -252,14 +252,14 @@ class _NotificationSettingItemWidgetState
               children: [
                 Icon(
                   CupertinoIcons.calendar_badge_plus,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   size: 20.sp,
                 ),
                 SizedBox(width: 8.w),
                 Text(
                   'تعديل جدولة الإشعار',
                   style: titleMedium(context).copyWith(
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                 ),
               ],

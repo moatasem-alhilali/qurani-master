@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 
@@ -52,7 +52,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   hintText: 'أدخل رابط الملف للتحميل',
                   prefixIcon: Icon(
                     Icons.link,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -73,7 +73,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   hintText: 'اسم الملف المخصص',
                   prefixIcon: Icon(
                     Icons.file_present,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -124,7 +124,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                     onPressed: _startDownload,
                     icon: Icon(
                       Icons.download,
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                     text: 'بدء التحميل',
                   ),

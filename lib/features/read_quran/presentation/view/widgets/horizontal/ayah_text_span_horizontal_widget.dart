@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 
 TextSpan ayahTextSpanHorizontalWidget({
@@ -54,9 +54,9 @@ TextSpan ayahTextSpanHorizontalWidget({
           // wordSpacing: wordSpacing + 10,
           color: Colors.black,
           backgroundColor: hasBookmarkAyahSelect
-              ? context.primaryScheme.withOpacity(.4)
+              ? context.primaryColor.withOpacity(.4)
               : isSelected
-                  ? context.primaryScheme
+                  ? context.primaryColor
                   : Colors.transparent,
         ),
         recognizer: recognizer,
@@ -72,9 +72,9 @@ TextSpan ayahTextSpanHorizontalWidget({
         letterSpacing: 5,
         color: Colors.black,
         backgroundColor: hasBookmarkAyahSelect
-            ? context.primaryScheme.withOpacity(.4)
+            ? context.primaryColor.withOpacity(.4)
             : isSelected
-                ? context.primaryScheme
+                ? context.primaryColor
                 : Colors.transparent,
       ),
       recognizer: recognizer,
@@ -87,11 +87,11 @@ TextSpan ayahTextSpanHorizontalWidget({
         fontSize: fontSize?.sp,
         height: 2,
         letterSpacing: 5,
-        color: hasBookmarkAyahSelect ? Colors.black : context.primaryScheme,
+        color: hasBookmarkAyahSelect ? Colors.black : context.primaryColor,
         backgroundColor: hasBookmarkAyahSelect
-            ? context.primaryScheme.withOpacity(.4)
+            ? context.primaryColor.withOpacity(.4)
             : isSelected
-                ? context.primaryScheme.withOpacity(.2)
+                ? context.primaryColor.withOpacity(.2)
                 : Colors.transparent,
       ),
       recognizer: recognizer,

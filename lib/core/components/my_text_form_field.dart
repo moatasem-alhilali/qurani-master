@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class MyTextFormFieldWidget extends StatefulWidget {
@@ -169,7 +169,7 @@ class _MyTextFormFieldWidgetState extends State<MyTextFormFieldWidget> {
         onTap: widget.onTap,
         style: widget.style ??
             titleSmall(context).copyWith(
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
         decoration: InputDecoration(
           suffixText: widget.suffixText,
@@ -186,13 +186,13 @@ class _MyTextFormFieldWidgetState extends State<MyTextFormFieldWidget> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(

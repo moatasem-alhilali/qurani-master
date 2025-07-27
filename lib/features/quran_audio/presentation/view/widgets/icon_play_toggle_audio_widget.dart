@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 //
 
@@ -78,7 +78,7 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
         return CircleAvatar(
           radius: widget.radius,
           backgroundColor: widget.backgroundColor ??
-              (playing ? Colors.redAccent : context.primaryScheme),
+              (playing ? Colors.redAccent : context.primaryColor),
           child: _buildIconButton(playing, processingState),
         );
       },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/read_quran/bookmark_page_icon_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
@@ -35,7 +35,7 @@ class HeaderReadQuranHorizontalWidget extends StatelessWidget {
                     22.0,
                   ) as double,
                   // fontFamily: 'naskh',
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                 ),
               ),
               const Spacer(),
@@ -45,13 +45,13 @@ class HeaderReadQuranHorizontalWidget extends StatelessWidget {
                   fontSize: context.customOrientation(18.0, 22.0) as double,
                   // fontWeight: FontWeight.bold,
                   // fontFamily: 'naskh',
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                 ),
               ),
             ],
           ),
           Divider(
-            color: context.primaryScheme,
+            color: context.primaryColor,
           ),
         ],
       ),

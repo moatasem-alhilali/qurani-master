@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
 import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
@@ -385,7 +385,7 @@ class _AyahTextWidgetState extends State<_AyahTextWidget> {
       fontSize: fontSize,
       height: 2,
       letterSpacing: 2,
-      color: context.primaryScheme,
+      color: context.primaryColor,
       shadows: const [
         Shadow(
           blurRadius: 0.5,

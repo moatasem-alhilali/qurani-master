@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class WeekdaysPickerWidget extends StatefulWidget {
   const WeekdaysPickerWidget({
@@ -30,7 +30,7 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
     'أربعاء',
     'خميس',
     'جمعة',
-    'سبت'
+    'سبت',
   ];
 
   @override
@@ -123,12 +123,12 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? (isFriday ? Colors.green : context.primaryScheme)
+                          ? (isFriday ? Colors.green : context.primaryColor)
                           : Colors.grey.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: isSelected
-                            ? (isFriday ? Colors.green : context.primaryScheme)
+                            ? (isFriday ? Colors.green : context.primaryColor)
                             : Colors.grey.withOpacity(0.3),
                         width: 2,
                       ),
@@ -137,7 +137,7 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
                               BoxShadow(
                                 color: (isFriday
                                         ? Colors.green
-                                        : context.primaryScheme)
+                                        : context.primaryColor)
                                     .withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),

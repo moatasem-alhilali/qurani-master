@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -41,7 +41,7 @@ class MyProgressButton extends StatelessWidget {
       duration: 300.milliseconds,
       decoration: BoxDecoration(
         border: isBorderColor
-            ? Border.all(color: defaultColor ?? context.primaryScheme, width: 2)
+            ? Border.all(color: defaultColor ?? context.primaryColor, width: 2)
             : null,
         borderRadius: BorderRadius.circular(borderRadius ?? 23),
         color:
@@ -59,12 +59,15 @@ class MyProgressButton extends StatelessWidget {
 
 //color
 Color? getBackColor(
-    RequestState state, Color? defaultColor, BuildContext context) {
+  RequestState state,
+  Color? defaultColor,
+  BuildContext context,
+) {
   switch (state) {
     case RequestState.initial:
-      return defaultColor ?? context.primaryScheme;
+      return defaultColor ?? context.primaryColor;
     case RequestState.loading:
-      return context.primaryScheme;
+      return context.primaryColor;
 
     case RequestState.success:
       return Colors.green;
@@ -77,7 +80,11 @@ Color? getBackColor(
 
 //Widget
 Widget getWidget(
-    RequestState state, String? text, BuildContext context, Color? colorText) {
+  RequestState state,
+  String? text,
+  BuildContext context,
+  Color? colorText,
+) {
   switch (state) {
     case RequestState.initial:
       return Text(

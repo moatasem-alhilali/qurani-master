@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/sheet/animated_bottom_resize_sheet.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/controller_audio_widget.dart';
@@ -29,13 +29,13 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
     return Container(
       height: maxHeightBox,
       decoration: BoxDecoration(
-        // color: context.primaryScheme,
+        // color: context.primaryColor,
         // gradient: LinearGradient(
         //   stops: const [0, 0.58],
         //   begin: Alignment.bottomCenter,
         //   end: Alignment.topCenter,
         //   colors: [
-        //     context.colorScheme.onSurface,
+        //      context.onSurfaceColor,
         //     context.scaffoldBackgroundColor,
         //   ],
         // ),
@@ -47,8 +47,8 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            context.secondary,
-            context.primaryScheme,
+            context.secondaryColor,
+            context.primaryColor,
           ],
         ),
       ),
@@ -65,7 +65,7 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                   height: 36,
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
-                    color: context.colorScheme.onSurface.withAlpha(30),
+                    color: context.onSurfaceColor.withAlpha(30),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(30),
                     ),
@@ -86,7 +86,7 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                       height: 36,
                       margin: const EdgeInsets.only(right: 10),
                       decoration: BoxDecoration(
-                        color: context.colorScheme.onSurface.withAlpha(30),
+                        color: context.onSurfaceColor.withAlpha(30),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(30),
                         ),
@@ -106,7 +106,7 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                           height: 36,
                           margin: const EdgeInsets.only(right: 10),
                           decoration: BoxDecoration(
-                            color: context.colorScheme.onSurface.withAlpha(30),
+                            color: context.onSurfaceColor.withAlpha(30),
                             borderRadius: const BorderRadius.all(
                               Radius.circular(30),
                             ),
@@ -133,7 +133,7 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                       height: 36,
                       margin: const EdgeInsets.only(right: 10),
                       decoration: BoxDecoration(
-                        color: context.colorScheme.onSurface.withAlpha(30),
+                        color: context.onSurfaceColor.withAlpha(30),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(30),
                         ),
@@ -183,7 +183,7 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                             '',
                         style: TextStyle(
                           fontSize: 22,
-                          color: context.primaryScheme,
+                          color: context.primaryColor,
                         ),
                       ),
                     ),

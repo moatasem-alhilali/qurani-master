@@ -4,7 +4,7 @@ import 'package:quran_app/core/components/base_fade_image.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
 import 'package:quran_app/core/components/base_smooth_page_indicator.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -110,7 +110,7 @@ class Info extends StatelessWidget {
           const SizedBox(height: 10),
           data['subtitle'].toString().autoSize(
                 context,
-                color: context.primaryScheme,
+                color: context.primaryColor,
                 maxLines: 20,
               ),
         ],
@@ -180,7 +180,7 @@ class _ItemState extends State<_Item> {
                 child: Container(
                   height: context.getHight(6),
                   decoration: BoxDecoration(
-                    color: context.secondary,
+                    color: context.secondaryColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -189,7 +189,7 @@ class _ItemState extends State<_Item> {
                         height: double.infinity,
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: context.primaryScheme,
+                          color: context.primaryColor,
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(8),
                             bottomRight: Radius.circular(8),
@@ -226,7 +226,7 @@ class _ItemState extends State<_Item> {
                     child: MyProgressButton(
                       borderRadius: 12,
                       text: 'قراءة',
-                      defaultColor: context.secondary,
+                      defaultColor: context.secondaryColor,
                       isBorderColor: true,
                       onPressed: () {
                         context.push(
