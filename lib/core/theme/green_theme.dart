@@ -1,132 +1,391 @@
-// 1. Blue Theme
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/shared/resources/assets_manager.dart';
+import 'package:quran_app/gen/fonts.gen.dart';
 
-final ThemeData greenThemeData = ThemeData(
-  brightness: Brightness.light,
+Color _background = const Color(0xff1e1e1e);
+Color _scaffoldBackgroundColor = const Color(0xff1e1e1e);
+Color _secondary = const Color(0xff353535);
+Color _third = const Color(0xff2c2c2c);
+Color _primary = const Color(0xff618264);
+Color _splashColor = const Color(0xff252525);
+Color _primaryColorDark = const Color(0xff364945);
+Color _onPrimary = Colors.white;
+//
+Color _surface = const Color(0xffCDAD80);
+Color _onSurface = const Color(0xff404C6E);
+Color textPrimary = Colors.white;
+ThemeData greenThemeData = ThemeData(
+  ///Colors
+  //
+  scaffoldBackgroundColor: _scaffoldBackgroundColor,
+  splashColor: _splashColor,
 
-  colorScheme: const ColorScheme(
-    brightness: Brightness.light,
-    primary: Color(0xff42796c),
-    onPrimary: Colors.white,
-    secondary: Colors.white,
-    onSecondary: Color(0xffCDAD80),
-    background: Color(0xfff1f2f4),
-    onBackground: Color(0xfff3efdf),
-    surface: Color(0xffCDAD80),
-    onSurface: Color(0xffE0E1E0),
-    error: Color(0xffE0E1E0),
-    onError: Color(0xffE0E1E0),
-    inversePrimary: Color(0xff000000),
-    inverseSurface: Color(0xffCD9974),
-  ),
-  primaryColor: const Color(0xFFFFFFFF),
-  primaryColorLight: const Color(0xff53618c),
-  primaryColorDark: const Color(0xff404C6E),
-  dialogBackgroundColor: const Color(0xffFFFFFF),
-  dividerColor: const Color(0xffCDAD80),
-  highlightColor: const Color(0xffCDAD80).withOpacity(0.25),
-  indicatorColor: const Color(0xffCDAD80),
-  scaffoldBackgroundColor: const Color(0xFFF1F2F4),
-  canvasColor: const Color(0xffFFFFFF),
-  hoverColor: const Color(0xffFFFFFF).withOpacity(0.3),
-  disabledColor: const Color(0xffffffff),
-  hintColor: const Color(0xff404C6E),
-  focusColor: const Color(0xffE0E1E0),
-  secondaryHeaderColor: const Color(0xff53618c),
-  cardColor: const Color(0xff404C6E),
+  //primary
+  primaryColor: _third,
+  // primarySecondary
+  primaryColorDark: _primaryColorDark,
+  // error
+
+  shadowColor: _secondary,
+  brightness: Brightness.dark,
 
   //
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      // backgroundColor: _primary,
-      ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
+  colorScheme: ColorScheme(
+    brightness: Brightness.dark,
+    primary: _primary,
+    onPrimary: _onPrimary,
+    secondary: _secondary,
+    onSecondary: _third,
+    surface: _surface,
+    onSurface: _onSurface,
+    error: const Color(0xffe74c3c),
+    onError: const Color(0xff404C6E),
+    inversePrimary: const Color(0xffffffff),
+    inverseSurface: const Color(0xffCD9974),
+    //third
+    onPrimaryContainer: _third,
+    // secondary
   ),
+  timePickerTheme: TimePickerThemeData(
+    backgroundColor: _scaffoldBackgroundColor,
+    hourMinuteColor: _primary,
+    hourMinuteTextColor: Colors.white,
+    dayPeriodColor: _primary,
+    dayPeriodTextColor: Colors.white,
+    dialHandColor: _primary,
+    dialBackgroundColor: _scaffoldBackgroundColor,
+    entryModeIconColor: _primary,
+  ),
+
+  ///dividerTheme
+  dividerColor: Colors.grey.withOpacity(0.5),
+  dividerTheme: DividerThemeData(
+    thickness: 1,
+    color: Colors.grey.withOpacity(0.5),
+  ),
+  useMaterial3: true,
+  drawerTheme: DrawerThemeData(
+    backgroundColor: _secondary,
+  ),
+
+  ///AppBarTheme
+  appBarTheme: const AppBarTheme(
+    foregroundColor: Colors.white,
+    surfaceTintColor: Colors.white,
+    shadowColor: Colors.white,
+    elevation: 0,
+    color: Colors.white,
+    scrolledUnderElevation: 0,
+    iconTheme: IconThemeData(
+      color: Colors.white,
+      size: 24,
+    ),
+    titleTextStyle: TextStyle(
+      color: Colors.white,
+
+      // fontFamily: isDark ? AssetsEnFonts.medium : AssetsArFonts.medium,
+      fontSize: 22,
+    ),
+  ),
+
+  ///iconTheme
   iconTheme: const IconThemeData(
     color: Colors.white,
+    size: 30,
   ),
 
-  inputDecorationTheme: const InputDecorationTheme(
-    filled: true,
-    // fillColor: _secondary,
-    prefixStyle: TextStyle(
+  ///bottom AppBar Theme
+  bottomAppBarTheme: const BottomAppBarTheme(
+    color: Colors.white,
+    elevation: 2,
+  ),
+
+  ///tab Bar Theme
+  tabBarTheme: TabBarThemeData(
+    labelStyle: const TextStyle(
       color: Colors.white,
+      fontFamily: FxFonts.ios1,
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
     ),
-    prefixIconColor: Colors.white,
-    iconColor: Colors.white,
+    labelColor: Colors.white,
+    dividerColor: _background,
+    indicatorColor: _background,
+    unselectedLabelStyle: const TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+      fontFamily: FxFonts.ios1,
+    ),
+    unselectedLabelColor: Colors.grey,
+    indicator: const UnderlineTabIndicator(),
+    indicatorSize: TabBarIndicatorSize.tab,
   ),
-  fontFamily: 'ios-1',
 
-  progressIndicatorTheme: const ProgressIndicatorThemeData(
-      // color: _primary,
+  ///Input Decoration Theme
+  inputDecorationTheme: InputDecorationTheme(
+    errorStyle: const TextStyle(
+      fontWeight: FontWeight.bold,
+      fontFamily: FxFonts.ios1,
+      color: Colors.red,
+    ),
+
+    labelStyle: const TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+      fontFamily: FxFonts.ios1,
+    ),
+
+    suffixStyle: const TextStyle(
+      color: Colors.grey,
+    ),
+    prefixStyle: const TextStyle(
+      color: Colors.grey,
+    ),
+    // fillColor: DarkColors.lapel,
+    hintStyle: const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w300,
+      color: Colors.grey,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: BorderSide(
+        color: _third,
+        width: 2,
       ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(
+        color: _secondary,
+        width: 2,
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: const BorderSide(
+        color: Colors.red,
+      ),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: const BorderSide(
+        color: Colors.red,
+      ),
+    ),
+  ),
+  //text Button Theme
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      enableFeedback: false,
+      elevation: 0,
+      textStyle: TextStyle(
+        color: _primary,
+        fontSize: 16,
+      ),
+    ),
+  ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      elevation: 0,
+      enableFeedback: false,
+      alignment: Alignment.center,
+      backgroundColor: Colors.transparent,
+      side: BorderSide(
+        color: _primary,
+        width: 2,
+      ),
+      padding: const EdgeInsets.all(4),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+  ),
 
-  //
-  splashColor: Colors.white, //customBackGroundBody
+  //elevated Button Theme
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      elevation: 0,
+      enableFeedback: false,
+      alignment: Alignment.center,
+      backgroundColor: _primary,
+      padding: const EdgeInsets.all(4),
+      textStyle: const TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  ),
 
-  //
-  textTheme: const TextTheme(
-    displaySmall: TextStyle(
-      color: Colors.black,
-      fontSize: 20,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      overflow: TextOverflow.ellipsis,
+  ///iconButtonTheme
+  iconButtonTheme: IconButtonThemeData(
+    style: IconButton.styleFrom(
+      enableFeedback: false,
+      elevation: 0,
+      iconSize: 35,
+    ),
+  ),
+
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: _primary,
+    elevation: 0,
+    iconSize: 35,
+  ),
+
+  //bottom Sheet Theme
+  bottomSheetTheme: const BottomSheetThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(12),
+        topRight: Radius.circular(12),
+      ),
+    ),
+  ),
+  //dialog Theme
+  dialogTheme: DialogThemeData(
+    backgroundColor: const Color(0xff1F222A),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+
+  progressIndicatorTheme:
+      ProgressIndicatorThemeData(circularTrackColor: _primary),
+  fontFamily: FontFamily.ios1,
+  textTheme: TextTheme(
+    // Display Styles (Largest)
+    displayLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 57.sp,
+      height: 1.12,
+      letterSpacing: -0.25,
+      color: textPrimary,
     ),
     displayMedium: TextStyle(
-      color: Colors.black,
-      fontSize: 25,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      overflow: TextOverflow.ellipsis,
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 45.sp,
+      height: 1.16,
+      color: textPrimary,
     ),
-    displayLarge: TextStyle(
-      color: Colors.black,
-      fontSize: 30,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w600,
-      overflow: TextOverflow.ellipsis,
+    displaySmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 36.sp,
+      height: 1.22,
+      color: textPrimary,
     ),
-    headlineSmall: TextStyle(
-      color: Colors.black,
-      fontSize: 13,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w400,
-      overflow: TextOverflow.ellipsis,
+
+    // Headline Styles
+    headlineLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 32.sp,
+      height: 1.25,
+      color: textPrimary,
     ),
     headlineMedium: TextStyle(
-      color: Colors.black,
-      fontSize: 15,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w400,
-      overflow: TextOverflow.ellipsis,
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 28.sp,
+      height: 1.29,
+      color: textPrimary,
     ),
-    headlineLarge: TextStyle(
-      color: Colors.black,
-      fontSize: 18,
-      fontFamily: 'ios-3',
-      overflow: TextOverflow.ellipsis,
+    headlineSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 24.sp,
+      height: 1.33,
+      color: textPrimary,
     ),
-    titleSmall: TextStyle(
-      color: Colors.black,
-      fontSize: 12,
-      fontFamily: 'ios-1',
-      // overflow: TextOverflow.ellipsis,
+
+    // Title Styles
+    titleLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 22.sp,
+      height: 1.27,
+      color: textPrimary,
     ),
     titleMedium: TextStyle(
-      fontSize: 14,
-      fontFamily: 'ios-1',
-      fontWeight: FontWeight.w500,
-      color: Colors.black,
-      // overflow: TextOverflow.ellipsis,
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w700,
+      fontSize: 16.sp,
+      height: 1.50,
+      letterSpacing: 0.15,
+      color: textPrimary,
     ),
-    titleLarge: TextStyle(
-      color: Colors.black,
-      fontSize: 16,
-      fontFamily: 'ios-2',
-      fontWeight: FontWeight.bold,
-      // overflow: TextOverflow.ellipsis,
+    titleSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.1,
+      color: textPrimary,
+    ),
+
+    // Label Styles
+    labelLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.1,
+      color: textPrimary,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 12.sp,
+      height: 1.33,
+      letterSpacing: 0.5,
+      color: textPrimary,
+    ),
+    labelSmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 11.sp,
+      height: 1.45,
+      letterSpacing: 0.5,
+      color: textPrimary,
+    ),
+
+    // Body Styles
+    bodyLarge: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 16.sp,
+      height: 1.50,
+      letterSpacing: 0.15,
+      color: textPrimary,
+    ),
+    bodyMedium: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      height: 1.43,
+      letterSpacing: 0.25,
+      color: textPrimary,
+    ),
+    bodySmall: TextStyle(
+      fontFamily: FontFamily.ios1,
+      fontWeight: FontWeight.w600,
+      fontSize: 12.sp,
+      height: 1.33,
+      letterSpacing: 0.4,
+      color: textPrimary,
     ),
   ),
 );

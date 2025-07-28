@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class CardWidget extends StatelessWidget {
   const CardWidget({
@@ -25,13 +25,13 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.all(16.sp),
+      padding: padding ?? EdgeInsets.all(8.sp),
       margin: margin,
       width: width,
       height: height,
       decoration: BoxDecoration(
-        borderRadius: borderRadius ?? BorderRadius.circular(12),
-        color: color ?? context.secondary,
+        borderRadius: borderRadius ?? BorderRadius.circular(12.r),
+        color: color ?? context.surfaceColor,
         border: border,
       ),
       child: child,

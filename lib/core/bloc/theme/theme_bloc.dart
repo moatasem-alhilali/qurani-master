@@ -11,20 +11,35 @@ part 'theme_state.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ThemeBloc() : super(const ThemeState()) {
-    on<ChangeThemeEvent>(_onThemeChange);
+    on<ChangeThemeColorsEvent>(_onThemeChange);
+    on<ChangeThemeModeEvent>(_onThemeModeChange);
     on<InitThemeEvent>(_onInitTheme);
   }
   MyColorTheme get currentThemeData =>
-      ThemeManager.getThemeByType(state.currentThemeType);
+      ThemeColorsManager.getThemeByType(state.currentThemeType);
   FutureOr<void> _onThemeChange(
-    ChangeThemeEvent event,
+    ChangeThemeColorsEvent event,
     Emitter<ThemeState> emit,
   ) async {
     final currentThemeType = event.theme;
-    await CacheService().setString(ThemeManager.cacheKey, currentThemeType);
+    await CacheService()
+        .setString(ThemeColorsManager.cacheKey, currentThemeType);
     emit(
       state.copyWith(
         currentThemeType: event.theme,
+      ),
+    );
+  }
+
+  FutureOr<void> _onThemeModeChange(
+    ChangeThemeModeEvent event,
+    Emitter<ThemeState> emit,
+  ) async {
+    final currentThemeMode = event.mode;
+    await CacheService().setString(ThemeModeManager.cacheKey, currentThemeMode);
+    emit(
+      state.copyWith(
+        currentThemeMode: ThemeMode.values.byName(currentThemeMode),
       ),
     );
   }
@@ -34,21 +49,31 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     Emitter<ThemeState> emit,
   ) async {
     final currentThemeType =
-        CacheService().getString(ThemeManager.cacheKey) ?? ThemeManager.blue;
+        CacheService().getString(ThemeColorsManager.cacheKey) ??
+            ThemeColorsManager.blue;
     emit(state.copyWith(currentThemeType: currentThemeType));
+
+    final currentThemeMode =
+        CacheService().getString(ThemeModeManager.cacheKey) ??
+            ThemeModeManager.dark;
+    emit(
+      state.copyWith(
+        currentThemeMode: ThemeMode.values.byName(currentThemeMode),
+      ),
+    );
   }
 }
 
 extension ThemeContextExtension on BuildContext {
   MyColorTheme get quranTheme {
-    final type =
-        CacheService().getString(ThemeManager.cacheKey) ?? ThemeManager.blue;
-    return ThemeManager.getThemeByType(type);
+    final type = CacheService().getString(ThemeColorsManager.cacheKey) ??
+        ThemeColorsManager.blue;
+    return ThemeColorsManager.getThemeByType(type);
   }
 
   ThemeData get themeApp {
-    final type =
-        CacheService().getString(ThemeManager.cacheKey) ?? ThemeManager.blue;
-    return ThemeManager.getThemeApp(type);
+    final type = CacheService().getString(ThemeColorsManager.cacheKey) ??
+        ThemeColorsManager.blue;
+    return ThemeColorsManager.getThemeApp(type);
   }
 }

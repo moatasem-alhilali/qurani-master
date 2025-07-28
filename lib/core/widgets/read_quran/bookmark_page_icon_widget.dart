@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/features/bookmark/data/request/bookmark_page_request.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/read_quran/data/quran_read_helper.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/main.dart';
 
 class BookmarkIconWidget extends StatefulWidget {
@@ -53,63 +52,66 @@ class _BookmarkIconWidgetState extends State<BookmarkIconWidget>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookmarkBloc, BookmarkState>(
-      builder: (context, state) {
-        final bookmarksController = context.read<BookmarkBloc>();
-        final quranCtrl = context.read<ReadQuranBloc>().quranRH;
-        final isBookmarked =
-            bookmarksController.hasBookmarkPage(widget.pageNumber + 1);
+    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
+      builder: (context, readQuranState) {
+        return BlocBuilder<BookmarkBloc, BookmarkState>(
+          builder: (context, state) {
+            final bookmarksController = context.read<BookmarkBloc>();
+            final isBookmarked =
+                bookmarksController.hasBookmarkPage(widget.pageNumber + 1);
 
-        return GestureDetector(
-          onTapDown: (_) {
-            _animationController.forward();
-          },
-          onTapUp: (_) {
-            _animationController.reverse();
-          },
-          onTapCancel: () {
-            _animationController.reverse();
-          },
-          onTap: () => _onTap(quranCtrl, context),
-          child: AnimatedBuilder(
-            animation: _scaleAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _scaleAnimation.value,
-                child: Semantics(
-                  button: true,
-                  enabled: true,
-                  label: 'Add Bookmark Page ${widget.pageNumber + 1}',
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return ScaleTransition(
-                        scale: animation,
-                        child: FadeTransition(
-                          opacity: animation,
-                          child: child,
+            return GestureDetector(
+              onTapDown: (_) {
+                _animationController.forward();
+              },
+              onTapUp: (_) {
+                _animationController.reverse();
+              },
+              onTapCancel: () {
+                _animationController.reverse();
+              },
+              onTap: () => _onTap(readQuranState, context),
+              child: AnimatedBuilder(
+                animation: _scaleAnimation,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Semantics(
+                      button: true,
+                      enabled: true,
+                      label: 'Add Bookmark Page ${widget.pageNumber + 1}',
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          key: ValueKey(isBookmarked),
+                          color: Theme.of(context).colorScheme.primary,
+                          size: widget.width ?? 24,
                         ),
-                      );
-                    },
-                    child: Icon(
-                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                      key: ValueKey(isBookmarked),
-                      color: Theme.of(context).colorScheme.primary,
-                      size: widget.width ?? 24,
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
-          ),
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );
   }
 
   void _onTap(
-    QuranReadHelper quranCtrl,
+    ReadQuranState readQuranState,
     BuildContext context,
   ) {
     // Add haptic feedback
@@ -123,7 +125,7 @@ class _BookmarkIconWidgetState extends State<BookmarkIconWidget>
       final bookmarkId = bookmark.getBookmarkPageId(pageNum);
       final bookmarkPageRequest = BookmarkPageRequest(
         pageNum: pageNum,
-        sorahName: quranCtrl.getSurahNameFromPage(pageNum),
+        sorahName: readQuranState.getSurahNameFromPage(pageNum),
         id: bookmarkId,
         lastRead: DateTime.now().toIso8601String(),
       );
@@ -136,7 +138,7 @@ class _BookmarkIconWidgetState extends State<BookmarkIconWidget>
     } else {
       final bookmarkPageRequest = BookmarkPageRequest(
         pageNum: pageNum,
-        sorahName: quranCtrl.getSurahNameFromPage(pageNum),
+        sorahName: readQuranState.getSurahNameFromPage(pageNum),
         lastRead: DateTime.now().toIso8601String(),
       );
       bookmark.add(

@@ -282,7 +282,7 @@
 //             fontFamily: FontFamily.amiriQuran,
 //             fontSize: fontSize,
 //             height: 1.6,
-//             color: context.primaryScheme,
+//             color: context.primaryColor,
 //           ),
 //         ),
 //       );
@@ -425,7 +425,7 @@
 // //     fontSize: fontSize,
 // //     height: 2,
 // //     letterSpacing: 2,
-// //     color: context.primaryScheme,
+// //     color: context.primaryColor,
 // //     shadows: const [
 // //       Shadow(
 // //         blurRadius: 0.5,

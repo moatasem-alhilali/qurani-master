@@ -3,12 +3,14 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_event.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_state.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
 
+part 'hisn_muslim_event.dart';
+part 'hisn_muslim_state.dart';
+
 class HisnMuslimBloc extends Bloc<HisnMuslimEvent, HisnMuslimState> {
-  HisnMuslimBloc() : super(HisnMuslimInitial()) {
+  HisnMuslimBloc() : super(HisnMuslimState()) {
     on<LoadHisnMuslimEvent>(_onLoadHisnMuslim);
   }
 
@@ -16,7 +18,7 @@ class HisnMuslimBloc extends Bloc<HisnMuslimEvent, HisnMuslimState> {
     LoadHisnMuslimEvent event,
     Emitter<HisnMuslimState> emit,
   ) async {
-    emit(HisnMuslimLoading());
+    emit(state.copyWith(state: RequestState.loading));
 
     try {
       final jsonStr =
@@ -31,9 +33,19 @@ class HisnMuslimBloc extends Bloc<HisnMuslimEvent, HisnMuslimState> {
         );
       }).toList();
 
-      emit(HisnMuslimLoaded(sections));
+      emit(
+        state.copyWith(
+          state: RequestState.success,
+          hisnMuslim: sections,
+        ),
+      );
     } catch (e) {
-      emit(HisnMuslimError('Failed to load hisn muslim data'));
+      emit(
+        state.copyWith(
+          state: RequestState.error,
+          hisnMuslim: [],
+        ),
+      );
     }
   }
 }

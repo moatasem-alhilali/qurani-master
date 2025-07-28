@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 
 class DhikrStatsCard extends StatelessWidget {
@@ -16,7 +17,7 @@ class DhikrStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.secondary,
+        color: context.secondaryColor,
         borderRadius: BorderRadius.circular(16),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -33,7 +34,7 @@ class DhikrStatsCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           subih.title,
-                          style: context.bodyMedium.copyWith(
+                          style: context.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                           ),
@@ -46,12 +47,12 @@ class DhikrStatsCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: context.primaryScheme.withOpacity(0.1),
+                            color: context.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             'مخصص',
-                            style: context.bodyMedium.copyWith(
+                            style: context.bodyMedium?.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -64,7 +65,7 @@ class DhikrStatsCard extends StatelessWidget {
                     subih.content,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: context.bodyMedium.copyWith(
+                    style: context.bodyMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 14.sp,
                     ),
@@ -86,14 +87,14 @@ class DhikrStatsCard extends StatelessWidget {
       height: 60.h,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: count > 0 ? context.primaryScheme : context.gray1,
+        color: count > 0 ? context.primaryColor : context.gray1,
       ),
       alignment: Alignment.center,
       padding: EdgeInsets.all(16.r),
       child: Center(
         child: Text(
           count.toString(),
-          style: context.bodyMedium.copyWith(
+          style: context.bodyMedium?.copyWith(
             color: count > 0 ? Colors.white : context.gray2,
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,

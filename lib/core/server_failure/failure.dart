@@ -15,28 +15,28 @@ class LogicFailure extends Failure {
 
 class ServerFailure extends Failure {
   ServerFailure(super.message);
-  factory ServerFailure.fromServerFailure(DioError dioError) {
+  factory ServerFailure.fromServerFailure(DioException dioError) {
     switch (dioError.type) {
-      case DioErrorType.connectionTimeout:
+      case DioExceptionType.connectionTimeout:
         return ServerFailure('connection Time out');
-      case DioErrorType.sendTimeout:
+      case DioExceptionType.sendTimeout:
         return ServerFailure('send Time out');
 
-      case DioErrorType.receiveTimeout:
+      case DioExceptionType.receiveTimeout:
         return ServerFailure('receive Time out');
 
-      case DioErrorType.badCertificate:
+      case DioExceptionType.badCertificate:
         return ServerFailure('bad Certificate');
-      case DioErrorType.badResponse:
+      case DioExceptionType.badResponse:
         return ServerFailure.fromResponsive(
           dioError.response!.statusCode!,
           dioError.response!.data,
         );
-      case DioErrorType.cancel:
+      case DioExceptionType.cancel:
         return ServerFailure('cancel');
-      case DioErrorType.connectionError:
+      case DioExceptionType.connectionError:
         return ServerFailure('there is no internet connection');
-      case DioErrorType.unknown:
+      case DioExceptionType.unknown:
         // if (dioError.message!.contains("SocketException")) {
         //   return ServerFailure("there is no internet connection");
         // }

@@ -1,19 +1,20 @@
-import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+part of 'hisn_muslim_bloc.dart';
 
-abstract class HisnMuslimState {}
-
-class HisnMuslimInitial extends HisnMuslimState {}
-
-class HisnMuslimLoading extends HisnMuslimState {}
-
-class HisnMuslimLoaded extends HisnMuslimState {
+class HisnMuslimState {
+  final RequestState state;
   final List<HisnMuslimModel> hisnMuslim;
 
-  HisnMuslimLoaded(this.hisnMuslim);
-}
+  HisnMuslimState(
+      {this.state = RequestState.initial, this.hisnMuslim = const []});
 
-class HisnMuslimError extends HisnMuslimState {
-  final String message;
-
-  HisnMuslimError(this.message);
+  HisnMuslimState copyWith({
+    RequestState? state,
+    List<HisnMuslimModel>? hisnMuslim,
+  }) {
+    return HisnMuslimState(
+      state: state ?? this.state,
+      hisnMuslim: hisnMuslim ?? this.hisnMuslim,
+    );
+  }
 }

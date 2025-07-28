@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 
@@ -27,7 +27,7 @@ class ScheduleCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         side: BorderSide(
           color: schedule.enabled
-              ? context.primaryScheme.withOpacity(0.3)
+              ? context.primaryColor.withOpacity(0.3)
               : Colors.grey.withOpacity(0.2),
         ),
       ),
@@ -47,15 +47,14 @@ class ScheduleCardWidget extends StatelessWidget {
                     padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
                       color: schedule.enabled
-                          ? context.primaryScheme.withOpacity(0.1)
+                          ? context.primaryColor.withOpacity(0.1)
                           : Colors.grey.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Icon(
                       _getScheduleIcon(),
-                      color: schedule.enabled
-                          ? context.primaryScheme
-                          : Colors.grey,
+                      color:
+                          schedule.enabled ? context.primaryColor : Colors.grey,
                       size: 20.sp,
                     ),
                   ),
@@ -90,7 +89,7 @@ class ScheduleCardWidget extends StatelessWidget {
                   Switch.adaptive(
                     value: schedule.enabled,
                     onChanged: (_) => onToggle(),
-                    activeColor: context.primaryScheme,
+                    activeColor: context.primaryColor,
                   ),
                 ],
               ),
@@ -128,7 +127,7 @@ class ScheduleCardWidget extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       decoration: BoxDecoration(
-                        color: context.primaryScheme.withOpacity(0.1),
+                        color: context.primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
@@ -136,7 +135,7 @@ class ScheduleCardWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: context.primaryScheme,
+                          color: context.primaryColor,
                         ),
                       ),
                     ),

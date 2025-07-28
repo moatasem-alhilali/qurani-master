@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/custom_container.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
@@ -20,7 +20,7 @@ class ThikrSlider extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Text(
             'الورد اليومي',
-            style: titleMedium(context).copyWith(color: context.primaryScheme),
+            style: titleMedium(context).copyWith(color: context.primaryColor),
           ),
         ),
         const _item(

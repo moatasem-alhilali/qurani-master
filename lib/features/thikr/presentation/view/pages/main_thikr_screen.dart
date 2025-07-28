@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/constant.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
@@ -16,7 +16,7 @@ class MainThikrScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'الا بذكر الله تطمئن القلوب',
       body: Column(
         children: [
@@ -96,12 +96,12 @@ class _Item extends StatelessWidget {
             margin: const EdgeInsets.all(8),
             // decoration: BoxDecoration(
             //   borderRadius: BorderRadius.circular(12),
-            //   color: context.secondary,
+            //   color: context.secondaryColor,
             // ),
             child: Icon(
               icon,
               size: 40,
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           ),
           // if (isSvgImage)

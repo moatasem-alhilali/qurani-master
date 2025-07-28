@@ -5,6 +5,7 @@ import 'package:quran_app/features/sabih/data/database/database_sabih_service.da
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/model/subih_seed_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
+import 'package:quran_app/main.dart';
 
 abstract class SabihRepository {
   Future<Either<LogicFailure, List<SubihModel>>> getSubih();
@@ -39,10 +40,14 @@ class SabihRepositoryImpl implements SabihRepository {
   @override
   Future<Either<LogicFailure, List<SubihModel>>> getSubih() async {
     try {
-      await SubihSeeder().runIfNeeded();
+      logger.d('getSubih');
+      await SubihSeeder.runIfNeeded();
+      logger.d('getSubih after');
       final result = await DatabaseSabihService.getAllSubihItems();
+      logger.d(result);
       return right(result);
     } catch (e) {
+      logger.e(e);
       return left(LogicFailure(e.toString()));
     }
   }

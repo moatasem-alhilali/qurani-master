@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
@@ -41,7 +41,7 @@ Future<bool?> showDeleteConfirmationDialog<T>(
           child: FadeTransition(
             opacity: fadeAnimation,
             child: AlertDialog(
-              backgroundColor: context.secondary,
+              backgroundColor: context.secondaryColor,
               elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -126,7 +126,7 @@ class _AnimatedDialogContent extends StatelessWidget {
               child: Text(
                 title ?? 'حذف الذكر؟',
                 style: titleMedium(context).copyWith(
-                  // color: context.secondary,
+                  // color: context.secondaryColor,
                   fontSize: 18.sp,
                 ),
               ),
@@ -165,7 +165,7 @@ class _AnimatedDialogContent extends StatelessWidget {
                       defaultColor: Colors.transparent,
                       onPressed: () => Navigator.of(context).pop(false),
                       text: 'إلغاء',
-                      colorText: context.primaryScheme,
+                      colorText: context.primaryColor,
                     ),
                   ),
                   SizedBox(width: 16.w),

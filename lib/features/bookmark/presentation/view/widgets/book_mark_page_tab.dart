@@ -6,11 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_page_model.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class BookmarkPageTab extends StatefulWidget {
   const BookmarkPageTab({super.key});
@@ -81,23 +81,18 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
         controller: _searchController,
         focusNode: _searchFocusNode,
         textAlign: TextAlign.right,
-        style: TextStyle(
-          color: context.primaryScheme,
-          fontSize: 14.sp,
-        ),
         decoration: InputDecoration(
           hintText: 'البحث في الصفحات المحفوظة...',
-          hintStyle: TextStyle(
-            color: context.primaryScheme.withValues(alpha: 0.6),
-            fontSize: 14.sp,
-          ),
+          // hintStyle: context.titleMedium?.copyWith(
+          //   color: context.primaryColor.withValues(alpha: 0.6),
+          //   fontSize: 14.sp,
+          // ),
           prefixIcon: Icon(
             Icons.search,
             color:
                 context.quranTheme.colorScheme.primary.withValues(alpha: 0.7),
             size: 20.sp,
           ),
-          filled: false,
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   icon: Icon(
@@ -112,7 +107,6 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                   },
                 )
               : null,
-          border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 12.w,
             vertical: 12.h,
@@ -142,7 +136,7 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                 Center(
                   child: Text(
                     'لا يوجد صفحات محفوظة',
-                    style: context.titleMedium.copyWith(
+                    style: context.titleMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 16.sp,
                     ),
@@ -165,7 +159,7 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                 Center(
                   child: Text(
                     'لا توجد نتائج للبحث عن "$_searchQuery"',
-                    style: context.titleMedium.copyWith(
+                    style: context.titleMedium?.copyWith(
                       color: context.gray1,
                       fontSize: 16.sp,
                     ),
@@ -229,9 +223,9 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                                                       .toString(),
                                                   // convertNumbers(
                                                   //     surah.surahNumber.toString()),
-                                                  style: TextStyle(
-                                                    color:
-                                                        context.primaryScheme,
+                                                  style: context.titleMedium
+                                                      ?.copyWith(
+                                                    color: context.primaryColor,
                                                     fontFamily: 'kufi',
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
@@ -253,15 +247,17 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                                           children: [
                                             Text(
                                               surah.sorahName ?? '',
-                                              style: TextStyle(
+                                              style:
+                                                  context.titleMedium?.copyWith(
                                                 fontSize: 16,
-                                                color: context.primaryScheme,
+                                                color: context.primaryColor,
                                               ),
                                             ),
                                             Text(
                                               surah.lastRead ?? '',
-                                              style: TextStyle(
-                                                color: context.primaryScheme,
+                                              style:
+                                                  context.titleMedium?.copyWith(
+                                                color: context.primaryColor,
                                                 fontSize: 12,
                                               ),
                                             ),
@@ -288,22 +284,24 @@ class _BookmarkPageTabState extends State<BookmarkPageTab> {
                                                 children: [
                                                   Text(
                                                     'رقم الصفحة',
-                                                    style: TextStyle(
+                                                    style: context.titleMedium
+                                                        ?.copyWith(
                                                       // fontFamily: 'uthman',
                                                       fontSize: 13,
-                                                      color: context.quranTheme
-                                                          .colorScheme.primary,
+                                                      color:
+                                                          context.primaryColor,
                                                     ),
                                                   ),
                                                   Text(
                                                     surah.pageNum.toString(),
-                                                    style: TextStyle(
+                                                    style: context.titleMedium
+                                                        ?.copyWith(
                                                       // fontFamily: 'kufi',
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: context.quranTheme
-                                                          .colorScheme.primary,
+                                                      color:
+                                                          context.primaryColor,
                                                     ),
                                                   ),
                                                 ],

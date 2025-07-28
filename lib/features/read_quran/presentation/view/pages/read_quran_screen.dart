@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/body_read_quran_horizontal_widget.dart';
-import 'package:quran_app/features/read_quran/presentation/view/widgets/vertical/body_read_quran_vertical_widget.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah_list_widget.dart';
 
 class ReadQuranScreen extends StatefulWidget {
-  const ReadQuranScreen({super.key});
+  const ReadQuranScreen({super.key, this.page});
+  final int? page;
 
   @override
   State<ReadQuranScreen> createState() => _ReadQuranScreenState();
@@ -21,7 +22,11 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ReadQuranBloc>().add(JumpToPageEvent());
+      if (widget.page != null) {
+        context.read<ReadQuranBloc>().add(JumpToPageEvent(page: widget.page));
+      } else {
+        context.read<ReadQuranBloc>().add(JumpToPageEvent());
+      }
       context.read<ReadQuranBloc>().add(ToggleBoxEvent());
     });
 
@@ -35,77 +40,85 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
         return BlocBuilder<ReadQuranBloc, ReadQuranState>(
           builder: (context, state) {
             final boxController = context.read<ReadQuranBloc>().boxController;
-            return Scaffold(
-              backgroundColor: context.scaffoldBackgroundColor,
-              body: SlidingBox(
-                minHeight: 50,
-                onSearchBoxHide: () {
-                  context.read<ReadQuranBloc>().add(
-                        ToggleHighBoxEvent(),
-                      );
-                },
-                onSearchBoxShow: () {
-                  context.read<ReadQuranBloc>().add(
-                        ToggleHighBoxEvent(
-                          minusHeight: 0,
-                        ),
-                      );
-                },
-                maxHeight:
-                    MediaQuery.of(context).size.height - state.minusHeight,
-                controller: boxController,
-                color: context.scaffoldBackgroundColor,
-                backdrop: Backdrop(
-                  fading: true,
-                  color: context.scaffoldBackgroundColor,
-                  appBar: BackdropAppBar(
-                    searchBox: SearchBox(
-                      controller:
-                          context.read<SearchBloc>().textEditingController,
-                      color: context.primaryScheme,
-                      inputDecoration: InputDecoration(
-                        hintText: 'ابحث عن الايه',
-                        hintStyle: TextStyle(
-                          color: context.scaffoldBackgroundColor,
-                        ),
-                        filled: true,
-                        fillColor: context.primaryScheme.withValues(alpha: 0.1),
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: context.primaryScheme,
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                statusBarColor: context.primaryColor,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.dark,
+              ),
+              child: Scaffold(
+                backgroundColor: const Color(0xFFF1F2F4),
+                body: SlidingBox(
+                  minHeight: 50,
+                  onSearchBoxHide: () {
+                    context.read<ReadQuranBloc>().add(
+                          ToggleHighBoxEvent(),
+                        );
+                  },
+                  onSearchBoxShow: () {
+                    context.read<ReadQuranBloc>().add(
+                          ToggleHighBoxEvent(
+                            minusHeight: 0,
+                          ),
+                        );
+                  },
+                  maxHeight:
+                      MediaQuery.of(context).size.height - state.minusHeight,
+                  controller: boxController,
+                  color: const Color(0xFFF1F2F4),
+                  backdrop: Backdrop(
+                    fading: true,
+                    color: const Color(0xFFF1F2F4),
+                    appBar: BackdropAppBar(
+                      searchBox: SearchBox(
+                        controller:
+                            context.read<SearchBloc>().textEditingController,
+                        color: context.primaryColor,
+                        inputDecoration: InputDecoration(
+                          hintText: 'ابحث عن الايه',
+                          hintStyle: const TextStyle(
+                            color: Color(0xFFF1F2F4),
+                          ),
+                          filled: true,
+                          fillColor:
+                              context.primaryColor.withValues(alpha: 0.1),
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.primaryColor,
+                            ),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.primaryColor,
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: context.primaryColor,
+                            ),
                           ),
                         ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: context.primaryScheme,
-                          ),
+                        style: TextStyle(
+                          color: context.onSurfaceColor,
+                          fontSize: 18,
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: context.primaryScheme,
-                          ),
-                        ),
+                        body: const SearchAyahListWidget(),
                       ),
+                    ),
+                    body: const BodyReadQuranHorizontalWidget(),
+                    // body: const BodyReadQuranVerticalWidget(),
+                  ),
+                  collapsedBody: Center(
+                    child: Text(
+                      'اسحب هنا للاعلي',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 18,
+                        color: context.primaryColor,
                       ),
-                      body: const SearchAyahListWidget(),
                     ),
                   ),
-                  body: const BodyReadQuranHorizontalWidget(),
-                  // body: const BodyReadQuranVerticalWidget(),
+                  draggableIconColor: context.primaryColor,
+                  body: const BackdropOptionQuranWidget(),
                 ),
-                collapsedBody: Center(
-                  child: Text(
-                    'اسحب هنا للاعلي',
-                    style: TextStyle(
-                      color: context.primaryScheme,
-                    ),
-                  ),
-                ),
-                draggableIconColor: context.primaryScheme,
-                body: const BackdropOptionQuranWidget(),
               ),
             );
           },

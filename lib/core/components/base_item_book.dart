@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/base_fade_image.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 
 class BaseBookItem extends StatelessWidget {
@@ -57,7 +57,7 @@ class BaseBookItem extends StatelessWidget {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: context.primaryScheme,
+                          color: context.primaryColor,
                         ),
                         child: type.autoSize(context, fontSize: 14),
                       ),

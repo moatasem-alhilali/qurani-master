@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class AnimatedTasbihWidget extends StatefulWidget {
   const AnimatedTasbihWidget({
@@ -224,9 +224,9 @@ class _AnimatedTasbihWidgetState extends State<AnimatedTasbihWidget>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    (widget.centerColor ?? context.primaryScheme)
+                    (widget.centerColor ?? context.primaryColor)
                         .withOpacity(0.1),
-                    (widget.centerColor ?? context.primaryScheme)
+                    (widget.centerColor ?? context.primaryColor)
                         .withOpacity(0.05),
                   ],
                 ),
@@ -281,13 +281,13 @@ class _AnimatedTasbihWidgetState extends State<AnimatedTasbihWidget>
                       shape: BoxShape.circle,
                       color: isCompleted
                           ? Colors.green.withOpacity(0.9)
-                          : (widget.centerColor ?? context.primaryScheme),
+                          : (widget.centerColor ?? context.primaryColor),
                       boxShadow: [
                         BoxShadow(
                           color: (isCompleted
                                   ? Colors.green
                                   : (widget.centerColor ??
-                                      context.primaryScheme))
+                                      context.primaryColor))
                               .withOpacity(0.4),
                           blurRadius: 15,
                           spreadRadius: 2,

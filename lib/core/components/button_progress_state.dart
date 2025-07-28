@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 
 /// A customizable progress button that changes its appearance based on its state.
@@ -105,7 +105,7 @@ class ProgressButtonState extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           border: isBorderColor
-              ? border ?? Border.all(color: context.primaryScheme)
+              ? border ?? Border.all(color: context.primaryColor)
               : null,
           borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
           color: isBorderColor
@@ -147,9 +147,9 @@ class ProgressButtonState extends StatelessWidget {
   ) {
     switch (state) {
       case RequestState.initial:
-        return defaultColor ?? context.primaryScheme;
+        return defaultColor ?? context.primaryColor;
       case RequestState.loading:
-        return context.primaryScheme;
+        return context.primaryColor;
       case RequestState.success:
         return Colors.green;
       case RequestState.error:
@@ -373,7 +373,7 @@ class BaseOnTap extends StatelessWidget {
       splashColor: Colors.red,
       borderRadius: BorderRadius.circular(8.r),
       overlayColor:
-          WidgetStatePropertyAll(context.primaryScheme.withOpacity(0.1)),
+          WidgetStatePropertyAll(context.primaryColor.withOpacity(0.1)),
       onTap: () {
         HapticFeedback.lightImpact();
         onTap?.call();

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/download/data/models/download_task_model.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 
@@ -31,8 +31,8 @@ class DownloadItemWidget extends StatelessWidget {
                         children: [
                           Text(
                             task.fileName,
-                            style: context.titleMedium.copyWith(
-                              color: context.primaryScheme,
+                            style: context.titleMedium?.copyWith(
+                              color: context.primaryColor,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -242,23 +242,23 @@ class DownloadItemWidget extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete',
           child: Row(
             children: [
-              Icon(Icons.delete_outline, size: 20),
-              SizedBox(width: 8),
-              Text('Remove from list'),
+              const Icon(Icons.delete_outline, size: 20),
+              const SizedBox(width: 8),
+              Text('حذف من القائمة', style: context.bodyMedium),
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'delete_with_file',
           child: Row(
             children: [
-              Icon(Icons.delete_forever, size: 20),
-              SizedBox(width: 8),
-              Text('Delete file'),
+              const Icon(Icons.delete_forever, size: 20),
+              const SizedBox(width: 8),
+              Text('حذف الملف', style: context.bodyMedium),
             ],
           ),
         ),

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class VerseOfDayWidget extends StatefulWidget {
   const VerseOfDayWidget({
@@ -265,9 +265,9 @@ class _VerseOfDayWidgetState extends State<VerseOfDayWidget>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      widget.primaryColor ?? context.primaryScheme,
+                      widget.primaryColor ?? context.primaryColor,
                       widget.secondaryColor ??
-                          context.primaryScheme.withOpacity(0.7),
+                          context.primaryColor.withOpacity(0.7),
                     ],
                     stops: [
                       _backgroundAnimation.value,

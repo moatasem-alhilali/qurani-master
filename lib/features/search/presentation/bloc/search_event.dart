@@ -5,24 +5,24 @@ abstract class SearchEvent {}
 
 class SetStateEvent extends SearchEvent {}
 
-class SearchMosoaaEvent extends SearchEvent {
-  final String text;
-  SearchMosoaaEvent(this.text);
-}
+// class SearchMosoaaEvent extends SearchEvent {
+//   final String text;
+//   SearchMosoaaEvent(this.text);
+// }
 
-class GetHistoryMosoaaEvent extends SearchEvent {}
+// class GetHistoryMosoaaEvent extends SearchEvent {}
 
-class SearchQuranEvent extends SearchEvent {
-  final String text;
-  SearchQuranEvent(this.text);
-}
+// class SearchQuranEvent extends SearchEvent {
+//   final String text;
+//   SearchQuranEvent(this.text);
+// }
 
 class SearchSurahEvent extends SearchEvent {
-  final String text;
   SearchSurahEvent(this.text);
+  final String text;
 }
 
 class FetchAyaMoreEvent extends SearchEvent {
-  final String text;
   FetchAyaMoreEvent(this.text);
+  final String text;
 }

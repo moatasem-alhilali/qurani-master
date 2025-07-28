@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 // Static current page for global access
 int currentPage = 0;
@@ -239,7 +239,7 @@ class _BottomNavItemState extends State<BottomNavItem>
                 ),
                 decoration: BoxDecoration(
                   color: widget.selected
-                      ? context.secondary.withOpacity(0.1)
+                      ? context.secondaryColor.withOpacity(0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(
                     _getCompactValue(screenWidth, screenHeight, 8, 12, 16),
@@ -257,28 +257,44 @@ class _BottomNavItemState extends State<BottomNavItem>
                         child: Icon(
                           widget.icon,
                           size: _getCompactValue(
-                              screenWidth, screenHeight, 20, 22, 26),
+                            screenWidth,
+                            screenHeight,
+                            20,
+                            22,
+                            26,
+                          ),
                           color: widget.selected
-                              ? context.primaryScheme
+                              ? context.primaryColor
                               : context.gray1,
                         ),
                       ),
                     ),
                     SizedBox(
-                        height: _getCompactValue(
-                            screenWidth, screenHeight, 2, 3, 4)),
+                      height: _getCompactValue(
+                        screenWidth,
+                        screenHeight,
+                        2,
+                        3,
+                        4,
+                      ),
+                    ),
                     // Text with smooth color transition
                     AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
                       style: TextStyle(
                         color: widget.selected
-                            ? context.primaryScheme
+                            ? context.primaryColor
                             : context.gray1,
                         fontWeight:
                             widget.selected ? FontWeight.bold : FontWeight.w500,
                         fontSize: _getCompactValue(
-                            screenWidth, screenHeight, 9, 10, 12),
+                          screenWidth,
+                          screenHeight,
+                          9,
+                          10,
+                          12,
+                        ),
                       ),
                       child: Text(
                         widget.label,
@@ -289,19 +305,30 @@ class _BottomNavItemState extends State<BottomNavItem>
                     ),
                     // Bottom indicator
                     SizedBox(
-                        height: _getCompactValue(
-                            screenWidth, screenHeight, 2, 3, 4)),
+                      height: _getCompactValue(
+                        screenWidth,
+                        screenHeight,
+                        2,
+                        3,
+                        4,
+                      ),
+                    ),
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       width: widget.selected
                           ? _getCompactValue(
-                              screenWidth, screenHeight, 16, 20, 24)
+                              screenWidth,
+                              screenHeight,
+                              16,
+                              20,
+                              24,
+                            )
                           : 0,
                       height:
                           _getCompactValue(screenWidth, screenHeight, 2, 2, 3),
                       decoration: BoxDecoration(
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

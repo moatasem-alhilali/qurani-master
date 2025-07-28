@@ -1,92 +1,108 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_bloc.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_event.dart';
-import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_state.dart';
 
-class SurahWithAllDetailScreen extends StatelessWidget {
+class SurahWithAllDetailScreen extends StatefulWidget {
   const SurahWithAllDetailScreen({super.key});
 
+  @override
+  State<SurahWithAllDetailScreen> createState() =>
+      _SurahWithAllDetailScreenState();
+}
+
+class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
+  final searchController = SearchController();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SurahInfoBloc()..add(LoadSurahInfoEvent()),
-      child: BaseHomeWidget(
-        title: 'معلومات حول السور',
-        body: BlocBuilder<SurahInfoBloc, SurahInfoState>(
+      child: AppScaffoldWidget(
+        title: 'السور وسبب النزول',
+        trailing: BlocBuilder<SurahInfoBloc, SurahInfoState>(
           builder: (context, state) {
-            if (state is SurahInfoLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+            return GenericSearchAnchorAsync<SurahInfoModel>(
+              asyncSuggestions: (query) async {
+                return state.data
+                    .where((element) => element.surah.contains(query))
+                    .toList();
+              },
+              onSelected: (item) {},
+              hintText: 'بحث عن سورة',
+              suggestionBuilder: (context, item) => _Item(data: item),
+            );
+          },
+        ),
+        slivers: [
+          BlocBuilder<SurahInfoBloc, SurahInfoState>(
+            builder: (context, state) {
+              return state.state.whenSliver<SurahInfoModel>(
+                onSuccess: () {
+                  final dataList = state.data;
 
-            if (state is SurahInfoError) {
-              return Center(child: Text(state.message));
-            }
+                  return SliverList.builder(
+                    itemCount: dataList.length,
+                    itemBuilder: (context, index) {
+                      final data = dataList[index];
 
-            if (state is SurahInfoLoaded) {
-              final dataList = state.data;
-
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: dataList.length,
-                itemBuilder: (context, index) {
-                  final data = dataList[index];
-
-                  return BaseAnimate(
-                    index: index,
-                    child: InkWell(
-                      onTap: () {
-                        context.showBottomSheet(
-                          child: _BottomSheet(data: data),
-                        );
-                      },
-                      child: CardWidget(
-                        // padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.all(8),
-                        // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.circular(12),
-                        //   color: index % 2 == 0
-                        //       ? context.primaryScheme
-                        //       : Colors.transparent,
-                        // ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'إسم السورة : ${data.surah}',
-                              style: titleSmall(context).copyWith(
-                                  // color: context.gray2,
-                                  ),
-                            ),
-                            CircleAvatar(
-                              backgroundColor: index % 2 == 0
-                                  ? context.primaryScheme
-                                  : context.primarySecondary,
-                              radius: 12.r,
-                              child: FittedBox(
-                                child: Text('${index + 1}'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                      return _Item(data: data);
+                    },
                   );
                 },
               );
-            }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-            return const SizedBox();
-          },
+class _Item extends StatelessWidget {
+  const _Item({
+    required this.data,
+    super.key,
+  });
+
+  final SurahInfoModel data;
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseAnimate(
+      index: 0,
+      child: InkWell(
+        onTap: () {
+          context.showBottomSheet(
+            child: _BottomSheet(data: data),
+          );
+        },
+        child: CardWidget(
+          margin: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'إسم السورة : ${data.surah}',
+                style: titleSmall(context).copyWith(
+                    // color: context.gray2,
+                    ),
+              ),
+              // CircleAvatar(
+              //   backgroundColor: context.surfaceColor,
+              //   radius: 12.r,
+              //   child: FittedBox(
+              //     child: Text('${data.surah}'),
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

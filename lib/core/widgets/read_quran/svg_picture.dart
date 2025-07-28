@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 Widget besmAllah(BuildContext context) {
   return SvgPicture.asset(
@@ -76,7 +76,7 @@ Widget button_curve({
     'assets/svg/button_curve.svg',
     width: width,
     height: height ?? 60,
-    color: context.primaryScheme,
+    color: context.primaryColor,
     // colorFilter: ColorFilter.mode(
     //     color ?? Get.theme.colorScheme.primary, BlendMode.srcIn),
   );
@@ -316,7 +316,6 @@ Widget bookmark_list({double? height, double? width}) {
     'assets/svg/bookmark_list.svg',
     width: width,
     height: height ?? 35,
-    
   );
 }
 

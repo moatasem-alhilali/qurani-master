@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
@@ -29,7 +29,7 @@ class LocationEnableScreen extends StatelessWidget {
               style: titleMedium(context).copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
-                color: context.primaryScheme,
+                color: context.primaryColor,
               ),
             ),
           ),

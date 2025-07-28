@@ -73,20 +73,20 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     LoadAllSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    emit(state.copyWith(loadState: LoadState.loading));
+    emit(state.copyWith(loadState: RequestState.loading));
 
     final result = await _repository.getSubih();
 
     result.fold(
       (failure) => emit(
         state.copyWith(
-          loadState: LoadState.error,
+          loadState: RequestState.error,
           errorMessage: failure.message,
         ),
       ),
       (subihList) => emit(
         state.copyWith(
-          loadState: LoadState.success,
+          loadState: RequestState.success,
           subihList: subihList,
         ),
       ),
@@ -150,7 +150,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     logger.d(event.periodType);
     emit(
       state.copyWith(
-        loadState: LoadState.loading,
+        loadState: RequestState.loading,
         periodType: event.periodType,
       ),
     );
@@ -163,14 +163,14 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     result.fold(
       (failure) => emit(
         state.copyWith(
-          loadState: LoadState.error,
+          loadState: RequestState.error,
           errorMessage: failure.message,
         ),
       ),
       (counts) => emit(
         state.copyWith(
           countsMap: counts,
-          loadState: LoadState.success,
+          loadState: RequestState.success,
         ),
       ),
     );
@@ -283,7 +283,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
   ) async {
     emit(
       state.copyWith(
-        analyticsLoadState: LoadState.loading,
+        analyticsLoadState: RequestState.loading,
       ),
     );
 
@@ -332,7 +332,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
 
       emit(
         state.copyWith(
-          analyticsLoadState: LoadState.success,
+          analyticsLoadState: RequestState.success,
           todayCounts: todayCounts,
           weekCounts: weekCounts,
           monthCounts: monthCounts,
@@ -346,7 +346,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     } catch (e) {
       emit(
         state.copyWith(
-          analyticsLoadState: LoadState.error,
+          analyticsLoadState: RequestState.error,
           errorMessage: e.toString(),
         ),
       );

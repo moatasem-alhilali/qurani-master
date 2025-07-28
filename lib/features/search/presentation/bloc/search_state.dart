@@ -4,12 +4,12 @@ part of 'search_bloc.dart';
 class SearchState {
   const SearchState({
     //
-    this.searchMossoState = RequestState.initial,
-    this.result = const {},
+    // this.searchMossoState = RequestState.initial,
+    // this.result = const {},
 
     //
-    this.historyState = RequestState.initial,
-    this.historySearchMosoaa = const [],
+    // this.historyState = RequestState.initial,
+    //  this.historySearchMosoaa = const [],
     //
     this.ayahState = RequestState.initial,
     this.loadAyahState = RequestState.initial,
@@ -17,38 +17,38 @@ class SearchState {
     this.currentSearchTerm = '',
   });
   //
-  final Map<String, dynamic> result;
-  final RequestState searchMossoState;
+  // final Map<String, dynamic> result;
+  // final RequestState searchMossoState;
   //
-  final List<dynamic> historySearchMosoaa;
-  final RequestState historyState;
+  // final List<dynamic> historySearchMosoaa;
+  // final RequestState historyState;
 
   //
-  final List<Aya> ayaData;
+  final List<NewAyahModel> ayaData;
   final RequestState ayahState;
   final RequestState loadAyahState;
   final String currentSearchTerm;
 
   SearchState copyWith({
-    RequestState? searchMossoState,
-    Map<String, dynamic>? result,
+    // RequestState? searchMossoState,
+    // Map<String, dynamic>? result,
     //
-    List<dynamic>? historySearchMosoaa,
-    RequestState? historyState,
+    // List<dynamic>? historySearchMosoaa,
+    // RequestState? historyState,
 
     //
-    List<Aya>? ayaData,
+    List<NewAyahModel>? ayaData,
     RequestState? ayahState,
     RequestState? loadAyahState,
     String? currentSearchTerm,
   }) {
     return SearchState(
-      result: result ?? this.result,
-      searchMossoState: searchMossoState ?? this.searchMossoState,
+      // result: result ?? this.result,
+      // searchMossoState: searchMossoState ?? this.searchMossoState,
 
       //
-      historySearchMosoaa: historySearchMosoaa ?? this.historySearchMosoaa,
-      historyState: historyState ?? this.historyState,
+      // historySearchMosoaa: historySearchMosoaa ?? this.historySearchMosoaa,
+      // historyState: historyState ?? this.historyState,
       //
       ayaData: ayaData ?? this.ayaData,
       ayahState: ayahState ?? this.ayahState,
@@ -56,4 +56,6 @@ class SearchState {
       currentSearchTerm: currentSearchTerm ?? this.currentSearchTerm,
     );
   }
+
+  
 }

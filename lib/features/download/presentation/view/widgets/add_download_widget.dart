@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 
 class AddDownloadWidget extends StatefulWidget {
@@ -41,7 +41,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
               children: [
                 Text(
                   'إضافة تنزيل جديد',
-                  style: titleMedium(context).copyWith(
+                  style: context.titleMedium?.copyWith(
                     fontSize: 20.sp,
                   ),
                 ),
@@ -52,7 +52,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   hintText: 'أدخل رابط الملف للتحميل',
                   prefixIcon: Icon(
                     Icons.link,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -73,20 +73,25 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   hintText: 'اسم الملف المخصص',
                   prefixIcon: Icon(
                     Icons.file_present,
-                    color: context.primaryScheme,
+                    color: context.primaryColor,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Column(
                   children: [
                     CheckboxListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       title: Text(
                         'التخزين العام',
-                        style: titleMedium(context),
+                        style: context.titleMedium,
                       ),
                       subtitle: Text(
                         'حفظ في مجلد التنزيلات',
-                        style: titleSmall(context),
+                        style: context.titleSmall?.copyWith(
+                          color: context.gray1,
+                        ),
                       ),
                       value: _saveInPublicStorage,
                       onChanged: (value) {
@@ -97,14 +102,20 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                       controlAffinity: ListTileControlAffinity.leading,
                       dense: true,
                     ),
+                    const Gap(16),
                     CheckboxListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       title: Text(
                         'السماح بالبيانات الخلوية',
-                        style: titleMedium(context),
+                        style: context.titleMedium,
                       ),
                       subtitle: Text(
                         'التحميل عبر بيانات الجوال',
-                        style: titleSmall(context),
+                        style: context.titleSmall?.copyWith(
+                          color: context.gray1,
+                        ),
                       ),
                       value: _allowCellular,
                       onChanged: (value) {
@@ -124,7 +135,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                     onPressed: _startDownload,
                     icon: Icon(
                       Icons.download,
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                     text: 'بدء التحميل',
                   ),

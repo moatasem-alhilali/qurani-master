@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
@@ -110,8 +110,8 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     ),
                   );
             },
-            color: context.primaryScheme,
-            backgroundColor: context.background,
+            color: context.primaryColor,
+            backgroundColor: context.surfaceColor,
             child: Padding(
               padding: EdgeInsets.all(16.w),
               child: Column(
@@ -192,22 +192,8 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
     return Container(
       decoration: BoxDecoration(
         gradient: gradient,
-        color: context.secondary,
+        color: context.secondaryColor,
         borderRadius: BorderRadius.circular(16.r),
-        boxShadow: elevated
-            ? [
-                BoxShadow(
-                  color: context.primaryScheme.withOpacity(0.1),
-                  blurRadius: 20.r,
-                  offset: Offset(0, 8.h),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10.r,
-                  offset: Offset(0, 2.h),
-                ),
-              ]
-            : null,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
@@ -291,7 +277,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     child: Container(
                       padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
-                        color: context.primaryScheme.withOpacity(0.1),
+                        color: context.primaryColor,
                         shape: BoxShape.circle,
                       ),
                       child: SizedBox(
@@ -300,7 +286,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                         child: CircularProgressIndicator(
                           strokeWidth: 2.w,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            context.primaryScheme,
+                            context.primaryColor,
                           ),
                         ),
                       ),
@@ -323,12 +309,12 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: context.primaryScheme.withOpacity(0.1),
+                color: context.primaryColor.withAlpha(20),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.phone_android,
-                color: context.primaryScheme,
+                color: context.primaryColor,
                 size: 24.sp,
               ),
             ),
@@ -351,14 +337,14 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: context.primaryScheme.withOpacity(0.1),
+                      color: context.primaryColor.withAlpha(20),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
                       state.currentVersion ?? 'غير محدد',
                       style: titleMedium(context).copyWith(
                         fontSize: 14.sp,
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -384,7 +370,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
               children: [
                 Icon(
                   Icons.cloud_download,
-                  color: context.primaryScheme,
+                  color: context.primaryColor,
                   size: 24.sp,
                 ),
                 SizedBox(width: 16.w),
@@ -486,7 +472,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
               duration: const Duration(milliseconds: 300),
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.2),
+                color: statusColor.withAlpha(20),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -515,10 +501,10 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
+                      color: statusColor.withAlpha(20),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: statusColor.withOpacity(0.3),
+                        color: statusColor.withAlpha(30),
                       ),
                     ),
                     child: Text(
@@ -543,7 +529,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     child: Container(
                       padding: EdgeInsets.all(6.w),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.2),
+                        color: Colors.red.withAlpha(20),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -721,23 +707,23 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        context.primaryScheme.withOpacity(0.05),
-                        context.primaryScheme.withOpacity(0.02),
+                        context.primaryColor.withAlpha(5),
+                        context.primaryColor.withAlpha(2),
                       ],
                     )
                   : null,
-              color: onTap != null ? null : context.gray6.withOpacity(0.3),
+              color: onTap != null ? null : context.gray6.withAlpha(30),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: onTap != null
-                    ? context.primaryScheme.withOpacity(0.2)
-                    : context.gray1.withOpacity(0.2),
+                    ? context.primaryColor.withAlpha(20)
+                    : context.gray1.withAlpha(20),
                 width: 1.5,
               ),
               boxShadow: onTap != null
                   ? [
                       BoxShadow(
-                        color: context.primaryScheme.withOpacity(0.1),
+                        color: context.primaryColor.withOpacity(0.1),
                         blurRadius: 8.r,
                         offset: Offset(0, 2.h),
                       ),
@@ -751,14 +737,13 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                   padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
                     color: onTap != null
-                        ? context.primaryScheme.withOpacity(0.1)
+                        ? context.primaryColor.withOpacity(0.1)
                         : context.gray1.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
-                    color:
-                        onTap != null ? context.primaryScheme : context.gray1,
+                    color: onTap != null ? context.primaryColor : context.gray1,
                     size: 20.sp,
                   ),
                 ),
@@ -794,7 +779,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     Icons.arrow_forward_ios,
                     size: 16.sp,
                     color: onTap != null
-                        ? context.primaryScheme.withOpacity(0.7)
+                        ? context.primaryColor.withOpacity(0.7)
                         : context.gray1.withOpacity(0.5),
                   ),
                 ),

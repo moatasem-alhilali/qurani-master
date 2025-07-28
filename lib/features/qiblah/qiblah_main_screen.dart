@@ -6,9 +6,9 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class QiblahMainScreen extends StatefulWidget {
   const QiblahMainScreen({super.key});
@@ -335,7 +335,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16.sp,
-                color: context.onBackground,
+                color: context.onSurfaceColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -346,7 +346,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             icon: const Icon(Icons.refresh),
             label: const Text('إعادة المحاولة'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryScheme,
+              backgroundColor: context.primaryColor,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
               shape: RoundedRectangleBorder(
@@ -365,18 +365,22 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(context.primaryScheme),
+            valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
             strokeWidth: 3,
           ),
           SizedBox(height: 20.h),
           Text(
             'جاري تحديد اتجاه القبلة...',
-            style: context.titleMedium,
+            style: context.titleMedium?.copyWith(
+              color: context.primaryColor,
+            ),
           ),
           SizedBox(height: 10.h),
           Text(
             'تأكد من تفعيل GPS والسماح بأذونات الموقع',
-            style: context.titleSmall,
+            style: context.titleSmall?.copyWith(
+              color: context.primaryColor,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -417,7 +421,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       distance: _distanceToMecca,
       cityName: _cityName,
       showDistance: true,
-      primaryColor: context.primaryScheme,
+      primaryColor: context.primaryColor,
       kaabaColor: Colors.green,
       showAnimation: true,
     );
@@ -457,11 +461,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             children: [
               Text(
                 'الاتجاه الحالي',
-                style: context.titleSmall,
+                style: context.titleSmall?.copyWith(
+                  color: context.primaryColor,
+                ),
               ),
               Text(
                 '${_currentDirection.toInt()}°',
-                style: context.titleMedium.copyWith(
+                style: context.titleMedium?.copyWith(
                   color: isAligned ? Colors.green : Colors.orange,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
@@ -480,7 +486,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 SizedBox(height: 5.h),
                 Text(
                   directionInstruction,
-                  style: context.titleSmall.copyWith(
+                  style: context.titleSmall?.copyWith(
                     color: isAligned ? Colors.green : Colors.orange,
                     fontWeight: FontWeight.w600,
                   ),
@@ -494,11 +500,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             children: [
               Text(
                 'اتجاه القبلة',
-                style: context.titleSmall,
+                style: context.titleSmall?.copyWith(
+                  color: context.primaryColor,
+                ),
               ),
               Text(
                 '${_qiblaDirection2.toInt()}°',
-                style: context.titleMedium.copyWith(
+                style: context.titleMedium?.copyWith(
                   color: isAligned ? Colors.green : Colors.orange,
                   fontWeight: FontWeight.bold,
                   fontSize: 20.sp,
@@ -532,17 +540,17 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                 padding: EdgeInsets.all(15.w),
                 decoration: BoxDecoration(
-                  color: context.primaryScheme.withOpacity(0.1),
+                  color: context.primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(15.r),
                   border: Border.all(
-                    color: context.primaryScheme.withOpacity(0.3),
+                    color: context.primaryColor.withOpacity(0.3),
                   ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.location_on,
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                       size: 20.w,
                     ),
                     SizedBox(width: 10.w),
@@ -552,11 +560,15 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                         children: [
                           Text(
                             'موقعك الحالي',
-                            style: context.titleSmall,
+                            style: context.titleSmall?.copyWith(
+                              color: context.primaryColor,
+                            ),
                           ),
                           Text(
                             _cityName ?? 'يتم تحديد الموقع...',
-                            style: context.titleMedium,
+                            style: context.titleMedium?.copyWith(
+                              color: context.primaryColor,
+                            ),
                           ),
                         ],
                       ),
@@ -567,7 +579,9 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                         children: [
                           Text(
                             'المسافة',
-                            style: context.titleSmall,
+                            style: context.titleSmall?.copyWith(
+                              color: context.primaryColor,
+                            ),
                           ),
                           Text(
                             '${_distanceToMecca!.toInt()} كم',
@@ -599,15 +613,15 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                 icon: const Icon(Icons.refresh),
                 label: const Text('تحديث الاتجاه'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryScheme.withOpacity(0.1),
-                  foregroundColor: context.primaryScheme,
+                  backgroundColor: context.primaryColor.withOpacity(0.1),
+                  foregroundColor: context.primaryColor,
                   elevation: 0,
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.r),
                     side: BorderSide(
-                      color: context.primaryScheme.withOpacity(0.3),
+                      color: context.primaryColor.withOpacity(0.3),
                     ),
                   ),
                 ),
@@ -622,10 +636,10 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
               margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               padding: EdgeInsets.all(15.w),
               decoration: BoxDecoration(
-                color: context.primaryScheme.withOpacity(0.1),
+                color: context.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(15.r),
                 border: Border.all(
-                  color: context.primaryScheme.withOpacity(0.3),
+                  color: context.primaryColor.withOpacity(0.3),
                 ),
               ),
               child: Column(
@@ -635,7 +649,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
                     children: [
                       Icon(
                         Icons.info_outline,
-                        color: context.primaryScheme,
+                        color: context.primaryColor,
                         size: 20.w,
                       ),
                       SizedBox(width: 10.w),
@@ -667,7 +681,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: BaseHomeWidget(
+      child: AppScaffoldWidget(
         title: 'القبلة',
         body: _errorMessage != null
             ? _buildErrorWidget()

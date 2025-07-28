@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
 class CustomContainer extends StatelessWidget {
@@ -11,19 +10,19 @@ class CustomContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage(
-                'assets/$image',
-              ),
-            ),
-          ),
-          height: height ?? context.getHight(30),
-        ),
+        // Container(
+        //   decoration: BoxDecoration(
+        //     color: Colors.transparent,
+        //     borderRadius: BorderRadius.circular(12),
+        //     image: DecorationImage(
+        //       fit: BoxFit.cover,
+        //       image: AssetImage(
+        //         'assets/$image',
+        //       ),
+        //     ),
+        //   ),
+        //   height: height ?? context.getHight(30),
+        // ),
         Container(
           height: height ?? context.getHight(30),
           width: double.infinity,
@@ -34,10 +33,10 @@ class CustomContainer extends StatelessWidget {
               begin: FractionalOffset.topCenter,
               end: FractionalOffset.bottomCenter,
               colors: [
-                Colors.grey.withOpacity(0.0),
+                Colors.grey.withOpacity(0),
                 Colors.black,
               ],
-              stops: [0.0, 1.0],
+              stops: const [0.0, 1.0],
             ),
           ),
           child: child,

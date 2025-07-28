@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class AnimatedPrayerTimeWidget extends StatefulWidget {
   const AnimatedPrayerTimeWidget({
@@ -111,9 +111,9 @@ class _AnimatedPrayerTimeWidgetState extends State<AnimatedPrayerTimeWidget>
                 child: CustomPaint(
                   size: Size(size, size),
                   painter: IslamicPatternPainter(
-                    primaryColor: widget.primaryColor ?? context.primaryScheme,
+                    primaryColor: widget.primaryColor ?? context.primaryColor,
                     secondaryColor: widget.secondaryColor ??
-                        context.primaryScheme.withOpacity(0.3),
+                        context.primaryColor.withOpacity(0.3),
                   ),
                 ),
               );
@@ -126,9 +126,9 @@ class _AnimatedPrayerTimeWidgetState extends State<AnimatedPrayerTimeWidget>
             painter: PrayerTimeCirclePainter(
               prayerTimes: widget.prayerTimes,
               currentIndex: currentPrayerIndex,
-              primaryColor: widget.primaryColor ?? context.primaryScheme,
+              primaryColor: widget.primaryColor ?? context.primaryColor,
               activeColor: widget.activeColor ?? Colors.orange,
-              textColor: widget.textColor ?? context.onBackground,
+              textColor: widget.textColor ?? context.onSurfaceColor,
             ),
           ),
 
@@ -178,7 +178,7 @@ class _AnimatedPrayerTimeWidgetState extends State<AnimatedPrayerTimeWidget>
                     'الصلاة القادمة',
                     style: TextStyle(
                       fontSize: 10.sp,
-                      color: widget.textColor ?? context.onBackground,
+                      color: widget.textColor ?? context.onSurfaceColor,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
@@ -186,7 +186,7 @@ class _AnimatedPrayerTimeWidgetState extends State<AnimatedPrayerTimeWidget>
                     widget.prayerTimes[currentPrayerIndex].name,
                     style: TextStyle(
                       fontSize: 14.sp,
-                      color: widget.textColor ?? context.onBackground,
+                      color: widget.textColor ?? context.onSurfaceColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

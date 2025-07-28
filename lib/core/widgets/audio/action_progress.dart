@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class ActionProgress extends StatelessWidget {
   const ActionProgress({
@@ -33,7 +33,7 @@ class ActionProgress extends StatelessWidget {
             if (!(playing ?? false) || !currentPlaying) {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: FittedBox(
                   child: IconButton(
                     onPressed: () {
@@ -62,7 +62,7 @@ class ActionProgress extends StatelessWidget {
             } else {
               return CircleAvatar(
                 radius: 18,
-                backgroundColor: context.primaryScheme,
+                backgroundColor: context.primaryColor,
                 child: const Icon(Icons.play_arrow_rounded),
               );
             }

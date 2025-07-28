@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 import 'package:quran_app/features/download/presentation/view/widgets/add_download_widget.dart';
 import 'package:quran_app/features/download/presentation/view/widgets/download_item_widget.dart';
@@ -38,119 +40,143 @@ class _DownloadScreenState extends State<DownloadScreen>
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DownloadBloc()..add(LoadDownloadTasksEvent()),
-      child: BaseHomeWidget(
-        isScroll: false,
-        showBackground: false,
-        title: 'التنزيلات',
-        actions: [
-          BlocBuilder<DownloadBloc, DownloadState>(
-            builder: (context, state) {
-              return IconButton(
-                onPressed: () {
-                  context.showBottomSheetUIHeader(
-                    child: BlocProvider.value(
-                      value: context.read<DownloadBloc>(),
-                      child: const AddDownloadWidget(),
-                    ),
-                    // backgroundColor: context.scaffoldBackgroundColor,
-                  );
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: context.primaryScheme,
-                ),
-              );
+      child: BlocBuilder<DownloadBloc, DownloadState>(
+        buildWhen: (prev, curr) => prev.loadState != curr.loadState,
+        builder: (context, state) {
+          return AppScaffoldWidget(
+            title: 'التنزيلات',
+            onRefresh: () async {
+              context.read<DownloadBloc>().add(LoadDownloadTasksEvent());
             },
-          ),
-          BlocBuilder<DownloadBloc, DownloadState>(
-            builder: (ctx, state) {
-              return PopupMenuButton<String>(
-                onSelected: (value) => _handleMenuAction(value, ctx),
-                icon: Icon(
-                  Icons.more_vert,
-                  color: context.primaryScheme,
-                ),
-                color: context.scaffoldBackgroundColor,
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'refresh',
-                    child: Row(
-                      children: [
-                        Icon(Icons.refresh, color: context.primaryScheme),
-                        const SizedBox(width: 8),
-                        Text('تحديث', style: titleSmall(context)),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'cancel_all',
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.cancel,
-                          color: Colors.red,
-                        ),
-                        const SizedBox(width: 8),
-                        Text('إلغاء الكل', style: titleSmall(context)),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          labelColor: context.primaryScheme,
-          unselectedLabelColor: context.gray1,
-          indicatorColor: context.primaryScheme,
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
-          dividerColor: Colors.transparent,
-          tabs: const [
-            Tab(text: 'الكل', icon: Icon(Icons.list)),
-            Tab(text: 'نشط', icon: Icon(Icons.download)),
-            Tab(text: 'مكتمل', icon: Icon(Icons.check_circle)),
-            Tab(text: 'متوقف', icon: Icon(Icons.pause_circle)),
-            Tab(text: 'فشل', icon: Icon(Icons.error)),
-          ],
-        ),
-        body: BlocConsumer<DownloadBloc, DownloadState>(
-          listener: (context, state) {
-            if (state.loadState == RequestState.error &&
-                state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage!),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-          builder: (context, state) {
-            return TabBarView(
-              controller: _tabController,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _buildDownloadList(context, state, null),
-                _buildDownloadList(context, state, [
-                  DownloadTaskStatus.running,
-                  DownloadTaskStatus.enqueued,
-                ]),
-                _buildDownloadList(context, state, [
-                  DownloadTaskStatus.complete,
-                ]),
-                _buildDownloadList(context, state, [
-                  DownloadTaskStatus.paused,
-                ]),
-                _buildDownloadList(context, state, [
-                  DownloadTaskStatus.failed,
-                ]),
+                BlocBuilder<DownloadBloc, DownloadState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: () {
+                        context.showBottomSheetUIHeader(
+                          child: BlocProvider.value(
+                            value: context.read<DownloadBloc>(),
+                            child: const AddDownloadWidget(),
+                          ),
+                          // backgroundColor: context.scaffoldBackgroundColor,
+                        );
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: context.primaryColor,
+                      ),
+                    );
+                  },
+                ),
+                BlocBuilder<DownloadBloc, DownloadState>(
+                  builder: (ctx, state) {
+                    return PopupMenuButton<String>(
+                      onSelected: (value) => _handleMenuAction(value, ctx),
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: context.primaryColor,
+                      ),
+                      color: context.scaffoldBackgroundColor,
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'refresh',
+                          child: Row(
+                            children: [
+                              Icon(Icons.refresh, color: context.primaryColor),
+                              const SizedBox(width: 8),
+                              Text('تحديث', style: titleSmall(context)),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'cancel_all',
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              ),
+                              const SizedBox(width: 8),
+                              Text('إلغاء الكل', style: titleSmall(context)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
-            );
-          },
-        ),
+            ),
+            sliverChildPosition: SliverChildPosition.end,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    // horizontal: 8.sp,
+                    vertical: 8.sp,
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.center,
+                    labelColor: context.primaryColor,
+                    unselectedLabelColor: context.gray1,
+                    indicatorColor: context.primaryColor,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
+                    dividerColor: Colors.transparent,
+                    tabs: const [
+                      Tab(text: 'الكل', icon: Icon(Icons.list)),
+                      Tab(text: 'نشط', icon: Icon(Icons.download)),
+                      Tab(text: 'مكتمل', icon: Icon(Icons.check_circle)),
+                      Tab(text: 'متوقف', icon: Icon(Icons.pause_circle)),
+                      Tab(text: 'فشل', icon: Icon(Icons.error)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            body: BlocConsumer<DownloadBloc, DownloadState>(
+              listener: (context, state) {
+                if (state.loadState == RequestState.error &&
+                    state.errorMessage != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.errorMessage!),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return SizedBox(
+                  height: context.getHight(80),
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildDownloadList(context, state, null),
+                      _buildDownloadList(context, state, [
+                        DownloadTaskStatus.running,
+                        DownloadTaskStatus.enqueued,
+                      ]),
+                      _buildDownloadList(context, state, [
+                        DownloadTaskStatus.complete,
+                      ]),
+                      _buildDownloadList(context, state, [
+                        DownloadTaskStatus.paused,
+                      ]),
+                      _buildDownloadList(context, state, [
+                        DownloadTaskStatus.failed,
+                      ]),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -176,18 +202,15 @@ class _DownloadScreenState extends State<DownloadScreen>
       return _buildEmptyState(statusFilter);
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        context.read<DownloadBloc>().add(LoadDownloadTasksEvent());
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: filteredDownloads.length,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final task = filteredDownloads[index];
+        return DownloadItemWidget(task: task);
       },
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: filteredDownloads.length,
-        itemBuilder: (context, index) {
-          final task = filteredDownloads[index];
-          return DownloadItemWidget(task: task);
-        },
-      ),
     );
   }
 

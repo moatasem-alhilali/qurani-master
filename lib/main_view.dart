@@ -6,13 +6,16 @@ import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
+import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
+import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
@@ -22,8 +25,9 @@ import 'package:quran_app/features/prayer_time/data/database/database_coordinate
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran_bloc.dart';
-import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
+import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
 class MyApp extends StatelessWidget {
@@ -86,6 +90,10 @@ class MyApp extends StatelessWidget {
         ///read quran
         BlocProvider(
           lazy: false,
+          create: (context) => OldReadQuranBloc()..add(OldLoadQuranEvent()),
+        ),
+        BlocProvider(
+          lazy: false,
           create: (context) => ReadQuranBloc()..add(LoadQuranEvent()),
         ),
 
@@ -99,13 +107,19 @@ class MyApp extends StatelessWidget {
         ///search
         BlocProvider(
           create: (context) => SearchBloc(
-            repositoryImpl: sl<SearchRepositoryImpl>(),
+            repositoryImpl: sl<QuranSearchDataSource>(),
           ),
           // lazy: false,
         ),
+
+        ///home
+        BlocProvider(
+          create: (context) => sl<RandomAyahBloc>()..add(GetRandomAyahEvent()),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
+        builder: (context, themeState) {
           return BlocConsumer<ConnectivityBloc, ConnectivityState>(
             listener: (context, state) {
               // TODO: implement listener
@@ -134,11 +148,13 @@ class MyApp extends StatelessWidget {
                   supportedLocales: const [Locale('ar'), Locale('en')],
                   onGenerateRoute: RouterGenerator.getRoute,
                   initialRoute: RoutesManager.main,
-                  // darkTheme: getDarkMode(),
-                  darkTheme: context.themeApp,
-                  theme: getLightMode(),
+                  // // darkTheme: getDarkMode(),
+                  // darkTheme: context.themeApp,
+                  // theme: getLightMode(),
+                  darkTheme: darkTheme,
+                  theme: lightTheme,
+                  themeMode: themeState.currentThemeMode,
                   title: 'طمأنينة',
-                  themeMode: ThemeMode.dark,
                   themeAnimationCurve: Curves.decelerate,
                   themeAnimationDuration: const Duration(milliseconds: 300),
                   themeAnimationStyle: const AnimationStyle(
@@ -180,14 +196,23 @@ class _AppState extends State<_App> {
       // child: ,
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
-          return BaseHomeWidget(
+          return Scaffold(
+            backgroundColor: context.scaffoldBackgroundColor,
             // titleWidget: const SizedBox(),
-            back: false,
-            title: 'طمأنينة',
-            showBackground: currentPage == 0 ? false : true,
-            isScroll: currentPage == 2 ? false : true,
-            bottomNavigationBar: const CustomBottomNavigationBarWidget(),
-            body: screens[currentPage],
+            // back: false,
+            // title: 'طمأنينة',
+            // showBackground: currentPage == 0 ? false : true,
+            // isScroll: currentPage == 2 ? false : true,
+            bottomNavigationBar: const IntrinsicHeight(
+              child: ColoredBox(
+                color: Colors.transparent,
+                child: SafeArea(
+                  top: false,
+                  child: CustomBottomNavigationBarWidget(),
+                ),
+              ),
+            ),
+            body: SafeArea(child: screens[currentPage]),
           );
         },
       ),

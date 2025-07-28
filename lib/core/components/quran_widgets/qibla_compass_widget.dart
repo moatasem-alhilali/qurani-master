@@ -3,7 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 // Main Qibla compass widget that works with stream (follows old working code pattern)
 class QiblaCompassWidgetWithStream extends StatefulWidget {
@@ -112,7 +113,7 @@ class _QiblaCompassWidgetWithStreamState
           return Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
-                widget.primaryColor ?? context.primaryScheme,
+                widget.primaryColor ?? context.primaryColor,
               ),
             ),
           );
@@ -162,9 +163,9 @@ class _QiblaCompassWidgetWithStreamState
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      (widget.primaryColor ?? context.primaryScheme)
+                      (widget.primaryColor ?? context.primaryColor)
                           .withOpacity(0.1),
-                      (widget.primaryColor ?? context.primaryScheme)
+                      (widget.primaryColor ?? context.primaryColor)
                           .withOpacity(0.05),
                       Colors.transparent,
                     ],
@@ -183,9 +184,9 @@ class _QiblaCompassWidgetWithStreamState
               CustomPaint(
                 size: Size(size, size),
                 painter: CompassRingPainter(
-                  primaryColor: widget.primaryColor ?? context.primaryScheme,
+                  primaryColor: widget.primaryColor ?? context.primaryColor,
                   secondaryColor: widget.primaryColor?.withOpacity(0.3) ??
-                      context.primaryScheme.withOpacity(0.3),
+                      context.primaryColor.withOpacity(0.3),
                 ),
               ),
 
@@ -199,8 +200,7 @@ class _QiblaCompassWidgetWithStreamState
                     painter: QiblaCompassPainter(
                       qiblaColor: widget.kaabaColor ?? Colors.green,
                       isAligned: _isAligned,
-                      primaryColor:
-                          widget.primaryColor ?? context.primaryScheme,
+                      primaryColor: widget.primaryColor ?? context.primaryColor,
                     ),
                   ),
                 ),
@@ -283,7 +283,9 @@ class _QiblaCompassWidgetWithStreamState
                           padding: EdgeInsets.only(top: 4.h),
                           child: Text(
                             widget.cityName!,
-                            style: context.titleMedium,
+                            style: context.titleMedium?.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                     ],

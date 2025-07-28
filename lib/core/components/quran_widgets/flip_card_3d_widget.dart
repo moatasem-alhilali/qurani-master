@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class FlipCard3DWidget extends StatefulWidget {
   const FlipCard3DWidget({
@@ -222,8 +222,8 @@ class QuranVerseCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            primaryColor ?? context.primaryScheme,
-            (primaryColor ?? context.primaryScheme).withOpacity(0.8),
+            primaryColor ?? context.primaryColor,
+            (primaryColor ?? context.primaryColor).withOpacity(0.8),
           ],
         ),
       ),
@@ -323,7 +323,7 @@ class QuranVerseCard extends StatelessWidget {
           Positioned.fill(
             child: CustomPaint(
               painter: IslamicPatternBackgroundPainter(
-                color: (primaryColor ?? context.primaryScheme).withOpacity(0.1),
+                color: (primaryColor ?? context.primaryColor).withOpacity(0.1),
               ),
             ),
           ),
@@ -337,7 +337,7 @@ class QuranVerseCard extends StatelessWidget {
                   padding:
                       EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                   decoration: BoxDecoration(
-                    color: primaryColor ?? context.primaryScheme,
+                    color: primaryColor ?? context.primaryColor,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Text(

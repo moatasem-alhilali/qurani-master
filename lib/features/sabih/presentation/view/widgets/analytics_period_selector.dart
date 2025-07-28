@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 
@@ -68,9 +68,9 @@ class _AnalyticsPeriodSelectorState extends State<AnalyticsPeriodSelector> {
           }
         },
         backgroundColor: context.onPrimaryContainer,
-        selectedColor: context.primaryScheme,
+        selectedColor: context.primaryColor,
         labelStyle: TextStyle(
-          color: isSelected ? context.secondary : null,
+          color: isSelected ? context.secondaryColor : null,
           fontWeight: isSelected ? FontWeight.bold : null,
         ),
       ),

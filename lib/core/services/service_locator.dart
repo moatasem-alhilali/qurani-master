@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
+import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
@@ -11,22 +12,33 @@ import 'package:quran_app/features/bookmark/data/remote/book_mark_repository_imp
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
+import 'package:quran_app/features/home/data/di/injection_container.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/quran_audio/data/di/injection_container.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/data/data_source/data_client.dart';
+import 'package:quran_app/features/quran_plan/data/di/injection_container.dart';
+import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
-import 'package:quran_app/features/search/data/remote/aya_repository.dart';
-import 'package:quran_app/features/search/data/remote/search_repository_imp.dart';
+import 'package:quran_app/features/search/data/di/injection_container.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
+  // ─────────────────────── DATABASE ───────────────────────
+  // await _initDatabaseClient();
+  await registerQuranDependencies(sl);
+  await registerSearchDependencies(sl);
+  await registerSurahVerseReaderDependencies(sl);
+  await registerHomeDependencies(sl);
+
   ///
+  /// getIt
+
   sl
     ..registerSingleton<DatabaseNotificationSettingService>(
       DatabaseNotificationSettingService(),
@@ -66,8 +78,6 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<BookRepositoryImpl>(BookRepositoryImpl())
     ..registerSingleton<BaseAudioRepositoryImpl>(BaseAudioRepositoryImpl())
     ..registerSingleton<CategoryRepositoryImpl>(CategoryRepositoryImpl())
-    ..registerSingleton<SearchRepositoryImpl>(SearchRepositoryImpl())
-    ..registerSingleton<AyaRepository>(AyaRepository())
     ..registerSingleton<PrayerTimeService>(AdhanPrayerTimeService())
     ..registerFactory<ConnectivityBloc>(ConnectivityBloc.new)
 
@@ -98,9 +108,10 @@ Future<void> setupServiceLocator() async {
       () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
     );
 
-  // ─────────────────────── DATABASE ───────────────────────
-  await _initDatabaseClient();
+  // ─────────────────────── QURAN PLAN ───────────────────────
+  await registerQuranPlanDependencies(sl);
 }
 
-Future<void> _initDatabaseClient() async => sl
-    .registerSingleton<DataBaseClient>(DataBaseClient.instance..initDatabase());
+// Future<void> _initDatabaseClient() async =>
+//     sl.registerSingleton<OldDataBaseClient>(
+//         OldDataBaseClient.instance..initDatabase());

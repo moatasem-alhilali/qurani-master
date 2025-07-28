@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -147,7 +147,7 @@ class SnackBarMessage {
               },
               child: CircleAvatar(
                 radius: 15,
-                backgroundColor: context.secondary,
+                backgroundColor: context.secondaryColor,
                 child: FittedBox(
                   child: Padding(
                     padding: const EdgeInsets.all(8),
@@ -180,7 +180,7 @@ Color _getStatusBackGround(
       return backgroundColor ?? context.scaffoldBackgroundColor;
 
     case RequestState.loading:
-      return backgroundColor ?? context.primaryScheme;
+      return backgroundColor ?? context.primaryColor;
     case RequestState.success:
       return backgroundColor ?? Colors.green;
 

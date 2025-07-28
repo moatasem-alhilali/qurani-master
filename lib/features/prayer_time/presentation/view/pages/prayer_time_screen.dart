@@ -1,10 +1,10 @@
 import 'package:adhan/src/prayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/timeline_list_item.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
@@ -24,10 +24,11 @@ class PrayerTimeScreen extends StatefulWidget {
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       // titleWidget: const NextTimePrayerRemainWidget(),
-      titleWidget: const SizedBox(),
-      showBackground: false,
+      // titleWidget: const SizedBox(),
+      // showBackground: false,
+      title: 'أوقات الصلاة',
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -119,7 +120,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         isLast: index == list.length - 1,
         iconColor: _getPrayerColor(data),
         iconBackgroundColor: Colors.transparent,
-        backgroundColor: context.secondary,
+        backgroundColor: context.surfaceColor,
         // iconBackgroundColor: _getPrayerColor(data),
         onTap: () {
           // Handle prayer item tap if needed

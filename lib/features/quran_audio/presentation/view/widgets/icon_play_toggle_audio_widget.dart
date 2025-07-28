@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
 
 //
 
@@ -9,12 +9,14 @@ class IconPlayToggleAudioWidget extends StatefulWidget {
     required this.audioPlayer,
     this.radius = 22,
     this.onPressed,
+    this.backgroundColor,
     super.key,
   });
 
   final AudioPlayer audioPlayer;
   final double radius;
   final VoidCallback? onPressed;
+  final Color? backgroundColor;
 
   @override
   State<IconPlayToggleAudioWidget> createState() =>
@@ -73,11 +75,7 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
           _animationController.reverse();
         }
 
-        return CircleAvatar(
-          radius: widget.radius,
-          backgroundColor: playing ? Colors.redAccent : context.primaryScheme,
-          child: _buildIconButton(playing, processingState),
-        );
+        return _buildIconButton(playing, processingState);
       },
     );
   }
@@ -89,23 +87,20 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
     if (processingState == ProcessingState.completed) {
       return const Icon(
         Icons.play_arrow_rounded,
-        color: Colors.white,
-        size: 28,
+        // size: 28,
       );
     }
 
-    return FittedBox(
-      child: IconButton(
-        onPressed: widget.onPressed ??
-            () {
-              _handlePlayPause(playing);
-            },
-        icon: AnimatedIcon(
-          icon: AnimatedIcons.play_pause,
-          progress: _animationController,
-          color: Colors.white,
-          size: 28,
-        ),
+    return IconButtonWidget(
+      tooltip: 'تشغيل/إيقاف',
+      onPressed: widget.onPressed ??
+          () {
+            _handlePlayPause(playing);
+          },
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.play_pause,
+        progress: _animationController,
+        // size: 28,
       ),
     );
   }

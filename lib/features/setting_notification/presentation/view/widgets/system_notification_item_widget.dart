@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 
@@ -55,7 +55,7 @@ class _SystemNotificationItemWidgetState
             icon: Icon(
               CupertinoIcons.xmark,
               size: 20.sp,
-              color: context.primaryScheme,
+              color: context.primaryColor,
             ),
           ),
         ],

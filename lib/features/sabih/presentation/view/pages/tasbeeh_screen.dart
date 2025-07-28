@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/bottom_sheet/extension_sheet.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_context_extension.dart';
+import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -57,7 +58,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'المسبحة (الذكر)',
       body: Column(
         children: [
@@ -79,14 +80,14 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                   children: [
                     Text(
                       'ملخص الذكر',
-                      style: context.bodyMedium.copyWith(
-                        color: context.primaryScheme,
+                      style: context.bodyMedium?.copyWith(
+                        color: context.primaryColor,
                       ),
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
-                      color: context.primaryScheme,
+                      color: context.primaryColor,
                     ),
                   ],
                 ),
@@ -169,7 +170,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             decoration: BoxDecoration(
                               color: i == _currentPage
-                                  ? context.primaryScheme
+                                  ? context.primaryColor
                                   : Colors.grey.shade300,
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -226,7 +227,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                           },
                           onEdit: subih.isCustom
                               ? () {
-                                  _showEditDhikrDialog(subih);
+                                  _showEditDhikrDialog(subih, context);
                                 }
                               : null,
                           onDelete: subih.isCustom
@@ -268,8 +269,8 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
     );
   }
 
-  void _showEditDhikrDialog(SubihModel subih) {
-    context.showSmoothSheetStyle(
+  void _showEditDhikrDialog(SubihModel subih, BuildContext context) {
+    context.showBottomSheetUIHeader(
       child: BlocProvider.value(
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),

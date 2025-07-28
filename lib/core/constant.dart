@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_screen.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
-import 'package:quran_app/features/read_quran/data/model/surah_model.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
@@ -12,7 +11,7 @@ const String thikr =
     'لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير';
 //url audio
 List<String> urlAudio = [];
-List<SurahModel> surahDownload = [];
+// List<SurahModel> surahDownload = [];
 // List<SurahModel> surahData = [];
 List<SubihModel> tusbihData = [];
 //-----------Cash Helper-----------
