@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loading_widget.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/data/model/bookmark_ayah.dart';
@@ -85,23 +84,14 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
         controller: _searchController,
         focusNode: _searchFocusNode,
         textAlign: TextAlign.right,
-        style: TextStyle(
-          color: context.primaryColor,
-          fontSize: 14.sp,
-        ),
         decoration: InputDecoration(
           hintText: 'البحث في الآيات المحفوظة...',
-          hintStyle: TextStyle(
-            color: context.primaryColor.withValues(alpha: 0.6),
-            fontSize: 14.sp,
-          ),
           prefixIcon: Icon(
             Icons.search,
             color:
                 context.quranTheme.colorScheme.primary.withValues(alpha: 0.7),
             size: 20.sp,
           ),
-          filled: false,
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
                   icon: Icon(
@@ -116,7 +106,6 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                   },
                 )
               : null,
-          border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 12.w,
             vertical: 12.h,
@@ -238,8 +227,8 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                                                     width: 40,
                                                     child: SvgPicture.asset(
                                                       'assets/svg/sora_num.svg',
-                                                      color: context.quranTheme
-                                                          .colorScheme.primary,
+                                                      color:
+                                                          context.primaryColor,
                                                     ),
                                                   ),
                                                   Transform.translate(
@@ -249,7 +238,8 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                                                         (originalIndex + 1)
                                                             .toString(),
                                                       ),
-                                                      style: TextStyle(
+                                                      style: context.titleMedium
+                                                          ?.copyWith(
                                                         color: context
                                                             .primaryColor
                                                             .withOpacity(.7),
@@ -275,7 +265,8 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                                               children: [
                                                 Text(
                                                   ayah.text,
-                                                  style: TextStyle(
+                                                  style: context.titleMedium
+                                                      ?.copyWith(
                                                     color: context.primaryColor
                                                         .withOpacity(.7),
                                                     fontFamily: 'uthmanic2',
@@ -293,7 +284,8 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                                                   ),
                                                   child: Text(
                                                     '${bookmark.lastRead} :  ${'الايه'}  ${convertNumbers(bookmark.ayahNumber.toString())}  -  ${'الصفحه'} ${bookmark.pageNumber! + 1}',
-                                                    style: TextStyle(
+                                                    style: context.titleMedium
+                                                        ?.copyWith(
                                                       fontFamily: 'naskh',
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -320,8 +312,7 @@ class _BookmarkAyahTabState extends State<BookmarkAyahTab> {
                               },
                             ),
                             hDivider(
-                              color: context.quranTheme.colorScheme.primary
-                                  .withOpacity(0.2),
+                              color: context.primaryColor.withOpacity(0.2),
                             ),
                           ],
                         );

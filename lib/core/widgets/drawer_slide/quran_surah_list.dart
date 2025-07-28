@@ -58,10 +58,6 @@ class _QuranSurahListState extends State<QuranSurahList> {
                   decoration: InputDecoration(
                     hintText: 'البحث عن سورة...',
 
-                    hintStyle: TextStyle(
-                      color: Theme.of(context).hintColor,
-                      fontSize: 14.sp,
-                    ),
                     prefixIcon: Icon(
                       Icons.search,
                       color: Theme.of(context).hintColor,
@@ -82,38 +78,38 @@ class _QuranSurahListState extends State<QuranSurahList> {
                             },
                           )
                         : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: context.quranTheme.colorScheme.primary
-                            .withOpacity(0.3),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: context.quranTheme.colorScheme.primary
-                            .withOpacity(0.3),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: context.quranTheme.colorScheme.primary,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
-                    ),
-                    filled: false,
-                    // fillColor: context.quranTheme.colorScheme.surface,
+                    // border: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   borderSide: BorderSide(
+                    //     color: context.quranTheme.colorScheme.primary
+                    //         .withOpacity(0.3),
+                    //   ),
+                    // ),
+                    // enabledBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   borderSide: BorderSide(
+                    //     color: context.quranTheme.colorScheme.primary
+                    //         .withOpacity(0.3),
+                    //   ),
+                    // ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   borderSide: BorderSide(
+                    //     color: context.quranTheme.colorScheme.primary,
+                    //   ),
+                    // ),
+                    // contentPadding: const EdgeInsets.symmetric(
+                    //   horizontal: 12,
+                    //   vertical: 12,
+                    // ),
+                    // filled: false,
+                    // // fillColor: context.quranTheme.colorScheme.surface,
                   ),
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: context.primaryColor,
-                  ),
-                  textAlign: TextAlign.right,
+                  // style: TextStyle(
+                  //   fontSize: 14.sp,
+                  //   color: context.primaryColor,
+                  // ),
+                  // textAlign: TextAlign.right,
                 ),
               ),
               SizedBox(
@@ -138,8 +134,8 @@ class _QuranSurahListState extends State<QuranSurahList> {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
                               '${'الجزء'} ${surah.ayahCount}',
-                              style: TextStyle(
-                                color: Theme.of(context).hintColor,
+                              style: context.titleMedium?.copyWith(
+                                // color: context.quranTheme.colorScheme.primary,
                                 fontFamily: 'kufi',
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
@@ -179,8 +175,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                   width: 40,
                                                   child: SvgPicture.asset(
                                                     'assets/svg/sora_num.svg',
-                                                    color: context.quranTheme
-                                                        .colorScheme.primary,
+                                                    color: context.primaryColor,
                                                   ),
                                                 ),
                                                 Transform.translate(
@@ -190,9 +185,10 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                       surah.surahNumber
                                                           .toString(),
                                                     ),
-                                                    style: TextStyle(
-                                                      color: context
-                                                          .quranTheme.hintColor,
+                                                    style: context.titleMedium
+                                                        ?.copyWith(
+                                                      color:
+                                                          context.primaryColor,
                                                       fontFamily: 'kufi',
                                                       fontSize: 14.sp,
                                                       fontWeight:
@@ -216,8 +212,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                               SvgPicture.asset(
                                                 'assets/svg/surah_name/00${originalIndex + 1}.svg',
                                                 width: 90,
-                                                color: context
-                                                    .quranTheme.hintColor,
+                                                color: context.primaryColor,
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
@@ -225,7 +220,8 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                 ),
                                                 child: Text(
                                                   surah.nameEn!,
-                                                  style: TextStyle(
+                                                  style: context.titleMedium
+                                                      ?.copyWith(
                                                     // fontFamily: 'naskh',
                                                     fontWeight: FontWeight.w600,
                                                     fontSize: 12.sp,
@@ -251,7 +247,8 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                   children: [
                                                     Text(
                                                       'عدد الايات',
-                                                      style: TextStyle(
+                                                      style: context.titleMedium
+                                                          ?.copyWith(
                                                         // fontFamily: 'uthman',
                                                         fontSize: 13.sp,
                                                         color: context
@@ -263,7 +260,8 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                                         surah.ayahCount
                                                             .toString(),
                                                       ),
-                                                      style: TextStyle(
+                                                      style: context.titleMedium
+                                                          ?.copyWith(
                                                         // fontFamily: 'kufi',
                                                         fontSize: 13.sp,
                                                         fontWeight:
@@ -301,8 +299,7 @@ class _QuranSurahListState extends State<QuranSurahList> {
                                 },
                               ),
                               hDivider(
-                                color: context.quranTheme.colorScheme.primary
-                                    .withOpacity(0.2),
+                                color: context.primaryColor.withOpacity(0.2),
                               ),
                             ],
                           ),

@@ -4,16 +4,15 @@ import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 
 class PrayerTimeAnimationWidget extends StatelessWidget {
+  const PrayerTimeAnimationWidget({
+    required this.prayerType,
+    super.key,
+    this.size = 50.0,
+    this.isActive = false,
+  });
   final Prayer prayerType;
   final double size;
   final bool isActive;
-
-  const PrayerTimeAnimationWidget({
-    Key? key,
-    required this.prayerType,
-    this.size = 50.0,
-    this.isActive = false,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +44,9 @@ class PrayerTimeAnimationWidget extends StatelessWidget {
 
 // Fajr (Dawn) Animation
 class FajrAnimation extends StatefulWidget {
+  const FajrAnimation({required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const FajrAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<FajrAnimation> createState() => _FajrAnimationState();
@@ -68,7 +65,7 @@ class _FajrAnimationState extends State<FajrAnimation>
       vsync: this,
     )..repeat(reverse: true);
 
-    _glowAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+    _glowAnimation = Tween<double>(begin: 0.3, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -124,11 +121,10 @@ class _FajrAnimationState extends State<FajrAnimation>
 
 // Sunrise Animation
 class SunriseAnimation extends StatefulWidget {
+  const SunriseAnimation(
+      {required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const SunriseAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<SunriseAnimation> createState() => _SunriseAnimationState();
@@ -167,7 +163,7 @@ class _SunriseAnimationState extends State<SunriseAnimation>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return Container(
+        return SizedBox(
           width: widget.size,
           height: widget.size,
           child: Stack(
@@ -225,11 +221,9 @@ class _SunriseAnimationState extends State<SunriseAnimation>
 
 // Dhuhr (Noon) Animation
 class DhuhrAnimation extends StatefulWidget {
+  const DhuhrAnimation({required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const DhuhrAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<DhuhrAnimation> createState() => _DhuhrAnimationState();
@@ -309,11 +303,9 @@ class _DhuhrAnimationState extends State<DhuhrAnimation>
 
 // Asr (Afternoon) Animation
 class AsrAnimation extends StatefulWidget {
+  const AsrAnimation({required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const AsrAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<AsrAnimation> createState() => _AsrAnimationState();
@@ -333,7 +325,7 @@ class _AsrAnimationState extends State<AsrAnimation>
       vsync: this,
     )..repeat(reverse: true);
 
-    _fadeAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0.6, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
@@ -402,11 +394,10 @@ class _AsrAnimationState extends State<AsrAnimation>
 
 // Maghrib (Sunset) Animation
 class MaghribAnimation extends StatefulWidget {
+  const MaghribAnimation(
+      {required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const MaghribAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<MaghribAnimation> createState() => _MaghribAnimationState();
@@ -430,7 +421,7 @@ class _MaghribAnimationState extends State<MaghribAnimation>
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    _colorAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _colorAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -455,12 +446,21 @@ class _MaghribAnimationState extends State<MaghribAnimation>
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.lerp(Colors.orange.shade300, Colors.red.shade400,
-                    _colorAnimation.value)!,
-                Color.lerp(Colors.red.shade300, Colors.purple.shade300,
-                    _colorAnimation.value)!,
-                Color.lerp(Colors.purple.shade200, Colors.indigo.shade200,
-                    _colorAnimation.value)!,
+                Color.lerp(
+                  Colors.orange.shade300,
+                  Colors.red.shade400,
+                  _colorAnimation.value,
+                )!,
+                Color.lerp(
+                  Colors.red.shade300,
+                  Colors.purple.shade300,
+                  _colorAnimation.value,
+                )!,
+                Color.lerp(
+                  Colors.purple.shade200,
+                  Colors.indigo.shade200,
+                  _colorAnimation.value,
+                )!,
               ],
             ),
           ),
@@ -473,8 +473,11 @@ class _MaghribAnimationState extends State<MaghribAnimation>
                   width: widget.size * 0.5,
                   height: widget.size * 0.5,
                   decoration: BoxDecoration(
-                    color: Color.lerp(Colors.orange.shade400,
-                        Colors.red.shade500, _colorAnimation.value),
+                    color: Color.lerp(
+                      Colors.orange.shade400,
+                      Colors.red.shade500,
+                      _colorAnimation.value,
+                    ),
                     borderRadius: BorderRadius.circular(widget.size * 0.25),
                     boxShadow: [
                       BoxShadow(
@@ -496,11 +499,9 @@ class _MaghribAnimationState extends State<MaghribAnimation>
 
 // Isha (Night) Animation
 class IshaAnimation extends StatefulWidget {
+  const IshaAnimation({required this.size, required this.isActive, super.key});
   final double size;
   final bool isActive;
-
-  const IshaAnimation({Key? key, required this.size, required this.isActive})
-      : super(key: key);
 
   @override
   State<IshaAnimation> createState() => _IshaAnimationState();
@@ -519,7 +520,7 @@ class _IshaAnimationState extends State<IshaAnimation>
       vsync: this,
     )..repeat(reverse: true);
 
-    _twinkleAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+    _twinkleAnimation = Tween<double>(begin: 0.3, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -640,7 +641,7 @@ class SunRaysPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       final angle = (i * 45) * (3.14159 / 180);
       final start = Offset(
         center.dx + (radius * 0.6) * cos(angle),

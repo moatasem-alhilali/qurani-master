@@ -35,8 +35,8 @@ class QuranJuz extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
                     '${'الجزء'} ${convertNumbers((index + 1).toString())}',
-                    style: TextStyle(
-                      color: Theme.of(context).hintColor,
+                    style: context.titleMedium?.copyWith(
+                      color: context.primaryColor,
                       fontFamily: 'kufi',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class QuranJuz extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       color: (index % 2 == 0
-                          ? context.quranTheme.colorScheme.primary
+                          ? context.primaryColor
                               .withOpacity(.15)
                           : Colors.transparent),
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -80,8 +80,7 @@ class QuranJuz extends StatelessWidget {
                                         width: 40,
                                         child: SvgPicture.asset(
                                           'assets/svg/sora_num.svg',
-                                          color: context
-                                              .quranTheme.colorScheme.primary,
+                                          color: context.primaryColor,
                                         ),
                                       ),
                                       Transform.translate(
@@ -90,8 +89,8 @@ class QuranJuz extends StatelessWidget {
                                           convertNumbers(
                                             (index + 1).toString(),
                                           ),
-                                          style: TextStyle(
-                                            color: context.quranTheme.hintColor,
+                                          style: context.titleMedium?.copyWith(
+                                            color: context.primaryColor,
                                             fontFamily: 'kufi',
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -111,7 +110,7 @@ class QuranJuz extends StatelessWidget {
                                   children: [
                                     Text(
                                       juz.text,
-                                      style: TextStyle(
+                                      style: context.titleMedium?.copyWith(
                                         color: context.primaryColor,
                                         // fontFamily: 'uthmanic2',
                                         fontSize: 14.sp,
@@ -125,7 +124,7 @@ class QuranJuz extends StatelessWidget {
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Text(
                                         '${surah.nameAr} ${convertNumbers(surah.surahNumber.toString())} - ${'الصفحه'} ${convertNumbers(juz.page.toString())}',
-                                        style: TextStyle(
+                                        style: context.titleMedium?.copyWith(
                                           // fontFamily: 'naskh',
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12.sp,
@@ -152,8 +151,7 @@ class QuranJuz extends StatelessWidget {
                   },
                 ),
                 hDivider(
-                  color:
-                      context.quranTheme.colorScheme.primary.withOpacity(0.2),
+                  color: context.primaryColor.withOpacity(0.2),
                 ),
               ],
             );

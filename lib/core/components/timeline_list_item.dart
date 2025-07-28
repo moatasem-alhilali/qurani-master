@@ -194,14 +194,14 @@ class TimelineListItem extends StatelessWidget {
                     color: dotColor ?? _getTimelineDotColor(context),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: context.secondaryColor,
+                      color: context.primaryColor,
                       width: 2.w,
                     ),
                   ),
                   child: status == TimelineItemStatus.completed
                       ? Icon(
                           Icons.check,
-                          color: Colors.white,
+                          color: context.onPrimaryColor,
                           size: 8.sp,
                         )
                       : null,

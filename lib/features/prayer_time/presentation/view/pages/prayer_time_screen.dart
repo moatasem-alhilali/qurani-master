@@ -120,7 +120,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         isLast: index == list.length - 1,
         iconColor: _getPrayerColor(data),
         iconBackgroundColor: Colors.transparent,
-        backgroundColor: context.secondaryColor,
+        backgroundColor: context.surfaceColor,
         // iconBackgroundColor: _getPrayerColor(data),
         onTap: () {
           // Handle prayer item tap if needed
