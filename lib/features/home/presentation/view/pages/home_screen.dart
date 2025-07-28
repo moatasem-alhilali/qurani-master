@@ -5,6 +5,7 @@ import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/quran_lottie_widget.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
             ),
         child: Column(
           children: [
+            const QuranLottieWidget(),
             // Amazing Prayer Countdown Widget
             BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
               builder: (context, state) {

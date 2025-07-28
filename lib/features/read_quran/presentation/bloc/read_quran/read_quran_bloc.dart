@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
-import 'package:quran_app/core/constant.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/read_quran/data/QuranReadHelperSqlite.dart';
+import 'package:quran_app/features/read_quran/data/model/last_read_quran_info_model.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 import 'package:quran_app/main.dart';
 
@@ -23,6 +25,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     on<ToggleBoxEvent>(_toggleBox);
     on<ToggleHighBoxEvent>(_toggleHighBox);
     on<GetTafsirAyahEvent>(_getTafsirAyah);
+    on<GetLastPageReadEvent>(_getLastPageRead);
     // on<GetCurrentPageAyahsSeparatedForBasmalahEvent>(
     //   _getCurrentPageAyahsSeparatedForBasmalah,
     // );
@@ -79,9 +82,18 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     SetLastPageReadEvent event,
     Emitter<ReadQuranState> emit,
   ) async {
-    lastPageRead = event.page;
-    await CacheConfig.saveLastPageRead();
-    // emit(state.copyWith(loadQuranState: RequestState.success));
+    final surahName = state.getSurahNameByPageIndex(event.page);
+    final lastReadQuranInfo = LastReadQuranInfoModel(
+      page: event.page.toString(),
+      date: DateTime.now().toIso8601String(),
+      surah: surahName,
+    );
+    final dataInfo = jsonEncode(lastReadQuranInfo.toJson());
+    await CacheService().setString(
+      CacheConfig.lastPageReadKey,
+      dataInfo,
+    );
+    emit(state.copyWith(lastReadQuranInfo: lastReadQuranInfo));
   }
 
   void _jumpToPage(JumpToPageEvent event, Emitter<ReadQuranState> emit) {
@@ -89,8 +101,8 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
       pageController.jumpToPage(event.page!);
       add(ToggleBoxEvent());
     } else {
-      if (lastPageRead != 0) {
-        pageController.jumpToPage(lastPageRead);
+      if (state.lastReadQuranInfo != null) {
+        pageController.jumpToPage(int.parse(state.lastReadQuranInfo!.page));
       }
     }
   }
@@ -119,19 +131,23 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     emit(state.copyWith(tafsirAyah: tafsirAyah));
   }
 
-  // Future<void> _getCurrentPageAyahsSeparatedForBasmalah(
-  //   GetCurrentPageAyahsSeparatedForBasmalahEvent event,
-  //   Emitter<ReadQuranState> emit,
-  // ) async {
-  //   final result =
-  //       await quranReadHelperSqlite.getCurrentPageAyahsSeparatedForBasmalah(
-  //     event.pageIndex,
-  //   );
-  //   print(result);
-  //   emit(
-  //     state.copyWith(
-  //       currentPageAyahsSeparatedForBasmalah: result,
-  //     ),
-  //   );
-  // }
+  Future<void> _getLastPageRead(
+    GetLastPageReadEvent event,
+    Emitter<ReadQuranState> emit,
+  ) async {
+    emit(state.copyWith(lastReadQuranInfoState: RequestState.loading));
+    try {
+      final lastPageRead =
+          CacheService().getString(CacheConfig.lastPageReadKey);
+      if (lastPageRead != null) {
+        final lastReadQuranInfo = LastReadQuranInfoModel.fromJson(
+          jsonDecode(lastPageRead) as Map<String, dynamic>,
+        );
+        emit(state.copyWith(lastReadQuranInfo: lastReadQuranInfo));
+      }
+    } catch (e) {
+      logger.e('error in getLastPageRead: $e');
+      emit(state.copyWith(lastReadQuranInfoState: RequestState.error));
+    }
+  }
 }

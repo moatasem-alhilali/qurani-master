@@ -74,6 +74,7 @@ dependencies:
   cloud_firestore: ^5.6.12
   device_info_plus: ^11.5.0
   firebase_messaging: ^15.2.10
+  lottie: ^3.3.1
   # ---------------------------------------
 
 dev_dependencies:
@@ -131,6 +132,7 @@ flutter:
     - assets/lang/
     - assets/logo/
     - assets/svg/
+    - assets/lottie/
     - assets/svg/surah_name/
     # - assets/images/
     - assets/svg/hijri/

@@ -40,7 +40,7 @@ class PrayersHomeWidget extends StatelessWidget {
                   switch (state.prayerState) {
                     case RequestState.initial:
                     case RequestState.loading:
-                      return ShimmerWidget(
+                      return ShimmerSkeletonizerWidget(
                         child: _buildList(PrayerInfoModel.dummy(), null),
                       );
                     case RequestState.error:

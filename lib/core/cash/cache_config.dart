@@ -5,6 +5,7 @@ import 'package:quran_app/core/constant.dart';
 class CacheConfig {
   // constants
   static const String subihKey = 'SUBIH';
+  static const String lastPageReadKey = 'LAST_PAGE_READ';
 
   //
   static bool hasInitLocal = false;
@@ -12,7 +13,6 @@ class CacheConfig {
   /// Initializes global settings stored in local cache (theme, last page, etc).
   static Future<void> loadConfig() async {
     await CacheService.init();
-    await _loadLastPageRead();
     await _loadInitFlag();
   }
 
@@ -20,9 +20,6 @@ class CacheConfig {
   // 🔁 Getters for Cached App State
   // ─────────────────────────────────────────────
 
-  static Future<void> _loadLastPageRead() async {
-    lastPageRead = CacheService().getInt('lastPageRead') ?? 0;
-  }
 
   static Future<void> _loadInitFlag() async {
     hasInitLocal = CacheService().getBool('hasInitLocal') ?? false;
@@ -32,9 +29,7 @@ class CacheConfig {
   // 💾 Setters to Save State
   // ─────────────────────────────────────────────
 
-  static Future<void> saveLastPageRead() async {
-    await CacheService().setInt('lastPageRead', lastPageRead);
-  }
+ 
 
   static Future<void> markInitDone() async {
     await CacheService().setBool('hasInitLocal', true);

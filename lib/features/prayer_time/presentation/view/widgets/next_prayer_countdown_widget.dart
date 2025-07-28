@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/components/glass_card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
@@ -120,7 +121,8 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
                           Text(
                             'الصلاة القادمة',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.85),
+                              color:
+                                  context.onBackgroundColor.withOpacity(0.85),
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w500,
                             ),
@@ -129,7 +131,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
                           Text(
                             widget.nextPrayer.title,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: context.onBackgroundColor,
                               fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
                               height: 1,
@@ -146,7 +148,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
                           Text(
                             widget.nextPrayer.time,
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: context.onBackgroundColor,
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
                             ),
@@ -157,7 +159,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
                   },
                 ),
 
-                SizedBox(height: 8.h),
+                // SizedBox(height: 8.h),
 
                 // Countdown Timer - Compact version
                 _buildCompactCountdownTimer(),
@@ -199,15 +201,12 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
       builder: (context, child) {
         return Transform.scale(
           scale: 1.0 + (_pulseController.value * 0.02),
-          child: Container(
+          child: GlassCardWidget(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.15),
-                width: 0.5,
-              ),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: context.onBackgroundColor.withOpacity(0.15),
+              width: 0.5,
             ),
             child: IntrinsicHeight(
               child: Row(
@@ -241,7 +240,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
         Text(
           value,
           style: TextStyle(
-            color: Colors.white,
+            color: context.onBackgroundColor,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
             height: 1,
@@ -258,7 +257,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: context.onBackgroundColor,
             fontSize: 9.sp,
             fontWeight: FontWeight.w400,
             height: 1,
@@ -279,7 +278,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
             child: Text(
               ':',
               style: TextStyle(
-                color: Colors.white,
+                color: context.onBackgroundColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
                 height: 1,
@@ -296,9 +295,9 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        context.primaryColor.withOpacity(0.5),
-        context.primaryColor.withOpacity(0.5),
-        context.surfaceColor.withOpacity(0.9),
+        context.primaryColor.withOpacity(0.8),
+        context.primaryColor.withOpacity(0.6),
+        context.onBackgroundColor.withOpacity(0.5),
       ],
       stops: const [0.0, 0.6, 1.0],
     );

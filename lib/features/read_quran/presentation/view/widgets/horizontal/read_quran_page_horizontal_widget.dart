@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/sheet/animated_bottom_sheet.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/widgets/read_quran/besm_allah_widget.dart';
 import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
-import 'package:quran_app/core/widgets/read_quran/svg_picture.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/read_quran/data/QuranReadHelperSqlite.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
@@ -184,7 +184,7 @@ class _AyahGroupWidget extends StatelessWidget {
     return Column(
       children: [
         RepaintBoundary(
-          child: context.surahBannerFirstPlace(pageIndex, groupIndex, context),
+          child: SurahBannerFirstPlace(pageIndex: pageIndex, i: groupIndex),
         ),
         RepaintBoundary(
           child: _buildBasmalahIfNeeded(state, ayahs, context, pageIndex),
@@ -202,7 +202,7 @@ class _AyahGroupWidget extends StatelessWidget {
           ),
         ),
         RepaintBoundary(
-          child: context.surahBannerLastPlace(pageIndex, groupIndex, context),
+          child: SurahBannerLastPlace(pageIndex: pageIndex, i: groupIndex),
         ),
       ],
     );
@@ -225,8 +225,8 @@ class _AyahGroupWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: (surahNumber == 95 || surahNumber == 97)
-          ? besmAllah2(context)
-          : besmAllah(context),
+          ? const BesmAllah2Widget()
+          : const BesmAllahWidget(),
     );
   }
 }

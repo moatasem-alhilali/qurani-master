@@ -95,7 +95,7 @@ class QuranPlanListScreen extends StatelessWidget {
                               createdAt: DateTime.now(),
                             ),
                           );
-                          return ShimmerWidget(
+                          return ShimmerSkeletonizerWidget(
                             child: CardWidget(
                               margin: const EdgeInsets.all(8),
                               padding: const EdgeInsets.all(8),

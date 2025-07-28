@@ -5,7 +5,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/text_highlighting_util.dart';
-import 'package:quran_app/core/widgets/read_quran/surah_name_with_banner.dart';
+import 'package:quran_app/core/widgets/read_quran/surah_name_image_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 
@@ -180,9 +180,9 @@ class _SearchAyahListWidgetState extends State<SearchAyahListWidget> {
                                 ],
                               ),
                             ),
-                            leading: context.surahNameWidget(
-                              search.surahId.toString(),
-                              context.quranTheme.hintColor!,
+                            leading: SurahNameImageWidget(
+                              num: search.surahId.toString(),
+                              color: context.quranTheme.hintColor!,
                             ),
                           ),
                         ),

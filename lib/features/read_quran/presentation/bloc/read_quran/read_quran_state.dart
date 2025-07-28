@@ -11,6 +11,8 @@ class ReadQuranState {
     this.minusHeight = 300,
     // this.currentPageAyahsSeparatedForBasmalah = const [],
     this.tafsirAyah,
+    this.lastReadQuranInfo,
+    this.lastReadQuranInfoState = RequestState.initial,
   });
   final RequestState loadQuranState;
   final List<NewSurahModel> surahs;
@@ -19,6 +21,8 @@ class ReadQuranState {
   final double minusHeight;
   // final List<List<NewAyahModel>> currentPageAyahsSeparatedForBasmalah;
   final String? tafsirAyah;
+  final LastReadQuranInfoModel? lastReadQuranInfo;
+  final RequestState lastReadQuranInfoState;
 
   ReadQuranState copyWith({
     RequestState? loadQuranState,
@@ -26,8 +30,9 @@ class ReadQuranState {
     List<List<NewAyahModel>>? pages,
     List<NewAyahModel>? allAyahs,
     double? minusHeight,
-    List<List<NewAyahModel>>? currentPageAyahsSeparatedForBasmalah,
     String? tafsirAyah,
+    LastReadQuranInfoModel? lastReadQuranInfo,
+    RequestState? lastReadQuranInfoState,
   }) {
     return ReadQuranState(
       loadQuranState: loadQuranState ?? this.loadQuranState,
@@ -35,10 +40,10 @@ class ReadQuranState {
       pages: pages ?? this.pages,
       allAyahs: allAyahs ?? this.allAyahs,
       minusHeight: minusHeight ?? this.minusHeight,
-      // currentPageAyahsSeparatedForBasmalah:
-      //     currentPageAyahsSeparatedForBasmalah ??
-      //         this.currentPageAyahsSeparatedForBasmalah,
       tafsirAyah: tafsirAyah ?? this.tafsirAyah,
+      lastReadQuranInfo: lastReadQuranInfo ?? this.lastReadQuranInfo,
+      lastReadQuranInfoState:
+          lastReadQuranInfoState ?? this.lastReadQuranInfoState,
     );
   }
 
@@ -51,7 +56,9 @@ class ReadQuranState {
         other.pages == pages &&
         other.allAyahs == allAyahs &&
         other.minusHeight == minusHeight &&
-        other.tafsirAyah == tafsirAyah;
+        other.tafsirAyah == tafsirAyah &&
+        other.lastReadQuranInfo == lastReadQuranInfo &&
+        other.lastReadQuranInfoState == lastReadQuranInfoState;
     // other.currentPageAyahsSeparatedForBasmalah ==
     //     currentPageAyahsSeparatedForBasmalah;
   }
@@ -63,7 +70,9 @@ class ReadQuranState {
       pages.hashCode ^
       allAyahs.hashCode ^
       minusHeight.hashCode ^
-      tafsirAyah.hashCode
+      tafsirAyah.hashCode ^
+      lastReadQuranInfo.hashCode ^
+      lastReadQuranInfoState.hashCode
       // currentPageAyahsSeparatedForBasmalah.hashCode;
       ;
 

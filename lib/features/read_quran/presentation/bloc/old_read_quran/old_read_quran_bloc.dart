@@ -70,9 +70,7 @@ class OldReadQuranBloc extends Bloc<OldReadQuranEvent, OldReadQuranState> {
     OldSetLastPageReadEvent event,
     Emitter<OldReadQuranState> emit,
   ) {
-    lastPageRead = event.page;
-    CacheConfig.saveLastPageRead();
-    emit(state.copyWith(loadQuranState: RequestState.success));
+   
   }
 
   void _jumpToPage(OldJumpToPageEvent event, Emitter<OldReadQuranState> emit) {
@@ -80,9 +78,7 @@ class OldReadQuranBloc extends Bloc<OldReadQuranEvent, OldReadQuranState> {
       pageController.jumpToPage(event.page!);
       add(OldToggleBoxEvent());
     } else {
-      if (lastPageRead != 0) {
-        pageController.jumpToPage(lastPageRead);
-      }
+     
     }
   }
 

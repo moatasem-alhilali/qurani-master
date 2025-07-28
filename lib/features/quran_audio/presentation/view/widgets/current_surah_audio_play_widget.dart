@@ -32,7 +32,7 @@ class CurrentSurahAudioPlayWidget extends StatelessWidget {
             builder: (context, state) {
               return state.loadAudioSourceState.handle(
                 onInitial: const SizedBox(),
-                onLoading: ShimmerWidget(
+                onLoading: ShimmerSkeletonizerWidget(
                   child: _ItemWidget(
                     boxController: boxController,
                     currentAudioData: CurrentQuranAudioModel(

@@ -64,7 +64,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
           BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
             builder: (context, state) {
               if (state.prayerState != RequestState.success) {
-                return ShimmerWidget(
+                return ShimmerSkeletonizerWidget(
                   child:
                       _buildTimelineList(PrayerInfoModel.dummy(), null, null),
                 );

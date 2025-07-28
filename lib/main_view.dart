@@ -94,7 +94,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           lazy: false,
-          create: (context) => ReadQuranBloc()..add(LoadQuranEvent()),
+          create: (context) => ReadQuranBloc()
+            ..add(LoadQuranEvent())
+            ..add(GetLastPageReadEvent()),
         ),
 
         ///notification

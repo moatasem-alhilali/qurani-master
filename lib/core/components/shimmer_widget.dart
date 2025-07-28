@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class ShimmerWidget extends StatelessWidget {
-  const ShimmerWidget({
+class ShimmerSkeletonizerWidget extends StatelessWidget {
+  const ShimmerSkeletonizerWidget({
     required this.child,
     this.isLoading = true,
     super.key,

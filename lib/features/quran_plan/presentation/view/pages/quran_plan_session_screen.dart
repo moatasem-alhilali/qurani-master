@@ -100,7 +100,7 @@ class QuranPlanSessionScreen extends StatelessWidget {
                               )
                             : const SizedBox.shrink(),
                         context: context,
-                        onLoading: ShimmerWidget(
+                        onLoading: ShimmerSkeletonizerWidget(
                           child: CurrentSessionWidget(
                             plan: QuranPlan(
                               title: 'title',
@@ -127,7 +127,7 @@ class QuranPlanSessionScreen extends StatelessWidget {
                         onSuccess: () => SmartAnalysisPlanWidget(
                           analysis: analysis!,
                         ),
-                        onLoading: ShimmerWidget(
+                        onLoading: ShimmerSkeletonizerWidget(
                           child: SmartAnalysisPlanWidget(
                             analysis: PlanProgressAnalysis(
                               averageSessionIntervalDays: 55,
@@ -169,7 +169,7 @@ class QuranPlanSessionScreen extends StatelessWidget {
                           },
                         ),
                         list: state.sessions,
-                        onLoading: ShimmerWidget(
+                        onLoading: ShimmerSkeletonizerWidget(
                           child: ListView.builder(
                             itemCount: state.sessions.length,
                             shrinkWrap: true,
