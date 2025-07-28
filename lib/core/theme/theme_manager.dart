@@ -5,7 +5,7 @@ import 'package:quran_app/core/theme/dark_theme.dart';
 import 'package:quran_app/core/theme/green_theme.dart';
 import 'package:quran_app/core/theme/quran_themes.dart';
 
-class ThemeManager {
+class ThemeColorsManager {
 //
   static const String dark = 'dark';
   static const String blue = 'blue';
@@ -45,4 +45,18 @@ class ThemeManager {
         return blueThemeData;
     }
   }
+}
+
+
+class ThemeModeManager {
+//
+  static const String dark = 'dark';
+  static const String light = 'light';
+
+  // cache key
+
+  static const String cacheKey = 'cache_theme_mode_key';
+
+ 
+
 }

@@ -6,7 +6,7 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
-import 'package:quran_app/core/widgets/theme_widget.dart';
+import 'package:quran_app/core/widgets/theme_mode_widget.dart';
 import 'package:quran_app/features/download/presentation/view/pages/download_screen.dart';
 import 'package:quran_app/features/manage_version/presentation/view/pages/version_management_screen.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/setting_notification_screen.dart';
@@ -162,12 +162,14 @@ class _SettingScreenState extends State<SettingScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'اعدادات الثيم',
-              style: titleMedium(context).copyWith(
+              style: context.titleMedium?.copyWith(
                 fontSize: 16.sp,
               ),
             ),
           ),
-          const ThemeWidget(),
+          // const ThemeColorsWidget(),
+          SizedBox(height: 8.h),
+          const ThemeModeWidget(),
         ],
       ),
     );

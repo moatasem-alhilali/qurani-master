@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
+        builder: (context, themeState) {
           return BlocConsumer<ConnectivityBloc, ConnectivityState>(
             listener: (context, state) {
               // TODO: implement listener
@@ -153,7 +153,7 @@ class MyApp extends StatelessWidget {
                   // theme: getLightMode(),
                   darkTheme: darkTheme,
                   theme: lightTheme,
-                  themeMode: ThemeMode.dark,
+                  themeMode: themeState.currentThemeMode,
                   title: 'طمأنينة',
                   themeAnimationCurve: Curves.decelerate,
                   themeAnimationDuration: const Duration(milliseconds: 300),

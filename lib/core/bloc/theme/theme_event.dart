@@ -3,9 +3,14 @@ part of 'theme_bloc.dart';
 @immutable
 abstract class ThemeEvent {}
 
-class ChangeThemeEvent extends ThemeEvent {
+class ChangeThemeColorsEvent extends ThemeEvent {
   String theme;
-  ChangeThemeEvent({required this.theme});
+  ChangeThemeColorsEvent({required this.theme});
+}
+
+class ChangeThemeModeEvent extends ThemeEvent {
+  String mode;
+  ChangeThemeModeEvent({required this.mode});
 }
 
 class InitThemeEvent extends ThemeEvent {}

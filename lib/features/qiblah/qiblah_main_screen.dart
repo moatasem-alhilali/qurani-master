@@ -6,9 +6,8 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class QiblahMainScreen extends StatefulWidget {
@@ -682,7 +681,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: BaseHomeWidget(
+      child: AppScaffoldWidget(
         title: 'القبلة',
         body: _errorMessage != null
             ? _buildErrorWidget()

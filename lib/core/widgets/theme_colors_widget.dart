@@ -5,14 +5,14 @@ import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/theme/theme_manager.dart';
 
-class ThemeWidget extends StatefulWidget {
-  const ThemeWidget({super.key, this.onTap});
+class ThemeColorsWidget extends StatefulWidget {
+  const ThemeColorsWidget({super.key, this.onTap});
   final VoidCallback? onTap;
   @override
-  State<ThemeWidget> createState() => _ThemeWidgetState();
+  State<ThemeColorsWidget> createState() => _ThemeColorsWidgetState();
 }
 
-class _ThemeWidgetState extends State<ThemeWidget>
+class _ThemeColorsWidgetState extends State<ThemeColorsWidget>
     with TickerProviderStateMixin {
   late AnimationController _scaleController;
   late AnimationController _selectionController;
@@ -21,10 +21,10 @@ class _ThemeWidgetState extends State<ThemeWidget>
   late Animation<double> _selectionAnimation;
 
   final List<Map<String, String>> titles = [
-    {'name': 'أزرق', 'value': ThemeManager.blue},
-    {'name': 'بني', 'value': ThemeManager.brown},
-    {'name': 'أخضر', 'value': ThemeManager.green},
-    {'name': 'الداكن', 'value': ThemeManager.dark},
+    {'name': 'أزرق', 'value': ThemeColorsManager.blue},
+    {'name': 'بني', 'value': ThemeColorsManager.brown},
+    {'name': 'أخضر', 'value': ThemeColorsManager.green},
+    {'name': 'الداكن', 'value': ThemeColorsManager.dark},
   ];
 
   @override
@@ -103,7 +103,7 @@ class _ThemeWidgetState extends State<ThemeWidget>
                               onTapCancel: () => _scaleController.reverse(),
                               onTap: () {
                                 _onTap(i, context);
-                                  widget.onTap?.call();
+                                widget.onTap?.call();
                               },
                               child: Container(
                                 padding: EdgeInsets.all(2.sp),
@@ -180,13 +180,13 @@ class _ThemeWidgetState extends State<ThemeWidget>
 
   Color _getThemeColor(String themeType) {
     switch (themeType) {
-      case ThemeManager.blue:
+      case ThemeColorsManager.blue:
         return const Color(0xff404C6E);
-      case ThemeManager.brown:
+      case ThemeColorsManager.brown:
         return const Color(0xff8B4B3C);
-      case ThemeManager.green:
+      case ThemeColorsManager.green:
         return const Color(0xff2D5016);
-      case ThemeManager.dark:
+      case ThemeColorsManager.dark:
         return const Color(0xff2A2A2A);
       default:
         return const Color(0xff404C6E);
@@ -195,7 +195,9 @@ class _ThemeWidgetState extends State<ThemeWidget>
 
   void _onTap(int i, BuildContext context) {
     final currentThemeType = titles[i]['value']!;
-    context.read<ThemeBloc>().add(ChangeThemeEvent(theme: currentThemeType));
+    context
+        .read<ThemeBloc>()
+        .add(ChangeThemeColorsEvent(theme: currentThemeType));
   }
 }
 
@@ -212,13 +214,13 @@ class MobileThemeItem extends StatelessWidget {
 
   Color _getThemeColor() {
     switch (themeType) {
-      case ThemeManager.blue:
+      case ThemeColorsManager.blue:
         return const Color(0xff404C6E);
-      case ThemeManager.brown:
+      case ThemeColorsManager.brown:
         return const Color(0xff8B4B3C);
-      case ThemeManager.green:
+      case ThemeColorsManager.green:
         return const Color(0xff2D5016);
-      case ThemeManager.dark:
+      case ThemeColorsManager.dark:
         return const Color(0xff2A2A2A);
       default:
         return const Color(0xff404C6E);
