@@ -47,9 +47,9 @@ app.*.map.json
 **/android/app/upload-keystore.jks
 
 
-# firebase
-firebase_options.dart
-# firebase android
-android/app/google-services.json
-# firebase ios
-ios/GoogleService-Info.plist
+# # firebase
+# firebase_options.dart
+# # firebase android
+# android/app/google-services.json
+# # firebase ios
+# ios/GoogleService-Info.plist
