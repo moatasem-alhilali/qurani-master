@@ -43,8 +43,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-**/android/key.properties
-**/android/app/upload-keystore.jks
+# **/android/key.properties
+# **/android/app/upload-keystore.jks
 
 
 # # firebase
