@@ -48,8 +48,8 @@ app.*.map.json
 
 
 # firebase
-firebase_options.dart
+# firebase_options.dart
 # firebase android
-android/app/google-services.json
+# android/app/google-services.json
 # firebase ios
-ios/GoogleService-Info.plist
+# ios/GoogleService-Info.plist
