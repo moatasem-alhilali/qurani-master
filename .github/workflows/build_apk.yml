@@ -2,7 +2,7 @@ name: Build & Ship APK (Telegram)
 
 on:
   push:
-    branches: [pro]
+    branches: [pro-dev]
     tags: ["v*"]
   workflow_dispatch:
 
