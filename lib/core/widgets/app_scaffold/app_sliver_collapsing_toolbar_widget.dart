@@ -235,6 +235,7 @@ class SmallHeaderDelegateWidget extends SliverPersistentHeaderDelegate {
     required this.scrollOffsetNotifier,
     required this.titleOpacityFn,
     required this.titleText,
+    this.title,
     this.trailing,
     this.leading,
   });
@@ -242,6 +243,7 @@ class SmallHeaderDelegateWidget extends SliverPersistentHeaderDelegate {
   final Color backgroundColor;
   final String titleText;
   final Widget? trailing;
+  final Widget? title;
   final Widget? leading;
   final ValueNotifier<double> scrollOffsetNotifier;
   final double Function(double) titleOpacityFn;
@@ -269,12 +271,12 @@ class SmallHeaderDelegateWidget extends SliverPersistentHeaderDelegate {
           final titleOpacity = titleOpacityFn(offset);
           return Row(
             children: [
+              leading ?? const BackIconWidget(),
+              if (leading != null) const SizedBox(width: 8),
               Opacity(
                 opacity: titleOpacity,
                 child: Row(
                   children: [
-                    leading ?? const BackIconWidget(),
-                    if (leading != null) const SizedBox(width: 8),
                     if (titleText.isNotEmpty)
                       Padding(
                         padding:
@@ -286,6 +288,12 @@ class SmallHeaderDelegateWidget extends SliverPersistentHeaderDelegate {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                      ),
+                    if (titleText.isEmpty && title != null)
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.only(start: 8, end: 8),
+                        child: title,
                       ),
                   ],
                 ),

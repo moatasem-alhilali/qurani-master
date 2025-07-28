@@ -6,6 +6,7 @@ import 'package:quran_app/core/components/base_component_show.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
 
 //=================================Navigator===============================
 extension MyNavigator on BuildContext {
@@ -87,7 +88,7 @@ extension MyNavigator on BuildContext {
                         child: iconHeader != null
                             ? Icon(
                                 iconHeader,
-                                color: Colors.white,
+                                color: context.onPrimaryColor,
                                 size: 24.sp,
                               )
                             : const Padding(
@@ -104,7 +105,7 @@ extension MyNavigator on BuildContext {
                               context,
                               fontSize: 13.sp,
                               minFontSize: 10,
-                              color: Colors.white,
+                              color: context.onPrimaryColor,
                             ),
                             // Text(
                             // title ?? 'اضافه جديد',
@@ -121,17 +122,17 @@ extension MyNavigator on BuildContext {
                               context,
                               fontSize: 10.sp,
                               minFontSize: 8,
-                              color: Colors.grey,
+                              color: context.onPrimaryColor,
                             ),
                           ],
                         ),
                       ),
-                      IconButton(
+                      IconButtonWidget(
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(
                           Icons.close,
-                          color: Colors.white,
-                          size: 24.sp,
+                          // color: context.onPrimaryColor,
+                          // size: 24.sp,
                         ),
                       ),
                     ],

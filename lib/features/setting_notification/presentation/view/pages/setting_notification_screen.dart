@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/button/material_button_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/filled_button_widget.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
@@ -94,7 +94,7 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
       create: (context) =>
           SettingNotificationBloc(sl())..add(LoadNotificationSettings()),
       lazy: false,
-      child: BaseHomeWidget(
+      child: AppScaffoldWidget(
         title: 'اعدادات الاشعارات',
 
         // titleWidget: const NextTimePrayerRemainWidget(),
@@ -108,142 +108,143 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
 
                 return FadeTransition(
                   opacity: _fadeController,
-                  child: CupertinoScrollbar(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.all(16.w),
-                      child: Column(
-                        children: [
-                          MaterialButtonWidget(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              context.push(const SystemNotificationScreen());
-                            },
-                            child: CardWidget(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'رؤية اشعارات النظام',
-                                    style: titleMedium(context),
-                                  ),
-                                  Icon(
-                                    CupertinoIcons.bell_fill,
-                                    size: 20.sp,
-                                  ),
-                                ],
-                              ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Column(
+                      children: [
+                        FilledButtonWidget(
+                          // padding: EdgeInsets.zero,
+                          onPressed: () {
+                            context.push(const SystemNotificationScreen());
+                          },
+                          child: CardWidget(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 16.h,
+                              horizontal: 16.w,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'رؤية اشعارات النظام',
+                                  style: titleMedium(context),
+                                ),
+                                Icon(
+                                  CupertinoIcons.bell_fill,
+                                  size: 20.sp,
+                                ),
+                              ],
                             ),
                           ),
-                          _buildSection(
-                            0,
-                            'الأذان',
-                            s,
-                            [
-                              _NotifItem(
-                                NotificationKeys.isNotificationAllAthan,
-                                'كل الصلوات',
-                                CupertinoIcons.bell_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationAthanFagr,
-                                'أذان الفجر',
-                                CupertinoIcons.sunrise_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationAthanDuhr,
-                                'أذان الظهر',
-                                CupertinoIcons.sun_max_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationAthanAsr,
-                                'أذان العصر',
-                                CupertinoIcons.sun_haze_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationAthanMagrib,
-                                'أذان المغرب',
-                                CupertinoIcons.sunset_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationAthanIsha,
-                                'أذان العشاء',
-                                CupertinoIcons.moon_stars_fill,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 32.h),
-                          _buildSection(
-                            1,
-                            'الورد اليومي',
-                            s,
-                            [
-                              _NotifItem(
-                                NotificationKeys.isNotificationThikrMorning,
-                                'أذكار الصباح',
-                                CupertinoIcons.sunrise,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationThikrNight,
-                                'أذكار المساء',
-                                CupertinoIcons.moon,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 32.h),
-                          _buildSection(
-                            2,
-                            'العشوائي',
-                            s,
-                            [
-                              _NotifItem(
-                                NotificationKeys.isNotificationMohammed,
-                                'الصلاة على محمد',
-                                CupertinoIcons.heart_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationRandomThikr,
-                                'الأذكار الصوتية العشوائية',
-                                CupertinoIcons.speaker_2_fill,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 32.h),
-                          _buildSection(
-                            3,
-                            'أخرى',
-                            s,
-                            [
-                              _NotifItem(
-                                NotificationKeys.isNotificationWridGetup,
-                                'أذكار الاستيقاظ',
-                                CupertinoIcons.moon_zzz_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationWridSleep,
-                                'أذكار النوم',
-                                CupertinoIcons.bed_double_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationReadSurahMulk,
-                                'قراءة سورة الملك',
-                                CupertinoIcons.book_fill,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationReadQuran,
-                                'الورد القرآني',
-                                CupertinoIcons.textformat,
-                              ),
-                              _NotifItem(
-                                NotificationKeys.isNotificationMiddleNight,
-                                'قيام الليل',
-                                CupertinoIcons.moon_stars,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 40.h),
-                        ],
-                      ),
+                        ),
+                        _buildSection(
+                          0,
+                          'الأذان',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationAllAthan,
+                              'كل الصلوات',
+                              CupertinoIcons.bell_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAthanFagr,
+                              'أذان الفجر',
+                              CupertinoIcons.sunrise_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAthanDuhr,
+                              'أذان الظهر',
+                              CupertinoIcons.sun_max_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAthanAsr,
+                              'أذان العصر',
+                              CupertinoIcons.sun_haze_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAthanMagrib,
+                              'أذان المغرب',
+                              CupertinoIcons.sunset_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAthanIsha,
+                              'أذان العشاء',
+                              CupertinoIcons.moon_stars_fill,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          1,
+                          'الورد اليومي',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationThikrMorning,
+                              'أذكار الصباح',
+                              CupertinoIcons.sunrise,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationThikrNight,
+                              'أذكار المساء',
+                              CupertinoIcons.moon,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          2,
+                          'العشوائي',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationMohammed,
+                              'الصلاة على محمد',
+                              CupertinoIcons.heart_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationRandomThikr,
+                              'الأذكار الصوتية العشوائية',
+                              CupertinoIcons.speaker_2_fill,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          3,
+                          'أخرى',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationWridGetup,
+                              'أذكار الاستيقاظ',
+                              CupertinoIcons.moon_zzz_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationWridSleep,
+                              'أذكار النوم',
+                              CupertinoIcons.bed_double_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadSurahMulk,
+                              'قراءة سورة الملك',
+                              CupertinoIcons.book_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadQuran,
+                              'الورد القرآني',
+                              CupertinoIcons.textformat,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationMiddleNight,
+                              'قيام الليل',
+                              CupertinoIcons.moon_stars,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 40.h),
+                      ],
                     ),
                   ),
                 );
@@ -267,21 +268,22 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16.w, bottom: 8.h),
+            padding: EdgeInsets.symmetric(
+              // horizontal: 16.w,
+              vertical: 8.h,
+            ),
             child: Text(
               title.toUpperCase(),
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-                color: CupertinoColors.secondaryLabel,
-                letterSpacing: 0.5,
+              style: context.titleMedium?.copyWith(
+                fontSize: 16.sp,
               ),
             ),
           ),
           Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
-              color: context.secondaryColor,
+              color: context.surfaceColor,
             ),
             child: Column(
               children: items.asMap().entries.map((entry) {

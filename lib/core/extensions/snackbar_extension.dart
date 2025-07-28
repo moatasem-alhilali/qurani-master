@@ -1,4 +1,3 @@
-
 import 'package:quran_app/core/extensions/snackbar_export.dart';
 
 extension CustomPositionSnackbar on BuildContext {
@@ -8,6 +7,9 @@ extension CustomPositionSnackbar on BuildContext {
     Duration duration = const Duration(milliseconds: 2400),
     SnackbarPosition position = SnackbarPosition.bottom,
     double? customOffset,
+    String? actionLabel,
+    VoidCallback? onAction,
+    double? paddingBottom,
   }) {
     final overlay = Overlay.of(this);
 
@@ -47,9 +49,26 @@ extension CustomPositionSnackbar on BuildContext {
     );
 
     late final OverlayEntry entry;
+
+    var isClosed = false;
+
+    Future<void> closeSnackbar() async {
+      if (isClosed) return;
+      isClosed = true;
+      try {
+        await controller.reverse();
+      } catch (_) {
+        // ignore: avoid_catches_without_on_clauses
+      }
+      entry.remove();
+      controller.dispose();
+    }
+
     entry = OverlayEntry(
       builder: (_) => IgnorePointer(
-        child: SafeArea(
+        ignoring: actionLabel == null || onAction == null,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: paddingBottom ?? 0),
           child: Stack(
             children: [
               Positioned(
@@ -66,9 +85,16 @@ extension CustomPositionSnackbar on BuildContext {
                     ).animate(animation),
                     child: Material(
                       color: Colors.transparent,
-                      child: AnimatedSnackbarWidget(
-                        message: message,
-                        style: style,
+                      child: SafeArea(
+                        child: AnimatedSnackbarWidget(
+                          message: message,
+                          style: style,
+                          actionLabel: actionLabel,
+                          onAction: () async {
+                            await closeSnackbar();
+                            onAction?.call();
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -83,10 +109,6 @@ extension CustomPositionSnackbar on BuildContext {
     overlay.insert(entry);
     controller.forward();
 
-    Future.delayed(duration, () async {
-      await controller.reverse();
-      entry.remove();
-      controller.dispose();
-    });
+    Future.delayed(duration, closeSnackbar);
   }
 }

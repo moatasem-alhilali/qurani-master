@@ -7,11 +7,11 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   useMaterial3: true,
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: AppColors.background,
-  canvasColor: AppColors.surface,
-  cardColor: AppColors.surface,
-  dividerColor: AppColors.divider,
-  shadowColor: AppColors.darkShadow,
+  scaffoldBackgroundColor: AppColors.darkBackground,
+  canvasColor: AppColors.darkSurface,
+  cardColor: AppColors.darkSurface,
+  dividerColor: AppColors.darkOutline,
+  shadowColor: AppColors.darkOutline,
   primaryColor: AppColors.gold,
   primaryColorLight: AppColors.gold.withOpacity(0.85),
   primaryColorDark: AppColors.gold,
@@ -54,7 +54,7 @@ final ThemeData darkTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.darkSurface,
     elevation: 0,
-    iconTheme: IconThemeData(color: AppColors.gold),
+    iconTheme: IconThemeData(color: AppColors.darkOnBackground),
     titleTextStyle: TextStyle(
       color: AppColors.darkOnBackground,
       fontSize: 20,
@@ -63,10 +63,10 @@ final ThemeData darkTheme = ThemeData(
   ),
 
   // ICONS
-  iconTheme: const IconThemeData(color: AppColors.darkSecondaryText),
-  primaryIconTheme: const IconThemeData(color: AppColors.gold),
+  iconTheme: const IconThemeData(color: AppColors.darkOnBackground),
+  primaryIconTheme: const IconThemeData(color: AppColors.darkOnBackground),
 
-  // TEXT
+  // TEXT THEME
   textTheme: TextTheme(
     // Display Styles (Largest)
     displayLarge: TextStyle(
@@ -551,13 +551,13 @@ final ThemeData darkTheme = ThemeData(
   // ACTION ICONS (AppBar, menus)
   actionIconTheme: ActionIconThemeData(
     backButtonIconBuilder: (context) =>
-        const Icon(Icons.arrow_back, color: AppColors.gold),
+        const Icon(Icons.arrow_back, color: AppColors.onBackground),
     closeButtonIconBuilder: (context) =>
-        const Icon(Icons.close, color: AppColors.gold),
+        const Icon(Icons.close, color: AppColors.onBackground),
     drawerButtonIconBuilder: (context) =>
-        const Icon(Icons.menu, color: AppColors.gold),
+        const Icon(Icons.menu, color: AppColors.onBackground),
     endDrawerButtonIconBuilder: (context) =>
-        const Icon(Icons.menu_open, color: AppColors.gold),
+        const Icon(Icons.menu_open, color: AppColors.onBackground),
     // يمكنك تخصيص style إذا احتجت
   ),
 
@@ -634,6 +634,10 @@ final ThemeData darkTheme = ThemeData(
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      shadowColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.12)),
+      surfaceTintColor:
+          WidgetStateProperty.all(AppColors.gold.withOpacity(0.12)),
+      iconColor: WidgetStateProperty.all(AppColors.darkOnSurface),
     ),
   ),
 

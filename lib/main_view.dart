@@ -6,6 +6,7 @@ import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -152,7 +153,7 @@ class MyApp extends StatelessWidget {
                   // theme: getLightMode(),
                   darkTheme: darkTheme,
                   theme: lightTheme,
-                  themeMode: ThemeMode.light,
+                  themeMode: ThemeMode.dark,
                   title: 'طمأنينة',
                   themeAnimationCurve: Curves.decelerate,
                   themeAnimationDuration: const Duration(milliseconds: 300),
@@ -196,6 +197,7 @@ class _AppState extends State<_App> {
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: context.scaffoldBackgroundColor,
             // titleWidget: const SizedBox(),
             // back: false,
             // title: 'طمأنينة',

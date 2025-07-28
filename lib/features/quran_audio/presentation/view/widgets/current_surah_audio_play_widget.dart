@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
@@ -89,40 +88,43 @@ class _ItemWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 20,
-                        child: Text(
-                          currentAudioData?.nameReader?.substring(0, 1) ?? '',
-                          style: context.titleMedium?.copyWith(
-                            color: context.onSurfaceColor,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: context.surfaceColor,
+                          radius: 20,
+                          child: Text(
+                            currentAudioData?.nameReader?.substring(0, 1) ?? '',
+                            style: context.titleMedium?.copyWith(
+                              color: context.gray1,
+                            ),
                           ),
                         ),
-                      ),
-                      const Gap(10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            currentAudioData?.nameReader ?? '',
-                            style: context.titleMedium?.copyWith(
-                              color: Colors.white,
+                        const Gap(10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              currentAudioData?.nameReader ?? '',
+                              style: context.titleMedium?.copyWith(
+                                  // color: context.gray1,
+                                  ),
                             ),
-                          ),
-                          // const Gap(5),
-                          Text(
-                            currentAudioData?.nameSurah ?? '',
-                            style: context.titleSmall?.copyWith(
-                              color: Colors.white,
+                            // const Gap(5),
+                            Text(
+                              currentAudioData?.nameSurah ?? '',
+                              style: context.titleSmall?.copyWith(
+                                  // color: context.gray1,
+                                  ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  const Gap(5),
                   Builder(
                     builder: (context) {
                       if (state.loadAudioSourceState == RequestState.loading) {

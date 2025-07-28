@@ -47,7 +47,7 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     CreatePlanEvent event,
     Emitter<QuranPlanState> emit,
   ) async {
-    emit(state.copyWith(requestState: RequestState.loading));
+    emit(state.copyWith(createRequestState: RequestState.loading));
     try {
       final planId = await dataSource.createPlan(
         event.plan,
@@ -56,15 +56,22 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
         event.totalDays,
       );
       final plans = await dataSource.getAllPlans();
-      emit(state.copyWith(requestState: RequestState.success, plans: plans));
+      emit(
+        state.copyWith(
+          createRequestState: RequestState.success,
+          plans: plans,
+        ),
+      );
+      add(LoadAllPlansEvent());
     } catch (e) {
       emit(
         state.copyWith(
-          requestState: RequestState.error,
+          createRequestState: RequestState.error,
           errorMessage: e.toString(),
         ),
       );
     }
+    emit(state.copyWith(createRequestState: RequestState.initial));
   }
 
   Future<void> _onUpdatePlan(
@@ -90,19 +97,25 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     DeletePlanEvent event,
     Emitter<QuranPlanState> emit,
   ) async {
-    emit(state.copyWith(requestState: RequestState.loading));
+    emit(state.copyWith(deleteRequestState: RequestState.loading));
     try {
       await dataSource.deletePlan(event.planId);
       final plans = await dataSource.getAllPlans();
-      emit(state.copyWith(requestState: RequestState.success, plans: plans));
+      emit(
+        state.copyWith(
+          deleteRequestState: RequestState.success,
+          plans: plans,
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
-          requestState: RequestState.error,
+          deleteRequestState: RequestState.error,
           errorMessage: e.toString(),
         ),
       );
     }
+    emit(state.copyWith(deleteRequestState: RequestState.initial));
   }
 
   Future<void> _onLoadSessions(
@@ -170,10 +183,12 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     emit(state.copyWith(nextSessionState: RequestState.loading));
     try {
       final nextSession = await dataSource.getNextSession(event.planId);
+      final plan = await dataSource.getPlanById(event.planId);
       emit(
         state.copyWith(
           nextSessionState: RequestState.success,
           nextSession: nextSession,
+          selectedPlan: plan,
         ),
       );
     } catch (e) {

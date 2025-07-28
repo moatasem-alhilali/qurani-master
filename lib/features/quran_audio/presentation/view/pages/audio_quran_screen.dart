@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:gap/gap.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
+import 'package:quran_app/core/widgets/app_scaffold/back_icon_widget.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
+import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_audio_bloc/download_quran_audio_bloc.dart';
+import 'package:quran_app/features/quran_audio/presentation/view/widgets/audio_search_body_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/backdrop_surah_list_audio_body_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/collapsed_quran_audio_body_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/current_surah_audio_play_widget.dart';
@@ -20,23 +24,13 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
   final BoxController boxController = BoxController();
   final TextEditingController textEditingController = TextEditingController();
 
+  ValueNotifier<bool> isBoxClosed = ValueNotifier(true);
+
   @override
   void initState() {
     super.initState();
-    textEditingController.addListener(() {
-      boxController.setSearchBody(
-        child: Center(
-          child: Text(
-            textEditingController.text != ''
-                ? textEditingController.value.text
-                : 'Empty',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface,
-              fontSize: 20,
-            ),
-          ),
-        ),
-      );
+    boxController.addListener(() {
+      isBoxClosed.value = !boxController.isBoxOpen;
     });
   }
 
@@ -48,25 +42,6 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: context.onSurfaceColor == ThemeMode.light
-            ? Brightness.dark
-            : Brightness.light,
-        statusBarBrightness: context.onSurfaceColor == ThemeMode.light
-            ? Brightness.dark
-            : Brightness.light,
-        systemNavigationBarIconBrightness:
-            context.onSurfaceColor == ThemeMode.light
-                ? Brightness.dark
-                : Brightness.light,
-        systemNavigationBarColor: context.onSurfaceColor == ThemeMode.light
-            ? context.onSurfaceColor.withAlpha(10)
-            : context.surfaceColor,
-      ),
-    );
-    //
     final screenHeight = MediaQuery.of(context).size.height;
     const appBarParts = 6;
     final appBarHeight = screenHeight / appBarParts;
@@ -75,98 +50,106 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
     const double minHeightBox = 60;
     final maxHeightBox = screenHeight - actualAppBarHeight;
 
-    return Scaffold(
-      backgroundColor: context.scaffoldBackgroundColor,
-      body: SlidingBox(
-        controller: boxController,
-        minHeight: minHeightBox,
-        maxHeight: maxHeightBox,
-        color: context.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(30)),
-        body: CollapsedQuranAudioBodyWidget(boxController: boxController),
-        draggableIconVisible: false,
-        collapsed: true,
-        collapsedBody:
-            CurrentSurahAudioPlayWidget(boxController: boxController),
-        backdrop: Backdrop(
-          fading: true,
+    return BlocProvider(
+      create: (context) => DownloadQuranAudioBloc(),
+      child: Scaffold(
+        backgroundColor: context.scaffoldBackgroundColor,
+        body: SlidingBox(
+          controller: boxController,
+          minHeight: minHeightBox,
+          maxHeight: maxHeightBox,
           color: context.scaffoldBackgroundColor,
-          body: BackdropSurahListAudioBodyWidget(
-            boxController: boxController,
-          ),
-          appBar: BackdropAppBar(
-            title: Container(
-              margin: const EdgeInsets.only(left: 15),
-              child: Text(
-                'القرآن الكريم',
-                textAlign: TextAlign.center,
-                style: context.titleMedium?.copyWith(
-                  fontSize: 22.sp,
-                ),
-              ),
+          borderRadius: const BorderRadius.all(Radius.circular(30)),
+          body: CollapsedQuranAudioBodyWidget(boxController: boxController),
+          draggableIconVisible: false,
+          collapsed: true,
+          collapsedBody:
+              CurrentSurahAudioPlayWidget(boxController: boxController),
+          backdrop: Backdrop(
+            fading: true,
+            color: context.scaffoldBackgroundColor,
+            body: BackdropSurahListAudioBodyWidget(
+              boxController: boxController,
             ),
-            searchBox: SearchBox(
-              controller: textEditingController,
-              inputDecoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 18,
+            appBar: BackdropAppBar(
+              title: Container(
+                // margin: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  children: [
+                    ValueListenableBuilder(
+                      key: const ValueKey('default'),
+                      valueListenable: isBoxClosed,
+                      builder: (context, value, child) {
+                        return value
+                            ? AnimatedOpacity(
+                                duration: const Duration(milliseconds: 300),
+                                opacity: value ? 1 : 0,
+                                child: value
+                                    ? const BackIconWidget()
+                                    : const SizedBox.shrink(),
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
+                    Gap(5.w),
+                    Text(
+                      'القرآن الكريم صوت',
+                      textAlign: TextAlign.center,
+                      style: context.titleMedium?.copyWith(
+                        fontSize: 18.sp,
+                      ),
+                    ),
+                  ],
                 ),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white,
+              ),
+              searchBox: SearchBox(
+                color: context.surfaceColor,
+                controller: textEditingController,
+                inputDecoration: InputDecoration(
+                  hintText: 'ابحث عن سورة',
+                  hintStyle: context.bodyMedium?.copyWith(
+                    color: context.gray1,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: context.surfaceColor,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: context.surfaceColor,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: context.surfaceColor,
+                    ),
                   ),
                 ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white,
+                style: context.bodyMedium,
+                body: Container(
+                  decoration: BoxDecoration(
+                    color: context.surfaceColor,
                   ),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.white,
+                  child: AudioSearchBodyWidget(
+                    boxController: boxController,
+                    textEditingController: textEditingController,
                   ),
                 ),
               ),
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 18,
-              ),
-              body: Center(
-                child: Text(
-                  'Search Result',
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              Container(
-                width: 40,
-                height: 40,
-                margin: const EdgeInsets.only(right: 10, left: 10),
-                decoration: BoxDecoration(
-                  color: context.onSurfaceColor.withAlpha(15),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(30),
-                  ),
-                ),
-                child: IconButton(
-                  iconSize: 20,
+              actions: [
+                IconButtonWidget(
                   icon: const Icon(
                     CupertinoIcons.search,
-                    // color: context.primaryColor,
+                    // color: context.gray1,
                   ),
                   onPressed: () {
                     textEditingController.text = '';
                     boxController.showSearchBox();
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

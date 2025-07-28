@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 enum SnackbarPosition { top, center, bottom }
 
@@ -28,16 +29,22 @@ class SnackBarType {
     iconColor: Colors.brown,
   );
 }
-
 class AnimatedSnackbarWidget extends StatefulWidget {
   const AnimatedSnackbarWidget({
     required this.message,
     required this.style,
+    this.actionLabel,
+    this.onAction,
+    this.actionTextColor,
     super.key,
   });
 
   final String message;
   final SnackBarType style;
+
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  final Color? actionTextColor;
 
   @override
   State<AnimatedSnackbarWidget> createState() => _AnimatedSnackbarWidgetState();
@@ -92,7 +99,7 @@ class _AnimatedSnackbarWidgetState extends State<AnimatedSnackbarWidget>
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: widget.style.backgroundColor.withValues(alpha: .22),
+            color: widget.style.backgroundColor.withOpacity(.22),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -124,6 +131,33 @@ class _AnimatedSnackbarWidgetState extends State<AnimatedSnackbarWidget>
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          if (widget.actionLabel != null && widget.onAction != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  foregroundColor: widget.actionTextColor ??
+                      (isWarning
+                          ? Colors.brown.shade800
+                          : Colors.white),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                onPressed: widget.onAction,
+                child: Text(
+                  widget.actionLabel!,
+                  style: context.bodyMedium?.copyWith(
+                    color: isWarning ? Colors.brown.shade800 : Colors.white,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

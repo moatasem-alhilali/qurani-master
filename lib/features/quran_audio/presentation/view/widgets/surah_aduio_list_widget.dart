@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
 import 'package:quran_app/core/widgets/filled_button_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/download_quran_audio_bloc/download_quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
@@ -78,7 +78,6 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
   Widget build(BuildContext context) {
     return BlocBuilder<QuranAudioBloc, QuranAudioState>(
       builder: (context, state) {
-        final surahs = state.surahInfoData;
         final currentPlaying =
             state.currentAudioData?.indexSurah == widget.indexSurah;
 
@@ -124,18 +123,14 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
                     widget.data?.nameAr ?? '',
                     style: titleSmall(context).copyWith(
                       fontSize: 16.sp,
-                      color: !currentPlaying
-                          ? context.onPrimaryColor
-                          : context.primaryColor,
+                      color: !currentPlaying ? null : context.primaryColor,
                     ),
                   ),
                   const Gap(10),
                   Text(
                     '(${widget.data?.ayahCount})',
                     style: titleSmall(context).copyWith(
-                      color: !currentPlaying
-                          ? context.onPrimaryColor
-                          : context.primaryColor,
+                      color: !currentPlaying ? null : context.primaryColor,
                     ),
                   ),
                 ],
@@ -143,48 +138,44 @@ class _ItemDownloadedState extends State<_ItemDownloaded> {
               BlocBuilder<DownloadQuranAudioBloc, DownloadQuranAudioState>(
                 builder: (context, stateDownload) {
                   return PopupMenuButton(
-                    color: context.scaffoldBackgroundColor,
                     itemBuilder: (context) {
                       return [
                         PopupMenuItem<void>(
                           onTap: () async {
-                            final result =
-                                await showDeleteConfirmationDialog<bool>(
-                              context,
-                              title: 'تحميل السورة',
-                              message: 'هل تريد تحميل السورة؟',
-                              icon: Icon(
-                                Icons.download,
-                                color: context.primaryColor,
-                              ),
-                            );
-                            if ((result ?? false) == true) {
-                              final surahs = state.surahInfoData;
+                            context.showCustomSnackbar(
+                              'هل تريد تحميل السورة؟',
+                              style: SnackBarType.warning,
+                              actionLabel: 'تأكيد',
+                              duration: const Duration(seconds: 3),
+                              paddingBottom: 100,
+                              onAction: () {
+                                final surahs = state.surahInfoData;
 
-                              final updateCurrent = CurrentQuranAudioModel(
-                                countSurahVerse:
-                                    state.currentAudioData!.countSurahVerse,
-                                imageReader:
-                                    state.currentAudioData!.imageReader,
-                                nameReader: state.currentAudioData!.nameReader,
-                                nameSurah: surahs[widget.indexSurah!].surah,
-                                identifier: state.currentAudioData!.identifier,
-                                indexSurah: widget.indexSurah! + 1,
-                              );
-                              if (context.mounted) {
-                                context.read<DownloadQuranAudioBloc>().add(
-                                      StartDownloadQuranAudioEvent(
-                                        currentAudioData: updateCurrent,
-                                      ),
-                                    );
-                              }
-                            }
+                                final updateCurrent = CurrentQuranAudioModel(
+                                  countSurahVerse:
+                                      state.currentAudioData!.countSurahVerse,
+                                  imageReader:
+                                      state.currentAudioData!.imageReader,
+                                  nameReader:
+                                      state.currentAudioData!.nameReader,
+                                  nameSurah: surahs[widget.indexSurah!].surah,
+                                  identifier:
+                                      state.currentAudioData!.identifier,
+                                  indexSurah: widget.indexSurah! + 1,
+                                );
+                                if (context.mounted) {
+                                  context.read<DownloadQuranAudioBloc>().add(
+                                        StartDownloadQuranAudioEvent(
+                                          currentAudioData: updateCurrent,
+                                        ),
+                                      );
+                                }
+                              },
+                            );
                           },
                           child: Text(
                             'تحميل السورة',
-                            style: context.bodyMedium?.copyWith(
-                              color: context.onPrimaryColor,
-                            ),
+                            style: context.bodyMedium,
                           ),
                         ),
                       ];

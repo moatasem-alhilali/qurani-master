@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
 
 //
 
@@ -75,12 +75,7 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
           _animationController.reverse();
         }
 
-        return CircleAvatar(
-          radius: widget.radius,
-          backgroundColor: widget.backgroundColor ??
-              (playing ? Colors.redAccent : context.primaryColor),
-          child: _buildIconButton(playing, processingState),
-        );
+        return _buildIconButton(playing, processingState);
       },
     );
   }
@@ -92,23 +87,20 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
     if (processingState == ProcessingState.completed) {
       return const Icon(
         Icons.play_arrow_rounded,
-        color: Colors.white,
-        size: 28,
+        // size: 28,
       );
     }
 
-    return FittedBox(
-      child: IconButton(
-        onPressed: widget.onPressed ??
-            () {
-              _handlePlayPause(playing);
-            },
-        icon: AnimatedIcon(
-          icon: AnimatedIcons.play_pause,
-          progress: _animationController,
-          color: Colors.white,
-          size: 28,
-        ),
+    return IconButtonWidget(
+      tooltip: 'تشغيل/إيقاف',
+      onPressed: widget.onPressed ??
+          () {
+            _handlePlayPause(playing);
+          },
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.play_pause,
+        progress: _animationController,
+        // size: 28,
       ),
     );
   }

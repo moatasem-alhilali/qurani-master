@@ -25,12 +25,12 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.all(16.sp),
+      padding: padding ?? EdgeInsets.all(8.sp),
       margin: margin,
       width: width,
       height: height,
       decoration: BoxDecoration(
-        borderRadius: borderRadius ?? BorderRadius.circular(12),
+        borderRadius: borderRadius ?? BorderRadius.circular(12.r),
         color: color ?? context.surfaceColor,
         border: border,
       ),

@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/sheet/animated_bottom_resize_sheet.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/controller_audio_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/surah_verse_reader_list_widget.dart';
@@ -40,15 +39,17 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
         //   ],
         // ),
         gradient: LinearGradient(
-          stops: const [
-            0.40,
-            1,
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
           colors: [
-            context.secondaryColor,
             context.primaryColor,
+            context.primaryColor.withOpacity(0.1),
+            context.scaffoldBackgroundColor,
+          ],
+          stops: const [
+            0.0,
+            0.6,
+            1.0,
           ],
         ),
       ),
@@ -60,90 +61,39 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: context.onSurfaceColor.withAlpha(30),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      if (boxController.isAttached) boxController.closeBox();
-                    },
-                    color: Colors.white,
-                    iconSize: 18.sp,
-                    icon: const Icon(CupertinoIcons.chevron_down),
-                  ),
+                IconButtonWidget(
+                  onPressed: () {
+                    if (boxController.isAttached) boxController.closeBox();
+                  },
+                  // color: Colors.white,
+                  // iconSize: 18.sp,
+                  icon: const Icon(CupertinoIcons.chevron_down),
                 ),
                 Row(
                   children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      margin: const EdgeInsets.only(right: 10),
-                      decoration: BoxDecoration(
-                        color: context.onSurfaceColor.withAlpha(30),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                      ),
-                      child: IconButton(
-                        onPressed: () {},
-                        color: Colors.white,
-                        iconSize: 18.sp,
-                        icon: const Icon(Icons.share_outlined),
-                      ),
+                    IconButtonWidget(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share_outlined),
                     ),
                     BlocBuilder<QuranAudioBloc, QuranAudioState>(
                       buildWhen: (p, c) => p.isMuted != c.isMuted,
                       builder: (context, state) {
-                        return Container(
-                          width: 36,
-                          height: 36,
-                          margin: const EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                            color: context.onSurfaceColor.withAlpha(30),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(30),
-                            ),
+                        return IconButtonWidget(
+                          onPressed: () => context
+                              .read<QuranAudioBloc>()
+                              .add(ToggleMuteEvent()),
+                          icon: Icon(
+                            state.isMuted
+                                ? CupertinoIcons.volume_off
+                                : CupertinoIcons.volume_up,
                           ),
-                          child: IconButton(
-                            onPressed: () => context
-                                .read<QuranAudioBloc>()
-                                .add(ToggleMuteEvent()),
-                            color: Colors.white,
-                            iconSize: 18.sp,
-                            icon: Icon(
-                              state.isMuted
-                                  ? CupertinoIcons.volume_off
-                                  : CupertinoIcons.volume_up,
-                            ),
-                            tooltip:
-                                state.isMuted ? 'إلغاء الكتم' : 'كتم الصوت',
-                          ),
+                          tooltip: state.isMuted ? 'إلغاء الكتم' : 'كتم الصوت',
                         );
                       },
                     ),
-                    Container(
-                      width: 36,
-                      height: 36,
-                      margin: const EdgeInsets.only(right: 10),
-                      decoration: BoxDecoration(
-                        color: context.onSurfaceColor.withAlpha(30),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                      ),
-                      child: IconButton(
-                        onPressed: () {},
-                        color: Colors.white,
-                        iconSize: 18.sp,
-                        icon: const Icon(Icons.more_vert_rounded),
-                      ),
+                    IconButtonWidget(
+                      onPressed: () {},
+                      icon: const Icon(Icons.more_vert_rounded),
                     ),
                   ],
                 ),
@@ -241,21 +191,21 @@ class CollapsedQuranAudioBodyWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    IconButton(
+                    IconButtonWidget(
                       onPressed: () {},
                       icon: const Icon(
                         CupertinoIcons.music_note_list,
                         // color: Colors.white,
                       ),
                     ),
-                    IconButton(
+                    IconButtonWidget(
                       onPressed: () {},
                       icon: const Icon(
                         CupertinoIcons.heart,
                         // color: Colors.white,
                       ),
                     ),
-                    IconButton(
+                    IconButtonWidget(
                       onPressed: () {},
                       icon: const Icon(
                         CupertinoIcons.plus,

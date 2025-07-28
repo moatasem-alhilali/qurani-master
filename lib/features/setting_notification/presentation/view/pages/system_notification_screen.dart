@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
+import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
@@ -83,7 +83,7 @@ class _SystemNotificationScreenState extends State<SystemNotificationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'اشعارات النظام',
       // isScroll: false,
       body: BlocBuilder<NotificationBloc, NotificationState>(

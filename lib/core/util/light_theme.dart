@@ -54,7 +54,7 @@ final ThemeData lightTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.surface,
     elevation: 0,
-    iconTheme: IconThemeData(color: AppColors.gold),
+    iconTheme: IconThemeData(color: AppColors.onBackground),
     titleTextStyle: TextStyle(
       color: AppColors.onBackground,
       fontSize: 20,
@@ -63,8 +63,10 @@ final ThemeData lightTheme = ThemeData(
   ),
 
   // ICONS
-  iconTheme: const IconThemeData(color: AppColors.secondaryText),
-  primaryIconTheme: const IconThemeData(color: AppColors.gold),
+  iconTheme: const IconThemeData(
+    color: AppColors.onBackground,
+  ),
+  primaryIconTheme: const IconThemeData(color: AppColors.onBackground),
 
   // TEXT
   textTheme: TextTheme(
@@ -545,13 +547,13 @@ final ThemeData lightTheme = ThemeData(
   // ACTION ICONS (AppBar, menus)
   actionIconTheme: ActionIconThemeData(
     backButtonIconBuilder: (context) =>
-        const Icon(Icons.arrow_back, color: AppColors.gold),
+        const Icon(Icons.arrow_back, color: AppColors.onBackground),
     closeButtonIconBuilder: (context) =>
-        const Icon(Icons.close, color: AppColors.gold),
+        const Icon(Icons.close, color: AppColors.onBackground),
     drawerButtonIconBuilder: (context) =>
-        const Icon(Icons.menu, color: AppColors.gold),
+        const Icon(Icons.menu, color: AppColors.onBackground),
     endDrawerButtonIconBuilder: (context) =>
-        const Icon(Icons.menu_open, color: AppColors.gold),
+        const Icon(Icons.menu_open, color: AppColors.onBackground),
     // يمكنك تخصيص style إذا احتجت
   ),
 
@@ -628,6 +630,10 @@ final ThemeData lightTheme = ThemeData(
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      shadowColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.12)),
+      surfaceTintColor:
+          WidgetStateProperty.all(AppColors.onSurface.withOpacity(0.12)),
+      iconColor: WidgetStateProperty.all(AppColors.onSurface),
     ),
   ),
 

@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:quran_app/core/bloc/generic/query/query_bloc.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_query_extension.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/current_audio_model.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -84,7 +83,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                               style: context.titleMedium?.copyWith(
                                 color: currentPlaying
                                     ? context.primaryColor
-                                    : Colors.white,
+                                    : context.gray1,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24.sp,
                               ),
@@ -100,7 +99,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                   style: context.titleMedium?.copyWith(
                                     color: currentPlaying
                                         ? context.primaryColor
-                                        : Colors.white,
+                                        : context.gray1,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.sp,
                                   ),
@@ -115,7 +114,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                       label: reader.language,
                                       color: currentPlaying
                                           ? context.primaryColor
-                                          : Colors.white,
+                                          : context.gray1,
                                     ),
                                     SizedBox(width: 8.w),
                                     _InfoChip(
@@ -123,7 +122,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                       label: reader.format,
                                       color: currentPlaying
                                           ? context.primaryColor
-                                          : Colors.white,
+                                          : context.gray1,
                                     ),
                                     if (reader.bitrate != null &&
                                         reader.bitrate!.isNotEmpty) ...[
@@ -133,7 +132,7 @@ class SurahVerseReaderListWidget extends StatelessWidget {
                                         label: reader.bitrate!,
                                         color: currentPlaying
                                             ? context.primaryColor
-                                            : Colors.white,
+                                            : context.gray1,
                                       ),
                                     ],
                                   ],

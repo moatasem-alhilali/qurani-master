@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/widgets/icon_button_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
 import 'package:rxdart/rxdart.dart';
@@ -36,8 +36,8 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     curve: Curves.easeInOut,
                     child: ProgressBar(
                       progressBarColor: context.primaryColor,
-                      baseBarColor: context.primaryColor.withOpacity(0.24),
-                      bufferedBarColor: context.primaryColor.withOpacity(0.24),
+                      baseBarColor: context.secondaryColor,
+                      bufferedBarColor: context.surfaceColor,
                       thumbColor: context.primaryColor,
                       barHeight: 8,
                       thumbRadius: 5,
@@ -74,16 +74,14 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     buildWhen: (p, c) =>
                         p.isShuffleEnabled != c.isShuffleEnabled,
                     builder: (context, state) {
-                      return IconButton(
-                        tooltip: 'Shuffle',
+                      return IconButtonWidget(
+                        tooltip: 'تبديل الترتيب',
                         onPressed: () => context
                             .read<QuranAudioBloc>()
                             .add(ToggleShuffleEvent()),
                         icon: Icon(
                           CupertinoIcons.shuffle,
-                          color: state.isShuffleEnabled
-                              ? context.primaryColor
-                              : Colors.white,
+                          color: state.isShuffleEnabled ? context.gray1 : null,
                         ),
                       );
                     },
@@ -93,7 +91,8 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     children: [
                       //next
                       _AnimatedControlButton(
-                        backgroundColor: Colors.white,
+                        tooltip: 'التالي',
+                        backgroundColor: Colors.transparent,
                         onTap: () async {
                           context.read<QuranAudioBloc>().add(
                                 PlayAudioNextOrPreviousEvent(
@@ -103,7 +102,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                         },
                         child: const Icon(
                           Icons.skip_next_outlined,
-                          color: Colors.grey,
+                          // color: context.gray1,
                         ),
                       ),
                       const SizedBox(
@@ -120,6 +119,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           if (state.loadAudioSourceState ==
                               RequestState.error) {
                             return _AnimatedControlButton(
+                              tooltip: 'تحميل المقطع',
                               backgroundColor: context.primaryColor,
                               onTap: () {
                                 context.read<QuranAudioBloc>().add(
@@ -130,7 +130,6 @@ class ProgressWithControllerWidget extends StatelessWidget {
                               },
                               child: const Icon(
                                 Icons.play_arrow_rounded,
-                                color: Colors.white,
                               ),
                             );
                           }
@@ -146,7 +145,8 @@ class ProgressWithControllerWidget extends StatelessWidget {
 
                       //back
                       _AnimatedControlButton(
-                        backgroundColor: Colors.white,
+                        tooltip: 'السابق',
+                        backgroundColor: Colors.transparent,
                         onTap: () async {
                           context.read<QuranAudioBloc>().add(
                                 PlayAudioNextOrPreviousEvent(
@@ -156,7 +156,6 @@ class ProgressWithControllerWidget extends StatelessWidget {
                         },
                         child: const Icon(
                           Icons.skip_previous_outlined,
-                          color: Colors.grey,
                         ),
                       ),
                     ],
@@ -166,8 +165,8 @@ class ProgressWithControllerWidget extends StatelessWidget {
                     buildWhen: (p, c) => p.loopMode != c.loopMode,
                     builder: (context, state) {
                       final isActive = state.loopMode != LoopMode.off;
-                      return IconButton(
-                        tooltip: 'Repeat',
+                      return IconButtonWidget(
+                        tooltip: 'تكرار',
                         onPressed: () => context
                             .read<QuranAudioBloc>()
                             .add(CycleLoopModeEvent()),
@@ -176,7 +175,7 @@ class ProgressWithControllerWidget extends StatelessWidget {
                           state.loopMode == LoopMode.one
                               ? CupertinoIcons.repeat_1
                               : CupertinoIcons.repeat,
-                          color: isActive ? context.primaryColor : Colors.white,
+                          color: isActive ? context.gray1 : null,
                         ),
                       );
                     },
@@ -196,11 +195,12 @@ class _AnimatedControlButton extends StatefulWidget {
     required this.child,
     required this.onTap,
     required this.backgroundColor,
+    required this.tooltip,
   });
   final Widget child;
   final VoidCallback onTap;
   final Color backgroundColor;
-
+  final String tooltip;
   @override
   State<_AnimatedControlButton> createState() => _AnimatedControlButtonState();
 }
@@ -271,14 +271,11 @@ class _AnimatedControlButtonState extends State<_AnimatedControlButton>
           scale: _scaleAnimation.value,
           child: Transform.rotate(
             angle: _rotationAnimation.value,
-            child: StyleButtonWrap(
-              onTap: _handleTap,
-              child: CircleAvatar(
-                backgroundColor: widget.backgroundColor,
-                child: FittedBox(
-                  child: widget.child,
-                ),
-              ),
+            child: IconButtonWidget(
+              onPressed: _handleTap,
+              icon: widget.child,
+              backgroundColor: widget.backgroundColor,
+              tooltip: widget.tooltip,
             ),
           ),
         );

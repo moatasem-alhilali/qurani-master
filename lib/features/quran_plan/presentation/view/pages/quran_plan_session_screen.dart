@@ -32,12 +32,9 @@ class QuranPlanSessionScreen extends StatelessWidget {
       child: BlocBuilder<QuranPlanBloc, QuranPlanState>(
         builder: (context, state) {
           return AppScaffoldWidget(
-            titleWidget: Hero(
-              tag: 'plan_title_$planId',
-              child: Text(
-                title ?? state.selectedPlan?.title ?? '',
-                style: context.titleMedium,
-              ),
+            titleWidget: Text(
+              title ?? state.selectedPlan?.title ?? '',
+              style: context.titleMedium,
             ),
             onRefresh: () async {
               context.read<QuranPlanBloc>().add(LoadSessionsEvent(planId));
@@ -96,10 +93,12 @@ class QuranPlanSessionScreen extends StatelessWidget {
                         ),
                       ),
                       state.nextSessionState.when<QuranPlanSession>(
-                        onSuccess: () => CurrentSessionWidget(
-                          plan: state.selectedPlan!,
-                          session: state.nextSession!,
-                        ),
+                        onSuccess: () => state.nextSession != null
+                            ? CurrentSessionWidget(
+                                plan: state.selectedPlan!,
+                                session: state.nextSession!,
+                              )
+                            : const SizedBox.shrink(),
                         context: context,
                         onLoading: ShimmerWidget(
                           child: CurrentSessionWidget(

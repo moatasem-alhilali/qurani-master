@@ -46,7 +46,7 @@ class _NotificationSettingItemWidgetState
         if (widget.setting == null) return const SizedBox();
         return Container(
           decoration: BoxDecoration(
-            color: context.secondaryColor,
+            color: context.surfaceColor,
             borderRadius: widget.isLast
                 ? BorderRadius.only(
                     bottomLeft: Radius.circular(12.r),
