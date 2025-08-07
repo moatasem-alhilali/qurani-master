@@ -7,6 +7,8 @@ import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/backdrop_option_quran_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/body_read_quran_horizontal_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/tafser/body_read_quran_tafser_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/vertical/body_read_quran_vertical_widget.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/search/presentation/view/widgets/sarch_ayah_list_widget.dart';
 
@@ -40,6 +42,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
         return BlocBuilder<ReadQuranBloc, ReadQuranState>(
           builder: (context, state) {
             final boxController = context.read<ReadQuranBloc>().boxController;
+            final isTafser = state.isTafser;
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
                 statusBarColor: context.primaryColor,
@@ -47,7 +50,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                 statusBarBrightness: Brightness.dark,
               ),
               child: Scaffold(
-                backgroundColor: const Color(0xFFF1F2F4),
+                backgroundColor: !isTafser ? const Color(0xFFF1F2F4) : null,
                 body: SlidingBox(
                   minHeight: 50,
                   onSearchBoxHide: () {
@@ -65,10 +68,20 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                   maxHeight:
                       MediaQuery.of(context).size.height - state.minusHeight,
                   controller: boxController,
-                  color: const Color(0xFFF1F2F4),
+                  color: !isTafser
+                      ? const Color(0xFFF1F2F4)
+                      : context.scaffoldBackgroundColor,
                   backdrop: Backdrop(
                     fading: true,
-                    color: const Color(0xFFF1F2F4),
+                    color: !isTafser
+                        ? const Color(0xFFF1F2F4)
+                        : context.scaffoldBackgroundColor,
+
+                    body: const BodyReadQuranHorizontalWidget(),
+                    // body: isVertical
+                    //     ? const BodyReadQuranVerticalWidget()
+                    //     : const BodyReadQuranHorizontalWidget(),
+
                     appBar: BackdropAppBar(
                       searchBox: SearchBox(
                         controller:
@@ -105,8 +118,6 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
                         body: const SearchAyahListWidget(),
                       ),
                     ),
-                    body: const BodyReadQuranHorizontalWidget(),
-                    // body: const BodyReadQuranVerticalWidget(),
                   ),
                   collapsedBody: Center(
                     child: Text(

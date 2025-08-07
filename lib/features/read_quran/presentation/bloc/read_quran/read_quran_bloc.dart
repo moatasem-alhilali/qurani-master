@@ -23,6 +23,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     on<SetLastPageReadEvent>(_setLastPageRead);
     on<JumpToPageEvent>(_jumpToPage);
     on<ToggleBoxEvent>(_toggleBox);
+    on<ToggleTafserEvent>(_toggleTafser);
     on<ToggleHighBoxEvent>(_toggleHighBox);
     on<GetTafsirAyahEvent>(_getTafsirAyah);
     on<GetLastPageReadEvent>(_getLastPageRead);
@@ -37,6 +38,7 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
   final QuranReadHelperSqlite quranReadHelperSqlite = QuranReadHelperSqlite();
 
   bool toggle = false;
+  bool isTafser = false;
 
   /// Loads Quran data using the helper
   Future<void> _loadQuran(
@@ -111,6 +113,11 @@ class ReadQuranBloc extends Bloc<ReadQuranEvent, ReadQuranState> {
     boxController.isBoxOpen
         ? boxController.closeBox()
         : boxController.openBox();
+  }
+
+  void _toggleTafser(ToggleTafserEvent event, Emitter<ReadQuranState> emit) {
+    isTafser = !isTafser;
+    emit(state.copyWith(isTafser: isTafser));
   }
 
   void _toggleHighBox(

@@ -6,6 +6,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/header_read_quran_horizontal_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/read_quran_page_horizontal_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/tafser/read_quran_page_tafser_widget.dart';
 
 class BodyReadQuranHorizontalWidget extends StatelessWidget {
   const BodyReadQuranHorizontalWidget({
@@ -23,7 +24,9 @@ class BodyReadQuranHorizontalWidget extends StatelessWidget {
               const EdgeInsets.symmetric(vertical: 8),
               EdgeInsets.zero,
             ) as EdgeInsetsGeometry,
-            color: context.primaryColor.withValues(alpha: 0.1),
+            color: state.isTafser
+                ? null
+                : context.primaryColor.withValues(alpha: 0.1),
             height: context.getScreenHeight(),
             child: state.loadQuranState == RequestState.loading
                 ? const Center(
@@ -86,14 +89,18 @@ class BodyReadQuranHorizontalWidget extends StatelessWidget {
                                     horizontalPadding = width * 0.20;
                                   }
 
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: horizontalPadding,
-                                    ),
-                                    child: ReadQuranPageHorizontalWidget(
-                                      pageIndex: index,
-                                    ),
-                                  );
+                                  return state.isTafser
+                                      ? ReadQuranPageTafserWidget(
+                                          pageIndex: index,
+                                        )
+                                      : Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: horizontalPadding,
+                                          ),
+                                          child: ReadQuranPageHorizontalWidget(
+                                            pageIndex: index,
+                                          ),
+                                        );
                                 },
                               ),
                             ),

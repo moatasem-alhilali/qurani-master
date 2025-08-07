@@ -36,3 +36,5 @@ class JumpToPageEvent extends ReadQuranEvent {
 
 // toggle box
 class ToggleBoxEvent extends ReadQuranEvent {}
+
+class ToggleTafserEvent extends ReadQuranEvent {}

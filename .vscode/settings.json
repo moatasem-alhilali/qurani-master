@@ -1,3 +1,4 @@
 {
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.sourceDirectory": "/home/moatasem/Programmer/Freelancer/Flutter Projetcs/Me/Quran App/quran_app/linux"
 }

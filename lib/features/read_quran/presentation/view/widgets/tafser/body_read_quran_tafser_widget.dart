@@ -4,16 +4,19 @@ import 'package:quran_app/core/extensions/colors_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/horizontal/header_read_quran_horizontal_widget.dart';
+import 'package:quran_app/features/read_quran/presentation/view/widgets/tafser/read_quran_page_tafser_widget.dart';
 import 'package:quran_app/features/read_quran/presentation/view/widgets/vertical/read_quran_page_vertical_widget.dart';
 
-class BodyReadQuranVerticalWidget extends StatelessWidget {
-  const BodyReadQuranVerticalWidget({
+class BodyReadQuranTafserlWidget extends StatelessWidget {
+  const BodyReadQuranTafserlWidget({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OldReadQuranBloc, OldReadQuranState>(
+    return BlocBuilder<ReadQuranBloc, ReadQuranState>(
       builder: (context, state) {
         final pageController = context.read<OldReadQuranBloc>().pageController;
         return SafeArea(
@@ -42,12 +45,13 @@ class BodyReadQuranVerticalWidget extends StatelessWidget {
                       return Center(
                         child: Stack(
                           children: [
-                            // Align(
-                            //   alignment: Alignment.topCenter,
-                            //   child: HeaderReadQuranVerticalWidget(
-                            //     index: index,
-                            //   ),
-                            // ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: HeaderReadQuranHorizontalWidget(
+                                index: index,
+                                state: state,
+                              ),
+                            ),
                             Align(
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
@@ -65,7 +69,7 @@ class BodyReadQuranVerticalWidget extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(
                                         // horizontal: horizontal,
                                         ),
-                                    child: ReadQuranPageVerticalWidget(
+                                    child: ReadQuranPageTafserWidget(
                                       pageIndex: index,
                                     ),
                                   );
