@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
-import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
 import 'package:quran_app/core/widgets/icon_button_widget.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_audio/presentation/view/widgets/icon_play_toggle_audio_widget.dart';
@@ -26,65 +24,68 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
       margin: EdgeInsets.only(top: 75.h),
       child: Column(
         children: [
-          Container(
-            height: 50,
-            margin: const EdgeInsets.only(top: 15),
-            child: Row(
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'اونلاين',
-                    style: context.titleMedium?.copyWith(
-                      fontSize: 22,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.showCustomSnackbar(
-                      'قريبا سيتم إضافة هذه الميزة',
-                      style: SnackBarType.warning,
-                    );
-                  },
-                  child: Text(
-                    'محفوظ',
-                    style: context.titleMedium?.copyWith(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.showCustomSnackbar(
-                      'قريبا سيتم إضافة هذه الميزة',
-                      style: SnackBarType.warning,
-                    );
-                  },
-                  child: Text(
-                    'المفضلة',
-                    style: context.titleMedium?.copyWith(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.showCustomSnackbar(
-                      'قريبا سيتم إضافة هذه الميزة',
-                      style: SnackBarType.warning,
-                    );
-                  },
-                  child: Text(
-                    'الاكثر تحميلا',
-                    style: context.titleMedium?.copyWith(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          SizedBox(
+            height: 50.h,
           ),
+          // Container(
+          //   height: 50,
+          //   margin: const EdgeInsets.only(top: 15),
+          //   child: Row(
+          //     children: [
+          //       TextButton(
+          //         onPressed: () {},
+          //         child: Text(
+          //           'اونلاين',
+          //           style: context.titleMedium?.copyWith(
+          //             fontSize: 22,
+          //           ),
+          //         ),
+          //       ),
+          //       TextButton(
+          //         onPressed: () {
+          //           context.showCustomSnackbar(
+          //             'قريبا سيتم إضافة هذه الميزة',
+          //             style: SnackBarType.warning,
+          //           );
+          //         },
+          //         child: Text(
+          //           'محفوظ',
+          //           style: context.titleMedium?.copyWith(
+          //             fontSize: 14,
+          //           ),
+          //         ),
+          //       ),
+          //       TextButton(
+          //         onPressed: () {
+          //           context.showCustomSnackbar(
+          //             'قريبا سيتم إضافة هذه الميزة',
+          //             style: SnackBarType.warning,
+          //           );
+          //         },
+          //         child: Text(
+          //           'المفضلة',
+          //           style: context.titleMedium?.copyWith(
+          //             fontSize: 14,
+          //           ),
+          //         ),
+          //       ),
+          //       TextButton(
+          //         onPressed: () {
+          //           context.showCustomSnackbar(
+          //             'قريبا سيتم إضافة هذه الميزة',
+          //             style: SnackBarType.warning,
+          //           );
+          //         },
+          //         child: Text(
+          //           'الاكثر تحميلا',
+          //           style: context.titleMedium?.copyWith(
+          //             fontSize: 14,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -103,28 +104,28 @@ class BackdropSurahListAudioBodyWidget extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            IconButtonWidget(
-                              tooltip: 'تبديل الترتيب',
-                              onPressed: () {
-                                context.showCustomSnackbar(
-                                  'قريبا سيتم إضافة هذه الميزة',
-                                  style: SnackBarType.warning,
-                                );
-                              },
-                              icon: const Icon(
-                                CupertinoIcons.sort_down,
-                                // size: 23,
-                              ),
-                            ),
+                            // IconButtonWidget(
+                            //   tooltip: 'تبديل الترتيب',
+                            //   onPressed: () {
+                            //     context.showCustomSnackbar(
+                            //       'قريبا سيتم إضافة هذه الميزة',
+                            //       style: SnackBarType.warning,
+                            //     );
+                            //   },
+                            //   icon: const Icon(
+                            //     CupertinoIcons.sort_down,
+                            //     // size: 23,
+                            //   ),
+                            // ),
                             TextButton(
                               onPressed: () {
-                                context.showCustomSnackbar(
-                                  'قريبا سيتم إضافة هذه الميزة',
-                                  style: SnackBarType.warning,
-                                );
+                                // context.showCustomSnackbar(
+                                //   'قريبا سيتم إضافة هذه الميزة',
+                                //   style: SnackBarType.warning,
+                                // );
                               },
                               child: Text(
-                                'تاريخ الاضافة',
+                                'القرأن الكريم',
                                 style: context.titleMedium,
                               ),
                             ),
