@@ -220,7 +220,16 @@ class _AppState extends State<_App> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('مرحبا'),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 12.r,
+                              child: const Icon(Icons.person),
+                            ),
+                            SizedBox(width: 4.w),
+                            const Text('مرحبا بعودتك'),
+                          ],
+                        ),
                         IconButton(
                           onPressed: () {
                             context.push(const SettingScreen());
