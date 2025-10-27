@@ -33,7 +33,7 @@ class DhikrCardWidget extends StatelessWidget {
           child: Container(
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: context.secondaryColor,
+              color: context.backgroundColor,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(

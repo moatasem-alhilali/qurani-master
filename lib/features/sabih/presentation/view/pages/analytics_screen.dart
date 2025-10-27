@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics_period_selector.dart';
@@ -40,48 +40,50 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
-      isScroll: false,
-      showBackground: false,
+    return AppScaffoldWidget(
       title: 'الإحصائيات',
-      body: BlocBuilder<SabihBloc, SabihState>(
-        buildWhen: (previous, current) =>
-            previous.analyticsLoadState != current.analyticsLoadState ||
-            previous.todayCounts != current.todayCounts ||
-            previous.weekCounts != current.weekCounts ||
-            previous.monthCounts != current.monthCounts ||
-            previous.allTimeCounts != current.allTimeCounts,
-        builder: (context, state) {
-          if (state.analyticsLoadState == LoadState.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      onRefresh: () async {},
+      body: SizedBox(
+        height: context.fullHeight,
+        child: BlocBuilder<SabihBloc, SabihState>(
+          buildWhen: (previous, current) =>
+              previous.analyticsLoadState != current.analyticsLoadState ||
+              previous.todayCounts != current.todayCounts ||
+              previous.weekCounts != current.weekCounts ||
+              previous.monthCounts != current.monthCounts ||
+              previous.allTimeCounts != current.allTimeCounts,
+          builder: (context, state) {
+            if (state.analyticsLoadState == LoadState.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state.analyticsLoadState == LoadState.error) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.errorMessage ?? 'حدث خطأ'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<SabihBloc>().add(GetAnalyticsDataEvent());
-                    },
-                    child: const Text('إعادة المحاولة'),
-                  ),
-                ],
-              ),
+            if (state.analyticsLoadState == LoadState.error) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.errorMessage ?? 'حدث خطأ'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<SabihBloc>().add(GetAnalyticsDataEvent());
+                      },
+                      child: const Text('إعادة المحاولة'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return TabBarView(
+              controller: _tabController,
+              children: [
+                _buildOverviewTab(state),
+                _buildDetailedStatsTab(state),
+              ],
             );
-          }
-
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              _buildOverviewTab(state),
-              _buildDetailedStatsTab(state),
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }
