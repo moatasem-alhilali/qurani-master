@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 
 class VersionManagementScreen extends StatefulWidget {
@@ -77,9 +77,9 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BaseHomeWidget(
+    return AppScaffoldWidget(
       title: 'إدارة الإصدارات',
-      showBackground: false,
+      // showBackground: false,
       body: BlocConsumer<VersionBloc, VersionState>(
         listener: (context, state) {
           // Handle error messages
@@ -111,7 +111,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                   );
             },
             color: context.primaryColor,
-            backgroundColor: context.surfaceColor,
+            backgroundColor: context.backgroundColor,
             child: Padding(
               padding: EdgeInsets.all(16.w),
               child: Column(
@@ -192,7 +192,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
     return Container(
       decoration: BoxDecoration(
         gradient: gradient,
-        color: context.secondaryColor,
+        color: backgroundColor ?? context.surfaceColor,
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: ClipRRect(
@@ -712,7 +712,7 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                       ],
                     )
                   : null,
-              color: onTap != null ? null : context.gray6.withAlpha(30),
+              color: onTap != null ? null : context.gray1.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: onTap != null
