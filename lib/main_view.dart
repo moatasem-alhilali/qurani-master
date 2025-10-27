@@ -14,6 +14,7 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/core/util/light_theme.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
@@ -29,6 +30,7 @@ import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/o
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
+import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -214,7 +216,30 @@ class _AppState extends State<_App> {
                 ),
               ),
             ),
-            body: SafeArea(child: screens[currentPage]),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('مرحبا'),
+                        IconButton(
+                          onPressed: () {
+                            context.push(SettingScreen());
+                          },
+                          icon: const Icon(
+                            Icons.settings,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(child: screens[currentPage]),
+                ],
+              ),
+            ),
           );
         },
       ),

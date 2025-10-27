@@ -1,74 +1,62 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/bloc/base/base_bloc.dart';
+import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 // Static current page for global access
 int currentPage = 0;
 
-class CustomBottomNavigationBarWidget extends StatelessWidget {
+class CustomBottomNavigationBarWidget extends StatefulWidget {
   const CustomBottomNavigationBarWidget({super.key});
 
+  @override
+  State<CustomBottomNavigationBarWidget> createState() =>
+      _CustomBottomNavigationBarWidgetState();
+}
+
+class _CustomBottomNavigationBarWidgetState
+    extends State<CustomBottomNavigationBarWidget> {
   void _onNavItemTapped(int index, BuildContext context) {
-    // Add haptic feedback
-    HapticFeedback.lightImpact();
-
-    // Update global state
     currentPage = index;
-
-    // Update global state through BlocProvider
-    context.read<BaseBloc>().add(SetStateBaseBlocEvent());
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BaseBloc, BaseState>(
-      builder: (context, state) {
-        final selectedIndex = currentPage;
-        final screenWidth = MediaQuery.of(context).size.width;
+    final selectedIndex = currentPage;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-        return Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: _getResponsiveValue(screenWidth, 8, 12, 16),
-            vertical: _getResponsiveValue(screenWidth, 4, 6, 8),
-          ),
-          child: CardWidget(
-            padding: EdgeInsets.symmetric(
-              horizontal: _getResponsiveValue(screenWidth, 8, 12, 16),
-              vertical: _getResponsiveValue(screenWidth, 4, 6, 8),
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: _getResponsiveValue(screenWidth, 8, 12, 16),
+        vertical: _getResponsiveValue(screenWidth, 4, 6, 8),
+      ),
+      child: CardWidget(
+        padding: EdgeInsets.symmetric(
+          horizontal: _getResponsiveValue(screenWidth, 8, 12, 16),
+          vertical: _getResponsiveValue(screenWidth, 4, 6, 8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(
+              icon: CupertinoIcons.home,
+              label: 'الرئيسية',
+              index: 0,
+              selectedIndex: selectedIndex,
+              context: context,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(
-                  icon: CupertinoIcons.home,
-                  label: 'الرئيسية',
-                  index: 0,
-                  selectedIndex: selectedIndex,
-                  context: context,
-                ),
-                _buildNavItem(
-                  icon: CupertinoIcons.collections,
-                  label: 'الاقسام',
-                  index: 1,
-                  selectedIndex: selectedIndex,
-                  context: context,
-                ),
-                _buildNavItem(
-                  icon: CupertinoIcons.settings_solid,
-                  label: 'الإعدادات',
-                  index: 2,
-                  selectedIndex: selectedIndex,
-                  context: context,
-                ),
-              ],
+            _buildNavItem(
+              icon: CupertinoIcons.collections,
+              label: 'الاقسام',
+              index: 1,
+              selectedIndex: selectedIndex,
+              context: context,
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 
@@ -127,7 +115,7 @@ class _BottomNavItemState extends State<BottomNavItem>
   late Animation<double> _bounceAnimation;
   late Animation<double> _scaleAnimation;
 
-  bool _isPressed = false;
+  final bool _isPressed = false;
 
   @override
   void initState() {
@@ -185,40 +173,19 @@ class _BottomNavItemState extends State<BottomNavItem>
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details) {
-    if (mounted) {
-      setState(() {
-        _isPressed = true;
-      });
-    }
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    if (mounted) {
-      setState(() {
-        _isPressed = false;
-      });
-      widget.onTap?.call();
-    }
-  }
-
-  void _onTapCancel() {
-    if (mounted) {
-      setState(() {
-        _isPressed = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
+    return StyleButtonWrap(
+      // onTapDown: _onTapDown,
+      // onTapUp: _onTapUp,
+      // onTapCancel: _onTapCancel,
+      onTap: () {
+        widget.onTap?.call();
+      },
+
       child: AnimatedScale(
         scale: _isPressed ? 0.95 : 1.0,
         duration: const Duration(milliseconds: 100),

@@ -63,7 +63,7 @@ List<Widget> screens = [
   const CategoryScreen(),
   // const AnotherScreen(),
 
-  const SettingScreen(),
+  // const SettingScreen(),
 ];
 
 //

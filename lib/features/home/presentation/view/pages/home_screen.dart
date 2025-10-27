@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
             ),
         child: Column(
           children: [
+          
             const QuranLottieWidget(),
             // Amazing Prayer Countdown Widget
             BlocBuilder<PrayerTimeCubit, PrayerTimeState>(

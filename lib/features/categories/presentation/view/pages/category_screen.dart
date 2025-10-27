@@ -95,38 +95,38 @@ class CategoryScreen extends StatelessWidget {
                       width: context.getWidth(35),
                       height: context.getHight(18),
                     ),
-                    FeatureCardIconWidget(
-                      title: 'مصاحف مترجمة معانيها',
-                      icon: const Icon(Icons.translate_rounded),
-                      onTap: () {
-                        context.push(
-                          BaseAudioScreen(
-                            id: '364768',
-                            title: 'مصاحف مترجمة معانيها',
-                          ),
-                        );
-                      },
-                      shapeType: CardShapeType.triangles,
-                      maxLines: 1,
-                      width: context.getWidth(35),
-                      height: context.getHight(18),
-                    ),
-                    FeatureCardIconWidget(
-                      title: 'مصاحف مترجمة',
-                      icon: const Icon(Icons.g_translate_rounded),
-                      maxLines: 1,
-                      onTap: () {
-                        context.push(
-                          BaseAudioScreen(
-                            id: '691',
-                            title: 'مصاحف مترجمة ',
-                          ),
-                        );
-                      },
-                      shapeType: CardShapeType.waves,
-                      width: context.getWidth(35),
-                      height: context.getHight(18),
-                    ),
+                    // FeatureCardIconWidget(
+                    //   title: 'مصاحف مترجمة معانيها',
+                    //   icon: const Icon(Icons.translate_rounded),
+                    //   onTap: () {
+                    //     context.push(
+                    //       BaseAudioScreen(
+                    //         id: '364768',
+                    //         title: 'مصاحف مترجمة معانيها',
+                    //       ),
+                    //     );
+                    //   },
+                    //   shapeType: CardShapeType.triangles,
+                    //   maxLines: 1,
+                    //   width: context.getWidth(35),
+                    //   height: context.getHight(18),
+                    // ),
+                    // FeatureCardIconWidget(
+                    //   title: 'مصاحف مترجمة',
+                    //   icon: const Icon(Icons.g_translate_rounded),
+                    //   maxLines: 1,
+                    //   onTap: () {
+                    //     context.push(
+                    //       BaseAudioScreen(
+                    //         id: '691',
+                    //         title: 'مصاحف مترجمة ',
+                    //       ),
+                    //     );
+                    //   },
+                    //   shapeType: CardShapeType.waves,
+                    //   width: context.getWidth(35),
+                    //   height: context.getHight(18),
+                    // ),
                   ],
                 ),
               ),
@@ -142,11 +142,11 @@ class CategoryScreen extends StatelessWidget {
                 mainAxisSpacing: 10,
               ),
               children: [
-                CategorySectionItem(
-                  title: 'فيديوهات',
-                  icon: const Icon(Icons.video_library_rounded),
-                  data: _getCategorySectionData()[0],
-                ),
+                // CategorySectionItem(
+                //   title: 'فيديوهات',
+                //   icon: const Icon(Icons.video_library_rounded),
+                //   data: _getCategorySectionData()[0],
+                // ),
                 CategorySectionItem(
                   title: 'كتب',
                   icon: const Icon(Icons.menu_book_rounded),
@@ -165,47 +165,47 @@ class CategoryScreen extends StatelessWidget {
                   data: _getCategorySectionData()[3],
                   shapeType: CardShapeType.hexagons,
                 ),
-                CategorySectionItem(
-                  title: 'فتاوي',
-                  icon: const Icon(Icons.balance_rounded),
-                  data: _getCategorySectionData()[4],
-                  shapeType: CardShapeType.triangles,
-                ),
+                // CategorySectionItem(
+                //   title: 'فتاوي',
+                //   icon: const Icon(Icons.balance_rounded),
+                //   data: _getCategorySectionData()[4],
+                //   shapeType: CardShapeType.triangles,
+                // ),
                 CategorySectionItem(
                   title: 'قرأن',
                   icon: const Icon(Icons.import_contacts_rounded),
                   data: _getCategorySectionData()[5],
                   shapeType: CardShapeType.waves,
                 ),
-                CategorySectionItem(
-                  title: 'عروض تقديميه',
-                  icon: const Icon(Icons.slideshow_rounded),
-                  data: _getCategorySectionData()[6],
-                ),
-                CategorySectionItem(
-                  title: 'اخبار',
-                  icon: const Icon(Icons.newspaper_rounded),
-                  data: _getCategorySectionData()[7],
-                  shapeType: CardShapeType.stars,
-                ),
-                CategorySectionItem(
-                  title: 'مقالات',
-                  icon: const Icon(Icons.article_rounded),
-                  data: _getCategorySectionData()[8],
-                  shapeType: CardShapeType.diamonds,
-                ),
-                CategorySectionItem(
-                  title: 'تطبيقات',
-                  icon: const Icon(Icons.apps_rounded),
-                  data: _getCategorySectionData()[9],
-                  shapeType: CardShapeType.hexagons,
-                ),
-                CategorySectionItem(
-                  title: 'خطب',
-                  icon: const Icon(Icons.record_voice_over_rounded),
-                  data: _getCategorySectionData()[10],
-                  shapeType: CardShapeType.triangles,
-                ),
+                // CategorySectionItem(
+                //   title: 'عروض تقديميه',
+                //   icon: const Icon(Icons.slideshow_rounded),
+                //   data: _getCategorySectionData()[6],
+                // ),
+                // CategorySectionItem(
+                //   title: 'اخبار',
+                //   icon: const Icon(Icons.newspaper_rounded),
+                //   data: _getCategorySectionData()[7],
+                //   shapeType: CardShapeType.stars,
+                // ),
+                // CategorySectionItem(
+                //   title: 'مقالات',
+                //   icon: const Icon(Icons.article_rounded),
+                //   data: _getCategorySectionData()[8],
+                //   shapeType: CardShapeType.diamonds,
+                // ),
+                // CategorySectionItem(
+                //   title: 'تطبيقات',
+                //   icon: const Icon(Icons.apps_rounded),
+                //   data: _getCategorySectionData()[9],
+                //   shapeType: CardShapeType.hexagons,
+                // ),
+                // CategorySectionItem(
+                //   title: 'خطب',
+                //   icon: const Icon(Icons.record_voice_over_rounded),
+                //   data: _getCategorySectionData()[10],
+                //   shapeType: CardShapeType.triangles,
+                // ),
               ],
             ),
             const BaseHederWidget(text: 'الاقسام '),
@@ -248,23 +248,23 @@ class CategoryScreen extends StatelessWidget {
                   icon: const Icon(Icons.gavel_rounded),
                   shapeType: CardShapeType.triangles,
                 ),
-                QuranCategory(
-                  data: kotabManbrJson,
-                  title: 'الخطب المنبرية',
-                  icon: const Icon(Icons.campaign_rounded),
-                  shapeType: CardShapeType.waves,
-                ),
-                QuranCategory(
-                  data: fdaelJson,
-                  title: 'فضائل الأقوال',
-                  icon: const Icon(Icons.favorite_rounded),
-                ),
-                QuranCategory(
-                  data: dawaForAllhJson,
-                  title: 'الدعوة إلى الله',
-                  icon: const Icon(Icons.volunteer_activism_rounded),
-                  shapeType: CardShapeType.stars,
-                ),
+                // QuranCategory(
+                //   data: kotabManbrJson,
+                //   title: 'الخطب المنبرية',
+                //   icon: const Icon(Icons.campaign_rounded),
+                //   shapeType: CardShapeType.waves,
+                // ),
+                // QuranCategory(
+                //   data: fdaelJson,
+                //   title: 'فضائل الأقوال',
+                //   icon: const Icon(Icons.favorite_rounded),
+                // ),
+                // QuranCategory(
+                //   data: dawaForAllhJson,
+                //   title: 'الدعوة إلى الله',
+                //   icon: const Icon(Icons.volunteer_activism_rounded),
+                //   shapeType: CardShapeType.stars,
+                // ),
                 QuranCategory(
                   data: historyJson,
                   title: 'التاريخ',
