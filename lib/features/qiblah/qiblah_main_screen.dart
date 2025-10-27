@@ -108,10 +108,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       _fadeController.forward();
       _slideController.forward();
     } catch (e) {
+      if(mounted){
+
       setState(() {
         _errorMessage = 'حدث خطأ في تحديد اتجاه القبلة: $e';
         _isLoading = false;
       });
+      }
     }
   }
 

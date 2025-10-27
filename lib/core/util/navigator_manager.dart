@@ -9,11 +9,14 @@ void fadeNavigation({
   Navigator.push(
     context,
     PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 500),
+      transitionDuration: const Duration(milliseconds: 250),
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeInOut,
+          ),
           child: child,
         );
       },
@@ -28,11 +31,14 @@ void fadeNavigationWithRemove({
   Navigator.pushAndRemoveUntil(
     context,
     PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 500),
+      transitionDuration: const Duration(milliseconds: 250),
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeInOut,
+          ),
           child: child,
         );
       },
@@ -48,14 +54,18 @@ void navigateToWithAnimation3({
   Navigator.push(
     context,
     PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return SlideTransition(
           position: Tween<Offset>(
             begin: const Offset(1, 0),
             end: Offset.zero,
-          ).animate(animation),
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOutCubic,
+            ),
+          ),
           child: child,
         );
       },
