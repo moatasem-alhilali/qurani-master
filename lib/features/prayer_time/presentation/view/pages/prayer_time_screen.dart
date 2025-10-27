@@ -1,7 +1,7 @@
 import 'package:adhan/src/prayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/timeline_list_item.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';

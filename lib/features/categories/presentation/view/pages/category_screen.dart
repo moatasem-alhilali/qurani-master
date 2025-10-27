@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';

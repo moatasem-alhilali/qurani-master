@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';

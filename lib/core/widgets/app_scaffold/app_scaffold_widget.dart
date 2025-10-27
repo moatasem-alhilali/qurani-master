@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_sliver_collapsing_toolbar_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/small_header_delegate_widget.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 
-class AppScaffoldCollapsingToolbarWidget extends StatefulWidget {
-  const AppScaffoldCollapsingToolbarWidget({
+class AppScaffoldWidget extends StatefulWidget {
+  const AppScaffoldWidget({
     this.body,
     super.key,
     this.background,
@@ -25,7 +25,8 @@ class AppScaffoldCollapsingToolbarWidget extends StatefulWidget {
     this.showLargeHeader = true,
     this.showSmallHeader = true,
     this.trailing,
-    this.initialOffset=100,
+    this.initialOffset = 100,
+    this.sliverChildPosition= SliverChildPosition.start,
   });
   final Widget? body;
   final Future<void> Function()? onRefresh;
@@ -46,13 +47,13 @@ class AppScaffoldCollapsingToolbarWidget extends StatefulWidget {
   final bool showLargeHeader;
   final bool showSmallHeader;
   final double? initialOffset;
+  final SliverChildPosition sliverChildPosition;
+
   @override
-  State<AppScaffoldCollapsingToolbarWidget> createState() =>
-      _AppScaffoldCollapsingToolbarWidgetState();
+  State<AppScaffoldWidget> createState() => _AppScaffoldWidgetState();
 }
 
-class _AppScaffoldCollapsingToolbarWidgetState
-    extends State<AppScaffoldCollapsingToolbarWidget> {
+class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
 // toolbar logic
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<double> _scrollOffset = ValueNotifier(0);
@@ -102,64 +103,68 @@ class _AppScaffoldCollapsingToolbarWidgetState
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
       backgroundColor: context.scaffoldBackgroundColor,
       bottomNavigationBar: widget.bottomNavigationBar ?? const SizedBox(),
-      body: Material(
-        color: context.scaffoldBackgroundColor,
-        child: SafeArea(
-          child: NestedScrollView(
-            controller: _scrollController,
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              if (widget.showLargeHeader)
-                SliverAppBar(
-                  expandedHeight: 110,
-                  backgroundColor: context.scaffoldBackgroundColor,
-                  elevation: 0,
-                  leading: const SizedBox(),
-                  flexibleSpace: LayoutBuilder(
-                    builder: (context, constraints) {
-                      const min = kToolbarHeight;
-                      const double max = 110;
-                      final t = ((constraints.maxHeight - min) / (max - min))
-                          .clamp(0.0, 1.0);
-                      return Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Positioned.fill(
-                            child: Opacity(
-                              opacity: t,
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 22),
-                                  child: Text(
-                                    widget.title ?? '',
-                                    style: context.titleLarge?.copyWith(
-                                      fontSize: 32.sp,
-                                    ),
-                                  ),
-                                ),
+      body: SafeArea(
+        child: NestedScrollView(
+          controller: _scrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            if (widget.showLargeHeader)
+              SliverAppBar(
+                expandedHeight: 110,
+                backgroundColor: context.scaffoldBackgroundColor,
+                elevation: 0,
+                leading: const SizedBox(),
+                flexibleSpace: LayoutBuilder(
+                  builder: (context, constraints) {
+                    const min = kToolbarHeight;
+                    const double max = 110;
+                    final t = ((constraints.maxHeight - min) / (max - min))
+                        .clamp(0.0, 1.0);
+                    return Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Positioned.fill(
+                          child: Opacity(
+                            opacity: t,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 22),
+                                child: widget.titleWidget != null
+                                    ? widget.titleWidget!
+                                    : Text(
+                                        widget.title ?? '',
+                                        style: context.titleLarge?.copyWith(
+                                          fontSize: 32.sp,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-              if (widget.showSmallHeader)
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: SmallHeaderDelegateWidget(
-                    backgroundColor: context.scaffoldBackgroundColor,
-                    height: 54,
-                    scrollOffsetNotifier: _scrollOffset,
-                    titleOpacityFn: _titleOpacity,
-                    titleText: widget.title ?? '',
-                    leading: widget.leading,
-                    trailing: widget.trailing,
-                  ),
+              ),
+            if (widget.showSmallHeader)
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: SmallHeaderDelegateWidget(
+                  backgroundColor: context.scaffoldBackgroundColor,
+                  height: 54,
+                  scrollOffsetNotifier: _scrollOffset,
+                  titleOpacityFn: _titleOpacity,
+                  titleText: widget.title ?? '',
+                  leading: widget.leading,
+                  trailing: widget.trailing,
+                  title: widget.titleWidget,
                 ),
-            ],
-            body: AppSliverWidget(
+              ),
+          ],
+          body: Material(
+            color: context.scaffoldBackgroundColor,
+            child: AppSliverWidget(
+              sliverChildPosition: widget.sliverChildPosition,
               slivers: widget.slivers,
               onRefresh: widget.onRefresh,
               child: widget.body ?? const SizedBox(),

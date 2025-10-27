@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold/header_background.dart';
+import 'package:quran_app/core/widgets/app_scaffold/header_background.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 class MainSliverAppBar extends StatelessWidget {
