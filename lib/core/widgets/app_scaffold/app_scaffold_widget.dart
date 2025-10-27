@@ -166,6 +166,7 @@ class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
             child: AppSliverWidget(
               sliverChildPosition: widget.sliverChildPosition,
               slivers: widget.slivers,
+              
               onRefresh: widget.onRefresh,
               child: widget.body ?? const SizedBox(),
             ),
