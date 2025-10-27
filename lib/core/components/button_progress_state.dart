@@ -337,7 +337,7 @@ class _StyleButtonWrapState extends State<StyleButtonWrap>
       onTapDown: (_) => _animationController.forward(),
       onTapCancel: () => _animationController.reverse(),
       onLongPress: () {
-        HapticFeedback.lightImpact();
+        // HapticFeedback.lightImpact();
         widget.onLongPress?.call();
       },
       child: AnimatedBuilder(
@@ -375,7 +375,7 @@ class BaseOnTap extends StatelessWidget {
       overlayColor:
           WidgetStatePropertyAll(context.primaryColor.withOpacity(0.1)),
       onTap: () {
-        HapticFeedback.lightImpact();
+        // HapticFeedback.lightImpact();
         onTap?.call();
       },
       child: child,
