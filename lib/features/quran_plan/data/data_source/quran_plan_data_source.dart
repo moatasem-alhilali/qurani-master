@@ -171,6 +171,24 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
     return maps.map(QuranPlanSession.fromMap).toList();
   }
 
+  /// get sessions with pagination
+  Future<List<QuranPlanSession>> getSessionsPaginated(
+    int planId, {
+    required int page,
+    required int pageSize,
+  }) async {
+    final offset = page * pageSize;
+    final maps = await _db.query(
+      DatabaseTables.quranPlanSession,
+      where: 'plan_id=?',
+      whereArgs: [planId],
+      orderBy: 'session_number ASC',
+      limit: pageSize,
+      offset: offset,
+    );
+    return maps.map(QuranPlanSession.fromMap).toList();
+  }
+
   /// complete session
   Future<void> completeSession(int sessionId) async {
     await _db.update(

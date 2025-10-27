@@ -14,7 +14,7 @@ import 'package:quran_app/features/quran_plan/presentation/view/widgets/current_
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_widget.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/smart_analysis_plan_widget.dart';
 
-class QuranPlanSessionScreen extends StatelessWidget {
+class QuranPlanSessionScreen extends StatefulWidget {
   const QuranPlanSessionScreen({
     required this.planId,
     this.title,
@@ -24,22 +24,57 @@ class QuranPlanSessionScreen extends StatelessWidget {
   final String? title;
 
   @override
+  State<QuranPlanSessionScreen> createState() => _QuranPlanSessionScreenState();
+}
+
+class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<QuranPlanBloc>().add(LoadMoreSessionsEvent(widget.planId));
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<QuranPlanBloc>()
-        ..add(LoadSessionsEvent(planId))
-        ..add(LoadNextSessionEvent(planId)),
+        ..add(LoadSessionsEvent(widget.planId))
+        ..add(LoadNextSessionEvent(widget.planId)),
       child: BlocBuilder<QuranPlanBloc, QuranPlanState>(
         builder: (context, state) {
           return AppScaffoldWidget(
             titleWidget: Text(
-              title ?? state.selectedPlan?.title ?? '',
+              widget.title ?? state.selectedPlan?.title ?? '',
               style: context.titleMedium,
             ),
             onRefresh: () async {
-              context.read<QuranPlanBloc>().add(LoadSessionsEvent(planId));
+              context
+                  .read<QuranPlanBloc>()
+                  .add(LoadSessionsEvent(widget.planId));
             },
-            body: Padding(
+            body: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(8),
               child: BlocConsumer<QuranPlanBloc, QuranPlanState>(
                 listenWhen: (prev, curr) =>
@@ -113,7 +148,7 @@ class QuranPlanSessionScreen extends StatelessWidget {
                               createdAt: DateTime.now(),
                             ),
                             session: QuranPlanSession(
-                              planId: planId,
+                              planId: widget.planId,
                               sessionNumber: 1,
                               fromSurahId: 1,
                               fromAyahNumber: 1,
@@ -156,28 +191,52 @@ class QuranPlanSessionScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       state.requestState.when<QuranPlanSession>(
-                        onSuccess: () => ListView.builder(
-                          itemCount: state.sessions.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final session = state.sessions[index];
-                            return SessionWidget(
-                              plan: state.selectedPlan!,
-                              session: session,
-                            );
-                          },
+                        onSuccess: () => Column(
+                          children: [
+                            ListView.builder(
+                              itemCount: state.sessions.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final session = state.sessions[index];
+                                return SessionWidget(
+                                  plan: state.selectedPlan!,
+                                  session: session,
+                                );
+                              },
+                            ),
+                            if (state.isLoadingMore)
+                              const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: CircularProgressIndicator(),
+                              ),
+                          ],
                         ),
                         list: state.sessions,
                         onLoading: ShimmerSkeletonizerWidget(
                           child: ListView.builder(
-                            itemCount: state.sessions.length,
+                            itemCount: 5,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              final session = state.sessions[index];
                               return SessionWidget(
-                                plan: state.selectedPlan!,
-                                session: session,
+                                plan: QuranPlan(
+                                  title: 'title',
+                                  startJuz: 1,
+                                  endJuz: 1,
+                                  totalDays: 1,
+                                  sessionsCount: 1,
+                                  versesPerSession: 1,
+                                  ownerId: '1',
+                                  createdAt: DateTime.now(),
+                                ),
+                                session: QuranPlanSession(
+                                  planId: widget.planId,
+                                  sessionNumber: 1,
+                                  fromSurahId: 1,
+                                  fromAyahNumber: 1,
+                                  toSurahId: 1,
+                                  toAyahNumber: 1,
+                                ),
                               );
                             },
                           ),

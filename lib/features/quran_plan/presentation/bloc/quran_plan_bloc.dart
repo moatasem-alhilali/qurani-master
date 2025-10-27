@@ -20,6 +20,7 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     on<UpdatePlanEvent>(_onUpdatePlan);
     on<DeletePlanEvent>(_onDeletePlan);
     on<LoadSessionsEvent>(_onLoadSessions);
+    on<LoadMoreSessionsEvent>(_onLoadMoreSessions);
     on<CompleteSessionEvent>(_onCompleteSession);
     on<LoadNextSessionEvent>(_onLoadNextSession);
   }
@@ -49,7 +50,7 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
   ) async {
     emit(state.copyWith(createRequestState: RequestState.loading));
     try {
-      final planId = await dataSource.createPlan(
+      await dataSource.createPlan(
         event.plan,
         event.fromJuz,
         event.toJuz,
@@ -122,13 +123,24 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
     LoadSessionsEvent event,
     Emitter<QuranPlanState> emit,
   ) async {
-    emit(state.copyWith(requestState: RequestState.loading));
+    emit(
+      state.copyWith(
+        requestState: RequestState.loading,
+        currentPage: 0,
+        hasMoreSessions: true,
+      ),
+    );
     try {
-      final sessions = await dataSource.getSessions(event.planId);
+      final sessions = await dataSource.getSessionsPaginated(
+        event.planId,
+        page: 0,
+        pageSize: state.pageSize,
+      );
       final plan = await dataSource.getPlanById(event.planId);
+      final allSessions = await dataSource.getSessions(event.planId);
       final analysis = await PlanAnalyticsService().analyzePlan(
         plan!,
-        sessions,
+        allSessions,
       );
       emit(
         state.copyWith(
@@ -136,6 +148,8 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
           sessions: sessions,
           analysis: analysis,
           selectedPlan: plan,
+          currentPage: 0,
+          hasMoreSessions: sessions.length >= state.pageSize,
         ),
       );
     } catch (e, stackTrace) {
@@ -146,6 +160,36 @@ class QuranPlanBloc extends Bloc<QuranPlanEvent, QuranPlanState> {
           errorMessage: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<void> _onLoadMoreSessions(
+    LoadMoreSessionsEvent event,
+    Emitter<QuranPlanState> emit,
+  ) async {
+    if (state.isLoadingMore || !state.hasMoreSessions) return;
+
+    emit(state.copyWith(isLoadingMore: true));
+    try {
+      final nextPage = state.currentPage + 1;
+      final newSessions = await dataSource.getSessionsPaginated(
+        event.planId,
+        page: nextPage,
+        pageSize: state.pageSize,
+      );
+
+      final updatedSessions = [...state.sessions, ...newSessions];
+      emit(
+        state.copyWith(
+          sessions: updatedSessions,
+          currentPage: nextPage,
+          hasMoreSessions: newSessions.length >= state.pageSize,
+          isLoadingMore: false,
+        ),
+      );
+    } catch (e) {
+      logger.e(e.toString());
+      emit(state.copyWith(isLoadingMore: false));
     }
   }
 
