@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
+import 'package:quran_app/features/audios/presentation/view/pages/base_audio_screen.dart';
+import 'package:quran_app/features/categories/presentation/view/pages/category_screen.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/quran_lottie_widget.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
@@ -34,7 +38,6 @@ class _HomeScreenState extends State<HomeScreenNew> {
             ),
         child: Column(
           children: [
-          
             const QuranLottieWidget(),
             // Amazing Prayer Countdown Widget
             BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
@@ -72,6 +75,33 @@ class _HomeScreenState extends State<HomeScreenNew> {
 
             const BaseHederWidget(text: 'المميزات'),
             const AnotherFeatures(),
+
+            const BaseHederWidget(text: 'المكتبة'),
+            SizedBox(
+              height: context.getHight(20),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    FeatureCardIconWidget(
+                      title: 'المكتبة الشاملة',
+                      icon: const Icon(Icons.book),
+                      onTap: () {
+                        context.push(
+                          CategoryScreen(
+                         
+                          ),
+                        );
+                      },
+                      maxLines: 1,
+                      width: context.getWidth(90),
+                      height: context.getHight(18),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             SizedBox(height: 16.h),
           ],

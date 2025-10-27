@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/features/categories/presentation/view/pages/category_screen.dart';
-import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
-import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 const String ayah =
     '﴿رَبِّ أَوزِعني أَن أَشكُرَ نِعمَتَكَ التي أَنعَمتَ عَلَيَّ وعَلى والدَيَّ وأَن أَعمَلَ صالحاً ترضاهُ وأَصلِح لي في ذُريتي إِنّي تُبتُ إِلَيكَ وإِنّي مِنَ المُسلِمينَ﴾';
@@ -57,14 +54,3 @@ int selectedIndex = 3;
 const String urlAudioReader =
     'https://cdn.islamic.network/quran/audio-surah/128';
 //
-
-List<Widget> screens = [
-  const HomeScreenNew(),
-  const CategoryScreen(),
-  // const AnotherScreen(),
-
-  // const SettingScreen(),
-];
-
-//
-// int lastPageRead = 0;

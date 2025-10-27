@@ -17,7 +17,7 @@ import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
+import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
@@ -202,20 +202,16 @@ class _AppState extends State<_App> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: context.scaffoldBackgroundColor,
-            // titleWidget: const SizedBox(),
-            // back: false,
-            // title: 'طمأنينة',
-            // showBackground: currentPage == 0 ? false : true,
-            // isScroll: currentPage == 2 ? false : true,
-            bottomNavigationBar: const IntrinsicHeight(
-              child: ColoredBox(
-                color: Colors.transparent,
-                child: SafeArea(
-                  top: false,
-                  child: CustomBottomNavigationBarWidget(),
-                ),
-              ),
-            ),
+
+            // bottomNavigationBar: const IntrinsicHeight(
+            //   child: ColoredBox(
+            //     color: Colors.transparent,
+            //     child: SafeArea(
+            //       top: false,
+            //       child: CustomBottomNavigationBarWidget(),
+            //     ),
+            //   ),
+            // ),
             body: SafeArea(
               child: Column(
                 children: [
@@ -227,7 +223,7 @@ class _AppState extends State<_App> {
                         const Text('مرحبا'),
                         IconButton(
                           onPressed: () {
-                            context.push(SettingScreen());
+                            context.push(const SettingScreen());
                           },
                           icon: const Icon(
                             Icons.settings,
@@ -236,7 +232,7 @@ class _AppState extends State<_App> {
                       ],
                     ),
                   ),
-                  Expanded(child: screens[currentPage]),
+                  const Expanded(child: HomeScreenNew()),
                 ],
               ),
             ),
