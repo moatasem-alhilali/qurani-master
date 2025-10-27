@@ -1,7 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:animated_text_kit/animated_text_kit.dart';
-// import 'package:flutter_animate/flutter_animate.dart';
-// import 'package:quran_app/core/shared/export/export-shared.dart';
+// // import 'package:quran_app/core/shared/export/export-shared.dart';
 
 // class MyAnimatedTextTyper extends StatelessWidget {
 //   const MyAnimatedTextTyper({

@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
-import 'package:quran_app/features/quran_plan/data/data_source/group_plan_datasource.dart';
 import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
@@ -81,9 +80,9 @@ class DatabaseService {
     await db.execute(QuranPlanDataSource.quranPlanSessionTable);
 
     // quran plan group tables
-    await db.execute(GroupPlanDataSource.planGroupMemberTable);
-    await db.execute(GroupPlanDataSource.planGroupActivityLogsTable);
-    await db.execute(GroupPlanDataSource.planGroupOfflineActionsTable);
+    // await db.execute(GroupPlanDataSource.planGroupMemberTable);
+    // await db.execute(GroupPlanDataSource.planGroupActivityLogsTable);
+    // await db.execute(GroupPlanDataSource.planGroupOfflineActionsTable);
 
     logger.i('✅ Database initialized and tables created.');
   }

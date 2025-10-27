@@ -2,7 +2,6 @@
 // import 'package:ecommerce_project/core/themes/extension_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -218,10 +217,7 @@ class ProgressButtonState extends StatelessWidget {
                   valueColor:
                       AlwaysStoppedAnimation<Color>(colorText ?? Colors.white),
                 ),
-              )
-                  .animate()
-                  .fadeIn(duration: 300.ms)
-                  .rotate(duration: 1.seconds, curve: Curves.linear),
+              ),
           ],
         );
       case RequestState.success:
@@ -247,15 +243,7 @@ class ProgressButtonState extends StatelessWidget {
               Icons.check_circle_outline,
               color: colorText ?? Colors.white,
               size: 24.r,
-            )
-                .animate()
-                .scale(
-                  begin: const Offset(0.5, 0.5),
-                  end: const Offset(1, 1),
-                  duration: 400.ms,
-                  curve: Curves.elasticOut,
-                )
-                .fadeIn(duration: 300.ms),
+            ),
           ],
         );
       case RequestState.error:
@@ -264,11 +252,7 @@ class ProgressButtonState extends StatelessWidget {
           color: colorText ?? Colors.white,
           size: 24.r,
           key: const ValueKey('error'),
-        ).animate().shake(duration: 500.ms, hz: 4).scale(
-              begin: const Offset(0.8, 0.8),
-              end: const Offset(1, 1),
-              duration: 400.ms,
-            );
+        );
     }
   }
 }

@@ -37,7 +37,7 @@ dependencies:
   smooth_page_indicator:
   # timelines:
   carousel_slider:
-  flutter_animate:
+  # flutter_animate:
   # shimmer:
   url_launcher: ^6.3.1
   auto_size_text:
@@ -71,7 +71,7 @@ dependencies:
   # vector_graphics: ^1.1.19
   flutter_svg: ^2.2.0
   pull_to_refresh: ^2.0.0
-  cloud_firestore: ^5.6.12
+  # cloud_firestore: ^5.6.12
   device_info_plus: ^11.5.0
   firebase_messaging: ^15.2.10
   lottie: ^3.3.1
