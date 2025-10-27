@@ -68,7 +68,7 @@ class _NormalAppScaffoldWidgetState extends State<NormalAppScaffoldWidget> {
       bottomNavigationBar: widget.bottomNavigationBar ?? const SizedBox(),
       body: SafeArea(
         child: NestedScrollView(
-          controller: widget.scrollController,
+          // controller: widget.scrollController,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverPersistentHeader(
               pinned: true,
@@ -84,12 +84,18 @@ class _NormalAppScaffoldWidgetState extends State<NormalAppScaffoldWidget> {
           ],
           body: Material(
             color: context.scaffoldBackgroundColor,
-            child: AppSliverWidget(
-              padding: EdgeInsets.all(8.sp),
-              sliverChildPosition: widget.sliverChildPosition,
-              slivers: widget.slivers,
-              onRefresh: widget.onRefresh,
-              child: widget.body ?? const SizedBox(),
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: 12.sp,
+              ),
+              child: AppSliverWidget(
+                padding: EdgeInsets.all(8.sp),
+                sliverChildPosition: widget.sliverChildPosition,
+                slivers: widget.slivers,
+                onRefresh: widget.onRefresh,
+                scrollController: widget.scrollController,
+                child: widget.body ?? const SizedBox(),
+              ),
             ),
           ),
         ),
