@@ -32,7 +32,8 @@ class BaseAnimate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return child.animate().fadeIn(delay: Duration(milliseconds: index * 100));
+    // return child.animate().fadeIn(delay: Duration(milliseconds: index * 100));
+    return child;
   }
 }
 

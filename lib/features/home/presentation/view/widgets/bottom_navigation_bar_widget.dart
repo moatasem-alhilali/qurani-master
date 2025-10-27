@@ -4,11 +4,16 @@ import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 
-// Static current page for global access
-int currentPage = 0;
-
+/// Custom bottom navigation bar with smooth animations and modern design
 class CustomBottomNavigationBarWidget extends StatefulWidget {
-  const CustomBottomNavigationBarWidget({super.key});
+  const CustomBottomNavigationBarWidget({
+    super.key,
+    this.initialIndex = 0,
+    this.onIndexChanged,
+  });
+
+  final int initialIndex;
+  final ValueChanged<int>? onIndexChanged;
 
   @override
   State<CustomBottomNavigationBarWidget> createState() =>
@@ -17,14 +22,23 @@ class CustomBottomNavigationBarWidget extends StatefulWidget {
 
 class _CustomBottomNavigationBarWidgetState
     extends State<CustomBottomNavigationBarWidget> {
-  void _onNavItemTapped(int index, BuildContext context) {
-    currentPage = index;
-    setState(() {});
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
+
+  void _onNavItemTapped(int index) {
+    if (_selectedIndex == index) return;
+
+    setState(() => _selectedIndex = index);
+    widget.onIndexChanged?.call(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = currentPage;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
@@ -44,15 +58,11 @@ class _CustomBottomNavigationBarWidgetState
               icon: CupertinoIcons.home,
               label: 'الرئيسية',
               index: 0,
-              selectedIndex: selectedIndex,
-              context: context,
             ),
             _buildNavItem(
               icon: CupertinoIcons.collections,
               label: 'الاقسام',
               index: 1,
-              selectedIndex: selectedIndex,
-              context: context,
             ),
           ],
         ),
@@ -64,17 +74,15 @@ class _CustomBottomNavigationBarWidgetState
     required IconData icon,
     required String label,
     required int index,
-    required int selectedIndex,
-    required BuildContext context,
   }) {
-    final isSelected = selectedIndex == index;
+    final isSelected = _selectedIndex == index;
 
     return Expanded(
       child: BottomNavItem(
         icon: icon,
         label: label,
         selected: isSelected,
-        onTap: () => _onNavItemTapped(index, context),
+        onTap: () => _onNavItemTapped(index),
       ),
     );
   }
@@ -91,6 +99,7 @@ class _CustomBottomNavigationBarWidgetState
   }
 }
 
+/// Individual navigation item with smooth animations
 class BottomNavItem extends StatefulWidget {
   const BottomNavItem({
     required this.icon,
@@ -115,8 +124,6 @@ class _BottomNavItemState extends State<BottomNavItem>
   late Animation<double> _bounceAnimation;
   late Animation<double> _scaleAnimation;
 
-  final bool _isPressed = false;
-
   @override
   void initState() {
     super.initState();
@@ -126,29 +133,14 @@ class _BottomNavItemState extends State<BottomNavItem>
       vsync: this,
     );
 
-    // Simple bounce animation
-    _bounceAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
+    _bounceAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
     );
 
-    // Subtle scale animation
-    _scaleAnimation = Tween<double>(
-      begin: 1,
-      end: 1.05,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
+    _scaleAnimation = Tween<double>(begin: 1, end: 1.05).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    // Set initial state
     if (widget.selected) {
       _controller.forward();
     }
@@ -159,11 +151,7 @@ class _BottomNavItemState extends State<BottomNavItem>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.selected != widget.selected) {
-      if (widget.selected) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
+      widget.selected ? _controller.forward() : _controller.reverse();
     }
   }
 
@@ -175,153 +163,88 @@ class _BottomNavItemState extends State<BottomNavItem>
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final size = MediaQuery.of(context).size;
+    final isCompact = size.width < 380 || size.height < 650;
+    final isMedium = size.width < 600 || size.height < 800;
 
     return StyleButtonWrap(
-      // onTapDown: _onTapDown,
-      // onTapUp: _onTapUp,
-      // onTapCancel: _onTapCancel,
-      onTap: () {
-        widget.onTap?.call();
-      },
-
-      child: AnimatedScale(
-        scale: _isPressed ? 0.95 : 1.0,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeInOut,
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                padding: EdgeInsets.symmetric(
-                  horizontal:
-                      _getCompactValue(screenWidth, screenHeight, 8, 12, 16),
-                  vertical:
-                      _getCompactValue(screenWidth, screenHeight, 6, 8, 10),
-                ),
-                decoration: BoxDecoration(
-                  color: widget.selected
-                      ? context.secondaryColor.withOpacity(0.1)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(
-                    _getCompactValue(screenWidth, screenHeight, 8, 12, 16),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Icon with smooth bounce
-                    Transform.translate(
-                      offset: Offset(0, -2 * _bounceAnimation.value),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeInOut,
-                        child: Icon(
-                          widget.icon,
-                          size: _getCompactValue(
-                            screenWidth,
-                            screenHeight,
-                            20,
-                            22,
-                            26,
-                          ),
-                          color: widget.selected
-                              ? context.primaryColor
-                              : context.gray1,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: _getCompactValue(
-                        screenWidth,
-                        screenHeight,
-                        2,
-                        3,
-                        4,
-                      ),
-                    ),
-                    // Text with smooth color transition
-                    AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut,
-                      style: TextStyle(
-                        color: widget.selected
-                            ? context.primaryColor
-                            : context.gray1,
-                        fontWeight:
-                            widget.selected ? FontWeight.bold : FontWeight.w500,
-                        fontSize: _getCompactValue(
-                          screenWidth,
-                          screenHeight,
-                          9,
-                          10,
-                          12,
-                        ),
-                      ),
-                      child: Text(
-                        widget.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    // Bottom indicator
-                    SizedBox(
-                      height: _getCompactValue(
-                        screenWidth,
-                        screenHeight,
-                        2,
-                        3,
-                        4,
-                      ),
-                    ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      width: widget.selected
-                          ? _getCompactValue(
-                              screenWidth,
-                              screenHeight,
-                              16,
-                              20,
-                              24,
-                            )
-                          : 0,
-                      height:
-                          _getCompactValue(screenWidth, screenHeight, 2, 2, 3),
-                      decoration: BoxDecoration(
-                        color: context.primaryColor,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ],
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.symmetric(
+                horizontal: isCompact ? 8 : (isMedium ? 12 : 16),
+                vertical: isCompact ? 6 : (isMedium ? 8 : 10),
+              ),
+              decoration: BoxDecoration(
+                color: widget.selected
+                    ? context.secondaryColor.withValues(alpha: 0.1)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(
+                  isCompact ? 8 : (isMedium ? 12 : 16),
                 ),
               ),
-            );
-          },
-        ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Animated icon with bounce effect
+                  Transform.translate(
+                    offset: Offset(0, -2 * _bounceAnimation.value),
+                    child: Icon(
+                      widget.icon,
+                      size: isCompact ? 20 : (isMedium ? 22 : 26),
+                      color: widget.selected
+                          ? context.primaryColor
+                          : context.gray1,
+                    ),
+                  ),
+                  SizedBox(height: isCompact ? 2 : (isMedium ? 3 : 4)),
+
+                  // Animated label
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    style: TextStyle(
+                      color: widget.selected
+                          ? context.primaryColor
+                          : context.gray1,
+                      fontWeight:
+                          widget.selected ? FontWeight.bold : FontWeight.w500,
+                      fontSize: isCompact ? 9 : (isMedium ? 10 : 12),
+                    ),
+                    child: Text(
+                      widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: isCompact ? 2 : (isMedium ? 3 : 4)),
+
+                  // Bottom indicator line
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    width: widget.selected
+                        ? (isCompact ? 16 : (isMedium ? 20 : 24))
+                        : 0,
+                    height: isCompact ? 2 : (isMedium ? 2 : 3),
+                    decoration: BoxDecoration(
+                      color: context.primaryColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  double _getCompactValue(
-    double screenWidth,
-    double screenHeight,
-    double small,
-    double medium,
-    double large,
-  ) {
-    // Consider both width and height for more accurate responsiveness
-    final isSmallScreen = screenWidth < 380 || screenHeight < 650;
-    final isMediumScreen = screenWidth < 600 || screenHeight < 800;
-
-    if (isSmallScreen) return small;
-    if (isMediumScreen) return medium;
-    return large;
   }
 }
