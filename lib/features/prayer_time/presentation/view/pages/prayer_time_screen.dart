@@ -1,16 +1,13 @@
 import 'package:adhan/src/prayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/timeline_list_item.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
-import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 // import 'package:timelines/timelines.dart';
 
@@ -147,25 +144,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     return prayerIndex < currentIndex;
   }
 
-  IconData _getPrayerIcon(PrayerInfoModel data) {
-    switch (data.type) {
-      case Prayer.fajr:
-        return Icons.wb_twilight;
-      case Prayer.sunrise:
-        return Icons.wb_sunny;
-      case Prayer.dhuhr:
-        return Icons.wb_sunny_outlined;
-      case Prayer.asr:
-        return Icons.wb_cloudy;
-      case Prayer.maghrib:
-        return Icons.wb_incandescent;
-      case Prayer.isha:
-        return Icons.nights_stay;
-      default:
-        return Icons.access_time;
-    }
-  }
-
   Color _getPrayerColor(PrayerInfoModel data) {
     switch (data.type) {
       case Prayer.fajr:
@@ -183,48 +161,5 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
       default:
         return Colors.grey;
     }
-  }
-
-  ListView _buildList(
-    List<PrayerInfoModel> list,
-    Prayer? currentType,
-    Prayer? nextType,
-  ) {
-    return ListView.builder(
-      itemCount: list.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        final data = list[index];
-        final isCurrent = currentType == data.type;
-        final isNext = nextType == data.type;
-
-        return BaseAnimate(
-          index: index + 2,
-          child: ItemPrayerWidget(
-            currentPrayer: TimePrayerModel(
-              id: 200 + index,
-              type: data.type,
-              title: data.name,
-              time: data.time12,
-              content: data.type.description,
-              image: data.type.imageAsset,
-              color: isCurrent ? Colors.blue : Colors.grey.shade300,
-            ),
-            nextPray: isNext
-                ? TimePrayerModel(
-                    title: data.name,
-                    time: data.time12,
-                    content: '',
-                    image: '',
-                    color: Colors.blue,
-                    id: -1,
-                    type: data.type,
-                  )
-                : null,
-          ),
-        );
-      },
-    );
   }
 }
