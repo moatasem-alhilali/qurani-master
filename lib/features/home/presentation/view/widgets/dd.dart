@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
 class PrayerHomePage extends StatelessWidget {
   const PrayerHomePage({super.key});
 
@@ -10,15 +8,22 @@ class PrayerHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final times = <PrayerTime>[
       PrayerTime(
-          name: 'العِشاء', time: '07:25', icon: CupertinoIcons.moon_stars),
+        name: 'العِشاء',
+        time: '07:25',
+        icon: CupertinoIcons.moon_stars,
+      ),
       PrayerTime(name: 'المغرب', time: '07:25', icon: CupertinoIcons.sunset),
       PrayerTime(name: 'العَصر', time: '07:25', icon: CupertinoIcons.sun_max),
       PrayerTime(name: 'الظُّهر', time: '07:25', icon: CupertinoIcons.sunrise),
       PrayerTime(
-          name: 'الفجر',
-          time: '03:25',
-          icon: CupertinoIcons.cloud_moon_bolt), // فقط أيقونة تقريبية
+        name: 'الفجر',
+        time: '03:25',
+        icon: CupertinoIcons.cloud_moon_bolt,
+      ), // فقط أيقونة تقريبية
     ];
+    const overlap = 36.0; // كما هو عندك
+    const fabDiameter = 64.0;
+    const notchDepth = 26.0; // نفس القيمة في الكليبّر
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -37,15 +42,19 @@ class PrayerHomePage extends StatelessWidget {
 
             // لوحة الميزات البيضاء المتداخلة
             Positioned(
-              top: headerHeight - 36, // التقويسة/التداخل
+              top: headerHeight - overlap,
               left: 0,
               right: 0,
               child: const FeaturesPanel(),
             ),
-
             // الزر الدائري المتداخل بالمنتصف
             Positioned(
-              top: headerHeight - 72,
+              // مركز الزر = panelTop + notchDepth
+              top: headerHeight -
+                  overlap +
+                  notchDepth -
+                  notchDepth -
+                  (fabDiameter / 2),
               left: 0,
               right: 0,
               child: const CenterActionButton(),
@@ -101,8 +110,10 @@ class PrayerHeader extends StatelessWidget {
                 // الصف العلوي (أيقونات)
                 Row(
                   children: [
-                    Icon(CupertinoIcons.bell,
-                        color: cs.onPrimary.withOpacity(0.95)),
+                    Icon(
+                      CupertinoIcons.bell,
+                      color: cs.onPrimary.withOpacity(0.95),
+                    ),
                     const Spacer(),
                     Text(
                       hijriDate,
@@ -113,8 +124,11 @@ class PrayerHeader extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(CupertinoIcons.chevron_down,
-                        color: cs.onPrimary.withOpacity(0.9), size: 16),
+                    Icon(
+                      CupertinoIcons.chevron_down,
+                      color: cs.onPrimary.withOpacity(0.9),
+                      size: 16,
+                    ),
                   ],
                 ),
                 const Spacer(),
@@ -133,8 +147,11 @@ class PrayerHeader extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(CupertinoIcons.cloud_drizzle,
-                        color: cs.onPrimary.withOpacity(0.95), size: 20),
+                    Icon(
+                      CupertinoIcons.cloud_drizzle,
+                      color: cs.onPrimary.withOpacity(0.95),
+                      size: 20,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -164,7 +181,7 @@ class PrayerHeader extends StatelessWidget {
 
                 // شريط أوقات الصلوات
                 SizedBox(
-                  height: 70,
+                  height: 80,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     reverse: true, // يتماشى مع RTL
@@ -240,7 +257,6 @@ class PrayerChip extends StatelessWidget {
   }
 }
 
-/// اللوح الأبيض "المميزات" مع التقويس الكبير
 class FeaturesPanel extends StatelessWidget {
   const FeaturesPanel({super.key});
 
@@ -248,13 +264,25 @@ class FeaturesPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
+    // نفس القيم المستعملة في التموضع
+    const fabDiameter = 64.0;
+    const notchDepth = 26.0; // كم ينزل الجيب لأسفل داخل اللوح
+    const notchMargin = 8.0; // مسافة أمان بين الزر والجيب
+    const shoulder = 46.0; // عرض الكتف يمين/يسار الزر
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(),
       child: ClipPath(
-        clipper: _TopRoundClipper(radius: 28),
+        clipper: SmoothNotchClipper(
+          cornerRadius: 18,
+          fabRadius: fabDiameter / 2, // 32
+          notchDepth: notchDepth,
+          notchMargin: notchMargin,
+          shoulderWidth: shoulder,
+          smoothness: NotchSmoothness.soft, // جرّب default/soft/verySoft
+        ),
         child: Container(
-          padding:
-              const EdgeInsets.fromLTRB(16, 46, 16, 18), // مساحة للزر المتداخل
+          padding: const EdgeInsets.fromLTRB(16, 52, 16, 18),
           decoration: BoxDecoration(
             color: cs.surface,
             boxShadow: const [
@@ -277,8 +305,6 @@ class FeaturesPanel extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 14),
-
-              // شبكة الأزرار
               GridView(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
@@ -291,16 +317,25 @@ class FeaturesPanel extends StatelessWidget {
                 ),
                 children: const [
                   FeatureIconButton(
-                      label: 'أذان', icon: CupertinoIcons.speaker_2_fill),
+                    label: 'أذان',
+                    icon: CupertinoIcons.speaker_2_fill,
+                  ),
                   FeatureIconButton(
-                      label: 'مجتمعنا', icon: CupertinoIcons.person_3_fill),
+                    label: 'مجتمعنا',
+                    icon: CupertinoIcons.person_3_fill,
+                  ),
                   FeatureIconButton(
-                      label: 'قبلة', icon: CupertinoIcons.compass_fill),
+                    label: 'قبلة',
+                    icon: CupertinoIcons.compass_fill,
+                  ),
                   FeatureIconButton(
-                      label: 'مسبحة',
-                      icon: CupertinoIcons.circle_grid_hex_fill),
+                    label: 'مسبحة',
+                    icon: CupertinoIcons.circle_grid_hex_fill,
+                  ),
                   FeatureIconButton(
-                      label: 'قرآن', icon: CupertinoIcons.book_solid),
+                    label: 'قرآن',
+                    icon: CupertinoIcons.book_solid,
+                  ),
                 ],
               ),
             ],
@@ -311,9 +346,112 @@ class FeaturesPanel extends StatelessWidget {
   }
 }
 
+/// نفس فكرة animated-bottom-navigation-bar: جيب ناعم عبر Cubic Bézier بكتفين
+enum NotchSmoothness { hard, normal, soft, verySoft }
+
+class SmoothNotchClipper extends CustomClipper<Path> {
+  SmoothNotchClipper({
+    required this.cornerRadius,
+    required this.fabRadius,
+    required this.notchDepth,
+    required this.notchMargin,
+    required this.shoulderWidth,
+    this.smoothness = NotchSmoothness.normal,
+  });
+
+  final double cornerRadius; // زوايا اللوح
+  final double fabRadius; // نصف قطر الزر (64 => 32)
+  final double notchDepth; // عمق الجيب "لتحت"
+  final double notchMargin; // فراغ بين الزر والجيب
+  final double shoulderWidth; // عرض الكتف يمين/يسار
+  final NotchSmoothness smoothness;
+
+  /// معاملات نُعومة تشبه المكتبة (كلما زادت، صار الكتف أنعم)
+  double get _k1 {
+    switch (smoothness) {
+      case NotchSmoothness.hard:
+        return 0.40;
+      case NotchSmoothness.normal:
+        return 0.55;
+      case NotchSmoothness.soft:
+        return 0.65;
+      case NotchSmoothness.verySoft:
+        return 0.75;
+    }
+  }
+
+  double get _k2 {
+    switch (smoothness) {
+      case NotchSmoothness.hard:
+        return 0.45;
+      case NotchSmoothness.normal:
+        return 0.55;
+      case NotchSmoothness.soft:
+        return 0.65;
+      case NotchSmoothness.verySoft:
+        return 0.75;
+    }
+  }
+
+  @override
+  Path getClip(Size size) {
+    final w = size.width;
+    final h = size.height;
+    final cx = w / 2;
+
+    // الحافة العليا baseline عند y=0 — سننزل تحتها بعمق notchDepth
+    final r = fabRadius + notchMargin; // نصف قطر الجيب الفعلي
+    final half = r + shoulderWidth; // نصف عرض الجيب مع الأكتاف
+
+    // نقاط البداية/النهاية على الحافة العليا
+    final leftStart = Offset(cornerRadius, 0);
+    final rightStart = Offset(w - cornerRadius, 0);
+
+    // نقاط الكتف والقمّة (داخل اللوح) — لأسفل (+depth)
+    final p0 = Offset(cx - half, 0); // بداية الكتف اليسار
+    final p3 = Offset(cx, notchDepth); // قمة الجيب
+    final p6 = Offset(cx + half, 0); // نهاية الكتف اليمين
+
+    // نقاط التحكّم (Cubic) — متناظرة
+    final c1 = Offset(cx - half * _k1, 0);
+    final c2 = Offset(cx - r * _k2, notchDepth * 0.6);
+    final c3 = Offset(cx + r * _k2, notchDepth * 0.6);
+    final c4 = Offset(cx + half * _k1, 0);
+
+    final path = Path()
+      ..moveTo(0, cornerRadius)
+      ..quadraticBezierTo(0, 0, leftStart.dx, leftStart.dy)
+      ..lineTo(p0.dx, p0.dy)
+      // كتف يسار -> قمة الجيب
+      ..cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, p3.dx, p3.dy)
+      // قمة الجيب -> كتف يمين
+      ..cubicTo(c3.dx, c3.dy, c4.dx, c4.dy, p6.dx, p6.dy)
+      ..lineTo(rightStart.dx, rightStart.dy)
+      ..quadraticBezierTo(w, 0, w, cornerRadius)
+      ..lineTo(w, h)
+      ..lineTo(0, h)
+      ..close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant SmoothNotchClipper old) =>
+      cornerRadius != old.cornerRadius ||
+      fabRadius != old.fabRadius ||
+      notchDepth != old.notchDepth ||
+      notchMargin != old.notchMargin ||
+      shoulderWidth != old.shoulderWidth ||
+      smoothness != old.smoothness;
+}
+
 class FeatureIconButton extends StatelessWidget {
-  const FeatureIconButton(
-      {required this.label, required this.icon, super.key, this.onTap});
+  const FeatureIconButton({
+    required this.label,
+    required this.icon,
+    super.key,
+    this.onTap,
+  });
 
   final String label;
   final IconData icon;
@@ -375,9 +513,10 @@ class CenterActionButton extends StatelessWidget {
           ),
           boxShadow: const [
             BoxShadow(
-                color: Color(0x33000000),
-                blurRadius: 14,
-                offset: Offset(0, 10)),
+              color: Color(0x33000000),
+              blurRadius: 14,
+              offset: Offset(0, 10),
+            ),
           ],
         ),
         child: Material(
@@ -387,8 +526,11 @@ class CenterActionButton extends StatelessWidget {
             onTap: () {},
             child: const Center(
               // أيقونة الأدوات (مطاعم/إعدادات) كما في الصورة
-              child: Icon(CupertinoIcons.wrench_fill,
-                  color: Colors.white, size: 26),
+              child: Icon(
+                CupertinoIcons.wrench_fill,
+                color: Colors.white,
+                size: 26,
+              ),
             ),
           ),
         ),
@@ -397,28 +539,47 @@ class CenterActionButton extends StatelessWidget {
   }
 }
 
-/// قصّ علوي مستدير للوحة البيضاء
-class _TopRoundClipper extends CustomClipper<Path> {
-  _TopRoundClipper({required this.radius});
-  final double radius;
+class _TopNotchedClipper extends CustomClipper<Path> {
+  // نصف قطر الجيب (نصف قطر الزر تقريبا)
+
+  _TopNotchedClipper({
+    this.radius = 28,
+    this.notchRadius = 40, // يناسب زر قطره 64px
+  });
+  final double radius; // نصف قطر الزوايا
+  final double notchRadius;
 
   @override
   Path getClip(Size size) {
-    final r = radius;
     final path = Path();
-    path.moveTo(0, r);
-    path.quadraticBezierTo(0, 0, r, 0);
-    path.lineTo(size.width - r, 0);
-    path.quadraticBezierTo(size.width, 0, size.width, r);
+    final centerX = size.width / 2;
+
+    // ابدأ من أعلى اليسار بزوايا مستديرة
+    path.moveTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
+
+    // خط إلى بداية الجيب
+    path.lineTo(centerX - notchRadius, 0);
+
+    // منحنى الجيب (نصف دائرة لأعلى)
+    path.arcToPoint(
+      Offset(centerX + notchRadius, 0),
+      radius: Radius.circular(notchRadius),
+      clockwise: false, // يجعل القوس للأعلى (نحت)
+    );
+
+    // أكمل إلى اليمين ثم نزول الزوايا
+    path.lineTo(size.width - radius, 0);
+    path.quadraticBezierTo(size.width, 0, size.width, radius);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
+
     return path;
   }
 
   @override
-  bool shouldReclip(covariant _TopRoundClipper oldClipper) =>
-      oldClipper.radius != radius;
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
 
 /// خلفية رأس الصفحة (تدرّج + نقش سداسي بسيط)

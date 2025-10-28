@@ -18,6 +18,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/dd.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
@@ -169,7 +170,11 @@ class MyApp extends StatelessWidget {
                   ),
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
-                  home: const _App(),
+                  // home: const _App(),
+                  home: const Scaffold(
+                    backgroundColor: Color(0xFFF3F7F6),
+                    body: PrayerHomePage(),
+                  ),
                 ),
               );
             },
