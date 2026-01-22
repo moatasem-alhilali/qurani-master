@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   flutter_timezone
   geolocator_windows
+  media_kit_libs_windows_audio
   pdfx
   permission_handler_windows
   share_plus

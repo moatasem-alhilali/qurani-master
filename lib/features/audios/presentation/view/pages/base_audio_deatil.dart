@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/download_service.dart';
@@ -11,11 +10,9 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/audio/action_progress.dart';
-import 'package:quran_app/core/widgets/audio/custom_progress.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class BaseAudioDetail extends StatelessWidget {
   BaseAudioDetail({super.key, this.data});
@@ -31,41 +28,42 @@ class BaseAudioDetail extends StatelessWidget {
       child: BaseHomeWidget(
         isScroll: false,
         title: data['title'].toString(),
-        body: BlocBuilder<ReadQuranBloc, ReadQuranState>(
-          builder: (context, readQuranState) {
-            return BlocBuilder<BaseAudioBloc, BaseAudioState>(
-              builder: (context, state) {
-                return state.famousBaseAudioState.handle<dynamic>(
-                  onSuccess: () => Column(
-                    children: [
-                      ProgressAudio(
-                        audioPlayer: state.audioPlayer ?? AudioPlayer(),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: state.baseAudioDetail.length,
-                          itemBuilder: (context, index) {
-                            final data = readQuranState.surahs[index];
+        body: const SizedBox(),
+        // body: BlocBuilder<ReadQuranBloc, ReadQuranState>(
+        //   builder: (context, readQuranState) {
+        //     return BlocBuilder<BaseAudioBloc, BaseAudioState>(
+        //       builder: (context, state) {
+        //         return state.famousBaseAudioState.handle<dynamic>(
+        //           onSuccess: () => Column(
+        //             children: [
+        //               ProgressAudio(
+        //                 audioPlayer: state.audioPlayer ?? AudioPlayer(),
+        //               ),
+        //               Expanded(
+        //                 child: ListView.builder(
+        //                   shrinkWrap: true,
+        //                   physics: const BouncingScrollPhysics(),
+        //                   itemCount: state.baseAudioDetail.length,
+        //                   itemBuilder: (context, index) {
+        //                     final data = readQuranState.surahs[index];
 
-                            final dataSurah = state.baseAudioDetail[index];
-                            return _ItemDownloaded(
-                              audioPlayer: state.audioPlayer,
-                              data: data,
-                              current: index,
-                              dataSurah: dataSurah,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        ),
+        //                     final dataSurah = state.baseAudioDetail[index];
+        //                     return _ItemDownloaded(
+        //                       audioPlayer: state.audioPlayer,
+        //                       data: data,
+        //                       current: index,
+        //                       dataSurah: dataSurah,
+        //                     );
+        //                   },
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         );
+        //       },
+        //     );
+        //   },
+        // ),
       ),
     );
   }

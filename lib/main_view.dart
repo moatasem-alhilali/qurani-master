@@ -18,7 +18,6 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/dd.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
@@ -27,7 +26,6 @@ import 'package:quran_app/features/prayer_time/data/database/database_coordinate
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
@@ -90,17 +88,13 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
 
-        ///read quran
-        BlocProvider(
-          lazy: false,
-          create: (context) => OldReadQuranBloc()..add(OldLoadQuranEvent()),
-        ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => ReadQuranBloc()
-            ..add(LoadQuranEvent())
-            ..add(GetLastPageReadEvent()),
-        ),
+     
+        // BlocProvider(
+        //   lazy: false,
+        //   create: (context) => ReadQuranBloc()
+        //     ..add(LoadQuranEvent())
+        //     ..add(GetLastPageReadEvent()),
+        // ),
 
         ///notification
         BlocProvider(
@@ -171,10 +165,7 @@ class MyApp extends StatelessWidget {
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
                   // home: const _App(),
-                  home: const Scaffold(
-                    backgroundColor: Color(0xFFF3F7F6),
-                    body: PrayerHomePage(),
-                  ),
+                  home: _App(),
                 ),
               );
             },

@@ -17,6 +17,7 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/firebase_options.dart';
 import 'package:quran_app/main_view.dart';
+import 'package:quran_library/quran.dart';
 
 // Background message handler must be a top-level function
 @pragma('vm:entry-point')
@@ -43,6 +44,7 @@ void main() async {
   // 🌐 Initialize timezone support to handle local timezones correctly
   await TimeZoneService().setupTimezone();
 
+
   await DownloadService().initialize();
   // 🧩 Register dependencies using service locator (e.g., GetIt)
   await setupServiceLocator();
@@ -62,12 +64,19 @@ void main() async {
   // 🔐 Request critical permissions (e.g., storage, notifications)
   await LocationPermissionService.init();
 
+  try {
+    await QuranLibrary.init();
+
+} catch (e) {
+  
+}
+
   // Initialize Firebase first
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+
     debugPrint('Firebase initialized successfully');
   } catch (e) {
     debugPrint('Firebase initialization failed: $e');

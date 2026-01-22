@@ -1,0 +1,67 @@
+import 'dart:async';
+import 'dart:developer' show log;
+import 'dart:io' show Directory, File, HttpHeaders, Platform;
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_scale_kit/flutter_scale_kit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:get_storage/get_storage.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:quran_library/src/audio/audio.dart';
+import 'package:rxdart/rxdart.dart' as r;
+
+import '/quran.dart';
+import '../core/utils/app_colors.dart';
+import '../core/utils/ui_helper.dart';
+import '../core/widgets/header_dialog_widget.dart';
+import '../quran/core/helpers/responsive.dart';
+import '../service/connectivity_service.dart';
+import '../service/internet_connection_controller.dart';
+import 'core/custom_paint/custom_slider.dart';
+
+// Export audio dependencies for main app usage
+export 'package:audio_service/audio_service.dart';
+export 'package:just_audio/just_audio.dart';
+export 'package:just_audio_media_kit/just_audio_media_kit.dart';
+
+part '../pages/surah_audio_screen.dart';
+part 'constants/readers_constants.dart';
+part 'constants/storage_constants.dart';
+part 'controller/audio_ctrl.dart';
+part 'controller/audio_handler.dart';
+part 'controller/extensions/ayah_ctrl_extension.dart';
+part 'controller/extensions/surah_audio_storage.dart';
+part 'controller/extensions/surah_ctrl_extension.dart';
+part 'controller/extensions/surah_getters.dart';
+part 'controller/extensions/surah_ui.dart';
+part 'controller/surah_state.dart';
+part 'core/utils/custom_widgets.dart';
+part 'data/model/ayah_audio_style.dart';
+part 'data/model/ayah_download_manager_style.dart';
+part 'data/model/reader_info.dart';
+part 'data/model/surah_audio_style.dart';
+part 'surah_audio/widgets/surah_audio_list.dart';
+part 'surah_audio/widgets/surah_back_drop_widget.dart';
+part 'surah_audio/widgets/surah_change_reader.dart';
+part 'surah_audio/widgets/surah_collapsed_play_widget.dart';
+part 'surah_audio/widgets/surah_download_play_button.dart';
+part 'surah_audio/widgets/surah_last_listen.dart';
+part 'surah_audio/widgets/surah_online_play_button.dart';
+part 'surah_audio/widgets/surah_play_landscape_widget.dart';
+part 'surah_audio/widgets/surah_play_widget.dart';
+part 'surah_audio/widgets/surah_repeat_widget.dart';
+part 'surah_audio/widgets/surah_seek_bar.dart';
+part 'surah_audio/widgets/surah_skip_next.dart';
+part 'surah_audio/widgets/surah_skip_previouse.dart';
+part 'widgets/ayah_audio_widget.dart';
+part 'widgets/ayah_change_reader.dart';
+part 'widgets/ayah_download_manager_sheet.dart';
+part 'widgets/ayah_skip_next.dart';
+part 'widgets/ayah_skip_previouse.dart';
+part 'widgets/package_seek_bar.dart';
+part 'widgets/play_ayah_widget.dart';

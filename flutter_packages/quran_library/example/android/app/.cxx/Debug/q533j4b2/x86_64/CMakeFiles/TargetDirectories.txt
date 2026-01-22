@@ -1,0 +1,2 @@
+/Volumes/PortableSSD/codingApps/quran_library/example/android/app/.cxx/Debug/q533j4b2/x86_64/CMakeFiles/edit_cache.dir
+/Volumes/PortableSSD/codingApps/quran_library/example/android/app/.cxx/Debug/q533j4b2/x86_64/CMakeFiles/rebuild_cache.dir

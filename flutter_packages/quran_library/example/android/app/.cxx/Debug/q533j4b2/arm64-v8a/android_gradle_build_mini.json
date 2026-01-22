@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Volumes/PortableSSD/Software/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Volumes/PortableSSD/Software/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Volumes/PortableSSD/codingApps/quran_library/example/android/app/.cxx/Debug/q533j4b2/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Volumes/PortableSSD/Software/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Volumes/PortableSSD/codingApps/quran_library/example/android/app/.cxx/Debug/q533j4b2/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

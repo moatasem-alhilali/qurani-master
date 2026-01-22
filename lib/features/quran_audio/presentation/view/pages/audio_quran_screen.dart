@@ -63,14 +63,14 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
           body: CollapsedQuranAudioBodyWidget(boxController: boxController),
           draggableIconVisible: false,
           collapsed: true,
-          collapsedBody:
-              CurrentSurahAudioPlayWidget(boxController: boxController),
+          // collapsedBody:
+          //     CurrentSurahAudioPlayWidget(boxController: boxController),
           backdrop: Backdrop(
             fading: true,
             color: context.scaffoldBackgroundColor,
-            body: BackdropSurahListAudioBodyWidget(
-              boxController: boxController,
-            ),
+            // body: BackdropSurahListAudioBodyWidget(
+            //   boxController: boxController,
+            // ),
             appBar: BackdropAppBar(
               title: Container(
                 // margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -131,10 +131,10 @@ class _AudioQuranScreenState extends State<AudioQuranScreen> {
                   decoration: BoxDecoration(
                     color: context.surfaceColor,
                   ),
-                  child: AudioSearchBodyWidget(
-                    boxController: boxController,
-                    textEditingController: textEditingController,
-                  ),
+                  // child: AudioSearchBodyWidget(
+                  //   boxController: boxController,
+                  //   textEditingController: textEditingController,
+                  // ),
                 ),
               ),
               actions: [

@@ -42,12 +42,12 @@ class QuranReadHelper {
     return ayahTafsir;
   }
 
-  List<List<AyahQuranModel>> getCurrentPageAyahsSeparatedForBasmalah(
-    int pageIndex,
-  ) =>
-      pages[pageIndex]
-          .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
-          .toList();
+  // List<List<AyahQuranModel>> getCurrentPageAyahsSeparatedForBasmalah(
+  //   int pageIndex,
+  // ) =>
+  //     pages[pageIndex]
+  //         .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
+  //         .toList();
 
   List<AyahQuranModel> getCurrentPageAyahs(int pageIndex) => pages[pageIndex];
 
