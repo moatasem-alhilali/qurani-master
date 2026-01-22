@@ -77,11 +77,12 @@ class CurrentSessionWidget extends StatelessWidget {
                     final quranLibrary = QuranLibrary();
 
                     // Get surah information using QuranLibrary
+                    // Note: getSurahInfo uses surahNumber as array index, so we need to subtract 1
                     final fromSurah = quranLibrary.getSurahInfo(
-                      surahNumber: session.fromSurahId,
+                      surahNumber: session.fromSurahId - 1,
                     );
                     final toSurah = quranLibrary.getSurahInfo(
-                      surahNumber: session.toSurahId,
+                      surahNumber: session.toSurahId - 1,
                     );
 
                     return Text(
