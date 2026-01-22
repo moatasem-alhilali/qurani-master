@@ -64,16 +64,59 @@ class SessionWidget extends StatelessWidget {
               // ),
               subtitle: StyleButtonWrap(
                 onTap: () {
-                  // Get the first page of the surah using QuranLibrary
-                  final quranLibrary = QuranLibrary()
-                    ..jumpToSurah(session.fromSurahId);
-                  final page = quranLibrary.currentPageNumber;
+                  // البحث عن الآية المحددة للحصول على معلوماتها
+                  final quranLibrary = QuranLibrary();
 
-                  context.push(
-                    ReadQuranScreen(
-                      page: page,
-                    ),
-                  );
+                  try {
+                    // الحصول على معلومات السورة (using 1-based indexing as per README)
+                    final surahInfo = quranLibrary.getSurahInfo(
+                      surahNumber: session.fromSurahId,
+                    );
+
+                    // البحث عن الآية في السورة باستخدام اسم السورة ورقم الآية
+                    final searchQuery = surahInfo.name;
+                    final searchResults = quranLibrary.search(searchQuery);
+
+                    // البحث عن الآية المحددة في نتائج البحث
+                    AyahModel? targetAyah;
+                    for (final ayah in searchResults) {
+                      if (ayah.surahNumber == session.fromSurahId &&
+                          ayah.ayahNumber == session.fromAyahNumber) {
+                        targetAyah = ayah;
+                        break;
+                      }
+                    }
+
+                    if (targetAyah != null) {
+                      // استخدام jumpToAyah للانتقال إلى الآية المحددة
+                      quranLibrary.jumpToAyah(
+                        targetAyah.page,
+                        targetAyah.ayahUQNumber,
+                      );
+                    } else {
+                      // إذا لم نجد الآية، انتقل إلى بداية السورة
+                      quranLibrary.jumpToSurah(session.fromSurahId);
+                    }
+
+                    final page = quranLibrary.currentPageNumber;
+
+                    context.push(
+                      ReadQuranScreen(
+                        page: page,
+                      ),
+                    );
+                  } catch (e) {
+                    // في حالة حدوث خطأ، انتقل إلى بداية السورة
+                    final quranLibrary = QuranLibrary()
+                      ..jumpToSurah(session.fromSurahId);
+                    final page = quranLibrary.currentPageNumber;
+
+                    context.push(
+                      ReadQuranScreen(
+                        page: page,
+                      ),
+                    );
+                  }
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,13 +125,12 @@ class SessionWidget extends StatelessWidget {
                       builder: (context) {
                         final quranLibrary = QuranLibrary();
 
-                        // Get surah information using QuranLibrary
-                        // Note: getSurahInfo uses surahNumber as array index, so we need to subtract 1
+                        // Get surah information using QuranLibrary (1-based indexing)
                         final fromSurah = quranLibrary.getSurahInfo(
-                          surahNumber: session.fromSurahId - 1,
+                          surahNumber: session.fromSurahId,
                         );
                         final toSurah = quranLibrary.getSurahInfo(
-                          surahNumber: session.toSurahId - 1,
+                          surahNumber: session.toSurahId,
                         );
 
                         return Text(

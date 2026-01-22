@@ -35,7 +35,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
             parentContext: context,
             isDark: state.currentThemeMode == ThemeMode.dark,
             appLanguageCode: 'ar',
-
+            pageIndex: widget.page ?? 0,
             // tafsirStyle:
             //     TafsirStyle.defaults(isDark: false, context: context).copyWith(
             //   widthOfBottomSheet: 500,
