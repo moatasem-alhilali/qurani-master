@@ -63,9 +63,9 @@ class DatabaseService {
   /// Called when database is created for the first time.
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(_searchEngine);
-    await db.execute(_sqlBookMark);
-    await db.execute(_bookmarkTextTable);
-    await db.execute(_bookmarkTable);
+    // await db.execute(_sqlBookMark);
+    // await db.execute(_bookmarkTextTable);
+    // await db.execute(_bookmarkTable);
     await db.execute(_coordinates);
     await db.execute(_doua);
     await db.execute(DatabaseNotificationSettingService.notificationSettings);

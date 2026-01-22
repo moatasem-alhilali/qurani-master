@@ -102,11 +102,11 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<QuranAudioPlayerRepo>(QuranAudioPlayerRepoImpl())
 
     // ─────────────────────── BLOC ───────────────────────
-    ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
-    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()))
-    ..registerFactory<QuranAudioBloc>(
-      () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
-    );
+    // ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
+    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()));
+  // ..registerFactory<QuranAudioBloc>(
+  //   () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
+  // );
 
   // ─────────────────────── QURAN PLAN ───────────────────────
   await registerQuranPlanDependencies(sl);

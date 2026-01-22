@@ -70,23 +70,23 @@ class MyApp extends StatelessWidget {
           create: (context) => ThemeBloc()..add(InitThemeEvent()),
         ),
 
-        ///quran audio
-        BlocProvider(
-          create: (context) =>
-              sl<QuranAudioBloc>()..add(InitQuranPlayerDataEvent()),
-          lazy: false,
-        ),
+        // ///quran audio
+        // BlocProvider(
+        //   create: (context) =>
+        //       sl<QuranAudioBloc>()..add(InitQuranPlayerDataEvent()),
+        //   lazy: false,
+        // ),
 
         ///base
         BlocProvider(create: (context) => BaseBloc()),
 
-        ///bookmark
-        BlocProvider(
-          create: (context) => sl<BookmarkBloc>()
-            ..add(GetBookmarksAyahEvent())
-            ..add(GetBookmarksPageEvent()),
-          lazy: false,
-        ),
+        // ///bookmark
+        // BlocProvider(
+        //   create: (context) => sl<BookmarkBloc>()
+        //     ..add(GetBookmarksAyahEvent())
+        //     ..add(GetBookmarksPageEvent()),
+        //   lazy: false,
+        // ),
 
      
         // BlocProvider(

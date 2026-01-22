@@ -15,7 +15,6 @@ import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_s
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/qiblah/qiblah_main_screen.dart';
-import 'package:quran_app/features/quran_audio/presentation/view/pages/audio_quran_screen.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_list_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/ruqia_shareia_screen.dart';
@@ -105,14 +104,14 @@ class AnotherFeatures extends StatelessWidget {
           text: 'الاذكار',
           icon: FlutterIslamicIcons.quran,
         ),
-        _Item(
-          onPressed: () {
-            // context.push(const AudioQuranScreen());
-            context.push(const AudioQuranScreen());
-          },
-          text: 'السماع',
-          icon: FlutterIslamicIcons.quran,
-        ),
+        // _Item(
+        //   onPressed: () {
+        //     // context.push(const AudioQuranScreen());
+        //     context.push(const AudioQuranScreen());
+        //   },
+        //   text: 'السماع',
+        //   icon: FlutterIslamicIcons.quran,
+        // ),
 
         //
         _Item(

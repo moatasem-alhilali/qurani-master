@@ -10,8 +10,8 @@ import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_library/quran_library.dart';
 
 class CurrentSessionWidget extends StatelessWidget {
   const CurrentSessionWidget({
@@ -54,11 +54,15 @@ class CurrentSessionWidget extends StatelessWidget {
           ),
           subtitle: StyleButtonWrap(
             onTap: () {
-              final quranState = context.read<ReadQuranBloc>().state;
-              final page = quranState.getFirstPageOfSurah(
-                session.fromSurahId,
-                ayahNumber: session.fromAyahNumber,
-              );
+              // Get the first page of the surah using QuranLibrary
+              final quranLibrary = QuranLibrary();
+
+              // Jump to the surah to get the page, then navigate
+              // We'll calculate the page based on surah number
+              // Since jumpToSurah sets the page internally, we can get the current page
+              quranLibrary.jumpToSurah(session.fromSurahId);
+              final page = quranLibrary.currentPageNumber;
+
               context.push(
                 ReadQuranScreen(
                   page: page,
@@ -68,16 +72,21 @@ class CurrentSessionWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BlocBuilder<ReadQuranBloc, ReadQuranState>(
-                  builder: (context, stateQuran) {
-                    final fromAyah = stateQuran.surahs.firstWhere(
-                      (surah) => surah.id == session.fromSurahId,
+                Builder(
+                  builder: (context) {
+                    final quranLibrary = QuranLibrary();
+
+                    // Get surah information using QuranLibrary
+                    final fromSurah = quranLibrary.getSurahInfo(
+                      surahNumber: session.fromSurahId,
                     );
-                    final toAyah = stateQuran.surahs.firstWhere(
-                      (surah) => surah.id == session.toSurahId,
+                    final toSurah = quranLibrary.getSurahInfo(
+                      surahNumber: session.toSurahId,
                     );
+
                     return Text(
-                      'من ${fromAyah.nameAr} الاية ${session.fromAyahNumber} \n إلى ${toAyah.nameAr} الاية ${session.toAyahNumber}',
+                      'من ${fromSurah.name} الاية ${session.fromAyahNumber} \n'
+                      'إلى ${toSurah.name} الاية ${session.toAyahNumber}',
                       style: context.bodyMedium,
                     );
                   },

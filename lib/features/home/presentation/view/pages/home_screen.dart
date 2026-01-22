@@ -79,30 +79,30 @@ class _HomeScreenState extends State<HomeScreenNew> {
             const BaseHederWidget(text: 'المميزات'),
             const AnotherFeatures(),
 
-            const BaseHederWidget(text: 'المكتبة'),
-            SizedBox(
-              height: context.getHight(20),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    FeatureCardIconWidget(
-                      title: 'المكتبة الشاملة',
-                      icon: const Icon(Icons.book),
-                      onTap: () {
-                        context.push(
-                          const CategoryScreen(),
-                        );
-                      },
-                      maxLines: 1,
-                      width: context.getWidth(90),
-                      height: context.getHight(18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // const BaseHederWidget(text: 'المكتبة'),
+            // SizedBox(
+            //   height: context.getHight(20),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8),
+            //     child: ListView(
+            //       scrollDirection: Axis.horizontal,
+            //       children: [
+            //         FeatureCardIconWidget(
+            //           title: 'المكتبة الشاملة',
+            //           icon: const Icon(Icons.book),
+            //           onTap: () {
+            //             context.push(
+            //               const CategoryScreen(),
+            //             );
+            //           },
+            //           maxLines: 1,
+            //           width: context.getWidth(90),
+            //           height: context.getHight(18),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
             SizedBox(height: 16.h),
           ],
