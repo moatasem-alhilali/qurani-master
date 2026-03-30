@@ -88,66 +88,70 @@ class _PlayerContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RepaintBoundary(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(28.r),
-                child: player,
-              ),
+              child: player,
             ),
-            SizedBox(height: 16.h),
-            _PlayerStatsRow(
-              controller: controller,
-              session: session,
-            ),
-            SizedBox(height: 18.h),
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: youngMuslimPanelDecoration(
-                context,
-                radius: 26,
-              ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // SizedBox(height: 16.h),
+                  // _PlayerStatsRow(
+                  //   controller: controller,
+                  //   session: session,
+                  // ),
+                  SizedBox(height: 18.h),
+                  Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: youngMuslimPanelDecoration(
+                      context,
+                      radius: 26,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const YoungMuslimSectionHeader(
+                          title: 'خيارات المشاهدة',
+                          subtitle: 'تجربة مبسطة بدون تشتيت أو خروج خارجي',
+                        ),
+                        SizedBox(height: 14.h),
+                        SwitchListTile.adaptive(
+                          value: autoPlayEnabled,
+                          contentPadding: EdgeInsets.zero,
+                          title: const Text('تشغيل الفيديو التالي تلقائيًا'),
+                          subtitle: const Text(
+                            'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
+                          ),
+                          onChanged: (_) => onToggleAutoPlay(),
+                        ),
+                        if (session.nextVideo != null)
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: onPlayNext,
+                              icon: const Icon(Icons.skip_next_rounded),
+                              label: Text(
+                                'تشغيل التالي: $nextVideoLabel',
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 22.h),
                   const YoungMuslimSectionHeader(
-                    title: 'خيارات المشاهدة',
-                    subtitle: 'تجربة مبسطة بدون تشتيت أو خروج خارجي',
+                    title: 'قائمة السلسلة',
+                    subtitle: 'انتقل بين الحلقات بدون مغادرة المشغل',
                   ),
                   SizedBox(height: 14.h),
-                  SwitchListTile.adaptive(
-                    value: autoPlayEnabled,
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text('تشغيل الفيديو التالي تلقائيًا'),
-                    subtitle: const Text(
-                      'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
+                  RepaintBoundary(
+                    child: YoungMuslimVideoCarousel(
+                      videos: session.queue,
+                      compact: true,
+                      seriesTitleBuilder: (_) => session.series.titleAr,
+                      onTap: onPlaySelected,
                     ),
-                    onChanged: (_) => onToggleAutoPlay(),
                   ),
-                  if (session.nextVideo != null)
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: onPlayNext,
-                        icon: const Icon(Icons.skip_next_rounded),
-                        label: Text(
-                          'تشغيل التالي: $nextVideoLabel',
-                        ),
-                      ),
-                    ),
                 ],
-              ),
-            ),
-            SizedBox(height: 22.h),
-            const YoungMuslimSectionHeader(
-              title: 'قائمة السلسلة',
-              subtitle: 'انتقل بين الحلقات بدون مغادرة المشغل',
-            ),
-            SizedBox(height: 14.h),
-            RepaintBoundary(
-              child: YoungMuslimVideoCarousel(
-                videos: session.queue,
-                compact: true,
-                seriesTitleBuilder: (_) => session.series.titleAr,
-                onTap: onPlaySelected,
               ),
             ),
           ],

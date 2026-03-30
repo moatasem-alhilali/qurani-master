@@ -16,7 +16,7 @@ import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
 part 'young_muslim_home_screen_content.dart';
-part 'young_muslim_home_screen_search.dart';
+part '../widgets/young_muslim_home_screen_search.dart';
 
 class YoungMuslimHomeScreen extends StatefulWidget {
   const YoungMuslimHomeScreen({super.key});

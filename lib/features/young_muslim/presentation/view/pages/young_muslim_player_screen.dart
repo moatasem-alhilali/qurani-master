@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -69,51 +68,48 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
           title: 'تشغيل آمن للأطفال',
           showLargeHeader: false,
           initialOffset: null,
-          body: Padding(
-            padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
-            child: BlocBuilder<YoungMuslimPlayerCubit, YoungMuslimPlayerState>(
-              buildWhen: (previous, current) {
-                return previous.loadState != current.loadState ||
-                    previous.session != current.session ||
-                    previous.autoPlayEnabled != current.autoPlayEnabled ||
-                    previous.errorMessage != current.errorMessage;
-              },
-              builder: (context, state) {
-                final session = state.session;
-                final controller = _cubit.controller;
+          body: BlocBuilder<YoungMuslimPlayerCubit, YoungMuslimPlayerState>(
+            buildWhen: (previous, current) {
+              return previous.loadState != current.loadState ||
+                  previous.session != current.session ||
+                  previous.autoPlayEnabled != current.autoPlayEnabled ||
+                  previous.errorMessage != current.errorMessage;
+            },
+            builder: (context, state) {
+              final session = state.session;
+              final controller = _cubit.controller;
 
-                Widget child;
-                if (session == null && state.loadState == RequestState.error) {
-                  child = _PlayerErrorBody(message: state.errorMessage);
-                } else if (session == null || controller == null) {
-                  child = const YoungMuslimLoadingPanel();
-                } else {
-                  child = _PlayerContent(
-                    session: session,
-                    controller: controller,
-                    autoPlayEnabled: state.autoPlayEnabled,
-                    onToggleAutoPlay: _cubit.toggleAutoPlay,
-                    onPlayNext: _cubit.playNextVideo,
-                    onPlaySelected: _cubit.playSelectedVideo,
-                    onEnterFullScreen: _enterFullScreenMode,
-                    onExitFullScreen: _restorePortraitMode,
-                  );
-                }
-
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 220),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  child: KeyedSubtree(
-                    key: ValueKey(
-                      state.session?.video.id ??
-                          '${widget.videoId}_${state.loadState.name}',
-                    ),
-                    child: child,
-                  ),
+              Widget child;
+              if (session == null && state.loadState == RequestState.error) {
+                child = _PlayerErrorBody(message: state.errorMessage);
+              } else if (session == null || controller == null) {
+                child = const SizedBox();
+              } else {
+                child = _PlayerContent(
+                  session: session,
+                  controller: controller,
+                  autoPlayEnabled: state.autoPlayEnabled,
+                  onToggleAutoPlay: _cubit.toggleAutoPlay,
+                  onPlayNext: _cubit.playNextVideo,
+                  onPlaySelected: _cubit.playSelectedVideo,
+                  onEnterFullScreen: _enterFullScreenMode,
+                  onExitFullScreen: _restorePortraitMode,
                 );
-              },
-            ),
+              }
+
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                child: KeyedSubtree(
+                  key: ValueKey(
+                    state.session?.video.id ??
+                        '${widget.videoId}_${state.loadState.name}',
+                  ),
+                  child: child,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -153,18 +149,18 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
   }
 
   Future<void> _enterFullScreenMode() async {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // await SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    // ]);
+    // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   Future<void> _restorePortraitMode() async {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // await SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
+    // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }

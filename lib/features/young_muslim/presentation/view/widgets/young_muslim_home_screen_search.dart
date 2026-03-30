@@ -1,4 +1,4 @@
-part of 'young_muslim_home_screen.dart';
+part of '../pages/young_muslim_home_screen.dart';
 
 class _YoungMuslimSearchSuggestion {
   const _YoungMuslimSearchSuggestion({
