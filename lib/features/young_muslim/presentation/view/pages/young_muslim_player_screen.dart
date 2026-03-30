@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/request_state/request_state_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/domain/repositories/young_muslim_repository.dart';
@@ -33,6 +34,7 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    unawaited(_restorePortraitMode());
     _cubit = YoungMuslimPlayerCubit(
       repository: context.read<YoungMuslimRepository>(),
     )..initialize(widget.videoId);
@@ -40,6 +42,7 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
 
   @override
   void dispose() {
+    unawaited(_restorePortraitMode());
     unawaited(_cubit.persistOnExit());
     unawaited(_cubit.close());
     super.dispose();
@@ -64,47 +67,51 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
           title: 'تشغيل آمن للأطفال',
           showLargeHeader: false,
           initialOffset: null,
-          body: BlocBuilder<YoungMuslimPlayerCubit, YoungMuslimPlayerState>(
-            buildWhen: (previous, current) {
-              return previous.loadState != current.loadState ||
-                  previous.session != current.session ||
-                  previous.autoPlayEnabled != current.autoPlayEnabled ||
-                  previous.errorMessage != current.errorMessage;
-            },
-            builder: (context, state) {
-              final child = state.loadState.when<Widget>(
-                context: context,
-                onLoading: _PlayerLoadingBody(session: state.session),
-                onError: _PlayerErrorBody(message: state.errorMessage),
-                onSuccess: () {
-                  final session = state.session;
-                  final controller = _cubit.controller;
-                  if (session == null || controller == null) {
-                    return const _PlayerLoadingBody();
-                  }
-                  return _PlayerContent(
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
+            child: BlocBuilder<YoungMuslimPlayerCubit, YoungMuslimPlayerState>(
+              buildWhen: (previous, current) {
+                return previous.loadState != current.loadState ||
+                    previous.session != current.session ||
+                    previous.autoPlayEnabled != current.autoPlayEnabled ||
+                    previous.errorMessage != current.errorMessage;
+              },
+              builder: (context, state) {
+                final session = state.session;
+                final controller = _cubit.controller;
+
+                Widget child;
+                if (session == null && state.loadState == RequestState.error) {
+                  child = _PlayerErrorBody(message: state.errorMessage);
+                } else if (session == null || controller == null) {
+                  child = const YoungMuslimLoadingPanel();
+                } else {
+                  child = _PlayerContent(
                     session: session,
                     controller: controller,
                     autoPlayEnabled: state.autoPlayEnabled,
                     onToggleAutoPlay: _cubit.toggleAutoPlay,
                     onPlayNext: _cubit.playNextVideo,
                     onPlaySelected: _cubit.playSelectedVideo,
+                    onEnterFullScreen: _enterFullScreenMode,
+                    onExitFullScreen: _restorePortraitMode,
                   );
-                },
-              );
+                }
 
-              return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 220),
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeInCubic,
-                child: KeyedSubtree(
-                  key: ValueKey(
-                    '${state.loadState.name}_${state.session?.video.id ?? widget.videoId}',
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 220),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  child: KeyedSubtree(
+                    key: ValueKey(
+                      state.session?.video.id ??
+                          '${widget.videoId}_${state.loadState.name}',
+                    ),
+                    child: child,
                   ),
-                  child: child,
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -142,37 +149,21 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
 
     await _cubit.handlePostQuizAutoPlay();
   }
-}
 
-class _PlayerLoadingBody extends StatelessWidget {
-  const _PlayerLoadingBody({
-    this.session,
-  });
+  Future<void> _enterFullScreenMode() async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
 
-  final YoungMuslimPlayerSessionEntity? session;
-
-  @override
-  Widget build(BuildContext context) {
-    if (session == null) {
-      return const SizedBox(
-        height: 420,
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return Stack(
-      children: [
-        Opacity(
-          opacity: 0.45,
-          child: IgnorePointer(
-            child: _PlayerContentSkeleton(session: session!),
-          ),
-        ),
-        const Positioned.fill(
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ],
-    );
+  Future<void> _restorePortraitMode() async {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }
 
@@ -220,6 +211,8 @@ class _PlayerContent extends StatelessWidget {
     required this.onToggleAutoPlay,
     required this.onPlayNext,
     required this.onPlaySelected,
+    required this.onEnterFullScreen,
+    required this.onExitFullScreen,
   });
 
   final YoungMuslimPlayerSessionEntity session;
@@ -228,12 +221,13 @@ class _PlayerContent extends StatelessWidget {
   final Future<void> Function() onToggleAutoPlay;
   final Future<void> Function() onPlayNext;
   final Future<void> Function(String videoId) onPlaySelected;
+  final Future<void> Function() onEnterFullScreen;
+  final Future<void> Function() onExitFullScreen;
 
   @override
   Widget build(BuildContext context) {
     final player = YoutubePlayer(
       controller: controller,
-      showVideoProgressIndicator: false,
       bottomActions: const [
         CurrentPosition(),
         SizedBox(width: 8),
@@ -245,93 +239,81 @@ class _PlayerContent extends StatelessWidget {
     );
 
     return YoutubePlayerBuilder(
+      onEnterFullScreen: () {
+        unawaited(onEnterFullScreen());
+      },
+      onExitFullScreen: () {
+        unawaited(onExitFullScreen());
+      },
       player: player,
       builder: (context, player) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RepaintBoundary(
-                child: Container(
-                  decoration: youngMuslimPanelDecoration(context),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(28.r),
-                    child: player,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RepaintBoundary(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(28.r),
+                child: player,
+              ),
+            ),
+            SizedBox(height: 16.h),
+            _PlayerStatsRow(
+              controller: controller,
+              session: session,
+            ),
+            SizedBox(height: 18.h),
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: youngMuslimPanelDecoration(
+                context,
+                radius: 26,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const YoungMuslimSectionHeader(
+                    title: 'خيارات المشاهدة',
+                    subtitle: 'تجربة مبسطة بدون تشتيت أو خروج خارجي',
                   ),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              _PlayerStatsRow(
-                controller: controller,
-                session: session,
-              ),
-              SizedBox(height: 18.h),
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: youngMuslimPanelDecoration(
-                  context,
-                  radius: 26,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const YoungMuslimSectionHeader(
-                      title: 'خيارات المشاهدة',
-                      subtitle: 'تجربة مبسطة بدون تشتيت أو خروج خارجي',
+                  SizedBox(height: 14.h),
+                  SwitchListTile.adaptive(
+                    value: autoPlayEnabled,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('تشغيل الفيديو التالي تلقائيًا'),
+                    subtitle: const Text(
+                      'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
                     ),
-                    SizedBox(height: 14.h),
-                    SwitchListTile.adaptive(
-                      value: autoPlayEnabled,
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('تشغيل الفيديو التالي تلقائيًا'),
-                      subtitle: const Text(
-                        'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
-                      ),
-                      onChanged: (_) => onToggleAutoPlay(),
-                    ),
-                    if (session.nextVideo != null)
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: onPlayNext,
-                          icon: const Icon(Icons.skip_next_rounded),
-                          label: Text(
-                            'تشغيل التالي: ${session.nextVideo!.episodeNumber ?? session.nextVideo!.orderIndex}',
-                          ),
+                    onChanged: (_) => onToggleAutoPlay(),
+                  ),
+                  if (session.nextVideo != null)
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: onPlayNext,
+                        icon: const Icon(Icons.skip_next_rounded),
+                        label: Text(
+                          'تشغيل التالي: ${session.nextVideo!.episodeNumber ?? session.nextVideo!.orderIndex}',
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
-              SizedBox(height: 22.h),
-              const YoungMuslimSectionHeader(
-                title: 'قائمة السلسلة',
-                subtitle: 'انتقل بين الحلقات بدون مغادرة المشغل',
+            ),
+            SizedBox(height: 22.h),
+            const YoungMuslimSectionHeader(
+              title: 'قائمة السلسلة',
+              subtitle: 'انتقل بين الحلقات بدون مغادرة المشغل',
+            ),
+            SizedBox(height: 14.h),
+            RepaintBoundary(
+              child: YoungMuslimVideoCarousel(
+                videos: session.queue,
+                compact: true,
+                seriesTitleBuilder: (_) => session.series.titleAr,
+                onTap: onPlaySelected,
               ),
-              SizedBox(height: 14.h),
-              RepaintBoundary(
-                child: SizedBox(
-                  height: 252.h,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    cacheExtent: 420.w,
-                    itemBuilder: (context, index) {
-                      final video = session.queue[index];
-                      return YoungMuslimVideoCard(
-                        video: video,
-                        seriesTitle: session.series.titleAr,
-                        onTap: () => onPlaySelected(video.id),
-                        compact: true,
-                      );
-                    },
-                    separatorBuilder: (_, __) => SizedBox(width: 12.w),
-                    itemCount: session.queue.length,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -399,57 +381,6 @@ class _PlayerStatsRow extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _PlayerContentSkeleton extends StatelessWidget {
-  const _PlayerContentSkeleton({
-    required this.session,
-  });
-
-  final YoungMuslimPlayerSessionEntity session;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 220.h,
-            decoration: youngMuslimPanelDecoration(context),
-          ),
-          SizedBox(height: 16.h),
-          Container(
-            height: 8.h,
-            decoration: BoxDecoration(
-              color: context.outline.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-          ),
-          SizedBox(height: 12.h),
-          Text(
-            session.video.title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            '${session.series.titleAr} • ${session.category.titleAr}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.gray1,
-                ),
-          ),
-          SizedBox(height: 18.h),
-          Container(
-            height: 124.h,
-            decoration: youngMuslimPanelDecoration(context, radius: 26),
-          ),
-        ],
-      ),
     );
   }
 }

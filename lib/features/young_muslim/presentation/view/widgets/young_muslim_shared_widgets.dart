@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -118,6 +119,19 @@ String youngMuslimRelative(DateTime? dateTime) {
   return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
 }
 
+double youngMuslimCarouselViewportFraction(
+  BuildContext context, {
+  required double itemWidth,
+  double horizontalPadding = 0,
+  double minFraction = 0.24,
+}) {
+  final viewportWidth = MediaQuery.sizeOf(context).width - horizontalPadding;
+  if (viewportWidth <= 0) {
+    return 1;
+  }
+  return (itemWidth / viewportWidth).clamp(minFraction, 1.0);
+}
+
 PageRouteBuilder<T> youngMuslimPageRoute<T>({
   required Widget child,
 }) {
@@ -219,9 +233,11 @@ class YoungMuslimMetricChip extends StatelessWidget {
         children: [
           Icon(icon, size: 14.sp, color: resolvedColor),
           SizedBox(width: 6.w),
-          Expanded(
+          Flexible(
             child: Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: resolvedColor,
                     fontWeight: FontWeight.w700,
@@ -283,6 +299,26 @@ class YoungMuslimEmptyState extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class YoungMuslimLoadingPanel extends StatelessWidget {
+  const YoungMuslimLoadingPanel({
+    this.heightFactor = 0.42,
+    super.key,
+  });
+
+  final double heightFactor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.sizeOf(context).height * heightFactor,
+      decoration: youngMuslimPanelDecoration(context),
+      child: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
@@ -709,6 +745,67 @@ class YoungMuslimVideoCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class YoungMuslimVideoCarousel extends StatelessWidget {
+  const YoungMuslimVideoCarousel({
+    required this.videos,
+    required this.seriesTitleBuilder,
+    required this.onTap,
+    this.onFavoriteToggle,
+    this.onWatchLaterToggle,
+    this.compact = false,
+    super.key,
+  });
+
+  final List<YoungMuslimVideoEntity> videos;
+  final String Function(YoungMuslimVideoEntity video) seriesTitleBuilder;
+  final ValueChanged<String> onTap;
+  final ValueChanged<String>? onFavoriteToggle;
+  final ValueChanged<String>? onWatchLaterToggle;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    if (videos.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final cardWidth = compact ? 170.w : 220.w;
+    final itemPadding = 6.w;
+
+    return CarouselSlider.builder(
+      itemCount: videos.length,
+      options: CarouselOptions(
+        height: compact ? 252.h : 305.h,
+        viewportFraction: youngMuslimCarouselViewportFraction(
+          context,
+          itemWidth: cardWidth + (itemPadding * 2),
+          horizontalPadding: 36.w,
+          minFraction: compact ? 0.2 : 0.24,
+        ),
+        enableInfiniteScroll: videos.length > 1,
+      ),
+      itemBuilder: (context, index, realIndex) {
+        final video = videos[index];
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: itemPadding),
+          child: YoungMuslimVideoCard(
+            video: video,
+            seriesTitle: seriesTitleBuilder(video),
+            compact: compact,
+            onTap: () => onTap(video.id),
+            onFavoriteToggle: onFavoriteToggle == null
+                ? null
+                : () => onFavoriteToggle!(video.id),
+            onWatchLaterToggle: onWatchLaterToggle == null
+                ? null
+                : () => onWatchLaterToggle!(video.id),
+          ),
+        );
+      },
     );
   }
 }

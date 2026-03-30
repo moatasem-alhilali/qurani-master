@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
@@ -171,19 +170,18 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
         ),
         SizedBox(height: 14.h),
         RepaintBoundary(
-          child: MasonryGridView.count(
-            crossAxisCount: _homeCategoryCrossAxisCount(context),
-            mainAxisSpacing: 14.h,
-            crossAxisSpacing: 14.w,
+          child: ListView.separated(
             itemCount: dashboard.categories.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            primary: false,
+            separatorBuilder: (_, __) => SizedBox(height: 14.h),
             itemBuilder: (context, index) {
               final category = dashboard.categories[index];
               return YoungMuslimCategoryCard(
                 category: category,
                 onTap: () => _openCategory(context, category.id),
-                height: 182 + ((index % 2) * 24),
+                height: 196,
               );
             },
           ),
@@ -202,26 +200,18 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
               icon: Icons.search_off_rounded,
             )
           else
-            SizedBox(
-              height: 305.h,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final video = dashboard.searchResults[index];
-                  return YoungMuslimVideoCard(
-                    video: video,
-                    seriesTitle: _seriesTitleFor(dashboard, video.seriesId),
-                    onTap: () => _openVideo(context, video.id),
-                    onFavoriteToggle: () => context
-                        .read<YoungMuslimBloc>()
-                        .add(YoungMuslimFavoriteToggled(video.id)),
-                    onWatchLaterToggle: () => context
-                        .read<YoungMuslimBloc>()
-                        .add(YoungMuslimWatchLaterToggled(video.id)),
-                  );
-                },
-                separatorBuilder: (_, __) => SizedBox(width: 12.w),
-                itemCount: dashboard.searchResults.length,
+            RepaintBoundary(
+              child: YoungMuslimVideoCarousel(
+                videos: dashboard.searchResults,
+                seriesTitleBuilder: (video) =>
+                    _seriesTitleFor(dashboard, video.seriesId),
+                onTap: (videoId) => _openVideo(context, videoId),
+                onFavoriteToggle: (videoId) => context
+                    .read<YoungMuslimBloc>()
+                    .add(YoungMuslimFavoriteToggled(videoId)),
+                onWatchLaterToggle: (videoId) => context
+                    .read<YoungMuslimBloc>()
+                    .add(YoungMuslimWatchLaterToggled(videoId)),
               ),
             ),
           SizedBox(height: 22.h),
@@ -637,13 +627,7 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
   }
 
   Widget _buildLoadingBody(BuildContext context) {
-    return Container(
-      height: MediaQuery.sizeOf(context).height * 0.42,
-      decoration: youngMuslimPanelDecoration(context),
-      child: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const YoungMuslimLoadingPanel();
   }
 
   Widget _buildErrorBody(BuildContext context, String? message) {
@@ -652,17 +636,6 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
       subtitle: message ?? 'حاول تحديث الصفحة مرة أخرى.',
       icon: Icons.cloud_off_rounded,
     );
-  }
-
-  int _homeCategoryCrossAxisCount(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    if (width >= 1100) {
-      return 4;
-    }
-    if (width >= 800) {
-      return 3;
-    }
-    return 2;
   }
 
   Widget _buildRailSection(
@@ -684,28 +657,17 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
             subtitle: subtitle,
           ),
           SizedBox(height: 14.h),
-          SizedBox(
-            height: 305.h,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              cacheExtent: 420.w,
-              itemBuilder: (context, index) {
-                final video = videos[index];
-                return YoungMuslimVideoCard(
-                  video: video,
-                  seriesTitle: _seriesTitleFor(dashboard, video.seriesId),
-                  onTap: () => _openVideo(context, video.id),
-                  onFavoriteToggle: () => context
-                      .read<YoungMuslimBloc>()
-                      .add(YoungMuslimFavoriteToggled(video.id)),
-                  onWatchLaterToggle: () => context
-                      .read<YoungMuslimBloc>()
-                      .add(YoungMuslimWatchLaterToggled(video.id)),
-                );
-              },
-              separatorBuilder: (_, __) => SizedBox(width: 12.w),
-              itemCount: videos.length,
-            ),
+          YoungMuslimVideoCarousel(
+            videos: videos,
+            seriesTitleBuilder: (video) =>
+                _seriesTitleFor(dashboard, video.seriesId),
+            onTap: (videoId) => _openVideo(context, videoId),
+            onFavoriteToggle: (videoId) => context
+                .read<YoungMuslimBloc>()
+                .add(YoungMuslimFavoriteToggled(videoId)),
+            onWatchLaterToggle: (videoId) => context
+                .read<YoungMuslimBloc>()
+                .add(YoungMuslimWatchLaterToggled(videoId)),
           ),
         ],
       ),
