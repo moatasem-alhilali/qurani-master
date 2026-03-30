@@ -5,7 +5,6 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
-import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
@@ -21,7 +20,6 @@ import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/ruqia_s
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
-import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_after_pray_screen.dart';
 
 class AnotherFeatures extends StatelessWidget {
@@ -47,6 +45,15 @@ class AnotherFeatures extends StatelessWidget {
           text: 'القرآن الكريم',
           icon: FlutterIslamicIcons.quran2,
         ),
+        // if (serviceEnabled)
+        _Item(
+          onPressed: () {
+            context.push(const PrayerTimeScreen());
+          },
+          text: 'أوقات الصلاة',
+          icon: FlutterIslamicIcons.prayingPerson,
+        ),
+
         _Item(
           onPressed: () {
             context.push(const QuranPlanListScreen());
@@ -75,14 +82,6 @@ class AnotherFeatures extends StatelessWidget {
           text: 'أذكار المساء',
           icon: FlutterIslamicIcons.prayer,
         ),
-        if (serviceEnabled)
-          _Item(
-            onPressed: () {
-              context.push(const PrayerTimeScreen());
-            },
-            text: 'أوقات الصلاة',
-            icon: FlutterIslamicIcons.prayingPerson,
-          ),
 
         _Item(
           onPressed: () {
@@ -105,13 +104,13 @@ class AnotherFeatures extends StatelessWidget {
           text: 'الاذكار',
           icon: FlutterIslamicIcons.quran,
         ),
-        _Item(
-          onPressed: () {
-            context.push(const YoungMuslimProvider());
-          },
-          text: 'المسلم الصغير',
-          icon: Icons.play_lesson_rounded,
-        ),
+        // _Item(
+        //   onPressed: () {
+        //     context.push(const YoungMuslimProvider());
+        //   },
+        //   text: 'المسلم الصغير',
+        //   icon: Icons.play_lesson_rounded,
+        // ),
         // _Item(
         //   onPressed: () {
         //     // context.push(const AudioQuranScreen());

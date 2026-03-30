@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
+import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown_widget.dart';
+import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
 class HomeScreenNew extends StatefulWidget {
   const HomeScreenNew({super.key});
@@ -75,30 +78,30 @@ class _HomeScreenState extends State<HomeScreenNew> {
             const BaseHederWidget(text: 'المميزات'),
             const AnotherFeatures(),
 
-            // const BaseHederWidget(text: 'المكتبة'),
-            // SizedBox(
-            //   height: context.getHight(20),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8),
-            //     child: ListView(
-            //       scrollDirection: Axis.horizontal,
-            //       children: [
-            //         FeatureCardIconWidget(
-            //           title: 'المكتبة الشاملة',
-            //           icon: const Icon(Icons.book),
-            //           onTap: () {
-            //             context.push(
-            //               const CategoryScreen(),
-            //             );
-            //           },
-            //           maxLines: 1,
-            //           width: context.getWidth(90),
-            //           height: context.getHight(18),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            const BaseHederWidget(text: 'قسم الأطفال'),
+            SizedBox(
+              height: context.getHight(20),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    FeatureCardIconWidget(
+                      title: 'المسلم الصغير',
+                      icon: const Icon(Icons.play_lesson_rounded),
+                      onTap: () {
+                        context.push(
+                          const YoungMuslimProvider(),
+                        );
+                      },
+                      maxLines: 1,
+                      width: context.getWidth(90),
+                      height: context.getHight(18),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             SizedBox(height: 16.h),
           ],

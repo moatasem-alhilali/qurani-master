@@ -1,15 +1,12 @@
-import 'package:adhan/src/prayer.dart';
+import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/components/timeline_list_item.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
-// import 'package:timelines/timelines.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_timeline.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
@@ -84,50 +81,32 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     Prayer? currentType,
     Prayer? nextType,
   ) {
-    final timelineItems = list.asMap().entries.map((entry) {
-      final index = entry.key;
-      final data = entry.value;
+    final timelineEntries = list.map((data) {
       final isCurrent = currentType == data.type;
       final isNext = nextType == data.type;
       final isPassed = _isPrayerPassed(data, currentType, list);
 
-      // Determine timeline status
-      TimelineItemStatus status;
+      PrayerTimelineStatus status;
       if (isPassed) {
-        status = TimelineItemStatus.completed;
+        status = PrayerTimelineStatus.completed;
       } else if (isCurrent) {
-        status = TimelineItemStatus.active;
+        status = PrayerTimelineStatus.current;
       } else if (isNext) {
-        status = TimelineItemStatus.upcoming;
+        status = PrayerTimelineStatus.next;
       } else {
-        status = TimelineItemStatus.upcoming;
+        status = PrayerTimelineStatus.upcoming;
       }
 
-      return TimelineListItem(
-        title: data.name,
-        subtitle: data.description,
-        time: data.time12,
-        iconWidget: PrayerTimeAnimationWidget(
-          prayerType: data.type,
-          size: 30,
-          isActive: isCurrent || isNext,
-        ),
+      return PrayerTimelineEntry(
+        prayer: data,
         status: status,
-        isFirst: index == 0,
-        isLast: index == list.length - 1,
-        iconColor: _getPrayerColor(data),
-        iconBackgroundColor: Colors.transparent,
-        backgroundColor: context.surfaceColor,
-        // iconBackgroundColor: _getPrayerColor(data),
-        onTap: () {
-          // Handle prayer item tap if needed
-        },
+        accentColor: _getPrayerColor(data),
       );
     }).toList();
 
     return BaseAnimate(
       index: 2,
-      child: TimelineList(items: timelineItems),
+      child: PrayerTimeTimeline(entries: timelineEntries),
     );
   }
 
@@ -146,6 +125,8 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
 
   Color _getPrayerColor(PrayerInfoModel data) {
     switch (data.type) {
+      case Prayer.none:
+        return Colors.grey;
       case Prayer.fajr:
         return Colors.blue;
       case Prayer.sunrise:
@@ -158,8 +139,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         return Colors.red;
       case Prayer.isha:
         return Colors.indigo;
-      default:
-        return Colors.grey;
     }
   }
 }
