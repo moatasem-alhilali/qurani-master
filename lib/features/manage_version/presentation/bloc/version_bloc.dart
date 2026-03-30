@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
@@ -53,7 +54,7 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
       (versionModel) {
         add(ConfigChangedEvent(versionModel: versionModel));
       },
-      onError: (error) {
+      onError: (Object error) {
         logger.e('Config changes stream error: $error');
       },
     );
@@ -153,11 +154,12 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     Emitter<VersionState> emit,
   ) async {
     try {
-      logger.d('=== Starting update check ===');
-      logger.d('Force refresh: ${event.forceRefresh}');
-      logger.d('Is manual check: ${event.isManualCheck}');
-      logger.d('Current ISCONNECTED: $ISCONNECTED');
-      logger.d('Current state has update: ${state.hasUpdateAvailable}');
+      logger
+        ..d('=== Starting update check ===')
+        ..d('Force refresh: ${event.forceRefresh}')
+        ..d('Is manual check: ${event.isManualCheck}')
+        ..d('Current ISCONNECTED: $ISCONNECTED')
+        ..d('Current state has update: ${state.hasUpdateAvailable}');
 
       emit(
         state.copyWith(
@@ -193,15 +195,16 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
             ),
           );
 
-          logger.d('Version check result: $versionModel');
-          logger.d('Update available: ${versionModel.isUpdateAvailable}');
-          logger.d('Current version: ${versionModel.currentVersion}');
-          logger.d('Latest version: ${versionModel.latestVersion}');
+          logger
+            ..d('Version check result: $versionModel')
+            ..d('Update available: ${versionModel.isUpdateAvailable}')
+            ..d('Current version: ${versionModel.currentVersion}')
+            ..d('Latest version: ${versionModel.latestVersion}');
 
-          // No dialog logic needed - version management screen will handle display
+          // Home screen handles the update prompt presentation now.
           if (versionModel.isUpdateAvailable) {
             logger.d(
-              'Update is available - can be viewed in version management screen',
+              'Update is available and ready for home screen presentation',
             );
           } else {
             logger.d('No update available');

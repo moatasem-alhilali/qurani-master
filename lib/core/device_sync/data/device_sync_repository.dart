@@ -62,21 +62,39 @@ class DeviceSyncRepository {
     final firstOpenedAt = await _localStore.getOrCreateFirstOpenedAt();
     final cachedToken = _localStore.getLastKnownToken();
     final pendingLaunches = _localStore.getPendingLaunchCount();
+    final totalLaunchCount = _localStore.getLaunchCount();
+    final lastOpenedAt = _localStore.getLastOpenedAt();
 
     final payload = await _deviceInfoService.buildInstallationPayload(
       installationId: installationId,
       firstOpenedAt: firstOpenedAt,
       cachedFcmToken: cachedToken,
     );
+    final firestoreData = payload.toFirestoreData(
+      pendingLaunches: pendingLaunches,
+      syncReason: reason,
+    );
+    final usageData = Map<String, dynamic>.from(
+      firestoreData['usage'] as Map<String, dynamic>,
+    )..addAll({
+        'totalLaunchCount': totalLaunchCount,
+      });
+    firestoreData['usage'] = usageData;
+
+    if (lastOpenedAt != null) {
+      final activityData = Map<String, dynamic>.from(
+        firestoreData['activity'] as Map<String, dynamic>,
+      )..addAll({
+          'lastOpenedAt': Timestamp.fromDate(lastOpenedAt),
+        });
+      firestoreData['activity'] = activityData;
+    }
 
     final document =
         _firestore.collection(_collectionName).doc(payload.deviceUniqueId);
 
     await document.set(
-      payload.toFirestoreData(
-        pendingLaunches: pendingLaunches,
-        syncReason: reason,
-      ),
+      firestoreData,
       SetOptions(merge: true),
     );
 

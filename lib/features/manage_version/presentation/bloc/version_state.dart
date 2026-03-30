@@ -1,7 +1,7 @@
 part of 'version_bloc.dart';
 
 @immutable
-class VersionState {
+class VersionState extends Equatable {
   const VersionState({
     this.versionCheckState = RequestState.initial,
     this.currentVersion,

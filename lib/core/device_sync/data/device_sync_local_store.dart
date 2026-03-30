@@ -11,6 +11,7 @@ class DeviceSyncLocalStore {
   static const _lastSyncedLaunchCountKey =
       'device_sync_last_synced_launch_count';
   static const _firstOpenedAtKey = 'device_sync_first_opened_at';
+  static const _lastOpenedAtKey = 'device_sync_last_opened_at';
   static const _lastKnownTokenKey = 'device_sync_last_known_fcm_token';
 
   final CacheService _cacheService;
@@ -45,9 +46,14 @@ class DeviceSyncLocalStore {
   }
 
   Future<int> recordLaunch() async {
+    final openedAt = DateTime.now().toUtc();
     final current = _cacheService.getInt(_launchCountKey) ?? 0;
     final updated = current + 1;
     await _cacheService.setInt(_launchCountKey, updated);
+    await _cacheService.setString(
+      _lastOpenedAtKey,
+      openedAt.toIso8601String(),
+    );
     return updated;
   }
 
@@ -62,6 +68,14 @@ class DeviceSyncLocalStore {
   int getPendingLaunchCount() {
     final pending = getLaunchCount() - getLastSyncedLaunchCount();
     return pending < 0 ? 0 : pending;
+  }
+
+  DateTime? getLastOpenedAt() {
+    final cached = _cacheService.getString(_lastOpenedAtKey);
+    if (cached == null || cached.isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(cached);
   }
 
   Future<void> markLaunchesSynced() async {
