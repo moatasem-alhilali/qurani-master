@@ -15,7 +15,6 @@ import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
@@ -25,8 +24,6 @@ import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
@@ -88,7 +85,6 @@ class MyApp extends StatelessWidget {
         //   lazy: false,
         // ),
 
-     
         // BlocProvider(
         //   lazy: false,
         //   create: (context) => ReadQuranBloc()
@@ -165,7 +161,7 @@ class MyApp extends StatelessWidget {
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
                   // home: const _App(),
-                  home: _App(),
+                  home: const _App(),
                 ),
               );
             },

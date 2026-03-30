@@ -21,6 +21,7 @@ import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/ruqia_s
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
+import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_after_pray_screen.dart';
 
 class AnotherFeatures extends StatelessWidget {
@@ -103,6 +104,13 @@ class AnotherFeatures extends StatelessWidget {
           },
           text: 'الاذكار',
           icon: FlutterIslamicIcons.quran,
+        ),
+        _Item(
+          onPressed: () {
+            context.push(const YoungMuslimProvider());
+          },
+          text: 'المسلم الصغير',
+          icon: Icons.play_lesson_rounded,
         ),
         // _Item(
         //   onPressed: () {

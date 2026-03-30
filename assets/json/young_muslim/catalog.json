@@ -1,0 +1,378 @@
+{
+  "version": 2,
+  "generated_at": "2026-03-30T11:19:48.651Z",
+  "categories": [
+    {
+      "id": "human_stories",
+      "title_ar": "قصص الإنسان في القرآن",
+      "title_en": "Human Stories",
+      "description": "قصص بشرية من القرآن تساعد الطفل على فهم المواقف والقيم من خلال الحكاية.",
+      "order": 1,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "tags": [
+        "قصص",
+        "الإنسان",
+        "القرآن"
+      ],
+      "source_key": "human_stories",
+      "accent_start": "#FF9B71",
+      "accent_end": "#FFD166",
+      "series_ids": [
+        "human_stories_ar"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/SMdRK8KVCT8/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbZgqr7KqvQjmI1N0mVTa5HICfCg",
+      "thumbnail": "https://i.ytimg.com/vi/SMdRK8KVCT8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBLK_cWmSABmrCc4Rdt1k3bAgTYug",
+      "file_name": null
+    },
+    {
+      "id": "animal_stories",
+      "title_ar": "قصص الحيوان في القرآن",
+      "title_en": "Animal Stories",
+      "description": "قصص الحيوانات المذكورة في القرآن بنسختين عربية وفرنسية داخل تجربة واحدة.",
+      "order": 2,
+      "audience": "kids",
+      "language": "multi",
+      "content_type": "story_series",
+      "tags": [
+        "قصص",
+        "حيوانات",
+        "القرآن"
+      ],
+      "source_key": "animal_stories",
+      "accent_start": "#39A96B",
+      "accent_end": "#8FE388",
+      "series_ids": [
+        "animal_stories_ar",
+        "animal_stories_fr"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/wHrxioBnB9o/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAeZJ7Yl2Ks0vRBcNjCQ1xU1Z9x_Q",
+      "thumbnail": "https://i.ytimg.com/vi/wHrxioBnB9o/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA48PH0lJ3wsuBxYz6rmGKufNH22w",
+      "file_name": null
+    },
+    {
+      "id": "women_stories",
+      "title_ar": "قصص النساء في القرآن",
+      "title_en": "Women Stories",
+      "description": "قصص النساء الواردة في القرآن بقيم تربوية واضحة تناسب الأطفال واليافعين.",
+      "order": 3,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "tags": [
+        "قصص",
+        "نساء",
+        "القرآن"
+      ],
+      "source_key": "women_stories",
+      "accent_start": "#E76F51",
+      "accent_end": "#F4A261",
+      "series_ids": [
+        "women_stories_ar"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/nbilq32cWn0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCo759eGZ0G4ghKow30yP5EvDx9hw",
+      "thumbnail": "https://i.ytimg.com/vi/nbilq32cWn0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBy4c6lCAb492uzCzG_7hL0A-l6xQ",
+      "file_name": null
+    },
+    {
+      "id": "verses_stories",
+      "title_ar": "قصص الآيات في القرآن",
+      "title_en": "Verses Stories",
+      "description": "حكايات توضح مواقف بعض الآيات وتربط الطفل بمعانيها في سياق قصصي مبسط.",
+      "order": 4,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "tags": [
+        "قصص",
+        "آيات",
+        "القرآن"
+      ],
+      "source_key": "verses_stories",
+      "accent_start": "#6C63FF",
+      "accent_end": "#8E9BFF",
+      "series_ids": [
+        "verses_stories_ar"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/rfbd68nNSI4/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDDWDaWBriIGcIvkU0ubvDBoASE_Q",
+      "thumbnail": "https://i.ytimg.com/vi/rfbd68nNSI4/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAhxCgyJQL4BdJ2pCtk6Q9tXMQ6fA",
+      "file_name": null
+    },
+    {
+      "id": "marvellous_stories",
+      "title_ar": "قصص العجائب في القرآن",
+      "title_en": "Marvellous Stories",
+      "description": "قصص عجيبة مليئة بالعبر والمواقف المؤثرة من القرآن بأسلوب مرئي جذاب.",
+      "order": 5,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "tags": [
+        "قصص",
+        "عجائب",
+        "القرآن"
+      ],
+      "source_key": "marvellous_stories",
+      "accent_start": "#A44CD3",
+      "accent_end": "#F4B393",
+      "series_ids": [
+        "marvellous_stories_ar"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCSKX-rATYwaj41wMs90NdqwaFO4A",
+      "thumbnail": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCDS1C-Wwss60OZU406MC0_STjiwQ",
+      "file_name": null
+    },
+    {
+      "id": "behind_the_scenes",
+      "title_ar": "كواليس السلاسل",
+      "title_en": "Behind The Scenes",
+      "description": "مقاطع قصيرة تكشف كواليس إنتاج بعض السلاسل بطريقة مناسبة وآمنة داخل التطبيق.",
+      "order": 6,
+      "audience": "general",
+      "language": "mixed",
+      "content_type": "behind_the_scenes",
+      "tags": [
+        "كواليس",
+        "إنتاج",
+        "قصص"
+      ],
+      "source_key": "behind_the_scenes",
+      "accent_start": "#355C7D",
+      "accent_end": "#6C5B7B",
+      "series_ids": [
+        "verses_stories_bts",
+        "marvellous_stories_bts"
+      ],
+      "banner_image": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwExCNACELwBSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYciBhKDwwDw==&rs=AOn4CLCG9uiuGqCl7woVXUhCJgVkmavmIQ",
+      "thumbnail": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhyIGEoPDAP&rs=AOn4CLDq_14ETiDeOkblulqMdYocrsDyoA",
+      "file_name": null
+    }
+  ],
+  "series": [
+    {
+      "id": "human_stories_ar",
+      "category_id": "human_stories",
+      "title_ar": "قصص الإنسان في القرآن",
+      "title_en": "Human Stories From Quran",
+      "description": "سلسلة قصصية تربط الطفل بمواقف البشر في القرآن الكريم بطريقة مرئية سهلة.",
+      "banner_image": "https://i.ytimg.com/vi/SMdRK8KVCT8/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAbZgqr7KqvQjmI1N0mVTa5HICfCg",
+      "thumbnail": "https://i.ytimg.com/vi/SMdRK8KVCT8/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBLK_cWmSABmrCc4Rdt1k3bAgTYug",
+      "file_name": "assets/json/young_muslim/playlists/human_stories_from_quran.json",
+      "source_key": "human_stories",
+      "tags": [
+        "قصص",
+        "القرآن",
+        "الإنسان",
+        "تعلم"
+      ],
+      "order": 1,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "accent_start": "#FF9B71",
+      "accent_end": "#FFD166",
+      "playlist_id": "PLJ0WU3XQoz49XWayvM7-m1N5ZgNNHL7fK",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz49XWayvM7-m1N5ZgNNHL7fK&si=KCtyXHBdLt44QxG2",
+      "total_videos": 31,
+      "total_duration_seconds": 29411,
+      "is_featured": true
+    },
+    {
+      "id": "animal_stories_ar",
+      "category_id": "animal_stories",
+      "title_ar": "قصص الحيوان في القرآن",
+      "title_en": "Animal Stories From Quran",
+      "description": "رحلة مرئية ممتعة مع الحيوانات المذكورة في القرآن بأسلوب قريب من الأطفال.",
+      "banner_image": "https://i.ytimg.com/vi/wHrxioBnB9o/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAeZJ7Yl2Ks0vRBcNjCQ1xU1Z9x_Q",
+      "thumbnail": "https://i.ytimg.com/vi/wHrxioBnB9o/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA48PH0lJ3wsuBxYz6rmGKufNH22w",
+      "file_name": "assets/json/young_muslim/playlists/animal_stories_from_quran_ar.json",
+      "source_key": "animal_stories",
+      "tags": [
+        "قصص",
+        "حيوانات",
+        "القرآن",
+        "أطفال"
+      ],
+      "order": 2,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "accent_start": "#39A96B",
+      "accent_end": "#8FE388",
+      "playlist_id": "PLJ0WU3XQoz4-4AjkrKBJTClcJxJsVF7RU",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-4AjkrKBJTClcJxJsVF7RU&si=XoNDieGBEY5ICEjg",
+      "total_videos": 32,
+      "total_duration_seconds": 29658,
+      "is_featured": true
+    },
+    {
+      "id": "animal_stories_fr",
+      "category_id": "animal_stories",
+      "title_ar": "قصص الحيوان في القرآن - فرنسي",
+      "title_en": "Animal Stories From Quran - French",
+      "description": "نسخة فرنسية من قصص الحيوان في القرآن لتوسيع التجربة التعليمية داخل التطبيق.",
+      "banner_image": "https://i.ytimg.com/vi/ilxvkuDpLxI/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDUK0M_ltrTuadGW3cZ8GuFlTfr9g",
+      "thumbnail": "https://i.ytimg.com/vi/ilxvkuDpLxI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCwcvx36onj5TidJ0fLt3W43rzjKw",
+      "file_name": "assets/json/young_muslim/playlists/animal_stories_from_quran_fr.json",
+      "source_key": "animal_stories",
+      "tags": [
+        "قصص",
+        "حيوانات",
+        "فرنسي",
+        "القرآن"
+      ],
+      "order": 3,
+      "audience": "kids",
+      "language": "fr",
+      "content_type": "story_series",
+      "accent_start": "#3FA7D6",
+      "accent_end": "#6DD3CE",
+      "playlist_id": "PLJ0WU3XQoz48F4V_dc5bFaqfehnIDXzxh",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz48F4V_dc5bFaqfehnIDXzxh&si=nDMBeEAowP8k0mhb",
+      "total_videos": 30,
+      "total_duration_seconds": 29301,
+      "is_featured": true
+    },
+    {
+      "id": "women_stories_ar",
+      "category_id": "women_stories",
+      "title_ar": "قصص النساء في القرآن",
+      "title_en": "Women Stories From Quran",
+      "description": "سلسلة تربط الأطفال بقصص النساء الواردة في القرآن بقيم تربوية واضحة.",
+      "banner_image": "https://i.ytimg.com/vi/nbilq32cWn0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCo759eGZ0G4ghKow30yP5EvDx9hw",
+      "thumbnail": "https://i.ytimg.com/vi/nbilq32cWn0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBy4c6lCAb492uzCzG_7hL0A-l6xQ",
+      "file_name": "assets/json/young_muslim/playlists/women_stories_from_quran.json",
+      "source_key": "women_stories",
+      "tags": [
+        "قصص",
+        "نساء",
+        "القرآن",
+        "قيم"
+      ],
+      "order": 4,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "accent_start": "#E76F51",
+      "accent_end": "#F4A261",
+      "playlist_id": "PLJ0WU3XQoz48dYxaKhohHdaN-DDlTAIx3",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz48dYxaKhohHdaN-DDlTAIx3&si=25A98qbPQv2fDkar",
+      "total_videos": 32,
+      "total_duration_seconds": 29559,
+      "is_featured": true
+    },
+    {
+      "id": "verses_stories_ar",
+      "category_id": "verses_stories",
+      "title_ar": "قصص الآيات في القرآن",
+      "title_en": "Verses Stories From Quran",
+      "description": "سلسلة تربط الطفل بسبب نزول بعض الآيات والمواقف التي ارتبطت بها.",
+      "banner_image": "https://i.ytimg.com/vi/rfbd68nNSI4/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDDWDaWBriIGcIvkU0ubvDBoASE_Q",
+      "thumbnail": "https://i.ytimg.com/vi/rfbd68nNSI4/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAhxCgyJQL4BdJ2pCtk6Q9tXMQ6fA",
+      "file_name": "assets/json/young_muslim/playlists/verses_stories_from_quran.json",
+      "source_key": "verses_stories",
+      "tags": [
+        "قصص",
+        "آيات",
+        "القرآن",
+        "تعلم"
+      ],
+      "order": 5,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "accent_start": "#6C63FF",
+      "accent_end": "#8E9BFF",
+      "playlist_id": "PLJ0WU3XQoz4-x5FPOHh3s8nRkeal-4ED7",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-x5FPOHh3s8nRkeal-4ED7&si=8_Zsv7xnv7lygoMP",
+      "total_videos": 32,
+      "total_duration_seconds": 28603,
+      "is_featured": false
+    },
+    {
+      "id": "marvellous_stories_ar",
+      "category_id": "marvellous_stories",
+      "title_ar": "قصص العجائب في القرآن",
+      "title_en": "Marvellous Stories From Quran",
+      "description": "سلسلة تقدم المواقف العجيبة والعبر المؤثرة في القرآن بأسلوب سهل ومرح.",
+      "banner_image": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCSKX-rATYwaj41wMs90NdqwaFO4A",
+      "thumbnail": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCDS1C-Wwss60OZU406MC0_STjiwQ",
+      "file_name": "assets/json/young_muslim/playlists/marvellous_stories_from_quran.json",
+      "source_key": "marvellous_stories",
+      "tags": [
+        "قصص",
+        "عجائب",
+        "القرآن",
+        "أطفال"
+      ],
+      "order": 6,
+      "audience": "kids",
+      "language": "ar",
+      "content_type": "story_series",
+      "accent_start": "#A44CD3",
+      "accent_end": "#F4B393",
+      "playlist_id": "PLJ0WU3XQoz4_vDPS0Xlaf3E2LgUz7pJsp",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4_vDPS0Xlaf3E2LgUz7pJsp&si=GI7aQoO6oeB15fUw",
+      "total_videos": 32,
+      "total_duration_seconds": 28422,
+      "is_featured": false
+    },
+    {
+      "id": "verses_stories_bts",
+      "category_id": "behind_the_scenes",
+      "title_ar": "كواليس قصص الآيات في القرآن",
+      "title_en": "Verses Stories Behind The Scenes",
+      "description": "مشاهد قصيرة من كواليس إنتاج قصص الآيات في القرآن بطريقة بسيطة وآمنة للأطفال.",
+      "banner_image": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwExCNACELwBSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYciBhKDwwDw==&rs=AOn4CLCG9uiuGqCl7woVXUhCJgVkmavmIQ",
+      "thumbnail": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhyIGEoPDAP&rs=AOn4CLDq_14ETiDeOkblulqMdYocrsDyoA",
+      "file_name": "assets/json/young_muslim/playlists/verses_stories_from_quran_bts.json",
+      "source_key": "behind_the_scenes",
+      "tags": [
+        "كواليس",
+        "آيات",
+        "إنتاج",
+        "قصص"
+      ],
+      "order": 7,
+      "audience": "general",
+      "language": "mixed",
+      "content_type": "behind_the_scenes",
+      "accent_start": "#355C7D",
+      "accent_end": "#6C5B7B",
+      "playlist_id": "PLJ0WU3XQoz4-wwPNqabuNIVS6_0LQJGwe",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-wwPNqabuNIVS6_0LQJGwe&si=enXky-A4L2vFEsc3",
+      "total_videos": 30,
+      "total_duration_seconds": 4433,
+      "is_featured": false
+    },
+    {
+      "id": "marvellous_stories_bts",
+      "category_id": "behind_the_scenes",
+      "title_ar": "كواليس قصص العجائب في القرآن",
+      "title_en": "Marvellous Stories Behind The Scenes",
+      "description": "مقاطع كواليس قصيرة تعرّف الطفل بكيفية صنع الحلقات بطريقة مرئية خفيفة.",
+      "banner_image": "https://i.ytimg.com/vi/v08TPkQkn8c/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDT8fu8Y0WdDw2RIRS3F7AblFbuBA",
+      "thumbnail": "https://i.ytimg.com/vi/v08TPkQkn8c/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDagfiAce72kzNLuC5lcqG2p3E6qw",
+      "file_name": "assets/json/young_muslim/playlists/marvellous_stories_from_quran_bts.json",
+      "source_key": "behind_the_scenes",
+      "tags": [
+        "كواليس",
+        "عجائب",
+        "إنتاج",
+        "قصص"
+      ],
+      "order": 8,
+      "audience": "general",
+      "language": "mixed",
+      "content_type": "behind_the_scenes",
+      "accent_start": "#264653",
+      "accent_end": "#2A9D8F",
+      "playlist_id": "PLJ0WU3XQoz4-R323nu-Gng8D5xTB1Py4-",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-R323nu-Gng8D5xTB1Py4-&si=DqzeCfdEFl1_d0ib",
+      "total_videos": 30,
+      "total_duration_seconds": 4314,
+      "is_featured": false
+    }
+  ]
+}
