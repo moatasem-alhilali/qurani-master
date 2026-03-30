@@ -20,7 +20,12 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
   bool _processingCompletion = false;
 
   Future<void> initialize(String videoId) async {
-    emit(state.copyWith(loadState: RequestState.loading));
+    emit(
+      state.copyWith(
+        loadState: RequestState.loading,
+        errorMessage: null,
+      ),
+    );
     try {
       final session = await _repository.getPlayerSession(videoId);
       await _configureController(session);
@@ -28,9 +33,6 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
         state.copyWith(
           loadState: RequestState.success,
           session: session,
-          currentVideo: session.video,
-          currentPosition: Duration(seconds: session.resumeFromSeconds),
-          duration: Duration(seconds: session.video.durationSeconds),
           autoPlayEnabled: state.autoPlayEnabled,
           completionTrigger: state.completionTrigger,
         ),
@@ -64,12 +66,13 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
   }
 
   Future<void> persistOnExit() async {
-    final video = state.currentVideo;
-    if (video == null) {
+    final session = state.session;
+    if (session == null) {
       return;
     }
+    final video = session.video;
 
-    final currentSecond = state.currentPosition.inSeconds;
+    final currentSecond = controller?.value.position.inSeconds ?? 0;
     if (video.isCompleted || currentSecond >= video.durationSeconds * 0.92) {
       await _repository.markVideoCompleted(video.id);
       await _repository.cancelResumeReminder(video.id);
@@ -132,17 +135,10 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
     }
 
     final value = activeController.value;
-    final duration = value.metaData.duration.inSeconds > 0
-        ? value.metaData.duration
-        : Duration(seconds: session.video.durationSeconds);
     final currentPosition = value.position;
-
-    emit(
-      state.copyWith(
-        currentPosition: currentPosition,
-        duration: duration,
-      ),
-    );
+    if (value.isDragging) {
+      return;
+    }
 
     final currentSeconds = currentPosition.inSeconds;
     if (currentSeconds > 0 && (currentSeconds - _lastSavedSecond).abs() >= 8) {
@@ -158,11 +154,8 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
       _processingCompletion = true;
       await _repository.markVideoCompleted(session.video.id);
       await _repository.cancelResumeReminder(session.video.id);
-      final refreshedDetails =
-          await _repository.getVideoDetails(session.video.id);
       emit(
         state.copyWith(
-          currentVideo: refreshedDetails.video,
           completionTrigger: state.completionTrigger + 1,
         ),
       );
@@ -183,9 +176,6 @@ class YoungMuslimPlayerState extends Equatable {
   const YoungMuslimPlayerState({
     this.loadState = RequestState.initial,
     this.session,
-    this.currentVideo,
-    this.currentPosition = Duration.zero,
-    this.duration = Duration.zero,
     this.autoPlayEnabled = true,
     this.completionTrigger = 0,
     this.errorMessage,
@@ -193,26 +183,13 @@ class YoungMuslimPlayerState extends Equatable {
 
   final RequestState loadState;
   final YoungMuslimPlayerSessionEntity? session;
-  final YoungMuslimVideoEntity? currentVideo;
-  final Duration currentPosition;
-  final Duration duration;
   final bool autoPlayEnabled;
   final int completionTrigger;
   final String? errorMessage;
 
-  double get progress {
-    if (duration.inSeconds <= 0) {
-      return 0;
-    }
-    return currentPosition.inSeconds / duration.inSeconds;
-  }
-
   YoungMuslimPlayerState copyWith({
     RequestState? loadState,
     YoungMuslimPlayerSessionEntity? session,
-    YoungMuslimVideoEntity? currentVideo,
-    Duration? currentPosition,
-    Duration? duration,
     bool? autoPlayEnabled,
     int? completionTrigger,
     String? errorMessage,
@@ -220,9 +197,6 @@ class YoungMuslimPlayerState extends Equatable {
     return YoungMuslimPlayerState(
       loadState: loadState ?? this.loadState,
       session: session ?? this.session,
-      currentVideo: currentVideo ?? this.currentVideo,
-      currentPosition: currentPosition ?? this.currentPosition,
-      duration: duration ?? this.duration,
       autoPlayEnabled: autoPlayEnabled ?? this.autoPlayEnabled,
       completionTrigger: completionTrigger ?? this.completionTrigger,
       errorMessage: errorMessage,
@@ -233,9 +207,6 @@ class YoungMuslimPlayerState extends Equatable {
   List<Object?> get props => [
         loadState,
         session,
-        currentVideo,
-        currentPosition,
-        duration,
         autoPlayEnabled,
         completionTrigger,
         errorMessage,

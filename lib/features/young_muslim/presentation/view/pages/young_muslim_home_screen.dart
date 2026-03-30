@@ -2,13 +2,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
+import 'package:quran_app/features/young_muslim/domain/repositories/young_muslim_repository.dart';
 import 'package:quran_app/features/young_muslim/presentation/bloc/young_muslim_bloc.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/pages/young_muslim_category_screen.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/pages/young_muslim_video_details_screen.dart';
+import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_rewards_sheet.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
@@ -20,171 +24,248 @@ class YoungMuslimHomeScreen extends StatefulWidget {
 }
 
 class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
-  late final TextEditingController _searchController;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
-      builder: (context, state) {
-        final dashboard = state.dashboard;
-        return AppScaffoldWidget(
-          title: 'المسلم الصغير',
-          onRefresh: () async {
-            context.read<YoungMuslimBloc>().add(const YoungMuslimRefreshed());
-          },
-          body: dashboard == null && state.loadState == RequestState.loading
-              ? SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.55,
-                  child: const Center(child: CircularProgressIndicator()),
-                )
-              : Padding(
-                  padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 120.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildTopHeader(context, dashboard),
-                      SizedBox(height: 18.h),
-                      _buildSearchBar(context, state, dashboard),
-                      SizedBox(height: 18.h),
-                      if (dashboard != null) ...[
-                        _buildHeroCarousel(context, dashboard),
-                        SizedBox(height: 18.h),
-                        _buildRewardsSummary(context, dashboard.rewardsSummary),
-                        SizedBox(height: 18.h),
-                        _buildQuickFilters(context, state, dashboard),
-                        SizedBox(height: 22.h),
-                        const YoungMuslimSectionHeader(
-                          title: 'الأقسام الرئيسية',
-                          subtitle: 'اختر القسم الذي يناسب عمر الطفل واهتمامه',
-                        ),
-                        SizedBox(height: 14.h),
-                        GridView.builder(
-                          itemCount: dashboard.categories.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 14.h,
-                            crossAxisSpacing: 14.w,
-                            childAspectRatio: 1.02,
-                          ),
-                          itemBuilder: (context, index) {
-                            final category = dashboard.categories[index];
-                            return YoungMuslimCategoryCard(
-                              category: category,
-                              onTap: () => _openCategory(context, category.id),
-                            );
-                          },
-                        ),
-                        SizedBox(height: 22.h),
-                        if (state.query.isNotEmpty ||
-                            state.filters.hasActiveFilters) ...[
-                          YoungMuslimSectionHeader(
-                            title: 'نتائج البحث',
-                            subtitle: '${dashboard.searchResults.length} نتيجة',
-                          ),
-                          SizedBox(height: 14.h),
-                          if (dashboard.searchResults.isEmpty)
-                            const YoungMuslimEmptyState(
-                              title: 'لا توجد نتائج مطابقة',
-                              subtitle:
-                                  'جرّب كلمات أبسط أو غيّر الفلاتر لتظهر لك حلقات أكثر.',
-                              icon: Icons.search_off_rounded,
-                            )
-                          else
-                            SizedBox(
-                              height: 305.h,
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  final video = dashboard.searchResults[index];
-                                  return YoungMuslimVideoCard(
-                                    video: video,
-                                    seriesTitle: _seriesTitleFor(
-                                      dashboard,
-                                      video.seriesId,
-                                    ),
-                                    onTap: () => _openVideo(context, video.id),
-                                    onFavoriteToggle: () =>
-                                        context.read<YoungMuslimBloc>().add(
-                                              YoungMuslimFavoriteToggled(
-                                                video.id,
-                                              ),
-                                            ),
-                                    onWatchLaterToggle: () =>
-                                        context.read<YoungMuslimBloc>().add(
-                                              YoungMuslimWatchLaterToggled(
-                                                video.id,
-                                              ),
-                                            ),
-                                  );
-                                },
-                                separatorBuilder: (_, __) =>
-                                    SizedBox(width: 12.w),
-                                itemCount: dashboard.searchResults.length,
-                              ),
-                            ),
-                          SizedBox(height: 22.h),
-                        ],
-                        _buildRailSection(
-                          context,
-                          title: 'أكمل المشاهدة',
-                          subtitle: 'ارجع من حيث توقفت بسهولة',
-                          videos: dashboard.continueWatching,
-                          dashboard: dashboard,
-                        ),
-                        SizedBox(height: 22.h),
-                        _buildRailSection(
-                          context,
-                          title: 'شاهدت مؤخرًا',
-                          subtitle: 'آخر ما شاهده الطفل داخل التطبيق',
-                          videos: dashboard.recentlyWatched,
-                          dashboard: dashboard,
-                        ),
-                        SizedBox(height: 22.h),
-                        _buildRailSection(
-                          context,
-                          title: 'المفضلة',
-                          subtitle: 'حلقات أحببت الاحتفاظ بها',
-                          videos: dashboard.favorites,
-                          dashboard: dashboard,
-                        ),
-                        SizedBox(height: 22.h),
-                        _buildRailSection(
-                          context,
-                          title: 'سأشاهد لاحقًا',
-                          subtitle: 'قائمة مرتبة للعودة لاحقًا',
-                          videos: dashboard.watchLater,
-                          dashboard: dashboard,
-                        ),
-                        SizedBox(height: 22.h),
-                        _buildRailSection(
-                          context,
-                          title: 'اقتراحات مناسبة',
+    return AppScaffoldWidget(
+      title: 'المسلم الصغير',
+      showLargeHeader: false,
+      initialOffset: null,
+      trailing: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
+        buildWhen: (previous, current) {
+          return previous.filters != current.filters ||
+              previous.dashboard != current.dashboard;
+        },
+        builder: (context, state) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildFilterAction(context, state),
+              SizedBox(width: 8.w),
+              GenericSearchAnchorAsync<_YoungMuslimSearchSuggestion>(
+                hintText: 'ابحث عن قصة أو حلقة',
+                asyncSuggestions: (query) async {
+                  final trimmed = query.trim();
+                  if (trimmed.isEmpty) {
+                    return const <_YoungMuslimSearchSuggestion>[];
+                  }
+
+                  final repository = context.read<YoungMuslimRepository>();
+                  final dashboard = await repository.getDashboard(
+                    query: trimmed,
+                    filters: state.filters,
+                  );
+
+                  return dashboard.searchResults
+                      .take(12)
+                      .map(
+                        (video) => _YoungMuslimSearchSuggestion(
+                          videoId: video.id,
+                          title: video.title,
                           subtitle:
-                              'مقترحات من نفس الجو القصصي الذي يحبه الطفل',
-                          videos: dashboard.suggestions,
-                          dashboard: dashboard,
+                              '${_seriesTitleFor(dashboard, video.seriesId)} • ${_categoryTitleFor(dashboard, video.categoryId)}',
+                          duration: youngMuslimDuration(
+                            video.durationSeconds,
+                          ),
                         ),
-                      ],
-                    ],
-                  ),
-                ),
-        );
+                      )
+                      .toList(growable: false);
+                },
+                onSelected: (item) => _openVideo(context, item.videoId),
+                suggestionBuilder: (context, item) {
+                  return _YoungMuslimSearchSuggestionTile(item: item);
+                },
+              ),
+            ],
+          );
+        },
+      ),
+      onRefresh: () async {
+        context.read<YoungMuslimBloc>().add(const YoungMuslimRefreshed());
       },
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 120.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocSelector<YoungMuslimBloc, YoungMuslimState,
+                YoungMuslimDashboardEntity?>(
+              selector: (state) => state.dashboard,
+              builder: _buildTopHeader,
+            ),
+            SizedBox(height: 18.h),
+            BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
+              buildWhen: (previous, current) {
+                return previous.filters != current.filters;
+              },
+              builder: (context, state) {
+                if (!state.filters.hasActiveFilters) {
+                  return const SizedBox.shrink();
+                }
+                return _buildActiveFiltersSummary(context, state);
+              },
+            ),
+            SizedBox(height: 18.h),
+            BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
+              buildWhen: (previous, current) {
+                return previous.loadState != current.loadState ||
+                    previous.dashboard != current.dashboard ||
+                    previous.query != current.query ||
+                    previous.filters != current.filters ||
+                    previous.errorMessage != current.errorMessage;
+              },
+              builder: (context, state) {
+                final dashboard = state.dashboard;
+                Widget child;
+                if (state.loadState == RequestState.loading &&
+                    dashboard == null) {
+                  child = _buildLoadingBody(context);
+                } else if (state.loadState == RequestState.error &&
+                    dashboard == null) {
+                  child = _buildErrorBody(context, state.errorMessage);
+                } else if (dashboard == null) {
+                  child = _buildLoadingBody(context);
+                } else {
+                  child = _buildDashboardContent(context, state, dashboard);
+                }
+
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 220),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  child: KeyedSubtree(
+                    key: ValueKey(
+                      '${state.loadState.name}_${dashboard?.categories.length ?? 0}_${state.query}_${state.filters.hashCode}',
+                    ),
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardContent(
+    BuildContext context,
+    YoungMuslimState state,
+    YoungMuslimDashboardEntity dashboard,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RepaintBoundary(
+          child: _buildHeroCarousel(context, dashboard),
+        ),
+        SizedBox(height: 18.h),
+        RepaintBoundary(
+          child: _buildRewardsSummary(context, dashboard),
+        ),
+        SizedBox(height: 18.h),
+        _buildQuickFilters(context, state),
+        SizedBox(height: 22.h),
+        const YoungMuslimSectionHeader(
+          title: 'الأقسام الرئيسية',
+          subtitle: 'اختر القسم الذي يناسب عمر الطفل واهتمامه',
+        ),
+        SizedBox(height: 14.h),
+        RepaintBoundary(
+          child: MasonryGridView.count(
+            crossAxisCount: _homeCategoryCrossAxisCount(context),
+            mainAxisSpacing: 14.h,
+            crossAxisSpacing: 14.w,
+            itemCount: dashboard.categories.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              final category = dashboard.categories[index];
+              return YoungMuslimCategoryCard(
+                category: category,
+                onTap: () => _openCategory(context, category.id),
+                height: 182 + ((index % 2) * 24),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 22.h),
+        if (state.filters.hasActiveFilters) ...[
+          YoungMuslimSectionHeader(
+            title: 'نتائج الفلترة',
+            subtitle: '${dashboard.searchResults.length} نتيجة',
+          ),
+          SizedBox(height: 14.h),
+          if (dashboard.searchResults.isEmpty)
+            const YoungMuslimEmptyState(
+              title: 'لا توجد نتائج مطابقة',
+              subtitle: 'جرّب كلمات أبسط أو غيّر الفلاتر لتظهر لك حلقات أكثر.',
+              icon: Icons.search_off_rounded,
+            )
+          else
+            SizedBox(
+              height: 305.h,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final video = dashboard.searchResults[index];
+                  return YoungMuslimVideoCard(
+                    video: video,
+                    seriesTitle: _seriesTitleFor(dashboard, video.seriesId),
+                    onTap: () => _openVideo(context, video.id),
+                    onFavoriteToggle: () => context
+                        .read<YoungMuslimBloc>()
+                        .add(YoungMuslimFavoriteToggled(video.id)),
+                    onWatchLaterToggle: () => context
+                        .read<YoungMuslimBloc>()
+                        .add(YoungMuslimWatchLaterToggled(video.id)),
+                  );
+                },
+                separatorBuilder: (_, __) => SizedBox(width: 12.w),
+                itemCount: dashboard.searchResults.length,
+              ),
+            ),
+          SizedBox(height: 22.h),
+        ],
+        _buildRailSection(
+          context,
+          title: 'أكمل المشاهدة',
+          subtitle: 'ارجع من حيث توقفت بسهولة',
+          videos: dashboard.continueWatching,
+          dashboard: dashboard,
+        ),
+        SizedBox(height: 22.h),
+        _buildRailSection(
+          context,
+          title: 'شاهدت مؤخرًا',
+          subtitle: 'آخر ما شاهده الطفل داخل التطبيق',
+          videos: dashboard.recentlyWatched,
+          dashboard: dashboard,
+        ),
+        SizedBox(height: 22.h),
+        _buildRailSection(
+          context,
+          title: 'المفضلة',
+          subtitle: 'حلقات أحببت الاحتفاظ بها',
+          videos: dashboard.favorites,
+          dashboard: dashboard,
+        ),
+        SizedBox(height: 22.h),
+        _buildRailSection(
+          context,
+          title: 'سأشاهد لاحقًا',
+          subtitle: 'قائمة مرتبة للعودة لاحقًا',
+          videos: dashboard.watchLater,
+          dashboard: dashboard,
+        ),
+        SizedBox(height: 22.h),
+        _buildRailSection(
+          context,
+          title: 'اقتراحات مناسبة',
+          subtitle: 'مقترحات من نفس الجو القصصي الذي يحبه الطفل',
+          videos: dashboard.suggestions,
+          dashboard: dashboard,
+        ),
+      ],
     );
   }
 
@@ -192,7 +273,7 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     BuildContext context,
     YoungMuslimDashboardEntity? dashboard,
   ) {
-    final firstCategory = dashboard?.categories.isNotEmpty == true
+    final firstCategory = (dashboard?.categories.isNotEmpty ?? false)
         ? dashboard!.categories.first
         : null;
     final colors = firstCategory == null
@@ -204,33 +285,19 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
           );
     return Container(
       padding: EdgeInsets.all(18.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            colors.first,
-            Color.lerp(colors.first, colors.last, 0.6) ?? colors.first,
-            colors.last,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(30.r),
-        boxShadow: [
-          BoxShadow(
-            color: colors.first.withValues(alpha: 0.18),
-            blurRadius: 22,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
+      decoration: youngMuslimPanelDecoration(context),
       child: Row(
         children: [
           Container(
-            width: 54.w,
-            height: 54.w,
+            width: 58.w,
+            height: 58.w,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(18.r),
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: colors,
+              ),
+              borderRadius: BorderRadius.circular(20.r),
             ),
             child: Icon(
               Icons.auto_awesome_rounded,
@@ -246,7 +313,6 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
                 Text(
                   'المسلم الصغير',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
                         fontWeight: FontWeight.w900,
                       ),
                 ),
@@ -256,9 +322,28 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
                       ? 'قصص مرئية، متابعة ذكية، وأسئلة بسيطة بعد المشاهدة.'
                       : 'لديك ${dashboard.continueWatching.length} عناصر يمكنك إكمالها الآن.',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.88),
+                        color: context.gray1,
                       ),
                 ),
+                if (dashboard != null) ...[
+                  SizedBox(height: 12.h),
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: [
+                      YoungMuslimMetricChip(
+                        label: '${dashboard.categories.length} أقسام',
+                        icon: Icons.grid_view_rounded,
+                        color: context.primaryColor,
+                      ),
+                      YoungMuslimMetricChip(
+                        label: '${dashboard.favorites.length} مفضلة',
+                        icon: Icons.favorite_rounded,
+                        color: youngMuslimRewardColor(context),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -267,83 +352,92 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     );
   }
 
-  Widget _buildSearchBar(
+  Widget _buildActiveFiltersSummary(
     BuildContext context,
     YoungMuslimState state,
-    YoungMuslimDashboardEntity? dashboard,
   ) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _searchController,
-            onChanged: (value) {
-              context
-                  .read<YoungMuslimBloc>()
-                  .add(YoungMuslimSearchChanged(value));
-            },
-            decoration: InputDecoration(
-              hintText: 'ابحث في الحلقات، الأقسام، أو السلاسل',
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: state.query.isEmpty
-                  ? null
-                  : IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        context
-                            .read<YoungMuslimBloc>()
-                            .add(const YoungMuslimSearchChanged(''));
-                      },
-                      icon: const Icon(Icons.close_rounded),
+    return Container(
+      padding: EdgeInsets.all(14.w),
+      decoration: youngMuslimPanelDecoration(context),
+      child: Row(
+        children: [
+          Icon(
+            Icons.tune_rounded,
+            color: context.primaryColor,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              'الفلاتر مفعلة الآن. يمكنك تعديلها من زر البحث أعلى الصفحة.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: context.gray1,
+                  ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<YoungMuslimBloc>().add(
+                    const YoungMuslimFiltersChanged(
+                      YoungMuslimFilters.empty,
                     ),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
-              filled: true,
-              fillColor: context.cardColor,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24.r),
-                borderSide: BorderSide(
-                  color: context.outlineVariant.withValues(alpha: 0.45),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24.r),
-                borderSide: BorderSide(
-                  color: context.outlineVariant.withValues(alpha: 0.45),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24.r),
-                borderSide: BorderSide(
-                  color: context.primaryColor.withValues(alpha: 0.6),
-                ),
-              ),
-            ),
+                  );
+            },
+            child: const Text('مسح'),
           ),
-        ),
-        SizedBox(width: 10.w),
-        InkWell(
-          onTap: dashboard == null
-              ? null
-              : () => _showFiltersSheet(context, state, dashboard),
-          borderRadius: BorderRadius.circular(20.r),
-          child: Ink(
-            width: 54.w,
-            height: 54.w,
-            decoration: BoxDecoration(
-              color: context.cardColor,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: context.outlineVariant.withValues(alpha: 0.45),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterAction(
+    BuildContext context,
+    YoungMuslimState state,
+  ) {
+    return BlocSelector<YoungMuslimBloc, YoungMuslimState,
+        YoungMuslimDashboardEntity?>(
+      selector: (blocState) => blocState.dashboard,
+      builder: (context, dashboard) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            InkWell(
+              onTap: dashboard == null
+                  ? null
+                  : () => _showFiltersSheet(context, state, dashboard),
+              borderRadius: BorderRadius.circular(18.r),
+              child: Ink(
+                width: 42.w,
+                height: 42.w,
+                decoration: BoxDecoration(
+                  color: context.cardColor,
+                  borderRadius: BorderRadius.circular(18.r),
+                  border: Border.all(
+                    color: context.outlineVariant.withValues(alpha: 0.45),
+                  ),
+                ),
+                child: Icon(
+                  Icons.tune_rounded,
+                  color: context.primaryColor,
+                  size: 20.sp,
+                ),
               ),
             ),
-            child: Icon(
-              Icons.tune_rounded,
-              color: context.primaryColor,
-            ),
-          ),
-        ),
-      ],
+            if (state.filters.hasActiveFilters)
+              Positioned(
+                top: -2,
+                right: -2,
+                child: Container(
+                  width: 10.w,
+                  height: 10.w,
+                  decoration: BoxDecoration(
+                    color: youngMuslimRewardColor(context),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -354,91 +448,28 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     return CarouselSlider.builder(
       itemCount: dashboard.categories.length,
       options: CarouselOptions(
-        height: 210.h,
-        enlargeCenterPage: true,
+        height: 198.h,
+        enlargeCenterPage: false,
         viewportFraction: 0.9,
-        autoPlay: true,
+        autoPlay: false,
+        enableInfiniteScroll: dashboard.categories.length > 1,
       ),
       itemBuilder: (context, index, realIndex) {
         final category = dashboard.categories[index];
-        final colors = youngMuslimGradientColors(
-          context,
-          startHex: category.accentStart,
-          endHex: category.accentEnd,
-        );
-        return InkWell(
+        return YoungMuslimMediaBanner(
+          title: category.titleAr,
+          subtitle: category.description,
+          imageUrl: category.bannerImage,
+          accentStart: category.accentStart,
+          accentEnd: category.accentEnd,
           onTap: () => _openCategory(context, category.id),
-          borderRadius: BorderRadius.circular(32.r),
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(32.r),
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: colors,
-              ),
+          badges: [
+            YoungMuslimMetricChip(
+              label: category.audience == 'kids' ? 'للأطفال' : 'عام',
+              icon: Icons.shield_moon_rounded,
+              color: Colors.white,
             ),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(32.r),
-                    child: Image.network(
-                      category.bannerImage,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32.r),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          context.scrim.withValues(alpha: 0.08),
-                          context.scrim.withValues(alpha: 0.55),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      YoungMuslimMetricChip(
-                        label: category.audience == 'kids' ? 'للأطفال' : 'عام',
-                        icon: Icons.shield_moon_rounded,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        category.titleAr,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        category.description,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.92),
-                            ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         );
       },
     );
@@ -446,47 +477,116 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
 
   Widget _buildRewardsSummary(
     BuildContext context,
-    YoungMuslimRewardsSummaryEntity rewards,
+    YoungMuslimDashboardEntity dashboard,
   ) {
-    return Container(
-      padding: EdgeInsets.all(18.w),
-      decoration: youngMuslimPanelDecoration(context),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const YoungMuslimSectionHeader(
-            title: 'نقاطك وإنجازاتك',
-            subtitle: 'تابع التقدّم بدون تعقيد',
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              Expanded(
-                child: YoungMuslimMetricChip(
-                  label: '${rewards.xp} XP',
-                  icon: Icons.bolt_rounded,
-                  color: youngMuslimRewardColor(context),
+    final rewards = dashboard.rewardsSummary;
+    final levelProgress = (rewards.xpIntoCurrentLevel / 100).clamp(0.0, 1.0);
+
+    return InkWell(
+      onTap: () {
+        YoungMuslimRewardsSheet.show(
+          context: context,
+          rewardsSummary: rewards,
+          achievements: dashboard.achievements,
+        );
+      },
+      borderRadius: BorderRadius.circular(28.r),
+      child: Ink(
+        padding: EdgeInsets.all(18.w),
+        decoration: youngMuslimPanelDecoration(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Expanded(
+                  child: YoungMuslimSectionHeader(
+                    title: 'نقاطك وإنجازاتك',
+                    subtitle: 'اضغط لعرض التقدّم الكامل والإنجازات القادمة',
+                  ),
                 ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: YoungMuslimMetricChip(
-                  label: 'المستوى ${rewards.level}',
-                  icon: Icons.emoji_events_rounded,
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 16.sp,
+                  color: context.gray1,
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Expanded(
+                  child: YoungMuslimMetricChip(
+                    label: '${rewards.xp} XP',
+                    icon: Icons.bolt_rounded,
+                    color: youngMuslimRewardColor(context),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: YoungMuslimMetricChip(
+                    label: 'المستوى ${rewards.level}',
+                    icon: Icons.emoji_events_rounded,
+                    color: context.primaryColor,
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: YoungMuslimMetricChip(
+                    label: '${rewards.unlockedAchievements} إنجاز',
+                    icon: Icons.stars_rounded,
+                    color: context.secondaryColor,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'التقدّم للمستوى التالي',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                ),
+                Text(
+                  '${rewards.xpIntoCurrentLevel}/100',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: context.gray1,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.h),
+            LinearProgressIndicator(
+              value: levelProgress,
+              minHeight: 9.h,
+              borderRadius: BorderRadius.circular(18.r),
+              backgroundColor: context.outline.withValues(alpha: 0.18),
+              color: youngMuslimRewardColor(context),
+            ),
+            SizedBox(height: 14.h),
+            Wrap(
+              spacing: 10.w,
+              runSpacing: 10.h,
+              children: [
+                YoungMuslimMetricChip(
+                  label: '${rewards.completedVideos} فيديو مكتمل',
+                  icon: Icons.play_lesson_rounded,
                   color: context.primaryColor,
                 ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: YoungMuslimMetricChip(
-                  label: '${rewards.unlockedAchievements} إنجاز',
-                  icon: Icons.stars_rounded,
+                YoungMuslimMetricChip(
+                  label: '${rewards.correctAnswers} إجابة صحيحة',
+                  icon: Icons.quiz_rounded,
                   color: context.secondaryColor,
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -494,7 +594,6 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
   Widget _buildQuickFilters(
     BuildContext context,
     YoungMuslimState state,
-    YoungMuslimDashboardEntity dashboard,
   ) {
     final statuses = {
       YoungMuslimStatusFilter.all: 'الكل',
@@ -537,6 +636,35 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     );
   }
 
+  Widget _buildLoadingBody(BuildContext context) {
+    return Container(
+      height: MediaQuery.sizeOf(context).height * 0.42,
+      decoration: youngMuslimPanelDecoration(context),
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildErrorBody(BuildContext context, String? message) {
+    return YoungMuslimEmptyState(
+      title: 'تعذر تحميل المحتوى',
+      subtitle: message ?? 'حاول تحديث الصفحة مرة أخرى.',
+      icon: Icons.cloud_off_rounded,
+    );
+  }
+
+  int _homeCategoryCrossAxisCount(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    if (width >= 1100) {
+      return 4;
+    }
+    if (width >= 800) {
+      return 3;
+    }
+    return 2;
+  }
+
   Widget _buildRailSection(
     BuildContext context, {
     required String title,
@@ -547,37 +675,40 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     if (videos.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        YoungMuslimSectionHeader(
-          title: title,
-          subtitle: subtitle,
-        ),
-        SizedBox(height: 14.h),
-        SizedBox(
-          height: 305.h,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              final video = videos[index];
-              return YoungMuslimVideoCard(
-                video: video,
-                seriesTitle: _seriesTitleFor(dashboard, video.seriesId),
-                onTap: () => _openVideo(context, video.id),
-                onFavoriteToggle: () => context
-                    .read<YoungMuslimBloc>()
-                    .add(YoungMuslimFavoriteToggled(video.id)),
-                onWatchLaterToggle: () => context
-                    .read<YoungMuslimBloc>()
-                    .add(YoungMuslimWatchLaterToggled(video.id)),
-              );
-            },
-            separatorBuilder: (_, __) => SizedBox(width: 12.w),
-            itemCount: videos.length,
+    return RepaintBoundary(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          YoungMuslimSectionHeader(
+            title: title,
+            subtitle: subtitle,
           ),
-        ),
-      ],
+          SizedBox(height: 14.h),
+          SizedBox(
+            height: 305.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              cacheExtent: 420.w,
+              itemBuilder: (context, index) {
+                final video = videos[index];
+                return YoungMuslimVideoCard(
+                  video: video,
+                  seriesTitle: _seriesTitleFor(dashboard, video.seriesId),
+                  onTap: () => _openVideo(context, video.id),
+                  onFavoriteToggle: () => context
+                      .read<YoungMuslimBloc>()
+                      .add(YoungMuslimFavoriteToggled(video.id)),
+                  onWatchLaterToggle: () => context
+                      .read<YoungMuslimBloc>()
+                      .add(YoungMuslimWatchLaterToggled(video.id)),
+                );
+              },
+              separatorBuilder: (_, __) => SizedBox(width: 12.w),
+              itemCount: videos.length,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -593,10 +724,22 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     return '';
   }
 
+  String _categoryTitleFor(
+    YoungMuslimDashboardEntity dashboard,
+    String categoryId,
+  ) {
+    for (final category in dashboard.categories) {
+      if (category.id == categoryId) {
+        return category.titleAr;
+      }
+    }
+    return '';
+  }
+
   void _openCategory(BuildContext context, String categoryId) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => YoungMuslimRouteScope.inherit(
+      youngMuslimPageRoute<void>(
+        child: YoungMuslimRouteScope.inherit(
           context: context,
           child: YoungMuslimCategoryScreen(categoryId: categoryId),
         ),
@@ -606,8 +749,8 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
 
   void _openVideo(BuildContext context, String videoId) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => YoungMuslimRouteScope.inherit(
+      youngMuslimPageRoute<void>(
+        child: YoungMuslimRouteScope.inherit(
           context: context,
           child: YoungMuslimVideoDetailsScreen(videoId: videoId),
         ),
@@ -770,6 +913,87 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
           },
         );
       },
+    );
+  }
+}
+
+class _YoungMuslimSearchSuggestion {
+  const _YoungMuslimSearchSuggestion({
+    required this.videoId,
+    required this.title,
+    required this.subtitle,
+    required this.duration,
+  });
+
+  final String videoId;
+  final String title;
+  final String subtitle;
+  final String duration;
+
+  @override
+  String toString() => title;
+}
+
+class _YoungMuslimSearchSuggestionTile extends StatelessWidget {
+  const _YoungMuslimSearchSuggestionTile({
+    required this.item,
+  });
+
+  final _YoungMuslimSearchSuggestion item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.all(14.w),
+      decoration: youngMuslimPanelDecoration(context, radius: 22),
+      child: Row(
+        children: [
+          Container(
+            width: 42.w,
+            height: 42.w,
+            decoration: BoxDecoration(
+              color: context.primaryContainer.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+            child: Icon(
+              Icons.play_circle_fill_rounded,
+              color: context.primaryColor,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  item.subtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: context.gray1,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          YoungMuslimMetricChip(
+            label: item.duration,
+            icon: Icons.schedule_rounded,
+            color: context.primaryColor,
+          ),
+        ],
+      ),
     );
   }
 }

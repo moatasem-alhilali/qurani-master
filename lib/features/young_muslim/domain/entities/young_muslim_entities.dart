@@ -656,6 +656,28 @@ class YoungMuslimPlayerSessionEntity extends Equatable {
       ];
 }
 
+class YoungMuslimQuizAnswerReviewEntity extends Equatable {
+  const YoungMuslimQuizAnswerReviewEntity({
+    required this.question,
+    required this.submittedAnswer,
+    required this.correctAnswer,
+    required this.isCorrect,
+  });
+
+  final YoungMuslimQuizQuestionEntity question;
+  final String submittedAnswer;
+  final String correctAnswer;
+  final bool isCorrect;
+
+  @override
+  List<Object?> get props => [
+        question,
+        submittedAnswer,
+        correctAnswer,
+        isCorrect,
+      ];
+}
+
 class YoungMuslimQuizResultEntity extends Equatable {
   const YoungMuslimQuizResultEntity({
     required this.quizSet,
@@ -663,6 +685,7 @@ class YoungMuslimQuizResultEntity extends Equatable {
     required this.totalQuestions,
     required this.awardedXp,
     required this.passed,
+    required this.answerReviews,
     required this.newlyUnlockedAchievements,
     required this.rewardsSummary,
   });
@@ -672,8 +695,16 @@ class YoungMuslimQuizResultEntity extends Equatable {
   final int totalQuestions;
   final int awardedXp;
   final bool passed;
+  final List<YoungMuslimQuizAnswerReviewEntity> answerReviews;
   final List<YoungMuslimAchievementEntity> newlyUnlockedAchievements;
   final YoungMuslimRewardsSummaryEntity rewardsSummary;
+
+  double get scorePercent {
+    if (totalQuestions == 0) {
+      return 0;
+    }
+    return correctAnswers / totalQuestions;
+  }
 
   @override
   List<Object?> get props => [
@@ -682,6 +713,7 @@ class YoungMuslimQuizResultEntity extends Equatable {
         totalQuestions,
         awardedXp,
         passed,
+        answerReviews,
         newlyUnlockedAchievements,
         rewardsSummary,
       ];

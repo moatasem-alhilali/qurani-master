@@ -39,6 +39,47 @@ bool _matchesDirectAnswer(String answer, String correctAnswer) {
       normalizedCorrect.contains(normalizedAnswer);
 }
 
+String _quizOptionText(
+  YoungMuslimQuizQuestionEntity question,
+  String? optionId,
+) {
+  if (optionId == null || optionId.isEmpty) {
+    return '';
+  }
+
+  for (final option in question.options) {
+    if (option.id == optionId) {
+      return option.text;
+    }
+  }
+
+  return optionId;
+}
+
+String _resolveSubmittedAnswer(
+  YoungMuslimQuizQuestionEntity question,
+  String? answer,
+) {
+  if (answer == null || answer.trim().isEmpty) {
+    return 'لم تتم الإجابة';
+  }
+
+  if (question.options.isNotEmpty) {
+    return _quizOptionText(question, answer);
+  }
+
+  return answer.trim();
+}
+
+String _resolveCorrectAnswer(YoungMuslimQuizQuestionEntity question) {
+  final correctOptionId = question.correctOptionId;
+  if (correctOptionId != null && correctOptionId.isNotEmpty) {
+    return _quizOptionText(question, correctOptionId);
+  }
+
+  return question.correctAnswerText.trim();
+}
+
 class YoungMuslimTables {
   static const seedState = 'ym_seed_state';
   static const categories = 'ym_categories';
@@ -64,6 +105,8 @@ class YoungMuslimLocalDataSource {
   }) : _databaseService = databaseService ?? DatabaseService();
 
   final DatabaseService _databaseService;
+  _YoungMuslimLibrary? _cachedLibrary;
+  Future<_YoungMuslimLibrary>? _libraryFuture;
 
   Future<Database> get _db async => _databaseService.database;
 
@@ -81,6 +124,7 @@ class YoungMuslimLocalDataSource {
     if (currentVersion == bundle.version && hasCategories) {
       await _ensureRewardsSummaryRow();
       await _rebuildRewardsSummary();
+      _invalidateLibraryCache();
       return;
     }
 
@@ -163,6 +207,7 @@ class YoungMuslimLocalDataSource {
     await _rebuildRelatedVideos();
     await _ensureRewardsSummaryRow();
     await _rebuildRewardsSummary();
+    _invalidateLibraryCache();
   }
 
   Future<YoungMuslimDashboardEntity> getDashboard({
@@ -352,6 +397,7 @@ class YoungMuslimLocalDataSource {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    _invalidateLibraryCache();
   }
 
   Future<void> saveVideoProgress({
@@ -402,7 +448,10 @@ class YoungMuslimLocalDataSource {
 
     if (completed) {
       await markVideoCompleted(videoId);
+      return;
     }
+
+    _invalidateLibraryCache();
   }
 
   Future<void> markVideoCompleted(String videoId) async {
@@ -440,6 +489,7 @@ class YoungMuslimLocalDataSource {
     );
 
     await _rebuildRewardsSummary();
+    _invalidateLibraryCache();
   }
 
   Future<void> toggleFavorite(String videoId) async {
@@ -466,6 +516,7 @@ class YoungMuslimLocalDataSource {
         whereArgs: [videoId],
       );
     }
+    _invalidateLibraryCache();
   }
 
   Future<void> toggleWatchLater(String videoId) async {
@@ -494,6 +545,7 @@ class YoungMuslimLocalDataSource {
     }
 
     await _rebuildRewardsSummary();
+    _invalidateLibraryCache();
   }
 
   Future<YoungMuslimQuizSetEntity?> getVideoQuiz(String videoId) async {
@@ -538,18 +590,27 @@ class YoungMuslimLocalDataSource {
     final quizSet = await _buildQuizSet(quizRows.first);
 
     var correctAnswers = 0;
+    final answerReviews = <YoungMuslimQuizAnswerReviewEntity>[];
     for (final question in quizSet.questions) {
       final answer = answers[question.id];
-      if (answer == null) {
-        continue;
-      }
-      if ((question.correctOptionId?.isNotEmpty ?? false)) {
-        if (answer == question.correctOptionId) {
-          correctAnswers++;
-        }
-      } else if (_matchesDirectAnswer(answer, question.correctAnswerText)) {
+      final hasChoiceAnswer = question.correctOptionId?.isNotEmpty ?? false;
+      final isCorrect = answer != null &&
+          (hasChoiceAnswer
+              ? answer == question.correctOptionId
+              : _matchesDirectAnswer(answer, question.correctAnswerText));
+
+      if (isCorrect) {
         correctAnswers++;
       }
+
+      answerReviews.add(
+        YoungMuslimQuizAnswerReviewEntity(
+          question: question,
+          submittedAnswer: _resolveSubmittedAnswer(question, answer),
+          correctAnswer: _resolveCorrectAnswer(question),
+          isCorrect: isCorrect,
+        ),
+      );
     }
 
     final passed = correctAnswers >= quizSet.passingScore;
@@ -587,6 +648,7 @@ class YoungMuslimLocalDataSource {
 
     final newlyUnlocked = await _rebuildRewardsSummary();
     final rewardsSummary = await getRewardsSummary();
+    _invalidateLibraryCache();
 
     return YoungMuslimQuizResultEntity(
       quizSet: quizSet,
@@ -594,6 +656,7 @@ class YoungMuslimLocalDataSource {
       totalQuestions: quizSet.questions.length,
       awardedXp: awardedXp,
       passed: passed,
+      answerReviews: answerReviews,
       newlyUnlockedAchievements: newlyUnlocked,
       rewardsSummary: rewardsSummary,
     );
@@ -935,6 +998,24 @@ class YoungMuslimLocalDataSource {
   }
 
   Future<_YoungMuslimLibrary> _loadLibrary() async {
+    if (_cachedLibrary != null) {
+      return _cachedLibrary!;
+    }
+    if (_libraryFuture != null) {
+      return _libraryFuture!;
+    }
+
+    _libraryFuture = _readLibraryFromDatabase();
+    try {
+      final library = await _libraryFuture!;
+      _cachedLibrary = library;
+      return library;
+    } finally {
+      _libraryFuture = null;
+    }
+  }
+
+  Future<_YoungMuslimLibrary> _readLibraryFromDatabase() async {
     final database = await _db;
     final categoryRows = await database.query(
       YoungMuslimTables.categories,
@@ -1006,6 +1087,11 @@ class YoungMuslimLocalDataSource {
       achievements: achievements,
       relatedVideoIds: relatedVideoIds,
     );
+  }
+
+  void _invalidateLibraryCache() {
+    _cachedLibrary = null;
+    _libraryFuture = null;
   }
 
   List<YoungMuslimVideoModel> _applyFilters(

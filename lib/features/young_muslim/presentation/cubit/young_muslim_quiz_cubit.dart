@@ -21,7 +21,14 @@ class YoungMuslimQuizCubit extends Cubit<YoungMuslimQuizState> {
     } else {
       updatedAnswers[questionId] = normalizedAnswer;
     }
-    emit(state.copyWith(answers: updatedAnswers));
+    emit(
+      state.copyWith(
+        answers: updatedAnswers,
+        submitState: state.submitState == RequestState.error
+            ? RequestState.initial
+            : state.submitState,
+      ),
+    );
   }
 
   Future<void> submit() async {
@@ -35,6 +42,7 @@ class YoungMuslimQuizCubit extends Cubit<YoungMuslimQuizState> {
         state.copyWith(
           submitState: RequestState.success,
           result: result,
+          errorMessage: null,
         ),
       );
     } catch (error) {

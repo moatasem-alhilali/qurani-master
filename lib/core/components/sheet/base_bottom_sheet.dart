@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 extension BaseBottomSheet on BuildContext {
-  void showBaseBottomSheet({
+  Future<T?> showBaseBottomSheet<T>({
     Widget? child,
     bool isDismissible = true,
     bool enableDrag = true,
@@ -12,7 +12,7 @@ extension BaseBottomSheet on BuildContext {
     BorderRadius? borderRadius,
     Duration? animationDuration,
   }) {
-    showModalBottomSheet<void>(
+   return  showModalBottomSheet<T>(
       context: this,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
