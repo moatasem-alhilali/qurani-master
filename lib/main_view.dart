@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
+import 'package:quran_app/core/bloc/device_sync/device_sync_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
@@ -47,6 +49,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               sl<ConnectivityBloc>()..add(const ConnectivityStarted()),
+          lazy: false,
+        ),
+
+        BlocProvider(
+          create: (context) => DeviceSyncBloc(
+            repository: sl<DeviceSyncRepository>(),
+            connectivityBloc: context.read<ConnectivityBloc>(),
+          )..add(const DeviceSyncStarted()),
           lazy: false,
         ),
 
@@ -115,10 +125,7 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
-          return BlocConsumer<ConnectivityBloc, ConnectivityState>(
-            listener: (context, state) {
-              // TODO: implement listener
-            },
+          return BlocBuilder<ConnectivityBloc, ConnectivityState>(
             builder: (context, state) {
               return ScreenUtilInit(
                 minTextAdapt: true,
@@ -160,7 +167,6 @@ class MyApp extends StatelessWidget {
                   ),
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
-                  // home: const _App(),
                   home: const _App(),
                 ),
               );
@@ -173,9 +179,7 @@ class MyApp extends StatelessWidget {
 }
 
 class _App extends StatefulWidget {
-  const _App({
-    super.key,
-  });
+  const _App();
 
   @override
   State<_App> createState() => _AppState();
