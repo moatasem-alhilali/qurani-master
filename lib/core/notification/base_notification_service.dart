@@ -95,7 +95,7 @@ abstract class BaseNotificationService {
     await initAllAndroidChannels();
     _configureSelectNotificationSubject();
 
-    logger.d('Notification service initialized successfully');
+    // logger.d('Notification service initialized successfully');
   }
 
   /// Initialize all Android notification channels with enhanced configuration

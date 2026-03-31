@@ -154,12 +154,12 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
     Emitter<VersionState> emit,
   ) async {
     try {
-      logger
-        ..d('=== Starting update check ===')
-        ..d('Force refresh: ${event.forceRefresh}')
-        ..d('Is manual check: ${event.isManualCheck}')
-        ..d('Current ISCONNECTED: $ISCONNECTED')
-        ..d('Current state has update: ${state.hasUpdateAvailable}');
+      // logger
+      //   ..d('=== Starting update check ===')
+      //   ..d('Force refresh: ${event.forceRefresh}')
+      //   ..d('Is manual check: ${event.isManualCheck}')
+      //   ..d('Current ISCONNECTED: $ISCONNECTED')
+      //   ..d('Current state has update: ${state.hasUpdateAvailable}');
 
       emit(
         state.copyWith(
@@ -195,11 +195,11 @@ class VersionBloc extends Bloc<VersionEvent, VersionState> {
             ),
           );
 
-          logger
-            ..d('Version check result: $versionModel')
-            ..d('Update available: ${versionModel.isUpdateAvailable}')
-            ..d('Current version: ${versionModel.currentVersion}')
-            ..d('Latest version: ${versionModel.latestVersion}');
+          // logger
+          //   ..d('Version check result: $versionModel')
+          //   ..d('Update available: ${versionModel.isUpdateAvailable}')
+          //   ..d('Current version: ${versionModel.currentVersion}')
+          //   ..d('Latest version: ${versionModel.latestVersion}');
 
           // Home screen handles the update prompt presentation now.
           if (versionModel.isUpdateAvailable) {

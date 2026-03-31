@@ -34,7 +34,7 @@ class NotificationOrchestratorService {
       await _rescheduleStaticNotifications();
       // await _rescheduleCustomSchedules(); // Uncomment when ready
 
-      logger.d('Completed comprehensive notification rescheduling');
+      // logger.d('Completed comprehensive notification rescheduling');
     } catch (e) {
       logger.e('Error in rescheduleAllNotifications: $e');
     }

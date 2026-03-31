@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/gen/assets.gen.dart';
 import 'package:quran_library/quran.dart';
 
 class ReadQuranScreen extends StatefulWidget {
@@ -36,6 +37,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
             isDark: state.currentThemeMode == ThemeMode.dark,
             appLanguageCode: 'ar',
             pageIndex: widget.page ?? 0,
+            appIconPathForPlayAudioInBackground: Assets.image.logo.path,
             // tafsirStyle:
             //     TafsirStyle.defaults(isDark: false, context: context).copyWith(
             //   widthOfBottomSheet: 500,
