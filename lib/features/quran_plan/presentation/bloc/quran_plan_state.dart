@@ -13,6 +13,10 @@ class QuranPlanState extends Equatable {
     this.nextSessionState = RequestState.initial,
     this.errorMessage,
     this.analysis,
+    this.currentPage = 0,
+    this.pageSize = 20,
+    this.hasMoreSessions = true,
+    this.isLoadingMore = false,
   });
   final RequestState requestState;
   final RequestState deleteRequestState;
@@ -24,6 +28,10 @@ class QuranPlanState extends Equatable {
   final RequestState nextSessionState;
   final String? errorMessage;
   final PlanProgressAnalysis? analysis;
+  final int currentPage;
+  final int pageSize;
+  final bool hasMoreSessions;
+  final bool isLoadingMore;
 
   QuranPlanState copyWith({
     RequestState? requestState,
@@ -36,6 +44,10 @@ class QuranPlanState extends Equatable {
     RequestState? nextSessionState,
     String? errorMessage,
     PlanProgressAnalysis? analysis,
+    int? currentPage,
+    int? pageSize,
+    bool? hasMoreSessions,
+    bool? isLoadingMore,
   }) {
     return QuranPlanState(
       requestState: requestState ?? this.requestState,
@@ -48,6 +60,10 @@ class QuranPlanState extends Equatable {
       nextSessionState: nextSessionState ?? this.nextSessionState,
       errorMessage: errorMessage ?? this.errorMessage,
       analysis: analysis ?? this.analysis,
+      currentPage: currentPage ?? this.currentPage,
+      pageSize: pageSize ?? this.pageSize,
+      hasMoreSessions: hasMoreSessions ?? this.hasMoreSessions,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -62,6 +78,10 @@ class QuranPlanState extends Equatable {
         nextSession,
         nextSessionState,
         errorMessage,
-        analysis
+        analysis,
+        currentPage,
+        pageSize,
+        hasMoreSessions,
+        isLoadingMore,
       ];
 }

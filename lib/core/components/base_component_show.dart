@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quran_app/core/extensions/num_duration_extensions.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -39,7 +39,7 @@ Future<void> showMyBottomSheetFunction({
               const HeaderStyle(),
               if (isScroll)
                 SingleChildScrollView(
-                  child: child.animate().fade(duration: 1.seconds),
+                  child: child,
                 ),
               if (!isScroll) child,
             ],
@@ -193,7 +193,7 @@ Future<void> showMyExitDialogFunction({
             ),
           ),
         ),
-      ).animate().fade();
+      );
     },
   );
 }

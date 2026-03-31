@@ -1,3 +1,19 @@
 {
-  "java.configuration.updateBuildConfiguration": "interactive"
+  // Dart/Flutter specific settings
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // Dart SDK settings
+  "dart.lineLength": 80,
+  "dart.enableSdkFormatter": true,
+  "dart.showTodos": true,
+  "dart.renameFilesWithClasses": true,
+  "dart.openDevToolsOnStart": false
 }

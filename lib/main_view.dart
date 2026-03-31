@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
+import 'package:quran_app/core/bloc/device_sync/device_sync_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
+import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
@@ -14,9 +16,9 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/core/util/light_theme.dart';
-import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
-import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
+import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
@@ -24,11 +26,9 @@ import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
-import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/old_read_quran/old_read_quran_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
+import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -52,6 +52,14 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
 
+        BlocProvider(
+          create: (context) => DeviceSyncBloc(
+            repository: sl<DeviceSyncRepository>(),
+            connectivityBloc: context.read<ConnectivityBloc>(),
+          )..add(const DeviceSyncStarted()),
+          lazy: false,
+        ),
+
         ///version management
         BlocProvider(
           create: (context) => VersionBloc(
@@ -69,33 +77,30 @@ class MyApp extends StatelessWidget {
           create: (context) => ThemeBloc()..add(InitThemeEvent()),
         ),
 
-        ///quran audio
-        BlocProvider(
-          create: (context) =>
-              sl<QuranAudioBloc>()..add(InitQuranPlayerDataEvent()),
-          lazy: false,
-        ),
+        // ///quran audio
+        // BlocProvider(
+        //   create: (context) =>
+        //       sl<QuranAudioBloc>()..add(InitQuranPlayerDataEvent()),
+        //   lazy: false,
+        // ),
 
         ///base
         BlocProvider(create: (context) => BaseBloc()),
 
-        ///bookmark
-        BlocProvider(
-          create: (context) => sl<BookmarkBloc>()
-            ..add(GetBookmarksAyahEvent())
-            ..add(GetBookmarksPageEvent()),
-          lazy: false,
-        ),
+        // ///bookmark
+        // BlocProvider(
+        //   create: (context) => sl<BookmarkBloc>()
+        //     ..add(GetBookmarksAyahEvent())
+        //     ..add(GetBookmarksPageEvent()),
+        //   lazy: false,
+        // ),
 
-        ///read quran
-        BlocProvider(
-          lazy: false,
-          create: (context) => OldReadQuranBloc()..add(OldLoadQuranEvent()),
-        ),
-        BlocProvider(
-          lazy: false,
-          create: (context) => ReadQuranBloc()..add(LoadQuranEvent()),
-        ),
+        // BlocProvider(
+        //   lazy: false,
+        //   create: (context) => ReadQuranBloc()
+        //     ..add(LoadQuranEvent())
+        //     ..add(GetLastPageReadEvent()),
+        // ),
 
         ///notification
         BlocProvider(
@@ -120,10 +125,7 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
-          return BlocConsumer<ConnectivityBloc, ConnectivityState>(
-            listener: (context, state) {
-              // TODO: implement listener
-            },
+          return BlocBuilder<ConnectivityBloc, ConnectivityState>(
             builder: (context, state) {
               return ScreenUtilInit(
                 minTextAdapt: true,
@@ -177,9 +179,7 @@ class MyApp extends StatelessWidget {
 }
 
 class _App extends StatefulWidget {
-  const _App({
-    super.key,
-  });
+  const _App();
 
   @override
   State<_App> createState() => _AppState();
@@ -198,21 +198,49 @@ class _AppState extends State<_App> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: context.scaffoldBackgroundColor,
-            // titleWidget: const SizedBox(),
-            // back: false,
-            // title: 'طمأنينة',
-            // showBackground: currentPage == 0 ? false : true,
-            // isScroll: currentPage == 2 ? false : true,
-            bottomNavigationBar: const IntrinsicHeight(
-              child: ColoredBox(
-                color: Colors.transparent,
-                child: SafeArea(
-                  top: false,
-                  child: CustomBottomNavigationBarWidget(),
-                ),
+
+            // bottomNavigationBar: const IntrinsicHeight(
+            //   child: ColoredBox(
+            //     color: Colors.transparent,
+            //     child: SafeArea(
+            //       top: false,
+            //       child: CustomBottomNavigationBarWidget(),
+            //     ),
+            //   ),
+            // ),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 12.r,
+                              child: const Icon(Icons.person),
+                            ),
+                            SizedBox(width: 4.w),
+                            const Text('مرحبا بعودتك'),
+                          ],
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            context.push(const SettingScreen());
+                          },
+                          icon: const Icon(
+                            Icons.settings,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Expanded(child: HomeScreenNew()),
+                ],
               ),
             ),
-            body: SafeArea(child: screens[currentPage]),
           );
         },
       ),

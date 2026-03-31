@@ -2,7 +2,6 @@
 // import 'package:ecommerce_project/core/themes/extension_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -218,10 +217,7 @@ class ProgressButtonState extends StatelessWidget {
                   valueColor:
                       AlwaysStoppedAnimation<Color>(colorText ?? Colors.white),
                 ),
-              )
-                  .animate()
-                  .fadeIn(duration: 300.ms)
-                  .rotate(duration: 1.seconds, curve: Curves.linear),
+              ),
           ],
         );
       case RequestState.success:
@@ -247,15 +243,7 @@ class ProgressButtonState extends StatelessWidget {
               Icons.check_circle_outline,
               color: colorText ?? Colors.white,
               size: 24.r,
-            )
-                .animate()
-                .scale(
-                  begin: const Offset(0.5, 0.5),
-                  end: const Offset(1, 1),
-                  duration: 400.ms,
-                  curve: Curves.elasticOut,
-                )
-                .fadeIn(duration: 300.ms),
+            ),
           ],
         );
       case RequestState.error:
@@ -264,95 +252,141 @@ class ProgressButtonState extends StatelessWidget {
           color: colorText ?? Colors.white,
           size: 24.r,
           key: const ValueKey('error'),
-        ).animate().shake(duration: 500.ms, hz: 4).scale(
-              begin: const Offset(0.8, 0.8),
-              end: const Offset(1, 1),
-              duration: 400.ms,
-            );
+        );
     }
   }
 }
 
-// --------------------
+// // --------------------
 
-/// A wrapper widget that adds a tap animation to its child.
-///
-/// This widget scales down its child when tapped and scales it back up when the tap is released.
-class StyleButtonWrap extends StatefulWidget {
-  final Widget child;
-  final VoidCallback? onTap;
-  final VoidCallback? onLongPress;
-
+class StyleButtonWrap extends StatelessWidget {
   const StyleButtonWrap({
     required this.child,
-    super.key,
-    this.onTap,
+    this.shape,
+    this.color,
     this.onLongPress,
+    this.onTap,
+    this.disabledColor,
+    this.disable,
+    this.padding,
+    this.height,
+    this.minWidth,
+    super.key,
   });
 
-  @override
-  _StyleButtonWrapState createState() => _StyleButtonWrapState();
-}
-
-class _StyleButtonWrapState extends State<StyleButtonWrap>
-    with SingleTickerProviderStateMixin {
-  static const int _clickAnimationDurationMillis = 100;
-  static const double _minScaleValue = 0.95;
-
-  late final AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: _clickAnimationDurationMillis),
-    );
-
-    _scaleAnimation = Tween<double>(
-      begin: 1,
-      end: _minScaleValue,
-    ).animate(_animationController);
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  /// Handles the tap event by playing the animation and invoking the callback.
-  Future<void> _handleTap() async {
-    await _animationController.forward();
-    await _animationController.reverse();
-    HapticFeedback.lightImpact();
-    widget.onTap?.call();
-  }
+  final ShapeBorder? shape;
+  final Color? color;
+  final Color? disabledColor;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+  final Widget? child;
+  final double? minWidth;
+  final double? height;
+  final EdgeInsetsGeometry? padding;
+  final bool? disable;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _handleTap,
-      onTapDown: (_) => _animationController.forward(),
-      onTapCancel: () => _animationController.reverse(),
-      onLongPress: () {
-        HapticFeedback.lightImpact();
-        widget.onLongPress?.call();
-      },
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
-        },
-        child: widget.child,
-      ),
+    return MaterialButton(
+      elevation: 0,
+      hoverElevation: 0,
+      focusElevation: 0,
+      highlightElevation: 0,
+      shape: shape,
+      color: color,
+      disabledColor: disabledColor ?? color,
+      height: height,
+      padding: padding,
+      minWidth: minWidth,
+      onPressed: true == disable
+          ? null
+          : () {
+              onTap?.call();
+              HapticFeedback.lightImpact();
+            },
+      child: child,
     );
   }
 }
+
+// /// A wrapper widget that adds a tap animation to its child.
+// ///
+// /// This widget scales down its child when tapped and scales it back up when the tap is released.
+// class StyleButtonWrap extends StatefulWidget {
+//   final Widget child;
+//   final VoidCallback? onTap;
+//   final VoidCallback? onLongPress;
+
+//   const StyleButtonWrap({
+//     required this.child,
+//     super.key,
+//     this.onTap,
+//     this.onLongPress,
+//   });
+
+//   @override
+//   _StyleButtonWrapState createState() => _StyleButtonWrapState();
+// }
+
+// class _StyleButtonWrapState extends State<StyleButtonWrap>
+//     with SingleTickerProviderStateMixin {
+//   static const int _clickAnimationDurationMillis = 100;
+//   static const double _minScaleValue = 0.95;
+
+//   late final AnimationController _animationController;
+//   late Animation<double> _scaleAnimation;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _animationController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(milliseconds: _clickAnimationDurationMillis),
+//     );
+
+//     _scaleAnimation = Tween<double>(
+//       begin: 1,
+//       end: _minScaleValue,
+//     ).animate(_animationController);
+//   }
+
+//   @override
+//   void dispose() {
+//     _animationController.dispose();
+//     super.dispose();
+//   }
+
+//   /// Handles the tap event by playing the animation and invoking the callback.
+//   Future<void> _handleTap() async {
+//     await _animationController.forward();
+//     await _animationController.reverse();
+//     HapticFeedback.lightImpact();
+//     widget.onTap?.call();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: _handleTap,
+//       onTapDown: (_) => _animationController.forward(),
+//       onTapCancel: () => _animationController.reverse(),
+//       onLongPress: () {
+//         // HapticFeedback.lightImpact();
+//         widget.onLongPress?.call();
+//       },
+//       child: AnimatedBuilder(
+//         animation: _scaleAnimation,
+//         builder: (context, child) {
+//           return Transform.scale(
+//             scale: _scaleAnimation.value,
+//             child: child,
+//           );
+//         },
+//         child: widget.child,
+//       ),
+//     );
+//   }
+// }
 
 /// A base widget that provides a tap effect with a ripple animation.
 ///
@@ -375,7 +409,7 @@ class BaseOnTap extends StatelessWidget {
       overlayColor:
           WidgetStatePropertyAll(context.primaryColor.withOpacity(0.1)),
       onTap: () {
-        HapticFeedback.lightImpact();
+        // HapticFeedback.lightImpact();
         onTap?.call();
       },
       child: child,

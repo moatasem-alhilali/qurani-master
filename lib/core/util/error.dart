@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 
 class BaseNoData extends StatelessWidget {
@@ -15,7 +14,7 @@ class BaseNoData extends StatelessWidget {
         textAlign: TextAlign.center,
         // style: titleMedium(context).copyWith(fontSize: 22),
       ),
-    ).animate().fade();
+    );
   }
 }
 
@@ -49,6 +48,6 @@ class BaseErrorRobot extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fade();
+    );
   }
 }

@@ -1,14 +1,15 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 
-import 'package:quran_app/features/home/presentation/view/widgets/bottom_navigation_bar_widget.dart';
-
 part 'base_event.dart';
 part 'base_state.dart';
+
+int currentPage = 0;
 
 class BaseBloc extends Bloc<BaseEvent, BaseState> {
   BaseBloc() : super(BaseState()) {
@@ -30,15 +31,7 @@ class BaseBloc extends Bloc<BaseEvent, BaseState> {
   }
 
   FutureOr<void> _changeScreen(event, emit) {
-    currentPage = event.current as int;
+    // currentPage = event.current as int;
     emit(BaseState());
-  }
-
-
-
-
-  @override
-  Future<void> close() async {
-    super.close();
   }
 }

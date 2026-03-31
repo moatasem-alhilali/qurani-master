@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 
 extension FullScreenSheet on BuildContext {
   void showFullScreenSheet({
@@ -18,7 +19,7 @@ extension FullScreenSheet on BuildContext {
     showModalBottomSheet<void>(
       context: this,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: scaffoldBackgroundColor,
       elevation: 0,
       useSafeArea: true,
       useRootNavigator: true,
@@ -139,7 +140,9 @@ class _FullScreenSheetContentState extends State<FullScreenSheetContent>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(
-              0, _slideAnimation.value * MediaQuery.of(context).size.height),
+            0,
+            _slideAnimation.value * MediaQuery.of(context).size.height,
+          ),
           child: Transform.scale(
             scale: _scaleAnimation.value,
             child: Opacity(
@@ -148,7 +151,8 @@ class _FullScreenSheetContentState extends State<FullScreenSheetContent>
                 width: double.infinity,
                 height: double.infinity,
                 decoration: BoxDecoration(
-                  color: widget.backgroundColor ?? Colors.white,
+                  color:
+                      widget.backgroundColor ?? context.scaffoldBackgroundColor,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(20.r),
                   ),
@@ -175,7 +179,8 @@ class _FullScreenSheetContentState extends State<FullScreenSheetContent>
                           16.h,
                         ),
                         decoration: BoxDecoration(
-                          color: widget.backgroundColor ?? Colors.white,
+                          color: widget.backgroundColor ??
+                              context.scaffoldBackgroundColor,
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20.r),
                           ),

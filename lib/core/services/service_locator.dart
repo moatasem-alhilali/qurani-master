@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
-import 'package:quran_app/core/local_database/database_service.dart';
+import 'package:quran_app/core/device_sync/data/device_sync_local_store.dart';
+import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/core/services/device_info_service.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart';
 import 'package:quran_app/features/bookmark/data/remote/book_mark_repository_imp.dart';
-import 'package:quran_app/features/bookmark/presentation/bloc/bookmark_bloc.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/home/data/di/injection_container.dart';
@@ -17,7 +20,6 @@ import 'package:quran_app/features/notification_schedules/data/repo/notification
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/di/injection_container.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
-import 'package:quran_app/features/quran_audio/presentation/bloc/quran_audio_bloc/quran_audio_bloc.dart';
 import 'package:quran_app/features/quran_plan/data/di/injection_container.dart';
 import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
@@ -45,6 +47,22 @@ Future<void> setupServiceLocator() async {
     )
     ..registerSingleton<CacheService>(CacheService())
     ..registerSingleton<Connectivity>(Connectivity())
+    ..registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance)
+    ..registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance)
+    ..registerSingleton<DeviceInfoService>(DeviceInfoService())
+    ..registerSingleton<DeviceSyncLocalStore>(
+      DeviceSyncLocalStore(
+        cacheService: sl.get<CacheService>(),
+      ),
+    )
+    ..registerSingleton<DeviceSyncRepository>(
+      DeviceSyncRepository(
+        firestore: sl.get<FirebaseFirestore>(),
+        firebaseMessaging: sl(),
+        deviceInfoService: sl.get<DeviceInfoService>(),
+        localStore: sl.get<DeviceSyncLocalStore>(),
+      ),
+    )
     // ─────────────────────── NOTIFICATION ───────────────────────
     ..registerSingleton<NotificationService>(NotificationService())
     ..registerSingleton<NotificationPermissionsService>(
@@ -102,11 +120,11 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<QuranAudioPlayerRepo>(QuranAudioPlayerRepoImpl())
 
     // ─────────────────────── BLOC ───────────────────────
-    ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
-    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()))
-    ..registerFactory<QuranAudioBloc>(
-      () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
-    );
+    // ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
+    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()));
+  // ..registerFactory<QuranAudioBloc>(
+  //   () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
+  // );
 
   // ─────────────────────── QURAN PLAN ───────────────────────
   await registerQuranPlanDependencies(sl);

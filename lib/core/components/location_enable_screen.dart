@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/components/base_progress_button.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -44,6 +43,6 @@ class LocationEnableScreen extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fade();
+    );
   }
 }

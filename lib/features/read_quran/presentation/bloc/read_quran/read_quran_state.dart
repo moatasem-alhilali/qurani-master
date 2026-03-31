@@ -1,222 +1,238 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-part of 'read_quran_bloc.dart';
+// // ignore_for_file: public_member_api_docs, sort_constructors_first
+// part of 'read_quran_bloc.dart';
 
-@immutable
-class ReadQuranState {
-  const ReadQuranState({
-    this.loadQuranState = RequestState.initial,
-    this.surahs = const [],
-    this.pages = const [],
-    this.allAyahs = const [],
-    this.minusHeight = 300,
-    // this.currentPageAyahsSeparatedForBasmalah = const [],
-    this.tafsirAyah,
-  });
-  final RequestState loadQuranState;
-  final List<NewSurahModel> surahs;
-  final List<List<NewAyahModel>> pages;
-  final List<NewAyahModel> allAyahs;
-  final double minusHeight;
-  // final List<List<NewAyahModel>> currentPageAyahsSeparatedForBasmalah;
-  final String? tafsirAyah;
+// @immutable
+// class ReadQuranState {
+//   const ReadQuranState({
+//     this.loadQuranState = RequestState.initial,
+//     this.surahs = const [],
+//     this.pages = const [],
+//     this.allAyahs = const [],
+//     this.minusHeight = 300,
+//     // this.currentPageAyahsSeparatedForBasmalah = const [],
+//     this.tafsirAyah,
+//     this.lastReadQuranInfo,
+//     this.isTafser = false,
+//     this.lastReadQuranInfoState = RequestState.initial,
+//   });
+//   final RequestState loadQuranState;
+//   final List<NewSurahModel> surahs;
+//   final List<List<NewAyahModel>> pages;
+//   final List<NewAyahModel> allAyahs;
+//   final double minusHeight;
+//   // final List<List<NewAyahModel>> currentPageAyahsSeparatedForBasmalah;
+//   final String? tafsirAyah;
+//   final LastReadQuranInfoModel? lastReadQuranInfo;
+//   final RequestState lastReadQuranInfoState;
 
-  ReadQuranState copyWith({
-    RequestState? loadQuranState,
-    List<NewSurahModel>? surahs,
-    List<List<NewAyahModel>>? pages,
-    List<NewAyahModel>? allAyahs,
-    double? minusHeight,
-    List<List<NewAyahModel>>? currentPageAyahsSeparatedForBasmalah,
-    String? tafsirAyah,
-  }) {
-    return ReadQuranState(
-      loadQuranState: loadQuranState ?? this.loadQuranState,
-      surahs: surahs ?? this.surahs,
-      pages: pages ?? this.pages,
-      allAyahs: allAyahs ?? this.allAyahs,
-      minusHeight: minusHeight ?? this.minusHeight,
-      // currentPageAyahsSeparatedForBasmalah:
-      //     currentPageAyahsSeparatedForBasmalah ??
-      //         this.currentPageAyahsSeparatedForBasmalah,
-      tafsirAyah: tafsirAyah ?? this.tafsirAyah,
-    );
-  }
+//   final bool isTafser;
 
-  @override
-  bool operator ==(covariant ReadQuranState other) {
-    if (identical(this, other)) return true;
+//   ReadQuranState copyWith({
+//     RequestState? loadQuranState,
+//     List<NewSurahModel>? surahs,
+//     List<List<NewAyahModel>>? pages,
+//     List<NewAyahModel>? allAyahs,
+//     double? minusHeight,
+//     String? tafsirAyah,
+//     LastReadQuranInfoModel? lastReadQuranInfo,
+//     RequestState? lastReadQuranInfoState,
+//     bool? isTafser,
+//   }) {
+//     return ReadQuranState(
+//       loadQuranState: loadQuranState ?? this.loadQuranState,
+//       surahs: surahs ?? this.surahs,
+//       pages: pages ?? this.pages,
+//       allAyahs: allAyahs ?? this.allAyahs,
+//       minusHeight: minusHeight ?? this.minusHeight,
+//       tafsirAyah: tafsirAyah ?? this.tafsirAyah,
+//       lastReadQuranInfo: lastReadQuranInfo ?? this.lastReadQuranInfo,
+//       lastReadQuranInfoState:
+//           lastReadQuranInfoState ?? this.lastReadQuranInfoState,
+//       isTafser: isTafser ?? this.isTafser,
+//     );
+//   }
 
-    return other.loadQuranState == loadQuranState &&
-        other.surahs == surahs &&
-        other.pages == pages &&
-        other.allAyahs == allAyahs &&
-        other.minusHeight == minusHeight &&
-        other.tafsirAyah == tafsirAyah;
-    // other.currentPageAyahsSeparatedForBasmalah ==
-    //     currentPageAyahsSeparatedForBasmalah;
-  }
+//   @override
+//   bool operator ==(covariant ReadQuranState other) {
+//     if (identical(this, other)) return true;
 
-  @override
-  int get hashCode =>
-      loadQuranState.hashCode ^
-      surahs.hashCode ^
-      pages.hashCode ^
-      allAyahs.hashCode ^
-      minusHeight.hashCode ^
-      tafsirAyah.hashCode
-      // currentPageAyahsSeparatedForBasmalah.hashCode;
-      ;
+//     return other.loadQuranState == loadQuranState &&
+//         other.surahs == surahs &&
+//         other.pages == pages &&
+//         other.allAyahs == allAyahs &&
+//         other.minusHeight == minusHeight &&
+//         other.tafsirAyah == tafsirAyah &&
+//         other.lastReadQuranInfo == lastReadQuranInfo &&
+//         other.lastReadQuranInfoState == lastReadQuranInfoState &&
+//         other.isTafser == isTafser;
+//     // other.currentPageAyahsSeparatedForBasmalah ==
+//     //     currentPageAyahsSeparatedForBasmalah;
+//   }
 
-  List<List<NewAyahModel>> getCurrentPageAyahsSeparatedForBasmalah(
-    int pageIndex,
-  ) =>
-      pages[pageIndex]
-          .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
-          .toList();
+//   @override
+//   int get hashCode =>
+//       loadQuranState.hashCode ^
+//       surahs.hashCode ^
+//       pages.hashCode ^
+//       allAyahs.hashCode ^
+//       minusHeight.hashCode ^
+//       tafsirAyah.hashCode ^
+//       lastReadQuranInfo.hashCode ^
+//       lastReadQuranInfoState.hashCode ^
+//       isTafser.hashCode
+//       // currentPageAyahsSeparatedForBasmalah.hashCode;
+//       ;
 
-  List<NewAyahModel> getCurrentPageAyahs(int pageIndex) => pages[pageIndex];
+//   List<List<NewAyahModel>> getCurrentPageAyahsSeparatedForBasmalah(
+//     int pageIndex,
+//   ) =>
+//       pages[pageIndex]
+//           .splitBetween((f, s) => f.ayahNumber > s.ayahNumber)
+//           .toList();
 
-  int getSurahNumberFromPage(int pageNumber) =>
-      getCurrentSurahByPage(pageNumber).surahNumber;
+//   List<NewAyahModel> getCurrentPageAyahs(int pageIndex) => pages[pageIndex];
 
-  NewSurahModel getCurrentSurahByPage(int pageNumber) => surahs.firstWhere(
-        (s) => allAyahs.contains(getCurrentPageAyahs(pageNumber).first),
-      );
+//   int getSurahNumberFromPage(int pageNumber) =>
+//       getCurrentSurahByPage(pageNumber).surahNumber;
 
-  String getSurahNameFromPage(int pageNumber) {
-    try {
-      return surahs
-          .firstWhere(
-            (s) => s.surahNumber == getSurahNumberFromPage(pageNumber),
-          )
-          .nameAr;
-    } catch (e) {
-      return 'Surah not found';
-    }
-  }
+//   NewSurahModel getCurrentSurahByPage(int pageNumber) => surahs.firstWhere(
+//         (s) => allAyahs.contains(getCurrentPageAyahs(pageNumber).first),
+//       );
 
-  String getSurahNameByPageIndex(int pageIndex) {
-    if (pages.isEmpty || pageIndex < 0 || pageIndex >= pages.length) return '';
-    final pageAyahs = pages[pageIndex];
-    if (pageAyahs.isEmpty) return '';
-    final surahId = pageAyahs.first.surahId;
-    final surah = surahs.firstWhere(
-      (s) => s.surahNumber == surahId,
-      orElse: () => NewSurahModel(
-        id: 0,
-        nameAr: '',
-        nameEn: '',
-        translation: '',
-        revelationType: '',
-        ayahCount: 0,
-        surahNumber: 0,
-      ),
-    );
-    return surah.nameAr;
-  }
+//   String getSurahNameFromPage(int pageNumber) {
+//     try {
+//       return surahs
+//           .firstWhere(
+//             (s) => s.surahNumber == getSurahNumberFromPage(pageNumber),
+//           )
+//           .nameAr;
+//     } catch (e) {
+//       return 'Surah not found';
+//     }
+//   }
 
-  int getSurahNumberByAyah(NewAyahModel ayah) =>
-      surahs.firstWhere((s) => s.surahNumber == ayah.surahId).surahNumber;
+//   String getSurahNameByPageIndex(int pageIndex) {
+//     if (pages.isEmpty || pageIndex < 0 || pageIndex >= pages.length) return '';
+//     final pageAyahs = pages[pageIndex];
+//     if (pageAyahs.isEmpty) return '';
+//     final surahId = pageAyahs.first.surahId;
+//     final surah = surahs.firstWhere(
+//       (s) => s.surahNumber == surahId,
+//       orElse: () => NewSurahModel(
+//         id: 0,
+//         nameAr: '',
+//         nameEn: '',
+//         translation: '',
+//         revelationType: '',
+//         ayahCount: 0,
+//         surahNumber: 0,
+//       ),
+//     );
+//     return surah.nameAr;
+//   }
 
-  NewSurahModel getSurahDataByAyahUQ(int ayah) =>
-      surahs.firstWhere((s) => s.surahNumber == ayah);
+//   int getSurahNumberByAyah(NewAyahModel ayah) =>
+//       surahs.firstWhere((s) => s.surahNumber == ayah.surahId).surahNumber;
 
-  NewAyahModel getJuzByPage(int page) =>
-      allAyahs.firstWhere((a) => a.page == page + 1);
+//   NewSurahModel getSurahDataByAyahUQ(int ayah) =>
+//       surahs.firstWhere((s) => s.surahNumber == ayah);
 
-  String getSurahByAyahUQ(int ayah) =>
-      surahs.firstWhere((s) => s.surahNumber == ayah).nameAr;
+//   NewAyahModel getJuzByPage(int page) =>
+//       allAyahs.firstWhere((a) => a.page == page + 1);
 
-  List<NewAyahModel> getAyahsBySurahNumber(int surahNumber) {
-    return allAyahs.where((a) => a.surahId == surahNumber).toList()
-      ..sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
-  }
+//   String getSurahByAyahUQ(int ayah) =>
+//       surahs.firstWhere((s) => s.surahNumber == ayah).nameAr;
 
-  int? getFirstPageOfSurah(int surahNumber, {int? ayahNumber = 1}) {
-    try {
-      final firstAyah = allAyahs.firstWhere(
-        (a) => a.surahId == surahNumber && a.ayahNumber == ayahNumber,
-        orElse: () => NewAyahModel(
-          id: 0,
-          surahId: 0,
-          numberGlobal: 0,
-          ayahNumber: 0,
-          text: '',
-        ),
-      );
-      return firstAyah.page! - 1;
-    } catch (_) {
-      return null;
-    }
-  }
+//   List<NewAyahModel> getAyahsBySurahNumber(int surahNumber) {
+//     return allAyahs.where((a) => a.surahId == surahNumber).toList()
+//       ..sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
+//   }
 
-  List<int> get downThePageIndex => [
-        75,
-        206,
-        330,
-        340,
-        348,
-        365,
-        375,
-        413,
-        416,
-        434,
-        444,
-        451,
-        497,
-        505,
-        524,
-        547,
-        554,
-        556,
-        583,
-      ];
-  List<int> get topOfThePageIndex => [
-        76,
-        207,
-        331,
-        341,
-        349,
-        366,
-        376,
-        414,
-        417,
-        435,
-        445,
-        452,
-        498,
-        506,
-        525,
-        548,
-        554,
-        555,
-        557,
-        583,
-        584,
-      ];
-}
+//   int? getFirstPageOfSurah(int surahNumber, {int? ayahNumber = 1}) {
+//     try {
+//       final firstAyah = allAyahs.firstWhere(
+//         (a) => a.surahId == surahNumber && a.ayahNumber == ayahNumber,
+//         orElse: () => NewAyahModel(
+//           id: 0,
+//           surahId: 0,
+//           numberGlobal: 0,
+//           ayahNumber: 0,
+//           text: '',
+//         ),
+//       );
+//       return firstAyah.page! - 1;
+//     } catch (_) {
+//       return null;
+//     }
+//   }
 
-extension IterableExtension<T> on Iterable<T> {
-  Iterable<List<T>> splitBetween(bool Function(T first, T second) test) =>
-      splitBetweenIndexed((_, first, second) => test(first, second));
+//   List<int> get downThePageIndex => [
+//         75,
+//         206,
+//         330,
+//         340,
+//         348,
+//         365,
+//         375,
+//         413,
+//         416,
+//         434,
+//         444,
+//         451,
+//         497,
+//         505,
+//         524,
+//         547,
+//         554,
+//         556,
+//         583,
+//       ];
+//   List<int> get topOfThePageIndex => [
+//         76,
+//         207,
+//         331,
+//         341,
+//         349,
+//         366,
+//         376,
+//         414,
+//         417,
+//         435,
+//         445,
+//         452,
+//         498,
+//         506,
+//         525,
+//         548,
+//         554,
+//         555,
+//         557,
+//         583,
+//         584,
+//       ];
+// }
 
-  Iterable<List<T>> splitBetweenIndexed(
-    bool Function(int index, T first, T second) test,
-  ) sync* {
-    final iterator = this.iterator;
-    if (!iterator.moveNext()) return;
-    var previous = iterator.current;
-    var chunk = <T>[previous];
-    var index = 1;
-    while (iterator.moveNext()) {
-      final element = iterator.current;
-      if (test(index++, previous, element)) {
-        yield chunk;
-        chunk = [];
-      }
-      chunk.add(element);
-      previous = element;
-    }
-    yield chunk;
-  }
-}
+// extension IterableExtension<T> on Iterable<T> {
+//   Iterable<List<T>> splitBetween(bool Function(T first, T second) test) =>
+//       splitBetweenIndexed((_, first, second) => test(first, second));
+
+//   Iterable<List<T>> splitBetweenIndexed(
+//     bool Function(int index, T first, T second) test,
+//   ) sync* {
+//     final iterator = this.iterator;
+//     if (!iterator.moveNext()) return;
+//     var previous = iterator.current;
+//     var chunk = <T>[previous];
+//     var index = 1;
+//     while (iterator.moveNext()) {
+//       final element = iterator.current;
+//       if (test(index++, previous, element)) {
+//         yield chunk;
+//         chunk = [];
+//       }
+//       chunk.add(element);
+//       previous = element;
+//     }
+//     yield chunk;
+//   }
+// }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
@@ -62,7 +61,7 @@ class CategoryDataScreen extends StatelessWidget {
                                     color: Colors.grey,
                                     size: 30,
                                   ),
-                                ).animate().fade()
+                                )
                               : null,
                           onChanged: (text) {
                             _onSearchTextChanged(state.categories);

@@ -17,7 +17,7 @@ plugins {
 
 android {
     namespace = "com.tamaneena.tamaneena_app"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "28.0.13004108"
 
     compileOptions {
@@ -32,7 +32,7 @@ android {
 
     defaultConfig {
         applicationId = "com.tamaneena.tamaneena_app"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 35
 
         versionCode = flutter.versionCode

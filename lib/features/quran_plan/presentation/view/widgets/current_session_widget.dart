@@ -10,8 +10,8 @@ import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_library/quran_library.dart';
 
 class CurrentSessionWidget extends StatelessWidget {
   const CurrentSessionWidget({
@@ -54,30 +54,78 @@ class CurrentSessionWidget extends StatelessWidget {
           ),
           subtitle: StyleButtonWrap(
             onTap: () {
-              final quranState = context.read<ReadQuranBloc>().state;
-              final page = quranState.getFirstPageOfSurah(
-                session.fromSurahId,
-                ayahNumber: session.fromAyahNumber,
-              );
-              context.push(
-                ReadQuranScreen(
-                  page: page,
-                ),
-              );
+              // البحث عن الآية المحددة للحصول على معلوماتها
+              final quranLibrary = QuranLibrary();
+
+              try {
+                // الحصول على معلومات السورة (using 1-based indexing as per README)
+                final surahInfo = quranLibrary.getSurahInfo(
+                  surahNumber: session.fromSurahId,
+                );
+
+                // البحث عن الآية في السورة باستخدام اسم السورة ورقم الآية
+                final searchQuery = surahInfo.name;
+                final searchResults = quranLibrary.search(searchQuery);
+
+                // البحث عن الآية المحددة في نتائج البحث
+                AyahModel? targetAyah;
+                for (final ayah in searchResults) {
+                  if (ayah.surahNumber == session.fromSurahId &&
+                      ayah.ayahNumber == session.fromAyahNumber) {
+                    targetAyah = ayah;
+                    break;
+                  }
+                }
+
+                if (targetAyah != null) {
+                  // استخدام jumpToAyah للانتقال إلى الآية المحددة
+                  quranLibrary.jumpToAyah(
+                    targetAyah.page,
+                    targetAyah.ayahUQNumber,
+                  );
+                } else {
+                  // إذا لم نجد الآية، انتقل إلى بداية السورة
+                  quranLibrary.jumpToSurah(session.fromSurahId);
+                }
+
+                final page = quranLibrary.currentPageNumber;
+
+                context.push(
+                  ReadQuranScreen(
+                    page: page,
+                  ),
+                );
+              } catch (e) {
+                // في حالة حدوث خطأ، انتقل إلى بداية السورة
+                final quranLibrary = QuranLibrary()
+                  ..jumpToSurah(session.fromSurahId);
+                final page = quranLibrary.currentPageNumber;
+
+                context.push(
+                  ReadQuranScreen(
+                    page: page,
+                  ),
+                );
+              }
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BlocBuilder<ReadQuranBloc, ReadQuranState>(
-                  builder: (context, stateQuran) {
-                    final fromAyah = stateQuran.surahs.firstWhere(
-                      (surah) => surah.id == session.fromSurahId,
+                Builder(
+                  builder: (context) {
+                    final quranLibrary = QuranLibrary();
+
+                    // Get surah information using QuranLibrary (1-based indexing)
+                    final fromSurah = quranLibrary.getSurahInfo(
+                      surahNumber: session.fromSurahId,
                     );
-                    final toAyah = stateQuran.surahs.firstWhere(
-                      (surah) => surah.id == session.toSurahId,
+                    final toSurah = quranLibrary.getSurahInfo(
+                      surahNumber: session.toSurahId,
                     );
+
                     return Text(
-                      'من ${fromAyah.nameAr} الاية ${session.fromAyahNumber} \n إلى ${toAyah.nameAr} الاية ${session.toAyahNumber}',
+                      'من ${fromSurah.name} الاية ${session.fromAyahNumber} \n'
+                      'إلى ${toSurah.name} الاية ${session.toAyahNumber}',
                       style: context.bodyMedium,
                     );
                   },

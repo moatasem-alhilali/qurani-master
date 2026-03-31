@@ -1,6 +1,5 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
@@ -40,7 +39,7 @@ class PrayersHomeWidget extends StatelessWidget {
                   switch (state.prayerState) {
                     case RequestState.initial:
                     case RequestState.loading:
-                      return ShimmerWidget(
+                      return ShimmerSkeletonizerWidget(
                         child: _buildList(PrayerInfoModel.dummy(), null),
                       );
                     case RequestState.error:
@@ -56,7 +55,7 @@ class PrayersHomeWidget extends StatelessWidget {
               ),
             ),
           ],
-        ).animate().fade();
+        );
       },
     );
   }

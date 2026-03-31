@@ -12,6 +12,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart' as _svg;
+import 'package:lottie/lottie.dart' as _lottie;
 import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
 class $AssetsAthoresGen {
@@ -71,8 +72,13 @@ class $AssetsImageGen {
   AssetGenImage get quranIcon =>
       const AssetGenImage('assets/image/quran_icon.png');
 
+  /// File path: assets/image/reading- quran.webp
+  AssetGenImage get readingQuran =>
+      const AssetGenImage('assets/image/reading- quran.webp');
+
   /// List of all assets
-  List<AssetGenImage> get values => [beadsIcon, listengIcon, logo, quranIcon];
+  List<AssetGenImage> get values =>
+      [beadsIcon, listengIcon, logo, quranIcon, readingQuran];
 }
 
 class $AssetsJsonGen {
@@ -89,9 +95,6 @@ class $AssetsJsonGen {
 
   /// File path: assets/json/most_reader.json
   String get mostReader => 'assets/json/most_reader.json';
-
-  /// File path: assets/json/quranV2.json
-  String get quranV2 => 'assets/json/quranV2.json';
 
   /// File path: assets/json/ruqia_shareia.json
   String get ruqiaShareia => 'assets/json/ruqia_shareia.json';
@@ -111,7 +114,6 @@ class $AssetsJsonGen {
         hadith40,
         hisnMuslim,
         mostReader,
-        quranV2,
         ruqiaShareia,
         surahInfo,
         wirdNightMorning,
@@ -148,6 +150,17 @@ class $AssetsLogoGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [bg, splashIcon, splashIconDark];
+}
+
+class $AssetsLottieGen {
+  const $AssetsLottieGen();
+
+  /// File path: assets/lottie/reading- quran.json
+  LottieGenImage get readingQuran =>
+      const LottieGenImage('assets/lottie/reading- quran.json');
+
+  /// List of all assets
+  List<LottieGenImage> get values => [readingQuran];
 }
 
 class $AssetsSvgGen {
@@ -1070,16 +1083,17 @@ class $AssetsSvgSurahNameGen {
 class Assets {
   const Assets._();
 
-  static const String quranV3 = 'assets/QuranV3.sqlite';
   static const $AssetsAthoresGen athores = $AssetsAthoresGen();
   static const $AssetsImageGen image = $AssetsImageGen();
   static const $AssetsJsonGen json = $AssetsJsonGen();
   static const $AssetsLangGen lang = $AssetsLangGen();
   static const $AssetsLogoGen logo = $AssetsLogoGen();
+  static const $AssetsLottieGen lottie = $AssetsLottieGen();
+  static const String quranWithTafser = 'assets/quran_with_tafser.sqlite';
   static const $AssetsSvgGen svg = $AssetsSvgGen();
 
   /// List of all assets
-  static List<String> get values => [quranV3];
+  static List<String> get values => [quranWithTafser];
 }
 
 class AssetGenImage {
@@ -1248,6 +1262,79 @@ class SvgGenImage {
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
+    );
+  }
+
+  String get path => _assetName;
+
+  String get keyName => _assetName;
+}
+
+class LottieGenImage {
+  const LottieGenImage(
+    this._assetName, {
+    this.flavors = const {},
+  });
+
+  final String _assetName;
+  final Set<String> flavors;
+
+  _lottie.LottieBuilder lottie({
+    Animation<double>? controller,
+    bool? animate,
+    _lottie.FrameRate? frameRate,
+    bool? repeat,
+    bool? reverse,
+    _lottie.LottieDelegates? delegates,
+    _lottie.LottieOptions? options,
+    void Function(_lottie.LottieComposition)? onLoaded,
+    _lottie.LottieImageProviderFactory? imageProviderFactory,
+    Key? key,
+    AssetBundle? bundle,
+    Widget Function(
+      BuildContext,
+      Widget,
+      _lottie.LottieComposition?,
+    )? frameBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    double? width,
+    double? height,
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    String? package,
+    bool? addRepaintBoundary,
+    FilterQuality? filterQuality,
+    void Function(String)? onWarning,
+    _lottie.LottieDecoder? decoder,
+    _lottie.RenderCache? renderCache,
+    bool? backgroundLoading,
+  }) {
+    return _lottie.Lottie.asset(
+      _assetName,
+      controller: controller,
+      animate: animate,
+      frameRate: frameRate,
+      repeat: repeat,
+      reverse: reverse,
+      delegates: delegates,
+      options: options,
+      onLoaded: onLoaded,
+      imageProviderFactory: imageProviderFactory,
+      key: key,
+      bundle: bundle,
+      frameBuilder: frameBuilder,
+      errorBuilder: errorBuilder,
+      width: width,
+      height: height,
+      fit: fit,
+      alignment: alignment,
+      package: package,
+      addRepaintBoundary: addRepaintBoundary,
+      filterQuality: filterQuality,
+      onWarning: onWarning,
+      decoder: decoder,
+      renderCache: renderCache,
+      backgroundLoading: backgroundLoading,
     );
   }
 

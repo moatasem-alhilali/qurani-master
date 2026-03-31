@@ -9,8 +9,10 @@
 #include <cloud_firestore/cloud_firestore_plugin_c_api.h>
 #include <connectivity_plus/connectivity_plus_windows_plugin.h>
 #include <firebase_core/firebase_core_plugin_c_api.h>
+#include <flutter_inappwebview_windows/flutter_inappwebview_windows_plugin_c_api.h>
 #include <flutter_timezone/flutter_timezone_plugin_c_api.h>
 #include <geolocator_windows/geolocator_windows.h>
+#include <media_kit_libs_windows_audio/media_kit_libs_windows_audio_plugin_c_api.h>
 #include <pdfx/pdfx_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <share_plus/share_plus_windows_plugin_c_api.h>
@@ -23,10 +25,14 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
   FirebaseCorePluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FirebaseCorePluginCApi"));
+  FlutterInappwebviewWindowsPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterInappwebviewWindowsPluginCApi"));
   FlutterTimezonePluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterTimezonePluginCApi"));
   GeolocatorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("GeolocatorWindows"));
+  MediaKitLibsWindowsAudioPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("MediaKitLibsWindowsAudioPluginCApi"));
   PdfxPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PdfxPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(

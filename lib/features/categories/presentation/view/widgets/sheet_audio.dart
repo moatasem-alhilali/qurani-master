@@ -62,9 +62,9 @@ class SheetAudios extends StatelessWidget {
                     Divider(
                       color: context.primaryColor,
                     ),
-                    ProgressAudio(
-                      audioPlayer: state.audioPlayer ?? AudioPlayer(),
-                    ),
+                    // ProgressAudio(
+                    //   audioPlayer: state.audioPlayer ?? AudioPlayer(),
+                    // ),
                     Expanded(
                       child: ListView.builder(
                         shrinkWrap: true,

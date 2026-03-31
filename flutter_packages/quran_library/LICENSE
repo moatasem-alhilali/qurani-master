@@ -1,0 +1,41 @@
+MIT License
+
+Copyright (c) 2025 Alheekmah Library
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+Additional Terms for QCF Fonts and QUL Resources
+
+The code in this repository is licensed under the MIT License above. This grant
+does not apply to Quranic fonts (QCF) and any tafsir/translation files or other
+resources obtained from Quranic Universal Library (QUL) or King Fahd Glorious
+Quran Printing Complex (KFGQPC). Those assets are governed by their respective
+terms. If you bundle or distribute these assets with your app, you must comply
+with the following conditions (summarized from QUL guidance):
+
+1. No distracting ads: Apps or projects must not include advertisements (even
+	halal/Islamic ads) that could distract users while reading the Quran.
+2. Follow upstream terms: Always comply with KFGQPC and QUL terms when
+	distributing applications that include or bundle these assets.
+
+References:
+- KFGQPC Developer Portal: https://qurancomplex.gov.sa/quran-dev/
+- Quranic Universal Library (QUL): https://qul.tarteel.ai/

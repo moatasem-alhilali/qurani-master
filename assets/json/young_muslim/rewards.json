@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "generated_at": "2026-03-30T11:19:48.655Z",
+  "xp_rules": {
+    "video_completed": 20,
+    "correct_video_quiz": 10,
+    "correct_series_quiz": 15,
+    "perfect_quiz_bonus": 10
+  },
+  "achievements": [
+    {
+      "id": "first_video_completed",
+      "title_ar": "أكملت أول فيديو",
+      "title_en": "First Video Completed",
+      "description": "أنهِ أول فيديو داخل المسلم الصغير.",
+      "type": "completed_videos",
+      "threshold": 1,
+      "xp_reward": 20,
+      "icon": "play_circle"
+    },
+    {
+      "id": "five_videos_completed",
+      "title_ar": "مشاهد نشيط",
+      "title_en": "Active Viewer",
+      "description": "أكمل 5 فيديوهات داخل المسلم الصغير.",
+      "type": "completed_videos",
+      "threshold": 5,
+      "xp_reward": 30,
+      "icon": "movie_filter"
+    },
+    {
+      "id": "series_completed",
+      "title_ar": "أنهيت سلسلة كاملة",
+      "title_en": "Series Finisher",
+      "description": "أتم جميع حلقات أي سلسلة كاملة.",
+      "type": "completed_series",
+      "threshold": 1,
+      "xp_reward": 40,
+      "icon": "auto_awesome"
+    },
+    {
+      "id": "ten_correct_answers",
+      "title_ar": "بطل الأسئلة",
+      "title_en": "Quiz Hero",
+      "description": "أجب إجابة صحيحة عن 10 أسئلة.",
+      "type": "correct_answers",
+      "threshold": 10,
+      "xp_reward": 35,
+      "icon": "emoji_events"
+    },
+    {
+      "id": "watch_later_collector",
+      "title_ar": "خطط لمشاهدتك",
+      "title_en": "Watch Later Planner",
+      "description": "أضف 3 فيديوهات إلى سأشاهد لاحقًا.",
+      "type": "watch_later_items",
+      "threshold": 3,
+      "xp_reward": 15,
+      "icon": "bookmark_added"
+    }
+  ]
+}

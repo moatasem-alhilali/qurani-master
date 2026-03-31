@@ -11,26 +11,73 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/main.dart';
 
 abstract class PrayerTimeService {
-  Future<List<PrayerInfoModel>> getTodayPrayerTimes();
+  Future<List<PrayerInfoModel>> getTodayPrayerTimes({Coordinates? coordinates});
+  Future<List<PrayerInfoModel>> getPrayerTimesForCoordinates({
+    required double latitude,
+    required double longitude,
+    int? utcOffsetMinutes,
+  });
   PrayerInfoModel? getCurrentPrayer();
 
   PrayerInfoModel? getNextPrayer();
 }
 
 class AdhanPrayerTimeService implements PrayerTimeService {
+  AdhanPrayerTimeService({
+    DatabaseCoordinatesService? coordinatesService,
+  }) : _coordinatesService = coordinatesService ?? DatabaseCoordinatesService();
+
+  final DatabaseCoordinatesService _coordinatesService;
   late PrayerTimes _prayerTimes;
   late List<PrayerInfoModel> _prayerInfoList;
 
   @override
-  Future<List<PrayerInfoModel>> getTodayPrayerTimes() async {
-    final coordinates = await _resolveCoordinates();
+  Future<List<PrayerInfoModel>> getTodayPrayerTimes({
+    Coordinates? coordinates,
+  }) async {
+    final savedLocation = await _coordinatesService.getSavedLocation();
+    final resolvedCoordinates = coordinates ??
+        (savedLocation != null
+            ? Coordinates(savedLocation.latitude, savedLocation.longitude)
+            : await _resolveCoordinates());
+    final utcOffset = savedLocation == null
+        ? null
+        : Duration(minutes: savedLocation.utcOffsetMinutes);
+    return _buildPrayerInfoListForOffset(resolvedCoordinates, utcOffset);
+  }
+
+  @override
+  Future<List<PrayerInfoModel>> getPrayerTimesForCoordinates({
+    required double latitude,
+    required double longitude,
+    int? utcOffsetMinutes,
+  }) async {
+    return _buildPrayerInfoListForOffset(
+      Coordinates(latitude, longitude),
+      utcOffsetMinutes == null ? null : Duration(minutes: utcOffsetMinutes),
+    );
+  }
+
+  List<PrayerInfoModel> _buildPrayerInfoListForOffset(
+    Coordinates coordinates,
+    Duration? utcOffset,
+  ) {
     final params = CalculationMethod.muslim_world_league.getParameters()
       ..madhab = Madhab.shafi;
 
-    _prayerTimes = PrayerTimes.today(coordinates, params);
-    _prayerInfoList =
+    if (utcOffset != null) {
+      final locationDate = DateTime.now().toUtc().add(utcOffset);
+      _prayerTimes = PrayerTimes.utcOffset(
+        coordinates,
+        DateComponents.from(locationDate),
+        params,
+        utcOffset,
+      );
+    } else {
+      _prayerTimes = PrayerTimes.today(coordinates, params);
+    }
+    return _prayerInfoList =
         NotificationDataConstSeed().prayerInfoListSeed(_prayerTimes);
-    return NotificationDataConstSeed().prayerInfoListSeed(_prayerTimes);
   }
 
   @override
@@ -47,6 +94,11 @@ class AdhanPrayerTimeService implements PrayerTimeService {
 
   Future<Coordinates> _resolveCoordinates() async {
     try {
+      final savedLocation = await _coordinatesService.getSavedLocation();
+      if (savedLocation != null) {
+        return Coordinates(savedLocation.latitude, savedLocation.longitude);
+      }
+
       if (!CacheConfig.hasInitLocal) {
         final permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied) {
@@ -55,7 +107,7 @@ class AdhanPrayerTimeService implements PrayerTimeService {
       }
 
       if (CacheConfig.hasInitLocal) {
-        final coordsMap = await DatabaseCoordinatesService().getCoordinates();
+        final coordsMap = await _coordinatesService.getCoordinates();
         if (coordsMap != null) {
           return Coordinates(
             coordsMap['latitude'] as double,
@@ -68,8 +120,10 @@ class AdhanPrayerTimeService implements PrayerTimeService {
       final coords = Coordinates(pos.latitude, pos.longitude);
 
       await CacheService().setBool('hasInitLocal', true);
-      await DatabaseCoordinatesService()
-          .setCoordinates(coords.latitude, coords.longitude);
+      await _coordinatesService.setCoordinates(
+        coords.latitude,
+        coords.longitude,
+      );
       return coords;
     } catch (e) {
       logger.e('Failed to resolve coordinates: $e');

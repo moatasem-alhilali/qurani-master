@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:quran_app/core/extensions/num_duration_extensions.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -50,8 +50,7 @@ class MyProgressButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         child: getWidget(state, text, context, colorText)
-            .animate()
-            .fade(duration: 1.seconds),
+        ,
       ),
     );
   }

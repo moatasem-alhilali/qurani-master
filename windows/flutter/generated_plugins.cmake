@@ -6,8 +6,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
   connectivity_plus
   firebase_core
+  flutter_inappwebview_windows
   flutter_timezone
   geolocator_windows
+  media_kit_libs_windows_audio
   pdfx
   permission_handler_windows
   share_plus

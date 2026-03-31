@@ -6,7 +6,7 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 
@@ -108,10 +108,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       _fadeController.forward();
       _slideController.forward();
     } catch (e) {
+      if(mounted){
+
       setState(() {
         _errorMessage = 'حدث خطأ في تحديد اتجاه القبلة: $e';
         _isLoading = false;
       });
+      }
     }
   }
 

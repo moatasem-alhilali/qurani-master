@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quran_app/core/shared/resources/size_config.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 
 class CustomSvgContainer extends StatelessWidget {
@@ -27,7 +25,7 @@ class CustomSvgContainer extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.topRight,
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(

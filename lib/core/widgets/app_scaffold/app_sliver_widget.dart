@@ -33,6 +33,7 @@ class AppSliverWidget extends StatefulWidget {
     this.onRefresh,
     this.isElasticTextRefreshHeader = true,
     this.hasAppBar = true,
+    this.scrollController,
     super.key,
   });
 
@@ -56,6 +57,7 @@ class AppSliverWidget extends StatefulWidget {
   final String? appBarTitle;
   final VoidCallback? onBack;
   final bool? isCenterTitle;
+  final ScrollController? scrollController;
 
   final EdgeInsetsGeometry? padding;
 
@@ -92,6 +94,7 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
               _refreshController.refreshCompleted();
             },
       child: CustomScrollView(
+        controller: widget.scrollController,
         slivers: _buildSlivers(context),
       ),
     );

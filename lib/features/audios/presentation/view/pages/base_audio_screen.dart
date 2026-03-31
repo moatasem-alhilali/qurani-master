@@ -1,15 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
@@ -47,7 +46,7 @@ class BaseAudioScreen extends StatelessWidget {
                             color: Colors.grey,
                             size: 30,
                           ),
-                        ).animate().fade()
+                        )
                       : null,
                   onChanged: (text) {
                     _onSearchTextChanged(state.baseAudio);

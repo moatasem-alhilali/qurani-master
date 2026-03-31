@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -37,6 +36,6 @@ class ItemCategory extends StatelessWidget {
           ),
         ),
       ),
-    ).animate().fade();
+    );
   }
 }

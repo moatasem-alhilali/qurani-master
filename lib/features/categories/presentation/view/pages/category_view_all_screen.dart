@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:quran_app/core/components/base_home_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -58,7 +57,7 @@ class CategoryViewAllScreen extends StatelessWidget {
                   }
                 },
                 title: data[index].title ?? '',
-              ).animate().fade();
+              );
             },
           ),
           // List<Map<String,dynamic>>
