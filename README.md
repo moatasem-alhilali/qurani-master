@@ -4,8 +4,31 @@
 [![License](https://img.shields.io/badge/license-MIT-orange)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-green)](https://flutter.dev)
 [![Version](https://img.shields.io/badge/version-1.0.5-brightgreen)](./pubspec.yaml)
+![visitors](https://visitor-badge.glitch.me/badge?right_color=teal&page_id=tamaneena/quran-app)
+![open source](https://img.shields.io/badge/-open%20source-wheat)
 
 تطبيق إسلامي شامل يجمع بين قراءة القرآن الكريم والاستماع إليه مع مجموعة متكاملة من المميزات الإسلامية.
+
+---
+
+## بعض الشاشات
+
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/1.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/2.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/3.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/4.jpg" alt="Image 2"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/5.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/6.jpg" alt="Image 2"></td>
+    <td><img src="https://github.com/yourSite0/qurani-master/blob/main/screenshots/7.jpg" alt="Image 2"></td>
+  </tr>
+</table>
 
 ---
 
@@ -29,6 +52,14 @@
 | 🌙 الوضع الليلي      | دعم كامل للوضع الداكن والفاتح                                 |
 | 🌐 دعم اللغتين       | العربية والإنجليزية                                           |
 | 📡 وضع بدون إنترنت   | عمل كامل offline مع مزامنة تلقائية                            |
+
+---
+
+## مبدأ العمل (Operating Principle)
+
+<a target="_blank" href="https://volansys.com/wp-content/uploads/2019/07/VOLANSYS_Tiers-of-Architecture-new.jpg">
+  <img width="350" alt="clean_architecture" src="https://user-images.githubusercontent.com/61885011/132905821-d68d4792-3f8f-4660-a648-968f353dcb1c.jpg">
+</a>
 
 ---
 
@@ -122,6 +153,14 @@ flutter build appbundle --obfuscate --split-debug-info=symbols/
 ## سياسة الخصوصية
 
 [Privacy Policy](./PRIVACY_POLICY.md)
+
+---
+
+## الخاتمة
+
+سيسعدني الإجابة على أي أسئلة، لا تتردد في فتح Issue أو Pull Request 🙂
+
+إذا أعجبك المشروع، لا تنسَ ⭐ تنجيم المستودع لإظهار دعمك. شكراً!
 
 ---
 
