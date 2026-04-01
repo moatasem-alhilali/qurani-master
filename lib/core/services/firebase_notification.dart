@@ -117,7 +117,11 @@ class FirebaseNotificationService {
           AndroidInitializationSettings('@mipmap/ic_launcher');
 
       // iOS initialization settings
-      const initializationSettingsDarwin = DarwinInitializationSettings();
+      const initializationSettingsDarwin = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
 
       // Combined initialization settings
       const initializationSettings = InitializationSettings(

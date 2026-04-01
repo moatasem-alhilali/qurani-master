@@ -82,16 +82,10 @@ void main() async {
   } catch (e) {
     debugPrint('QuranLibrary initialization failed: $e');
   }
-  // // Set background message handler AFTER Firebase initialization
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // // Initialize notification service
-  // try {
-  //   await FirebaseNotificationService.instance.initialize();
-  //   debugPrint('Notification service initialized successfully');
-  // } catch (e) {
-  //   debugPrint('Notification service initialization failed: $e');
-  // }
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
 
   //
   await NotificationPermissionService.handelNotification();
