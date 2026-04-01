@@ -48,20 +48,17 @@
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>audio</string>
-			<string>background-processing</string>
 			<string>remote-notification</string>
 		</array>
-		<key>BGTaskSchedulerPermittedIdentifiers</key>
-		<array>
-			<string>com.example.notification.refresh</string>
-		</array>
+		<key>FDAllFilesDownloadedMessage</key>
+		<string>اكتمل تنزيل جميع الملفات.</string>
+		<key>FDMaximumConcurrentTasks</key>
+		<integer>5</integer>
 		<key>UIStatusBarHidden</key>
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
-		  <key>NSLocationWhenInUseUsageDescription</key>
-    <string>App needs location to determine Qiblah direction.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>App needs location to determine Qiblah direction.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>نحتاج إلى موقعك أثناء استخدام التطبيق لتحديد القبلة وحساب أوقات الصلاة بدقة.</string>
 	</dict>
 </plist>
