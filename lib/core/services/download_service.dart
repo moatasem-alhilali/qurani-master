@@ -71,11 +71,11 @@ class DownloadService {
     try {
       await _permission();
 
-      final externalDirectory = await getExternalStorageDirectory();
-
-      // final dir =
-      //     await Directory('${externalDirectory!.path}/Download').create();
       final di = await getDownloadPath();
+      if (di == null) {
+        throw Exception('Cannot resolve a writable download directory');
+      }
+
       final extension = url.split('/').last.split('.').last;
       final fileName =
           '${DateTime.now().millisecondsSinceEpoch.toString() + description}.$extension';
@@ -83,9 +83,8 @@ class DownloadService {
 
       await FlutterDownloader.enqueue(
         url: url,
-        // savedDir: dir.path,
-        savedDir: di!,
-        saveInPublicStorage: true,
+        savedDir: di,
+        saveInPublicStorage: Platform.isAndroid,
         fileName: fileName,
       ).then((value) => logger.i(value));
       try {
@@ -99,6 +98,10 @@ class DownloadService {
   }
 
   Future<void> _permission() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
     final storage = await Permission.storage.status;
     if (storage.isDenied) {
       await Permission.storage.request();
@@ -113,10 +116,14 @@ class DownloadService {
 Future<String?> getDownloadPath() async {
   Directory? directory;
   try {
-    directory = Directory('/storage/emulated/0/Download');
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      directory = Directory('/storage/emulated/0/Download');
 
-    if (!await directory.exists()) {
-      directory = await getExternalStorageDirectory();
+      if (!await directory.exists()) {
+        directory = await getExternalStorageDirectory();
+      }
     }
   } catch (err) {
     print('Cannot get download folder path');
