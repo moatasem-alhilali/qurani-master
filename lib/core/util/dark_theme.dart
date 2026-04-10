@@ -568,7 +568,7 @@ final ThemeData darkTheme = ThemeData(
   applyElevationOverlayColor: false,
 
   // BOTTOM APP BAR
-  bottomAppBarTheme: const BottomAppBarTheme(
+  bottomAppBarTheme: const BottomAppBarThemeData(
     color: AppColors.darkSurface,
     elevation: 6,
     shape: CircularNotchedRectangle(),

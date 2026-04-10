@@ -96,7 +96,7 @@ ThemeData greenThemeData = ThemeData(
   ),
 
   ///bottom AppBar Theme
-  bottomAppBarTheme: const BottomAppBarTheme(
+  bottomAppBarTheme: const BottomAppBarThemeData(
     color: Colors.white,
     elevation: 2,
   ),
