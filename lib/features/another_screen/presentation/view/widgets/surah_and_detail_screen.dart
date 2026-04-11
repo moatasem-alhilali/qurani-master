@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
+import 'package:quran_app/core/components/unified_library_widgets.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -20,6 +20,11 @@ class SurahWithAllDetailScreen extends StatefulWidget {
 
 class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
   String _query = '';
+
+  String _asBullets(List<String> lines) {
+    if (lines.isEmpty) return '';
+    return lines.map((line) => '• ${line.trim()}').join('\n\n');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +49,14 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                 setState(() {
                   _query = item.surah;
                 });
-                _showSurahDetails(context, item);
+                _showSurahDetails(context, item, state.data.indexOf(item));
               },
               hintText: 'بحث عن سورة',
-              suggestionBuilder: (context, item) =>
-                  _SurahSuggestion(item: item),
+              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+                title: item.surah,
+                subtitle: item.maqsiduhaAleamu,
+                trailing: '#${item.id}',
+              ),
             );
           },
         ),
@@ -109,7 +117,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
 
                         return _SurahTile(
                           data: data,
-                          onTap: () => _showSurahDetails(context, data),
+                          onTap: () => _showSurahDetails(context, data, index),
                         );
                       },
                     ),
@@ -125,25 +133,88 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
     );
   }
 
-  void _showSurahDetails(BuildContext context, SurahInfoModel data) {
+  void _showSurahDetails(BuildContext context, SurahInfoModel data, int index) {
+    final shareContent = [
+      'سورة ${data.surah}',
+      '',
+      'رقم السورة: ${data.id}',
+      'عدد الآيات: ${data.ayaatiha}',
+      '',
+      'معنى اسم السورة:',
+      data.maeniAsamuha,
+      '',
+      'سبب التسمية:',
+      data.sababTasmiatiha,
+      '',
+      'أسماء أخرى:',
+      data.asmawuha,
+      '',
+      'المقصد العام:',
+      data.maqsiduhaAleamu,
+      '',
+      'سبب النزول:',
+      data.sababNuzuliha,
+      '',
+      'فضائل السورة:',
+      _asBullets(data.fadluha),
+      '',
+      'مناسبات السورة:',
+      _asBullets(data.munasabatiha),
+    ].join('\n');
+
     context.showBottomSheet(
-      child: _SurahDetailSheet(data: data),
-    );
-  }
-}
-
-class _SurahSuggestion extends StatelessWidget {
-  const _SurahSuggestion({required this.item});
-
-  final SurahInfoModel item;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      title: Text(item.surah, style: context.titleSmall),
-      subtitle: Text('عدد الآيات: ${item.ayaatiha}', style: context.bodySmall),
-      trailing: Text('#${item.id}', style: context.bodySmall),
+      child: UnifiedLibraryDetailSheet(
+        title: data.surah,
+        subtitle: 'موسوعة السور',
+        shareText: shareContent,
+        copyText: shareContent,
+        shareSubject: 'موسوعة السور',
+        badges: [
+          UnifiedLibraryMeta(
+            label: 'الترتيب',
+            value: '${index + 1}',
+            isPrimary: true,
+          ),
+          UnifiedLibraryMeta(
+            label: 'رقم السورة',
+            value: '${data.id}',
+          ),
+          UnifiedLibraryMeta(
+            label: 'عدد الآيات',
+            value: data.ayaatiha,
+          ),
+        ],
+        sections: [
+          UnifiedLibrarySection(
+            title: 'معنى اسم السورة',
+            content: data.maeniAsamuha,
+          ),
+          UnifiedLibrarySection(
+            title: 'سبب التسمية',
+            content: data.sababTasmiatiha,
+          ),
+          UnifiedLibrarySection(
+            title: 'أسماء أخرى للسورة',
+            content: data.asmawuha,
+          ),
+          UnifiedLibrarySection(
+            title: 'المقصد العام',
+            content: data.maqsiduhaAleamu,
+          ),
+          UnifiedLibrarySection(
+            title: 'سبب النزول',
+            content: data.sababNuzuliha,
+          ),
+          UnifiedLibrarySection(
+            title: 'فضائل السورة',
+            content: _asBullets(data.fadluha),
+          ),
+          UnifiedLibrarySection(
+            title: 'مناسبات السورة',
+            content: _asBullets(data.munasabatiha),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -161,184 +232,18 @@ class _SurahTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseAnimate(
       index: data.id,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: CardWidget(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: context.primaryColor.withValues(alpha: 0.14),
-                child: Text(
-                  '${data.id}',
-                  style: context.labelLarge?.copyWith(
-                    color: context.primaryColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.surah,
-                      style: context.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'عدد الآيات: ${data.ayaatiha}',
-                      style: context.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16,
-                color: context.onSurfaceColor.withValues(alpha: 0.65),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SurahDetailSheet extends StatelessWidget {
-  const _SurahDetailSheet({required this.data});
-
-  final SurahInfoModel data;
-
-  String _asBullets(List<String> lines) {
-    if (lines.isEmpty) return 'لا توجد بيانات.';
-    return lines.map((line) => '• $line').join('\n\n');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CardWidget(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data.surah,
-                    style: context.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                    textDirection: TextDirection.rtl,
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _MetaChip(title: 'رقم السورة', value: '${data.id}'),
-                      _MetaChip(title: 'عدد الآيات', value: data.ayaatiha),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            _DetailSection(
-              title: 'معنى اسم السورة',
-              content: data.maeniAsamuha,
-            ),
-            _DetailSection(title: 'سبب التسمية', content: data.sababTasmiatiha),
-            _DetailSection(title: 'أسماء أخرى للسورة', content: data.asmawuha),
-            _DetailSection(
-              title: 'المقصد العام',
-              content: data.maqsiduhaAleamu,
-            ),
-            _DetailSection(title: 'سبب النزول', content: data.sababNuzuliha),
-            _DetailSection(
-              title: 'فضائل السورة',
-              content: _asBullets(data.fadluha),
-            ),
-            _DetailSection(
-              title: 'مناسبات السورة',
-              content: _asBullets(data.munasabatiha),
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({
-    required this.title,
-    required this.value,
-  });
-
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.primaryColor.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: Text(
-          '$title: $value',
-          style: context.labelMedium?.copyWith(
-            color: context.primaryColor,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DetailSection extends StatelessWidget {
-  const _DetailSection({
-    required this.title,
-    required this.content,
-  });
-
-  final String title;
-  final String content;
-
-  @override
-  Widget build(BuildContext context) {
-    return CardWidget(
-      margin: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            title,
-            style: context.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-            textDirection: TextDirection.rtl,
-          ),
-          const SizedBox(height: 8),
-          SelectableText(
-            content.trim().isEmpty ? 'لا توجد بيانات.' : content,
-            textDirection: TextDirection.rtl,
-            style: context.bodyMedium?.copyWith(height: 1.6),
+      child: UnifiedLibraryCard(
+        title: data.surah,
+        subtitle: data.maqsiduhaAleamu,
+        leadingLabel: '${data.id}',
+        badges: [
+          UnifiedLibraryMeta(
+            label: 'عدد الآيات',
+            value: data.ayaatiha,
+            isPrimary: true,
           ),
         ],
+        onTap: onTap,
       ),
     );
   }
