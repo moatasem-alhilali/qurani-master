@@ -322,4 +322,15 @@ class SmartOutreachScheduleRepository {
 
     return _notificationService.schedulePreviewInFiveSeconds(bundle.schedule);
   }
+
+  Future<bool> scheduleSnoozeNotification(int scheduleId) async {
+    await _databaseService.ensureTables();
+
+    final bundle = await getScheduleById(scheduleId);
+    if (bundle == null) {
+      return false;
+    }
+
+    return _notificationService.scheduleSnoozeInFiveMinutes(bundle.schedule);
+  }
 }

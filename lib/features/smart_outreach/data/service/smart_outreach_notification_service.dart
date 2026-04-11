@@ -14,7 +14,8 @@ class SmartOutreachNotificationService {
   }) : _notificationService = notificationService;
 
   final NotificationService _notificationService;
-  bool _requestedFullScreenPermission = false;
+  bool _fullScreenIntentPermissionGranted = false;
+  bool _fullScreenIntentPermissionChecked = false;
 
   static const String payloadType = 'smart_outreach';
 
@@ -99,21 +100,46 @@ class SmartOutreachNotificationService {
   Future<bool> schedulePreviewInFiveSeconds(
     SmartOutreachScheduleModel schedule,
   ) async {
+    return scheduleAlertAfterDelay(
+      schedule: schedule,
+      delay: const Duration(seconds: 5),
+      titlePrefix: 'تجربة إشعار',
+      body: 'بعد لحظات سيظهر لك تنبيه المهمة بواجهة كاملة.',
+    );
+  }
+
+  Future<bool> scheduleSnoozeInFiveMinutes(
+    SmartOutreachScheduleModel schedule,
+  ) async {
+    return scheduleAlertAfterDelay(
+      schedule: schedule,
+      delay: const Duration(minutes: 5),
+      titlePrefix: 'تذكير المهمة',
+      body: 'انتهت مدة التأجيل. ابدأ مهمة التواصل الآن.',
+    );
+  }
+
+  Future<bool> scheduleAlertAfterDelay({
+    required SmartOutreachScheduleModel schedule,
+    required Duration delay,
+    required String titlePrefix,
+    required String body,
+  }) async {
     final scheduleId = schedule.id;
     if (scheduleId == null) {
       return false;
     }
 
-    await _requestFullScreenIntentPermissionIfNeeded();
+    await _requestFullScreenIntentPermissionIfNeeded(forceRetry: true);
 
     final previewId = notificationIdForPreview(scheduleId);
     await _notificationService.cancelNotificationById(id: previewId);
 
-    final fireAt = DateTime.now().add(const Duration(seconds: 5));
+    final fireAt = DateTime.now().add(delay);
     return _notificationService.scheduleNotificationCompatType(
       id: previewId,
-      title: 'تجربة إشعار ${schedule.title}',
-      body: 'بعد لحظات سيظهر لك شكل إشعار المهمة على الشاشة.',
+      title: '$titlePrefix ${schedule.title}',
+      body: body,
       channel: NotificationChannel.smartOutreach,
       schedule: NotificationScheduleModel.customDates(<DateTime>[fireAt]),
       payload: buildPayload(scheduleId),
@@ -125,17 +151,23 @@ class SmartOutreachNotificationService {
     );
   }
 
-  Future<void> _requestFullScreenIntentPermissionIfNeeded() async {
-    if (!Platform.isAndroid || _requestedFullScreenPermission) {
+  Future<void> _requestFullScreenIntentPermissionIfNeeded({
+    bool forceRetry = false,
+  }) async {
+    if (!Platform.isAndroid || _fullScreenIntentPermissionGranted) {
       return;
     }
+    if (_fullScreenIntentPermissionChecked && !forceRetry) {
+      return;
+    }
+    _fullScreenIntentPermissionChecked = true;
 
-    _requestedFullScreenPermission = true;
     try {
       final androidPlugin = _notificationService.plugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
-      await androidPlugin?.requestFullScreenIntentPermission();
+      final granted = await androidPlugin?.requestFullScreenIntentPermission();
+      _fullScreenIntentPermissionGranted = granted ?? false;
     } catch (_) {}
   }
 }

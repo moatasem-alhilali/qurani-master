@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
-import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_execution_screen.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_alarm_alert_screen.dart';
 
 class SmartOutreachNotificationRouterService {
   SmartOutreachNotificationRouterService({
@@ -61,9 +61,8 @@ class SmartOutreachNotificationRouterService {
 
       navigator.push(
         MaterialPageRoute<void>(
-          builder: (_) => SmartOutreachExecutionScreen(
+          builder: (_) => SmartOutreachAlarmAlertScreen(
             scheduleId: scheduleId,
-            launchedFromNotification: true,
           ),
         ),
       );

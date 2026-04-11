@@ -350,7 +350,7 @@ abstract class BaseNotificationService {
       data.name,
       channelDescription: 'قناة ${data.name}',
       sound: RawResourceAndroidNotificationSound(data.sound),
-      priority: Priority.high,
+      priority: fullScreenIntent ? Priority.max : Priority.high,
       importance: Importance.max,
       channelBypassDnd: channelBypassDnd,
       largeIcon:

@@ -171,6 +171,12 @@ class _SmartOutreachUpsertScheduleScreenState
               onPressed: _onSavePressed,
               child: const Text('حفظ الجدول'),
             ),
+            SizedBox(height: 10.h),
+            OutlinedButton.icon(
+              onPressed: _previewFullScreenNotification,
+              icon: const Icon(Icons.notification_important_outlined),
+              label: const Text('تجربة إشعار ملء الشاشة (بعد 5 ثوانٍ)'),
+            ),
             SizedBox(height: 12.h),
           ],
         ),
@@ -383,6 +389,20 @@ class _SmartOutreachUpsertScheduleScreenState
             smsTemplate: _scheduleSmsController.text,
             contacts: contacts,
           ),
+        );
+  }
+
+  void _previewFullScreenNotification() {
+    final scheduleId = widget.initialBundle?.schedule.id;
+    if (scheduleId == null) {
+      _showMessage(
+        'احفظ المهمة أولًا، ثم جرّب الإشعار من نفس الشاشة أو من قائمة المهام.',
+      );
+      return;
+    }
+
+    context.read<SmartOutreachSchedulesBloc>().add(
+          PreviewSmartOutreachScheduleNotificationEvent(scheduleId),
         );
   }
 }
