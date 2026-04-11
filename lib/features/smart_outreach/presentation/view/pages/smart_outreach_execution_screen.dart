@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_execution_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_execution_content.dart';
 
@@ -60,7 +59,9 @@ class _SmartOutreachExecutionViewState
 
     final executionState = context.read<SmartOutreachExecutionBloc>().state;
     if (executionState.awaitingCallOutcome) {
-      _handlePostCallAutoFlow(executionState);
+      context
+          .read<SmartOutreachExecutionBloc>()
+          .add(const HandleCallReturnSmartOutreachEvent());
     }
   }
 
@@ -88,24 +89,5 @@ class _SmartOutreachExecutionViewState
         );
       },
     );
-  }
-
-  void _handlePostCallAutoFlow(SmartOutreachExecutionState state) {
-    if (!state.awaitingCallOutcome) {
-      return;
-    }
-
-    final currentContact = state.currentContact;
-    if (currentContact == null) {
-      return;
-    }
-
-    final bloc = context.read<SmartOutreachExecutionBloc>();
-    if (currentContact.actionType == SmartOutreachActionType.callThenSms) {
-      bloc.add(const SendCurrentContactSmsEvent());
-      return;
-    }
-
-    bloc.add(const MarkCurrentContactAnsweredEvent());
   }
 }

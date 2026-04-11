@@ -21,6 +21,7 @@ class SmartOutreachExecutionBloc
     on<RefreshSmartOutreachSessionEvent>(_onRefreshSession);
     on<RunAutoStepSmartOutreachEvent>(_onRunAutoStep);
     on<LaunchCurrentContactCallEvent>(_onLaunchCall);
+    on<HandleCallReturnSmartOutreachEvent>(_onHandleCallReturn);
     on<SendCurrentContactSmsEvent>(_onSendSms);
     on<MarkCurrentContactAnsweredEvent>(_onMarkAnswered);
     on<MarkCurrentContactNotAnsweredEvent>(_onMarkNotAnswered);
@@ -130,6 +131,43 @@ class SmartOutreachExecutionBloc
     );
   }
 
+  Future<void> _onHandleCallReturn(
+    HandleCallReturnSmartOutreachEvent event,
+    Emitter<SmartOutreachExecutionState> emit,
+  ) async {
+    if (!state.awaitingCallOutcome) {
+      return;
+    }
+
+    final contact = state.currentContact;
+    if (contact == null) {
+      emit(
+        state.copyWith(
+          awaitingCallOutcome: false,
+          awaitingSmsFallback: false,
+        ),
+      );
+      return;
+    }
+
+    final isCallThenSms =
+        contact.actionType == SmartOutreachActionType.callThenSms;
+
+    final nextState = state.copyWith(
+      awaitingCallOutcome: false,
+      awaitingSmsFallback: isCallThenSms,
+      message: null,
+    );
+    emit(nextState);
+
+    if (isCallThenSms) {
+      _queueAutoRunIfNeeded(nextState);
+      return;
+    }
+
+    add(const MarkCurrentContactAnsweredEvent());
+  }
+
   Future<void> _onRunAutoStep(
     RunAutoStepSmartOutreachEvent event,
     Emitter<SmartOutreachExecutionState> emit,
@@ -191,6 +229,9 @@ class SmartOutreachExecutionBloc
     if (!launched) {
       emit(
         state.copyWith(
+          awaitingCallOutcome: false,
+          awaitingSmsFallback:
+              contact.actionType == SmartOutreachActionType.callThenSms,
           message: 'تعذر إرسال الرسالة.',
         ),
       );

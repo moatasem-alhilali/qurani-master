@@ -26,6 +26,10 @@ class LaunchCurrentContactCallEvent extends SmartOutreachExecutionEvent {
   const LaunchCurrentContactCallEvent();
 }
 
+class HandleCallReturnSmartOutreachEvent extends SmartOutreachExecutionEvent {
+  const HandleCallReturnSmartOutreachEvent();
+}
+
 class SendCurrentContactSmsEvent extends SmartOutreachExecutionEvent {
   const SendCurrentContactSmsEvent();
 }

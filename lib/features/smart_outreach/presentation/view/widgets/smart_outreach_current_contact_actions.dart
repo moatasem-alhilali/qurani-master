@@ -54,7 +54,8 @@ class SmartOutreachCurrentContactActions extends StatelessWidget {
                 ),
               if (!isCompleted &&
                   contact.actionType.includesSms &&
-                  contact.actionType == SmartOutreachActionType.smsOnly)
+                  (contact.actionType == SmartOutreachActionType.smsOnly ||
+                      state.awaitingSmsFallback))
                 FilledButton.icon(
                   onPressed: () {
                     context
@@ -62,7 +63,11 @@ class SmartOutreachCurrentContactActions extends StatelessWidget {
                         .add(const SendCurrentContactSmsEvent());
                   },
                   icon: const Icon(Icons.sms),
-                  label: const Text('إرسال رسالة'),
+                  label: Text(
+                    state.awaitingSmsFallback
+                        ? 'إعادة إرسال الرسالة'
+                        : 'إرسال رسالة',
+                  ),
                 ),
               OutlinedButton(
                 onPressed: () {
@@ -93,7 +98,8 @@ class SmartOutreachCurrentContactActions extends StatelessWidget {
           if (state.awaitingSmsFallback) ...[
             SizedBox(height: 8.h),
             Text(
-              'تم بدء تسلسل اتصال+رسالة. سيتم إرسال الرسالة تلقائيًا بعد إنهاء الاتصال.',
+              'تم بدء تسلسل اتصال+رسالة. '
+              'سيتم إرسال الرسالة تلقائيًا بعد إنهاء الاتصال.',
               style: context.bodySmall,
             ),
           ],
