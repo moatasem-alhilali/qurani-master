@@ -11,9 +11,10 @@ class AudioService {
     try {
       return urls.map((url) {
         logger.i(url);
+        final trimmed = url.trim();
         return offline
-            ? AudioSource.file(url)
-            : AudioSource.uri(Uri.parse(url));
+            ? AudioSource.file(trimmed)
+            : LockCachingAudioSource(Uri.parse(trimmed));
       }).toList();
     } catch (e) {
       logger.e(e);

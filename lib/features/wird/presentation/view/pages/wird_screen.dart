@@ -104,12 +104,17 @@ class _WirdAudioListState extends State<_WirdAudioList> {
 
   final Map<int, int> _itemIndexToQueueIndex = {};
   final Map<int, int> _queueIndexToItemIndex = {};
+  final Map<int, List<int>> _itemIndexToQueueIndices = {};
 
   bool _isAudioInitializing = false;
   bool _isAudioReady = false;
   bool _isPlaying = false;
   ProcessingState _processingState = ProcessingState.idle;
   int? _activeItemIndex;
+  int? _activeQueueIndex;
+  int _currentRepeatIndex = 0;
+  int _currentRepeatTotal = 0;
+  bool _isQueueRepeated = false;
 
   String _audioSignature = '';
   int _setupToken = 0;
@@ -135,11 +140,12 @@ class _WirdAudioListState extends State<_WirdAudioList> {
     super.dispose();
   }
 
-  String _buildAudioSignature(List<WirdModel> items) {
-    return items
+  String _buildAudioSignature(List<WirdModel> items, {bool repeated = false}) {
+    final base = items
         .map((item) => item.audioUrl.trim())
         .where((url) => url.isNotEmpty)
         .join('|');
+    return '${repeated ? 'r' : 's'}:$base';
   }
 
   Future<void> _setupAudioQueue(List<WirdModel> items) async {
@@ -158,8 +164,13 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         _isPlaying = false;
         _processingState = ProcessingState.idle;
         _activeItemIndex = null;
+        _activeQueueIndex = null;
+        _currentRepeatIndex = 0;
+        _currentRepeatTotal = 0;
         _itemIndexToQueueIndex.clear();
         _queueIndexToItemIndex.clear();
+        _itemIndexToQueueIndices.clear();
+        _isQueueRepeated = false;
       });
     }
 
@@ -185,6 +196,7 @@ class _WirdAudioListState extends State<_WirdAudioList> {
     for (final entry in indexedAudioItems) {
       _itemIndexToQueueIndex[entry.key] = queueIndex;
       _queueIndexToItemIndex[queueIndex] = entry.key;
+      _itemIndexToQueueIndices[entry.key] = [queueIndex];
       audioUrls.add(entry.value.audioUrl.trim());
       queueIndex += 1;
     }
@@ -204,10 +216,7 @@ class _WirdAudioListState extends State<_WirdAudioList> {
       _indexSubscription =
           service.audioPlayer.currentIndexStream.listen((currentQueueIndex) {
         if (!mounted) return;
-
-        setState(() {
-          _activeItemIndex = _queueIndexToItemIndex[currentQueueIndex ?? -1];
-        });
+        _syncActiveQueueState(currentQueueIndex);
       });
 
       _playerStateSubscription =
@@ -218,8 +227,8 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         setState(() {
           _isPlaying = playerState.playing;
           _processingState = playerState.processingState;
-          _activeItemIndex = _queueIndexToItemIndex[currentQueueIndex ?? -1];
         });
+        _syncActiveQueueState(currentQueueIndex);
       });
 
       if (mounted) {
@@ -282,6 +291,10 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         currentState.processingState == ProcessingState.completed;
 
     try {
+      if (_isQueueRepeated) {
+        await _setupAudioQueue(widget.items);
+      }
+
       if (isCurrentItem && currentState.playing) {
         await player.pause();
         return;
@@ -302,6 +315,258 @@ class _WirdAudioListState extends State<_WirdAudioList> {
     }
   }
 
+  Future<void> _togglePlayAll() async {
+    if (_isAudioInitializing || !_isAudioReady) {
+      return;
+    }
+
+    if (_isQueueRepeated) {
+      if (_isPlaying) {
+        await _audioService?.audioPlayer.pause();
+        return;
+      }
+      await _audioService?.audioPlayer.play();
+      return;
+    }
+
+    await _setupRepeatedAudioQueue(widget.items);
+    if (!mounted) return;
+    await _audioService?.audioPlayer.play();
+  }
+
+  Future<void> _setupRepeatedAudioQueue(List<WirdModel> items) async {
+    final signature = _buildAudioSignature(items, repeated: true);
+    if (_audioSignature == signature && _audioService != null) {
+      return;
+    }
+
+    _audioSignature = signature;
+    final setupId = ++_setupToken;
+
+    if (mounted) {
+      setState(() {
+        _isAudioInitializing = true;
+        _isAudioReady = false;
+        _isPlaying = false;
+        _processingState = ProcessingState.idle;
+        _activeItemIndex = null;
+        _activeQueueIndex = null;
+        _currentRepeatIndex = 0;
+        _currentRepeatTotal = 0;
+        _itemIndexToQueueIndex.clear();
+        _queueIndexToItemIndex.clear();
+        _itemIndexToQueueIndices.clear();
+      });
+    }
+
+    await _disposeAudioPlayer();
+    if (!mounted || setupId != _setupToken) return;
+
+    final indexedAudioItems = widget.items.asMap().entries.where(
+          (entry) => entry.value.audioUrl.trim().isNotEmpty,
+        );
+
+    if (indexedAudioItems.isEmpty) {
+      if (mounted) {
+        setState(() {
+          _isAudioInitializing = false;
+          _isAudioReady = false;
+          _isQueueRepeated = false;
+        });
+      }
+      return;
+    }
+
+    final audioUrls = <String>[];
+    var queueIndex = 0;
+    for (final entry in indexedAudioItems) {
+      final repeatCount = entry.value.counter <= 0 ? 1 : entry.value.counter;
+      final indices = <int>[];
+      for (var i = 0; i < repeatCount; i += 1) {
+        indices.add(queueIndex);
+        _queueIndexToItemIndex[queueIndex] = entry.key;
+        audioUrls.add(entry.value.audioUrl.trim());
+        queueIndex += 1;
+      }
+      _itemIndexToQueueIndex[entry.key] = indices.first;
+      _itemIndexToQueueIndices[entry.key] = indices;
+    }
+
+    final service = AudioService();
+
+    try {
+      await service.initAudiosNetworks(audioUrls);
+
+      if (!mounted || setupId != _setupToken) {
+        await service.audioPlayer.dispose();
+        return;
+      }
+
+      _audioService = service;
+
+      _indexSubscription =
+          service.audioPlayer.currentIndexStream.listen((currentQueueIndex) {
+        if (!mounted) return;
+        _syncActiveQueueState(currentQueueIndex);
+      });
+
+      _playerStateSubscription =
+          service.audioPlayer.playerStateStream.listen((playerState) {
+        if (!mounted) return;
+
+        final currentQueueIndex = service.audioPlayer.currentIndex;
+        setState(() {
+          _isPlaying = playerState.playing;
+          _processingState = playerState.processingState;
+        });
+        _syncActiveQueueState(currentQueueIndex);
+      });
+
+      if (mounted) {
+        setState(() {
+          _isAudioInitializing = false;
+          _isAudioReady = true;
+          _isQueueRepeated = true;
+        });
+      }
+    } catch (_) {
+      await service.audioPlayer.dispose();
+
+      if (mounted) {
+        setState(() {
+          _isAudioInitializing = false;
+          _isAudioReady = false;
+          _isQueueRepeated = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تعذر تهيئة الصوت للأذكار.')),
+        );
+      }
+    }
+  }
+
+  Widget _buildPlayAllButton() {
+    final hasAudio = _itemIndexToQueueIndex.isNotEmpty;
+    final isBuffering = _isAudioInitializing ||
+        _processingState == ProcessingState.loading ||
+        _processingState == ProcessingState.buffering;
+
+    if (!hasAudio) {
+      return const SizedBox.shrink();
+    }
+
+    if (isBuffering) {
+      return FilledButton.tonalIcon(
+        onPressed: null,
+        icon: const SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        label: const Text('تهيئة الصوت'),
+      );
+    }
+
+    var icon = Icons.play_circle_fill_rounded;
+    var label = 'تشغيل الكل';
+
+    if (_isQueueRepeated && _isPlaying) {
+      icon = Icons.pause_circle_filled_rounded;
+      label = 'إيقاف مؤقت';
+    } else if (_isQueueRepeated &&
+        _processingState == ProcessingState.completed) {
+      icon = Icons.replay_circle_filled_rounded;
+      label = 'إعادة التشغيل';
+    }
+
+    return FilledButton.tonalIcon(
+      onPressed: _togglePlayAll,
+      icon: Icon(icon),
+      label: Text(label),
+    );
+  }
+
+  void _syncActiveQueueState(int? currentQueueIndex) {
+    if (!mounted) return;
+
+    final itemIndex = _queueIndexToItemIndex[currentQueueIndex ?? -1];
+    final indices =
+        itemIndex == null ? null : _itemIndexToQueueIndices[itemIndex];
+
+    var repeatIndex = 0;
+    var repeatTotal = 0;
+    if (indices != null && indices.isNotEmpty && currentQueueIndex != null) {
+      repeatTotal = indices.length;
+      final position = indices.indexOf(currentQueueIndex);
+      repeatIndex = position == -1 ? 0 : position + 1;
+    }
+
+    setState(() {
+      _activeItemIndex = itemIndex;
+      _activeQueueIndex = currentQueueIndex;
+      _currentRepeatIndex = repeatIndex;
+      _currentRepeatTotal = repeatTotal;
+    });
+  }
+
+  Widget _buildPlayAllStatus(List<WirdModel> items) {
+    if (!_isQueueRepeated ||
+        _activeItemIndex == null ||
+        _activeItemIndex! < 0 ||
+        _activeItemIndex! >= items.length) {
+      if (_isQueueRepeated &&
+          _processingState == ProcessingState.completed &&
+          items.isNotEmpty) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: CardWidget(
+            margin: const EdgeInsets.symmetric(vertical: 6),
+            child: Text(
+              'تم الانتهاء من تشغيل جميع الأذكار.',
+              style: context.titleSmall,
+            ),
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    }
+
+    final item = items[_activeItemIndex!];
+    final repeatTotal =
+        _currentRepeatTotal == 0 ? item.counter : _currentRepeatTotal;
+    final repeatIndex = _currentRepeatIndex == 0 ? 1 : _currentRepeatIndex;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: CardWidget(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'الذكر الحالي',
+              style: context.labelMedium?.copyWith(
+                color: context.primaryColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              item.title,
+              style: context.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'التكرار: $repeatIndex / $repeatTotal',
+              style: context.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = widget.items;
@@ -309,20 +574,30 @@ class _WirdAudioListState extends State<_WirdAudioList> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
       child: Column(
-        children: List<Widget>.generate(items.length, (index) {
-          final item = items[index];
-          return _WirdItemCard(
-            key: ValueKey('wird_${item.title}_$index'),
-            item: item,
-            index: index,
-            hasAudio: _itemIndexToQueueIndex.containsKey(index),
-            isAudioInitializing: _isAudioInitializing,
-            isCurrentAudio: _activeItemIndex == index,
-            isAudioPlaying: _isPlaying,
-            audioProcessingState: _processingState,
-            onAudioPressed: () => unawaited(_toggleAudio(index)),
-          );
-        }),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: _buildPlayAllButton(),
+          ),
+          const SizedBox(height: 6),
+          _buildPlayAllStatus(items),
+          const SizedBox(height: 4),
+          ...List<Widget>.generate(items.length, (index) {
+            final item = items[index];
+            return _WirdItemCard(
+              key: ValueKey('wird_${item.title}_$index'),
+              item: item,
+              index: index,
+              hasAudio: _itemIndexToQueueIndex.containsKey(index),
+              isAudioInitializing: _isAudioInitializing,
+              isCurrentAudio: _activeItemIndex == index,
+              isAudioPlaying: _isPlaying,
+              audioProcessingState: _processingState,
+              onAudioPressed: () => unawaited(_toggleAudio(index)),
+            );
+          }),
+        ],
       ),
     );
   }
