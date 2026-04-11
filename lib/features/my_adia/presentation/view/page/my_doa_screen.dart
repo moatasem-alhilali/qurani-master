@@ -55,11 +55,48 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
           builder: (context, state) {
             return state.loadState.whenSliver<SubihModel>(
               onSuccess: () {
-                final allItems = state.subihList;
-                final customItems =
-                    allItems.where((element) => element.isCustom).toList();
-                final displayItems =
-                    customItems.isNotEmpty ? customItems : allItems;
+                final displayItems = state.subihList
+                    .where((element) => element.isCustom)
+                    .toList();
+
+                if (displayItems.isEmpty) {
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.auto_awesome_rounded,
+                              size: 56,
+                              color: context.primaryColor,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'لا توجد أدعية مضافة',
+                              style: context.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'هذا القسم يعرض الأدعية التي أضفتها فقط.',
+                              textAlign: TextAlign.center,
+                              style: context.bodyMedium,
+                            ),
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: _showAddDhikrDialog,
+                              icon: const Icon(Icons.add_rounded),
+                              label: const Text('إضافة دعاء'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
                 final totalCountToday = displayItems.fold<int>(
                   0,
                   (sum, item) => sum + state.getCountForSubih(item.id ?? -1),
@@ -72,7 +109,6 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
                       return _SummaryHeader(
                         totalItems: displayItems.length,
                         totalToday: totalCountToday,
-                        isUsingFallbackList: customItems.isEmpty,
                       );
                     }
 
@@ -153,11 +189,11 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
           },
         ),
       ],
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: _showAddDhikrDialog,
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('إضافة دعاء'),
+        // label: const Text('إضافة دعاء'),
         tooltip: 'إضافة دعاء جديد',
+        child: const Icon(Icons.add_rounded),
       ),
     );
   }
@@ -204,12 +240,10 @@ class _SummaryHeader extends StatelessWidget {
   const _SummaryHeader({
     required this.totalItems,
     required this.totalToday,
-    required this.isUsingFallbackList,
   });
 
   final int totalItems;
   final int totalToday;
-  final bool isUsingFallbackList;
 
   @override
   Widget build(BuildContext context) {
@@ -239,15 +273,6 @@ class _SummaryHeader extends StatelessWidget {
               ),
             ],
           ),
-          if (isUsingFallbackList) ...[
-            const SizedBox(height: 10),
-            Text(
-              'لا توجد أدعية مخصصة بعد، تم عرض جميع الأذكار المتاحة.',
-              style: context.bodySmall?.copyWith(
-                color: context.onSurfaceColor.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
         ],
       ),
     );

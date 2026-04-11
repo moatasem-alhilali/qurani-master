@@ -51,7 +51,9 @@ class WirdScreen extends StatelessWidget {
               return state.state.whenSliver<WirdModel>(
                 onSuccess: () {
                   final data = state.data ?? [];
-                  return _WirdAudioList(items: data);
+                  return SliverToBoxAdapter(
+                    child: _WirdAudioList(items: data),
+                  );
                 },
                 context: context,
                 sliverList: state.data,
@@ -282,11 +284,10 @@ class _WirdAudioListState extends State<_WirdAudioList> {
   Widget build(BuildContext context) {
     final items = widget.items;
 
-    return SliverPadding(
+    return Padding(
       padding: const EdgeInsets.only(bottom: 24),
-      sliver: SliverList.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
+      child: Column(
+        children: List<Widget>.generate(items.length, (index) {
           final item = items[index];
           return _WirdItemCard(
             key: ValueKey('wird_${item.title}_$index'),
@@ -299,7 +300,7 @@ class _WirdAudioListState extends State<_WirdAudioList> {
             audioProcessingState: _processingState,
             onAudioPressed: () => unawaited(_toggleAudio(index)),
           );
-        },
+        }),
       ),
     );
   }
