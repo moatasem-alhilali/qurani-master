@@ -19,6 +19,7 @@ class SmartOutreachExecutionBloc
         super(const SmartOutreachExecutionState()) {
     on<StartSmartOutreachSessionEvent>(_onStartSession);
     on<RefreshSmartOutreachSessionEvent>(_onRefreshSession);
+    on<RunAutoStepSmartOutreachEvent>(_onRunAutoStep);
     on<LaunchCurrentContactCallEvent>(_onLaunchCall);
     on<SendCurrentContactSmsEvent>(_onSendSms);
     on<MarkCurrentContactAnsweredEvent>(_onMarkAnswered);
@@ -55,15 +56,15 @@ class SmartOutreachExecutionBloc
       return;
     }
 
-    emit(
-      state.copyWith(
-        loadState: RequestState.success,
-        sessionBundle: bundle,
-        awaitingCallOutcome: false,
-        awaitingSmsFallback: false,
-        message: null,
-      ),
+    final nextState = state.copyWith(
+      loadState: RequestState.success,
+      sessionBundle: bundle,
+      awaitingCallOutcome: false,
+      awaitingSmsFallback: false,
+      message: null,
     );
+    emit(nextState);
+    _queueAutoRunIfNeeded(nextState);
   }
 
   Future<void> _onRefreshSession(
@@ -128,6 +129,37 @@ class SmartOutreachExecutionBloc
     );
   }
 
+  Future<void> _onRunAutoStep(
+    RunAutoStepSmartOutreachEvent event,
+    Emitter<SmartOutreachExecutionState> emit,
+  ) async {
+    final bundle = state.sessionBundle;
+    final contact = state.currentContact;
+
+    if (bundle == null || contact == null) {
+      return;
+    }
+
+    if (!state.autoPilotEnabled || state.awaitingCallOutcome) {
+      return;
+    }
+
+    if (bundle.isContactCompleted(contact)) {
+      add(const MoveToNextContactEvent());
+      return;
+    }
+
+    if (contact.actionType.includesCall && !state.awaitingSmsFallback) {
+      add(const LaunchCurrentContactCallEvent());
+      return;
+    }
+
+    if (contact.actionType.includesSms &&
+        (!contact.actionType.includesCall || state.awaitingSmsFallback)) {
+      add(const SendCurrentContactSmsEvent());
+    }
+  }
+
   Future<void> _onSendSms(
     SendCurrentContactSmsEvent event,
     Emitter<SmartOutreachExecutionState> emit,
@@ -190,14 +222,15 @@ class SmartOutreachExecutionBloc
       return;
     }
 
-    emit(
-      state.copyWith(
-        sessionBundle: updated,
-        awaitingCallOutcome: false,
-        awaitingSmsFallback: false,
-        message: null,
-      ),
+    final nextState = state.copyWith(
+      sessionBundle: updated,
+      awaitingCallOutcome: false,
+      awaitingSmsFallback: false,
+      message: null,
     );
+
+    emit(nextState);
+    _queueAutoRunIfNeeded(nextState);
   }
 
   Future<void> _onMarkAnswered(
@@ -253,16 +286,23 @@ class SmartOutreachExecutionBloc
     final shouldSuggestSms =
         contact.actionType == SmartOutreachActionType.callThenSms;
 
-    emit(
-      state.copyWith(
-        sessionBundle: updated,
-        awaitingCallOutcome: false,
-        awaitingSmsFallback: shouldSuggestSms,
-        message: shouldSuggestSms
-            ? 'تم تسجيل عدم الرد. أرسل رسالة لإكمال هذا التواصل.'
-            : null,
-      ),
+    final nextState = state.copyWith(
+      sessionBundle: updated,
+      awaitingCallOutcome: false,
+      awaitingSmsFallback: shouldSuggestSms,
+      message: shouldSuggestSms
+          ? 'تم تسجيل عدم الرد. سيتم إرسال رسالة تلقائيًا.'
+          : null,
     );
+
+    emit(nextState);
+
+    if (shouldSuggestSms && nextState.autoPilotEnabled) {
+      add(const SendCurrentContactSmsEvent());
+      return;
+    }
+
+    _queueAutoRunIfNeeded(nextState);
   }
 
   Future<void> _onSkipCurrentContact(
@@ -315,13 +355,13 @@ class SmartOutreachExecutionBloc
       return;
     }
 
-    emit(
-      state.copyWith(
-        sessionBundle: moved,
-        awaitingCallOutcome: false,
-        awaitingSmsFallback: false,
-      ),
+    final nextState = state.copyWith(
+      sessionBundle: moved,
+      awaitingCallOutcome: false,
+      awaitingSmsFallback: false,
     );
+    emit(nextState);
+    _queueAutoRunIfNeeded(nextState);
   }
 
   Future<void> _onFinishSession(
@@ -403,14 +443,14 @@ class SmartOutreachExecutionBloc
       return;
     }
 
-    emit(
-      state.copyWith(
-        sessionBundle: updated,
-        awaitingCallOutcome: setAwaitingCallOutcome,
-        awaitingSmsFallback: setAwaitingSmsFallback,
-        message: null,
-      ),
+    final nextState = state.copyWith(
+      sessionBundle: updated,
+      awaitingCallOutcome: setAwaitingCallOutcome,
+      awaitingSmsFallback: setAwaitingSmsFallback,
+      message: null,
     );
+    emit(nextState);
+    _queueAutoRunIfNeeded(nextState);
   }
 
   String _resolveSmsTemplate(
@@ -428,5 +468,16 @@ class SmartOutreachExecutionBloc
     }
 
     return 'السلام عليكم، حاولت التواصل معك. فضلاً تواصل معي عند التوفر.';
+  }
+
+  void _queueAutoRunIfNeeded(SmartOutreachExecutionState nextState) {
+    if (!nextState.autoPilotEnabled ||
+        nextState.isCompleted ||
+        nextState.awaitingCallOutcome ||
+        nextState.currentContact == null) {
+      return;
+    }
+
+    add(const RunAutoStepSmartOutreachEvent());
   }
 }

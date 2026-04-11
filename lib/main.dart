@@ -91,7 +91,7 @@ void main() async {
   await NotificationPermissionService.handelNotification();
   runApp(
     DevicePreview(
-      enabled: kDebugMode,
+      enabled: false,
       builder: (context) => const MyApp(), // Wrap your app
     ),
   );

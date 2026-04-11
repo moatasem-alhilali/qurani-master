@@ -1,13 +1,16 @@
+import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_contacts_picker_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contact_form_card.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contact_form_row.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_schedule_fields_section.dart';
 
 class SmartOutreachUpsertScheduleScreen extends StatefulWidget {
   const SmartOutreachUpsertScheduleScreen({
@@ -31,9 +34,13 @@ class _SmartOutreachUpsertScheduleScreenState
   late TimeOfDay _time;
   late bool _isEnabled;
 
-  final List<_ContactFormRow> _contactRows = <_ContactFormRow>[];
+  final List<SmartOutreachContactFormRow> _contactRows =
+      <SmartOutreachContactFormRow>[];
   final SmartOutreachContactsPickerService _contactsPickerService =
       sl<SmartOutreachContactsPickerService>();
+  final AdhanPrayerTimeService _prayerTimeService =
+      sl<AdhanPrayerTimeService>();
+  bool _isSettingTimeFromFajr = false;
 
   bool get _isEditing => widget.initialBundle?.schedule.id != null;
 
@@ -61,10 +68,10 @@ class _SmartOutreachUpsertScheduleScreenState
     _isEnabled = initial?.schedule.isEnabled ?? true;
 
     if (initial == null || initial.contacts.isEmpty) {
-      _contactRows.add(_ContactFormRow.empty());
+      _contactRows.add(SmartOutreachContactFormRow.empty());
     } else {
       for (final contact in initial.contacts) {
-        _contactRows.add(_ContactFormRow.fromContact(contact));
+        _contactRows.add(SmartOutreachContactFormRow.fromContact(contact));
       }
     }
 
@@ -133,48 +140,20 @@ class _SmartOutreachUpsertScheduleScreenState
         body: ListView(
           padding: EdgeInsets.all(16.w),
           children: [
-            TextField(
-              controller: _titleController,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'عنوان الجدول *',
-                hintText: 'تواصل الصباح',
-              ),
-            ),
-            SizedBox(height: 12.h),
-            TextField(
-              controller: _noteController,
-              textInputAction: TextInputAction.next,
-              maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'ملاحظة (اختياري)',
-              ),
-            ),
-            SizedBox(height: 12.h),
-            InkWell(
-              onTap: _pickTime,
-              child: InputDecorator(
-                decoration: const InputDecoration(
-                  labelText: 'الوقت اليومي',
-                ),
-                child: Text(_time.format(context)),
-              ),
-            ),
-            SizedBox(height: 12.h),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: _isEnabled,
-              onChanged: (val) => setState(() => _isEnabled = val),
-              title: const Text('تفعيل الجدول'),
-            ),
-            SizedBox(height: 12.h),
-            TextField(
-              controller: _scheduleSmsController,
-              maxLines: 2,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'قالب الرسالة النصية الافتراضي (اختياري)',
-              ),
+            SmartOutreachScheduleFieldsSection(
+              titleController: _titleController,
+              noteController: _noteController,
+              scheduleSmsController: _scheduleSmsController,
+              time: _time,
+              isEnabled: _isEnabled,
+              isSettingTimeFromFajr: _isSettingTimeFromFajr,
+              onPickTime: _pickTime,
+              onApplyTimeFromFajr: _applyTimeFromFajrPrayer,
+              onEnabledChanged: (value) {
+                setState(() {
+                  _isEnabled = value;
+                });
+              },
             ),
             SizedBox(height: 18.h),
             const Text(
@@ -218,101 +197,22 @@ class _SmartOutreachUpsertScheduleScreenState
       final index = entry.key;
       final row = entry.value;
 
-      return Card(
-        margin: EdgeInsets.only(bottom: 12.h),
-        child: Padding(
-          padding: EdgeInsets.all(12.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'الأولوية ${index + 1}',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed:
-                        index == 0 ? null : () => _moveContact(index, -1),
-                    icon: const Icon(Icons.arrow_upward),
-                  ),
-                  IconButton(
-                    onPressed: index == _contactRows.length - 1
-                        ? null
-                        : () => _moveContact(index, 1),
-                    icon: const Icon(Icons.arrow_downward),
-                  ),
-                  IconButton(
-                    onPressed: _contactRows.length <= 1
-                        ? null
-                        : () => _removeContactRow(index),
-                    icon: const Icon(Icons.delete_outline),
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: () => _fillContactFromDevice(index),
-                  icon: const Icon(Icons.contact_phone_outlined),
-                  label: const Text('اختيار من جهات الاتصال'),
-                ),
-              ),
-              TextField(
-                controller: row.nameController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'الاسم / التسمية (اختياري)',
-                ),
-              ),
-              SizedBox(height: 10.h),
-              TextField(
-                controller: row.phoneController,
-                keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'رقم الهاتف *',
-                  hintText: '+9665XXXXXXX',
-                ),
-              ),
-              SizedBox(height: 10.h),
-              DropdownButtonFormField<SmartOutreachActionType>(
-                initialValue: row.actionType,
-                items: SmartOutreachActionType.values
-                    .map(
-                      (type) => DropdownMenuItem<SmartOutreachActionType>(
-                        value: type,
-                        child: Text(type.label),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    row.actionType = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'نوع الإجراء',
-                ),
-              ),
-              if (row.actionType.includesSms) ...[
-                SizedBox(height: 10.h),
-                TextField(
-                  controller: row.smsTemplateController,
-                  textInputAction: TextInputAction.next,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    labelText: 'قالب رسالة نصية خاص (اختياري)',
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
+      return SmartOutreachContactFormCard(
+        index: index,
+        totalCount: _contactRows.length,
+        row: row,
+        onMoveUp: index == 0 ? null : () => _moveContact(index, -1),
+        onMoveDown: index == _contactRows.length - 1
+            ? null
+            : () => _moveContact(index, 1),
+        onRemove:
+            _contactRows.length <= 1 ? null : () => _removeContactRow(index),
+        onPickFromContacts: () => _fillContactFromDevice(index),
+        onActionTypeChanged: (value) {
+          setState(() {
+            row.actionType = value;
+          });
+        },
       );
     }).toList();
   }
@@ -323,8 +223,60 @@ class _SmartOutreachUpsertScheduleScreenState
     }
 
     setState(() {
-      _contactRows.add(_ContactFormRow.empty());
+      _contactRows.add(SmartOutreachContactFormRow.empty());
     });
+  }
+
+  Future<void> _applyTimeFromFajrPrayer() async {
+    if (_isSettingTimeFromFajr) {
+      return;
+    }
+
+    setState(() {
+      _isSettingTimeFromFajr = true;
+    });
+
+    try {
+      final prayerTimes = await _prayerTimeService.getTodayPrayerTimes();
+      DateTime? fajrDateTime;
+      String? fajrLabel;
+
+      for (final prayer in prayerTimes) {
+        if (prayer.type == Prayer.fajr) {
+          fajrDateTime = prayer.time;
+          fajrLabel = prayer.time12;
+          break;
+        }
+      }
+
+      if (fajrDateTime == null) {
+        _showMessage('تعذر جلب موعد صلاة الفجر. تأكد من إعدادات الموقع.');
+        return;
+      }
+
+      final resolvedFajr = fajrDateTime;
+
+      setState(() {
+        _time = TimeOfDay(
+          hour: resolvedFajr.hour,
+          minute: resolvedFajr.minute,
+        );
+      });
+
+      final fallbackLabel =
+          '${resolvedFajr.hour.toString().padLeft(2, '0')}:${resolvedFajr.minute.toString().padLeft(2, '0')}';
+      _showMessage(
+        'تم ضبط الوقت على الفجر (${fajrLabel ?? fallbackLabel}).',
+      );
+    } catch (_) {
+      _showMessage('تعذر جلب وقت الفجر حاليًا. حاول مرة أخرى.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSettingTimeFromFajr = false;
+        });
+      }
+    }
   }
 
   Future<void> _addContactFromDevice() async {
@@ -366,7 +318,7 @@ class _SmartOutreachUpsertScheduleScreenState
 
     setState(() {
       _contactRows.add(
-        _ContactFormRow.prefilled(
+        SmartOutreachContactFormRow.prefilled(
           name: result.contact!.name,
           phone: selectedPhone,
         ),
@@ -527,61 +479,5 @@ class _SmartOutreachUpsertScheduleScreenState
             contacts: contacts,
           ),
         );
-  }
-}
-
-class _ContactFormRow {
-  _ContactFormRow({
-    required this.id,
-    required this.nameController,
-    required this.phoneController,
-    required this.smsTemplateController,
-    required this.actionType,
-  });
-
-  factory _ContactFormRow.empty() {
-    return _ContactFormRow(
-      id: null,
-      nameController: TextEditingController(),
-      phoneController: TextEditingController(),
-      smsTemplateController: TextEditingController(),
-      actionType: SmartOutreachActionType.callOnly,
-    );
-  }
-
-  factory _ContactFormRow.fromContact(SmartOutreachContactModel contact) {
-    return _ContactFormRow(
-      id: contact.id,
-      nameController: TextEditingController(text: contact.name ?? ''),
-      phoneController: TextEditingController(text: contact.phone),
-      smsTemplateController:
-          TextEditingController(text: contact.smsTemplate ?? ''),
-      actionType: contact.actionType,
-    );
-  }
-
-  factory _ContactFormRow.prefilled({
-    required String name,
-    required String phone,
-  }) {
-    return _ContactFormRow(
-      id: null,
-      nameController: TextEditingController(text: name.trim()),
-      phoneController: TextEditingController(text: phone.trim()),
-      smsTemplateController: TextEditingController(),
-      actionType: SmartOutreachActionType.callOnly,
-    );
-  }
-
-  final int? id;
-  final TextEditingController nameController;
-  final TextEditingController phoneController;
-  final TextEditingController smsTemplateController;
-  SmartOutreachActionType actionType;
-
-  void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    smsTemplateController.dispose();
   }
 }

@@ -6,6 +6,7 @@ class SmartOutreachExecutionState {
     this.sessionBundle,
     this.awaitingCallOutcome = false,
     this.awaitingSmsFallback = false,
+    this.autoPilotEnabled = true,
     this.message,
   });
 
@@ -13,6 +14,7 @@ class SmartOutreachExecutionState {
   final SmartOutreachSessionBundle? sessionBundle;
   final bool awaitingCallOutcome;
   final bool awaitingSmsFallback;
+  final bool autoPilotEnabled;
   final String? message;
 
   SmartOutreachContactModel? get currentContact =>
@@ -26,6 +28,7 @@ class SmartOutreachExecutionState {
     SmartOutreachSessionBundle? sessionBundle,
     bool? awaitingCallOutcome,
     bool? awaitingSmsFallback,
+    bool? autoPilotEnabled,
     String? message,
   }) {
     return SmartOutreachExecutionState(
@@ -33,6 +36,7 @@ class SmartOutreachExecutionState {
       sessionBundle: sessionBundle ?? this.sessionBundle,
       awaitingCallOutcome: awaitingCallOutcome ?? this.awaitingCallOutcome,
       awaitingSmsFallback: awaitingSmsFallback ?? this.awaitingSmsFallback,
+      autoPilotEnabled: autoPilotEnabled ?? this.autoPilotEnabled,
       message: message,
     );
   }

@@ -18,6 +18,10 @@ class RefreshSmartOutreachSessionEvent extends SmartOutreachExecutionEvent {
   const RefreshSmartOutreachSessionEvent();
 }
 
+class RunAutoStepSmartOutreachEvent extends SmartOutreachExecutionEvent {
+  const RunAutoStepSmartOutreachEvent();
+}
+
 class LaunchCurrentContactCallEvent extends SmartOutreachExecutionEvent {
   const LaunchCurrentContactCallEvent();
 }

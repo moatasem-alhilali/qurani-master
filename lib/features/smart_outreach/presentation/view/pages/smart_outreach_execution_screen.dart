@@ -29,19 +29,13 @@ class SmartOutreachExecutionScreen extends StatelessWidget {
             launchedFromNotification: launchedFromNotification,
           ),
         ),
-      child: _SmartOutreachExecutionView(
-        launchedFromNotification: launchedFromNotification,
-      ),
+      child: const _SmartOutreachExecutionView(),
     );
   }
 }
 
 class _SmartOutreachExecutionView extends StatefulWidget {
-  const _SmartOutreachExecutionView({
-    required this.launchedFromNotification,
-  });
-
-  final bool launchedFromNotification;
+  const _SmartOutreachExecutionView();
 
   @override
   State<_SmartOutreachExecutionView> createState() =>
@@ -51,13 +45,11 @@ class _SmartOutreachExecutionView extends StatefulWidget {
 class _SmartOutreachExecutionViewState
     extends State<_SmartOutreachExecutionView> with WidgetsBindingObserver {
   bool _isCallOutcomeDialogOpen = false;
-  late bool _showStartMissionGate;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _showStartMissionGate = widget.launchedFromNotification;
   }
 
   @override
@@ -126,19 +118,6 @@ class _SmartOutreachExecutionViewState
     final schedule = bundle.scheduleBundle.schedule;
     final contacts = bundle.scheduleBundle.contacts;
     final currentContact = state.currentContact;
-
-    if (_showStartMissionGate) {
-      return _StartMissionGate(
-        scheduleTitle: schedule.title,
-        scheduleNote: schedule.note,
-        contactsCount: contacts.length,
-        onStart: () {
-          setState(() {
-            _showStartMissionGate = false;
-          });
-        },
-      );
-    }
 
     final completedCount = bundle.completedCount;
     final totalCount = contacts.length;
@@ -288,76 +267,6 @@ class _SmartOutreachExecutionViewState
     );
 
     _isCallOutcomeDialogOpen = false;
-  }
-}
-
-class _StartMissionGate extends StatelessWidget {
-  const _StartMissionGate({
-    required this.scheduleTitle,
-    required this.scheduleNote,
-    required this.contactsCount,
-    required this.onStart,
-  });
-
-  final String scheduleTitle;
-  final String? scheduleNote;
-  final int contactsCount;
-  final VoidCallback onStart;
-
-  @override
-  Widget build(BuildContext context) {
-    final note = (scheduleNote ?? '').trim();
-
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(18.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 30.r,
-                  backgroundColor: context.primaryColor.withValues(alpha: 0.12),
-                  child: Icon(
-                    Icons.alarm_on_rounded,
-                    size: 30.sp,
-                    color: context.primaryColor,
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                Text(
-                  scheduleTitle,
-                  style: context.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 6.h),
-                Text(
-                  'عدد جهات الاتصال: $contactsCount',
-                  style: context.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                if (note.isNotEmpty) ...[
-                  SizedBox(height: 8.h),
-                  Text(
-                    note,
-                    style: context.bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-                SizedBox(height: 16.h),
-                FilledButton.icon(
-                  onPressed: onStart,
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('ابدأ المهمة'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 
