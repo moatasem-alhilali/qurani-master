@@ -42,6 +42,17 @@ class SmartOutreachNotificationService {
     });
   }
 
+  String buildPayloadWithTrigger({
+    required int scheduleId,
+    required DateTime triggerAt,
+  }) {
+    return jsonEncode({
+      'type': payloadType,
+      'scheduleId': scheduleId,
+      'triggerAt': triggerAt.toIso8601String(),
+    });
+  }
+
   int? extractScheduleId(String? payload) {
     if (payload == null || payload.trim().isEmpty) {
       return null;
@@ -147,7 +158,10 @@ class SmartOutreachNotificationService {
       body: body,
       channel: NotificationChannel.smartOutreach,
       schedule: NotificationScheduleModel.customDates(<DateTime>[fireAt]),
-      payload: buildPayload(scheduleId),
+      payload: buildPayloadWithTrigger(
+        scheduleId: scheduleId,
+        triggerAt: fireAt,
+      ),
       category: AndroidNotificationCategory.alarm,
       visibility: NotificationVisibility.public,
       fullScreenIntent: true,

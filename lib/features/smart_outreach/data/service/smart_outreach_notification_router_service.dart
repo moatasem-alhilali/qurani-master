@@ -22,7 +22,6 @@ class SmartOutreachNotificationRouterService {
   static const String _lastHandledPayloadKey =
       'smart_outreach_last_handled_payload';
   static const String _lastHandledAtKey = 'smart_outreach_last_handled_at_ms';
-  static const Duration _duplicateCooldown = Duration(minutes: 10);
 
   Future<void> initialize() async {
     if (_initialized) {
@@ -80,11 +79,12 @@ class SmartOutreachNotificationRouterService {
     final lastPayload = prefs.getString(_lastHandledPayloadKey);
     final lastHandledAtMs = prefs.getInt(_lastHandledAtKey);
     final now = DateTime.now();
+    final todayKey = _dayKey(now);
 
     if (lastPayload == payload && lastHandledAtMs != null) {
       final lastHandledAt =
           DateTime.fromMillisecondsSinceEpoch(lastHandledAtMs);
-      if (now.difference(lastHandledAt) < _duplicateCooldown) {
+      if (_dayKey(lastHandledAt) == todayKey) {
         return true;
       }
     }
@@ -92,6 +92,12 @@ class SmartOutreachNotificationRouterService {
     await prefs.setString(_lastHandledPayloadKey, payload);
     await prefs.setInt(_lastHandledAtKey, now.millisecondsSinceEpoch);
     return false;
+  }
+
+  String _dayKey(DateTime dateTime) {
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final day = dateTime.day.toString().padLeft(2, '0');
+    return '${dateTime.year}-$month-$day';
   }
 
   Future<void> dispose() async {

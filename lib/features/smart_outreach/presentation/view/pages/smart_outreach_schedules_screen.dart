@@ -5,6 +5,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
+import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_execution_screen.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_upsert_schedule_screen.dart';
@@ -23,8 +24,27 @@ class SmartOutreachSchedulesScreen extends StatelessWidget {
   }
 }
 
-class _SmartOutreachSchedulesView extends StatelessWidget {
+class _SmartOutreachSchedulesView extends StatefulWidget {
   const _SmartOutreachSchedulesView();
+
+  @override
+  State<_SmartOutreachSchedulesView> createState() =>
+      _SmartOutreachSchedulesViewState();
+}
+
+class _SmartOutreachSchedulesViewState
+    extends State<_SmartOutreachSchedulesView> {
+  final SmartOutreachScheduleRepository _repository =
+      sl<SmartOutreachScheduleRepository>();
+  bool _checkedFullScreenPermission = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _askForFullScreenPermissionIfNeeded();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +78,47 @@ class _SmartOutreachSchedulesView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> _askForFullScreenPermissionIfNeeded() async {
+    if (!mounted || _checkedFullScreenPermission) {
+      return;
+    }
+    _checkedFullScreenPermission = true;
+
+    final canUse = await _repository.canUseFullScreenIntent();
+    if (!mounted || canUse) {
+      return;
+    }
+
+    final openSettings = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) {
+            return AlertDialog(
+              title: const Text('صلاحية ملء الشاشة'),
+              content: const Text(
+                'لتشغيل تنبيه المهمة بواجهة كاملة حتى عند قفل التطبيق، فعّل إذن الظهور بملء الشاشة.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: const Text('لاحقًا'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  child: const Text('فتح الإعدادات'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!openSettings) {
+      return;
+    }
+
+    await _repository.openFullScreenIntentSettings();
   }
 
   Widget _buildBody(
