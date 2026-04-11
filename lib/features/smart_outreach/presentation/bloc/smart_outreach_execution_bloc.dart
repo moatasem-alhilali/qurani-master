@@ -123,7 +123,8 @@ class SmartOutreachExecutionBloc
     emit(
       state.copyWith(
         awaitingCallOutcome: true,
-        awaitingSmsFallback: false,
+        awaitingSmsFallback:
+            contact.actionType == SmartOutreachActionType.callThenSms,
         message: null,
       ),
     );

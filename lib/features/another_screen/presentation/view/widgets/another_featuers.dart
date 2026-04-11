@@ -66,7 +66,7 @@ class AnotherFeatures extends StatelessWidget {
           onPressed: () {
             context.push(const SmartOutreachSchedulesScreen());
           },
-          text: 'التواصل الذكي',
+          text: 'أيقظني',
           icon: Icons.phone_in_talk_rounded,
         ),
         _Item(

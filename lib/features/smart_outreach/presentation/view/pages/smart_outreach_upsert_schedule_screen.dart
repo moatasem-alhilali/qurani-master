@@ -8,8 +8,9 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_contacts_picker_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
-import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contact_form_card.dart';
-import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contact_form_row.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contacts_form_manager.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_contacts_section.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_phone_picker_sheet.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_schedule_fields_section.dart';
 
 class SmartOutreachUpsertScheduleScreen extends StatefulWidget {
@@ -34,8 +35,7 @@ class _SmartOutreachUpsertScheduleScreenState
   late TimeOfDay _time;
   late bool _isEnabled;
 
-  final List<SmartOutreachContactFormRow> _contactRows =
-      <SmartOutreachContactFormRow>[];
+  late final SmartOutreachContactsFormManager _contactsManager;
   final SmartOutreachContactsPickerService _contactsPickerService =
       sl<SmartOutreachContactsPickerService>();
   final AdhanPrayerTimeService _prayerTimeService =
@@ -67,13 +67,9 @@ class _SmartOutreachUpsertScheduleScreenState
 
     _isEnabled = initial?.schedule.isEnabled ?? true;
 
-    if (initial == null || initial.contacts.isEmpty) {
-      _contactRows.add(SmartOutreachContactFormRow.empty());
-    } else {
-      for (final contact in initial.contacts) {
-        _contactRows.add(SmartOutreachContactFormRow.fromContact(contact));
-      }
-    }
+    _contactsManager = SmartOutreachContactsFormManager.fromInitial(
+      initial?.contacts ?? const [],
+    );
 
     context
         .read<SmartOutreachSchedulesBloc>()
@@ -85,9 +81,7 @@ class _SmartOutreachUpsertScheduleScreenState
     _titleController.dispose();
     _noteController.dispose();
     _scheduleSmsController.dispose();
-    for (final row in _contactRows) {
-      row.dispose();
-    }
+    _contactsManager.dispose();
     super.dispose();
   }
 
@@ -156,30 +150,22 @@ class _SmartOutreachUpsertScheduleScreenState
               },
             ),
             SizedBox(height: 18.h),
-            const Text(
-              'جهات الاتصال (الحد الأقصى 5)',
-              style: TextStyle(fontWeight: FontWeight.w600),
+            SmartOutreachContactsSection(
+              rows: _contactsManager.rows,
+              onAddFromContacts: _contactsManager.rows.length >= 5
+                  ? null
+                  : _addContactFromDevice,
+              onAddManual:
+                  _contactsManager.rows.length >= 5 ? null : _addContactRow,
+              onMoveContact: _moveContact,
+              onRemoveContact: _removeContactRow,
+              onPickContact: _fillContactFromDevice,
+              onActionTypeChanged: (index, type) {
+                setState(() {
+                  _contactsManager.rows[index].actionType = type;
+                });
+              },
             ),
-            SizedBox(height: 4.h),
-            Wrap(
-              spacing: 8.w,
-              runSpacing: 8.h,
-              children: [
-                TextButton.icon(
-                  onPressed:
-                      _contactRows.length >= 5 ? null : _addContactFromDevice,
-                  icon: const Icon(Icons.contacts_outlined),
-                  label: const Text('إضافة من جهات الاتصال'),
-                ),
-                TextButton.icon(
-                  onPressed: _contactRows.length >= 5 ? null : _addContactRow,
-                  icon: const Icon(Icons.add),
-                  label: const Text('إضافة يدوياً'),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            ..._buildContacts(),
             SizedBox(height: 24.h),
             FilledButton(
               onPressed: _onSavePressed,
@@ -192,38 +178,13 @@ class _SmartOutreachUpsertScheduleScreenState
     );
   }
 
-  List<Widget> _buildContacts() {
-    return _contactRows.asMap().entries.map((entry) {
-      final index = entry.key;
-      final row = entry.value;
-
-      return SmartOutreachContactFormCard(
-        index: index,
-        totalCount: _contactRows.length,
-        row: row,
-        onMoveUp: index == 0 ? null : () => _moveContact(index, -1),
-        onMoveDown: index == _contactRows.length - 1
-            ? null
-            : () => _moveContact(index, 1),
-        onRemove:
-            _contactRows.length <= 1 ? null : () => _removeContactRow(index),
-        onPickFromContacts: () => _fillContactFromDevice(index),
-        onActionTypeChanged: (value) {
-          setState(() {
-            row.actionType = value;
-          });
-        },
-      );
-    }).toList();
-  }
-
   void _addContactRow() {
-    if (_contactRows.length >= 5) {
+    if (_contactsManager.rows.length >= 5) {
       return;
     }
 
     setState(() {
-      _contactRows.add(SmartOutreachContactFormRow.empty());
+      _contactsManager.addEmpty();
     });
   }
 
@@ -290,17 +251,15 @@ class _SmartOutreachUpsertScheduleScreenState
       return;
     }
 
-    final selectedPhone =
-        await _selectPhoneNumber(result.contact!.phoneNumbers);
+    final selectedPhone = await showSmartOutreachPhonePicker(
+      context,
+      result.contact!.phoneNumbers,
+    );
     if (!mounted || selectedPhone == null) {
       return;
     }
 
-    final emptyIndex = _contactRows.indexWhere(
-      (row) =>
-          row.nameController.text.trim().isEmpty &&
-          row.phoneController.text.trim().isEmpty,
-    );
+    final emptyIndex = _contactsManager.firstEmptyIndex();
 
     if (emptyIndex >= 0) {
       _fillRow(
@@ -311,23 +270,21 @@ class _SmartOutreachUpsertScheduleScreenState
       return;
     }
 
-    if (_contactRows.length >= 5) {
+    if (_contactsManager.rows.length >= 5) {
       _showMessage('وصلت إلى الحد الأقصى (5 جهات اتصال).');
       return;
     }
 
     setState(() {
-      _contactRows.add(
-        SmartOutreachContactFormRow.prefilled(
-          name: result.contact!.name,
-          phone: selectedPhone,
-        ),
+      _contactsManager.appendPrefilled(
+        name: result.contact!.name,
+        phone: selectedPhone,
       );
     });
   }
 
   Future<void> _fillContactFromDevice(int index) async {
-    if (index < 0 || index >= _contactRows.length) {
+    if (index < 0 || index >= _contactsManager.rows.length) {
       return;
     }
 
@@ -341,8 +298,10 @@ class _SmartOutreachUpsertScheduleScreenState
       return;
     }
 
-    final selectedPhone =
-        await _selectPhoneNumber(result.contact!.phoneNumbers);
+    final selectedPhone = await showSmartOutreachPhonePicker(
+      context,
+      result.contact!.phoneNumbers,
+    );
     if (!mounted || selectedPhone == null) {
       return;
     }
@@ -359,55 +318,13 @@ class _SmartOutreachUpsertScheduleScreenState
     required String name,
     required String phone,
   }) {
-    final row = _contactRows[index];
-    final cleanName = name.trim();
-
     setState(() {
-      if (cleanName.isNotEmpty && cleanName != 'بدون اسم') {
-        row.nameController.text = cleanName;
-      }
-      row.phoneController.text = phone.trim();
+      _contactsManager.fillRow(
+        index: index,
+        name: name,
+        phone: phone,
+      );
     });
-  }
-
-  Future<String?> _selectPhoneNumber(List<String> phoneNumbers) async {
-    final unique = phoneNumbers
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .toList(growable: false);
-
-    if (unique.isEmpty) {
-      return null;
-    }
-
-    if (unique.length == 1) {
-      return unique.first;
-    }
-
-    return showModalBottomSheet<String>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const ListTile(
-                title: Text('اختر رقم الهاتف'),
-                subtitle: Text('هذه الجهة تحتوي على أكثر من رقم'),
-              ),
-              ...unique.map(
-                (phone) => ListTile(
-                  leading: const Icon(Icons.phone_outlined),
-                  title: Text(phone),
-                  onTap: () => Navigator.of(context).pop(phone),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   void _showMessage(String message) {
@@ -417,25 +334,23 @@ class _SmartOutreachUpsertScheduleScreenState
   }
 
   void _removeContactRow(int index) {
-    if (_contactRows.length <= 1) {
+    if (_contactsManager.rows.length <= 1) {
       return;
     }
 
     setState(() {
-      final removed = _contactRows.removeAt(index);
-      removed.dispose();
+      _contactsManager.removeAt(index);
     });
   }
 
   void _moveContact(int index, int direction) {
-    final target = index + direction;
-    if (target < 0 || target >= _contactRows.length) {
+    if (index + direction < 0 ||
+        index + direction >= _contactsManager.rows.length) {
       return;
     }
 
     setState(() {
-      final row = _contactRows.removeAt(index);
-      _contactRows.insert(target, row);
+      _contactsManager.move(index, direction);
     });
   }
 
@@ -455,17 +370,7 @@ class _SmartOutreachUpsertScheduleScreenState
   }
 
   void _onSavePressed() {
-    final contacts = _contactRows
-        .map(
-          (row) => SmartOutreachContactDraft(
-            id: row.id,
-            name: row.nameController.text,
-            phone: row.phoneController.text,
-            actionType: row.actionType,
-            smsTemplate: row.smsTemplateController.text,
-          ),
-        )
-        .toList(growable: false);
+    final contacts = _contactsManager.buildDrafts();
 
     context.read<SmartOutreachSchedulesBloc>().add(
           SaveSmartOutreachScheduleEvent(
