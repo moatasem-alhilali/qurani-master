@@ -23,6 +23,7 @@ enum NotificationChannel {
   hasbnaAllh,
   laHawla,
   subhanAllh,
+  smartOutreach,
 }
 
 extension NotificationChannelMeta on NotificationChannel {
@@ -90,6 +91,11 @@ extension NotificationChannelMeta on NotificationChannel {
     NotificationChannel.defaultChannel: NotificationChannelData(
       id: 'default_android_channel',
       name: 'Default',
+      sound: 'default_custom',
+    ),
+    NotificationChannel.smartOutreach: NotificationChannelData(
+      id: 'smart_outreach_channel',
+      name: 'Smart Outreach',
       sound: 'default_custom',
     ),
   };

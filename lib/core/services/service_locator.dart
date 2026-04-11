@@ -25,6 +25,15 @@ import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/search/data/di/injection_container.dart';
+import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
+import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
+import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_session_repository.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_communication_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
+import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_execution_bloc.dart';
+import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 
@@ -44,6 +53,9 @@ Future<void> setupServiceLocator() async {
   sl
     ..registerSingleton<DatabaseNotificationSettingService>(
       DatabaseNotificationSettingService(),
+    )
+    ..registerSingleton<SmartOutreachDatabaseService>(
+      SmartOutreachDatabaseService(),
     )
     ..registerSingleton<CacheService>(CacheService())
     ..registerSingleton<Connectivity>(Connectivity())
@@ -87,6 +99,34 @@ Future<void> setupServiceLocator() async {
         adhanPrayerTimeService: sl.get(),
       ),
     )
+    ..registerSingleton<SmartOutreachValidationService>(
+      SmartOutreachValidationService(),
+    )
+    ..registerSingleton<SmartOutreachNotificationService>(
+      SmartOutreachNotificationService(notificationService: sl.get()),
+    )
+    ..registerSingleton<SmartOutreachCommunicationService>(
+      SmartOutreachCommunicationService(),
+    )
+    ..registerSingleton<SmartOutreachScheduleRepository>(
+      SmartOutreachScheduleRepository(
+        databaseService: sl.get(),
+        validationService: sl.get(),
+        notificationService: sl.get(),
+      ),
+    )
+    ..registerSingleton<SmartOutreachSessionRepository>(
+      SmartOutreachSessionRepository(
+        databaseService: sl.get(),
+        scheduleRepository: sl.get(),
+      ),
+    )
+    ..registerSingleton<SmartOutreachNotificationRouterService>(
+      SmartOutreachNotificationRouterService(
+        notificationService: sl.get(),
+        smartOutreachNotificationService: sl.get(),
+      ),
+    )
 
     // ─────────────────────── MANAGE NOTIFICATION REPO ───────────────────────
     // sl.get<ManageNotificationRepo>().tasksNotification = tasksNotification;
@@ -122,6 +162,16 @@ Future<void> setupServiceLocator() async {
     // ─────────────────────── BLOC ───────────────────────
     // ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
     ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()));
+  sl
+    ..registerFactory<SmartOutreachSchedulesBloc>(
+      () => SmartOutreachSchedulesBloc(sl.get()),
+    )
+    ..registerFactory<SmartOutreachExecutionBloc>(
+      () => SmartOutreachExecutionBloc(
+        sessionRepository: sl.get(),
+        communicationService: sl.get(),
+      ),
+    );
   // ..registerFactory<QuranAudioBloc>(
   //   () => QuranAudioBloc(quranAudioPlayerRepo: sl()),
   // );

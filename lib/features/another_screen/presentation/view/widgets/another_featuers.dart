@@ -18,6 +18,7 @@ import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/ruqia_shareia_screen.dart';
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_schedules_screen.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
 import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_after_pray_screen.dart';
@@ -60,6 +61,13 @@ class AnotherFeatures extends StatelessWidget {
           },
           text: 'خطط الختم',
           icon: FlutterIslamicIcons.solidQuran2,
+        ),
+        _Item(
+          onPressed: () {
+            context.push(const SmartOutreachSchedulesScreen());
+          },
+          text: 'التواصل الذكي',
+          icon: Icons.phone_in_talk_rounded,
         ),
         _Item(
           onPressed: () {

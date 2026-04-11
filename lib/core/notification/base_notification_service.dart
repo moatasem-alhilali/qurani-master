@@ -92,6 +92,14 @@ abstract class BaseNotificationService {
       onDidReceiveBackgroundNotificationResponse: backgroundNotificationHandler,
     );
 
+    final launchDetails = await plugin.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      final payload = launchDetails?.notificationResponse?.payload;
+      if (payload != null && payload.trim().isNotEmpty) {
+        selectNotificationSubject.add(payload);
+      }
+    }
+
     await initAllAndroidChannels();
     _configureSelectNotificationSubject();
 

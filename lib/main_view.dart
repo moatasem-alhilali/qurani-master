@@ -30,6 +30,7 @@ import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cu
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -169,7 +170,6 @@ class MyApp extends StatelessWidget {
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
                   builder: DevicePreview.appBuilder,
-                  
 
                   home: const _App(),
                 ),
@@ -190,6 +190,12 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> {
+  @override
+  void initState() {
+    super.initState();
+    sl<SmartOutreachNotificationRouterService>().initialize();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(

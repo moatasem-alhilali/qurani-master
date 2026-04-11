@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
+import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
@@ -17,6 +18,14 @@ class DatabaseTables {
   static const String doua = 'doua';
   static const String quranPlan = 'quran_plans';
   static const String quranPlanSession = 'quran_plan_sessions';
+  static const String smartOutreachSchedules =
+      SmartOutreachDatabaseService.schedulesTable;
+  static const String smartOutreachContacts =
+      SmartOutreachDatabaseService.contactsTable;
+  static const String smartOutreachSessions =
+      SmartOutreachDatabaseService.sessionsTable;
+  static const String smartOutreachContactResults =
+      SmartOutreachDatabaseService.contactResultsTable;
 }
 
 /// A singleton service to manage the local SQLite database.
@@ -39,7 +48,7 @@ class DatabaseService {
   static const _dbName = 'quran_app_test7.db';
 
   /// Database version (used for future upgrades)
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
 
   /// Accessor that returns the database instance
   Future<Database> get database async {
@@ -57,6 +66,7 @@ class DatabaseService {
       path,
       version: _dbVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -83,8 +93,21 @@ class DatabaseService {
     // await db.execute(GroupPlanDataSource.planGroupMemberTable);
     // await db.execute(GroupPlanDataSource.planGroupActivityLogsTable);
     // await db.execute(GroupPlanDataSource.planGroupOfflineActionsTable);
+    await db.execute(SmartOutreachDatabaseService.schedulesTableSql);
+    await db.execute(SmartOutreachDatabaseService.contactsTableSql);
+    await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
+    await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
 
     logger.i('✅ Database initialized and tables created.');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(SmartOutreachDatabaseService.schedulesTableSql);
+      await db.execute(SmartOutreachDatabaseService.contactsTableSql);
+      await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
+      await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
+    }
   }
 
   // ──────────────────────────────────────────────────────────────────────────────
