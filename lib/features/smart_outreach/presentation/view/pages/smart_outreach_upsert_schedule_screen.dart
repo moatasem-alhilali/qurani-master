@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_contacts_picker_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 
 class SmartOutreachUpsertScheduleScreen extends StatefulWidget {
@@ -30,6 +32,8 @@ class _SmartOutreachUpsertScheduleScreenState
   late bool _isEnabled;
 
   final List<_ContactFormRow> _contactRows = <_ContactFormRow>[];
+  final SmartOutreachContactsPickerService _contactsPickerService =
+      sl<SmartOutreachContactsPickerService>();
 
   bool get _isEditing => widget.initialBundle?.schedule.id != null;
 
@@ -173,17 +177,25 @@ class _SmartOutreachUpsertScheduleScreenState
               ),
             ),
             SizedBox(height: 18.h),
-            Row(
+            const Text(
+              'جهات الاتصال (الحد الأقصى 5)',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 4.h),
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
               children: [
-                const Text(
-                  'جهات الاتصال (الحد الأقصى 5)',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                TextButton.icon(
+                  onPressed:
+                      _contactRows.length >= 5 ? null : _addContactFromDevice,
+                  icon: const Icon(Icons.contacts_outlined),
+                  label: const Text('إضافة من جهات الاتصال'),
                 ),
-                const Spacer(),
                 TextButton.icon(
                   onPressed: _contactRows.length >= 5 ? null : _addContactRow,
                   icon: const Icon(Icons.add),
-                  label: const Text('إضافة جهة اتصال'),
+                  label: const Text('إضافة يدوياً'),
                 ),
               ],
             ),
@@ -239,6 +251,14 @@ class _SmartOutreachUpsertScheduleScreenState
                   ),
                 ],
               ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () => _fillContactFromDevice(index),
+                  icon: const Icon(Icons.contact_phone_outlined),
+                  label: const Text('اختيار من جهات الاتصال'),
+                ),
+              ),
               TextField(
                 controller: row.nameController,
                 textInputAction: TextInputAction.next,
@@ -258,7 +278,7 @@ class _SmartOutreachUpsertScheduleScreenState
               ),
               SizedBox(height: 10.h),
               DropdownButtonFormField<SmartOutreachActionType>(
-                value: row.actionType,
+                initialValue: row.actionType,
                 items: SmartOutreachActionType.values
                     .map(
                       (type) => DropdownMenuItem<SmartOutreachActionType>(
@@ -305,6 +325,143 @@ class _SmartOutreachUpsertScheduleScreenState
     setState(() {
       _contactRows.add(_ContactFormRow.empty());
     });
+  }
+
+  Future<void> _addContactFromDevice() async {
+    final result = await _contactsPickerService.pickContact();
+    if (!mounted || result.cancelled) {
+      return;
+    }
+
+    if (!result.isSuccess || result.contact == null) {
+      _showMessage(result.errorMessage ?? 'تعذر اختيار جهة الاتصال.');
+      return;
+    }
+
+    final selectedPhone =
+        await _selectPhoneNumber(result.contact!.phoneNumbers);
+    if (!mounted || selectedPhone == null) {
+      return;
+    }
+
+    final emptyIndex = _contactRows.indexWhere(
+      (row) =>
+          row.nameController.text.trim().isEmpty &&
+          row.phoneController.text.trim().isEmpty,
+    );
+
+    if (emptyIndex >= 0) {
+      _fillRow(
+        index: emptyIndex,
+        name: result.contact!.name,
+        phone: selectedPhone,
+      );
+      return;
+    }
+
+    if (_contactRows.length >= 5) {
+      _showMessage('وصلت إلى الحد الأقصى (5 جهات اتصال).');
+      return;
+    }
+
+    setState(() {
+      _contactRows.add(
+        _ContactFormRow.prefilled(
+          name: result.contact!.name,
+          phone: selectedPhone,
+        ),
+      );
+    });
+  }
+
+  Future<void> _fillContactFromDevice(int index) async {
+    if (index < 0 || index >= _contactRows.length) {
+      return;
+    }
+
+    final result = await _contactsPickerService.pickContact();
+    if (!mounted || result.cancelled) {
+      return;
+    }
+
+    if (!result.isSuccess || result.contact == null) {
+      _showMessage(result.errorMessage ?? 'تعذر اختيار جهة الاتصال.');
+      return;
+    }
+
+    final selectedPhone =
+        await _selectPhoneNumber(result.contact!.phoneNumbers);
+    if (!mounted || selectedPhone == null) {
+      return;
+    }
+
+    _fillRow(
+      index: index,
+      name: result.contact!.name,
+      phone: selectedPhone,
+    );
+  }
+
+  void _fillRow({
+    required int index,
+    required String name,
+    required String phone,
+  }) {
+    final row = _contactRows[index];
+    final cleanName = name.trim();
+
+    setState(() {
+      if (cleanName.isNotEmpty && cleanName != 'بدون اسم') {
+        row.nameController.text = cleanName;
+      }
+      row.phoneController.text = phone.trim();
+    });
+  }
+
+  Future<String?> _selectPhoneNumber(List<String> phoneNumbers) async {
+    final unique = phoneNumbers
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+
+    if (unique.isEmpty) {
+      return null;
+    }
+
+    if (unique.length == 1) {
+      return unique.first;
+    }
+
+    return showModalBottomSheet<String>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const ListTile(
+                title: Text('اختر رقم الهاتف'),
+                subtitle: Text('هذه الجهة تحتوي على أكثر من رقم'),
+              ),
+              ...unique.map(
+                (phone) => ListTile(
+                  leading: const Icon(Icons.phone_outlined),
+                  title: Text(phone),
+                  onTap: () => Navigator.of(context).pop(phone),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _removeContactRow(int index) {
@@ -400,6 +557,19 @@ class _ContactFormRow {
       smsTemplateController:
           TextEditingController(text: contact.smsTemplate ?? ''),
       actionType: contact.actionType,
+    );
+  }
+
+  factory _ContactFormRow.prefilled({
+    required String name,
+    required String phone,
+  }) {
+    return _ContactFormRow(
+      id: null,
+      nameController: TextEditingController(text: name.trim()),
+      phoneController: TextEditingController(text: phone.trim()),
+      smsTemplateController: TextEditingController(),
+      actionType: SmartOutreachActionType.callOnly,
     );
   }
 

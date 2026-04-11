@@ -17,6 +17,8 @@ import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/home/data/di/injection_container.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/di/injection_container.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
@@ -29,6 +31,7 @@ import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_d
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_session_repository.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_communication_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_contacts_picker_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
@@ -85,6 +88,9 @@ Future<void> setupServiceLocator() async {
         notifyService: sl.get(),
       ),
     )
+    ..registerSingleton<AthanAlarmPayloadService>(
+      AthanAlarmPayloadService(),
+    )
     ..registerSingleton<AdhanPrayerTimeService>(AdhanPrayerTimeService())
     ..registerSingleton<SettingNotificationRepo>(
       SettingNotificationRepo(
@@ -97,10 +103,20 @@ Future<void> setupServiceLocator() async {
         settingRepo: sl.get(),
         notificationSchedulesRepo: sl.get(),
         adhanPrayerTimeService: sl.get(),
+        athanPayloadService: sl.get(),
+      ),
+    )
+    ..registerSingleton<AthanAlarmNotificationRouterService>(
+      AthanAlarmNotificationRouterService(
+        notificationService: sl.get(),
+        payloadService: sl.get(),
       ),
     )
     ..registerSingleton<SmartOutreachValidationService>(
       SmartOutreachValidationService(),
+    )
+    ..registerSingleton<SmartOutreachContactsPickerService>(
+      SmartOutreachContactsPickerService(),
     )
     ..registerSingleton<SmartOutreachNotificationService>(
       SmartOutreachNotificationService(notificationService: sl.get()),

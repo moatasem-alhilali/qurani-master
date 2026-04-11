@@ -1,3 +1,4 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
@@ -6,6 +7,7 @@ import 'package:quran_app/features/notification_schedules/data/model/notificatio
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 import 'package:quran_app/main.dart';
@@ -18,12 +20,14 @@ class NotificationOrchestratorService {
     required this.settingRepo,
     required this.notificationSchedulesRepo,
     required this.adhanPrayerTimeService,
+    required this.athanPayloadService,
   });
 
   final NotificationService notificationService;
   final SettingNotificationRepo settingRepo;
   final NotificationSchedulesRepo notificationSchedulesRepo;
   final AdhanPrayerTimeService adhanPrayerTimeService;
+  final AthanAlarmPayloadService athanPayloadService;
 
   /// Reschedule all notifications using the unified notification system
   Future<void> rescheduleAllNotifications() async {
@@ -78,16 +82,27 @@ class NotificationOrchestratorService {
         final id = NotificationIdManager.generateNotificationId(key);
 
         if (enabled) {
+          final prayerName = info.name.trim();
           final success =
               await notificationService.scheduleNotificationCompatType(
             id: id,
-            title: info.name,
-            body: info.description,
+            title: 'أذان $prayerName',
+            body: athanPayloadService.buildAthanBody(prayerName),
             channel: NotificationChannel.athan,
             schedule: NotificationScheduleModel.daily(
               hour: info.time.hour,
               minute: info.time.minute,
             ),
+            payload: athanPayloadService.buildPayload(
+              key: key,
+              prayerName: prayerName,
+              prayerTimeLabel: info.time12,
+            ),
+            category: AndroidNotificationCategory.alarm,
+            visibility: NotificationVisibility.public,
+            fullScreenIntent: true,
+            ongoing: true,
+            autoCancel: true,
           );
 
           if (success) {

@@ -340,6 +340,8 @@ abstract class BaseNotificationService {
     bool autoCancel = true,
     bool showWhen = true,
     bool enableVibration = true,
+    bool fullScreenIntent = false,
+    bool channelBypassDnd = false,
   }) async {
     final data = channel.data;
 
@@ -350,6 +352,7 @@ abstract class BaseNotificationService {
       sound: RawResourceAndroidNotificationSound(data.sound),
       priority: Priority.high,
       importance: Importance.max,
+      channelBypassDnd: channelBypassDnd,
       largeIcon:
           largeIcon != null ? DrawableResourceAndroidBitmap(largeIcon) : null,
       actions: actions,
@@ -363,6 +366,7 @@ abstract class BaseNotificationService {
       when: DateTime.now().millisecondsSinceEpoch,
       category: category ?? AndroidNotificationCategory.reminder,
       visibility: visibility ?? NotificationVisibility.public,
+      fullScreenIntent: fullScreenIntent,
       styleInformation: bigTextStyle ?? bigPictureStyle ?? inboxStyle,
       showProgress: showProgress,
       maxProgress: maxProgress,

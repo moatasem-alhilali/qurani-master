@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
@@ -19,6 +20,11 @@ class NotificationPermissionService {
       await Permission.notification.request();
     }
     await sl<NotificationPermissionsService>().requestExactAlarmPermission();
+    final androidPlugin = sl<NotificationService>()
+        .plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    await androidPlugin?.requestFullScreenIntentPermission();
     await sl<NotificationService>().setupNotificationActions();
   }
 }

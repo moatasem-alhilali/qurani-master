@@ -95,7 +95,7 @@ extension NotificationChannelMeta on NotificationChannel {
     ),
     NotificationChannel.smartOutreach: NotificationChannelData(
       id: 'smart_outreach_channel',
-      name: 'Smart Outreach',
+      name: 'التواصل الذكي',
       sound: 'default_custom',
     ),
   };

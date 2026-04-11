@@ -1,5 +1,7 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
@@ -13,6 +15,8 @@ class SettingNotificationRepo {
   });
 
   final NotificationService notificationService;
+  final AthanAlarmPayloadService _athanPayloadService =
+      AthanAlarmPayloadService();
 
   /// Get NotificationSettingModel by key
   Future<NotificationSettingModel?> getSetting(String key) async {
@@ -85,13 +89,31 @@ class SettingNotificationRepo {
 
       // Only schedule if enabled and not a settings-only notification
       if (setting.enabled && !setting.onlySetting) {
+        final isAthan = _athanPayloadService.isAthanKey(setting.key);
+        final prayerName = _athanPayloadService.prayerNameFromKey(setting.key);
+        final title = isAthan ? 'أذان $prayerName' : setting.label;
+        final body = isAthan
+            ? _athanPayloadService.buildAthanBody(prayerName)
+            : NotificationDataConst.resolveNotificationBody(setting.key);
+
         final success =
             await notificationService.scheduleNotificationCompatType(
           id: id,
-          title: setting.label,
-          body: NotificationDataConst.resolveNotificationBody(setting.key),
+          title: title,
+          body: body,
           channel: NotificationDataConst.resolveChannel(setting.key),
           schedule: setting.schedule,
+          payload: isAthan
+              ? _athanPayloadService.buildPayload(
+                  key: setting.key,
+                  prayerName: prayerName,
+                )
+              : null,
+          category: isAthan ? AndroidNotificationCategory.alarm : null,
+          visibility: isAthan ? NotificationVisibility.public : null,
+          fullScreenIntent: isAthan,
+          ongoing: isAthan,
+          autoCancel: true,
         );
 
         if (success) {

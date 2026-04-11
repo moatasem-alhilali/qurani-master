@@ -26,6 +26,7 @@ import 'package:quran_app/features/manage_version/data/repositories/version_repo
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
@@ -193,6 +194,7 @@ class _AppState extends State<_App> {
   @override
   void initState() {
     super.initState();
+    sl<AthanAlarmNotificationRouterService>().initialize();
     sl<SmartOutreachNotificationRouterService>().initialize();
   }
 

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
@@ -12,6 +14,7 @@ class SmartOutreachNotificationService {
   }) : _notificationService = notificationService;
 
   final NotificationService _notificationService;
+  bool _requestedFullScreenPermission = false;
 
   static const String payloadType = 'smart_outreach';
 
@@ -58,8 +61,10 @@ class SmartOutreachNotificationService {
       return false;
     }
 
+    await _requestFullScreenIntentPermissionIfNeeded();
+
     final title = 'ابدأ ${schedule.title}';
-    final body = 'اضغط لبدء تنفيذ جدول التواصل الآن.';
+    final body = 'اضغط "ابدأ المهمة" وابدأ التواصل بخطوات سريعة.';
 
     return _notificationService.scheduleNotificationCompatType(
       id: notificationIdForSchedule(scheduleId),
@@ -71,6 +76,11 @@ class SmartOutreachNotificationService {
         minute: schedule.minute,
       ),
       payload: buildPayload(scheduleId),
+      category: AndroidNotificationCategory.alarm,
+      visibility: NotificationVisibility.public,
+      fullScreenIntent: true,
+      ongoing: true,
+      autoCancel: true,
     );
   }
 
@@ -78,5 +88,19 @@ class SmartOutreachNotificationService {
     return _notificationService.cancelNotificationById(
       id: notificationIdForSchedule(scheduleId),
     );
+  }
+
+  Future<void> _requestFullScreenIntentPermissionIfNeeded() async {
+    if (!Platform.isAndroid || _requestedFullScreenPermission) {
+      return;
+    }
+
+    _requestedFullScreenPermission = true;
+    try {
+      final androidPlugin = _notificationService.plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+      await androidPlugin?.requestFullScreenIntentPermission();
+    } catch (_) {}
   }
 }

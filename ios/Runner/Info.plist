@@ -61,5 +61,7 @@
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>نحتاج إلى موقعك أثناء استخدام التطبيق لتحديد القبلة وحساب أوقات الصلاة بدقة.</string>
+		<key>NSContactsUsageDescription</key>
+		<string>نستخدم جهات الاتصال لتسهيل اختيار الأرقام في التواصل الذكي بدون إدخال يدوي.</string>
 	</dict>
 </plist>

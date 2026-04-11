@@ -339,6 +339,12 @@ class NotificationService extends BaseNotificationService {
     String? largeIcon,
     String? groupKey,
     bool setAsGroupSummary = false,
+    AndroidNotificationCategory? category,
+    NotificationVisibility? visibility,
+    bool ongoing = false,
+    bool autoCancel = true,
+    bool fullScreenIntent = false,
+    bool channelBypassDnd = false,
   }) async {
     try {
       final details = await buildNotificationDetails(
@@ -346,6 +352,12 @@ class NotificationService extends BaseNotificationService {
         largeIcon: largeIcon,
         groupKey: groupKey,
         setAsGroupSummary: setAsGroupSummary,
+        category: category,
+        visibility: visibility,
+        ongoing: ongoing,
+        autoCancel: autoCancel,
+        fullScreenIntent: fullScreenIntent,
+        channelBypassDnd: channelBypassDnd,
       );
 
       switch (schedule.type) {
