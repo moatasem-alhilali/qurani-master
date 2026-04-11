@@ -95,6 +95,12 @@
 
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
 
+        <receiver
+            android:name=".smartoutreach.receiver.SmartOutreachAlarmReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.WAKE_LOCK" />
+
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

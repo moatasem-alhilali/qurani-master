@@ -4,9 +4,13 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.telephony.SmsManager
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.tamaneena.tamaneena_app.smartoutreach.SmartOutreachAlarmConstants
+import com.tamaneena.tamaneena_app.smartoutreach.alarmScheduler.SmartOutreachAlarmScheduler
+import com.tamaneena.tamaneena_app.smartoutreach.alarmScheduler.SmartOutreachAlarmSchedulerImpl
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
@@ -16,10 +20,27 @@ class MainActivity : AudioServiceActivity() {
             "com.tamaneena.tamaneena_app/device_identity"
         private const val SMART_OUTREACH_CHANNEL =
             "com.tamaneena.tamaneena_app/smart_outreach"
+
+        private var pendingSmartOutreachScheduleId: Int? = null
+    }
+
+    private lateinit var smartOutreachAlarmScheduler: SmartOutreachAlarmScheduler
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cachePendingSmartOutreachIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        cachePendingSmartOutreachIntent(intent)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
+        smartOutreachAlarmScheduler = SmartOutreachAlarmSchedulerImpl(this)
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -109,8 +130,98 @@ class MainActivity : AudioServiceActivity() {
                     }
                 }
 
+                "scheduleSmartOutreachDailyAlarm" -> {
+                    val requestCode = call.argument<Int>("requestCode")
+                    val scheduleId = call.argument<Int>("scheduleId")
+                    val hour = call.argument<Int>("hour")
+                    val minute = call.argument<Int>("minute")
+                    val title = call.argument<String>("title").orEmpty().trim()
+                    val body = call.argument<String>("body").orEmpty().trim()
+
+                    if (requestCode == null ||
+                        scheduleId == null ||
+                        hour == null ||
+                        minute == null ||
+                        title.isBlank()
+                    ) {
+                        result.error("INVALID_ARGS", "Invalid daily alarm args", null)
+                        return@setMethodCallHandler
+                    }
+
+                    smartOutreachAlarmScheduler.scheduleDaily(
+                        requestCode = requestCode,
+                        scheduleId = scheduleId,
+                        hour = hour,
+                        minute = minute,
+                        title = title,
+                        body = body,
+                    )
+                    result.success(true)
+                }
+
+                "scheduleSmartOutreachOneShotAlarm" -> {
+                    val requestCode = call.argument<Int>("requestCode")
+                    val scheduleId = call.argument<Int>("scheduleId")
+                    val triggerAtMillis = call.argument<Number>("triggerAtMillis")?.toLong()
+                    val title = call.argument<String>("title").orEmpty().trim()
+                    val body = call.argument<String>("body").orEmpty().trim()
+
+                    if (requestCode == null ||
+                        scheduleId == null ||
+                        triggerAtMillis == null ||
+                        title.isBlank()
+                    ) {
+                        result.error("INVALID_ARGS", "Invalid one-shot alarm args", null)
+                        return@setMethodCallHandler
+                    }
+
+                    smartOutreachAlarmScheduler.scheduleOneShot(
+                        requestCode = requestCode,
+                        scheduleId = scheduleId,
+                        triggerAtMillis = triggerAtMillis,
+                        title = title,
+                        body = body,
+                    )
+                    result.success(true)
+                }
+
+                "cancelSmartOutreachAlarm" -> {
+                    val requestCode = call.argument<Int>("requestCode")
+                    if (requestCode == null) {
+                        result.error("INVALID_ARGS", "requestCode is required", null)
+                        return@setMethodCallHandler
+                    }
+                    smartOutreachAlarmScheduler.cancel(requestCode)
+                    result.success(true)
+                }
+
+                "consumePendingSmartOutreachScheduleId" -> {
+                    result.success(consumePendingSmartOutreachScheduleId())
+                }
+
                 else -> result.notImplemented()
             }
         }
+    }
+
+    private fun cachePendingSmartOutreachIntent(intent: Intent?) {
+        if (intent?.action != SmartOutreachAlarmConstants.ACTION_OPEN_SMART_OUTREACH_ALARM) {
+            return
+        }
+
+        val scheduleId = intent?.getIntExtra(
+            SmartOutreachAlarmConstants.EXTRA_SCHEDULE_ID,
+            -1,
+        ) ?: -1
+
+        if (scheduleId > 0) {
+            pendingSmartOutreachScheduleId = scheduleId
+        }
+    }
+
+    private fun consumePendingSmartOutreachScheduleId(): Int? {
+        val value = pendingSmartOutreachScheduleId
+        pendingSmartOutreachScheduleId = null
+        return value
     }
 }

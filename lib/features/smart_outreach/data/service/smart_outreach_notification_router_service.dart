@@ -5,9 +5,8 @@ import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_alarm_alert_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class SmartOutreachNotificationRouterService {
+class SmartOutreachNotificationRouterService with WidgetsBindingObserver {
   SmartOutreachNotificationRouterService({
     required SmartOutreachNotificationService smartOutreachNotificationService,
   }) : _smartOutreachNotificationService = smartOutreachNotificationService;
@@ -16,12 +15,8 @@ class SmartOutreachNotificationRouterService {
 
   StreamSubscription<String>? _subscription;
   bool _initialized = false;
-  int? _lastHandledScheduleId;
+  String? _lastHandledKey;
   DateTime? _lastHandledAt;
-
-  static const String _lastHandledPayloadKey =
-      'smart_outreach_last_handled_payload';
-  static const String _lastHandledAtKey = 'smart_outreach_last_handled_at_ms';
 
   Future<void> initialize() async {
     if (_initialized) {
@@ -29,9 +24,19 @@ class SmartOutreachNotificationRouterService {
     }
     _initialized = true;
 
+    WidgetsBinding.instance.addObserver(this);
     _subscription = selectNotificationSubject.stream.listen((payload) {
       _handlePayload(payload);
     });
+
+    await _consumePendingNativeAlarmIntent();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_consumePendingNativeAlarmIntent());
+    }
   }
 
   Future<void> _handlePayload(String payload) async {
@@ -41,17 +46,33 @@ class SmartOutreachNotificationRouterService {
       return;
     }
 
-    final now = DateTime.now();
-    if (_lastHandledScheduleId == scheduleId &&
-        _lastHandledAt != null &&
-        now.difference(_lastHandledAt!) < const Duration(seconds: 1)) {
+    _openAlarmScreen(
+      scheduleId: scheduleId,
+      dedupeKey: 'payload:$payload',
+    );
+
+    // clear behavior subject value to avoid stale replay handling
+    selectNotificationSubject.add('');
+  }
+
+  Future<void> _consumePendingNativeAlarmIntent() async {
+    final scheduleId = await _smartOutreachNotificationService
+        .consumePendingScheduleIdFromNativeAlarm();
+    if (scheduleId == null) {
       return;
     }
 
-    _lastHandledScheduleId = scheduleId;
-    _lastHandledAt = now;
+    _openAlarmScreen(
+      scheduleId: scheduleId,
+      dedupeKey: 'native:$scheduleId',
+    );
+  }
 
-    if (await _isDuplicateAcrossAppLaunches(payload)) {
+  void _openAlarmScreen({
+    required int scheduleId,
+    required String dedupeKey,
+  }) {
+    if (_isDuplicate(dedupeKey)) {
       return;
     }
 
@@ -69,38 +90,21 @@ class SmartOutreachNotificationRouterService {
         ),
       );
     });
-
-    // clear last payload value to avoid re-processing stale behavior subject data
-    selectNotificationSubject.add('');
   }
 
-  Future<bool> _isDuplicateAcrossAppLaunches(String payload) async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastPayload = prefs.getString(_lastHandledPayloadKey);
-    final lastHandledAtMs = prefs.getInt(_lastHandledAtKey);
+  bool _isDuplicate(String key) {
     final now = DateTime.now();
-    final todayKey = _dayKey(now);
+    final isDuplicate = _lastHandledKey == key &&
+        _lastHandledAt != null &&
+        now.difference(_lastHandledAt!) < const Duration(seconds: 1);
 
-    if (lastPayload == payload && lastHandledAtMs != null) {
-      final lastHandledAt =
-          DateTime.fromMillisecondsSinceEpoch(lastHandledAtMs);
-      if (_dayKey(lastHandledAt) == todayKey) {
-        return true;
-      }
-    }
-
-    await prefs.setString(_lastHandledPayloadKey, payload);
-    await prefs.setInt(_lastHandledAtKey, now.millisecondsSinceEpoch);
-    return false;
-  }
-
-  String _dayKey(DateTime dateTime) {
-    final month = dateTime.month.toString().padLeft(2, '0');
-    final day = dateTime.day.toString().padLeft(2, '0');
-    return '${dateTime.year}-$month-$day';
+    _lastHandledKey = key;
+    _lastHandledAt = now;
+    return isDuplicate;
   }
 
   Future<void> dispose() async {
+    WidgetsBinding.instance.removeObserver(this);
     await _subscription?.cancel();
     _subscription = null;
     _initialized = false;

@@ -88,6 +88,19 @@ class SmartOutreachNotificationService {
     final title = 'ابدأ ${schedule.title}';
     final body = 'اضغط "ابدأ المهمة" وابدأ التواصل بخطوات سريعة.';
 
+    if (Platform.isAndroid) {
+      final requestCode = notificationIdForSchedule(scheduleId);
+      await _notificationService.cancelNotificationById(id: requestCode);
+      return _scheduleAndroidDailyAlarm(
+        requestCode: requestCode,
+        scheduleId: scheduleId,
+        hour: schedule.hour,
+        minute: schedule.minute,
+        title: title,
+        body: body,
+      );
+    }
+
     return _notificationService.scheduleNotificationCompatType(
       id: notificationIdForSchedule(scheduleId),
       title: title,
@@ -107,10 +120,19 @@ class SmartOutreachNotificationService {
     );
   }
 
-  Future<void> cancelForSchedule(int scheduleId) {
-    return _notificationService.cancelNotificationById(
-      id: notificationIdForSchedule(scheduleId),
-    );
+  Future<void> cancelForSchedule(int scheduleId) async {
+    final scheduleNotificationId = notificationIdForSchedule(scheduleId);
+    final previewNotificationId = notificationIdForPreview(scheduleId);
+
+    if (Platform.isAndroid) {
+      await _cancelAndroidAlarm(scheduleNotificationId);
+      await _cancelAndroidAlarm(previewNotificationId);
+    }
+
+    await _notificationService.cancelNotificationById(
+        id: scheduleNotificationId);
+    await _notificationService.cancelNotificationById(
+        id: previewNotificationId);
   }
 
   Future<bool> schedulePreviewInFiveSeconds(
@@ -152,6 +174,18 @@ class SmartOutreachNotificationService {
     await _notificationService.cancelNotificationById(id: previewId);
 
     final fireAt = DateTime.now().add(delay);
+
+    if (Platform.isAndroid) {
+      await _cancelAndroidAlarm(previewId);
+      return _scheduleAndroidOneShotAlarm(
+        requestCode: previewId,
+        scheduleId: scheduleId,
+        triggerAt: fireAt,
+        title: '$titlePrefix ${schedule.title}',
+        body: body,
+      );
+    }
+
     return _notificationService.scheduleNotificationCompatType(
       id: previewId,
       title: '$titlePrefix ${schedule.title}',
@@ -199,6 +233,20 @@ class SmartOutreachNotificationService {
     }
   }
 
+  Future<int?> consumePendingScheduleIdFromNativeAlarm() async {
+    if (!Platform.isAndroid) {
+      return null;
+    }
+
+    try {
+      return await _channel.invokeMethod<int>(
+        'consumePendingSmartOutreachScheduleId',
+      );
+    } on PlatformException {
+      return null;
+    }
+  }
+
   Future<void> _requestFullScreenIntentPermissionIfNeeded({
     bool forceRetry = false,
   }) async {
@@ -222,5 +270,62 @@ class SmartOutreachNotificationService {
 
       _fullScreenIntentPermissionGranted = await canUseFullScreenIntent();
     } catch (_) {}
+  }
+
+  Future<bool> _scheduleAndroidDailyAlarm({
+    required int requestCode,
+    required int scheduleId,
+    required int hour,
+    required int minute,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      final scheduled =
+          await _channel.invokeMethod<bool>('scheduleSmartOutreachDailyAlarm', {
+        'requestCode': requestCode,
+        'scheduleId': scheduleId,
+        'hour': hour,
+        'minute': minute,
+        'title': title,
+        'body': body,
+      });
+      return scheduled ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  Future<bool> _scheduleAndroidOneShotAlarm({
+    required int requestCode,
+    required int scheduleId,
+    required DateTime triggerAt,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      final scheduled = await _channel.invokeMethod<bool>(
+        'scheduleSmartOutreachOneShotAlarm',
+        {
+          'requestCode': requestCode,
+          'scheduleId': scheduleId,
+          'triggerAtMillis': triggerAt.millisecondsSinceEpoch,
+          'title': title,
+          'body': body,
+        },
+      );
+      return scheduled ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  Future<void> _cancelAndroidAlarm(int requestCode) async {
+    try {
+      await _channel.invokeMethod<bool>(
+        'cancelSmartOutreachAlarm',
+        {'requestCode': requestCode},
+      );
+    } on PlatformException {}
   }
 }
