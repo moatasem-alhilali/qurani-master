@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 class SmartOutreachPickedContact {
@@ -62,26 +63,19 @@ class SmartOutreachContactPickerResult {
 class SmartOutreachContactsPickerService {
   Future<SmartOutreachContactPickerResult> pickContact() async {
     try {
+      final hasPermission = await _ensureReadPermission();
+      if (!hasPermission) {
+        return SmartOutreachContactPickerResult.failed(
+          SmartOutreachContactPickerFailure.permissionDenied,
+        );
+      }
+
       final pickedId = await FlutterContacts.native.showPicker();
       if (pickedId == null || pickedId.trim().isEmpty) {
         return SmartOutreachContactPickerResult.cancelled();
       }
 
-      var contact = await _loadContactWithPhones(pickedId);
-      if (contact == null || contact.phones.isEmpty) {
-        final permissionStatus = await FlutterContacts.permissions.request(
-          PermissionType.read,
-        );
-
-        if (permissionStatus != PermissionStatus.granted &&
-            permissionStatus != PermissionStatus.limited) {
-          return SmartOutreachContactPickerResult.failed(
-            SmartOutreachContactPickerFailure.permissionDenied,
-          );
-        }
-
-        contact = await _loadContactWithPhones(pickedId);
-      }
+      final contact = await _loadContactWithPhones(pickedId);
 
       if (contact == null || contact.phones.isEmpty) {
         return SmartOutreachContactPickerResult.failed(
@@ -110,7 +104,11 @@ class SmartOutreachContactsPickerService {
           phoneNumbers: uniqueNumbers,
         ),
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      debugPrint(
+        'SmartOutreachContactsPickerService.pickContact error: '
+        '$error\n$stackTrace',
+      );
       return SmartOutreachContactPickerResult.failed(
         SmartOutreachContactPickerFailure.unknown,
       );
@@ -125,6 +123,24 @@ class SmartOutreachContactsPickerService {
         ContactProperty.phone,
       },
     );
+  }
+
+  Future<bool> _ensureReadPermission() async {
+    final currentStatus = await FlutterContacts.permissions.check(
+      PermissionType.read,
+    );
+
+    if (currentStatus == PermissionStatus.granted ||
+        currentStatus == PermissionStatus.limited) {
+      return true;
+    }
+
+    final requestedStatus = await FlutterContacts.permissions.request(
+      PermissionType.read,
+    );
+
+    return requestedStatus == PermissionStatus.granted ||
+        requestedStatus == PermissionStatus.limited;
   }
 
   String _resolveContactName(Contact contact) {
