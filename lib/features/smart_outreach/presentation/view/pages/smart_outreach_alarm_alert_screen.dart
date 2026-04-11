@@ -63,98 +63,102 @@ class _SmartOutreachAlarmAlertScreenState
     const accentGold = Color(0xFFE4C98A);
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
+      body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: <Color>[
-              Color(0xFF0A3C33),
-              Color(0xFF0F5144),
-              Color(0xFF123A35),
+              Color(0xFF0B3D34),
+              Color(0xFF0E4C3F),
+              Color(0xFF112D29),
             ],
           ),
         ),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: -200.h,
-              left: -200.w,
-              child: Container(
-                width: 500.w,
-                height: 500.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFE4C98A).withValues(alpha: 0.08),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -180.h,
-              right: -130.w,
-              child: Container(
-                width: 380.w,
-                height: 380.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.06),
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 14.h),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final scale = (constraints.maxHeight / 760).clamp(0.76, 1.0);
+
+              double h(double value) => value * scale;
+              double fs(double value) => (value * scale).sp;
+
+              return Padding(
+                padding: EdgeInsets.fromLTRB(14.w, h(8), 14.w, h(10)),
                 child: Column(
                   children: <Widget>[
                     Align(
                       alignment: AlignmentDirectional.topEnd,
                       child: IconButton(
+                        visualDensity: VisualDensity.compact,
                         onPressed: _dismiss,
                         icon: const Icon(Icons.close, color: Colors.white70),
                       ),
                     ),
-                    SizedBox(height: 2.h),
                     Text(
                       'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم',
                       style: TextStyle(
                         color: accentGold,
-                        fontSize: 24.sp,
+                        fontSize: fs(19),
                         fontFamily: 'uthmanic2',
+                        height: 1.25,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 18.h),
-                    Text(
-                      timeLabel,
-                      style: TextStyle(
-                        color: accentGold,
-                        fontSize: 76.sp,
-                        fontWeight: FontWeight.w700,
-                        height: 1,
-                        fontFamily: 'kufi',
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      dateLabel,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.92),
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'kufi',
-                      ),
-                    ),
-                    SizedBox(height: 26.h),
+                    SizedBox(height: h(9)),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 18.h,
+                        horizontal: 14.w,
+                        vertical: h(10),
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(18.r),
+                        color: Colors.black.withValues(alpha: 0.19),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: accentGold.withValues(alpha: 0.35),
+                        ),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              timeLabel,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: accentGold,
+                                fontSize: fs(58),
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'kufi',
+                                height: 1,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: h(3)),
+                          Text(
+                            dateLabel,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.92),
+                              fontSize: fs(14),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'kufi',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: h(9)),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14.w,
+                        vertical: h(10),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.23),
+                        borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: accentGold.withValues(alpha: 0.45),
                         ),
@@ -164,27 +168,29 @@ class _SmartOutreachAlarmAlertScreenState
                           Icon(
                             Icons.mosque_rounded,
                             color: accentGold,
-                            size: 40.sp,
+                            size: fs(26),
                           ),
-                          SizedBox(height: 10.h),
+                          SizedBox(height: h(5)),
                           Text(
                             _scheduleTitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 31.sp,
+                              fontSize: fs(20),
                               fontWeight: FontWeight.w700,
                               fontFamily: 'kufi',
                               height: 1.3,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 10.h),
+                          SizedBox(height: h(5)),
                           Text(
-                            'اجعل نيتك لله وابدأ مهمة التواصل بلطف ورحمة.',
+                            'ابدأ مهمتك بنية صالحة ورفق بالكلمة.',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 16.sp,
-                              height: 1.6,
+                              fontSize: fs(12.5),
+                              height: 1.5,
                               fontFamily: 'kufi',
                             ),
                             textAlign: TextAlign.center,
@@ -192,55 +198,41 @@ class _SmartOutreachAlarmAlertScreenState
                         ],
                       ),
                     ),
-                    const Spacer(),
+                    SizedBox(height: h(8)),
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(
-                        horizontal: 14.w,
-                        vertical: 12.h,
+                        horizontal: 12.w,
+                        vertical: h(8),
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(14.r),
+                        color: Colors.black.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
-                          color: accentGold.withValues(alpha: 0.35),
+                          color: accentGold.withValues(alpha: 0.3),
                         ),
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            '﴿ وَقُولُوا لِلنَّاسِ حُسْنًا ﴾',
-                            style: TextStyle(
-                              color: accentGold,
-                              fontSize: 24.sp,
-                              fontFamily: 'uthmanic2',
-                              height: 1.4,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'اجعل هذا التواصل بابًا للخير والرفق وصلة الرحم.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 14.sp,
-                              fontFamily: 'kufi',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      child: Text(
+                        '﴿ وَقُولُوا لِلنَّاسِ حُسْنًا ﴾',
+                        style: TextStyle(
+                          color: accentGold,
+                          fontSize: fs(18),
+                          fontFamily: 'uthmanic2',
+                          height: 1.35,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: 18.h),
+                    const Spacer(),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
                         style: FilledButton.styleFrom(
                           backgroundColor: accentGold,
-                          foregroundColor: const Color(0xFF0B3D33),
-                          padding: EdgeInsets.symmetric(vertical: 15.h),
+                          foregroundColor: const Color(0xFF0D3F36),
+                          padding: EdgeInsets.symmetric(vertical: h(11)),
                           textStyle: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: fs(14),
                             fontWeight: FontWeight.w700,
                             fontFamily: 'kufi',
                           ),
@@ -250,18 +242,18 @@ class _SmartOutreachAlarmAlertScreenState
                         label: const Text('ابدأ المهمة الآن'),
                       ),
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: h(7)),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           side: BorderSide(
-                            color: accentGold.withValues(alpha: 0.65),
+                            color: accentGold.withValues(alpha: 0.7),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          padding: EdgeInsets.symmetric(vertical: h(10)),
                           textStyle: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: fs(13),
                             fontWeight: FontWeight.w600,
                             fontFamily: 'kufi',
                           ),
@@ -269,8 +261,8 @@ class _SmartOutreachAlarmAlertScreenState
                         onPressed: _isSnoozing ? null : _snoozeFiveMinutes,
                         icon: _isSnoozing
                             ? SizedBox(
-                                width: 16.w,
-                                height: 16.w,
+                                width: 14.w,
+                                height: 14.w,
                                 child: const CircularProgressIndicator(
                                   strokeWidth: 2,
                                   color: Colors.white,
@@ -280,33 +272,21 @@ class _SmartOutreachAlarmAlertScreenState
                         label: const Text('تأخير 5 دقائق'),
                       ),
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: h(6)),
                     Text(
-                      'اللهم بارك في وقتنا وأعمالنا',
+                      'اللهم بارك في وقتنا',
                       style: TextStyle(
-                        color: accentGold.withValues(alpha: 0.95),
-                        fontSize: 18.sp,
+                        color: accentGold,
+                        fontSize: fs(14),
                         fontFamily: 'uthmanic2',
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    TextButton.icon(
-                      onPressed: _dismiss,
-                      icon: const Icon(Icons.close, color: Colors.white70),
-                      label: Text(
-                        'إغلاق التنبيه',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontFamily: 'kufi',
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
       ),
     );

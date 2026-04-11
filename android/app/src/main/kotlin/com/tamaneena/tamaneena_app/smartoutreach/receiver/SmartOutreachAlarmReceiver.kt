@@ -3,6 +3,8 @@ package com.tamaneena.tamaneena_app.smartoutreach.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.app.KeyguardManager
+import com.tamaneena.tamaneena_app.MainActivity
 import com.tamaneena.tamaneena_app.smartoutreach.SmartOutreachAlarmConstants
 import com.tamaneena.tamaneena_app.smartoutreach.alarmNotificationService.SmartOutreachAlarmNotificationService
 import com.tamaneena.tamaneena_app.smartoutreach.alarmNotificationService.SmartOutreachAlarmNotificationServiceImpl
@@ -34,6 +36,7 @@ class SmartOutreachAlarmReceiver : BroadcastReceiver() {
             title = title,
             body = body,
         )
+        openAlarmScreen(context = context, scheduleId = scheduleId)
 
         if (isDaily) {
             val hour = intent.getIntExtra(SmartOutreachAlarmConstants.EXTRA_HOUR, -1)
@@ -49,6 +52,31 @@ class SmartOutreachAlarmReceiver : BroadcastReceiver() {
                     body = body,
                 )
             }
+        }
+    }
+
+    private fun openAlarmScreen(
+        context: Context,
+        scheduleId: Int,
+    ) {
+        val keyguardManager = context.getSystemService(KeyguardManager::class.java)
+        if (keyguardManager?.isDeviceLocked == true) {
+            return
+        }
+
+        val openIntent = Intent(context, MainActivity::class.java).apply {
+            action = SmartOutreachAlarmConstants.ACTION_OPEN_SMART_OUTREACH_ALARM
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                Intent.FLAG_ACTIVITY_NO_USER_ACTION
+            putExtra(SmartOutreachAlarmConstants.EXTRA_SCHEDULE_ID, scheduleId)
+        }
+
+        try {
+            context.startActivity(openIntent)
+        } catch (_: Exception) {
+            // Keep notification full-screen intent as fallback on restricted devices.
         }
     }
 }

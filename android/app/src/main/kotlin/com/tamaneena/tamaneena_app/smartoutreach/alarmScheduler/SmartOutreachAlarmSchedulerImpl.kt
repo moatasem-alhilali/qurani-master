@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.tamaneena.tamaneena_app.MainActivity
 import com.tamaneena.tamaneena_app.smartoutreach.SmartOutreachAlarmConstants
 import com.tamaneena.tamaneena_app.smartoutreach.receiver.SmartOutreachAlarmReceiver
 import java.util.Calendar
@@ -41,7 +42,12 @@ class SmartOutreachAlarmSchedulerImpl(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        scheduleExact(triggerAtMillis = triggerAtMillis, pendingIntent = pendingIntent)
+        scheduleExact(
+            triggerAtMillis = triggerAtMillis,
+            pendingIntent = pendingIntent,
+            requestCode = requestCode,
+            scheduleId = scheduleId,
+        )
     }
 
     override fun scheduleOneShot(
@@ -68,7 +74,12 @@ class SmartOutreachAlarmSchedulerImpl(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        scheduleExact(triggerAtMillis = triggerAtMillis, pendingIntent = pendingIntent)
+        scheduleExact(
+            triggerAtMillis = triggerAtMillis,
+            pendingIntent = pendingIntent,
+            requestCode = requestCode,
+            scheduleId = scheduleId,
+        )
     }
 
     override fun cancel(requestCode: Int) {
@@ -117,7 +128,31 @@ class SmartOutreachAlarmSchedulerImpl(
     private fun scheduleExact(
         triggerAtMillis: Long,
         pendingIntent: PendingIntent,
+        requestCode: Int,
+        scheduleId: Int,
     ) {
+        val showIntent = Intent(context, MainActivity::class.java).apply {
+            action = SmartOutreachAlarmConstants.ACTION_OPEN_SMART_OUTREACH_ALARM
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra(SmartOutreachAlarmConstants.EXTRA_SCHEDULE_ID, scheduleId)
+        }
+        val showPendingIntent = PendingIntent.getActivity(
+            context,
+            requestCode + 700000,
+            showIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+
+        try {
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(triggerAtMillis, showPendingIntent),
+                pendingIntent,
+            )
+            return
+        } catch (_: Exception) {}
+
         try {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
