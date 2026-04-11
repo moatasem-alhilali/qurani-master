@@ -17,6 +17,7 @@ class SmartOutreachNotificationService {
   final NotificationService _notificationService;
   bool _fullScreenIntentPermissionGranted = false;
   bool _fullScreenIntentPermissionChecked = false;
+  bool _iosTimeSensitivePermissionChecked = false;
   static const MethodChannel _channel = MethodChannel(
     'com.tamaneena.tamaneena_app/smart_outreach',
   );
@@ -100,6 +101,8 @@ class SmartOutreachNotificationService {
         body: body,
       );
     }
+
+    await _requestIosTimeSensitivePermissionIfNeeded();
 
     return _notificationService.scheduleNotificationCompatType(
       id: notificationIdForSchedule(scheduleId),
@@ -186,6 +189,8 @@ class SmartOutreachNotificationService {
       );
     }
 
+    await _requestIosTimeSensitivePermissionIfNeeded();
+
     return _notificationService.scheduleNotificationCompatType(
       id: previewId,
       title: '$titlePrefix ${schedule.title}',
@@ -234,7 +239,7 @@ class SmartOutreachNotificationService {
   }
 
   Future<int?> consumePendingScheduleIdFromNativeAlarm() async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       return null;
     }
 
@@ -270,6 +275,21 @@ class SmartOutreachNotificationService {
 
       _fullScreenIntentPermissionGranted = await canUseFullScreenIntent();
     } catch (_) {}
+  }
+
+  Future<void> _requestIosTimeSensitivePermissionIfNeeded() async {
+    if (!Platform.isIOS || _iosTimeSensitivePermissionChecked) {
+      return;
+    }
+    _iosTimeSensitivePermissionChecked = true;
+
+    try {
+      await _channel.invokeMethod<bool>(
+        'requestTimeSensitiveNotificationPermission',
+      );
+    } on PlatformException {
+      // Ignore and continue with default iOS notification behavior.
+    }
   }
 
   Future<bool> _scheduleAndroidDailyAlarm({

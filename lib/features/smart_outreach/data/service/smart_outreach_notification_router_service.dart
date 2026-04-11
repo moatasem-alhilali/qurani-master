@@ -15,7 +15,7 @@ class SmartOutreachNotificationRouterService with WidgetsBindingObserver {
 
   StreamSubscription<String>? _subscription;
   bool _initialized = false;
-  String? _lastHandledKey;
+  int? _lastHandledScheduleId;
   DateTime? _lastHandledAt;
 
   Future<void> initialize() async {
@@ -48,7 +48,6 @@ class SmartOutreachNotificationRouterService with WidgetsBindingObserver {
 
     _openAlarmScreen(
       scheduleId: scheduleId,
-      dedupeKey: 'payload:$payload',
     );
 
     // clear behavior subject value to avoid stale replay handling
@@ -64,15 +63,13 @@ class SmartOutreachNotificationRouterService with WidgetsBindingObserver {
 
     _openAlarmScreen(
       scheduleId: scheduleId,
-      dedupeKey: 'native:$scheduleId',
     );
   }
 
   void _openAlarmScreen({
     required int scheduleId,
-    required String dedupeKey,
   }) {
-    if (_isDuplicate(dedupeKey)) {
+    if (_isDuplicate(scheduleId)) {
       return;
     }
 
@@ -92,13 +89,13 @@ class SmartOutreachNotificationRouterService with WidgetsBindingObserver {
     });
   }
 
-  bool _isDuplicate(String key) {
+  bool _isDuplicate(int scheduleId) {
     final now = DateTime.now();
-    final isDuplicate = _lastHandledKey == key &&
+    final isDuplicate = _lastHandledScheduleId == scheduleId &&
         _lastHandledAt != null &&
-        now.difference(_lastHandledAt!) < const Duration(seconds: 1);
+        now.difference(_lastHandledAt!) < const Duration(seconds: 2);
 
-    _lastHandledKey = key;
+    _lastHandledScheduleId = scheduleId;
     _lastHandledAt = now;
     return isDuplicate;
   }
