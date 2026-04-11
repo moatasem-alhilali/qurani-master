@@ -5,15 +5,13 @@ import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_alarm_alert_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SmartOutreachNotificationRouterService {
   SmartOutreachNotificationRouterService({
-    required NotificationService notificationService,
     required SmartOutreachNotificationService smartOutreachNotificationService,
-  })  : _notificationService = notificationService,
-        _smartOutreachNotificationService = smartOutreachNotificationService;
+  }) : _smartOutreachNotificationService = smartOutreachNotificationService;
 
-  final NotificationService _notificationService;
   final SmartOutreachNotificationService _smartOutreachNotificationService;
 
   StreamSubscription<String>? _subscription;
@@ -21,22 +19,23 @@ class SmartOutreachNotificationRouterService {
   int? _lastHandledScheduleId;
   DateTime? _lastHandledAt;
 
+  static const String _lastHandledPayloadKey =
+      'smart_outreach_last_handled_payload';
+  static const String _lastHandledAtKey = 'smart_outreach_last_handled_at_ms';
+  static const Duration _duplicateCooldown = Duration(minutes: 10);
+
   Future<void> initialize() async {
     if (_initialized) {
       return;
     }
     _initialized = true;
 
-    _subscription = selectNotificationSubject.stream.listen(_handlePayload);
-
-    final details =
-        await _notificationService.plugin.getNotificationAppLaunchDetails();
-    if (details?.didNotificationLaunchApp ?? false) {
-      _handlePayload(details?.notificationResponse?.payload ?? '');
-    }
+    _subscription = selectNotificationSubject.stream.listen((payload) {
+      _handlePayload(payload);
+    });
   }
 
-  void _handlePayload(String payload) {
+  Future<void> _handlePayload(String payload) async {
     final scheduleId =
         _smartOutreachNotificationService.extractScheduleId(payload);
     if (scheduleId == null) {
@@ -52,6 +51,10 @@ class SmartOutreachNotificationRouterService {
 
     _lastHandledScheduleId = scheduleId;
     _lastHandledAt = now;
+
+    if (await _isDuplicateAcrossAppLaunches(payload)) {
+      return;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navigator = NavigationService.navigatorKey.currentState;
@@ -70,6 +73,25 @@ class SmartOutreachNotificationRouterService {
 
     // clear last payload value to avoid re-processing stale behavior subject data
     selectNotificationSubject.add('');
+  }
+
+  Future<bool> _isDuplicateAcrossAppLaunches(String payload) async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastPayload = prefs.getString(_lastHandledPayloadKey);
+    final lastHandledAtMs = prefs.getInt(_lastHandledAtKey);
+    final now = DateTime.now();
+
+    if (lastPayload == payload && lastHandledAtMs != null) {
+      final lastHandledAt =
+          DateTime.fromMillisecondsSinceEpoch(lastHandledAtMs);
+      if (now.difference(lastHandledAt) < _duplicateCooldown) {
+        return true;
+      }
+    }
+
+    await prefs.setString(_lastHandledPayloadKey, payload);
+    await prefs.setInt(_lastHandledAtKey, now.millisecondsSinceEpoch);
+    return false;
   }
 
   Future<void> dispose() async {

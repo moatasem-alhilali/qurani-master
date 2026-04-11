@@ -139,7 +139,6 @@ Future<void> setupServiceLocator() async {
     )
     ..registerSingleton<SmartOutreachNotificationRouterService>(
       SmartOutreachNotificationRouterService(
-        notificationService: sl.get(),
         smartOutreachNotificationService: sl.get(),
       ),
     )
