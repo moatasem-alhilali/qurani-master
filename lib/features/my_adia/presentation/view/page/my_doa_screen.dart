@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/my_adia/presentation/view/widget/my_dhikr_card_widget.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
@@ -12,9 +14,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/add_dhikr_dialog.dart';
 
 class MuDoaScreen extends StatefulWidget {
-  const MuDoaScreen({
-    super.key,
-  });
+  const MuDoaScreen({super.key});
 
   @override
   State<MuDoaScreen> createState() => _MuDoaScreenState();
@@ -25,20 +25,6 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
   void initState() {
     super.initState();
     context.read<SabihBloc>().add(LoadAllSubihEvent());
-    _loadTodayCounts();
-  }
-
-  void _loadTodayCounts() {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    context.read<SabihBloc>().add(
-          GetCountsForPeriodEvent(
-            from: today,
-            to: now,
-            periodType: PeriodType.today,
-          ),
-        );
   }
 
   @override
@@ -46,9 +32,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
     return AppScaffoldWidget(
       title: 'أدعيتي',
       onRefresh: () async {
-        context.read<SabihBloc>().add(LoadAllSubihEvent());
-        _loadTodayCounts();
-        // return Future.value();
+        context.read<SabihBloc>().add(RefreshAllSubihEvent());
       },
       slivers: [
         BlocConsumer<SabihBloc, SabihState>(
@@ -58,42 +42,61 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
             if (state.actionState == RequestState.error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.errorMessage ?? 'حدث خطأ'),
+                  content: Text(state.errorMessage ?? 'تعذر تنفيذ العملية.'),
                 ),
               );
             }
           },
           buildWhen: (previous, current) =>
-              previous.loadState != current.loadState,
+              previous.loadState != current.loadState ||
+              previous.subihList != current.subihList ||
+              previous.countsMap != current.countsMap ||
+              previous.actionState != current.actionState,
           builder: (context, state) {
             return state.loadState.whenSliver<SubihModel>(
               onSuccess: () {
-                final subihList =
-                    state.subihList.where((e) => e.isCustom).toList();
+                final allItems = state.subihList;
+                final customItems =
+                    allItems.where((element) => element.isCustom).toList();
+                final displayItems =
+                    customItems.isNotEmpty ? customItems : allItems;
+                final totalCountToday = displayItems.fold<int>(
+                  0,
+                  (sum, item) => sum + state.getCountForSubih(item.id ?? -1),
+                );
 
                 return SliverList.builder(
-                  itemCount: subihList.length,
+                  itemCount: displayItems.length + 1,
                   itemBuilder: (context, index) {
-                    final subih = subihList[index];
+                    if (index == 0) {
+                      return _SummaryHeader(
+                        totalItems: displayItems.length,
+                        totalToday: totalCountToday,
+                        isUsingFallbackList: customItems.isEmpty,
+                      );
+                    }
+
+                    final subih = displayItems[index - 1];
                     final count = state.getCountForSubih(subih.id ?? -1);
+
                     return MyDhikrCardWidget(
                       subih: subih,
                       count: count,
                       onTap: () {
-                        if (subih.id != null) {
-                          context.read<SabihBloc>().add(
-                                PerformSubihTapEvent(subihId: subih.id!),
-                              );
-                        }
+                        final subihId = subih.id;
+                        if (subihId == null) return;
+
+                        context.read<SabihBloc>().add(
+                              PerformSubihTapEvent(subihId: subihId),
+                            );
                       },
                       onReset: () {
-                        if (subih.id != null) {
-                          context.read<SabihBloc>().add(
-                                ResetTodayCounterEvent(
-                                  subihId: subih.id!,
-                                ),
-                              );
-                        }
+                        final subihId = subih.id;
+                        if (subihId == null) return;
+
+                        context.read<SabihBloc>().add(
+                              ResetTodayCounterEvent(subihId: subihId),
+                            );
                       },
                       onEdit: subih.isCustom
                           ? () {
@@ -109,18 +112,52 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
                   },
                 );
               },
+              sliverList: state.subihList,
+              context: context,
+              onEmptyList: SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.auto_awesome_rounded,
+                          size: 56,
+                          color: context.primaryColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'لا توجد أدعية بعد',
+                          style: context.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'أضف دعاءك الأول وسيظهر هنا مباشرة.',
+                          textAlign: TextAlign.center,
+                          style: context.bodyMedium,
+                        ),
+                        const SizedBox(height: 16),
+                        FilledButton.icon(
+                          onPressed: _showAddDhikrDialog,
+                          icon: const Icon(Icons.add_rounded),
+                          label: const Text('إضافة دعاء'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             );
           },
         ),
       ],
-      floatingActionButton: BlocBuilder<SabihBloc, SabihState>(
-        builder: (context, state) {
-          return FloatingActionButton(
-            onPressed: _showAddDhikrDialog,
-            tooltip: 'إضافة أدعية مخصصة',
-            child: const Icon(Icons.add),
-          );
-        },
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _showAddDhikrDialog,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('إضافة دعاء'),
+        tooltip: 'إضافة دعاء جديد',
       ),
     );
   }
@@ -131,9 +168,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         value: context.read<SabihBloc>(),
         child: const AddDhikrDialog(),
       ),
-      title: 'إضافة أدعية مخصصة',
-      subtitle: 'أدعية مخصصة هي أدعية يمكنك إضافتها لتصبح أدعيتك الأولى',
-      // backgroundColor: context.scaffoldBackgroundColor,
+      title: 'إضافة دعاء جديد',
+      subtitle: 'اكتب الدعاء ليظهر ضمن أدعيتك الخاصة.',
     );
   }
 
@@ -143,24 +179,118 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),
       ),
-      title: 'تعديل أدعية مخصصة',
-      subtitle: 'أدعية مخصصة هي أدعية يمكنك إضافتها لتصبح أدعيتك الأولى',
-      // backgroundColor: context.scaffoldBackgroundColor,
+      title: 'تعديل الدعاء',
+      subtitle: 'يمكنك تعديل النص أو الوصف وحفظ التغييرات مباشرة.',
     );
   }
 
   Future<void> _showDeleteConfirmation(SubihModel subih) async {
-    final result = await showDeleteConfirmationDialog<bool>(
-      context,
-    );
+    final sabihBloc = context.read<SabihBloc>();
+    final result = await showDeleteConfirmationDialog<bool>(context);
 
-    if (result != null && result == true) {
-      if (subih.id != null) {
-        final request = SubihRequest.fromModel(subih);
-        if (context.mounted) {
-          context.read<SabihBloc>().add(DeleteSubihEvent(request: request));
-        }
-      }
+    if (!mounted || result != true || subih.id == null) {
+      return;
     }
+
+    sabihBloc.add(
+      DeleteSubihEvent(
+        request: SubihRequest.fromModel(subih),
+      ),
+    );
+  }
+}
+
+class _SummaryHeader extends StatelessWidget {
+  const _SummaryHeader({
+    required this.totalItems,
+    required this.totalToday,
+    required this.isUsingFallbackList,
+  });
+
+  final int totalItems;
+  final int totalToday;
+  final bool isUsingFallbackList;
+
+  @override
+  Widget build(BuildContext context) {
+    return CardWidget(
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'ملخص اليوم',
+            style: context.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _StatChip(
+                title: 'عدد الأدعية',
+                value: '$totalItems',
+              ),
+              _StatChip(
+                title: 'مرات الترديد',
+                value: '$totalToday',
+              ),
+            ],
+          ),
+          if (isUsingFallbackList) ...[
+            const SizedBox(height: 10),
+            Text(
+              'لا توجد أدعية مخصصة بعد، تم عرض جميع الأذكار المتاحة.',
+              style: context.bodySmall?.copyWith(
+                color: context.onSurfaceColor.withValues(alpha: 0.7),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StatChip extends StatelessWidget {
+  const _StatChip({
+    required this.title,
+    required this.value,
+  });
+
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.primaryColor.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$title: ',
+              style: context.labelMedium?.copyWith(
+                color: context.primaryColor,
+              ),
+            ),
+            Text(
+              value,
+              style: context.labelLarge?.copyWith(
+                color: context.primaryColor,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -47,6 +47,7 @@ class SabihState extends Equatable {
     List<SubihModel>? subihList,
     Map<int, int>? countsMap,
     String? errorMessage,
+    bool clearErrorMessage = false,
     int? selectedSubihId,
     PeriodType? periodType,
     Map<int, int>? todayCounts,
@@ -64,7 +65,8 @@ class SabihState extends Equatable {
       analyticsLoadState: analyticsLoadState ?? this.analyticsLoadState,
       subihList: subihList ?? this.subihList,
       countsMap: countsMap ?? this.countsMap,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       selectedSubihId: selectedSubihId ?? this.selectedSubihId,
       periodType: periodType ?? this.periodType,
       todayCounts: todayCounts ?? this.todayCounts,

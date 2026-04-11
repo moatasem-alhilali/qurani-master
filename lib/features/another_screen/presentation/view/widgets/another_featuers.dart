@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,185 +24,153 @@ import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_
 class AnotherFeatures extends StatelessWidget {
   const AnotherFeatures({super.key});
 
+  List<_FeatureShortcut> _items(BuildContext context) {
+    return [
+      _FeatureShortcut(
+        label: 'المصحف الشريف',
+        icon: FlutterIslamicIcons.quran2,
+        onTap: () => context.push(const ReadQuranScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'مواقيت الصلاة',
+        icon: FlutterIslamicIcons.prayingPerson,
+        onTap: () => context.push(const PrayerTimeScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'خطط الختمة',
+        icon: FlutterIslamicIcons.solidQuran2,
+        onTap: () => context.push(const QuranPlanListScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'التنبيه الذكي',
+        icon: Icons.phone_in_talk_rounded,
+        onTap: () => context.push(const SmartOutreachSchedulesScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'أذكار الصباح',
+        icon: FlutterIslamicIcons.prayer,
+        onTap: () => context.push(const WirdScreen(isMorning: true)),
+      ),
+      _FeatureShortcut(
+        label: 'اتجاه القبلة',
+        icon: FlutterIslamicIcons.qibla,
+        onTap: () => context.push(const QiblahMainScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'أذكار المساء',
+        icon: FlutterIslamicIcons.prayer,
+        onTap: () => context.push(const WirdScreen(isMorning: false)),
+      ),
+      _FeatureShortcut(
+        label: 'المسبحة',
+        icon: FlutterIslamicIcons.tasbih2,
+        onTap: () => context.push(const TasbeehProvider()),
+      ),
+      _FeatureShortcut(
+        label: 'أسماء الله الحسنى',
+        icon: FlutterIslamicIcons.allah,
+        onTap: () => context.push(const AllhNameScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'مكتبة الأذكار',
+        icon: FlutterIslamicIcons.quran,
+        onTap: () => context.push(const MainThikrScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'حصن المسلم',
+        icon: FlutterIslamicIcons.quran,
+        onTap: () => context.push(const HisnMuslimScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'الأربعون النووية',
+        icon: FlutterIslamicIcons.quran,
+        onTap: () => context.push(const Hadith40Screen()),
+      ),
+      _FeatureShortcut(
+        label: 'أذكار ما بعد الصلاة',
+        icon: FlutterIslamicIcons.tasbihHand,
+        onTap: () => context.push(const ZkarAfterPrayScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'الرقية الشرعية',
+        icon: FlutterIslamicIcons.quran,
+        onTap: () => context.push(const RuqiaShareiaScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'موسوعة السور',
+        icon: FlutterIslamicIcons.quran,
+        onTap: () => context.push(const SurahWithAllDetailScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'أدعيتي الخاصة',
+        icon: FlutterIslamicIcons.muslim2,
+        onTap: () => context.push(const MuDoaProvider()),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GridView(
+    final features = _items(context);
+
+    return GridView.builder(
+      itemCount: features.length,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         childAspectRatio: 1 / 1.4,
         crossAxisSpacing: 5,
         mainAxisSpacing: 5,
       ),
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      children: [
-        _Item(
-          onPressed: () {
-            context.push(const ReadQuranScreen());
-            // context.push(const SamsungSettingsHeaderDemo());
-          },
-          text: 'القرآن الكريم',
-          icon: FlutterIslamicIcons.quran2,
-        ),
-        // if (serviceEnabled)
-        _Item(
-          onPressed: () {
-            context.push(const PrayerTimeScreen());
-          },
-          text: 'أوقات الصلاة',
-          icon: FlutterIslamicIcons.prayingPerson,
-        ),
+      itemBuilder: (context, index) {
+        final item = features[index];
+        final shape = CardShapeType.values[index % CardShapeType.values.length];
 
-        _Item(
-          onPressed: () {
-            context.push(const QuranPlanListScreen());
-          },
-          text: 'خطط الختم',
-          icon: FlutterIslamicIcons.solidQuran2,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const SmartOutreachSchedulesScreen());
-          },
-          text: 'أيقظني',
-          icon: Icons.phone_in_talk_rounded,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const WirdScreen(isMorning: true));
-          },
-          text: 'أذكار الصباح',
-          icon: FlutterIslamicIcons.prayer,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const QiblahMainScreen());
-          },
-          text: 'القبلة',
-          icon: FlutterIslamicIcons.qibla,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const WirdScreen(isMorning: false));
-          },
-          text: 'أذكار المساء',
-          icon: FlutterIslamicIcons.prayer,
-        ),
-
-        _Item(
-          onPressed: () {
-            context.push(const TasbeehProvider());
-          },
-          text: 'التسبيح',
-          icon: FlutterIslamicIcons.tasbih2,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const AllhNameScreen());
-          },
-          text: 'أسماء الله ',
-          icon: FlutterIslamicIcons.allah,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const MainThikrScreen());
-          },
-          text: 'الاذكار',
-          icon: FlutterIslamicIcons.quran,
-        ),
-        // _Item(
-        //   onPressed: () {
-        //     context.push(const YoungMuslimProvider());
-        //   },
-        //   text: 'المسلم الصغير',
-        //   icon: Icons.play_lesson_rounded,
-        // ),
-        // _Item(
-        //   onPressed: () {
-        //     // context.push(const AudioQuranScreen());
-        //     context.push(const AudioQuranScreen());
-        //   },
-        //   text: 'السماع',
-        //   icon: FlutterIslamicIcons.quran,
-        // ),
-
-        //
-        _Item(
-          onPressed: () {
-            context.push(const HisnMuslimScreen());
-          },
-          text: 'حصن المسلم',
-          icon: FlutterIslamicIcons.quran,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const Hadith40Screen());
-          },
-          text: 'الأربعين النووية',
-          icon: FlutterIslamicIcons.quran,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const ZkarAfterPrayScreen());
-          },
-          text: 'أذكار بعد الصلاة',
-          icon: FlutterIslamicIcons.tasbihHand,
-        ),
-
-        //second
-        _Item(
-          onPressed: () {
-            context.push(const RuqiaShareiaScreen());
-          },
-          text: 'الرقية الشرعية',
-          icon: FlutterIslamicIcons.quran,
-        ),
-
-        _Item(
-          onPressed: () {
-            context.push(const SurahWithAllDetailScreen());
-          },
-          text: 'السور وسبب النزول',
-          icon: FlutterIslamicIcons.quran,
-        ),
-        _Item(
-          onPressed: () {
-            context.push(const MuDoaProvider());
-          },
-          text: 'ادعيتي',
-          icon: FlutterIslamicIcons.muslim2,
-        ),
-      ],
+        return _FeatureItem(
+          onPressed: item.onTap,
+          text: item.label,
+          icon: item.icon,
+          shapeType: shape,
+        );
+      },
     );
   }
 }
 
-//
-class _Item extends StatelessWidget {
-  const _Item({
+class _FeatureShortcut {
+  const _FeatureShortcut({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+}
+
+class _FeatureItem extends StatelessWidget {
+  const _FeatureItem({
     required this.onPressed,
     required this.text,
-    this.icon,
+    required this.icon,
+    required this.shapeType,
   });
 
   final String text;
+  final IconData icon;
+  final CardShapeType shapeType;
+  final VoidCallback onPressed;
 
-  final IconData? icon;
-
-  final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
-    final shapeType =
-        CardShapeType.values[Random().nextInt(CardShapeType.values.length)];
     return Column(
       children: [
         Expanded(
           child: FeatureCardIconWidget(
             onTap: onPressed,
-            icon: Icon(
-              icon,
-              size: 40.sp,
-            ),
+            icon: Icon(icon, size: 40.sp),
             shapeType: shapeType,
           ),
         ),

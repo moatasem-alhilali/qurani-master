@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
@@ -17,78 +17,126 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
   SabihBloc({required SabihRepository repository})
       : _repository = repository,
         super(const SabihState()) {
-    // Load all dhikr items
     on<LoadAllSubihEvent>(_onLoadAllSubih);
-
-    // Refresh all dhikr items
     on<RefreshAllSubihEvent>(_onRefreshAllSubih);
-
-    // Tap/count dhikr
     on<PerformSubihTapEvent>(_onPerformSubihTap);
-
-    // Get counts for a specific period
     on<GetCountsForPeriodEvent>(_onGetCountsForPeriod);
-
-    // Reset counter for today for a specific dhikr
     on<ResetTodayCounterEvent>(_onResetTodayCounter);
-
-    // Add new custom dhikr
     on<AddCustomSubihEvent>(_onAddCustomSubih);
-
-    // Update existing dhikr
     on<UpdateSubihEvent>(_onUpdateSubih);
-
-    // Delete dhikr
     on<DeleteSubihEvent>(_onDeleteSubih);
-
-    // Get analytics data
     on<GetAnalyticsDataEvent>(_onGetAnalyticsData);
   }
+
   final SabihRepository _repository;
+
+  ({DateTime from, DateTime to}) _todayPeriod() {
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    return (from: todayStart, to: now);
+  }
+
+  Future<void> _refreshSubihAndTodayCounts(
+    Emitter<SabihState> emit, {
+    RequestState actionState = RequestState.success,
+  }) async {
+    final subihResult = await _repository.getSubih();
+
+    if (subihResult.isLeft()) {
+      final failure = subihResult.swap().getOrElse(() => LogicFailure(null));
+      emit(
+        state.copyWith(
+          actionState: RequestState.error,
+          errorMessage: failure.message ?? 'تعذر تحديث قائمة الأذكار.',
+        ),
+      );
+      return;
+    }
+
+    final subihList = subihResult.getOrElse(() => []);
+    final today = _todayPeriod();
+    final countsResult = await _repository.getCountsGrouped(
+      from: today.from,
+      to: today.to,
+    );
+
+    if (countsResult.isLeft()) {
+      final failure = countsResult.swap().getOrElse(() => LogicFailure(null));
+      logger
+          .e('Failed to refresh counts after list refresh: ${failure.message}');
+    }
+
+    final counts = countsResult.getOrElse(() => state.countsMap ?? {});
+
+    emit(
+      state.copyWith(
+        loadState: RequestState.success,
+        actionState: actionState,
+        subihList: subihList,
+        countsMap: counts,
+        periodType: PeriodType.today,
+        clearErrorMessage: true,
+      ),
+    );
+  }
 
   FutureOr<void> _onRefreshAllSubih(
     RefreshAllSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    // Refresh the list of dhikr items
-    final subihResult = await _repository.getSubih();
-
-    subihResult.fold(
-      (failure) => emit(
-        state.copyWith(
-          actionState: RequestState.error,
-          errorMessage: failure.message,
-        ),
-      ),
-      (subihList) => emit(
-        state.copyWith(
-          subihList: subihList,
-          actionState: RequestState.success,
-        ),
+    emit(
+      state.copyWith(
+        actionState: RequestState.loading,
+        clearErrorMessage: true,
       ),
     );
+
+    await _refreshSubihAndTodayCounts(emit);
   }
 
   FutureOr<void> _onLoadAllSubih(
     LoadAllSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    emit(state.copyWith(loadState: RequestState.loading));
+    emit(
+      state.copyWith(
+        loadState: RequestState.loading,
+        clearErrorMessage: true,
+      ),
+    );
 
-    final result = await _repository.getSubih();
+    final subihResult = await _repository.getSubih();
 
-    result.fold(
-      (failure) => emit(
+    if (subihResult.isLeft()) {
+      final failure = subihResult.swap().getOrElse(() => LogicFailure(null));
+      emit(
         state.copyWith(
           loadState: RequestState.error,
-          errorMessage: failure.message,
+          errorMessage: failure.message ?? 'تعذر تحميل الأذكار.',
         ),
-      ),
-      (subihList) => emit(
-        state.copyWith(
-          loadState: RequestState.success,
-          subihList: subihList,
-        ),
+      );
+      return;
+    }
+
+    final subihList = subihResult.getOrElse(() => []);
+    final today = _todayPeriod();
+    final countsResult = await _repository.getCountsGrouped(
+      from: today.from,
+      to: today.to,
+    );
+
+    if (countsResult.isLeft()) {
+      final failure = countsResult.swap().getOrElse(() => LogicFailure(null));
+      logger.e('Failed to load today counts: ${failure.message}');
+    }
+
+    emit(
+      state.copyWith(
+        loadState: RequestState.success,
+        subihList: subihList,
+        countsMap: countsResult.getOrElse(() => state.countsMap ?? {}),
+        periodType: PeriodType.today,
+        clearErrorMessage: true,
       ),
     );
   }
@@ -97,48 +145,59 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     PerformSubihTapEvent event,
     Emitter<SabihState> emit,
   ) async {
-    // Show optimistic update
-    final updatedCounts = Map<int, int>.from(state.countsMap ?? {});
-    updatedCounts[event.subihId] = (updatedCounts[event.subihId] ?? 0) + 1;
+    final previousCounts = Map<int, int>.from(state.countsMap ?? {});
+    final optimisticCounts = Map<int, int>.from(previousCounts)
+      ..update(
+        event.subihId,
+        (value) => value + 1,
+        ifAbsent: () => 1,
+      );
 
     emit(
       state.copyWith(
-        countsMap: updatedCounts,
+        countsMap: optimisticCounts,
         actionState: RequestState.loading,
+        clearErrorMessage: true,
       ),
     );
 
     final result = await _repository.performSubihTap(event.subihId);
 
     if (result.isLeft()) {
-      final failure = result.swap().getOrElse(() => LogicFailure('message'));
+      final failure = result.swap().getOrElse(() => LogicFailure(null));
       emit(
         state.copyWith(
+          countsMap: previousCounts,
           actionState: RequestState.error,
-          errorMessage: failure.message ?? 'Unknown error',
+          errorMessage: failure.message ?? 'تعذر تسجيل الذكر.',
         ),
       );
       return;
     }
 
-    final now = DateTime.now();
+    final today = _todayPeriod();
     final countsResult = await _repository.getCountsGrouped(
-      from: event.from ?? DateTime(now.year, now.month, now.day),
-      to: event.to ?? now,
+      from: event.from ?? today.from,
+      to: event.to ?? today.to,
     );
 
-    countsResult.fold(
-      (failure) => emit(
+    if (countsResult.isLeft()) {
+      logger.e('Failed to refresh counts after tap. keeping optimistic value.');
+      emit(
         state.copyWith(
-          actionState: RequestState.error,
-          errorMessage: failure.message,
-        ),
-      ),
-      (counts) => emit(
-        state.copyWith(
-          countsMap: counts,
+          countsMap: optimisticCounts,
           actionState: RequestState.success,
+          clearErrorMessage: true,
         ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        countsMap: countsResult.getOrElse(() => optimisticCounts),
+        actionState: RequestState.success,
+        clearErrorMessage: true,
       ),
     );
   }
@@ -148,12 +207,26 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     Emitter<SabihState> emit,
   ) async {
     logger.d(event.periodType);
-    emit(
-      state.copyWith(
-        loadState: RequestState.loading,
-        periodType: event.periodType,
-      ),
-    );
+
+    final shouldShowFullLoading = state.subihList.isEmpty;
+
+    if (shouldShowFullLoading) {
+      emit(
+        state.copyWith(
+          loadState: RequestState.loading,
+          periodType: event.periodType,
+          clearErrorMessage: true,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          actionState: RequestState.loading,
+          periodType: event.periodType,
+          clearErrorMessage: true,
+        ),
+      );
+    }
 
     final result = await _repository.getCountsGrouped(
       from: event.from,
@@ -161,18 +234,38 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     );
 
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          loadState: RequestState.error,
-          errorMessage: failure.message,
-        ),
-      ),
-      (counts) => emit(
-        state.copyWith(
-          countsMap: counts,
-          loadState: RequestState.success,
-        ),
-      ),
+      (failure) {
+        if (shouldShowFullLoading) {
+          emit(
+            state.copyWith(
+              loadState: RequestState.error,
+              errorMessage: failure.message,
+            ),
+          );
+          return;
+        }
+
+        emit(
+          state.copyWith(
+            actionState: RequestState.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
+      (counts) {
+        emit(
+          state.copyWith(
+            countsMap: counts,
+            periodType: event.periodType,
+            loadState:
+                shouldShowFullLoading ? RequestState.success : state.loadState,
+            actionState: shouldShowFullLoading
+                ? state.actionState
+                : RequestState.success,
+            clearErrorMessage: true,
+          ),
+        );
+      },
     );
   }
 
@@ -180,23 +273,30 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     ResetTodayCounterEvent event,
     Emitter<SabihState> emit,
   ) async {
-    // This is a custom operation not directly in the repository
-    // We'll need to implement it by removing today's logs for this dhikr
+    emit(
+      state.copyWith(
+        actionState: RequestState.loading,
+        clearErrorMessage: true,
+      ),
+    );
 
-    emit(state.copyWith(actionState: RequestState.loading));
+    final resetResult = await _repository.resetTodayCounter(event.subihId);
 
-    // For now, we'll simulate this by refreshing the counts
-    // In a real implementation, you would add a method to delete logs for today
+    if (resetResult.isLeft()) {
+      final failure = resetResult.swap().getOrElse(() => LogicFailure(null));
+      emit(
+        state.copyWith(
+          actionState: RequestState.error,
+          errorMessage: failure.message ?? 'تعذر تصفير عداد اليوم.',
+        ),
+      );
+      return;
+    }
 
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    // TODO: Add repository method to reset counter for specific dhikr for today
-
-    // Refresh counts after reset
+    final today = _todayPeriod();
     final result = await _repository.getCountsGrouped(
-      from: today,
-      to: now,
+      from: today.from,
+      to: today.to,
     );
 
     result.fold(
@@ -206,18 +306,14 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
           errorMessage: failure.message,
         ),
       ),
-      (counts) {
-        // Remove this dhikr's count or set to 0
-        final updatedCounts = Map<int, int>.from(counts);
-        updatedCounts[event.subihId] = 0;
-
-        emit(
-          state.copyWith(
-            countsMap: updatedCounts,
-            actionState: RequestState.success,
-          ),
-        );
-      },
+      (counts) => emit(
+        state.copyWith(
+          countsMap: counts,
+          periodType: PeriodType.today,
+          actionState: RequestState.success,
+          clearErrorMessage: true,
+        ),
+      ),
     );
   }
 
@@ -225,56 +321,80 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
     AddCustomSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    emit(state.copyWith(actionState: RequestState.loading));
+    emit(
+      state.copyWith(
+        actionState: RequestState.loading,
+        clearErrorMessage: true,
+      ),
+    );
 
     final result = await _repository.addSubih(event.request);
-    result.fold(
-      (failure) => emit(
+    if (result.isLeft()) {
+      final failure = result.swap().getOrElse(() => LogicFailure(null));
+      emit(
         state.copyWith(
           actionState: RequestState.error,
           errorMessage: failure.message,
         ),
-      ),
-      (_) => add(RefreshAllSubihEvent()),
-    );
+      );
+      return;
+    }
+
+    await _refreshSubihAndTodayCounts(emit);
   }
 
   FutureOr<void> _onUpdateSubih(
     UpdateSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    emit(state.copyWith(actionState: RequestState.loading));
+    emit(
+      state.copyWith(
+        actionState: RequestState.loading,
+        clearErrorMessage: true,
+      ),
+    );
 
     final result = await _repository.updateSubih(event.request);
 
-    result.fold(
-      (failure) => emit(
+    if (result.isLeft()) {
+      final failure = result.swap().getOrElse(() => LogicFailure(null));
+      emit(
         state.copyWith(
           actionState: RequestState.error,
           errorMessage: failure.message,
         ),
-      ),
-      (_) => add(RefreshAllSubihEvent()),
-    );
+      );
+      return;
+    }
+
+    await _refreshSubihAndTodayCounts(emit);
   }
 
   FutureOr<void> _onDeleteSubih(
     DeleteSubihEvent event,
     Emitter<SabihState> emit,
   ) async {
-    emit(state.copyWith(actionState: RequestState.loading));
+    emit(
+      state.copyWith(
+        actionState: RequestState.loading,
+        clearErrorMessage: true,
+      ),
+    );
 
     final result = await _repository.deleteSubih(event.request);
 
-    result.fold(
-      (failure) => emit(
+    if (result.isLeft()) {
+      final failure = result.swap().getOrElse(() => LogicFailure(null));
+      emit(
         state.copyWith(
           actionState: RequestState.error,
           errorMessage: failure.message,
         ),
-      ),
-      (_) => add(RefreshAllSubihEvent()),
-    );
+      );
+      return;
+    }
+
+    await _refreshSubihAndTodayCounts(emit);
   }
 
   FutureOr<void> _onGetAnalyticsData(

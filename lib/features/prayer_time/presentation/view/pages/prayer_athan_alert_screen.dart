@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 
 class PrayerAthanAlertScreen extends StatelessWidget {
@@ -15,88 +17,97 @@ class PrayerAthanAlertScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.scaffoldBackgroundColor,
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF0B3D2E),
-              Color(0xFF145A45),
-              Color(0xFF1B6E55),
+              context.primaryColor.withValues(alpha: 0.10),
+              context.scaffoldBackgroundColor,
+              context.scaffoldBackgroundColor,
             ],
           ),
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 18.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: Column(
               children: [
                 Align(
                   alignment: AlignmentDirectional.topEnd,
                   child: IconButton(
                     onPressed: () => Navigator.of(context).maybePop(),
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(
+                      Icons.close,
+                      color: context.onSurfaceColor,
+                    ),
                   ),
                 ),
                 const Spacer(),
-                Icon(
-                  Icons.mosque_rounded,
-                  size: 90.sp,
-                  color: Colors.white,
-                ),
-                SizedBox(height: 18.h),
-                Text(
-                  'حان الآن وقت صلاة',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.92),
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w600,
+                CardWidget(
+                  border: Border.all(
+                    color: context.outlineVariant.withValues(alpha: 0.4),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  prayerName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 44.sp,
-                    fontWeight: FontWeight.w800,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 72.w,
+                        height: 72.w,
+                        decoration: BoxDecoration(
+                          color: context.primaryColor.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.mosque_rounded,
+                          size: 38.sp,
+                          color: context.primaryColor,
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'حان الآن وقت الصلاة',
+                        style: context.titleMedium?.copyWith(
+                          color: context.onSurfaceColor.withValues(alpha: 0.82),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        prayerName,
+                        style: context.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: context.primaryColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      if ((prayerTimeLabel ?? '').trim().isNotEmpty) ...[
+                        SizedBox(height: 4.h),
+                        Text(
+                          prayerTimeLabel!,
+                          style: context.bodyMedium?.copyWith(
+                            color:
+                                context.onSurfaceColor.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: 12.h),
+                      Text(
+                        'أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.',
+                        style: context.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                if ((prayerTimeLabel ?? '').trim().isNotEmpty) ...[
-                  SizedBox(height: 6.h),
-                  Text(
-                    prayerTimeLabel!,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-                SizedBox(height: 16.h),
-                Text(
-                  'أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 16.sp,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
                 const Spacer(),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF0B3D2E),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                    ),
                     onPressed: () => Navigator.of(context).maybePop(),
-                    icon: const Icon(Icons.check_circle_outline),
+                    icon: const Icon(Icons.check_circle_outline_rounded),
                     label: const Text('تم الاستعداد للصلاة'),
                   ),
                 ),
@@ -104,11 +115,6 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white70),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                    ),
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
@@ -116,11 +122,10 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.schedule),
+                    icon: const Icon(Icons.schedule_rounded),
                     label: const Text('فتح صفحة أوقات الصلاة'),
                   ),
                 ),
-                SizedBox(height: 14.h),
               ],
             ),
           ),

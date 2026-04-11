@@ -103,7 +103,7 @@ extension QueryStateWidgetX<T> on QueryState<T> {
         return onError != null
             ? onError(failure, refresh ?? defaultRefresh ?? () {})
             : ErrorRetryWidget(
-                message: failure.message,
+                message: failure.message??'',
                 onRetry: refresh ?? defaultRefresh,
               );
       case RequestState.success:

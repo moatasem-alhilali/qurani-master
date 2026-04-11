@@ -4,5 +4,6 @@ part of 'wird_bloc.dart';
 abstract class WirdEvent {}
 
 class LoadWirdEvent extends WirdEvent {
-  LoadWirdEvent();
+  LoadWirdEvent({required this.isMorning});
+  final bool isMorning;
 }

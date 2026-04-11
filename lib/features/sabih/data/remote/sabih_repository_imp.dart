@@ -28,6 +28,7 @@ abstract class SabihRepository {
     required DateTime from,
     required DateTime to,
   });
+  Future<Either<LogicFailure, void>> resetTodayCounter(int subihId);
 
   // Unified action
   Future<Either<LogicFailure, void>> performSubihTap(int subihId);
@@ -136,6 +137,16 @@ class SabihRepositoryImpl implements SabihRepository {
         to: to,
       );
       return right(result);
+    } catch (e) {
+      return left(LogicFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<LogicFailure, void>> resetTodayCounter(int subihId) async {
+    try {
+      await DatabaseSabihService.resetTodayCounter(subihId);
+      return right(null);
     } catch (e) {
       return left(LogicFailure(e.toString()));
     }

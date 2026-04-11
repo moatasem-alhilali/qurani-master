@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/components/glass_card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
@@ -15,6 +13,7 @@ class NextPrayerCountdownWidget extends StatefulWidget {
     required this.remainingTime,
     super.key,
   });
+
   final TimePrayerModel nextPrayer;
   final Duration remainingTime;
 
@@ -23,10 +22,7 @@ class NextPrayerCountdownWidget extends StatefulWidget {
       _NextPrayerCountdownWidgetState();
 }
 
-class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
-    with TickerProviderStateMixin {
-  late AnimationController _mainController;
-  late AnimationController _pulseController;
+class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
   late Timer _timer;
   late Duration _currentRemainingTime;
 
@@ -34,28 +30,28 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
   void initState() {
     super.initState();
     _currentRemainingTime = widget.remainingTime;
-
-    _mainController = AnimationController(
-      duration: const Duration(seconds: 8),
-      vsync: this,
-    )..repeat();
-
-    _pulseController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: true);
-
     _startCountdown();
+  }
+
+  @override
+  void didUpdateWidget(covariant NextPrayerCountdownWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.remainingTime != widget.remainingTime) {
+      _currentRemainingTime = widget.remainingTime;
+    }
   }
 
   void _startCountdown() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
       setState(() {
         if (_currentRemainingTime.inSeconds > 0) {
           _currentRemainingTime =
               Duration(seconds: _currentRemainingTime.inSeconds - 1);
-        } else {
-          timer.cancel();
         }
       });
     });
@@ -63,243 +59,102 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget>
 
   @override
   void dispose() {
-    _mainController.dispose();
-    _pulseController.dispose();
     _timer.cancel();
     super.dispose();
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    final h = hours.toString().padLeft(2, '0');
+    final m = minutes.toString().padLeft(2, '0');
+    final s = seconds.toString().padLeft(2, '0');
+    return '$h:$m:$s';
   }
 
   @override
   Widget build(BuildContext context) {
     return CardWidget(
-      margin: EdgeInsets.symmetric(
-        horizontal: 8.sp,
-        vertical: 8.sp,
+      margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+      border: Border.all(
+        color: context.outlineVariant.withValues(alpha: 0.4),
       ),
-      padding: EdgeInsets.zero,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: Container(
-          height: 120.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.r),
-            gradient: _getSimpleGradient(context),
-          ),
-          child: Stack(
-            children: [
-              // Main Content - Reorganized for compact layout
-              _buildCompactContent(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCompactContent() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       child: Row(
         children: [
-          // Left side - Prayer info
+          Container(
+            width: 52.w,
+            height: 52.w,
+            decoration: BoxDecoration(
+              color: context.primaryColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+            child: Center(
+              child: PrayerTimeAnimationWidget(
+                prayerType: widget.nextPrayer.type,
+                size: 28,
+                isActive: true,
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
           Expanded(
-            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Header
-                AnimatedBuilder(
-                  animation: _pulseController,
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: 1.0 + (_pulseController.value * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'الصلاة القادمة',
-                            style: TextStyle(
-                              color:
-                                  context.onBackgroundColor.withOpacity(0.85),
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            widget.nextPrayer.title,
-                            style: TextStyle(
-                              color: context.onBackgroundColor,
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                              height: 1,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 1.h),
-                          Text(
-                            widget.nextPrayer.time,
-                            style: TextStyle(
-                              color: context.onBackgroundColor,
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                Text(
+                  'الصلاة القادمة',
+                  style: context.bodySmall?.copyWith(
+                    color: context.onSurfaceColor.withValues(alpha: 0.6),
+                  ),
                 ),
-
-                // SizedBox(height: 8.h),
-
-                // Countdown Timer - Compact version
-                _buildCompactCountdownTimer(),
+                SizedBox(height: 3.h),
+                Text(
+                  widget.nextPrayer.title,
+                  style: context.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  widget.nextPrayer.time,
+                  style: context.bodySmall,
+                ),
               ],
             ),
           ),
-
-          SizedBox(width: 12.w),
-
-          // Right side - Prayer animation
-          AnimatedBuilder(
-            animation: _mainController,
-            builder: (context, child) {
-              return Transform.rotate(
-                angle: _mainController.value *
-                    2 *
-                    math.pi *
-                    0.05, // Slower rotation
-                child: PrayerTimeAnimationWidget(
-                  prayerType: widget.nextPrayer.type,
-                  size: 45, // Further reduced for better fit
-                  isActive: true,
+          SizedBox(width: 10.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              color: context.primaryColor.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'المتبقي',
+                  style: context.bodySmall?.copyWith(
+                    color: context.primaryColor,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              );
-            },
+                SizedBox(height: 2.h),
+                Text(
+                  _formatDuration(_currentRemainingTime),
+                  style: context.titleSmall?.copyWith(
+                    color: context.primaryColor,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCompactCountdownTimer() {
-    final hours = _currentRemainingTime.inHours;
-    final minutes = _currentRemainingTime.inMinutes.remainder(60);
-    final seconds = _currentRemainingTime.inSeconds.remainder(60);
-
-    return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: 1.0 + (_pulseController.value * 0.02),
-          child: GlassCardWidget(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(
-              color: context.onBackgroundColor.withOpacity(0.15),
-              width: 0.5,
-            ),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildCompactTimeUnit(hours.toString().padLeft(2, '0'), 'س'),
-                  _buildCompactTimeSeparator(),
-                  _buildCompactTimeUnit(
-                    minutes.toString().padLeft(2, '0'),
-                    'د',
-                  ),
-                  _buildCompactTimeSeparator(),
-                  _buildCompactTimeUnit(
-                    seconds.toString().padLeft(2, '0'),
-                    'ث',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCompactTimeUnit(String value, String label) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: context.onBackgroundColor,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.bold,
-            height: 1,
-            shadows: [
-              Shadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 1.w),
-        Text(
-          label,
-          style: TextStyle(
-            color: context.onBackgroundColor,
-            fontSize: 9.sp,
-            fontWeight: FontWeight.w400,
-            height: 1,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCompactTimeSeparator() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.w),
-      child: AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          return Opacity(
-            opacity: 0.5 + (_pulseController.value * 0.5),
-            child: Text(
-              ':',
-              style: TextStyle(
-                color: context.onBackgroundColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-                height: 1,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  LinearGradient _getSimpleGradient(BuildContext context) {
-    return LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        context.primaryColor.withOpacity(0.8),
-        context.primaryColor.withOpacity(0.6),
-        context.onBackgroundColor.withOpacity(0.5),
-      ],
-      stops: const [0.0, 0.6, 1.0],
     );
   }
 }

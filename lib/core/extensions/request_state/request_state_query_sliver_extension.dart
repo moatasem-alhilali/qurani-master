@@ -120,8 +120,7 @@ extension QueryStateSliverWidgetX<T> on QueryState<T> {
                 child: Center(child: CircularProgressIndicator()),
               );
       case RequestState.error:
-        final failure =
-            this.failure ?? ServerFailure('Unknown error');
+        final failure = this.failure ?? ServerFailure('Unknown error');
         if (onError != null) {
           return _asSliver(
             onError(failure, refresh ?? defaultRefresh ?? () {}),
@@ -130,8 +129,7 @@ extension QueryStateSliverWidgetX<T> on QueryState<T> {
         return SliverFillRemaining(
           hasScrollBody: false,
           child: ErrorRetryWidget(
-            message: failure.message,
-           
+            message: failure.message ?? '',
             onRetry: refresh ?? defaultRefresh,
           ),
         );

@@ -6,7 +6,7 @@ class AssetFailure extends Failure {
 
 abstract class Failure {
   Failure(this.message);
-  final String message;
+  final String? message;
 }
 
 class LogicFailure extends Failure {

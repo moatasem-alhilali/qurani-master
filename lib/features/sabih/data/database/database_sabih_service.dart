@@ -43,8 +43,22 @@ CREATE TABLE $subihSummary (
     return _db.insert(subih, request.toJson());
   }
 
-  static Future<int> deleteSubihItem(SubihRequest request) {
-    return _db.delete(subih, request.id!);
+  static Future<int> deleteSubihItem(SubihRequest request) async {
+    final subihId = request.id;
+    if (subihId == null) return 0;
+
+    await _db.deleteWhere(
+      subihLogs,
+      where: 'subih_id = ?',
+      whereArgs: [subihId],
+    );
+    await _db.deleteWhere(
+      subihSummary,
+      where: 'subih_id = ?',
+      whereArgs: [subihId],
+    );
+
+    return _db.delete(subih, subihId);
   }
 
   static Future<int> updateSubihItem(int id, SubihRequest request) {
@@ -150,6 +164,29 @@ CREATE TABLE $subihSummary (
       for (final row in result)
         row['subih_id']! as int: (row['total'] as int?) ?? 0,
     };
+  }
+
+  static Future<void> resetTodayCounter(int subihId) async {
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = todayStart.add(const Duration(days: 1));
+    final todayDate = todayStart.toIso8601String();
+
+    await _db.deleteWhere(
+      subihLogs,
+      where: 'subih_id = ? AND timestamp >= ? AND timestamp < ?',
+      whereArgs: [
+        subihId,
+        todayStart.toIso8601String(),
+        todayEnd.toIso8601String(),
+      ],
+    );
+
+    await _db.deleteWhere(
+      subihSummary,
+      where: 'subih_id = ? AND date = ?',
+      whereArgs: [subihId, todayDate],
+    );
   }
 
   // ───────────── دالة موحدة للتسجيل + ملخص ─────────────

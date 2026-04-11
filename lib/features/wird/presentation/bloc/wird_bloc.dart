@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
-import 'package:quran_app/features/allh_name/data/models/allah_name_model.dart';
 import 'package:quran_app/features/wird/data/models/wird_model.dart';
 
 part 'wird_event.dart';
@@ -27,7 +26,10 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
         JsonLoaderService.wirdsPath,
       );
 
-      final names = list.map(WirdModel.fromJson).toList();
+      final names = list
+          .map(WirdModel.fromJson)
+          .where((item) => item.isForPeriod(event.isMorning))
+          .toList();
 
       emit(state.copyWith(data: names, state: RequestState.success));
     } catch (e) {
