@@ -1,5 +1,8 @@
 package com.tamaneena.tamaneena_app
 
+import android.app.NotificationManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.telephony.SmsManager
@@ -71,6 +74,38 @@ class MainActivity : AudioServiceActivity() {
                         result.success(true)
                     } catch (e: Exception) {
                         result.error("SMS_FAILED", e.message, null)
+                    }
+                }
+
+                "canUseFullScreenIntent" -> {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        result.success(true)
+                        return@setMethodCallHandler
+                    }
+
+                    try {
+                        val manager = getSystemService(NotificationManager::class.java)
+                        result.success(manager?.canUseFullScreenIntent() == true)
+                    } catch (e: Exception) {
+                        result.error("FSI_CHECK_FAILED", e.message, null)
+                    }
+                }
+
+                "openFullScreenIntentSettings" -> {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        result.success(false)
+                        return@setMethodCallHandler
+                    }
+
+                    try {
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                                data = Uri.parse("package:$packageName")
+                            }
+                        startActivity(intent)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        result.error("FSI_SETTINGS_FAILED", e.message, null)
                     }
                 }
 

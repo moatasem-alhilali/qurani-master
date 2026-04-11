@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
@@ -16,6 +17,9 @@ class SmartOutreachNotificationService {
   final NotificationService _notificationService;
   bool _fullScreenIntentPermissionGranted = false;
   bool _fullScreenIntentPermissionChecked = false;
+  static const MethodChannel _channel = MethodChannel(
+    'com.tamaneena.tamaneena_app/smart_outreach',
+  );
 
   static const String payloadType = 'smart_outreach';
 
@@ -68,7 +72,7 @@ class SmartOutreachNotificationService {
       return false;
     }
 
-    await _requestFullScreenIntentPermissionIfNeeded();
+    await _requestFullScreenIntentPermissionIfNeeded(forceRetry: true);
 
     final title = 'ابدأ ${schedule.title}';
     final body = 'اضغط "ابدأ المهمة" وابدأ التواصل بخطوات سريعة.';
@@ -88,6 +92,7 @@ class SmartOutreachNotificationService {
       fullScreenIntent: true,
       ongoing: true,
       autoCancel: true,
+      channelBypassDnd: true,
     );
   }
 
@@ -148,7 +153,36 @@ class SmartOutreachNotificationService {
       fullScreenIntent: true,
       ongoing: false,
       autoCancel: true,
+      channelBypassDnd: true,
     );
+  }
+
+  Future<bool> canUseFullScreenIntent() async {
+    if (!Platform.isAndroid) {
+      return true;
+    }
+
+    try {
+      final allowed =
+          await _channel.invokeMethod<bool>('canUseFullScreenIntent');
+      return allowed ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  Future<bool> openFullScreenIntentSettings() async {
+    if (!Platform.isAndroid) {
+      return false;
+    }
+
+    try {
+      final opened =
+          await _channel.invokeMethod<bool>('openFullScreenIntentSettings');
+      return opened ?? false;
+    } on PlatformException {
+      return false;
+    }
   }
 
   Future<void> _requestFullScreenIntentPermissionIfNeeded({
@@ -167,7 +201,12 @@ class SmartOutreachNotificationService {
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
       final granted = await androidPlugin?.requestFullScreenIntentPermission();
-      _fullScreenIntentPermissionGranted = granted ?? false;
+      if (granted == true) {
+        _fullScreenIntentPermissionGranted = true;
+        return;
+      }
+
+      _fullScreenIntentPermissionGranted = await canUseFullScreenIntent();
     } catch (_) {}
   }
 }

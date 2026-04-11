@@ -60,32 +60,45 @@ class _SmartOutreachAlarmAlertScreenState
   Widget build(BuildContext context) {
     final timeLabel = DateFormat('HH:mm', 'ar').format(_now);
     final dateLabel = DateFormat('EEEE، d MMMM', 'ar').format(_now);
+    const accentGold = Color(0xFFE4C98A);
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
             colors: <Color>[
-              Color(0xFF090C2B),
-              Color(0xFF121B45),
-              Color(0xFF1E1C4E),
+              Color(0xFF0A3C33),
+              Color(0xFF0F5144),
+              Color(0xFF123A35),
             ],
           ),
         ),
         child: Stack(
           children: <Widget>[
             Positioned(
-              top: -180.h,
-              right: -180.w,
+              top: -200.h,
+              left: -200.w,
               child: Container(
-                width: 460.w,
-                height: 460.w,
+                width: 500.w,
+                height: 500.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.07),
+                  color: const Color(0xFFE4C98A).withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -180.h,
+              right: -130.w,
+              child: Container(
+                width: 380.w,
+                height: 380.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.06),
                 ),
               ),
             ),
@@ -98,84 +111,139 @@ class _SmartOutreachAlarmAlertScreenState
                       alignment: AlignmentDirectional.topEnd,
                       child: IconButton(
                         onPressed: _dismiss,
-                        icon: const Icon(Icons.close, color: Colors.white),
+                        icon: const Icon(Icons.close, color: Colors.white70),
                       ),
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم',
+                      style: TextStyle(
+                        color: accentGold,
+                        fontSize: 24.sp,
+                        fontFamily: 'uthmanic2',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 18.h),
                     Text(
                       timeLabel,
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 70.sp,
+                        color: accentGold,
+                        fontSize: 76.sp,
                         fontWeight: FontWeight.w700,
                         height: 1,
+                        fontFamily: 'kufi',
                       ),
                     ),
                     SizedBox(height: 6.h),
                     Text(
                       dateLabel,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 26.sp,
+                        color: Colors.white.withValues(alpha: 0.92),
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.w500,
+                        fontFamily: 'kufi',
                       ),
                     ),
-                    SizedBox(height: 40.h),
-                    Text(
-                      _scheduleTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36.sp,
-                        fontWeight: FontWeight.w700,
+                    SizedBox(height: 26.h),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 18.h,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 14.h),
-                    Text(
-                      'حان وقت التنفيذ. ابدأ المهمة الآن أو قم بتأجيلها لخمس دقائق.',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.86),
-                        fontSize: 16.sp,
-                        height: 1.5,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(18.r),
+                        border: Border.all(
+                          color: accentGold.withValues(alpha: 0.45),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
+                      child: Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.mosque_rounded,
+                            color: accentGold,
+                            size: 40.sp,
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            _scheduleTitle,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 31.sp,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'kufi',
+                              height: 1.3,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 10.h),
+                          Text(
+                            'اجعل نيتك لله وابدأ مهمة التواصل بلطف ورحمة.',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 16.sp,
+                              height: 1.6,
+                              fontFamily: 'kufi',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: _dismiss,
-                      child: Container(
-                        width: 92.w,
-                        height: 92.w,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.35),
-                            width: 4,
-                          ),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.25),
-                              blurRadius: 16,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.close,
-                          size: 48.sp,
-                          color: const Color(0xFF6468E8),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(
+                          color: accentGold.withValues(alpha: 0.35),
                         ),
                       ),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            '﴿ وَقُولُوا لِلنَّاسِ حُسْنًا ﴾',
+                            style: TextStyle(
+                              color: accentGold,
+                              fontSize: 24.sp,
+                              fontFamily: 'uthmanic2',
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            'اجعل هذا التواصل بابًا للخير والرفق وصلة الرحم.',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 14.sp,
+                              fontFamily: 'kufi',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 28.h),
+                    SizedBox(height: 18.h),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
                         style: FilledButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF131B47),
-                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          backgroundColor: accentGold,
+                          foregroundColor: const Color(0xFF0B3D33),
+                          padding: EdgeInsets.symmetric(vertical: 15.h),
+                          textStyle: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'kufi',
+                          ),
                         ),
                         onPressed: _isSnoozing ? null : _startMission,
                         icon: const Icon(Icons.play_circle_outline),
@@ -188,8 +256,15 @@ class _SmartOutreachAlarmAlertScreenState
                       child: OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.white70),
+                          side: BorderSide(
+                            color: accentGold.withValues(alpha: 0.65),
+                          ),
                           padding: EdgeInsets.symmetric(vertical: 14.h),
+                          textStyle: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'kufi',
+                          ),
                         ),
                         onPressed: _isSnoozing ? null : _snoozeFiveMinutes,
                         icon: _isSnoozing
@@ -206,6 +281,27 @@ class _SmartOutreachAlarmAlertScreenState
                       ),
                     ),
                     SizedBox(height: 8.h),
+                    Text(
+                      'اللهم بارك في وقتنا وأعمالنا',
+                      style: TextStyle(
+                        color: accentGold.withValues(alpha: 0.95),
+                        fontSize: 18.sp,
+                        fontFamily: 'uthmanic2',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    TextButton.icon(
+                      onPressed: _dismiss,
+                      icon: const Icon(Icons.close, color: Colors.white70),
+                      label: Text(
+                        'إغلاق التنبيه',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontFamily: 'kufi',
+                          fontSize: 13.sp,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

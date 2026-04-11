@@ -131,6 +131,21 @@ class SmartOutreachSchedulesBloc
     PreviewSmartOutreachScheduleNotificationEvent event,
     Emitter<SmartOutreachSchedulesState> emit,
   ) async {
+    final canUseFullScreen = await _repository.canUseFullScreenIntent();
+    if (!canUseFullScreen) {
+      final openedSettings = await _repository.openFullScreenIntentSettings();
+      emit(
+        state.copyWith(
+          validationErrors: <String>[
+            openedSettings
+                ? 'فعّل إذن الظهور بملء الشاشة من إعدادات النظام، ثم ارجع وجرب مرة أخرى.'
+                : 'يجب تفعيل إذن الظهور بملء الشاشة يدويًا من إعدادات التطبيق.',
+          ],
+        ),
+      );
+      return;
+    }
+
     final scheduled =
         await _repository.schedulePreviewNotification(event.scheduleId);
 

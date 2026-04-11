@@ -333,4 +333,12 @@ class SmartOutreachScheduleRepository {
 
     return _notificationService.scheduleSnoozeInFiveMinutes(bundle.schedule);
   }
+
+  Future<bool> canUseFullScreenIntent() {
+    return _notificationService.canUseFullScreenIntent();
+  }
+
+  Future<bool> openFullScreenIntentSettings() {
+    return _notificationService.openFullScreenIntentSettings();
+  }
 }
