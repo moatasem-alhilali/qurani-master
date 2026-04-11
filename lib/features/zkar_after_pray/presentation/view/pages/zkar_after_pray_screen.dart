@@ -120,7 +120,8 @@ class _ZkarAfterPrayScreenState extends State<ZkarAfterPrayScreen> {
                 _showDetails(context, item, index < 0 ? 0 : index);
               },
               hintText: 'بحث عن أذكار',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: _titleForCard(item, 0),
                 subtitle: _normalize(item.zekr),
               ),

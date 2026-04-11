@@ -81,7 +81,8 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
                 _showDetails(context, item, index < 0 ? 0 : index);
               },
               hintText: 'بحث عن أسماء الله الحسنى',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: item.name,
                 subtitle: item.text,
               ),

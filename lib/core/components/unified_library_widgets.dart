@@ -312,7 +312,8 @@ class _LibraryBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = meta.isPrimary ? context.primaryColor : context.onSurfaceColor;
+    final color =
+        meta.isPrimary ? context.primaryColor : context.onSurfaceColor;
     final background = meta.isPrimary
         ? context.primaryColor.withValues(alpha: 0.12)
         : context.onSurfaceColor.withValues(alpha: 0.08);
@@ -347,7 +348,8 @@ class _DetailSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = section.content.trim().isEmpty ? emptyText : section.content;
+    final content =
+        section.content.trim().isEmpty ? emptyText : section.content;
 
     return CardWidget(
       margin: const EdgeInsets.only(top: 8),

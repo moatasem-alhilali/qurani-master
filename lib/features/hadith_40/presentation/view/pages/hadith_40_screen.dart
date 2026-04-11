@@ -63,7 +63,8 @@ class _Hadith40ScreenState extends State<Hadith40Screen> {
 
   void _showDetails(BuildContext context, Hadith40Model item, int index) {
     final title = _extractTitle(item, index);
-    final shareContent = '$title\n\n${item.hadith}\n\nشرح الحديث:\n${item.description}';
+    final shareContent =
+        '$title\n\n${item.hadith}\n\nشرح الحديث:\n${item.description}';
 
     context.showBottomSheet(
       child: UnifiedLibraryDetailSheet(
@@ -117,7 +118,8 @@ class _Hadith40ScreenState extends State<Hadith40Screen> {
                 _showDetails(context, item, index < 0 ? 0 : index);
               },
               hintText: 'بحث عن حديث',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: _extractTitle(item, 0),
                 subtitle: _extractPreview(item),
               ),

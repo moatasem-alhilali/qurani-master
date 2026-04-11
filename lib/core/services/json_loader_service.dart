@@ -12,6 +12,17 @@ class JsonLoaderService {
   static const String zkarAfterPrayPath = 'assets/json/zkar-after-pray.json';
   static const String ruqiaShareiaPath = 'assets/json/ruqia_shareia.json';
   static const String hisnMuslimPath = 'assets/json/hisn_muslim.json';
+  static const String adhkarHajjUmrahPath =
+      'assets/json/adhkar_hajj_umrah.json';
+  static const String adhkarSleepDreamsPath =
+      'assets/json/adhkar_sleep_dreams.json';
+  static const String adhkarQuranDuasPath =
+      'assets/json/adhkar_quran_duas.json';
+  static const String adhkarQuranicDuasPath =
+      'assets/json/adhkar_quranic_duas.json';
+  static const String adhkarFuneralPath = 'assets/json/adhkar_funeral.json';
+  static const String adhkarSalahJumuahPath =
+      'assets/json/adhkar_salah_jumuah.json';
 
   /// Loads and decodes a JSON list from an asset file.
   ///

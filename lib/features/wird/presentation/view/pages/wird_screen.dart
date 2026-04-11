@@ -9,6 +9,7 @@ import 'package:quran_app/core/extensions/request_state/request_state_sliver_ext
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/audio_service.dart';
 import 'package:quran_app/core/services/copy_service.dart';
+import 'package:quran_app/core/services/json_loader_service.dart';
 import 'package:quran_app/core/services/url_launcher_service.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
@@ -16,16 +17,37 @@ import 'package:quran_app/features/wird/data/models/wird_model.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
 
 class WirdScreen extends StatelessWidget {
-  const WirdScreen({required this.isMorning, super.key});
+  const WirdScreen({required this.isMorning, super.key})
+      : titleOverride = null,
+        assetPath = JsonLoaderService.wirdsPath,
+        filterByPeriod = true;
+
+  const WirdScreen.custom({
+    required String title,
+    required this.assetPath,
+    this.isMorning = true,
+    this.filterByPeriod = false,
+    super.key,
+  }) : titleOverride = title;
 
   final bool isMorning;
+  final String? titleOverride;
+  final String assetPath;
+  final bool filterByPeriod;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => WirdBloc()..add(LoadWirdEvent(isMorning: isMorning)),
+      create: (context) => WirdBloc()
+        ..add(
+          LoadWirdEvent(
+            isMorning: isMorning,
+            assetPath: assetPath,
+            filterByPeriod: filterByPeriod,
+          ),
+        ),
       child: AppScaffoldWidget(
-        title: isMorning ? 'الورد الصباحي' : 'الورد المسائي',
+        title: titleOverride ?? (isMorning ? 'الورد الصباحي' : 'الورد المسائي'),
         trailing: BlocBuilder<WirdBloc, WirdState>(
           builder: (context, state) {
             return GenericSearchAnchorAsync<WirdModel>(

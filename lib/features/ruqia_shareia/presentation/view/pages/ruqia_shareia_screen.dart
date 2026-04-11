@@ -46,7 +46,8 @@ class _RuqiaShareiaScreenState extends State<RuqiaShareiaScreen> {
     RuqiaShareiaModel item,
     int index,
   ) {
-    final reference = item.reference.trim().isEmpty ? 'القرآن الكريم' : item.reference;
+    final reference =
+        item.reference.trim().isEmpty ? 'القرآن الكريم' : item.reference;
     final count = item.count.trim().isEmpty ? 'غير محدد' : item.count;
     final shareContent = [
       item.category,
@@ -125,7 +126,8 @@ class _RuqiaShareiaScreenState extends State<RuqiaShareiaScreen> {
                 _showDetails(context, item, index < 0 ? 0 : index);
               },
               hintText: 'بحث عن رقية',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: item.category,
                 subtitle: _preview(item.zekr, maxChars: 90),
               ),

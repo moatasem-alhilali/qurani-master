@@ -4,6 +4,13 @@ part of 'wird_bloc.dart';
 abstract class WirdEvent {}
 
 class LoadWirdEvent extends WirdEvent {
-  LoadWirdEvent({required this.isMorning});
+  LoadWirdEvent({
+    required this.isMorning,
+    this.assetPath = JsonLoaderService.wirdsPath,
+    this.filterByPeriod = true,
+  });
+
   final bool isMorning;
+  final String assetPath;
+  final bool filterByPeriod;
 }

@@ -23,13 +23,13 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
 
     try {
       final list = await JsonLoaderService.loadJsonList(
-        JsonLoaderService.wirdsPath,
+        event.assetPath,
       );
 
-      final names = list
-          .map(WirdModel.fromJson)
-          .where((item) => item.isForPeriod(event.isMorning))
-          .toList();
+      final allItems = list.map(WirdModel.fromJson).toList();
+      final names = event.filterByPeriod
+          ? allItems.where((item) => item.isForPeriod(event.isMorning)).toList()
+          : allItems;
 
       emit(state.copyWith(data: names, state: RequestState.success));
     } catch (e) {

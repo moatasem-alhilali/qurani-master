@@ -52,7 +52,8 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                 _showSurahDetails(context, item, state.data.indexOf(item));
               },
               hintText: 'بحث عن سورة',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: item.surah,
                 subtitle: item.maqsiduhaAleamu,
                 trailing: '#${item.id}',

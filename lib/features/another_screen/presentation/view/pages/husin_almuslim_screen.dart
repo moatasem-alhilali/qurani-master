@@ -128,7 +128,8 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                 _showDetailBottomSheet(context, item, index < 0 ? 0 : index);
               },
               hintText: 'بحث عن حصن المسلم',
-              suggestionBuilder: (context, item) => UnifiedLibrarySearchSuggestion(
+              suggestionBuilder: (context, item) =>
+                  UnifiedLibrarySearchSuggestion(
                 title: item.title,
                 subtitle: _preview(item, maxChars: 90),
               ),
