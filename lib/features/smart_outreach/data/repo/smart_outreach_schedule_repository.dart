@@ -311,4 +311,15 @@ class SmartOutreachScheduleRepository {
 
     await _notificationService.cancelForSchedule(scheduleId);
   }
+
+  Future<bool> schedulePreviewNotification(int scheduleId) async {
+    await _databaseService.ensureTables();
+
+    final bundle = await getScheduleById(scheduleId);
+    if (bundle == null) {
+      return false;
+    }
+
+    return _notificationService.schedulePreviewInFiveSeconds(bundle.schedule);
+  }
 }

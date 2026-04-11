@@ -49,6 +49,13 @@ class DeleteSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
   final int scheduleId;
 }
 
+class PreviewSmartOutreachScheduleNotificationEvent
+    extends SmartOutreachSchedulesEvent {
+  const PreviewSmartOutreachScheduleNotificationEvent(this.scheduleId);
+
+  final int scheduleId;
+}
+
 class ClearSmartOutreachScheduleFeedbackEvent
     extends SmartOutreachSchedulesEvent {
   const ClearSmartOutreachScheduleFeedbackEvent();

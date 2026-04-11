@@ -24,6 +24,12 @@ class SmartOutreachNotificationService {
     );
   }
 
+  int notificationIdForPreview(int scheduleId) {
+    return NotificationIdManager.generateNotificationId(
+      '${payloadType}_preview_$scheduleId',
+    );
+  }
+
   String buildPayload(int scheduleId) {
     return jsonEncode({
       'type': payloadType,
@@ -87,6 +93,35 @@ class SmartOutreachNotificationService {
   Future<void> cancelForSchedule(int scheduleId) {
     return _notificationService.cancelNotificationById(
       id: notificationIdForSchedule(scheduleId),
+    );
+  }
+
+  Future<bool> schedulePreviewInFiveSeconds(
+    SmartOutreachScheduleModel schedule,
+  ) async {
+    final scheduleId = schedule.id;
+    if (scheduleId == null) {
+      return false;
+    }
+
+    await _requestFullScreenIntentPermissionIfNeeded();
+
+    final previewId = notificationIdForPreview(scheduleId);
+    await _notificationService.cancelNotificationById(id: previewId);
+
+    final fireAt = DateTime.now().add(const Duration(seconds: 5));
+    return _notificationService.scheduleNotificationCompatType(
+      id: previewId,
+      title: 'تجربة إشعار ${schedule.title}',
+      body: 'بعد لحظات سيظهر لك شكل إشعار المهمة على الشاشة.',
+      channel: NotificationChannel.smartOutreach,
+      schedule: NotificationScheduleModel.customDates(<DateTime>[fireAt]),
+      payload: buildPayload(scheduleId),
+      category: AndroidNotificationCategory.alarm,
+      visibility: NotificationVisibility.public,
+      fullScreenIntent: true,
+      ongoing: false,
+      autoCancel: true,
     );
   }
 

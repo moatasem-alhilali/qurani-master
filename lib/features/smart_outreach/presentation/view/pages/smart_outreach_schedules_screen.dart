@@ -92,6 +92,13 @@ class _SmartOutreachSchedulesView extends StatelessWidget {
           bundle: bundle,
           onTap: () => _openUpsertScreen(context, bundle: bundle),
           onStart: () => _openExecution(context, bundle.schedule.id!),
+          onPreviewNotification: () {
+            context.read<SmartOutreachSchedulesBloc>().add(
+                  PreviewSmartOutreachScheduleNotificationEvent(
+                    bundle.schedule.id!,
+                  ),
+                );
+          },
           onDelete: () {
             context.read<SmartOutreachSchedulesBloc>().add(
                   DeleteSmartOutreachScheduleEvent(bundle.schedule.id!),

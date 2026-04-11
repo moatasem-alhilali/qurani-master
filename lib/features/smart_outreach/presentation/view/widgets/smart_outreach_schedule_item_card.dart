@@ -9,6 +9,7 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
     required this.bundle,
     required this.onTap,
     required this.onStart,
+    required this.onPreviewNotification,
     required this.onDelete,
     required this.onToggle,
     super.key,
@@ -17,6 +18,7 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
   final SmartOutreachScheduleBundle bundle;
   final VoidCallback onTap;
   final VoidCallback onStart;
+  final VoidCallback onPreviewNotification;
   final VoidCallback onDelete;
   final ValueChanged<bool> onToggle;
 
@@ -86,6 +88,12 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
                   icon: const Icon(Icons.delete_outline),
                 ),
               ],
+            ),
+            SizedBox(height: 6.h),
+            OutlinedButton.icon(
+              onPressed: onPreviewNotification,
+              icon: const Icon(Icons.notification_important_outlined),
+              label: const Text('تجربة الإشعار (بعد 5 ثوانٍ)'),
             ),
           ],
         ),

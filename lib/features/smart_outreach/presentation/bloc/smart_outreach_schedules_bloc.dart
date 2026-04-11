@@ -14,6 +14,7 @@ class SmartOutreachSchedulesBloc
     on<SaveSmartOutreachScheduleEvent>(_onSaveSchedule);
     on<ToggleSmartOutreachScheduleEnabledEvent>(_onToggleEnabled);
     on<DeleteSmartOutreachScheduleEvent>(_onDeleteSchedule);
+    on<PreviewSmartOutreachScheduleNotificationEvent>(_onPreviewNotification);
     on<ClearSmartOutreachScheduleFeedbackEvent>(_onClearFeedback);
   }
 
@@ -124,6 +125,24 @@ class SmartOutreachSchedulesBloc
     await _repository.deleteSchedule(event.scheduleId);
     add(const LoadSmartOutreachSchedulesEvent(changeState: false));
     emit(state.copyWith(deleteState: RequestState.success));
+  }
+
+  Future<void> _onPreviewNotification(
+    PreviewSmartOutreachScheduleNotificationEvent event,
+    Emitter<SmartOutreachSchedulesState> emit,
+  ) async {
+    final scheduled =
+        await _repository.schedulePreviewNotification(event.scheduleId);
+
+    emit(
+      state.copyWith(
+        validationErrors: <String>[
+          scheduled
+              ? 'تمت جدولة إشعار تجريبي بعد 5 ثوانٍ.'
+              : 'تعذر جدولة الإشعار التجريبي حاليًا.',
+        ],
+      ),
+    );
   }
 
   void _onClearFeedback(
