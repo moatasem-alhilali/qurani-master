@@ -27,7 +27,7 @@ import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ///prayer time
         BlocProvider(
-          create: (context) => PrayerTimeCubit(
+          create: (context) => PrayerTimeBloc(
             prayerTimeService: AdhanPrayerTimeService(),
             coordinatesService: DatabaseCoordinatesService(),
-          )..initPrayerTime(),
+          )..add(const PrayerTimeInitRequested()),
         ),
 
         ///connectivity
@@ -205,7 +205,9 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       return;
     }
 
-    context.read<PrayerTimeCubit>().refreshOnAppResume();
+    context.read<PrayerTimeBloc>().add(
+          const PrayerTimeRefreshOnAppResumeRequested(),
+        );
   }
 
   @override

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/item_prayer.dart';
 
 class CurrentPrayerHomeWidget extends StatefulWidget {
@@ -21,7 +21,7 @@ class _CurrentPrayerHomeWidgetState extends State<CurrentPrayerHomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+    return BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
       builder: (context, state) {
         if (state.prayerState == RequestState.success &&
             state.currentPrayerModel != null) {

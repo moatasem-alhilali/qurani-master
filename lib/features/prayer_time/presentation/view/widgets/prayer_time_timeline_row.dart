@@ -21,68 +21,137 @@ class _PrayerScheduleRow extends StatelessWidget {
       top: isFirst ? Radius.circular(22.r) : Radius.zero,
       bottom: isLast ? Radius.circular(22.r) : Radius.zero,
     );
+    final rowColor = _rowBackgroundColor(context);
+    final rowBorderColor = _rowBorderColor(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: borderRadius,
-        border: Border(
-          right: BorderSide(
-            color: _highlightColor(context),
-            width: _isCurrent ? 3 : (_isNext ? 2 : 0.5),
-          ),
-          bottom: isLast
-              ? BorderSide.none
-              : BorderSide(
-                  color: _alpha(context.outlineVariant, 0.32),
-                ),
-        ),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-      child: Row(
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
         children: [
-          _PrayerIcon(entry: entry),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+          Container(
+            decoration: BoxDecoration(
+              color: rowColor,
+              borderRadius: borderRadius,
+              boxShadow: _isCurrent
+                  ? [
+                      BoxShadow(
+                        color: _alpha(entry.accentColor, 0.22),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                  : null,
+              border: Border.all(
+                color: rowBorderColor,
+                width: _isCurrent ? 1.2 : 0.8,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+            child: Row(
               children: [
-                Text(
-                  entry.prayer.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: _titleColor(context),
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
+                _PrayerIcon(entry: entry),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              entry.prayer.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: _titleColor(context),
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w800,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                          if (_isCurrent) ...[
+                            SizedBox(width: 8.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _alpha(entry.accentColor, 0.18),
+                                borderRadius: BorderRadius.circular(999.r),
+                                border: Border.all(
+                                  color: _alpha(entry.accentColor, 0.38),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.bolt_rounded,
+                                    size: 13.sp,
+                                    color: entry.accentColor,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    'الآن',
+                                    style: TextStyle(
+                                      color: entry.accentColor,
+                                      fontSize: 11.5.sp,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        _subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: _alpha(context.onSurfaceColor, 0.5),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          height: 1.1,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 6.h),
-                Text(
-                  _subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: _alpha(context.onSurfaceColor, 0.5),
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                    height: 1.1,
-                  ),
-                ),
+                SizedBox(width: 12.w),
+                _PrayerTimesColumn(entry: entry, isCurrent: _isCurrent),
               ],
             ),
           ),
-          SizedBox(width: 12.w),
-          _PrayerTimesColumn(entry: entry),
+          if (_isCurrent || _isNext)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: _isCurrent ? 3.w : 2.w,
+                decoration: BoxDecoration(
+                  color: _highlightColor(context),
+                  borderRadius: BorderRadius.only(
+                    topRight: isFirst ? Radius.circular(22.r) : Radius.zero,
+                    bottomRight: isLast ? Radius.circular(22.r) : Radius.zero,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
   String get _subtitle {
-    if (_isCurrent) return 'الصلاة الحالية';
+    if (_isCurrent) return 'الصلاة الحالية الآن';
     if (_isNext) return 'الصلاة القادمة';
     if (_isCompleted) return 'انتهى وقتها';
     return 'الوقت المحلي';
@@ -99,12 +168,25 @@ class _PrayerScheduleRow extends StatelessWidget {
     if (_isNext) return _alpha(entry.accentColor, 0.72);
     return Colors.transparent;
   }
+
+  Color _rowBackgroundColor(BuildContext context) {
+    if (_isCurrent) return _alpha(entry.accentColor, 0.08);
+    if (_isNext) return _alpha(entry.accentColor, 0.045);
+    return context.surfaceColor;
+  }
+
+  Color _rowBorderColor(BuildContext context) {
+    if (_isCurrent) return _alpha(entry.accentColor, 0.35);
+    if (_isNext) return _alpha(entry.accentColor, 0.2);
+    return _alpha(context.outlineVariant, 0.16);
+  }
 }
 
 class _PrayerIcon extends StatelessWidget {
   const _PrayerIcon({required this.entry});
 
   final PrayerTimelineEntry entry;
+  bool get _isCurrent => entry.status == PrayerTimelineStatus.current;
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +194,15 @@ class _PrayerIcon extends StatelessWidget {
       width: 36.w,
       height: 36.w,
       decoration: BoxDecoration(
-        color: _alpha(entry.accentColor, 0.12),
+        color: _isCurrent
+            ? _alpha(entry.accentColor, 0.2)
+            : _alpha(entry.accentColor, 0.12),
         borderRadius: BorderRadius.circular(12.r),
+        border: _isCurrent
+            ? Border.all(
+                color: _alpha(entry.accentColor, 0.35),
+              )
+            : null,
       ),
       child: Icon(
         _iconForPrayer(entry.prayer.type),
@@ -144,31 +233,38 @@ class _PrayerIcon extends StatelessWidget {
 }
 
 class _PrayerTimesColumn extends StatelessWidget {
-  const _PrayerTimesColumn({required this.entry});
+  const _PrayerTimesColumn({
+    required this.entry,
+    required this.isCurrent,
+  });
 
   final PrayerTimelineEntry entry;
+  final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
+    final clock12 = DateFormat('hh:mm').format(entry.prayer.time);
+    final period = entry.prayer.time.hour < 12 ? 'ص' : 'م';
+
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            entry.prayer.time12,
+            clock12,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: context.onSurfaceColor,
+              color: isCurrent ? entry.accentColor : context.onSurfaceColor,
               fontSize: 18.sp,
-              fontWeight: FontWeight.w800,
+              fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w800,
               height: 1.05,
             ),
           ),
           SizedBox(height: 5.h),
           Text(
-            entry.prayer.time24,
+            period,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

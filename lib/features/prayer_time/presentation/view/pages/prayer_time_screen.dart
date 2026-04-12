@@ -8,7 +8,7 @@ import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_location_picker_sheet.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_timeline.dart';
 
@@ -30,7 +30,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+          // BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
           //   builder: (context, state) {
           //     if (state.prayerState == RequestState.success &&
           //         state.nextPrayer != null) {
@@ -59,7 +59,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
           //     return const SizedBox();
           //   },
           // ),
-          BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+          BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
             builder: (context, state) {
               final list = state.prayerState == RequestState.loading
                   ? PrayerInfoModel.dummy()
@@ -161,7 +161,9 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
         nextPrayer: state.nextPrayer,
         onChangeLocation: () => _openLocationPicker(context, state),
         onUseCurrentLocation: () {
-          context.read<PrayerTimeCubit>().useCurrentDeviceLocation();
+          context.read<PrayerTimeBloc>().add(
+                const PrayerTimeUseCurrentDeviceLocationRequested(),
+              );
         },
       ),
     );
@@ -178,10 +180,16 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
       builder: (sheetContext) {
         return PrayerLocationPickerSheet(
           initialLocation: state.selectedLocation,
-          onUseCurrentLocation: () =>
-              context.read<PrayerTimeCubit>().useCurrentDeviceLocation(),
-          onLocationSelected: (selection) =>
-              context.read<PrayerTimeCubit>().selectManualLocation(selection),
+          onUseCurrentLocation: () async {
+            context.read<PrayerTimeBloc>().add(
+                  const PrayerTimeUseCurrentDeviceLocationRequested(),
+                );
+          },
+          onLocationSelected: (selection) async {
+            context.read<PrayerTimeBloc>().add(
+                  PrayerTimeManualLocationSelected(selection),
+                );
+          },
         );
       },
     );
@@ -190,13 +198,13 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   Future<void> _openLocationSettings(BuildContext context) async {
     await Geolocator.openLocationSettings();
     if (!context.mounted) return;
-    await context.read<PrayerTimeCubit>().initPrayerTime();
+    context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
   }
 
   Future<void> _openPermissionSettings(BuildContext context) async {
     await openAppSettings();
     if (!context.mounted) return;
-    await context.read<PrayerTimeCubit>().initPrayerTime();
+    context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
   }
 
   DateTime _resolveLocationNow(int? utcOffsetMinutes) {

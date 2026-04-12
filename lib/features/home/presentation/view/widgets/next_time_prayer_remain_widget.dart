@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 
 class NextTimePrayerRemainWidget extends StatelessWidget {
   const NextTimePrayerRemainWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+    return BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
       builder: (context, state) {
         if (state.prayerState != RequestState.success ||
             state.nextPrayer == null) {
@@ -41,7 +41,7 @@ class PrayerTimeWidget extends StatefulWidget {
   final String nextPrayerTimeFormatted;
 
   @override
-  _PrayerTimeWidgetState createState() => _PrayerTimeWidgetState();
+  State<PrayerTimeWidget> createState() => _PrayerTimeWidgetState();
 }
 
 class _PrayerTimeWidgetState extends State<PrayerTimeWidget> {
@@ -82,8 +82,10 @@ class _PrayerTimeWidgetState extends State<PrayerTimeWidget> {
       stream: _remainingTimeController!.stream,
       initialData: '00:00:00',
       builder: (context, snapshot) {
-        return '  ${widget.nextPrayerName} : ${widget.nextPrayerTimeFormatted}  \n الوقت المتبقي : ${snapshot.data} '
-            .autoSize(
+        final text =
+            '  ${widget.nextPrayerName} : ${widget.nextPrayerTimeFormatted}  '
+            '\n الوقت المتبقي : ${snapshot.data} ';
+        return text.autoSize(
           context,
           textAlign: TextAlign.center,
           fontSize: 12.sp,

@@ -13,7 +13,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 
@@ -22,7 +22,7 @@ class PrayersHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+    return BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
       builder: (context, state) {
         if (!CacheConfig.hasInitLocal && !serviceEnabled) {
           return const LocationEnableScreen();
@@ -91,7 +91,6 @@ class PrayersHomeWidget extends StatelessWidget {
 class _ItemPrayer extends StatefulWidget {
   const _ItemPrayer({
     required this.data,
-    super.key,
   });
 
   final TimePrayerModel data;

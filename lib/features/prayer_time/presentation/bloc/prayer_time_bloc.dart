@@ -15,21 +15,36 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
 import 'package:quran_app/main.dart';
 
+part 'prayer_time_event.dart';
 part 'prayer_time_state.dart';
 
-class PrayerTimeCubit extends Cubit<PrayerTimeState> {
-  PrayerTimeCubit({
+class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
+  PrayerTimeBloc({
     required this.prayerTimeService,
     required this.coordinatesService,
-  }) : super(PrayerTimeState());
+  }) : super(PrayerTimeState()) {
+    on<PrayerTimeInitRequested>(_onInitPrayerTimeRequested);
+    on<PrayerTimeUpdateLocationRequested>(_onUpdateLocationRequested);
+    on<PrayerTimeManualLocationSelected>(_onManualLocationSelected);
+    on<PrayerTimeUseCurrentDeviceLocationRequested>(
+      _onUseCurrentDeviceLocationRequested,
+    );
+    on<PrayerTimeRefreshOnAppResumeRequested>(_onRefreshOnAppResumeRequested);
+    on<PrayerTimeRefreshFromDeviceLocationInBackgroundRequested>(
+      _onRefreshFromDeviceLocationInBackgroundRequested,
+    );
+    on<_PrayerTimeProgressTicked>(_onPrayerTimeProgressTicked);
+  }
+
   final AdhanPrayerTimeService prayerTimeService;
   final DatabaseCoordinatesService coordinatesService;
+
   Timer? _prayerProgressTimer;
   bool _isBackgroundRefreshInProgress = false;
   bool _isDayRolloverRefreshInProgress = false;
   static const double _locationChangeThresholdInMeters = 2000;
 
-  static PrayerTimeCubit get(BuildContext context) => BlocProvider.of(context);
+  static PrayerTimeBloc get(BuildContext context) => BlocProvider.of(context);
 
   @override
   Future<void> close() {
@@ -37,7 +52,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     return super.close();
   }
 
-  Future<void> initPrayerTime() async {
+  Future<void> _onInitPrayerTimeRequested(
+    PrayerTimeInitRequested event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
     emit(
       state.copyWith(
         prayerState: RequestState.loading,
@@ -45,17 +63,24 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         locationStatusMessage: null,
       ),
     );
+
     try {
       final savedLocation = await coordinatesService.getSavedLocation();
       if (savedLocation != null) {
-        await _loadPrayerTimesForSelection(savedLocation);
+        await _loadPrayerTimesForSelection(
+          savedLocation,
+          emit: emit,
+        );
         if (!savedLocation.isManual) {
-          unawaited(refreshFromDeviceLocationInBackground());
+          add(const PrayerTimeRefreshFromDeviceLocationInBackgroundRequested());
         }
         return;
       }
 
-      await _loadUsingDeviceLocation(fallbackLocation: savedLocation);
+      await _loadUsingDeviceLocation(
+        emit: emit,
+        fallbackLocation: savedLocation,
+      );
     } catch (e) {
       logger.e(e);
       emit(
@@ -68,7 +93,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     }
   }
 
-  Future<void> updateLocation() async {
+  Future<void> _onUpdateLocationRequested(
+    PrayerTimeUpdateLocationRequested event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
     emit(
       state.copyWith(
         prayerState: RequestState.loading,
@@ -76,11 +104,18 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
         locationStatusMessage: null,
       ),
     );
+
     final fallbackLocation = await coordinatesService.getSavedLocation();
-    await _loadUsingDeviceLocation(fallbackLocation: fallbackLocation);
+    await _loadUsingDeviceLocation(
+      emit: emit,
+      fallbackLocation: fallbackLocation,
+    );
   }
 
-  Future<void> selectManualLocation(PrayerLocationSelection selection) async {
+  Future<void> _onManualLocationSelected(
+    PrayerTimeManualLocationSelected event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
     emit(
       state.copyWith(
         prayerState: RequestState.loading,
@@ -90,8 +125,11 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     );
 
     try {
-      await coordinatesService.saveLocationSelection(selection);
-      await _loadPrayerTimesForSelection(selection);
+      await coordinatesService.saveLocationSelection(event.selection);
+      await _loadPrayerTimesForSelection(
+        event.selection,
+        emit: emit,
+      );
     } catch (e) {
       logger.e(e);
       emit(
@@ -104,17 +142,26 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     }
   }
 
-  Future<void> useCurrentDeviceLocation() async {
-    await updateLocation();
+  Future<void> _onUseCurrentDeviceLocationRequested(
+    PrayerTimeUseCurrentDeviceLocationRequested event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    add(const PrayerTimeUpdateLocationRequested());
   }
 
-  Future<void> refreshOnAppResume() async {
-    _refreshPrayerProgressFromState();
-    await _refreshForDayRolloverIfNeeded();
-    await refreshFromDeviceLocationInBackground();
+  Future<void> _onRefreshOnAppResumeRequested(
+    PrayerTimeRefreshOnAppResumeRequested event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    _refreshPrayerProgressFromState(emit);
+    await _refreshForDayRolloverIfNeeded(emit);
+    add(const PrayerTimeRefreshFromDeviceLocationInBackgroundRequested());
   }
 
-  Future<void> refreshFromDeviceLocationInBackground() async {
+  Future<void> _onRefreshFromDeviceLocationInBackgroundRequested(
+    PrayerTimeRefreshFromDeviceLocationInBackgroundRequested event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
     if (_isBackgroundRefreshInProgress) return;
     final selectedLocation = state.selectedLocation;
     if (selectedLocation == null || selectedLocation.isManual) return;
@@ -145,7 +192,10 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       if (!_hasMeaningfulLocationChange(cachedSelection, liveSelection)) return;
 
       await coordinatesService.saveLocationSelection(liveSelection);
-      await _loadPrayerTimesForSelection(liveSelection);
+      await _loadPrayerTimesForSelection(
+        liveSelection,
+        emit: emit,
+      );
     } catch (e) {
       logger.w('Silent device location refresh failed: $e');
     } finally {
@@ -153,13 +203,23 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     }
   }
 
+  Future<void> _onPrayerTimeProgressTicked(
+    _PrayerTimeProgressTicked event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    _refreshPrayerProgressFromState(emit);
+    await _refreshForDayRolloverIfNeeded(emit);
+  }
+
   Future<void> _loadUsingDeviceLocation({
+    required Emitter<PrayerTimeState> emit,
     PrayerLocationSelection? fallbackLocation,
   }) async {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         await _handleDeviceLocationFailure(
+          emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.serviceDisabled,
           message: 'خدمة الموقع غير مفعلة. فعّلها أو اختر مدينة يدويًا.',
@@ -174,6 +234,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
 
       if (permission == LocationPermission.denied) {
         await _handleDeviceLocationFailure(
+          emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.permissionDenied,
           message: 'يلزم منح صلاحية الموقع أو اختيار مدينة يدويًا.',
@@ -183,6 +244,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
 
       if (permission == LocationPermission.deniedForever) {
         await _handleDeviceLocationFailure(
+          emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.permissionDeniedForever,
           message:
@@ -203,10 +265,14 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       );
 
       await coordinatesService.saveLocationSelection(selection);
-      await _loadPrayerTimesForSelection(selection);
+      await _loadPrayerTimesForSelection(
+        selection,
+        emit: emit,
+      );
     } catch (e) {
       logger.e(e);
       await _handleDeviceLocationFailure(
+        emit: emit,
         fallbackLocation: fallbackLocation,
         status: PrayerLocationStatus.error,
         message: 'تعذر تحديد موقع الجهاز حاليًا',
@@ -215,6 +281,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   }
 
   Future<void> _handleDeviceLocationFailure({
+    required Emitter<PrayerTimeState> emit,
     required PrayerLocationStatus status,
     required String message,
     PrayerLocationSelection? fallbackLocation,
@@ -222,6 +289,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     if (fallbackLocation != null) {
       await _loadPrayerTimesForSelection(
         fallbackLocation,
+        emit: emit,
         status: status,
         statusMessage: message,
       );
@@ -245,6 +313,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
 
   Future<void> _loadPrayerTimesForSelection(
     PrayerLocationSelection selection, {
+    required Emitter<PrayerTimeState> emit,
     PrayerLocationStatus status = PrayerLocationStatus.ready,
     String? statusMessage,
   }) async {
@@ -293,12 +362,12 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   void _startPrayerProgressTicker() {
     _prayerProgressTimer?.cancel();
     _prayerProgressTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      _refreshPrayerProgressFromState();
-      unawaited(_refreshForDayRolloverIfNeeded());
+      if (isClosed) return;
+      add(const _PrayerTimeProgressTicked());
     });
   }
 
-  void _refreshPrayerProgressFromState() {
+  void _refreshPrayerProgressFromState(Emitter<PrayerTimeState> emit) {
     final selectedLocation = state.selectedLocation;
     if (selectedLocation == null || state.prayerList.isEmpty) return;
 
@@ -331,7 +400,9 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     );
   }
 
-  Future<void> _refreshForDayRolloverIfNeeded() async {
+  Future<void> _refreshForDayRolloverIfNeeded(
+    Emitter<PrayerTimeState> emit,
+  ) async {
     if (_isDayRolloverRefreshInProgress) return;
     final selectedLocation = state.selectedLocation;
     if (selectedLocation == null || state.prayerList.isEmpty) return;
@@ -344,6 +415,7 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     try {
       await _loadPrayerTimesForSelection(
         selectedLocation,
+        emit: emit,
         status: state.locationStatus,
         statusMessage: state.locationStatusMessage,
       );

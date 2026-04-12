@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
-import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_time_animations.dart';
 
 class NextPrayerCountdownWidget extends StatefulWidget {
   const NextPrayerCountdownWidget({
@@ -77,6 +77,25 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
     return '$h:$m:$s';
   }
 
+  IconData _iconForPrayer(Prayer prayer) {
+    switch (prayer) {
+      case Prayer.none:
+        return Icons.access_time_rounded;
+      case Prayer.fajr:
+        return Icons.wb_twilight_rounded;
+      case Prayer.sunrise:
+        return Icons.wb_sunny_outlined;
+      case Prayer.dhuhr:
+        return Icons.light_mode_rounded;
+      case Prayer.asr:
+        return Icons.wb_sunny_rounded;
+      case Prayer.maghrib:
+        return Icons.brightness_5_rounded;
+      case Prayer.isha:
+        return Icons.nightlight_round;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CardWidget(
@@ -94,10 +113,10 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: Center(
-              child: PrayerTimeAnimationWidget(
-                prayerType: widget.nextPrayer.type,
-                size: 28,
-                isActive: true,
+              child: Icon(
+                _iconForPrayer(widget.nextPrayer.type),
+                color: context.primaryColor,
+                size: 28.sp,
               ),
             ),
           ),

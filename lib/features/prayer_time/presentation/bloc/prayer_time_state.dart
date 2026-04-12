@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-part of 'prayer_time_cubit.dart';
+part of 'prayer_time_bloc.dart';
 
 const _unset = Object();
 

@@ -8,10 +8,11 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_prayer_status_strip.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
-import 'package:quran_app/features/prayer_time/presentation/cubit/prayer_time_cubit.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
@@ -36,13 +37,14 @@ class _HomeScreenState extends State<HomeScreenNew> {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
+            const HomePrayerStatusStrip(),
             // SizedBox(
             //   height: context.fullHeight,
             //   // child: const PrayerHomePage(),
             // ),
             // const QuranLottieWidget(),
             // Amazing Prayer Countdown Widget
-            BlocBuilder<PrayerTimeCubit, PrayerTimeState>(
+            BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
               builder: (context, state) {
                 if (state.prayerState == RequestState.success &&
                     state.nextPrayer != null) {
