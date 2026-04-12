@@ -36,7 +36,10 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
   @override
   void didUpdateWidget(covariant NextPrayerCountdownWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.remainingTime != widget.remainingTime) {
+    final nextPrayerChanged = oldWidget.nextPrayer.id != widget.nextPrayer.id ||
+        oldWidget.nextPrayer.type != widget.nextPrayer.type ||
+        oldWidget.nextPrayer.time != widget.nextPrayer.time;
+    if (oldWidget.remainingTime != widget.remainingTime || nextPrayerChanged) {
       _currentRemainingTime = widget.remainingTime;
     }
   }

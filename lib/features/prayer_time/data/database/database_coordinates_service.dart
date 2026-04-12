@@ -82,7 +82,8 @@ class DatabaseCoordinatesService {
       source: PrayerLocationSelection.sourceFromStorage(
         _cache.getString(_sourceKey),
       ),
-      utcOffsetMinutes: _cache.getInt(_utcOffsetKey) ?? 0,
+      utcOffsetMinutes: _cache.getInt(_utcOffsetKey) ??
+          DateTime.now().timeZoneOffset.inMinutes,
       locality: _cache.getString(_localityKey),
       administrativeArea: _cache.getString(_administrativeAreaKey),
       country: _cache.getString(_countryKey),

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,8 +24,18 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
   }) : super(PrayerTimeState());
   final AdhanPrayerTimeService prayerTimeService;
   final DatabaseCoordinatesService coordinatesService;
+  Timer? _prayerProgressTimer;
+  bool _isBackgroundRefreshInProgress = false;
+  bool _isDayRolloverRefreshInProgress = false;
+  static const double _locationChangeThresholdInMeters = 2000;
 
   static PrayerTimeCubit get(BuildContext context) => BlocProvider.of(context);
+
+  @override
+  Future<void> close() {
+    _prayerProgressTimer?.cancel();
+    return super.close();
+  }
 
   Future<void> initPrayerTime() async {
     emit(
@@ -34,8 +47,11 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
     );
     try {
       final savedLocation = await coordinatesService.getSavedLocation();
-      if (savedLocation != null && savedLocation.isManual) {
+      if (savedLocation != null) {
         await _loadPrayerTimesForSelection(savedLocation);
+        if (!savedLocation.isManual) {
+          unawaited(refreshFromDeviceLocationInBackground());
+        }
         return;
       }
 
@@ -90,6 +106,51 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
 
   Future<void> useCurrentDeviceLocation() async {
     await updateLocation();
+  }
+
+  Future<void> refreshOnAppResume() async {
+    _refreshPrayerProgressFromState();
+    await _refreshForDayRolloverIfNeeded();
+    await refreshFromDeviceLocationInBackground();
+  }
+
+  Future<void> refreshFromDeviceLocationInBackground() async {
+    if (_isBackgroundRefreshInProgress) return;
+    final selectedLocation = state.selectedLocation;
+    if (selectedLocation == null || selectedLocation.isManual) return;
+
+    _isBackgroundRefreshInProgress = true;
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+
+      final permission = await Geolocator.checkPermission();
+      final hasPermission = permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse;
+      if (!hasPermission) return;
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
+      );
+      final liveSelection = await PrayerLocationResolver.fromCoordinates(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        utcOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
+      );
+
+      final cachedSelection =
+          await coordinatesService.getSavedLocation() ?? selectedLocation;
+      if (!_hasMeaningfulLocationChange(cachedSelection, liveSelection)) return;
+
+      await coordinatesService.saveLocationSelection(liveSelection);
+      await _loadPrayerTimesForSelection(liveSelection);
+    } catch (e) {
+      logger.w('Silent device location refresh failed: $e');
+    } finally {
+      _isBackgroundRefreshInProgress = false;
+    }
   }
 
   Future<void> _loadUsingDeviceLocation({
@@ -192,42 +253,189 @@ class PrayerTimeCubit extends Cubit<PrayerTimeState> {
       longitude: selection.longitude,
       utcOffsetMinutes: selection.utcOffsetMinutes,
     );
-    final current = prayerTimeService.getCurrentPrayer();
-    final next = prayerTimeService.getNextPrayer();
-    final prayerModels = _buildPrayerModels(list);
+    final resolvedPrayerState = _resolvePrayerState(
+      prayers: list,
+      utcOffsetMinutes: selection.utcOffsetMinutes,
+    );
 
     emit(
       state.copyWith(
         prayerList: list,
-        currentPrayer: current,
-        nextPrayer: next,
+        currentPrayer: resolvedPrayerState.currentPrayer,
+        nextPrayer: resolvedPrayerState.nextPrayer,
         prayerState: RequestState.success,
         selectedLocation: selection,
         locationStatus: status,
         locationStatusMessage: statusMessage,
-        currentPrayerModel: prayerModels.firstWhereOrNull(
-          (p) => p.type == current?.type,
-        ),
-        nextPrayerModel: prayerModels.firstWhereOrNull(
-          (p) => p.type == next?.type,
-        ),
+        currentPrayerModel: resolvedPrayerState.currentPrayer == null
+            ? null
+            : _buildPrayerModel(resolvedPrayerState.currentPrayer!),
+        nextPrayerModel: resolvedPrayerState.nextPrayer == null
+            ? null
+            : _buildPrayerModel(resolvedPrayerState.nextPrayer!),
+      ),
+    );
+    _startPrayerProgressTicker();
+  }
+
+  TimePrayerModel _buildPrayerModel(PrayerInfoModel prayer) {
+    return TimePrayerModel(
+      id: prayer.id,
+      type: prayer.type,
+      title: prayer.name,
+      time: prayer.time12,
+      image: prayer.type.imageAsset,
+      content: prayer.type.description,
+      color: Colors.white,
+    );
+  }
+
+  void _startPrayerProgressTicker() {
+    _prayerProgressTimer?.cancel();
+    _prayerProgressTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _refreshPrayerProgressFromState();
+      unawaited(_refreshForDayRolloverIfNeeded());
+    });
+  }
+
+  void _refreshPrayerProgressFromState() {
+    final selectedLocation = state.selectedLocation;
+    if (selectedLocation == null || state.prayerList.isEmpty) return;
+
+    final resolvedPrayerState = _resolvePrayerState(
+      prayers: state.prayerList,
+      utcOffsetMinutes: selectedLocation.utcOffsetMinutes,
+    );
+
+    final currentChanged = _hasPrayerOccurrenceChanged(
+      state.currentPrayer,
+      resolvedPrayerState.currentPrayer,
+    );
+    final nextChanged = _hasPrayerOccurrenceChanged(
+      state.nextPrayer,
+      resolvedPrayerState.nextPrayer,
+    );
+    if (!currentChanged && !nextChanged) return;
+
+    emit(
+      state.copyWith(
+        currentPrayer: resolvedPrayerState.currentPrayer,
+        nextPrayer: resolvedPrayerState.nextPrayer,
+        currentPrayerModel: resolvedPrayerState.currentPrayer == null
+            ? null
+            : _buildPrayerModel(resolvedPrayerState.currentPrayer!),
+        nextPrayerModel: resolvedPrayerState.nextPrayer == null
+            ? null
+            : _buildPrayerModel(resolvedPrayerState.nextPrayer!),
       ),
     );
   }
 
-  List<TimePrayerModel> _buildPrayerModels(List<PrayerInfoModel> list) {
-    return list
-        .map(
-          (prayer) => TimePrayerModel(
-            id: prayer.id,
-            type: prayer.type,
-            title: prayer.name,
-            time: prayer.time12,
-            image: prayer.type.imageAsset,
-            content: prayer.type.description,
-            color: Colors.white,
-          ),
-        )
-        .toList();
+  Future<void> _refreshForDayRolloverIfNeeded() async {
+    if (_isDayRolloverRefreshInProgress) return;
+    final selectedLocation = state.selectedLocation;
+    if (selectedLocation == null || state.prayerList.isEmpty) return;
+
+    final now = _resolveLocationNow(selectedLocation.utcOffsetMinutes);
+    final sourceDate = state.prayerList.first.time;
+    if (_isSameDate(now, sourceDate)) return;
+
+    _isDayRolloverRefreshInProgress = true;
+    try {
+      await _loadPrayerTimesForSelection(
+        selectedLocation,
+        status: state.locationStatus,
+        statusMessage: state.locationStatusMessage,
+      );
+    } finally {
+      _isDayRolloverRefreshInProgress = false;
+    }
   }
+
+  _ResolvedPrayerState _resolvePrayerState({
+    required List<PrayerInfoModel> prayers,
+    required int utcOffsetMinutes,
+  }) {
+    if (prayers.isEmpty) {
+      return const _ResolvedPrayerState();
+    }
+
+    final now = _resolveLocationNow(utcOffsetMinutes);
+
+    PrayerInfoModel? currentPrayer;
+    PrayerInfoModel? nextPrayer;
+
+    for (final prayer in prayers) {
+      if (prayer.time.isAfter(now)) {
+        nextPrayer ??= prayer;
+      } else {
+        currentPrayer = prayer;
+      }
+    }
+
+    if (nextPrayer == null) {
+      final fajr = prayers.firstWhereOrNull((p) => p.type == Prayer.fajr);
+      if (fajr != null) {
+        nextPrayer = PrayerInfoModel(
+          id: fajr.id,
+          type: fajr.type,
+          name: fajr.name,
+          description: fajr.description,
+          time: fajr.time.add(const Duration(days: 1)),
+        );
+      }
+    }
+
+    return _ResolvedPrayerState(
+      currentPrayer: currentPrayer,
+      nextPrayer: nextPrayer,
+    );
+  }
+
+  DateTime _resolveLocationNow(int utcOffsetMinutes) {
+    return DateTime.now().toUtc().add(Duration(minutes: utcOffsetMinutes));
+  }
+
+  bool _isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  bool _hasPrayerOccurrenceChanged(
+    PrayerInfoModel? previous,
+    PrayerInfoModel? next,
+  ) {
+    if (previous == null || next == null) {
+      return previous != next;
+    }
+
+    return previous.type != next.type || previous.time != next.time;
+  }
+
+  bool _hasMeaningfulLocationChange(
+    PrayerLocationSelection oldLocation,
+    PrayerLocationSelection newLocation,
+  ) {
+    if (oldLocation.utcOffsetMinutes != newLocation.utcOffsetMinutes) {
+      return true;
+    }
+
+    final distance = Geolocator.distanceBetween(
+      oldLocation.latitude,
+      oldLocation.longitude,
+      newLocation.latitude,
+      newLocation.longitude,
+    );
+
+    return distance >= _locationChangeThresholdInMeters;
+  }
+}
+
+class _ResolvedPrayerState {
+  const _ResolvedPrayerState({
+    this.currentPrayer,
+    this.nextPrayer,
+  });
+
+  final PrayerInfoModel? currentPrayer;
+  final PrayerInfoModel? nextPrayer;
 }

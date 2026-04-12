@@ -64,15 +64,19 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
               final list = state.prayerState == RequestState.loading
                   ? PrayerInfoModel.dummy()
                   : state.prayerList;
-              final currentType = state.currentPrayer?.type;
-              final nextType = state.nextPrayer?.type;
+              final currentPrayer = state.currentPrayer;
+              final nextPrayer = state.nextPrayer;
+              final locationNow = _resolveLocationNow(
+                state.selectedLocation?.utcOffsetMinutes,
+              );
 
               final content = _buildTimelineList(
                 context: context,
                 state: state,
                 list: list,
-                currentType: currentType,
-                nextType: nextType,
+                currentPrayer: currentPrayer,
+                nextPrayer: nextPrayer,
+                locationNow: locationNow,
               );
 
               if (state.prayerState == RequestState.loading) {
@@ -94,13 +98,19 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     required BuildContext context,
     required PrayerTimeState state,
     required List<PrayerInfoModel> list,
-    required Prayer? currentType,
-    required Prayer? nextType,
+    required PrayerInfoModel? currentPrayer,
+    required PrayerInfoModel? nextPrayer,
+    required DateTime locationNow,
   }) {
     final timelineEntries = list.map((data) {
-      final isCurrent = currentType == data.type;
-      final isNext = nextType == data.type;
-      final isPassed = _isPrayerPassed(data, currentType, list);
+      final isCurrent = _isSamePrayerOccurrence(data, currentPrayer);
+      final isNext = _isSamePrayerOccurrence(data, nextPrayer);
+      final isPassed = _isPrayerPassed(
+        prayer: data,
+        currentPrayer: currentPrayer,
+        nextPrayer: nextPrayer,
+        locationNow: locationNow,
+      );
 
       PrayerTimelineStatus status;
       if (isPassed) {
@@ -189,17 +199,36 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     await context.read<PrayerTimeCubit>().initPrayerTime();
   }
 
-  bool _isPrayerPassed(
+  DateTime _resolveLocationNow(int? utcOffsetMinutes) {
+    if (utcOffsetMinutes == null) {
+      return DateTime.now();
+    }
+
+    return DateTime.now().toUtc().add(Duration(minutes: utcOffsetMinutes));
+  }
+
+  bool _isSamePrayerOccurrence(
     PrayerInfoModel prayer,
-    Prayer? currentType,
-    List<PrayerInfoModel> allPrayers,
+    PrayerInfoModel? target,
   ) {
-    if (currentType == null) return false;
+    if (target == null) return false;
 
-    final currentIndex = allPrayers.indexWhere((p) => p.type == currentType);
-    final prayerIndex = allPrayers.indexWhere((p) => p.type == prayer.type);
+    return prayer.type == target.type &&
+        prayer.time.year == target.time.year &&
+        prayer.time.month == target.time.month &&
+        prayer.time.day == target.time.day;
+  }
 
-    return prayerIndex < currentIndex;
+  bool _isPrayerPassed({
+    required PrayerInfoModel prayer,
+    required PrayerInfoModel? currentPrayer,
+    required PrayerInfoModel? nextPrayer,
+    required DateTime locationNow,
+  }) {
+    if (_isSamePrayerOccurrence(prayer, currentPrayer)) return false;
+    if (_isSamePrayerOccurrence(prayer, nextPrayer)) return false;
+
+    return prayer.time.isBefore(locationNow);
   }
 
   Color _getPrayerColor(PrayerInfoModel data) {

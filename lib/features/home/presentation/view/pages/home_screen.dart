@@ -47,8 +47,8 @@ class _HomeScreenState extends State<HomeScreenNew> {
                 if (state.prayerState == RequestState.success &&
                     state.nextPrayer != null) {
                   // Calculate remaining time
-                  final remainingTime =
-                      state.nextPrayer!.time.difference(DateTime.now());
+                  final remainingTime = state.nextPrayer!.time
+                      .difference(_resolveLocationNow(state));
                   final safeRemainingTime =
                       remainingTime.isNegative ? Duration.zero : remainingTime;
 
@@ -110,6 +110,15 @@ class _HomeScreenState extends State<HomeScreenNew> {
         ),
       ),
     );
+  }
+
+  DateTime _resolveLocationNow(PrayerTimeState state) {
+    final offsetMinutes = state.selectedLocation?.utcOffsetMinutes;
+    if (offsetMinutes == null) {
+      return DateTime.now();
+    }
+
+    return DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
   }
 }
 
