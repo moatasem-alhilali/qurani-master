@@ -92,20 +92,68 @@ class AthanAlarmPayloadService {
     }
   }
 
-  String buildAthanBody(String prayerName) {
+  String buildAthanTitle({
+    required String prayerName,
+    String? prayerTimeLabel,
+  }) {
+    final cleanPrayerName = prayerName.trim();
+    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
+    if (cleanTime == null) {
+      return 'أذان $cleanPrayerName';
+    }
+    return 'أذان $cleanPrayerName • $cleanTime';
+  }
+
+  String buildAthanBody({
+    required String prayerName,
+    String? prayerTimeLabel,
+  }) {
+    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
+    final intro = cleanTime == null
+        ? 'حان الآن وقت صلاة ${prayerName.trim()}.'
+        : 'حان الآن وقت صلاة ${prayerName.trim()} عند $cleanTime.';
+
     switch (prayerName.trim()) {
       case 'الفجر':
-        return 'حي على الصلاة • ابدأ يومك بنور الفجر.';
+        return '$intro حي على الصلاة • ابدأ يومك بنور الفجر.';
       case 'الظهر':
-        return 'حان وقت صلاة الظهر • اجعلها استراحة قلب.';
+        return '$intro اجعلها استراحة قلب.';
       case 'العصر':
-        return 'أذان العصر الآن • جدد حضورك مع الله.';
+        return '$intro جدد حضورك مع الله.';
       case 'المغرب':
-        return 'أذان المغرب • اختم يومك بطاعة وسكينة.';
+        return '$intro اختم يومك بطاعة وسكينة.';
       case 'العشاء':
-        return 'أذان العشاء • لا تفوت ختام الصلوات.';
+        return '$intro لا تفوت ختام الصلوات.';
       default:
-        return 'حان الآن وقت الصلاة.';
+        return '$intro تقبل الله طاعتك.';
     }
+  }
+
+  String buildAthanExpandedBody({
+    required String prayerName,
+    String? prayerTimeLabel,
+  }) {
+    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
+    final timeLine = cleanTime == null ? '' : 'موعد الصلاة: $cleanTime.\n';
+    return '$timeLine${buildAthanBody(prayerName: prayerName, prayerTimeLabel: prayerTimeLabel)}\nاضغط لفتح تنبيه الصلاة والتفاصيل.';
+  }
+
+  String buildAthanSubText({
+    required String prayerName,
+    String? prayerTimeLabel,
+  }) {
+    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
+    if (cleanTime != null) {
+      return 'وقت $prayerName: $cleanTime';
+    }
+    return 'حان وقت صلاة $prayerName';
+  }
+
+  String? _normalizeTimeLabel(String? prayerTimeLabel) {
+    final trimmed = prayerTimeLabel?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    return trimmed;
   }
 }

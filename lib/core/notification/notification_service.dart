@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Color;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
@@ -336,8 +337,16 @@ class NotificationService extends BaseNotificationService {
     required NotificationChannel channel,
     required NotificationScheduleModel schedule,
     String? payload,
+    String? icon,
     String? largeIcon,
     String? groupKey,
+    String? subText,
+    String? ticker,
+    String? bigText,
+    Color? color,
+    bool colorized = false,
+    bool onlyAlertOnce = false,
+    int? whenMillisecondsSinceEpoch,
     bool setAsGroupSummary = false,
     AndroidNotificationCategory? category,
     NotificationVisibility? visibility,
@@ -347,11 +356,26 @@ class NotificationService extends BaseNotificationService {
     bool channelBypassDnd = false,
   }) async {
     try {
+      final trimmedBigText = bigText?.trim();
       final details = await buildNotificationDetails(
         channel,
+        icon: icon,
         largeIcon: largeIcon,
         groupKey: groupKey,
         setAsGroupSummary: setAsGroupSummary,
+        subText: subText,
+        ticker: ticker,
+        color: color,
+        colorized: colorized,
+        onlyAlertOnce: onlyAlertOnce,
+        whenMillisecondsSinceEpoch: whenMillisecondsSinceEpoch,
+        bigTextStyle: (trimmedBigText == null || trimmedBigText.isEmpty)
+            ? null
+            : BigTextStyleInformation(
+                trimmedBigText,
+                contentTitle: title,
+                summaryText: subText,
+              ),
         category: category,
         visibility: visibility,
         ongoing: ongoing,

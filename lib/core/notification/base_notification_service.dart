@@ -64,7 +64,7 @@ abstract class BaseNotificationService {
 
     // Android initialization settings with proper configuration
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      'ic_notification_small',
     );
 
     // iOS initialization settings with proper permissions
@@ -323,6 +323,7 @@ abstract class BaseNotificationService {
   /// Build standard notification details with all common options
   Future<NotificationDetails> buildNotificationDetails(
     NotificationChannel channel, {
+    String? icon,
     String? largeIcon,
     List<AndroidNotificationAction>? actions,
     String? groupKey,
@@ -332,6 +333,12 @@ abstract class BaseNotificationService {
     BigTextStyleInformation? bigTextStyle,
     BigPictureStyleInformation? bigPictureStyle,
     InboxStyleInformation? inboxStyle,
+    String? subText,
+    String? ticker,
+    Color? color,
+    bool colorized = false,
+    bool onlyAlertOnce = false,
+    int? whenMillisecondsSinceEpoch,
     bool showProgress = false,
     int maxProgress = 100,
     int progress = 0,
@@ -349,6 +356,7 @@ abstract class BaseNotificationService {
       data.id,
       data.name,
       channelDescription: 'قناة ${data.name}',
+      icon: icon ?? 'ic_notification_small',
       sound: RawResourceAndroidNotificationSound(data.sound),
       priority: fullScreenIntent ? Priority.max : Priority.high,
       importance: Importance.max,
@@ -362,12 +370,16 @@ abstract class BaseNotificationService {
           enableVibration ? Int64List.fromList([0, 1000, 500, 1000]) : null,
       enableLights: true,
       ledColor: const Color.fromARGB(255, 0, 255, 0),
-      ticker: 'تطبيق طمأنينة',
-      when: DateTime.now().millisecondsSinceEpoch,
+      ticker: ticker ?? 'تطبيق طمأنينة',
+      when: whenMillisecondsSinceEpoch,
       category: category ?? AndroidNotificationCategory.reminder,
       visibility: visibility ?? NotificationVisibility.public,
       fullScreenIntent: fullScreenIntent,
       styleInformation: bigTextStyle ?? bigPictureStyle ?? inboxStyle,
+      subText: subText,
+      color: color,
+      colorized: colorized,
+      onlyAlertOnce: onlyAlertOnce,
       showProgress: showProgress,
       maxProgress: maxProgress,
       progress: progress,

@@ -91,9 +91,11 @@ class SettingNotificationRepo {
       if (setting.enabled && !setting.onlySetting) {
         final isAthan = _athanPayloadService.isAthanKey(setting.key);
         final prayerName = _athanPayloadService.prayerNameFromKey(setting.key);
-        final title = isAthan ? 'أذان $prayerName' : setting.label;
+        final title = isAthan
+            ? _athanPayloadService.buildAthanTitle(prayerName: prayerName)
+            : setting.label;
         final body = isAthan
-            ? _athanPayloadService.buildAthanBody(prayerName)
+            ? _athanPayloadService.buildAthanBody(prayerName: prayerName)
             : NotificationDataConst.resolveNotificationBody(setting.key);
 
         final success =
@@ -106,6 +108,17 @@ class SettingNotificationRepo {
           payload: isAthan
               ? _athanPayloadService.buildPayload(
                   key: setting.key,
+                  prayerName: prayerName,
+                )
+              : null,
+          icon: isAthan ? 'ic_notification_small' : null,
+          largeIcon: isAthan ? 'ic_notification_large' : null,
+          subText: isAthan
+              ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
+              : null,
+          ticker: isAthan ? 'حان الآن أذان $prayerName' : null,
+          bigText: isAthan
+              ? _athanPayloadService.buildAthanExpandedBody(
                   prayerName: prayerName,
                 )
               : null,

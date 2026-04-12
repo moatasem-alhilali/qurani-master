@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
@@ -83,11 +84,18 @@ class NotificationOrchestratorService {
 
         if (enabled) {
           final prayerName = info.name.trim();
+          final prayerTimeLabel = info.time12.trim();
           final success =
               await notificationService.scheduleNotificationCompatType(
             id: id,
-            title: 'أذان $prayerName',
-            body: athanPayloadService.buildAthanBody(prayerName),
+            title: athanPayloadService.buildAthanTitle(
+              prayerName: prayerName,
+              prayerTimeLabel: prayerTimeLabel,
+            ),
+            body: athanPayloadService.buildAthanBody(
+              prayerName: prayerName,
+              prayerTimeLabel: prayerTimeLabel,
+            ),
             channel: NotificationChannel.athan,
             schedule: NotificationScheduleModel.daily(
               hour: info.time.hour,
@@ -96,8 +104,21 @@ class NotificationOrchestratorService {
             payload: athanPayloadService.buildPayload(
               key: key,
               prayerName: prayerName,
-              prayerTimeLabel: info.time12,
+              prayerTimeLabel: prayerTimeLabel,
             ),
+            icon: 'ic_notification_small',
+            largeIcon: 'ic_notification_large',
+            subText: athanPayloadService.buildAthanSubText(
+              prayerName: prayerName,
+              prayerTimeLabel: prayerTimeLabel,
+            ),
+            ticker: 'حان الآن أذان $prayerName',
+            bigText: athanPayloadService.buildAthanExpandedBody(
+              prayerName: prayerName,
+              prayerTimeLabel: prayerTimeLabel,
+            ),
+            color: const Color(0xFF1F7A4D),
+            colorized: true,
             category: AndroidNotificationCategory.alarm,
             visibility: NotificationVisibility.public,
             fullScreenIntent: true,
