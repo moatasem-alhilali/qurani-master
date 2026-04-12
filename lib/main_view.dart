@@ -250,7 +250,15 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
                           children: [
                             CircleAvatar(
                               radius: 12.r,
-                              child: const Icon(Icons.person),
+                              backgroundColor: Colors.transparent,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/image/logo.png',
+                                  width: 24.r,
+                                  height: 24.r,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                             SizedBox(width: 4.w),
                             const Text('مرحبا بعودتك'),
