@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
@@ -11,11 +12,17 @@ class NextPrayerCountdownWidget extends StatefulWidget {
   const NextPrayerCountdownWidget({
     required this.nextPrayer,
     required this.remainingTime,
+    this.currentPrayerName,
+    this.locationLabel,
+    this.utcOffsetMinutes,
     super.key,
   });
 
   final TimePrayerModel nextPrayer;
   final Duration remainingTime;
+  final String? currentPrayerName;
+  final String? locationLabel;
+  final int? utcOffsetMinutes;
 
   @override
   State<NextPrayerCountdownWidget> createState() =>
@@ -77,6 +84,18 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
     return '$h:$m:$s';
   }
 
+  String _formatClock12(DateTime date) => DateFormat('hh:mm').format(date);
+
+  String _periodArabic(DateTime date) => date.hour < 12 ? 'ص' : 'م';
+
+  DateTime _resolveLocationNow() {
+    final offsetMinutes = widget.utcOffsetMinutes;
+    if (offsetMinutes == null) {
+      return DateTime.now();
+    }
+    return DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
+  }
+
   IconData _iconForPrayer(Prayer prayer) {
     switch (prayer) {
       case Prayer.none:
@@ -98,85 +117,202 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final locationNow = _resolveLocationNow();
+    final hijri = _HijriDate.fromDate(locationNow).formatArabic();
+    final currentPrayerLabel =
+        widget.currentPrayerName ?? widget.nextPrayer.title;
+    final locationLabel = widget.locationLabel ?? 'الموقع';
+    final dateText = DateFormat('y/M/d').format(locationNow);
+    final clockText =
+        '${_formatClock12(locationNow)} ${_periodArabic(locationNow)}';
+    final statusLine = '$dateText • $clockText • $currentPrayerLabel';
+
     return CardWidget(
       margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
       border: Border.all(
         color: context.outlineVariant.withValues(alpha: 0.4),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            width: 52.w,
-            height: 52.w,
-            decoration: BoxDecoration(
-              color: context.primaryColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14.r),
-            ),
-            child: Center(
-              child: Icon(
-                _iconForPrayer(widget.nextPrayer.type),
-                color: context.primaryColor,
-                size: 28.sp,
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'الصلاة القادمة',
-                  style: context.bodySmall?.copyWith(
-                    color: context.onSurfaceColor.withValues(alpha: 0.6),
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                Text(
-                  widget.nextPrayer.title,
-                  style: context.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  widget.nextPrayer.time,
-                  style: context.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 10.w),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: context.primaryColor.withValues(alpha: 0.10),
+              color: context.onSurfaceColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: Row(
               children: [
-                Text(
-                  'المتبقي',
-                  style: context.bodySmall?.copyWith(
-                    color: context.primaryColor,
-                    fontWeight: FontWeight.w700,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        statusLine,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        '$hijri • $locationLabel',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.bodySmall?.copyWith(
+                          color: context.onSurfaceColor.withValues(alpha: 0.64),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 2.h),
-                Text(
-                  _formatDuration(_currentRemainingTime),
-                  style: context.titleSmall?.copyWith(
-                    color: context.primaryColor,
-                    fontWeight: FontWeight.w900,
+                SizedBox(width: 8.w),
+                Container(
+                  width: 26.w,
+                  height: 26.w,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF4E9D37),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.mosque_rounded,
+                    color: Colors.white,
+                    size: 14.sp,
                   ),
                 ),
               ],
             ),
+          ),
+          SizedBox(height: 10.h),
+          Row(
+            children: [
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  color: context.primaryColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: Center(
+                  child: Icon(
+                    _iconForPrayer(widget.nextPrayer.type),
+                    color: context.primaryColor,
+                    size: 26.sp,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'الصلاة القادمة',
+                      style: context.bodySmall?.copyWith(
+                        color: context.onSurfaceColor.withValues(alpha: 0.6),
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      '${widget.nextPrayer.title} • ${widget.nextPrayer.time}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: context.primaryColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'المتبقي',
+                      style: context.bodySmall?.copyWith(
+                        color: context.primaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      _formatDuration(_currentRemainingTime),
+                      style: context.titleSmall?.copyWith(
+                        color: context.primaryColor,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
+  }
+}
+
+class _HijriDate {
+  _HijriDate(this.day, this.month, this.year);
+
+  factory _HijriDate.fromDate(DateTime date) {
+    final a = (14 - date.month) ~/ 12;
+    final y = date.year + 4800 - a;
+    final m = date.month + 12 * a - 3;
+    final julianDay = date.day +
+        ((153 * m + 2) ~/ 5) +
+        365 * y +
+        y ~/ 4 -
+        y ~/ 100 +
+        y ~/ 400 -
+        32045;
+
+    var l = julianDay - 1948440 + 10632;
+    final n = (l - 1) ~/ 10631;
+    l = l - 10631 * n + 354;
+    final j = ((10985 - l) ~/ 5316) * ((50 * l) ~/ 17719) +
+        (l ~/ 5670) * ((43 * l) ~/ 15238);
+    l = l -
+        ((30 - j) ~/ 15) * ((17719 * j) ~/ 50) -
+        (j ~/ 16) * ((15238 * j) ~/ 43) +
+        29;
+    final month = (24 * l) ~/ 709;
+    final day = l - (709 * month) ~/ 24;
+    final year = 30 * n + j - 30;
+
+    return _HijriDate(day, month, year);
+  }
+
+  final int day;
+  final int month;
+  final int year;
+
+  static const _months = [
+    'محرم',
+    'صفر',
+    'ربيع الأول',
+    'ربيع الآخر',
+    'جمادى الأولى',
+    'جمادى الآخرة',
+    'رجب',
+    'شعبان',
+    'رمضان',
+    'شوال',
+    'ذو القعدة',
+    'ذو الحجة',
+  ];
+
+  String formatArabic() {
+    final monthName = _months[(month - 1).clamp(0, _months.length - 1)];
+    return '$day $monthName $year هـ';
   }
 }
