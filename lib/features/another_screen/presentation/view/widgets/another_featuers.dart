@@ -14,12 +14,9 @@ import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_ti
 import 'package:quran_app/features/qiblah/qiblah_main_screen.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_list_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
-import 'package:quran_app/features/ruqia_shareia/presentation/view/pages/ruqia_shareia_screen.dart';
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_schedules_screen.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
-import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
-import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_after_pray_screen.dart';
 
 class AnotherFeatures extends StatelessWidget {
   const AnotherFeatures({super.key});
@@ -47,19 +44,9 @@ class AnotherFeatures extends StatelessWidget {
         onTap: () => context.push(const SmartOutreachSchedulesScreen()),
       ),
       _FeatureShortcut(
-        label: 'أذكار الصباح',
-        icon: FlutterIslamicIcons.prayer,
-        onTap: () => context.push(const WirdScreen(isMorning: true)),
-      ),
-      _FeatureShortcut(
         label: 'اتجاه القبلة',
         icon: FlutterIslamicIcons.qibla,
         onTap: () => context.push(const QiblahMainScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'أذكار المساء',
-        icon: FlutterIslamicIcons.prayer,
-        onTap: () => context.push(const WirdScreen(isMorning: false)),
       ),
       _FeatureShortcut(
         label: 'المسبحة',
@@ -85,16 +72,6 @@ class AnotherFeatures extends StatelessWidget {
         label: 'الأربعون النووية',
         icon: FlutterIslamicIcons.quran,
         onTap: () => context.push(const Hadith40Screen()),
-      ),
-      _FeatureShortcut(
-        label: 'أذكار ما بعد الصلاة',
-        icon: FlutterIslamicIcons.tasbihHand,
-        onTap: () => context.push(const ZkarAfterPrayScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'الرقية الشرعية',
-        icon: FlutterIslamicIcons.quran,
-        onTap: () => context.push(const RuqiaShareiaScreen()),
       ),
       _FeatureShortcut(
         label: 'موسوعة السور',

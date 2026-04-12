@@ -113,6 +113,13 @@ class NotificationOrchestratorService {
               prayerTimeLabel: prayerTimeLabel,
             ),
             ticker: 'حان الآن أذان $prayerName',
+            iosSubtitle: athanPayloadService.buildAthanSubText(
+              prayerName: prayerName,
+              prayerTimeLabel: prayerTimeLabel,
+            ),
+            iosThreadIdentifier: 'athan_notifications',
+            iosCategoryIdentifier: 'islamic_notifications',
+            iosInterruptionLevel: InterruptionLevel.active,
             bigText: athanPayloadService.buildAthanExpandedBody(
               prayerName: prayerName,
               prayerTimeLabel: prayerTimeLabel,
@@ -122,7 +129,7 @@ class NotificationOrchestratorService {
             category: AndroidNotificationCategory.alarm,
             visibility: NotificationVisibility.public,
             fullScreenIntent: true,
-            ongoing: true,
+            ongoing: false,
             autoCancel: true,
           );
 

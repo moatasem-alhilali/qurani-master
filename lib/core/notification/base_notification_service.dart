@@ -68,10 +68,28 @@ abstract class BaseNotificationService {
     );
 
     // iOS initialization settings with proper permissions
-    const iosSettings = DarwinInitializationSettings(
+    final iosSettings = DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
+      notificationCategories: <DarwinNotificationCategory>[
+        DarwinNotificationCategory(
+          'islamic_notifications',
+          actions: <DarwinNotificationAction>[
+            DarwinNotificationAction.plain(
+              'open_app',
+              'فتح التطبيق',
+              options: <DarwinNotificationActionOption>{
+                DarwinNotificationActionOption.foreground,
+              },
+            ),
+            DarwinNotificationAction.plain('dismiss', 'إخفاء'),
+          ],
+          options: <DarwinNotificationCategoryOption>{
+            DarwinNotificationCategoryOption.allowInCarPlay,
+          },
+        ),
+      ],
     );
 
     // Linux settings (if supporting desktop)
@@ -339,6 +357,12 @@ abstract class BaseNotificationService {
     bool colorized = false,
     bool onlyAlertOnce = false,
     int? whenMillisecondsSinceEpoch,
+    String? iosSubtitle,
+    String? iosThreadIdentifier,
+    String? iosCategoryIdentifier,
+    InterruptionLevel? iosInterruptionLevel,
+    String? iosSound,
+    int? iosBadgeNumber,
     bool showProgress = false,
     int maxProgress = 100,
     int progress = 0,
@@ -396,15 +420,19 @@ abstract class BaseNotificationService {
           : Int32List.fromList(<int>[4]), // FLAG_INSISTENT for ongoing
     );
 
-    const ios = DarwinNotificationDetails(
+    final ios = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
-      badgeNumber: 1,
-      subtitle: 'تطبيق طمأنينة',
-      threadIdentifier: 'islamic_app_notifications',
-      categoryIdentifier: 'islamic_notifications',
-      interruptionLevel: InterruptionLevel.active,
+      presentBanner: true,
+      presentList: true,
+      sound: iosSound,
+      badgeNumber: iosBadgeNumber ?? 1,
+      subtitle: iosSubtitle ?? 'تطبيق طمأنينة',
+      threadIdentifier:
+          iosThreadIdentifier ?? 'islamic_app_notifications_${data.id}',
+      categoryIdentifier: iosCategoryIdentifier ?? 'islamic_notifications',
+      interruptionLevel: iosInterruptionLevel ?? InterruptionLevel.active,
     );
 
     return NotificationDetails(android: android, iOS: ios);

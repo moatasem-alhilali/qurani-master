@@ -347,6 +347,12 @@ class NotificationService extends BaseNotificationService {
     bool colorized = false,
     bool onlyAlertOnce = false,
     int? whenMillisecondsSinceEpoch,
+    String? iosSubtitle,
+    String? iosThreadIdentifier,
+    String? iosCategoryIdentifier,
+    InterruptionLevel? iosInterruptionLevel,
+    String? iosSound,
+    int? iosBadgeNumber,
     bool setAsGroupSummary = false,
     AndroidNotificationCategory? category,
     NotificationVisibility? visibility,
@@ -369,6 +375,12 @@ class NotificationService extends BaseNotificationService {
         colorized: colorized,
         onlyAlertOnce: onlyAlertOnce,
         whenMillisecondsSinceEpoch: whenMillisecondsSinceEpoch,
+        iosSubtitle: iosSubtitle ?? subText,
+        iosThreadIdentifier: iosThreadIdentifier,
+        iosCategoryIdentifier: iosCategoryIdentifier,
+        iosInterruptionLevel: iosInterruptionLevel,
+        iosSound: iosSound,
+        iosBadgeNumber: iosBadgeNumber,
         bigTextStyle: (trimmedBigText == null || trimmedBigText.isEmpty)
             ? null
             : BigTextStyleInformation(

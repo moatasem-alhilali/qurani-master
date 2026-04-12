@@ -117,6 +117,12 @@ class SettingNotificationRepo {
               ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
               : null,
           ticker: isAthan ? 'حان الآن أذان $prayerName' : null,
+          iosSubtitle: isAthan
+              ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
+              : null,
+          iosThreadIdentifier: isAthan ? 'athan_notifications' : null,
+          iosCategoryIdentifier: isAthan ? 'islamic_notifications' : null,
+          iosInterruptionLevel: isAthan ? InterruptionLevel.active : null,
           bigText: isAthan
               ? _athanPayloadService.buildAthanExpandedBody(
                   prayerName: prayerName,
@@ -125,7 +131,7 @@ class SettingNotificationRepo {
           category: isAthan ? AndroidNotificationCategory.alarm : null,
           visibility: isAthan ? NotificationVisibility.public : null,
           fullScreenIntent: isAthan,
-          ongoing: isAthan,
+          ongoing: false,
           autoCancel: true,
         );
 

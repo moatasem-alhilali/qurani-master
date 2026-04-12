@@ -2,20 +2,105 @@ import 'dart:async';
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 
-class NextPrayerCountdownWidget extends StatefulWidget {
+class NextPrayerCountdownWidget extends StatelessWidget {
   const NextPrayerCountdownWidget({
+    this.nextPrayer,
+    this.remainingTime,
+    this.currentPrayerName,
+    this.locationLabel,
+    this.utcOffsetMinutes,
+    this.useBlocFallback = true,
+    super.key,
+  }) : assert(
+          (nextPrayer == null && remainingTime == null) ||
+              (nextPrayer != null && remainingTime != null),
+          'nextPrayer and remainingTime must be provided together.',
+        );
+
+  final TimePrayerModel? nextPrayer;
+  final Duration? remainingTime;
+  final String? currentPrayerName;
+  final String? locationLabel;
+  final int? utcOffsetMinutes;
+  final bool useBlocFallback;
+
+  @override
+  Widget build(BuildContext context) {
+    final manualPrayer = nextPrayer;
+    final manualRemainingTime = remainingTime;
+    if (manualPrayer != null && manualRemainingTime != null) {
+      return _NextPrayerCountdownCard(
+        nextPrayer: manualPrayer,
+        remainingTime: manualRemainingTime,
+        currentPrayerName: currentPrayerName,
+        locationLabel: locationLabel,
+        utcOffsetMinutes: utcOffsetMinutes,
+      );
+    }
+
+    if (!useBlocFallback) {
+      return const SizedBox.shrink();
+    }
+
+    return BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
+      builder: (context, state) {
+        if (state.prayerState != RequestState.success ||
+            state.nextPrayer == null) {
+          return const SizedBox.shrink();
+        }
+
+        final remainingTime =
+            state.nextPrayer!.time.difference(_resolveLocationNow(state));
+        final safeRemainingTime =
+            remainingTime.isNegative ? Duration.zero : remainingTime;
+
+        final nextPrayerModel = TimePrayerModel(
+          id: 999,
+          title: state.nextPrayer!.name,
+          time: state.nextPrayer!.time12,
+          type: state.nextPrayer!.type,
+          image: state.nextPrayer!.type.imageAsset,
+          content: state.nextPrayer!.description,
+          color: Colors.blue,
+        );
+
+        return _NextPrayerCountdownCard(
+          nextPrayer: nextPrayerModel,
+          remainingTime: safeRemainingTime,
+          currentPrayerName: state.currentPrayer?.name,
+          locationLabel: state.selectedLocation?.label,
+          utcOffsetMinutes: state.selectedLocation?.utcOffsetMinutes,
+        );
+      },
+    );
+  }
+
+  DateTime _resolveLocationNow(PrayerTimeState state) {
+    final offsetMinutes = state.selectedLocation?.utcOffsetMinutes;
+    if (offsetMinutes == null) {
+      return DateTime.now();
+    }
+    return DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
+  }
+}
+
+class _NextPrayerCountdownCard extends StatefulWidget {
+  const _NextPrayerCountdownCard({
     required this.nextPrayer,
     required this.remainingTime,
     this.currentPrayerName,
     this.locationLabel,
     this.utcOffsetMinutes,
-    super.key,
   });
 
   final TimePrayerModel nextPrayer;
@@ -25,11 +110,11 @@ class NextPrayerCountdownWidget extends StatefulWidget {
   final int? utcOffsetMinutes;
 
   @override
-  State<NextPrayerCountdownWidget> createState() =>
-      _NextPrayerCountdownWidgetState();
+  State<_NextPrayerCountdownCard> createState() =>
+      _NextPrayerCountdownCardState();
 }
 
-class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
+class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
   late Timer _timer;
   late Duration _currentRemainingTime;
 
@@ -41,7 +126,7 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
   }
 
   @override
-  void didUpdateWidget(covariant NextPrayerCountdownWidget oldWidget) {
+  void didUpdateWidget(covariant _NextPrayerCountdownCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     final nextPrayerChanged = oldWidget.nextPrayer.id != widget.nextPrayer.id ||
         oldWidget.nextPrayer.type != widget.nextPrayer.type ||
@@ -174,10 +259,11 @@ class _NextPrayerCountdownWidgetState extends State<NextPrayerCountdownWidget> {
                     color: Color(0xFF4E9D37),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.mosque_rounded,
-                    color: Colors.white,
-                    size: 14.sp,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/image/logo.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ],

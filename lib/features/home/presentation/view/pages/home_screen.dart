@@ -4,14 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
-import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
-import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
-import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
@@ -42,38 +38,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
             // ),
             // const QuranLottieWidget(),
             // Amazing Prayer Countdown Widget
-            BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
-              builder: (context, state) {
-                if (state.prayerState == RequestState.success &&
-                    state.nextPrayer != null) {
-                  // Calculate remaining time
-                  final remainingTime = state.nextPrayer!.time
-                      .difference(_resolveLocationNow(state));
-                  final safeRemainingTime =
-                      remainingTime.isNegative ? Duration.zero : remainingTime;
-
-                  // Create TimePrayerModel from the next prayer
-                  final nextPrayerModel = TimePrayerModel(
-                    id: 999,
-                    title: state.nextPrayer!.name,
-                    time: state.nextPrayer!.time12,
-                    type: state.nextPrayer!.type,
-                    image: state.nextPrayer!.type.imageAsset,
-                    content: state.nextPrayer!.description,
-                    color: Colors.blue,
-                  );
-
-                  return NextPrayerCountdownWidget(
-                    nextPrayer: nextPrayerModel,
-                    remainingTime: safeRemainingTime,
-                    currentPrayerName: state.currentPrayer?.name,
-                    locationLabel: state.selectedLocation?.label,
-                    utcOffsetMinutes: state.selectedLocation?.utcOffsetMinutes,
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
+            const NextPrayerCountdownWidget(),
 
             const _HomeUpdateTile(),
 
@@ -113,15 +78,6 @@ class _HomeScreenState extends State<HomeScreenNew> {
         ),
       ),
     );
-  }
-
-  DateTime _resolveLocationNow(PrayerTimeState state) {
-    final offsetMinutes = state.selectedLocation?.utcOffsetMinutes;
-    if (offsetMinutes == null) {
-      return DateTime.now();
-    }
-
-    return DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
   }
 }
 
