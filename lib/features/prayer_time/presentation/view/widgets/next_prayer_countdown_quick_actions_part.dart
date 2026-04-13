@@ -6,7 +6,7 @@ class _QuickActionsPanel extends StatelessWidget {
   List<_QuickActionItem> _actions(BuildContext context) {
     return [
       _QuickActionItem(
-        label: 'المصحف الشريف',
+        label: 'المصحف',
         icon: Icons.menu_book_outlined,
         onTap: () => context.push(const ReadQuranScreen()),
       ),
@@ -16,7 +16,7 @@ class _QuickActionsPanel extends StatelessWidget {
         onTap: () => context.push(const PrayerTimeScreen()),
       ),
       _QuickActionItem(
-        label: 'اتجاه القبلة',
+        label: 'القبلة',
         icon: Icons.explore_outlined,
         onTap: () => context.push(const QiblahMainScreen()),
       ),
@@ -25,26 +25,26 @@ class _QuickActionsPanel extends StatelessWidget {
         icon: Icons.volunteer_activism_outlined,
         onTap: () => context.push(const MainThikrScreen()),
       ),
-      _QuickActionItem(
-        label: 'المسبحة',
-        icon: Icons.repeat_rounded,
-        onTap: () => context.push(const TasbeehProvider()),
-      ),
-      _QuickActionItem(
-        label: 'خطط الختمة',
-        icon: Icons.inventory_2_outlined,
-        onTap: () => context.push(const QuranPlanListScreen()),
-      ),
-      _QuickActionItem(
-        label: 'حصن المسلم',
-        icon: Icons.security_outlined,
-        onTap: () => context.push(const HisnMuslimScreen()),
-      ),
-      _QuickActionItem(
-        label: 'كل المميزات',
-        icon: Icons.grid_view_rounded,
-        onTap: () => _openAppsSheet(context),
-      ),
+      // _QuickActionItem(
+      //   label: 'المسبحة',
+      //   icon: Icons.repeat_rounded,
+      //   onTap: () => context.push(const TasbeehProvider()),
+      // ),
+      // _QuickActionItem(
+      //   label: 'خطط الختمة',
+      //   icon: Icons.inventory_2_outlined,
+      //   onTap: () => context.push(const QuranPlanListScreen()),
+      // ),
+      // _QuickActionItem(
+      //   label: 'حصن المسلم',
+      //   icon: Icons.security_outlined,
+      //   onTap: () => context.push(const HisnMuslimScreen()),
+      // ),
+      // _QuickActionItem(
+      //   label: 'كل المميزات',
+      //   icon: Icons.grid_view_rounded,
+      //   onTap: () => _openAppsSheet(context),
+      // ),
     ];
   }
 
@@ -107,7 +107,7 @@ class _QuickActionsPanel extends StatelessWidget {
     final actions = _actions(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22.r),
@@ -123,49 +123,46 @@ class _QuickActionsPanel extends StatelessWidget {
           borderRadius: BorderRadius.circular(22.r),
           child: ColoredBox(
             color: Colors.white,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(10.w, 12.h, 10.w, 10.h),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: actions.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 1.22,
-                  crossAxisSpacing: 2.w,
-                  mainAxisSpacing: 8.h,
-                ),
-                itemBuilder: (context, index) {
-                  final item = actions[index];
-                  return InkWell(
-                    onTap: item.onTap,
-                    borderRadius: BorderRadius.circular(12.r),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(height: 2.h),
-                        Icon(
-                          item.icon,
-                          color: _kAccentGold,
-                          size: 21.sp,
-                        ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          item.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _kPanelText,
-                            fontSize: 11.2.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: actions.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 1.22,
+                crossAxisSpacing: 2.w,
+                mainAxisSpacing: 8.h,
               ),
+              itemBuilder: (context, index) {
+                final item = actions[index];
+                return InkWell(
+                  onTap: item.onTap,
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // SizedBox(height: 2.h),
+                      Icon(
+                        item.icon,
+                        color: _kAccentGold,
+                        size: 21.sp,
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        item.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: _kPanelText,
+                          fontSize: 11.2.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),

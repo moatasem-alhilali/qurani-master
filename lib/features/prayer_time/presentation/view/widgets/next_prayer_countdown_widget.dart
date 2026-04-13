@@ -5,6 +5,7 @@ import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
@@ -22,6 +23,8 @@ import 'package:quran_app/features/setting/presentation/view/pages/setting_scree
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
 
 part 'next_prayer_countdown_card_part.dart';
+part 'next_prayer_countdown_card_logic_part.dart';
+part 'next_prayer_countdown_card_widgets_part.dart';
 part 'next_prayer_countdown_models_part.dart';
 part 'next_prayer_countdown_quick_actions_part.dart';
 
