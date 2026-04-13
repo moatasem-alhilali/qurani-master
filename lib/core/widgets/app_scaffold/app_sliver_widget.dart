@@ -34,6 +34,7 @@ class AppSliverWidget extends StatefulWidget {
     this.isElasticTextRefreshHeader = true,
     this.hasAppBar = true,
     this.scrollController,
+    this.topSpacing,
     super.key,
   });
 
@@ -58,6 +59,7 @@ class AppSliverWidget extends StatefulWidget {
   final VoidCallback? onBack;
   final bool? isCenterTitle;
   final ScrollController? scrollController;
+  final double? topSpacing;
 
   final EdgeInsetsGeometry? padding;
 
@@ -74,7 +76,6 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -102,7 +103,7 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
 
   List<Widget> _buildSlivers(BuildContext context) {
     final childSliver = SliverPadding(
-      padding: EdgeInsets.only(top: 16.h),
+      padding: EdgeInsets.only(top: widget.topSpacing ?? 16.h),
       sliver: SliverToBoxAdapter(
         child: SafeArea(
           top: false,

@@ -17,7 +17,6 @@ import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/core/util/light_theme.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
@@ -30,7 +29,6 @@ import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notifica
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
-import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
 
 class MyApp extends StatelessWidget {
@@ -238,47 +236,7 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
             //     ),
             //   ),
             // ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 12.r,
-                              backgroundColor: Colors.transparent,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  'assets/image/logo.png',
-                                  width: 24.r,
-                                  height: 24.r,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            const Text('مرحبا بعودتك'),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            context.push(const SettingScreen());
-                          },
-                          icon: const Icon(
-                            Icons.settings,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Expanded(child: HomeScreenNew()),
-                ],
-              ),
-            ),
+            body: const HomeScreenNew(),
           );
         },
       ),

@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
   Widget build(BuildContext context) {
     return AppSliverWidget(
       hasAppBar: false,
+      topSpacing: 0,
       child: Padding(
         padding: EdgeInsets.zero,
         child: Column(
