@@ -32,22 +32,10 @@ class _HomeScreenState extends State<HomeScreenNew> {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
-            // SizedBox(
-            //   height: context.fullHeight,
-            //   // child: const PrayerHomePage(),
-            // ),
-            // const QuranLottieWidget(),
-            // Amazing Prayer Countdown Widget
             const NextPrayerCountdownWidget(),
-
             const _HomeUpdateTile(),
-
-            // const CurrentPrayerHomeWidget(),
-            // const PrayersHomeWidget(),
-
             const BaseHederWidget(text: 'المميزات'),
             const AnotherFeatures(),
-
             const BaseHederWidget(text: 'قسم الأطفال'),
             SizedBox(
               height: context.getHight(20),
@@ -72,7 +60,6 @@ class _HomeScreenState extends State<HomeScreenNew> {
                 ),
               ),
             ),
-
             SizedBox(height: 16.h),
           ],
         ),
