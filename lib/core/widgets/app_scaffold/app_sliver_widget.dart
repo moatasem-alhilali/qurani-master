@@ -81,19 +81,21 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final canRefresh = widget.onRefresh != null;
+
     return RefreshWidget(
       controller: _refreshController,
-      header: widget.isElasticTextRefreshHeader
-          ? const ElasticTextRefreshHeader()
-          : widget.refreshHeader,
-      onRefresh: widget.onRefresh == null
+      header: canRefresh
           ? widget.isElasticTextRefreshHeader
-              ? _refreshController.refreshCompleted
-              : null
-          : () {
+              ? const ElasticTextRefreshHeader()
+              : widget.refreshHeader
+          : null,
+      onRefresh: canRefresh
+          ? () {
               widget.onRefresh!.call();
               _refreshController.refreshCompleted();
-            },
+            }
+          : null,
       child: CustomScrollView(
         controller: widget.scrollController,
         slivers: _buildSlivers(context),

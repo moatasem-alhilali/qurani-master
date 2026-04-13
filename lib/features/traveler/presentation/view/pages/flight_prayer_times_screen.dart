@@ -199,30 +199,35 @@ class _FlightPrayerTimesScreenState extends State<FlightPrayerTimesScreen> {
           );
         },
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: _buildMap(context),
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: _buildMap(context),
+              ),
+              Positioned(
+                top: 10.h,
+                left: 12.w,
+                right: 12.w,
+                child: _buildTopHud(context),
+              ),
+              Positioned(
+                right: 12.w,
+                top: 148.h,
+                child: _buildMapControls(context),
+              ),
+              Positioned(
+                left: 12.w,
+                right: 12.w,
+                bottom: 12.h,
+                child: _buildCommandPanel(context),
+              ),
+            ],
           ),
-          Positioned(
-            top: 10.h,
-            left: 12.w,
-            right: 12.w,
-            child: _buildTopHud(context),
-          ),
-          Positioned(
-            right: 12.w,
-            top: 148.h,
-            child: _buildMapControls(context),
-          ),
-          Positioned(
-            left: 12.w,
-            right: 12.w,
-            bottom: 12.h,
-            child: _buildCommandPanel(context),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

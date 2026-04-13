@@ -4,7 +4,6 @@ import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
@@ -21,18 +20,14 @@ class TravelAthkarScreen extends StatefulWidget {
 }
 
 class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
-  static const String _favoritesCacheKey = 'travel_athkar_favorites';
-
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
   List<TravelDhikrModel> _allItems = const [];
-  final Set<String> _favoriteKeys = <String>{};
   final Map<String, int> _repeatCounts = <String, int>{};
 
   bool _isLoading = true;
   String? _errorMessage;
-  String _selectedFilter = 'all';
   String _searchQuery = '';
   _AthkarDisplayMode _displayMode = _AthkarDisplayMode.pageView;
   int _currentPageIndex = 0;
@@ -70,28 +65,12 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
           .where((item) => item.key.isNotEmpty)
           .toList();
 
-      final cachedFavorites =
-          CacheService().getString(_favoritesCacheKey) ?? '[]';
-      final decodedFavorites = jsonDecode(cachedFavorites);
-      final favorites = <String>{};
-      if (decodedFavorites is List<dynamic>) {
-        favorites.addAll(
-          decodedFavorites
-              .whereType<String>()
-              .map((item) => item.trim())
-              .where((item) => item.isNotEmpty),
-        );
-      }
-
       if (!mounted) {
         return;
       }
 
       setState(() {
         _allItems = items;
-        _favoriteKeys
-          ..clear()
-          ..addAll(favorites);
         _isLoading = false;
         _currentPageIndex = 0;
       });
@@ -104,23 +83,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
         _isLoading = false;
       });
     }
-  }
-
-  Future<void> _toggleFavorite(String key) async {
-    if (key.trim().isEmpty) {
-      return;
-    }
-
-    setState(() {
-      if (_favoriteKeys.contains(key)) {
-        _favoriteKeys.remove(key);
-      } else {
-        _favoriteKeys.add(key);
-      }
-    });
-
-    final payload = jsonEncode(_favoriteKeys.toList());
-    await CacheService().setString(_favoritesCacheKey, payload);
   }
 
   void _incrementCounter(TravelDhikrModel item) {
@@ -142,26 +104,10 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     });
   }
 
-  List<String> get _triggerFilters {
-    final triggers = _allItems.map((item) => item.trigger).toSet().toList()
-      ..sort((first, second) => first.compareTo(second));
-    return triggers;
-  }
-
   List<TravelDhikrModel> get _visibleItems {
     final query = _searchQuery.trim();
 
     return _allItems.where((item) {
-      if (_selectedFilter == 'favorites' && !_favoriteKeys.contains(item.key)) {
-        return false;
-      }
-
-      if (_selectedFilter != 'all' &&
-          _selectedFilter != 'favorites' &&
-          item.trigger != _selectedFilter) {
-        return false;
-      }
-
       if (query.isEmpty) {
         return true;
       }
@@ -213,7 +159,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
   void _applySearch(String query) {
     setState(() {
       _searchQuery = query.trim();
-      _selectedFilter = 'all';
       _currentPageIndex = 0;
     });
     _jumpToFirstPage();
@@ -233,42 +178,64 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
       title: 'أذكار السفر',
       showLargeHeader: false,
       initialOffset: null,
-      trailing: GenericSearchAnchorAsync<TravelDhikrModel>(
-        hintText: 'ابحث في الأذكار',
-        asyncSuggestions: _searchSuggestions,
-        onSelected: (item) {
-          _applySearch(item.title);
-        },
-        suggestionBuilder: (context, item) {
-          return ListTile(
-            leading: Icon(
-              Icons.menu_book_rounded,
-              color: context.primaryColor,
-            ),
-            title: Text(
-              item.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            subtitle: Text(
-              _searchPreview(item.text),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: context.onSurfaceColor.withValues(alpha: 0.65),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          );
-        },
-      ),
+      trailing: _buildHeaderActions(context),
       slivers: [
         _buildBodySliver(context),
+      ],
+    );
+  }
+
+  Widget _buildHeaderActions(BuildContext context) {
+    final hasQuery = _searchQuery.trim().isNotEmpty;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (hasQuery)
+          IconButton(
+            tooltip: 'إلغاء البحث',
+            onPressed: () => _applySearch(''),
+            icon: Icon(
+              Icons.filter_alt_off_rounded,
+              color: context.onSurfaceColor.withValues(alpha: 0.82),
+              size: 20.sp,
+            ),
+          ),
+        _buildDisplayModeToggle(context),
+        GenericSearchAnchorAsync<TravelDhikrModel>(
+          hintText: 'ابحث في الأذكار',
+          asyncSuggestions: _searchSuggestions,
+          onSelected: (item) {
+            _applySearch(item.title);
+          },
+          suggestionBuilder: (context, item) {
+            return ListTile(
+              leading: Icon(
+                Icons.menu_book_rounded,
+                color: context.primaryColor,
+              ),
+              title: Text(
+                item.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: context.onSurfaceColor,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              subtitle: Text(
+                _searchPreview(item.text),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: context.onSurfaceColor.withValues(alpha: 0.65),
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -323,10 +290,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
           children: [
             _buildSummaryCard(context),
             SizedBox(height: 10.h),
-            _buildToolbarRow(context),
-            SizedBox(height: 10.h),
-            _buildFilterRow(context),
-            SizedBox(height: 10.h),
             Expanded(
               child: _buildAthkarContent(
                 context,
@@ -339,79 +302,10 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     );
   }
 
-  Widget _buildToolbarRow(BuildContext context) {
-    final hasQuery = _searchQuery.trim().isNotEmpty;
-
-    return Row(
-      children: [
-        Expanded(
-          child: hasQuery
-              ? DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: context.surfaceColor,
-                    borderRadius: BorderRadius.circular(999.r),
-                    border: Border.all(
-                      color: context.outlineVariant.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.search_rounded,
-                          color: context.primaryColor,
-                          size: 16.sp,
-                        ),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: Text(
-                            _searchQuery,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: context.onSurfaceColor,
-                              fontSize: 11.8.sp,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => _applySearch(''),
-                          borderRadius: BorderRadius.circular(999.r),
-                          child: Padding(
-                            padding: EdgeInsets.all(2.sp),
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 16.sp,
-                              color:
-                                  context.onSurfaceColor.withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Text(
-                  'استخدم البحث من أيقونة العدسة بالأعلى',
-                  style: TextStyle(
-                    color: context.onSurfaceColor.withValues(alpha: 0.65),
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-        ),
-        SizedBox(width: 8.w),
-        _buildDisplayModeToggle(context),
-      ],
-    );
-  }
-
   Widget _buildSummaryCard(BuildContext context) {
     final fixedCount = _fixedItemsCount;
     final completed = _completedItemsCount;
+    final dynamicCount = _allItems.where((item) => item.isDynamicRepeat).length;
     final progress = fixedCount == 0 ? 0.0 : completed / fixedCount;
     final progressText = '$completed / $fixedCount';
 
@@ -483,8 +377,8 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
               SizedBox(width: 6.w),
               Expanded(
                 child: _SummaryInfoChip(
-                  label: 'المفضلة',
-                  value: '${_favoriteKeys.length}',
+                  label: 'ديناميكي',
+                  value: '$dynamicCount',
                   color: context.onSurfaceColor,
                 ),
               ),
@@ -510,15 +404,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
       message: isPageMode ? 'التحويل إلى ListView' : 'التحويل إلى PageView',
       child: IconButton(
         visualDensity: VisualDensity.compact,
-        style: IconButton.styleFrom(
-          backgroundColor: context.surfaceColor,
-          side: BorderSide(
-            color: context.outlineVariant.withValues(alpha: 0.32),
-          ),
-          padding: EdgeInsets.all(6.sp),
-          minimumSize: Size(38.w, 38.w),
-          maximumSize: Size(40.w, 40.w),
-        ),
         onPressed: () {
           final next = isPageMode
               ? _AthkarDisplayMode.listView
@@ -536,39 +421,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
           color: context.primaryColor,
           size: 18.sp,
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilterRow(BuildContext context) {
-    final filters = <String>[
-      'all',
-      ..._triggerFilters,
-      'favorites',
-    ];
-
-    return SizedBox(
-      height: 40.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: filters.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          final selected = _selectedFilter == filter;
-
-          return ChoiceChip(
-            label: Text(_filterLabel(filter)),
-            selected: selected,
-            onSelected: (_) {
-              setState(() {
-                _selectedFilter = filter;
-                _currentPageIndex = 0;
-              });
-              _jumpToFirstPage();
-            },
-          );
-        },
       ),
     );
   }
@@ -598,32 +450,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
 
     return Column(
       children: [
-        Row(
-          children: [
-            Text(
-              'دعاء ${safeIndex + 1} / ${visibleItems.length}',
-              style: TextStyle(
-                color: context.onSurfaceColor.withValues(alpha: 0.7),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: safeIndex <= 0 ? null : () => _goToPage(safeIndex - 1),
-              icon: const Icon(Icons.chevron_right_rounded),
-              tooltip: 'السابق',
-            ),
-            IconButton(
-              onPressed: safeIndex >= visibleItems.length - 1
-                  ? null
-                  : () => _goToPage(safeIndex + 1),
-              icon: const Icon(Icons.chevron_left_rounded),
-              tooltip: 'التالي',
-            ),
-          ],
-        ),
-        SizedBox(height: 6.h),
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -661,14 +487,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     );
   }
 
-  void _goToPage(int index) {
-    _carouselController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
   void _jumpToFirstPage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_carouselController.ready) {
@@ -692,7 +510,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
   }
 
   Widget _buildDhikrCard(BuildContext context, TravelDhikrModel item) {
-    final favorite = _favoriteKeys.contains(item.key);
     final current = _repeatCounts[item.key] ?? 0;
     final target = item.repeatCount;
     final done = target != null && !item.isDynamicRepeat && current >= target;
@@ -730,14 +547,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-              ),
-              IconButton(
-                onPressed: () => _toggleFavorite(item.key),
-                icon: Icon(
-                  favorite ? Icons.star_rounded : Icons.star_outline_rounded,
-                  color: favorite ? Colors.amber : context.onSurfaceColor,
-                ),
-                tooltip: favorite ? 'إزالة من المفضلة' : 'إضافة للمفضلة',
               ),
               IconShareWidget(
                 text: shareText,
@@ -828,16 +637,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
         ],
       ),
     );
-  }
-
-  String _filterLabel(String key) {
-    if (key == 'all') {
-      return 'الكل';
-    }
-    if (key == 'favorites') {
-      return 'المفضلة';
-    }
-    return _triggerLabel(key);
   }
 }
 
