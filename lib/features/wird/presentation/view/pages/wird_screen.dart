@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -101,19 +102,23 @@ class _WirdAudioListState extends State<_WirdAudioList> {
   AudioService? _audioService;
   StreamSubscription<int?>? _indexSubscription;
   StreamSubscription<PlayerState>? _playerStateSubscription;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   final Map<int, int> _itemIndexToQueueIndex = {};
   final Map<int, int> _queueIndexToItemIndex = {};
   final Map<int, List<int>> _itemIndexToQueueIndices = {};
+  final Map<int, int> _remainingByIndex = {};
 
   bool _isAudioInitializing = false;
   bool _isAudioReady = false;
   bool _isPlaying = false;
   ProcessingState _processingState = ProcessingState.idle;
   int? _activeItemIndex;
-  int? _activeQueueIndex;
   int _currentRepeatIndex = 0;
   int _currentRepeatTotal = 0;
+  int _currentPageIndex = 0;
+  _WirdDisplayMode _displayMode = _WirdDisplayMode.listView;
   bool _isQueueRepeated = false;
 
   String _audioSignature = '';
@@ -122,15 +127,28 @@ class _WirdAudioListState extends State<_WirdAudioList> {
   @override
   void initState() {
     super.initState();
+    _syncRemainingCacheWithItems();
     unawaited(_setupAudioQueue(widget.items));
   }
 
   @override
   void didUpdateWidget(covariant _WirdAudioList oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _syncRemainingCacheWithItems();
     final nextSignature = _buildAudioSignature(widget.items);
     if (nextSignature != _audioSignature) {
       unawaited(_setupAudioQueue(widget.items));
+    }
+
+    final maxIndex = widget.items.isEmpty ? 0 : widget.items.length - 1;
+    if (_currentPageIndex > maxIndex) {
+      _currentPageIndex = maxIndex;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || widget.items.isEmpty) {
+          return;
+        }
+        _carouselController.jumpToPage(_currentPageIndex);
+      });
     }
   }
 
@@ -138,6 +156,14 @@ class _WirdAudioListState extends State<_WirdAudioList> {
   void dispose() {
     unawaited(_disposeAudioPlayer());
     super.dispose();
+  }
+
+  void _syncRemainingCacheWithItems() {
+    _remainingByIndex.removeWhere((index, _) => index >= widget.items.length);
+
+    for (var i = 0; i < widget.items.length; i += 1) {
+      _remainingByIndex.putIfAbsent(i, () => widget.items[i].counter);
+    }
   }
 
   String _buildAudioSignature(List<WirdModel> items, {bool repeated = false}) {
@@ -164,7 +190,6 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         _isPlaying = false;
         _processingState = ProcessingState.idle;
         _activeItemIndex = null;
-        _activeQueueIndex = null;
         _currentRepeatIndex = 0;
         _currentRepeatTotal = 0;
         _itemIndexToQueueIndex.clear();
@@ -350,7 +375,6 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         _isPlaying = false;
         _processingState = ProcessingState.idle;
         _activeItemIndex = null;
-        _activeQueueIndex = null;
         _currentRepeatIndex = 0;
         _currentRepeatTotal = 0;
         _itemIndexToQueueIndex.clear();
@@ -504,7 +528,6 @@ class _WirdAudioListState extends State<_WirdAudioList> {
 
     setState(() {
       _activeItemIndex = itemIndex;
-      _activeQueueIndex = currentQueueIndex;
       _currentRepeatIndex = repeatIndex;
       _currentRepeatTotal = repeatTotal;
     });
@@ -567,6 +590,62 @@ class _WirdAudioListState extends State<_WirdAudioList> {
     );
   }
 
+  Widget _buildDisplayModeToggle(BuildContext context) {
+    final isListMode = _displayMode == _WirdDisplayMode.listView;
+
+    return Tooltip(
+      message: isListMode ? 'التحويل إلى PageView' : 'التحويل إلى ListView',
+      child: IconButton(
+        visualDensity: VisualDensity.compact,
+        style: IconButton.styleFrom(
+          backgroundColor: context.surfaceColor,
+          side: BorderSide(
+            color: context.outlineVariant.withValues(alpha: 0.32),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            _displayMode = isListMode
+                ? _WirdDisplayMode.pageView
+                : _WirdDisplayMode.listView;
+          });
+        },
+        icon: Icon(
+          isListMode ? Icons.view_carousel_rounded : Icons.view_agenda_rounded,
+          color: context.primaryColor,
+          size: 20,
+        ),
+      ),
+    );
+  }
+
+  void _goToPage(int index) {
+    _carouselController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  Widget _buildItemCard(List<WirdModel> items, int index) {
+    final item = items[index];
+    return _WirdItemCard(
+      key: ValueKey('wird_${item.title}_$index'),
+      item: item,
+      index: index,
+      initialRemaining: _remainingByIndex[index] ?? item.counter,
+      onRemainingChanged: (value) {
+        _remainingByIndex[index] = value;
+      },
+      hasAudio: _itemIndexToQueueIndex.containsKey(index),
+      isAudioInitializing: _isAudioInitializing,
+      isCurrentAudio: _activeItemIndex == index,
+      isAudioPlaying: _isPlaying,
+      audioProcessingState: _processingState,
+      onAudioPressed: () => unawaited(_toggleAudio(index)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = widget.items;
@@ -578,29 +657,97 @@ class _WirdAudioListState extends State<_WirdAudioList> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: _buildPlayAllButton(),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildPlayAllButton(),
+                ),
+                const SizedBox(width: 8),
+                _buildDisplayModeToggle(context),
+              ],
+            ),
           ),
           const SizedBox(height: 6),
           _buildPlayAllStatus(items),
           const SizedBox(height: 4),
-          ...List<Widget>.generate(items.length, (index) {
-            final item = items[index];
-            return _WirdItemCard(
-              key: ValueKey('wird_${item.title}_$index'),
-              item: item,
-              index: index,
-              hasAudio: _itemIndexToQueueIndex.containsKey(index),
-              isAudioInitializing: _isAudioInitializing,
-              isCurrentAudio: _activeItemIndex == index,
-              isAudioPlaying: _isPlaying,
-              audioProcessingState: _processingState,
-              onAudioPressed: () => unawaited(_toggleAudio(index)),
-            );
-          }),
+          if (_displayMode == _WirdDisplayMode.listView)
+            ListView.separated(
+              itemCount: items.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (_, __) => const SizedBox(height: 2),
+              itemBuilder: (context, index) {
+                return _buildItemCard(items, index);
+              },
+            )
+          else ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Text(
+                    'ذكر ${_currentPageIndex + 1} / ${items.length}',
+                    style: context.titleSmall?.copyWith(
+                      color: context.onSurfaceColor.withValues(alpha: 0.7),
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: _currentPageIndex <= 0
+                        ? null
+                        : () => _goToPage(_currentPageIndex - 1),
+                    icon: const Icon(Icons.chevron_right_rounded),
+                    tooltip: 'السابق',
+                  ),
+                  IconButton(
+                    onPressed: _currentPageIndex >= items.length - 1
+                        ? null
+                        : () => _goToPage(_currentPageIndex + 1),
+                    icon: const Icon(Icons.chevron_left_rounded),
+                    tooltip: 'التالي',
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.70,
+              child: CarouselSlider.builder(
+                controller: _carouselController,
+                itemCount: items.length,
+                options: CarouselOptions(
+                  height: MediaQuery.sizeOf(context).height * 0.70,
+                  viewportFraction: 0.86,
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.04,
+                  initialPage: _currentPageIndex,
+                  onPageChanged: (index, _) {
+                    setState(() {
+                      _currentPageIndex = index;
+                    });
+                  },
+                ),
+                itemBuilder: (context, index, _) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: _buildItemCard(items, index),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
+}
+
+enum _WirdDisplayMode {
+  listView,
+  pageView,
 }
 
 bool _matchesQuery(WirdModel item, String query) {
@@ -652,6 +799,8 @@ class _WirdItemCard extends StatefulWidget {
   const _WirdItemCard({
     required this.item,
     required this.index,
+    required this.initialRemaining,
+    required this.onRemainingChanged,
     required this.hasAudio,
     required this.isAudioInitializing,
     required this.isCurrentAudio,
@@ -663,6 +812,8 @@ class _WirdItemCard extends StatefulWidget {
 
   final WirdModel item;
   final int index;
+  final int initialRemaining;
+  final ValueChanged<int> onRemainingChanged;
   final bool hasAudio;
   final bool isAudioInitializing;
   final bool isCurrentAudio;
@@ -681,14 +832,15 @@ class _WirdItemCardState extends State<_WirdItemCard> {
   @override
   void initState() {
     super.initState();
-    remaining = widget.item.counter;
+    remaining = widget.initialRemaining;
   }
 
   @override
   void didUpdateWidget(covariant _WirdItemCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.item.counter != widget.item.counter) {
-      remaining = widget.item.counter;
+    if (oldWidget.item.counter != widget.item.counter ||
+        oldWidget.initialRemaining != widget.initialRemaining) {
+      remaining = widget.initialRemaining;
     }
   }
 
@@ -697,12 +849,14 @@ class _WirdItemCardState extends State<_WirdItemCard> {
     setState(() {
       remaining -= 1;
     });
+    widget.onRemainingChanged(remaining);
   }
 
   void _reset() {
     setState(() {
       remaining = widget.item.counter;
     });
+    widget.onRemainingChanged(remaining);
   }
 
   Future<void> _openLink(String url) async {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,8 @@ import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/traveler/data/models/travel_dhikr_model.dart';
 
 class TravelAthkarScreen extends StatefulWidget {
@@ -20,8 +23,8 @@ class TravelAthkarScreen extends StatefulWidget {
 class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
   static const String _favoritesCacheKey = 'travel_athkar_favorites';
 
-  final TextEditingController _searchController = TextEditingController();
-  final PageController _pageController = PageController();
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   List<TravelDhikrModel> _allItems = const [];
   final Set<String> _favoriteKeys = <String>{};
@@ -42,8 +45,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -165,10 +166,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
         return true;
       }
 
-      return item.title.contains(query) ||
-          item.text.contains(query) ||
-          item.virtue.contains(query) ||
-          _triggerLabel(item.trigger).contains(query);
+      return _matchesSearch(item, query);
     }).toList();
   }
 
@@ -193,48 +191,124 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     return travelTriggerLabels[trigger] ?? trigger;
   }
 
+  bool _matchesSearch(TravelDhikrModel item, String query) {
+    return item.title.contains(query) ||
+        item.text.contains(query) ||
+        item.virtue.contains(query) ||
+        _triggerLabel(item.trigger).contains(query);
+  }
+
+  Future<List<TravelDhikrModel>> _searchSuggestions(String query) async {
+    final normalized = query.trim();
+    if (normalized.isEmpty) {
+      return _allItems.take(18).toList();
+    }
+
+    return _allItems
+        .where((item) => _matchesSearch(item, normalized))
+        .take(30)
+        .toList();
+  }
+
+  void _applySearch(String query) {
+    setState(() {
+      _searchQuery = query.trim();
+      _selectedFilter = 'all';
+      _currentPageIndex = 0;
+    });
+    _jumpToFirstPage();
+  }
+
+  String _searchPreview(String text) {
+    final value = text.replaceAll('\n', ' ').trim();
+    if (value.length <= 80) {
+      return value;
+    }
+    return '${value.substring(0, 80)}...';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('أذكار السفر'),
+    return AppScaffoldWidget(
+      title: 'أذكار السفر',
+      showLargeHeader: false,
+      initialOffset: null,
+      trailing: GenericSearchAnchorAsync<TravelDhikrModel>(
+        hintText: 'ابحث في الأذكار',
+        asyncSuggestions: _searchSuggestions,
+        onSelected: (item) {
+          _applySearch(item.title);
+        },
+        suggestionBuilder: (context, item) {
+          return ListTile(
+            leading: Icon(
+              Icons.menu_book_rounded,
+              color: context.primaryColor,
+            ),
+            title: Text(
+              item.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: context.onSurfaceColor,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            subtitle: Text(
+              _searchPreview(item.text),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: context.onSurfaceColor.withValues(alpha: 0.65),
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          );
+        },
       ),
-      body: SafeArea(
-        child: _buildBody(context),
-      ),
+      slivers: [
+        _buildBodySliver(context),
+      ],
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBodySliver(BuildContext context) {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
+      return const SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.sp),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.sp),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.onSurfaceColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-              FilledButton.icon(
-                onPressed: _loadContent,
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('إعادة المحاولة'),
-              ),
-            ],
+                SizedBox(height: 12.h),
+                FilledButton.icon(
+                  onPressed: _loadContent,
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('إعادة المحاولة'),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -242,30 +316,96 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
 
     final visibleItems = _visibleItems;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 12.h),
-      child: Column(
-        children: [
-          _buildSummaryCard(context),
-          SizedBox(height: 10.h),
-          Row(
-            children: [
-              Expanded(child: _buildSearchField(context)),
-              SizedBox(width: 8.w),
-              _buildDisplayModeToggle(context),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          _buildFilterRow(context),
-          SizedBox(height: 10.h),
-          Expanded(
-            child: _buildAthkarContent(
-              context,
-              visibleItems,
+    return SliverFillRemaining(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 12.h),
+        child: Column(
+          children: [
+            _buildSummaryCard(context),
+            SizedBox(height: 10.h),
+            _buildToolbarRow(context),
+            SizedBox(height: 10.h),
+            _buildFilterRow(context),
+            SizedBox(height: 10.h),
+            Expanded(
+              child: _buildAthkarContent(
+                context,
+                visibleItems,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildToolbarRow(BuildContext context) {
+    final hasQuery = _searchQuery.trim().isNotEmpty;
+
+    return Row(
+      children: [
+        Expanded(
+          child: hasQuery
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: context.surfaceColor,
+                    borderRadius: BorderRadius.circular(999.r),
+                    border: Border.all(
+                      color: context.outlineVariant.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.search_rounded,
+                          color: context.primaryColor,
+                          size: 16.sp,
+                        ),
+                        SizedBox(width: 6.w),
+                        Expanded(
+                          child: Text(
+                            _searchQuery,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: context.onSurfaceColor,
+                              fontSize: 11.8.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => _applySearch(''),
+                          borderRadius: BorderRadius.circular(999.r),
+                          child: Padding(
+                            padding: EdgeInsets.all(2.sp),
+                            child: Icon(
+                              Icons.close_rounded,
+                              size: 16.sp,
+                              color:
+                                  context.onSurfaceColor.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Text(
+                  'استخدم البحث من أيقونة العدسة بالأعلى',
+                  style: TextStyle(
+                    color: context.onSurfaceColor.withValues(alpha: 0.65),
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+        ),
+        SizedBox(width: 8.w),
+        _buildDisplayModeToggle(context),
+      ],
     );
   }
 
@@ -359,29 +499,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSearchField(BuildContext context) {
-    return TextField(
-      controller: _searchController,
-      onChanged: (value) {
-        setState(() {
-          _searchQuery = value;
-          _currentPageIndex = 0;
-        });
-        _jumpToFirstPage();
-      },
-      decoration: InputDecoration(
-        hintText: 'ابحث في الأذكار',
-        prefixIcon: const Icon(Icons.search_rounded),
-        filled: true,
-        fillColor: context.surfaceColor,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.r),
-          borderSide: BorderSide.none,
-        ),
       ),
     );
   }
@@ -508,19 +625,34 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
         ),
         SizedBox(height: 6.h),
         Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: visibleItems.length,
-            onPageChanged: (value) {
-              setState(() {
-                _currentPageIndex = value;
-              });
-            },
-            itemBuilder: (context, index) {
-              final item = visibleItems[index];
-              return SingleChildScrollView(
-                padding: EdgeInsets.only(bottom: 8.h),
-                child: _buildDhikrCard(context, item),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return CarouselSlider.builder(
+                controller: _carouselController,
+                itemCount: visibleItems.length,
+                options: CarouselOptions(
+                  height: constraints.maxHeight,
+                  viewportFraction: 0.86,
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.04,
+                  initialPage: safeIndex,
+                  onPageChanged: (value, _) {
+                    setState(() {
+                      _currentPageIndex = value;
+                    });
+                  },
+                ),
+                itemBuilder: (context, index, _) {
+                  final item = visibleItems[index];
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: _buildDhikrCard(context, item),
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -530,7 +662,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
   }
 
   void _goToPage(int index) {
-    _pageController.animateToPage(
+    _carouselController.animateToPage(
       index,
       duration: const Duration(milliseconds: 280),
       curve: Curves.easeOutCubic,
@@ -539,10 +671,10 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
 
   void _jumpToFirstPage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_pageController.hasClients) {
+      if (!mounted || !_carouselController.ready) {
         return;
       }
-      _pageController.jumpToPage(0);
+      _carouselController.jumpToPage(0);
     });
   }
 
