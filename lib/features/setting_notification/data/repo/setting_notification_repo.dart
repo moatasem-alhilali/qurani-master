@@ -111,8 +111,6 @@ class SettingNotificationRepo {
                   prayerName: prayerName,
                 )
               : null,
-          icon: isAthan ? 'ic_notification_small' : null,
-          largeIcon: isAthan ? 'ic_notification_large' : null,
           subText: isAthan
               ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
               : null,

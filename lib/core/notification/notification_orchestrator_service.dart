@@ -106,8 +106,6 @@ class NotificationOrchestratorService {
               prayerName: prayerName,
               prayerTimeLabel: prayerTimeLabel,
             ),
-            icon: 'ic_notification_small',
-            largeIcon: 'ic_notification_large',
             subText: athanPayloadService.buildAthanSubText(
               prayerName: prayerName,
               prayerTimeLabel: prayerTimeLabel,

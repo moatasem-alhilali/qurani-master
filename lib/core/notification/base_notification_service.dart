@@ -64,7 +64,7 @@ abstract class BaseNotificationService {
 
     // Android initialization settings with proper configuration
     const androidSettings = AndroidInitializationSettings(
-      'ic_notification_small',
+      '@mipmap/ic_launcher',
     );
 
     // iOS initialization settings with proper permissions
@@ -380,7 +380,7 @@ abstract class BaseNotificationService {
       data.id,
       data.name,
       channelDescription: 'قناة ${data.name}',
-      icon: icon ?? 'ic_notification_small',
+      icon: icon,
       sound: RawResourceAndroidNotificationSound(data.sound),
       priority: fullScreenIntent ? Priority.max : Priority.high,
       importance: Importance.max,

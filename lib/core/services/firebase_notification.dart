@@ -114,7 +114,7 @@ class FirebaseNotificationService {
 
       // Android initialization settings
       const initializationSettingsAndroid =
-          AndroidInitializationSettings('ic_notification_small');
+          AndroidInitializationSettings('@mipmap/ic_launcher');
 
       // iOS initialization settings
       const initializationSettingsDarwin = DarwinInitializationSettings(
@@ -258,7 +258,7 @@ class FirebaseNotificationService {
           const AndroidNotificationAction(
             _actionView,
             'View',
-            icon: DrawableResourceAndroidBitmap('ic_notification_small'),
+            icon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
           ),
           const AndroidNotificationAction(
             _actionDismiss,
@@ -274,10 +274,8 @@ class FirebaseNotificationService {
               _getChannelDescription(message.data['type'] as String?),
           importance: importance,
           priority: Priority.high,
-          icon: 'ic_notification_small',
-          largeIcon: const DrawableResourceAndroidBitmap(
-            'ic_notification_large',
-          ),
+          icon: '@mipmap/ic_launcher',
+          largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
           enableLights: true,
           actions: androidActions,
           groupKey: message.data['type'] as String? ?? 'default',
