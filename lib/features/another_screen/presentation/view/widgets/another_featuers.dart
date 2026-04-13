@@ -17,6 +17,11 @@ import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_schedules_screen.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
+import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
+import 'package:quran_app/features/traveler/presentation/view/pages/flight_prayer_times_screen.dart';
+import 'package:quran_app/features/traveler/presentation/view/pages/travel_athkar_screen.dart';
+import 'package:quran_app/features/traveler/presentation/view/pages/travel_places_map_screen.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_options_sheet.dart';
 
 class AnotherFeatures extends StatelessWidget {
   const AnotherFeatures({super.key});
@@ -32,6 +37,11 @@ class AnotherFeatures extends StatelessWidget {
         label: 'مواقيت الصلاة',
         icon: FlutterIslamicIcons.prayingPerson,
         onTap: () => context.push(const PrayerTimeScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'المسافر',
+        icon: Icons.travel_explore_rounded,
+        onTap: () => _openTravelerSheet(context),
       ),
       _FeatureShortcut(
         label: 'خطط الختمة',
@@ -84,6 +94,42 @@ class AnotherFeatures extends StatelessWidget {
         onTap: () => context.push(const MuDoaProvider()),
       ),
     ];
+  }
+
+  Future<void> _openTravelerSheet(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return TravelerOptionsSheet(
+          onOpenNearbyMosques: () {
+            Navigator.of(sheetContext).pop();
+            context.push(
+              const TravelPlacesMapScreen(
+                placeType: TravelerPlaceType.mosque,
+              ),
+            );
+          },
+          onOpenTravelAzkar: () {
+            Navigator.of(sheetContext).pop();
+            context.push(const TravelAthkarScreen());
+          },
+          onOpenHalalRestaurants: () {
+            Navigator.of(sheetContext).pop();
+            context.push(
+              const TravelPlacesMapScreen(
+                placeType: TravelerPlaceType.halalRestaurant,
+              ),
+            );
+          },
+          onOpenFlightPrayerTimes: () {
+            Navigator.of(sheetContext).pop();
+            context.push(const FlightPrayerTimesScreen());
+          },
+        );
+      },
+    );
   }
 
   @override

@@ -17,7 +17,7 @@ String _formatClock12(DateTime date) {
 String _formatPrayerTime12(DateTime date) {
   final hour12 = date.hour % 12 == 0 ? 12 : date.hour % 12;
   final time = '${_twoDigits(hour12)}:${_twoDigits(date.minute)}';
-  final period = date.hour < 12 ? 'ص' : 'م';
+  final period = date.hour < 12 ? '' : '';
   return '$time $period';
 }
 
