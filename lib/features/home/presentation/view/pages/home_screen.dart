@@ -213,7 +213,6 @@ class _YoungMuslimCard extends StatelessWidget {
   }
 }
 
-
 class _HomeUpdateTile extends StatelessWidget {
   const _HomeUpdateTile();
 
