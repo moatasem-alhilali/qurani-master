@@ -1,0 +1,518 @@
+{
+  "version": 1,
+  "feature_key": "daily_wird",
+  "default_language": "ar",
+  "supported_languages": ["ar"],
+  "presets": [
+    {
+      "id": "light",
+      "name": "البرنامج الخفيف",
+      "description": "برنامج يومي خفيف مناسب للمستخدم المبتدئ أو المشغول.",
+      "item_ids": [
+        "morning_dhikr_basic",
+        "istighfar_10",
+        "salawat_10",
+        "quran_2_pages",
+        "sleep_dua"
+      ]
+    },
+    {
+      "id": "medium",
+      "name": "البرنامج المتوسط",
+      "description": "برنامج يومي متوازن يجمع بين الأذكار والقرآن والأدعية.",
+      "item_ids": [
+        "morning_dhikr_basic",
+        "evening_dhikr_basic",
+        "istighfar_50",
+        "salawat_50",
+        "quran_4_pages",
+        "dua_of_day_1",
+        "sleep_dua",
+        "mulk_surah"
+      ]
+    },
+    {
+      "id": "intensive",
+      "name": "البرنامج المكثف",
+      "description": "برنامج يومي مكثف للمستخدم المحافظ والراغب في زيادة ورده اليومي.",
+      "item_ids": [
+        "morning_dhikr_basic",
+        "evening_dhikr_basic",
+        "post_prayer_dhikr",
+        "istighfar_100",
+        "salawat_100",
+        "quran_1_juz",
+        "dua_of_day_1",
+        "dua_of_day_2",
+        "sleep_dua",
+        "mulk_surah",
+        "kahf_friday"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "morning_dhikr_basic",
+      "title": "أذكار الصباح",
+      "type": "dhikr_set",
+      "category": "morning",
+      "time_category": "morning",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "collection",
+      "reference_keys": [
+        "morning_1",
+        "morning_2",
+        "morning_3",
+        "morning_4"
+      ],
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 10,
+      "order_index": 1,
+      "is_active": true
+    },
+    {
+      "id": "evening_dhikr_basic",
+      "title": "أذكار المساء",
+      "type": "dhikr_set",
+      "category": "evening",
+      "time_category": "evening",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "collection",
+      "reference_keys": [
+        "evening_1",
+        "evening_2",
+        "evening_3"
+      ],
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 10,
+      "order_index": 2,
+      "is_active": true
+    },
+    {
+      "id": "post_prayer_dhikr",
+      "title": "أذكار بعد الصلاة",
+      "type": "dhikr_set",
+      "category": "after_prayer",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "collection",
+      "reference_keys": [
+        "post_prayer_1",
+        "post_prayer_2",
+        "post_prayer_3"
+      ],
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 8,
+      "order_index": 3,
+      "is_active": true
+    },
+    {
+      "id": "istighfar_10",
+      "title": "الاستغفار",
+      "type": "counted_dhikr",
+      "category": "istighfar",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 10,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "istighfar_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 4,
+      "order_index": 4,
+      "is_active": true
+    },
+    {
+      "id": "istighfar_50",
+      "title": "الاستغفار",
+      "type": "counted_dhikr",
+      "category": "istighfar",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 50,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "istighfar_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 8,
+      "order_index": 5,
+      "is_active": true
+    },
+    {
+      "id": "istighfar_100",
+      "title": "الاستغفار",
+      "type": "counted_dhikr",
+      "category": "istighfar",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 100,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "istighfar_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 12,
+      "order_index": 6,
+      "is_active": true
+    },
+    {
+      "id": "salawat_10",
+      "title": "الصلاة على النبي ﷺ",
+      "type": "counted_dhikr",
+      "category": "salawat",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 10,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "salawat_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 4,
+      "order_index": 7,
+      "is_active": true
+    },
+    {
+      "id": "salawat_50",
+      "title": "الصلاة على النبي ﷺ",
+      "type": "counted_dhikr",
+      "category": "salawat",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 50,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "salawat_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 8,
+      "order_index": 8,
+      "is_active": true
+    },
+    {
+      "id": "salawat_100",
+      "title": "الصلاة على النبي ﷺ",
+      "type": "counted_dhikr",
+      "category": "salawat",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 100,
+      "default_count_step": 1,
+      "content_mode": "single",
+      "reference_key": "salawat_text",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 12,
+      "order_index": 9,
+      "is_active": true
+    },
+    {
+      "id": "quran_2_pages",
+      "title": "ورد القرآن",
+      "type": "quran",
+      "category": "quran",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 2,
+      "count_unit": "pages",
+      "content_mode": "single",
+      "reference_key": "quran_general",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 8,
+      "order_index": 10,
+      "is_active": true
+    },
+    {
+      "id": "quran_4_pages",
+      "title": "ورد القرآن",
+      "type": "quran",
+      "category": "quran",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 4,
+      "count_unit": "pages",
+      "content_mode": "single",
+      "reference_key": "quran_general",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 12,
+      "order_index": 11,
+      "is_active": true
+    },
+    {
+      "id": "quran_1_juz",
+      "title": "ورد القرآن",
+      "type": "quran",
+      "category": "quran",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": true,
+      "count_required": 1,
+      "count_unit": "juz",
+      "content_mode": "single",
+      "reference_key": "quran_general",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 20,
+      "order_index": 12,
+      "is_active": true
+    },
+    {
+      "id": "dua_of_day_1",
+      "title": "دعاء اليوم",
+      "type": "dua",
+      "category": "daily_dua",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "single",
+      "reference_key": "dua_day_1",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 6,
+      "order_index": 13,
+      "is_active": true
+    },
+    {
+      "id": "dua_of_day_2",
+      "title": "دعاء اليوم",
+      "type": "dua",
+      "category": "daily_dua",
+      "time_category": "anytime",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "single",
+      "reference_key": "dua_day_2",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 6,
+      "order_index": 14,
+      "is_active": true
+    },
+    {
+      "id": "sleep_dua",
+      "title": "دعاء النوم",
+      "type": "dua",
+      "category": "sleep",
+      "time_category": "night",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "single",
+      "reference_key": "sleep_dua_1",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 5,
+      "order_index": 15,
+      "is_active": true
+    },
+    {
+      "id": "mulk_surah",
+      "title": "قراءة سورة الملك",
+      "type": "surah",
+      "category": "night_surah",
+      "time_category": "night",
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "single",
+      "reference_key": "surah_mulk",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 10,
+      "order_index": 16,
+      "is_active": true
+    },
+    {
+      "id": "kahf_friday",
+      "title": "قراءة سورة الكهف",
+      "type": "surah",
+      "category": "friday_surah",
+      "time_category": "anytime",
+      "active_days": ["friday"],
+      "is_mandatory_in_preset": false,
+      "is_customizable": true,
+      "has_counter": false,
+      "count_required": null,
+      "content_mode": "single",
+      "reference_key": "surah_kahf",
+      "has_audio": false,
+      "audio_url": null,
+      "reward_points": 12,
+      "order_index": 17,
+      "is_active": true
+    }
+  ],
+  "content_library": {
+    "istighfar_text": {
+      "title": "نص الاستغفار",
+      "text": "أستغفر الله",
+      "source": "ذكر مشروع",
+      "fadhl": "الاستغفار من أجلّ الأذكار وأعظمها أثرًا على القلب."
+    },
+    "salawat_text": {
+      "title": "نص الصلاة على النبي ﷺ",
+      "text": "اللهم صل وسلم على نبينا محمد",
+      "source": "ذكر مشروع",
+      "fadhl": "الصلاة على النبي ﷺ من أعظم القربات."
+    },
+    "quran_general": {
+      "title": "ورد القرآن",
+      "text": "اقرأ المقدار المحدد من القرآن الكريم بخشوع وتدبر.",
+      "source": "القرآن الكريم",
+      "fadhl": "القرآن نور وهدى وبركة."
+    },
+    "dua_day_1": {
+      "title": "دعاء اليوم",
+      "text": "اللهم أعني على ذكرك وشكرك وحسن عبادتك",
+      "source": "دعاء مشروع",
+      "fadhl": "من أجمع الأدعية وأنفعها في باب العبادة."
+    },
+    "dua_day_2": {
+      "title": "دعاء اليوم",
+      "text": "رب اغفر لي وتب علي إنك أنت التواب الرحيم",
+      "source": "دعاء مشروع",
+      "fadhl": "دعاء جامع بين المغفرة والتوبة والرجاء."
+    },
+    "sleep_dua_1": {
+      "title": "دعاء النوم",
+      "text": "باسمك اللهم أموت وأحيا",
+      "source": "صحيح البخاري",
+      "fadhl": "من أذكار النوم الثابتة."
+    },
+    "surah_mulk": {
+      "title": "سورة الملك",
+      "text": "قراءة سورة الملك كاملة قبل النوم",
+      "source": "القرآن الكريم",
+      "fadhl": "ورد ثابت عند كثير من المسلمين ويُستحب المواظبة على القرآن."
+    },
+    "surah_kahf": {
+      "title": "سورة الكهف",
+      "text": "قراءة سورة الكهف كاملة يوم الجمعة",
+      "source": "القرآن الكريم",
+      "fadhl": "ورد أسبوعي مشهور ومحبب يوم الجمعة."
+    },
+    "morning_1": {
+      "title": "ذكر الصباح 1",
+      "text": "أصبحنا وأصبح الملك لله",
+      "source": "ذكر مشروع",
+      "fadhl": "من الأذكار المشهورة في الصباح."
+    },
+    "morning_2": {
+      "title": "ذكر الصباح 2",
+      "text": "اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور",
+      "source": "ذكر مشروع",
+      "fadhl": "ذكر جامع لمعاني التوكل والافتقار."
+    },
+    "morning_3": {
+      "title": "ذكر الصباح 3",
+      "text": "رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا",
+      "source": "ذكر مشروع",
+      "fadhl": "من الأذكار العظيمة في تجديد الرضا والإيمان."
+    },
+    "morning_4": {
+      "title": "ذكر الصباح 4",
+      "text": "حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم",
+      "source": "ذكر مشروع",
+      "fadhl": "ذكر عظيم في التوكل واليقين."
+    },
+    "evening_1": {
+      "title": "ذكر المساء 1",
+      "text": "أمسينا وأمسى الملك لله",
+      "source": "ذكر مشروع",
+      "fadhl": "من أذكار المساء المشهورة."
+    },
+    "evening_2": {
+      "title": "ذكر المساء 2",
+      "text": "اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير",
+      "source": "ذكر مشروع",
+      "fadhl": "من أذكار المساء الثابتة المشهورة."
+    },
+    "evening_3": {
+      "title": "ذكر المساء 3",
+      "text": "رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا",
+      "source": "ذكر مشروع",
+      "fadhl": "ذكر عظيم في الثبات والسكينة."
+    },
+    "post_prayer_1": {
+      "title": "ذكر بعد الصلاة 1",
+      "text": "أستغفر الله، أستغفر الله، أستغفر الله",
+      "source": "ذكر مشروع",
+      "fadhl": "من أذكار ما بعد الصلاة المشهورة."
+    },
+    "post_prayer_2": {
+      "title": "ذكر بعد الصلاة 2",
+      "text": "اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام",
+      "source": "ذكر مشروع",
+      "fadhl": "ذكر عظيم بعد الصلاة."
+    },
+    "post_prayer_3": {
+      "title": "ذكر بعد الصلاة 3",
+      "text": "سبحان الله، والحمد لله، والله أكبر",
+      "source": "ذكر مشروع",
+      "fadhl": "من الأذكار المشهورة عقب الصلاة."
+    }
+  },
+  "user_customization_rules": {
+    "can_change_counter_value": true,
+    "can_hide_default_items": true,
+    "can_duplicate_items": false,
+    "can_add_custom_dua": true,
+    "can_add_custom_dhikr": true,
+    "can_edit_builtin_content": false,
+    "can_reorder_items": true
+  },
+  "notification_defaults": {
+    "morning_reminder_enabled": true,
+    "morning_reminder_time": "07:00",
+    "evening_reminder_enabled": true,
+    "evening_reminder_time": "17:30",
+    "night_reminder_enabled": true,
+    "night_reminder_time": "21:00",
+    "end_of_day_summary_enabled": true,
+    "end_of_day_summary_time": "22:30"
+  },
+  "tracking": {
+    "enable_daily_completion": true,
+    "enable_streak": true,
+    "enable_weekly_stats": true
+  }
+}

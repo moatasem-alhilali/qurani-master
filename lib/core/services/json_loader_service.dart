@@ -8,6 +8,8 @@ class JsonLoaderService {
   static const String mostReaderPath = 'assets/json/most_reader.json';
   static const String surahInfoPath = 'assets/json/surah_info.json';
   static const String wirdsPath = 'assets/json/wird_night_morning.json';
+  static const String dailyWirdProgramPath =
+      'assets/json/daily_wird_program.json';
   static const String hadith40Path = 'assets/json/hadith_40.json';
   static const String zkarAfterPrayPath = 'assets/json/zkar-after-pray.json';
   static const String ruqiaShareiaPath = 'assets/json/ruqia_shareia.json';

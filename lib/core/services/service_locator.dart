@@ -15,6 +15,7 @@ import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart'
 import 'package:quran_app/features/bookmark/data/remote/book_mark_repository_imp.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
+import 'package:quran_app/features/daily_wird/data/di/injection_container.dart';
 import 'package:quran_app/features/home/data/di/injection_container.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
@@ -49,6 +50,7 @@ Future<void> setupServiceLocator() async {
   await registerSearchDependencies(sl);
   await registerSurahVerseReaderDependencies(sl);
   await registerHomeDependencies(sl);
+  await registerDailyWirdDependencies(sl);
 
   ///
   /// getIt

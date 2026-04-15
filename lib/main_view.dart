@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +25,7 @@ import 'package:quran_app/features/manage_version/data/datasources/version_cache
 import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
 import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
+import 'package:quran_app/features/daily_wird/data/repo/daily_wird_repository.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
@@ -195,6 +198,7 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     sl<AthanAlarmNotificationRouterService>().initialize();
     sl<SmartOutreachNotificationRouterService>().initialize();
+    unawaited(sl<DailyWirdRepository>().syncReminderSchedules());
   }
 
   @override

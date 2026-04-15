@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/util/ThemeColors.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
 
 final ThemeData darkTheme = ThemeData(

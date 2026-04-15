@@ -8,6 +8,7 @@ import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
+import 'package:quran_app/features/daily_wird/presentation/view/pages/daily_wird_screen.dart';
 import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
@@ -57,6 +58,11 @@ class AnotherFeatures extends StatelessWidget {
         label: 'اتجاه القبلة',
         icon: FlutterIslamicIcons.qibla,
         onTap: () => context.push(const QiblahMainScreen()),
+      ),
+      _FeatureShortcut(
+        label: 'زاد اليوم والليلة',
+        icon: FlutterIslamicIcons.tasbih,
+        onTap: () => context.push(const DailyWirdScreen()),
       ),
       _FeatureShortcut(
         label: 'المسبحة',

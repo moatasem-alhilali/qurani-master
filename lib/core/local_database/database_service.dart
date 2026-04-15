@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
+import 'package:quran_app/features/daily_wird/data/database/daily_wird_database_service.dart';
 import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
@@ -26,6 +27,14 @@ class DatabaseTables {
       SmartOutreachDatabaseService.sessionsTable;
   static const String smartOutreachContactResults =
       SmartOutreachDatabaseService.contactResultsTable;
+  static const String dailyWirdSettings =
+      DailyWirdDatabaseService.settingsTable;
+  static const String dailyWirdCustomizations =
+      DailyWirdDatabaseService.customizationsTable;
+  static const String dailyWirdPrograms =
+      DailyWirdDatabaseService.programsTable;
+  static const String dailyWirdProgramItems =
+      DailyWirdDatabaseService.programItemsTable;
 }
 
 /// A singleton service to manage the local SQLite database.
@@ -48,7 +57,7 @@ class DatabaseService {
   static const _dbName = 'quran_app_test7.db';
 
   /// Database version (used for future upgrades)
-  static const _dbVersion = 2;
+  static const _dbVersion = 3;
 
   /// Accessor that returns the database instance
   Future<Database> get database async {
@@ -97,6 +106,10 @@ class DatabaseService {
     await db.execute(SmartOutreachDatabaseService.contactsTableSql);
     await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
     await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
+    await db.execute(DailyWirdDatabaseService.settingsTableSql);
+    await db.execute(DailyWirdDatabaseService.customizationsTableSql);
+    await db.execute(DailyWirdDatabaseService.programsTableSql);
+    await db.execute(DailyWirdDatabaseService.programItemsTableSql);
 
     logger.i('✅ Database initialized and tables created.');
   }
@@ -107,6 +120,12 @@ class DatabaseService {
       await db.execute(SmartOutreachDatabaseService.contactsTableSql);
       await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
       await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
+    }
+    if (oldVersion < 3) {
+      await db.execute(DailyWirdDatabaseService.settingsTableSql);
+      await db.execute(DailyWirdDatabaseService.customizationsTableSql);
+      await db.execute(DailyWirdDatabaseService.programsTableSql);
+      await db.execute(DailyWirdDatabaseService.programItemsTableSql);
     }
   }
 

@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: adhan_dart
-      sha256: "3510e87a81acd816dfe11df458d236cb33f64a9132d2f5becc57ef6cbfefb565"
+      sha256: "4910af871e17b412a744616647dd9ecf4a7d0096dcbeb3a2432ac2994b1b5fb4"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "1.2.0"
   analyzer:
     dependency: transitive
     description:
