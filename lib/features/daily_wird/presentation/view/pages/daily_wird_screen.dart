@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/snackbar_export.dart';
+import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -342,7 +341,8 @@ class _PresetSelectionSection extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'ابدأ ببرنامج تعبدي جاهز، ثم خصص العدد وأخف ما لا تريد ورتب عناصر الزاد كما يناسبك.',
+            'ابدأ ببرنامج تعبدي جاهز، ثم خصص العدد وأخف ما لا تريد '
+            'ورتب عناصر الزاد كما يناسبك.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: context.onSurfaceColor.withValues(alpha: 0.74),
                 ),
@@ -462,45 +462,38 @@ class _SummaryCard extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.r),
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            context.surfaceColor,
-            context.surfaceVariant.withValues(alpha: 0.88),
-          ],
-        ),
+        borderRadius: BorderRadius.circular(22.r),
+        color: context.surfaceColor,
         border: Border.all(
-          color: context.outline.withValues(alpha: 0.12),
+          color: context.outline.withValues(alpha: 0.10),
         ),
         boxShadow: [
           BoxShadow(
-            color: context.shadow.withValues(alpha: 0.08),
-            blurRadius: 20.r,
-            offset: Offset(0, 12.h),
+            color: context.shadow.withValues(alpha: 0.05),
+            blurRadius: 14.r,
+            offset: Offset(0, 8.h),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(22.r),
         child: Stack(
           children: [
             _TopAccentLine(color: context.primaryColor),
             Positioned(
-              left: -24.w,
-              top: 16.h,
+              left: -18.w,
+              top: 14.h,
               child: Container(
-                width: 72.w,
-                height: 72.w,
+                width: 58.w,
+                height: 58.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: context.primaryColor.withValues(alpha: 0.06),
+                  color: context.primaryColor.withValues(alpha: 0.04),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(18.w),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -520,13 +513,14 @@ class _SummaryCard extends StatelessWidget {
                               label: 'برنامج اليوم',
                               color: context.primaryColor,
                             ),
-                            SizedBox(height: 6.h),
+                            SizedBox(height: 4.h),
                             Text(
                               preset.name,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
                                   ?.copyWith(
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                             ),
@@ -557,7 +551,7 @@ class _SummaryCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 14.h),
                   TweenAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeOutCubic,
@@ -572,7 +566,9 @@ class _SummaryCard extends StatelessWidget {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            'أكملت ${((state.program?.completionPercentage ?? 0).round())}% من زادك اليوم',
+                            'أكملت '
+                            '${(state.program?.completionPercentage ?? 0).round()}%'
+                            ' من زادك اليوم',
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: context.onSurfaceColor
@@ -583,7 +579,7 @@ class _SummaryCard extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
@@ -694,35 +690,28 @@ class _ItemCard extends StatelessWidget {
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22.r),
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              context.surfaceColor,
-              accentColor.withValues(alpha: 0.06),
-            ],
-          ),
+          borderRadius: BorderRadius.circular(20.r),
+          color: context.surfaceColor,
           border: Border.all(
             color: item.isCompleted
-                ? accentColor.withValues(alpha: 0.28)
-                : context.outline.withValues(alpha: 0.12),
+                ? accentColor.withValues(alpha: 0.18)
+                : context.outline.withValues(alpha: 0.10),
           ),
           boxShadow: [
             BoxShadow(
-              color: context.shadow.withValues(alpha: 0.06),
-              blurRadius: 16.r,
-              offset: Offset(0, 10.h),
+              color: context.shadow.withValues(alpha: 0.04),
+              blurRadius: 12.r,
+              offset: Offset(0, 7.h),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(22.r),
+          borderRadius: BorderRadius.circular(20.r),
           child: Stack(
             children: [
               _TopAccentLine(color: accentColor),
               Padding(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.fromLTRB(14.w, 13.h, 14.w, 12.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -749,16 +738,17 @@ class _ItemCard extends StatelessWidget {
                                     .textTheme
                                     .titleMedium
                                     ?.copyWith(
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.w700,
                                       decoration: item.isCompleted
                                           ? TextDecoration.lineThrough
                                           : null,
                                     ),
                               ),
-                              SizedBox(height: 4.h),
+                              SizedBox(height: 3.h),
                               Wrap(
                                 spacing: 6.w,
-                                runSpacing: 6.h,
+                                runSpacing: 4.h,
                                 children: [
                                   _MetaChip(
                                     label: _timeCategoryLabel(
@@ -792,7 +782,7 @@ class _ItemCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 14.h),
+                    SizedBox(height: 10.h),
                     TweenAnimationBuilder<double>(
                       duration: const Duration(milliseconds: 360),
                       curve: Curves.easeOutCubic,
@@ -804,28 +794,31 @@ class _ItemCard extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 10.h),
                     Text(
                       item.contentEntries.isNotEmpty
                           ? item.contentEntries.first.text
                           : item.contentText,
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            height: 1.75,
+                            fontSize: 13.sp,
+                            height: 1.6,
                             color:
                                 context.onSurfaceColor.withValues(alpha: 0.82),
                           ),
                     ),
-                    SizedBox(height: 14.h),
+                    SizedBox(height: 10.h),
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => _openItem(context),
                             style: OutlinedButton.styleFrom(
+                              minimumSize: Size.fromHeight(38.h),
+                              padding: EdgeInsets.symmetric(vertical: 0.h),
                               side: BorderSide(
-                                color: accentColor.withValues(alpha: 0.26),
+                                color: accentColor.withValues(alpha: 0.18),
                               ),
                             ),
                             child: const Text('دخول'),
@@ -835,8 +828,12 @@ class _ItemCard extends StatelessWidget {
                         Expanded(
                           child: FilledButton(
                             style: FilledButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: context.onPrimaryColor,
+                              minimumSize: Size.fromHeight(38.h),
+                              padding: EdgeInsets.symmetric(vertical: 0.h),
+                              backgroundColor:
+                                  accentColor.withValues(alpha: 0.16),
+                              foregroundColor: accentColor,
+                              elevation: 0,
                             ),
                             onPressed: () {
                               if (item.hasCounter) {
@@ -865,6 +862,10 @@ class _ItemCard extends StatelessWidget {
                           ),
                         ),
                         PopupMenuButton<_ItemAction>(
+                          style: IconButton.styleFrom(
+                            minimumSize: Size(38.w, 38.w),
+                            padding: EdgeInsets.zero,
+                          ),
                           onSelected: (value) async {
                             switch (value) {
                               case _ItemAction.reset:
@@ -991,7 +992,7 @@ class _ItemCard extends StatelessWidget {
       case 'dua':
         return context.secondaryColor;
       default:
-        return context.primaryContainer;
+        return context.primaryColor;
     }
   }
 
@@ -1091,7 +1092,7 @@ class _TopAccentLine extends StatelessWidget {
       right: 0,
       left: 0,
       child: Container(
-        height: 3.h,
+        height: 2.h,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerRight,
@@ -1109,9 +1110,9 @@ class _TopAccentLine extends StatelessWidget {
 
 class _IconBadge extends StatelessWidget {
   const _IconBadge({
-    this.heroTag,
     required this.icon,
     required this.color,
+    this.heroTag,
   });
 
   final String? heroTag;
@@ -1121,34 +1122,27 @@ class _IconBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final badge = Container(
-      width: 48.w,
-      height: 48.w,
+      width: 42.w,
+      height: 42.w,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(14.r),
+        color: color.withValues(alpha: 0.08),
         border: Border.all(
-          color: color.withValues(alpha: 0.14),
+          color: color.withValues(alpha: 0.10),
         ),
       ),
       child: Center(
         child: Container(
-          width: 34.w,
-          height: 34.w,
+          width: 28.w,
+          height: 28.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                color.withValues(alpha: 0.26),
-                color,
-              ],
-            ),
+            borderRadius: BorderRadius.circular(10.r),
+            color: color.withValues(alpha: 0.90),
           ),
           child: Icon(
             icon,
             color: context.onPrimaryColor,
-            size: 16.sp,
+            size: 14.sp,
           ),
         ),
       ),
@@ -1180,12 +1174,12 @@ class _SoftLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(999.r),
         border: Border.all(
-          color: color.withValues(alpha: 0.12),
+          color: color.withValues(alpha: 0.08),
         ),
       ),
       child: Text(
@@ -1201,9 +1195,9 @@ class _SoftLabel extends StatelessWidget {
 
 class _SoftValuePill extends StatelessWidget {
   const _SoftValuePill({
-    super.key,
     required this.value,
     required this.color,
+    super.key,
   });
 
   final String value;
@@ -1212,17 +1206,18 @@ class _SoftValuePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(16.r),
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: color.withValues(alpha: 0.14),
+          color: color.withValues(alpha: 0.08),
         ),
       ),
       child: Text(
         value,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              fontSize: 12.sp,
               color: color,
               fontWeight: FontWeight.w700,
             ),
@@ -1245,7 +1240,7 @@ class _SoftProgressBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(999.r),
       child: LinearProgressIndicator(
-        minHeight: 8.h,
+        minHeight: 6.h,
         value: value,
         backgroundColor: color.withValues(alpha: 0.08),
         valueColor: AlwaysStoppedAnimation<Color>(color),
@@ -1266,16 +1261,17 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(999.r),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              fontSize: 10.sp,
               color: color,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
       ),
     );
