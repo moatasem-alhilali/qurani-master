@@ -314,6 +314,30 @@ class _NoticeActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (action.isRefreshIcon) {
+      // أيقونة تحديث دائرية – تظهر بجانب زر "تفعيل الموقع"
+      return InkWell(
+        onTap: action.onTap,
+        borderRadius: BorderRadius.circular(999.r),
+        child: Container(
+          width: 32.w,
+          height: 32.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _kAccentGold.withValues(alpha: 0.18),
+            border: Border.all(
+              color: _kAccentGold.withValues(alpha: 0.54),
+            ),
+          ),
+          child: Icon(
+            Icons.refresh_rounded,
+            color: _kAccentGold,
+            size: 17.sp,
+          ),
+        ),
+      );
+    }
+
     return InkWell(
       onTap: action.onTap,
       borderRadius: BorderRadius.circular(999.r),

@@ -35,6 +35,12 @@ const _kPanelText = AppColors.brandBrownDeep;
 const _kPanelSurface = AppColors.brandIvory;
 const _kPanelBorder = AppColors.brandMist;
 
+/// ─── إعداد قابل للتعديل يدوياً ───────────────────────────────────────────────
+/// عيّن [kShowSunrise] على [false] لإخفاء الشروق من صف أوقات الصلاة تماماً.
+/// عيّنه على [true] لإظهاره بين الفجر والظهر.
+/// ─────────────────────────────────────────────────────────────────────────────
+const bool kShowSunrise = false;
+
 class NextPrayerCountdownWidget extends StatelessWidget {
   const NextPrayerCountdownWidget({
     this.nextPrayer,
@@ -205,6 +211,11 @@ class NextPrayerCountdownWidget extends StatelessWidget {
               label: 'تفعيل الموقع',
               onTap: () => _openLocationSettings(context),
             ),
+            secondaryAction: _LocationNoticeAction(
+              label: 'تحديث',
+              onTap: () => _retryFetchPrayerTimes(context),
+              isRefreshIcon: true,
+            ),
           );
         }
         return _LocationNoticeConfig(
@@ -213,6 +224,11 @@ class NextPrayerCountdownWidget extends StatelessWidget {
           primaryAction: _LocationNoticeAction(
             label: 'تفعيل الموقع',
             onTap: () => _openLocationSettings(context),
+          ),
+          secondaryAction: _LocationNoticeAction(
+            label: 'تحديث',
+            onTap: () => _retryFetchPrayerTimes(context),
+            isRefreshIcon: true,
           ),
         );
       case PrayerLocationStatus.permissionDenied:
@@ -297,44 +313,50 @@ class NextPrayerCountdownWidget extends StatelessWidget {
         );
   }
 
+  /// يُعيد محاولة جلب مواقيت الصلاة بعد أن يقوم المستخدم بتفعيل الموقع.
+  void _retryFetchPrayerTimes(BuildContext context) {
+    context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
+  }
+
   List<_PrayerMiniEntry> _placeholderPrayerEntries() {
-    return const [
-      _PrayerMiniEntry(
+    return [
+      const _PrayerMiniEntry(
         name: 'الفجر',
         time: '------',
         type: Prayer.fajr,
         isCurrent: false,
         isNext: false,
       ),
-      _PrayerMiniEntry(
-        name: 'الشروق',
-        time: '------',
-        type: Prayer.sunrise,
-        isCurrent: false,
-        isNext: false,
-      ),
-      _PrayerMiniEntry(
+      if (kShowSunrise)
+        const _PrayerMiniEntry(
+          name: 'الشروق',
+          time: '------',
+          type: Prayer.sunrise,
+          isCurrent: false,
+          isNext: false,
+        ),
+      const _PrayerMiniEntry(
         name: 'الظهر',
         time: '------',
         type: Prayer.dhuhr,
         isCurrent: false,
         isNext: false,
       ),
-      _PrayerMiniEntry(
+      const _PrayerMiniEntry(
         name: 'العصر',
         time: '------',
         type: Prayer.asr,
         isCurrent: false,
         isNext: false,
       ),
-      _PrayerMiniEntry(
+      const _PrayerMiniEntry(
         name: 'المغرب',
         time: '------',
         type: Prayer.maghrib,
         isCurrent: false,
         isNext: false,
       ),
-      _PrayerMiniEntry(
+      const _PrayerMiniEntry(
         name: 'العشاء',
         time: '------',
         type: Prayer.isha,

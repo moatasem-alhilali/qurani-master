@@ -163,7 +163,11 @@ List<_PrayerMiniEntry> _buildPrayerEntries({
   required TimePrayerModel fallbackNextPrayer,
 }) {
   if (prayerTimes.isNotEmpty) {
-    return prayerTimes
+    final filtered = kShowSunrise
+        ? prayerTimes
+        : prayerTimes.where((p) => p.type != Prayer.sunrise).toList();
+
+    return filtered
         .map(
           (prayer) => _PrayerMiniEntry(
             name: prayer.name,

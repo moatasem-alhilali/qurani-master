@@ -30,10 +30,13 @@ class _LocationNoticeAction {
   const _LocationNoticeAction({
     required this.label,
     required this.onTap,
+    this.isRefreshIcon = false,
   });
 
   final String label;
   final VoidCallback onTap;
+  /// إذا كان [true] تُعرض أيقونة إعادة التحميل بدلاً من نص الزر.
+  final bool isRefreshIcon;
 }
 
 class _LocationNoticeConfig {
