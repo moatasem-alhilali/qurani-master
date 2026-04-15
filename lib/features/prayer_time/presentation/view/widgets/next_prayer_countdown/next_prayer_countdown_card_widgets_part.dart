@@ -230,7 +230,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                   ),
                   SizedBox(height: 9.h),
                   Directionality(
-                    textDirection: ui.TextDirection.ltr,
+                    textDirection: ui.TextDirection.rtl,
                     child: Row(
                       children: prayerEntries
                           .map(
