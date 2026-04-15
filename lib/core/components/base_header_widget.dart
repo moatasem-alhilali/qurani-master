@@ -9,7 +9,7 @@ class BaseHederWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+      padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 15.sp),
       child: SizedBox(
         height: context.getHight(4),
         child: Row(

@@ -35,7 +35,10 @@ class _HomeScreenState extends State<HomeScreenNew> {
             const NextPrayerCountdownWidget(),
             const _HomeUpdateTile(),
             const BaseHederWidget(text: 'المميزات'),
-            const AnotherFeatures(),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
+              child: const AnotherFeatures(),
+            ),
             const BaseHederWidget(text: 'قسم الأطفال'),
             SizedBox(
               height: context.getHight(18),
