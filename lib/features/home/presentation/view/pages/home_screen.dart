@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
@@ -39,21 +38,13 @@ class _HomeScreenState extends State<HomeScreenNew> {
             const AnotherFeatures(),
             const BaseHederWidget(text: 'قسم الأطفال'),
             SizedBox(
-              height: context.getHight(20),
+              height: context.getHight(22),
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    FeatureCardIconWidget(
-                      title: 'المسلم الصغير',
-                      icon: const Icon(Icons.play_lesson_rounded),
-                      onTap: () {
-                        context.push(
-                          const YoungMuslimProvider(),
-                        );
-                      },
-                      maxLines: 1,
+                    _YoungMuslimCard(
                       width: context.getWidth(90),
                       height: context.getHight(18),
                     ),
@@ -64,6 +55,231 @@ class _HomeScreenState extends State<HomeScreenNew> {
             SizedBox(height: 16.h),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _YoungMuslimCard extends StatelessWidget {
+  const _YoungMuslimCard({
+    required this.width,
+    required this.height,
+  });
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final cardBackground = context.surfaceColor;
+    final cardBackgroundSoft = context.primaryContainer.withValues(alpha: 0.45);
+    final cardBorder = context.outline.withValues(alpha: 0.85);
+    final shadow = context.shadow.withValues(alpha: 0.10);
+    final accent = context.primaryColor;
+    final accentSoft = context.primaryContainer.withValues(alpha: 0.80);
+    final titleColor = context.onSurfaceColor;
+    final bodyColor = context.onSurfaceVariant.withValues(alpha: 0.86);
+
+    return InkWell(
+      onTap: () {
+        context.push(const YoungMuslimProvider());
+      },
+      borderRadius: BorderRadius.circular(26.r),
+      child: Ink(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26.r),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              cardBackground,
+              cardBackgroundSoft,
+            ],
+          ),
+          border: Border.all(
+            color: cardBorder,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: shadow,
+              blurRadius: 20.r,
+              offset: Offset(0, 10.h),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -22.h,
+              right: -12.w,
+              child: Container(
+                width: 96.w,
+                height: 96.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: accentSoft.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -14.h,
+              left: 18.w,
+              child: Container(
+                width: 58.w,
+                height: 58.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: accent.withValues(alpha: 0.10),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 18.h,
+              right: 18.w,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(999.r),
+                  border: Border.all(
+                    color: accent.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: Text(
+                  'تعلّم ممتع',
+                  style: TextStyle(
+                    color: titleColor,
+                    fontSize: 9.4.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 16.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'المسلم الصغير',
+                    style: TextStyle(
+                      color: titleColor,
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'رحلة خفيفة للطفل بين القصص والآداب والأذكار',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: bodyColor,
+                      fontSize: 10.5.sp,
+                      height: 1.28,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Wrap(
+                    spacing: 7.w,
+                    runSpacing: 7.h,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const _YoungMuslimMiniPill(
+                        icon: Icons.auto_stories_rounded,
+                        label: 'قصص',
+                      ),
+                      const _YoungMuslimMiniPill(
+                        icon: Icons.favorite_border_rounded,
+                        label: 'آداب',
+                      ),
+                      const _YoungMuslimMiniPill(
+                        icon: Icons.star_border_rounded,
+                        label: 'أذكار',
+                      ),
+                      Container(
+                        width: 50.w,
+                        height: 50.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              accentSoft,
+                              accent,
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: shadow.withValues(alpha: 0.18),
+                              blurRadius: 10.r,
+                              offset: Offset(0, 5.h),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.play_lesson_rounded,
+                          color: context.onPrimaryColor,
+                          size: 24.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _YoungMuslimMiniPill extends StatelessWidget {
+  const _YoungMuslimMiniPill({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final background = context.surfaceColor.withValues(alpha: 0.70);
+    final border = context.outline.withValues(alpha: 0.90);
+    final foreground = context.onSurfaceColor;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999.r),
+        border: Border.all(
+          color: border,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: foreground,
+            size: 13.sp,
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            label,
+            style: TextStyle(
+              color: foreground,
+              fontSize: 9.4.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

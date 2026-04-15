@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
@@ -142,16 +142,16 @@ class AnotherFeatures extends StatelessWidget {
               Container(
                 width: 6.w,
                 height: 6.w,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.gold,
+                  color: context.primaryColor,
                 ),
               ),
               SizedBox(width: 7.w),
               Text(
                 'مزايا نافعة',
                 style: TextStyle(
-                  color: AppColors.brandBrownDeep,
+                  color: context.onSurfaceColor,
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w800,
                 ),
@@ -165,16 +165,17 @@ class AnotherFeatures extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.1,
-            crossAxisSpacing: 10.w,
-            mainAxisSpacing: 10.h,
+            crossAxisCount: 3,
+            childAspectRatio: 0.84,
+            crossAxisSpacing: 8.w,
+            mainAxisSpacing: 8.h,
           ),
           itemBuilder: (context, index) {
             return _FeatureTile(
-              item: gridItems[index],
-              accentColor:
-                  index.isEven ? AppColors.brandGoldLight : AppColors.brandSand,
+                  item: gridItems[index],
+              accentColor: index.isEven
+                  ? context.primaryContainer
+                  : context.secondaryContainer,
             );
           },
         ),
@@ -206,125 +207,134 @@ class _FeaturedShortcutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(24.r);
+    final chipBackground = context.primaryColor.withValues(alpha: 0.12);
+    final chipBorder = context.primaryColor.withValues(alpha: 0.18);
+    final glowColor = context.primaryContainer.withValues(alpha: 0.20);
+    final decorativeIconColor = context.onPrimaryColor.withValues(alpha: 0.10);
+
     return InkWell(
       onTap: item.onTap,
-      borderRadius: BorderRadius.circular(24.r),
+      borderRadius: borderRadius,
       child: Ink(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.r),
-          gradient: const LinearGradient(
+          borderRadius: borderRadius,
+          gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              AppColors.brandGoldLight,
-              AppColors.gold,
+              context.primaryColor,
+              context.primaryColor.withValues(alpha: 0.82),
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.brandBrown.withValues(alpha: 0.18),
+              color: context.shadow.withValues(alpha: 0.18),
               blurRadius: 18.r,
               offset: Offset(0, 10.h),
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -22.h,
-              left: -18.w,
-              child: Container(
-                width: 110.w,
-                height: 110.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.brandIvory.withValues(alpha: 0.18),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: Stack(
+            children: [
+              Positioned(
+                top: -22.h,
+                left: -18.w,
+                child: Container(
+                  width: 110.w,
+                  height: 110.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: glowColor,
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: -34.h,
-              right: -6.w,
-              child: Icon(
-                FlutterIslamicIcons.solidQuran2,
-                size: 112.sp,
-                color: AppColors.brandIvory.withValues(alpha: 0.11),
+              Positioned(
+                bottom: -34.h,
+                right: -6.w,
+                child: Icon(
+                  FlutterIslamicIcons.solidQuran2,
+                  size: 112.sp,
+                  color: decorativeIconColor,
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 5.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.brandIvory.withValues(alpha: 0.16),
-                            borderRadius: BorderRadius.circular(999.r),
-                            border: Border.all(
-                              color: AppColors.brandIvory.withValues(
-                                alpha: 0.22,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 5.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: chipBackground,
+                              borderRadius: BorderRadius.circular(999.r),
+                              border: Border.all(
+                                color: chipBorder,
+                              ),
+                            ),
+                            child: Text(
+                              'مزية مقترحة',
+                              style: TextStyle(
+                                color: context.onPrimaryColor,
+                                fontSize: 10.5.sp,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
-                          child: Text(
-                            'مزية مقترحة',
+                          SizedBox(height: 12.h),
+                          item.label.autoSize(
+                            context,
+                            maxLines: 1,
                             style: TextStyle(
-                              color: AppColors.brandIvory,
-                              fontSize: 10.5.sp,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w800,
+                              color: context.onPrimaryColor,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 12.h),
-                        item.label.autoSize(
-                          context,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.brandIvory,
+                          SizedBox(height: 6.h),
+                          item.subtitle.autoSize(
+                            context,
+                            maxLines: 2,
+                            fontSize: 11.5.sp,
+                            minFontSize: 10,
+                            color: context.onPrimaryColor.withValues(
+                              alpha: 0.92,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 6.h),
-                        item.subtitle.autoSize(
-                          context,
-                          maxLines: 2,
-                          fontSize: 11.5.sp,
-                          minFontSize: 10,
-                          color: AppColors.brandIvory.withValues(alpha: 0.92),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Container(
-                    width: 58.w,
-                    height: 58.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.brandIvory.withValues(alpha: 0.18),
-                      border: Border.all(
-                        color: AppColors.brandIvory.withValues(alpha: 0.26),
+                        ],
                       ),
                     ),
-                    child: Icon(
-                      item.icon,
-                      color: AppColors.brandIvory,
-                      size: 28.sp,
+                    SizedBox(width: 12.w),
+                    Container(
+                      width: 58.w,
+                      height: 58.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: chipBackground,
+                        border: Border.all(
+                          color: chipBorder,
+                        ),
+                      ),
+                      child: Icon(
+                        item.icon,
+                        color: context.onPrimaryColor,
+                        size: 28.sp,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -342,86 +352,91 @@ class _FeatureTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(20.r);
+    final surface = context.surfaceColor;
+    final outline = context.outline.withValues(alpha: 0.95);
+    final shadow = context.shadow.withValues(alpha: 0.08);
+    final titleColor = context.onSurfaceColor;
+    final iconBackgroundStart =
+        context.primaryContainer.withValues(alpha: 0.48);
+    final iconBackgroundEnd = accentColor.withValues(alpha: 0.82);
+
     return InkWell(
       onTap: item.onTap,
-      borderRadius: BorderRadius.circular(20.r),
+      borderRadius: borderRadius,
       child: Ink(
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20.r),
+          color: surface,
+          borderRadius: borderRadius,
           border: Border.all(
-            color: AppColors.brandMist.withValues(alpha: 0.95),
+            color: outline,
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.brandBrown.withValues(alpha: 0.08),
+              color: shadow,
               blurRadius: 12.r,
               offset: Offset(0, 7.h),
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -18.h,
-              left: -10.w,
-              child: Container(
-                width: 64.w,
-                height: 64.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: accentColor.withValues(alpha: 0.16),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: Stack(
+            children: [
+              Positioned(
+                top: -18.h,
+                left: -10.w,
+                child: Container(
+                  width: 64.w,
+                  height: 64.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: accentColor.withValues(alpha: 0.16),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(14.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 42.w,
-                    height: 42.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14.r),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColors.brandIvory,
-                          accentColor.withValues(alpha: 0.82),
-                        ],
+              Padding(
+                padding: EdgeInsets.fromLTRB(10.w, 12.h, 10.w, 10.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 44.w,
+                      height: 44.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.r),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            iconBackgroundStart,
+                            iconBackgroundEnd,
+                          ],
+                        ),
                       ),
-                    ),
                     child: Icon(
                       item.icon,
-                      color: AppColors.brandBrownDeep,
-                      size: 20.sp,
+                      color: titleColor,
+                      size: 21.sp,
                     ),
                   ),
-                  const Spacer(),
+                  SizedBox(height: 14.h),
                   item.label.autoSize(
                     context,
-                    maxLines: 1,
-                    minFontSize: 11,
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.brandBrownDeep,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  item.subtitle.autoSize(
-                    context,
                     maxLines: 2,
-                    minFontSize: 9,
-                    fontSize: 10.5.sp,
-                    color: AppColors.secondaryText,
+                    minFontSize: 8,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11.5.sp,
+                      fontWeight: FontWeight.w800,
+                      color: titleColor,
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
