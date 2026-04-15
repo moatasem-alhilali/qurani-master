@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // BASE COLORS (used for both light and dark themes)
-  // Main brand color - used for primary buttons, FAB, active icons, accent highlights
+  // Main brand color - used for primary buttons, FAB, active icons,
+  // accent highlights
   static const Color gold = Color(0xFFC3A46B);
+  static const Color brandGoldLight = Color(0xFFD9BE8F);
+  static const Color brandGoldDeep = Color(0xFFB18C55);
+  static const Color brandSand = Color(0xFFCBB08B);
+  static const Color brandCream = Color(0xFFF8EDD2);
+  static const Color brandIvory = Color(0xFFFFF7E7);
+  static const Color brandMist = Color(0xFFF2E1BD);
+  static const Color brandBrown = Color(0xFF6F5636);
+  static const Color brandBrownDeep = Color(0xFF5A452A);
 
   // Accent color - used for secondary actions, switches, accent elements
   static const Color blue = Color(0xFF4083FF);
@@ -116,7 +125,8 @@ class AppColors {
   // Used as background for circular icon buttons (inactive/normal) in dark mode
   // Example: Quick settings icon backgrounds in dark mode
   static const Color iconBgDark = Color(
-      0x1AFFFFFF); // White 10% opacity (or Color(0xFF23272B).withOpacity(0.26))
+    0x1AFFFFFF,
+  ); // White 10% opacity (or Color(0xFF23272B).withOpacity(0.26))
 
   // Used as background for circular icon buttons when selected/active (both themes)
   // Example: Quick settings icon backgrounds when toggled on

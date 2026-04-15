@@ -48,123 +48,159 @@ class _QuickActionsPanel extends StatelessWidget {
     ];
   }
 
-  Future<void> _openAppsSheet(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return SafeArea(
-          top: false,
-          child: FractionallySizedBox(
-            heightFactor: 0.76,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(24.r),
-                ),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(height: 10.h),
-                  Container(
-                    width: 42.w,
-                    height: 4.h,
-                    decoration: BoxDecoration(
-                      color: _kHeroDeep.withValues(alpha: 0.22),
-                      borderRadius: BorderRadius.circular(999.r),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-                    child: Text(
-                      'كل المميزات',
-                      style: TextStyle(
-                        color: _kPanelText,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 16.h),
-                      child: const AnotherFeatures(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final actions = _actions(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5.w),
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22.r),
+          borderRadius: BorderRadius.circular(20.r),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              _kPanelSurface,
+              AppColors.brandCream,
+            ],
+          ),
+          border: Border.all(
+            color: _kPanelBorder.withValues(alpha: 0.95),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 14.r,
-              offset: Offset(0, 7.h),
+              color: _kHeroDeep.withValues(alpha: 0.18),
+              blurRadius: 18.r,
+              offset: Offset(0, 8.h),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(22.r),
-          child: ColoredBox(
-            color: Colors.white,
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: actions.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1.22,
-                crossAxisSpacing: 2.w,
-                mainAxisSpacing: 8.h,
-              ),
-              itemBuilder: (context, index) {
-                final item = actions[index];
-                return InkWell(
-                  onTap: item.onTap,
-                  borderRadius: BorderRadius.circular(12.r),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // SizedBox(height: 2.h),
-                      Icon(
-                        item.icon,
-                        color: _kAccentGold,
-                        size: 21.sp,
-                      ),
-                      SizedBox(height: 5.h),
-                      Text(
-                        item.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: _kPanelText,
-                          fontSize: 11.2.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+          borderRadius: BorderRadius.circular(20.r),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -24.h,
+                left: -10.w,
+                child: Container(
+                  width: 92.w,
+                  height: 92.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.brandIvory.withValues(alpha: 0.65),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 18.w,
+                left: 18.w,
+                child: Container(
+                  height: 2.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        _kAccentGold.withValues(alpha: 0),
+                        _kAccentGold.withValues(alpha: 0.85),
+                        _kAccentGold.withValues(alpha: 0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: List.generate(actions.length, (index) {
+                      final item = actions[index];
+                      return Expanded(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _QuickActionButton(item: item),
+                            ),
+                            if (index != actions.length - 1)
+                              Container(
+                                width: 1,
+                                margin: EdgeInsets.symmetric(vertical: 10.h),
+                                color: _kHeroDeep.withValues(alpha: 0.14),
+                              ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickActionButton extends StatelessWidget {
+  const _QuickActionButton({required this.item});
+
+  final _QuickActionItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: item.onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 34.w,
+              height: 34.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.brandIvory,
+                    AppColors.brandGoldLight.withValues(alpha: 0.82),
+                  ],
+                ),
+                border: Border.all(
+                  color: AppColors.brandGoldLight.withValues(alpha: 0.95),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _kHeroDeep.withValues(alpha: 0.10),
+                    blurRadius: 8.r,
+                    offset: Offset(0, 3.h),
+                  ),
+                ],
+              ),
+              child: Icon(
+                item.icon,
+                color: _kHeroDeep,
+                size: 16.sp,
+              ),
+            ),
+            SizedBox(height: 5.h),
+            Text(
+              item.label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _kPanelText,
+                fontSize: 9.7.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.22,
+              ),
+            ),
+          ],
         ),
       ),
     );

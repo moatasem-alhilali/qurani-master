@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
@@ -24,11 +24,13 @@ part 'next_prayer_countdown_card_widgets_part.dart';
 part 'next_prayer_countdown_models_part.dart';
 part 'next_prayer_countdown_quick_actions_part.dart';
 
-const _kHeroTop = Color(0xFF2D7E99);
-const _kHeroBottom = Color(0xFF1F667F);
-const _kHeroDeep = Color(0xFF1A5A71);
-const _kAccentGold = Color(0xFFD4B17A);
-const _kPanelText = Color(0xFF2F3443);
+const _kHeroTop = AppColors.brandIvory;
+const _kHeroBottom = AppColors.brandSand;
+const _kHeroDeep = AppColors.brandGoldDeep;
+const _kAccentGold = AppColors.brandCream;
+const _kPanelText = AppColors.brandBrownDeep;
+const _kPanelSurface = AppColors.brandIvory;
+const _kPanelBorder = AppColors.brandMist;
 
 class NextPrayerCountdownWidget extends StatelessWidget {
   const NextPrayerCountdownWidget({
@@ -98,7 +100,7 @@ class NextPrayerCountdownWidget extends StatelessWidget {
           type: state.nextPrayer!.type,
           image: state.nextPrayer!.type.imageAsset,
           content: state.nextPrayer!.description,
-          color: Colors.blue,
+          color: AppColors.gold,
         );
 
         return _NextPrayerCountdownCard(

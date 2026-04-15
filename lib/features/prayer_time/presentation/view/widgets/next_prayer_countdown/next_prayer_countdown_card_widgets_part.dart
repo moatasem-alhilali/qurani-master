@@ -62,7 +62,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                 height: 160.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.10),
+                  color: _kAccentGold.withValues(alpha: 0.16),
                 ),
               ),
             ),
@@ -74,7 +74,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                 height: 210.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.black.withValues(alpha: 0.10),
+                  color: _kPanelText.withValues(alpha: 0.12),
                 ),
               ),
             ),
@@ -114,17 +114,17 @@ class _NextPrayerHeroCard extends StatelessWidget {
                               vertical: 6.h,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.10),
+                              color: _kAccentGold.withValues(alpha: 0.16),
                               borderRadius: BorderRadius.circular(999.r),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.22),
+                                color: _kAccentGold.withValues(alpha: 0.34),
                               ),
                             ),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.location_on_outlined,
-                                  color: Colors.white.withValues(alpha: 0.92),
+                                  color: _kAccentGold.withValues(alpha: 0.96),
                                   size: 14.sp,
                                 ),
                                 SizedBox(width: 4.w),
@@ -134,7 +134,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: _kAccentGold,
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w600,
                                       height: 1.1,
@@ -165,7 +165,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.92),
+                      color: _kAccentGold.withValues(alpha: 0.96),
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -177,7 +177,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                     child: Text(
                       clockText,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: _kAccentGold,
                         fontSize: 42.sp,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.6,
@@ -191,7 +191,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.92),
+                      color: _kAccentGold.withValues(alpha: 0.94),
                       fontSize: 11.5.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -203,7 +203,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.92),
+                      color: _kAccentGold.withValues(alpha: 0.90),
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -212,7 +212,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Container(
                     height: 1,
-                    color: Colors.white.withValues(alpha: 0.22),
+                    color: _kAccentGold.withValues(alpha: 0.30),
                   ),
                   SizedBox(height: 9.h),
                   Directionality(
@@ -253,7 +253,7 @@ class _HeaderActionIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconWidget = Icon(
       icon,
-      color: Colors.white,
+      color: _kAccentGold,
       size: 20.sp,
     );
 
@@ -287,10 +287,14 @@ class _PrayerTimeMiniTile extends StatelessWidget {
     final isNext = entry.isNext;
     final foregroundColor = isCurrent
         ? _kAccentGold
-        : (isNext ? Colors.white : Colors.white.withValues(alpha: 0.88));
+        : (isNext
+            ? _kAccentGold.withValues(alpha: 0.94)
+            : _kAccentGold.withValues(alpha: 0.80));
     final timeColor = isCurrent
         ? _kAccentGold
-        : (isNext ? Colors.white : Colors.white.withValues(alpha: 0.82));
+        : (isNext
+            ? _kAccentGold.withValues(alpha: 0.92)
+            : _kAccentGold.withValues(alpha: 0.74));
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.h),
