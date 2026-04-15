@@ -10,6 +10,8 @@ class _NextPrayerCountdownCard extends StatefulWidget {
     this.currentPrayerName,
     this.locationLabel,
     this.utcOffsetMinutes,
+    this.notice,
+    this.prayerEntriesOverride,
   });
 
   final TimePrayerModel nextPrayer;
@@ -20,6 +22,8 @@ class _NextPrayerCountdownCard extends StatefulWidget {
   final String? currentPrayerName;
   final String? locationLabel;
   final int? utcOffsetMinutes;
+  final _LocationNoticeConfig? notice;
+  final List<_PrayerMiniEntry>? prayerEntriesOverride;
 
   @override
   State<_NextPrayerCountdownCard> createState() =>
@@ -95,12 +99,13 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
     final safeRemaining =
         effectiveRemaining.isNegative ? Duration.zero : effectiveRemaining;
 
-    final prayerEntries = _buildPrayerEntries(
-      prayerTimes: widget.prayerTimes,
-      currentPrayer: resolvedPrayers.currentPrayer,
-      nextPrayer: resolvedPrayers.nextPrayer,
-      fallbackNextPrayer: widget.nextPrayer,
-    );
+    final prayerEntries = widget.prayerEntriesOverride ??
+        _buildPrayerEntries(
+          prayerTimes: widget.prayerTimes,
+          currentPrayer: resolvedPrayers.currentPrayer,
+          nextPrayer: resolvedPrayers.nextPrayer,
+          fallbackNextPrayer: widget.nextPrayer,
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -116,6 +121,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
           onSettingsTap: () {
             context.push(const SettingScreen());
           },
+          notice: widget.notice,
         ),
         // const SizedBox(
         //   height: 10,

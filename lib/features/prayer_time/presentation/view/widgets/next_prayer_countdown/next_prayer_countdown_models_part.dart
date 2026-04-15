@@ -26,6 +26,28 @@ class _ResolvedPrayerState {
   final PrayerInfoModel? nextPrayer;
 }
 
+class _LocationNoticeAction {
+  const _LocationNoticeAction({
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+}
+
+class _LocationNoticeConfig {
+  const _LocationNoticeConfig({
+    required this.message,
+    this.primaryAction,
+    this.secondaryAction,
+  });
+
+  final String message;
+  final _LocationNoticeAction? primaryAction;
+  final _LocationNoticeAction? secondaryAction;
+}
+
 class _HijriDate {
   _HijriDate(this.day, this.month, this.year);
 

@@ -9,6 +9,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
     required this.countdownText,
     required this.prayerEntries,
     required this.onSettingsTap,
+    this.notice,
   });
 
   final String locationLabel;
@@ -18,6 +19,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
   final String countdownText;
   final List<_PrayerMiniEntry> prayerEntries;
   final VoidCallback onSettingsTap;
+  final _LocationNoticeConfig? notice;
 
   @override
   Widget build(BuildContext context) {
@@ -242,10 +244,92 @@ class _NextPrayerHeroCard extends StatelessWidget {
                           .toList(),
                     ),
                   ),
+                  if (notice != null) ...[
+                    SizedBox(height: 12.h),
+                    _LocationNoticeCard(notice: notice!),
+                  ],
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LocationNoticeCard extends StatelessWidget {
+  const _LocationNoticeCard({required this.notice});
+
+  final _LocationNoticeConfig notice;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(10.w),
+      decoration: BoxDecoration(
+        color: _kAccentGold.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: _kAccentGold.withValues(alpha: 0.26),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            notice.message,
+            style: TextStyle(
+              color: _kAccentGold,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
+              height: 1.35,
+            ),
+          ),
+          if (notice.primaryAction != null ||
+              notice.secondaryAction != null) ...[
+            SizedBox(height: 8.h),
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: [
+                if (notice.primaryAction != null)
+                  _NoticeActionChip(action: notice.primaryAction!),
+                if (notice.secondaryAction != null)
+                  _NoticeActionChip(action: notice.secondaryAction!),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _NoticeActionChip extends StatelessWidget {
+  const _NoticeActionChip({required this.action});
+
+  final _LocationNoticeAction action;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: action.onTap,
+      borderRadius: BorderRadius.circular(999.r),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+        decoration: BoxDecoration(
+          color: _kAccentGold,
+          borderRadius: BorderRadius.circular(999.r),
+        ),
+        child: Text(
+          action.label,
+          style: TextStyle(
+            color: _kHeroDeep,
+            fontSize: 10.5.sp,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
     );
@@ -298,58 +382,94 @@ class _PrayerTimeMiniTile extends StatelessWidget {
     final isCurrent = entry.isCurrent;
     final isNext = entry.isNext;
     final foregroundColor = isCurrent
-        ? _kAccentGold
+        ? _kHeroDeep
         : (isNext
             ? _kAccentGold.withValues(alpha: 0.94)
             : _kAccentGold.withValues(alpha: 0.80));
     final timeColor = isCurrent
-        ? _kAccentGold
+        ? _kHeroDeep.withValues(alpha: 0.92)
         : (isNext
             ? _kAccentGold.withValues(alpha: 0.92)
             : _kAccentGold.withValues(alpha: 0.74));
+    final backgroundColor = isCurrent
+        ? _kAccentGold
+        : (isNext ? _kAccentGold.withValues(alpha: 0.08) : Colors.transparent);
+    final borderColor = isCurrent
+        ? _kAccentGold
+        : (isNext ? _kAccentGold.withValues(alpha: 0.20) : Colors.transparent);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2.h),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: foregroundColor,
-            size: 17.sp,
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            entry.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(14.r),
+          border: Border.all(color: borderColor),
+          boxShadow: isCurrent
+              ? [
+                  BoxShadow(
+                    color: _kAccentGold.withValues(alpha: 0.24),
+                    blurRadius: 8.r,
+                    offset: Offset(0, 4.h),
+                  ),
+                ]
+              : null,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
               color: foregroundColor,
-              fontSize: 11.sp,
-              fontWeight:
-                  isCurrent || isNext ? FontWeight.w700 : FontWeight.w600,
-              height: 1.1,
+              size: 17.sp,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 2.h),
-          Directionality(
-            textDirection: ui.TextDirection.ltr,
-            child: Text(
-              entry.time,
+            SizedBox(height: 4.h),
+            Text(
+              entry.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: timeColor,
-                fontSize: 12.sp,
+                color: foregroundColor,
+                fontSize: 11.sp,
                 fontWeight:
-                    isCurrent || isNext ? FontWeight.w700 : FontWeight.w500,
+                    isCurrent || isNext ? FontWeight.w700 : FontWeight.w600,
                 height: 1.1,
               ),
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            SizedBox(height: 2.h),
+            Directionality(
+              textDirection: ui.TextDirection.ltr,
+              child: Text(
+                entry.time,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: timeColor,
+                  fontSize: 12.sp,
+                  fontWeight:
+                      isCurrent || isNext ? FontWeight.w700 : FontWeight.w500,
+                  height: 1.1,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            if (isCurrent) ...[
+              SizedBox(height: 4.h),
+              Container(
+                width: 16.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: _kHeroDeep.withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(999.r),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
