@@ -172,7 +172,7 @@ class AnotherFeatures extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             return _FeatureTile(
-                  item: gridItems[index],
+              item: gridItems[index],
               accentColor: index.isEven
                   ? context.primaryContainer
                   : context.secondaryContainer,
@@ -400,70 +400,60 @@ class _FeatureTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                top: 10.h,
-                left: -14.w,
-                child: Container(
-                  width: 54.w,
-                  height: 54.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: accentSoft,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(10.w, 14.h, 10.w, 10.h),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 48.w,
-                      height: 48.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: accentSoft,
-                        border: Border.all(
-                          color: accentColor.withValues(alpha: 0.18),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 48.w,
+                        height: 48.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: accentSoft,
+                          border: Border.all(
+                            color: accentColor.withValues(alpha: 0.18),
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 32.w,
-                          height: 32.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(11.r),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                accentColor.withValues(alpha: 0.72),
-                                accentStrong,
-                              ],
+                        child: Center(
+                          child: Container(
+                            width: 32.w,
+                            height: 32.w,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11.r),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  accentColor.withValues(alpha: 0.72),
+                                  accentStrong,
+                                ],
+                              ),
+                            ),
+                            child: Icon(
+                              item.icon,
+                              color: context.onPrimaryColor,
+                              size: 16.sp,
                             ),
                           ),
-                          child: Icon(
-                            item.icon,
-                            color: context.onPrimaryColor,
-                            size: 16.sp,
-                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 14.h),
-                    item.label.autoSize(
-                      context,
-                      maxLines: 2,
-                      minFontSize: 8,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 11.2.sp,
-                        fontWeight: FontWeight.w800,
-                        color: titleColor,
-                        height: 1.25,
+                      SizedBox(height: 12.h),
+                      item.label.autoSize(
+                        context,
+                        maxLines: 2,
+                        minFontSize: 8,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11.2.sp,
+                          fontWeight: FontWeight.w800,
+                          color: titleColor,
+                          height: 1.25,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
