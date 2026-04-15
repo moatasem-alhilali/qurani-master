@@ -76,10 +76,10 @@ class _YoungMuslimCard extends StatelessWidget {
     final cardBorder = context.outline.withValues(alpha: 0.85);
     final shadow = context.shadow.withValues(alpha: 0.10);
     final accent = context.primaryColor;
-    final accentSoft = context.primaryContainer.withValues(alpha: 0.80);
     final titleColor = context.onSurfaceColor;
     final bodyColor = context.onSurfaceVariant.withValues(alpha: 0.86);
-    final panelBackground = context.surfaceVariant.withValues(alpha: 0.58);
+    final chipBackground = accent.withValues(alpha: 0.10);
+    final chipBorder = accent.withValues(alpha: 0.16);
 
     return InkWell(
       onTap: () {
@@ -92,8 +92,8 @@ class _YoungMuslimCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22.r),
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
             colors: [
               cardBackground,
               cardBackgroundSoft,
@@ -113,26 +113,32 @@ class _YoungMuslimCard extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              top: -14.h,
-              left: -8.w,
+              top: 0,
+              right: 0,
+              left: 0,
               child: Container(
-                width: 68.w,
-                height: 68.w,
+                height: 4.h,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: accentSoft.withValues(alpha: 0.22),
+                  gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [
+                      accent,
+                      accent.withValues(alpha: 0.14),
+                    ],
+                  ),
                 ),
               ),
             ),
             Positioned(
-              bottom: -10.h,
-              right: 20.w,
+              top: -12.h,
+              right: -12.w,
               child: Container(
-                width: 40.w,
-                height: 40.w,
+                width: 72.w,
+                height: 72.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: accent.withValues(alpha: 0.10),
+                  color: accent.withValues(alpha: 0.05),
                 ),
               ),
             ),
@@ -142,10 +148,10 @@ class _YoungMuslimCard extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.10),
+                  color: chipBackground,
                   borderRadius: BorderRadius.circular(999.r),
                   border: Border.all(
-                    color: accent.withValues(alpha: 0.18),
+                    color: chipBorder,
                   ),
                 ),
                 child: Text(
@@ -159,135 +165,88 @@ class _YoungMuslimCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 14.h),
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 8.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'المسلم الصغير',
-                            style: TextStyle(
-                              color: titleColor,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          SizedBox(height: 3.h),
-                          Text(
-                            'رحلة خفيفة للطفل بين القصص والآداب والأذكار',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: bodyColor,
-                              fontSize: 8.8.sp,
-                              height: 1.20,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          Row(
-                            children: [
-                              _YoungMuslimDot(color: accent),
-                              SizedBox(width: 6.w),
-                              Text(
-                                'قصص',
-                                style: TextStyle(
-                                  color: titleColor,
-                                  fontSize: 8.2.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              SizedBox(width: 10.w),
-                              _YoungMuslimDot(
-                                color: context.secondaryColor,
-                              ),
-                              SizedBox(width: 6.w),
-                              Text(
-                                'آداب',
-                                style: TextStyle(
-                                  color: titleColor,
-                                  fontSize: 8.2.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              SizedBox(width: 10.w),
-                              _YoungMuslimDot(
-                                color: context.primaryContainer,
-                              ),
-                              SizedBox(width: 6.w),
-                              Text(
-                                'أذكار',
-                                style: TextStyle(
-                                  color: titleColor,
-                                  fontSize: 8.2.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
                   Container(
-                    width: 74.w,
-                    height: double.infinity,
+                    width: 52.w,
+                    height: 52.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18.r),
-                      color: panelBackground,
+                      color: chipBackground,
                       border: Border.all(
-                        color: context.outline.withValues(alpha: 0.65),
+                        color: chipBorder,
                       ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40.w,
-                            height: 40.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  accentSoft,
-                                  accent,
-                                ],
+                    child: Icon(
+                      Icons.play_lesson_rounded,
+                      color: accent,
+                      size: 24.sp,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'المسلم الصغير',
+                          style: TextStyle(
+                            color: titleColor,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'رحلة خفيفة للطفل بين القصص والآداب والأذكار',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: bodyColor,
+                            fontSize: 8.8.sp,
+                            height: 1.22,
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            _YoungMuslimDot(color: accent),
+                            SizedBox(width: 5.w),
+                            Text(
+                              'قصص',
+                              style: TextStyle(
+                                color: titleColor,
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w700,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: shadow.withValues(alpha: 0.18),
-                                  blurRadius: 10.r,
-                                  offset: Offset(0, 5.h),
-                                ),
-                              ],
                             ),
-                            child: Icon(
-                              Icons.play_lesson_rounded,
-                              color: context.onPrimaryColor,
-                              size: 20.sp,
+                            SizedBox(width: 8.w),
+                            _YoungMuslimDot(color: context.secondaryColor),
+                            SizedBox(width: 5.w),
+                            Text(
+                              'آداب',
+                              style: TextStyle(
+                                color: titleColor,
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 10.h),
-                          _YoungMuslimPanelLine(
-                            width: 32.w,
-                            color: context.outline.withValues(alpha: 0.55),
-                          ),
-                          SizedBox(height: 4.h),
-                          _YoungMuslimPanelLine(
-                            width: 22.w,
-                            color: context.outline.withValues(alpha: 0.42),
-                          ),
-                        ],
-                      ),
+                            SizedBox(width: 8.w),
+                            _YoungMuslimDot(color: context.primaryContainer),
+                            SizedBox(width: 5.w),
+                            Text(
+                              'أذكار',
+                              style: TextStyle(
+                                color: titleColor,
+                                fontSize: 8.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -318,27 +277,6 @@ class _YoungMuslimDot extends StatelessWidget {
   }
 }
 
-class _YoungMuslimPanelLine extends StatelessWidget {
-  const _YoungMuslimPanelLine({
-    required this.width,
-    required this.color,
-  });
-
-  final double width;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: 3.h,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-    );
-  }
-}
 
 class _HomeUpdateTile extends StatelessWidget {
   const _HomeUpdateTile();

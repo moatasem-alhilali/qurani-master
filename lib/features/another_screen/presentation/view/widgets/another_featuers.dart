@@ -165,10 +165,10 @@ class AnotherFeatures extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 4,
             childAspectRatio: 0.84,
-            crossAxisSpacing: 8.w,
-            mainAxisSpacing: 8.h,
+            crossAxisSpacing: 7.w,
+            mainAxisSpacing: 7.h,
           ),
           itemBuilder: (context, index) {
             return _FeatureTile(
@@ -208,10 +208,13 @@ class _FeaturedShortcutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(24.r);
-    final chipBackground = context.primaryColor.withValues(alpha: 0.12);
-    final chipBorder = context.primaryColor.withValues(alpha: 0.18);
-    final glowColor = context.primaryContainer.withValues(alpha: 0.20);
-    final decorativeIconColor = context.onPrimaryColor.withValues(alpha: 0.10);
+    final accent = context.primaryColor;
+    final chipBackground = accent.withValues(alpha: 0.10);
+    final chipBorder = accent.withValues(alpha: 0.16);
+    final cardBackground = context.surfaceColor;
+    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
+    final titleColor = context.onSurfaceColor;
+    final subtitleColor = context.onSurfaceVariant.withValues(alpha: 0.88);
 
     return InkWell(
       onTap: item.onTap,
@@ -220,18 +223,21 @@ class _FeaturedShortcutCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           gradient: LinearGradient(
-            begin: Alignment.topRight,
+            begin: Alignment.topLeft,
             end: Alignment.bottomLeft,
             colors: [
-              context.primaryColor,
-              context.primaryColor.withValues(alpha: 0.82),
+              cardBackground,
+              cardBackgroundSoft,
             ],
+          ),
+          border: Border.all(
+            color: context.outline.withValues(alpha: 0.85),
           ),
           boxShadow: [
             BoxShadow(
-              color: context.shadow.withValues(alpha: 0.18),
-              blurRadius: 18.r,
-              offset: Offset(0, 10.h),
+              color: context.shadow.withValues(alpha: 0.10),
+              blurRadius: 14.r,
+              offset: Offset(0, 7.h),
             ),
           ],
         ),
@@ -240,30 +246,56 @@ class _FeaturedShortcutCard extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                top: -22.h,
-                left: -18.w,
+                top: 0,
+                right: 0,
+                left: 0,
                 child: Container(
-                  width: 110.w,
-                  height: 110.w,
+                  height: 4.h,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: glowColor,
+                    gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      colors: [
+                        accent,
+                        accent.withValues(alpha: 0.18),
+                      ],
+                    ),
                   ),
                 ),
               ),
               Positioned(
-                bottom: -34.h,
-                right: -6.w,
-                child: Icon(
-                  FlutterIslamicIcons.solidQuran2,
-                  size: 112.sp,
-                  color: decorativeIconColor,
+                top: -16.h,
+                left: -18.w,
+                child: Container(
+                  width: 82.w,
+                  height: 82.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: accent.withValues(alpha: 0.06),
+                  ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+                padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 16.h),
                 child: Row(
                   children: [
+                    Container(
+                      width: 52.w,
+                      height: 52.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18.r),
+                        color: chipBackground,
+                        border: Border.all(
+                          color: chipBorder,
+                        ),
+                      ),
+                      child: Icon(
+                        item.icon,
+                        color: accent,
+                        size: 24.sp,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,62 +304,40 @@ class _FeaturedShortcutCard extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 10.w,
-                              vertical: 5.h,
+                              vertical: 4.h,
                             ),
                             decoration: BoxDecoration(
                               color: chipBackground,
                               borderRadius: BorderRadius.circular(999.r),
-                              border: Border.all(
-                                color: chipBorder,
-                              ),
                             ),
                             child: Text(
                               'مزية مقترحة',
                               style: TextStyle(
-                                color: context.onPrimaryColor,
-                                fontSize: 10.5.sp,
+                                color: accent,
+                                fontSize: 9.6.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: 10.h),
                           item.label.autoSize(
                             context,
                             maxLines: 1,
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w800,
-                              color: context.onPrimaryColor,
+                              color: titleColor,
                             ),
                           ),
-                          SizedBox(height: 6.h),
+                          SizedBox(height: 4.h),
                           item.subtitle.autoSize(
                             context,
                             maxLines: 2,
-                            fontSize: 11.5.sp,
+                            fontSize: 11.sp,
                             minFontSize: 10,
-                            color: context.onPrimaryColor.withValues(
-                              alpha: 0.92,
-                            ),
+                            color: subtitleColor,
                           ),
                         ],
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Container(
-                      width: 58.w,
-                      height: 58.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: chipBackground,
-                        border: Border.all(
-                          color: chipBorder,
-                        ),
-                      ),
-                      child: Icon(
-                        item.icon,
-                        color: context.onPrimaryColor,
-                        size: 28.sp,
                       ),
                     ),
                   ],
@@ -373,8 +383,8 @@ class _FeatureTile extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: shadow,
-              blurRadius: 12.r,
-              offset: Offset(0, 7.h),
+              blurRadius: 8.r,
+              offset: Offset(0, 4.h),
             ),
           ],
         ),
@@ -402,13 +412,13 @@ class _FeatureTile extends StatelessWidget {
               ),
               Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 48.w,
-                        height: 48.w,
+                        width: 38.w,
+                        height: 38.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: accentSoft,
@@ -418,10 +428,10 @@ class _FeatureTile extends StatelessWidget {
                         ),
                         child: Center(
                           child: Container(
-                            width: 32.w,
-                            height: 32.w,
+                            width: 24.w,
+                            height: 24.w,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(11.r),
+                              borderRadius: BorderRadius.circular(9.r),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -434,22 +444,22 @@ class _FeatureTile extends StatelessWidget {
                             child: Icon(
                               item.icon,
                               color: context.onPrimaryColor,
-                              size: 16.sp,
+                              size: 12.sp,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 7.h),
                       item.label.autoSize(
                         context,
                         maxLines: 2,
-                        minFontSize: 8,
+                        minFontSize: 7,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 11.2.sp,
+                          fontSize: 9.3.sp,
                           fontWeight: FontWeight.w800,
                           color: titleColor,
-                          height: 1.25,
+                          height: 1.15,
                         ),
                       ),
                     ],
