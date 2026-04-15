@@ -31,9 +31,9 @@ class _NextPrayerHeroCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: _kHeroDeep.withValues(alpha: 0.30),
-            blurRadius: 20.r,
-            offset: Offset(0, 10.h),
+            color: _kHeroDeep.withValues(alpha: 0.22),
+            blurRadius: 22.r,
+            offset: Offset(0, 11.h),
           ),
         ],
       ),
@@ -55,6 +55,18 @@ class _NextPrayerHeroCard extends StatelessWidget {
               ),
             ),
             Positioned(
+              top: -36.h,
+              left: -20.w,
+              child: Container(
+                width: 150.w,
+                height: 150.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _kAccentGold.withValues(alpha: 0.12),
+                ),
+              ),
+            ),
+            Positioned(
               top: -45.h,
               right: -50.w,
               child: Container(
@@ -62,7 +74,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                 height: 160.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _kAccentGold.withValues(alpha: 0.16),
+                  color: _kAccentGold.withValues(alpha: 0.12),
                 ),
               ),
             ),
@@ -85,10 +97,10 @@ class _NextPrayerHeroCard extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.transparent,
-                      _kHeroDeep.withValues(alpha: 0.30),
+                      _kAccentGold.withValues(alpha: 0.06),
+                      _kHeroDeep.withValues(alpha: 0.38),
                     ],
-                    stops: const [0.55, 1],
+                    stops: const [0.12, 1],
                   ),
                 ),
               ),
@@ -114,10 +126,10 @@ class _NextPrayerHeroCard extends StatelessWidget {
                               vertical: 6.h,
                             ),
                             decoration: BoxDecoration(
-                              color: _kAccentGold.withValues(alpha: 0.16),
+                              color: _kAccentGold.withValues(alpha: 0.14),
                               borderRadius: BorderRadius.circular(999.r),
                               border: Border.all(
-                                color: _kAccentGold.withValues(alpha: 0.34),
+                                color: _kAccentGold.withValues(alpha: 0.42),
                               ),
                             ),
                             child: Row(
@@ -212,7 +224,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                   SizedBox(height: 12.h),
                   Container(
                     height: 1,
-                    color: _kAccentGold.withValues(alpha: 0.30),
+                    color: _kAccentGold.withValues(alpha: 0.34),
                   ),
                   SizedBox(height: 9.h),
                   Directionality(

@@ -24,10 +24,10 @@ part 'next_prayer_countdown_card_widgets_part.dart';
 part 'next_prayer_countdown_models_part.dart';
 part 'next_prayer_countdown_quick_actions_part.dart';
 
-const _kHeroTop = AppColors.brandIvory;
-const _kHeroBottom = AppColors.brandSand;
-const _kHeroDeep = AppColors.brandGoldDeep;
-const _kAccentGold = AppColors.brandCream;
+const _kHeroTop = AppColors.brandGoldLight;
+const _kHeroBottom = AppColors.gold;
+const _kHeroDeep = AppColors.brandBrown;
+const _kAccentGold = AppColors.brandIvory;
 const _kPanelText = AppColors.brandBrownDeep;
 const _kPanelSurface = AppColors.brandIvory;
 const _kPanelBorder = AppColors.brandMist;
