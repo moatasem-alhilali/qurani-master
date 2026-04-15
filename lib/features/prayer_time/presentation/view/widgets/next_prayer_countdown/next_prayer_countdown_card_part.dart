@@ -121,7 +121,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
         //   height: 10,
         // ),
         Transform.translate(
-          offset: Offset(0, -14.h),
+          offset: Offset(0, -40.h),
           child: const _QuickActionsPanel(),
         ),
       ],

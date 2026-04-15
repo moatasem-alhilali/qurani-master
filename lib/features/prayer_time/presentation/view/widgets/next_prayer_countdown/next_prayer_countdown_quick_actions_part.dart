@@ -110,7 +110,10 @@ class _QuickActionsPanel extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 6.w,
+                  vertical: 8.h,
+                ),
                 child: IntrinsicHeight(
                   child: Row(
                     children: List.generate(actions.length, (index) {

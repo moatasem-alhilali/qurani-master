@@ -110,7 +110,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                 14.w,
                 (12.h + topInset).clamp(12.h, 72.h),
                 14.w,
-                50.h,
+                70.h,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -157,12 +157,12 @@ class _NextPrayerHeroCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: 8.w),
-                        const _HeaderActionIcon(icon: Icons.search_rounded),
-                        SizedBox(width: 6.w),
-                        const _HeaderActionIcon(
-                          icon: Icons.notifications_none_rounded,
-                        ),
+                        // SizedBox(width: 8.w),
+                        // const _HeaderActionIcon(icon: Icons.search_rounded),
+                        SizedBox(width: 20.w),
+                        // const _HeaderActionIcon(
+                        //   icon: Icons.notifications_none_rounded,
+                        // ),
                         SizedBox(width: 6.w),
                         _HeaderActionIcon(
                           icon: Icons.settings_outlined,
