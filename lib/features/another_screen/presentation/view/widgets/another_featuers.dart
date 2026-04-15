@@ -357,9 +357,8 @@ class _FeatureTile extends StatelessWidget {
     final outline = context.outline.withValues(alpha: 0.95);
     final shadow = context.shadow.withValues(alpha: 0.08);
     final titleColor = context.onSurfaceColor;
-    final iconBackgroundStart =
-        context.primaryContainer.withValues(alpha: 0.48);
-    final iconBackgroundEnd = accentColor.withValues(alpha: 0.82);
+    final accentSoft = accentColor.withValues(alpha: 0.16);
+    final accentStrong = accentColor.withValues(alpha: 0.90);
 
     return InkWell(
       onTap: item.onTap,
@@ -384,57 +383,89 @@ class _FeatureTile extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                top: -18.h,
-                left: -10.w,
+                top: 0,
+                right: 0,
+                left: 0,
                 child: Container(
-                  width: 64.w,
-                  height: 64.w,
+                  height: 3.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      colors: [
+                        accentStrong,
+                        accentSoft,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10.h,
+                left: -14.w,
+                child: Container(
+                  width: 54.w,
+                  height: 54.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: accentColor.withValues(alpha: 0.16),
+                    color: accentSoft,
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(10.w, 12.h, 10.w, 10.h),
+                padding: EdgeInsets.fromLTRB(10.w, 14.h, 10.w, 10.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 44.w,
-                      height: 44.w,
+                      width: 48.w,
+                      height: 48.w,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            iconBackgroundStart,
-                            iconBackgroundEnd,
-                          ],
+                        shape: BoxShape.circle,
+                        color: accentSoft,
+                        border: Border.all(
+                          color: accentColor.withValues(alpha: 0.18),
                         ),
                       ),
-                    child: Icon(
-                      item.icon,
-                      color: titleColor,
-                      size: 21.sp,
+                      child: Center(
+                        child: Container(
+                          width: 32.w,
+                          height: 32.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(11.r),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                accentColor.withValues(alpha: 0.72),
+                                accentStrong,
+                              ],
+                            ),
+                          ),
+                          child: Icon(
+                            item.icon,
+                            color: context.onPrimaryColor,
+                            size: 16.sp,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 14.h),
-                  item.label.autoSize(
-                    context,
-                    maxLines: 2,
-                    minFontSize: 8,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11.5.sp,
-                      fontWeight: FontWeight.w800,
-                      color: titleColor,
+                    SizedBox(height: 14.h),
+                    item.label.autoSize(
+                      context,
+                      maxLines: 2,
+                      minFontSize: 8,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11.2.sp,
+                        fontWeight: FontWeight.w800,
+                        color: titleColor,
+                        height: 1.25,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             ],
           ),
         ),
