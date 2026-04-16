@@ -3,6 +3,9 @@ part of '../../audio.dart';
 extension SurahGetters on AudioCtrl {
   /// -------- [Getters] ----------
 
+  MediaItem get activeMediaItem =>
+      state.isRadioMode.value ? (state.radioMediaItem ?? mediaItem) : mediaItem;
+
   String get localSurahFilePath {
     if (kIsWeb) {
       return '';
@@ -62,6 +65,7 @@ extension SurahGetters on AudioCtrl {
   }
 
   Future<void> updateMediaItemAndPlay() async {
+    state.isRadioMode.value = false;
     final newMediaItem = mediaItem;
     AudioHandler.instance.mediaItem.add(newMediaItem);
 

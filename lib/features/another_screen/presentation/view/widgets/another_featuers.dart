@@ -11,6 +11,7 @@ import 'package:quran_app/features/daily_wird/presentation/view/pages/daily_wird
 import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_list_screen.dart';
+import 'package:quran_app/features/radio/presentation/view/pages/radio_screen.dart';
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_schedules_screen.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
@@ -38,13 +39,19 @@ class AnotherFeatures extends StatelessWidget {
         onTap: () => _openTravelerSheet(context),
       ),
       _FeatureShortcut(
+        label: 'الإذاعة',
+        subtitle: 'إذاعات قرآنية وإسلامية ببث مباشر متواصل',
+        icon: Icons.radio_rounded,
+        onTap: () => context.push(const RadioScreen()),
+      ),
+      _FeatureShortcut(
         label: 'خطط الختمة',
         subtitle: 'خطط مرتبة لإتمام الختمة بما يناسبك',
         icon: FlutterIslamicIcons.solidQuran2,
         onTap: () => context.push(const QuranPlanListScreen()),
       ),
       _FeatureShortcut(
-        label: 'التنبيه الذكي',
+        label: 'صحبة الفجر',
         subtitle: 'تذكيرات دعوية واتصالات مجدولة',
         icon: Icons.phone_in_talk_rounded,
         onTap: () => context.push(const SmartOutreachSchedulesScreen()),

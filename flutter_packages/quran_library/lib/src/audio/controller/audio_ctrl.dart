@@ -170,6 +170,50 @@ class AudioCtrl extends GetxController {
     }
   }
 
+  Future<void> playRadioStream({
+    required String id,
+    required String title,
+    required String url,
+    String? imageUrl,
+    String artist = 'إذاعة',
+  }) async {
+    await state.stopAllAudio();
+    disableSurahAutoNextListener();
+
+    if (!state.audioServiceInitialized.value &&
+        !kIsWeb &&
+        (Platform.isIOS || Platform.isAndroid || Platform.isMacOS)) {
+      await initAudioService();
+    }
+
+    state.isRadioMode.value = true;
+    state.radioStationId.value = id;
+    state.radioStationTitle.value = title;
+    state.radioStationArtist.value = artist;
+    state.radioStationUrl.value = url;
+    state.radioStationImageUrl.value = imageUrl ?? '';
+
+    final mediaItem = state.radioMediaItem;
+    if (mediaItem != null) {
+      AudioHandler.instance.mediaItem.add(mediaItem);
+    }
+
+    await state.audioPlayer.setAudioSource(
+      AudioSource.uri(
+        Uri.parse(url),
+        tag: mediaItem,
+      ),
+    );
+    state.isPlaying.value = true;
+    await state.audioPlayer.play();
+  }
+
+  Future<void> stopRadioStream() async {
+    await state.audioPlayer.stop();
+    state.isPlaying.value = false;
+    state.isRadioMode.value = false;
+  }
+
   /// -------- [DownloadingMethods] ----------
 
   Future<void> downloadSurah({int? surahNum}) async {

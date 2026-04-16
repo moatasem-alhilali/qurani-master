@@ -18,16 +18,19 @@ import 'package:quran_app/features/categories/data/remote/category_repository_im
 import 'package:quran_app/features/daily_wird/data/di/injection_container.dart';
 import 'package:quran_app/features/home/data/di/injection_container.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
+import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
-import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/quran_audio/data/di/injection_container.dart';
 import 'package:quran_app/features/quran_audio/data/remote/quran_audio_player_repo.dart';
 import 'package:quran_app/features/quran_plan/data/di/injection_container.dart';
+import 'package:quran_app/features/radio/data/di/injection_container.dart';
 import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/search/data/di/injection_container.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_session_repository.dart';
@@ -38,8 +41,6 @@ import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_no
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_execution_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
-import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
-import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -51,6 +52,7 @@ Future<void> setupServiceLocator() async {
   await registerSurahVerseReaderDependencies(sl);
   await registerHomeDependencies(sl);
   await registerDailyWirdDependencies(sl);
+  await registerRadioDependencies(sl);
 
   ///
   /// getIt
@@ -178,8 +180,7 @@ Future<void> setupServiceLocator() async {
 
     // ─────────────────────── BLOC ───────────────────────
     // ..registerFactory<BookmarkBloc>(() => BookmarkBloc(repository: sl()))
-    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()));
-  sl
+    ..registerFactory<SabihBloc>(() => SabihBloc(repository: sl()))
     ..registerFactory<SmartOutreachSchedulesBloc>(
       () => SmartOutreachSchedulesBloc(sl.get()),
     )

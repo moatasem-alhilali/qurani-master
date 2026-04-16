@@ -61,6 +61,12 @@ class SurahState {
   RxInt downloadProgress = 0.obs;
   RxBool audioServiceInitialized = false.obs;
   RxBool isDirectPlaying = false.obs;
+  RxBool isRadioMode = false.obs;
+  RxString radioStationId = ''.obs;
+  RxString radioStationTitle = ''.obs;
+  RxString radioStationArtist = ''.obs;
+  RxString radioStationUrl = ''.obs;
+  RxString radioStationImageUrl = ''.obs;
   // منع إعادة الإدخال عند الانتقال التلقائي للسورة التالية
   bool surahAutoNextInProgress = false;
   // إشارة لإلغاء التحميل الجاري (دفعة آيات السورة)
@@ -94,6 +100,22 @@ class SurahState {
           .obs;
   RxBool isSheetOpen = false.obs;
   RxInt get currentAudioListSurahNum => (selectedSurahIndex.value + 1).obs;
+
+  MediaItem? get radioMediaItem {
+    if (radioStationId.value.isEmpty || radioStationTitle.value.isEmpty) {
+      return null;
+    }
+
+    return MediaItem(
+      id: radioStationId.value,
+      title: radioStationTitle.value,
+      artist:
+          radioStationArtist.value.isEmpty ? 'إذاعة' : radioStationArtist.value,
+      artUri: radioStationImageUrl.value.isEmpty
+          ? cachedArtUri
+          : Uri.tryParse(radioStationImageUrl.value),
+    );
+  }
 
   /// إيقاف جميع الاشتراكات / Cancel all subscriptions
   void cancelAllSubscriptions() {

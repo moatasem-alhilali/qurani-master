@@ -30,6 +30,8 @@ import 'package:quran_app/features/prayer_time/data/database/database_coordinate
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
+import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
+import 'package:quran_app/features/radio/presentation/view/widgets/radio_mini_player_widget.dart';
 import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
 import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
@@ -126,6 +128,10 @@ class MyApp extends StatelessWidget {
           create: (context) => sl<RandomAyahBloc>()..add(GetRandomAyahEvent()),
           lazy: false,
         ),
+        BlocProvider(
+          create: (context) => sl<RadioBloc>()..add(const RadioInitialized()),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
@@ -171,7 +177,22 @@ class MyApp extends StatelessWidget {
                   ),
                   navigatorKey: NavigationService.navigatorKey,
                   debugShowCheckedModeBanner: false,
-                  builder: DevicePreview.appBuilder,
+                  builder: (context, child) {
+                    final preview = DevicePreview.appBuilder(
+                      context,
+                      child ?? const SizedBox.shrink(),
+                    );
+
+                    return Stack(
+                      children: [
+                        Positioned.fill(child: preview),
+                        const Align(
+                          alignment: Alignment.bottomCenter,
+                          child: RadioMiniPlayerWidget(),
+                        ),
+                      ],
+                    );
+                  },
 
                   home: const _App(),
                 ),
@@ -230,16 +251,6 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: context.scaffoldBackgroundColor,
-
-            // bottomNavigationBar: const IntrinsicHeight(
-            //   child: ColoredBox(
-            //     color: Colors.transparent,
-            //     child: SafeArea(
-            //       top: false,
-            //       child: CustomBottomNavigationBarWidget(),
-            //     ),
-            //   ),
-            // ),
             body: const HomeScreenNew(),
           );
         },

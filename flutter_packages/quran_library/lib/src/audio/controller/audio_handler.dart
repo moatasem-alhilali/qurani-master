@@ -15,7 +15,7 @@ class AudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
         .pipe(playbackState);
 
     // إضافة العنصر الصوتي الأولي
-    mediaItem.add(surahCtrl.mediaItem);
+    mediaItem.add(surahCtrl.activeMediaItem);
 
     // تحديث mediaItem عند تغيير السورة من داخل اللاعب
     // surahCtrl.state.audioPlayer.currentIndexStream.listen((index) {
@@ -43,6 +43,7 @@ class AudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> skipToNext() async {
+    if (surahCtrl.state.isRadioMode.value) return;
     if (surahCtrl.state.currentAudioListSurahNum.value < 114) {
       await surahCtrl.playNextSurah();
     }
@@ -50,6 +51,7 @@ class AudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> skipToPrevious() async {
+    if (surahCtrl.state.isRadioMode.value) return;
     if (surahCtrl.state.currentAudioListSurahNum.value > 1) {
       await surahCtrl.playPreviousSurah();
     }
@@ -61,27 +63,40 @@ class AudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> stop() async {
+    if (surahCtrl.state.isRadioMode.value) {
+      await surahCtrl.stopRadioStream();
+      return;
+    }
     await surahCtrl.state.audioPlayer.stop();
   }
 
   /// تحويل حدث just_audio إلى حالة audio_service
   PlaybackState _transformEvent(PlaybackEvent event) {
+    final isRadioMode = surahCtrl.state.isRadioMode.value;
     return PlaybackState(
-      controls: [
-        MediaControl.skipToPrevious,
-        if (surahCtrl.state.audioPlayer.playing)
-          MediaControl.pause
-        else
-          MediaControl.play,
-        MediaControl.stop,
-        MediaControl.skipToNext,
-      ],
+      controls: isRadioMode
+          ? [
+              if (surahCtrl.state.audioPlayer.playing)
+                MediaControl.pause
+              else
+                MediaControl.play,
+              MediaControl.stop,
+            ]
+          : [
+              MediaControl.skipToPrevious,
+              if (surahCtrl.state.audioPlayer.playing)
+                MediaControl.pause
+              else
+                MediaControl.play,
+              MediaControl.stop,
+              MediaControl.skipToNext,
+            ],
       systemActions: const {
         MediaAction.seek,
         MediaAction.seekForward,
         MediaAction.seekBackward,
       },
-      androidCompactActionIndices: const [0, 1, 3],
+      androidCompactActionIndices: isRadioMode ? const [0, 1] : const [0, 1, 3],
       processingState: const {
         ProcessingState.idle: AudioProcessingState.idle,
         ProcessingState.loading: AudioProcessingState.loading,
