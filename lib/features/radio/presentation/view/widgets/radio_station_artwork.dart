@@ -23,48 +23,45 @@ class RadioStationArtwork extends StatelessWidget {
     final radius = borderRadius ?? 24.r;
     final hasFixedSize = size != null;
 
-    return Hero(
-      tag: heroTag,
-      child: Material(
-        color: Colors.transparent,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius),
-          child: Stack(
-            children: [
-              SizedBox(
-                width: hasFixedSize ? dimension : null,
-                height: hasFixedSize ? dimension : null,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.cover,
-                  width: hasFixedSize ? dimension : double.infinity,
-                  height: hasFixedSize ? dimension : double.infinity,
-                  errorWidget: (context, url, error) => _FallbackArtwork(
-                    size: dimension,
-                    expand: !hasFixedSize,
-                  ),
-                  placeholder: (context, url) => _FallbackArtwork(
-                    size: dimension,
-                    expand: !hasFixedSize,
+    return Material(
+      color: Colors.transparent,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Stack(
+          children: [
+            SizedBox(
+              width: hasFixedSize ? dimension : null,
+              height: hasFixedSize ? dimension : null,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                width: hasFixedSize ? dimension : double.infinity,
+                height: hasFixedSize ? dimension : double.infinity,
+                errorWidget: (context, url, error) => _FallbackArtwork(
+                  size: dimension,
+                  expand: !hasFixedSize,
+                ),
+                placeholder: (context, url) => _FallbackArtwork(
+                  size: dimension,
+                  expand: !hasFixedSize,
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      context.scrim.withValues(alpha: 0.12),
+                    ],
                   ),
                 ),
               ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        context.scrim.withValues(alpha: 0.12),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
