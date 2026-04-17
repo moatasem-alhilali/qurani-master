@@ -1,10 +1,10 @@
 import 'package:path/path.dart';
-import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/daily_wird/data/database/daily_wird_database_service.dart';
+import 'package:quran_app/features/notification_schedules/data/database/database_notification_schedules_service.dart';
 import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
-import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 

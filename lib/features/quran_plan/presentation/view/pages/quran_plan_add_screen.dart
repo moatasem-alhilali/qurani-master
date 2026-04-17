@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/device_info_service.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/app_scaffold/back_icon_widget.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
@@ -97,7 +97,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                                     borderRadius: BorderRadius.circular(12.r),
                                   ),
                                 ),
-                                value: _startJuz,
+                                initialValue: _startJuz,
                                 items: List.generate(30, (i) => i + 1)
                                     .map(
                                       (j) => DropdownMenuItem(
@@ -120,7 +120,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                                     borderRadius: BorderRadius.circular(12.r),
                                   ),
                                 ),
-                                value: _endJuz,
+                                initialValue: _endJuz,
                                 items: List.generate(30, (i) => i + 1)
                                     .map(
                                       (j) => DropdownMenuItem(
@@ -160,7 +160,8 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                         ),
                         SizedBox(height: 24.h),
                         ListTile(
-                          tileColor: context.primaryColor.withValues(alpha: 0.1),
+                          tileColor:
+                              context.primaryColor.withValues(alpha: 0.1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.r),
                           ),
@@ -169,7 +170,9 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                                 ? 'حدد وقت التذكير اليومي'
                                 : 'وقت التذكير: ${_reminderTime!.format(context)}',
                             style: context.bodyMedium?.copyWith(
-                              fontWeight: _reminderTime == null ? FontWeight.w500 : FontWeight.w700,
+                              fontWeight: _reminderTime == null
+                                  ? FontWeight.w500
+                                  : FontWeight.w700,
                               color: context.primaryColor,
                             ),
                           ),
