@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
-import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/filled_button_widget.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
@@ -112,31 +110,72 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                     padding: EdgeInsets.all(16.w),
                     child: Column(
                       children: [
-                        FilledButtonWidget(
-                          // padding: EdgeInsets.zero,
-                          onPressed: () {
+                        InkWell(
+                          onTap: () {
                             context.push(const SystemNotificationScreen());
                           },
-                          child: CardWidget(
+                          borderRadius: BorderRadius.circular(20.r),
+                          child: Ink(
                             padding: EdgeInsets.symmetric(
-                              vertical: 16.h,
-                              horizontal: 16.w,
+                              vertical: 20.h,
+                              horizontal: 20.w,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.r),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  context.primaryColor,
+                                  context.primaryColor.withValues(alpha: 0.8),
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: context.primaryColor.withValues(alpha: 0.2),
+                                  blurRadius: 12.r,
+                                  offset: Offset(0, 6.h),
+                                ),
+                              ],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'رؤية اشعارات النظام',
-                                  style: titleMedium(context),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.bell_solid,
+                                      size: 24.sp,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Text(
+                                      'رؤية اشعارات النظام',
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Icon(
-                                  CupertinoIcons.bell_fill,
-                                  size: 20.sp,
+                                Container(
+                                  padding: EdgeInsets.all(6.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white,
+                                    size: 16.sp,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        SizedBox(height: 24.h),
                         _buildSection(
                           0,
                           'الأذان',
@@ -262,6 +301,12 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
     Map<String, NotificationSettingModel> settings,
     List<_NotifItem> items,
   ) {
+    final borderRadius = BorderRadius.circular(20.r);
+    final cardBackground = context.surfaceColor;
+    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
+    final cardBorder = context.outline.withValues(alpha: 0.85);
+    final shadow = context.shadow.withValues(alpha: 0.06);
+
     return FadeTransition(
       opacity: _itemAnimations[index],
       child: Column(
@@ -269,21 +314,40 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
         children: [
           Padding(
             padding: EdgeInsets.symmetric(
-              // horizontal: 16.w,
+              horizontal: 8.w,
               vertical: 8.h,
             ),
             child: Text(
               title.toUpperCase(),
-              style: context.titleMedium?.copyWith(
-                fontSize: 16.sp,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w800,
+                color: context.primaryColor,
               ),
             ),
           ),
           Container(
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.r),
-              color: context.surfaceColor,
+              borderRadius: borderRadius,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  cardBackground,
+                  cardBackgroundSoft,
+                ],
+              ),
+              border: Border.all(
+                color: cardBorder,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: shadow,
+                  blurRadius: 12.r,
+                  offset: Offset(0, 6.h),
+                ),
+              ],
             ),
             child: Column(
               children: items.asMap().entries.map((entry) {
