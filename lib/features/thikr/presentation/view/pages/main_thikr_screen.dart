@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/thikr_slider.dart';
@@ -107,7 +107,7 @@ class MainThikrScreen extends StatelessWidget {
     final cardWidth = (width - 8 * 3) / 2;
 
     return AppScaffoldWidget(
-      title: 'الا بذكر الله تطمئن القلوب',
+      title: 'مكتبة الأذكار',
       body: Column(
         children: [
           const ThikrSlider(),
