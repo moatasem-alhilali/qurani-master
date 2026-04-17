@@ -59,30 +59,35 @@ class YoungMuslimMetricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolvedColor = color ?? context.primaryColor;
+    final isWhite = resolvedColor == Colors.white;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: resolvedColor == Colors.white
+        color: isWhite
             ? Colors.white.withValues(alpha: 0.18)
-            : resolvedColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(18.r),
+            : resolvedColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: isWhite 
+              ? Colors.white.withValues(alpha: 0.25)
+              : resolvedColor.withValues(alpha: 0.15),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 14.sp, color: resolvedColor),
+          Icon(icon, size: 13.sp, color: resolvedColor),
           SizedBox(width: 6.w),
           Flexible(
             child: Text(
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: resolvedColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12.sp,
-                  ),
+              style: TextStyle(
+                color: resolvedColor,
+                fontWeight: FontWeight.w800,
+                fontSize: 11.sp,
+              ),
             ),
           ),
         ],
@@ -108,34 +113,34 @@ class YoungMuslimEmptyState extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(24.w),
-      decoration: BoxDecoration(
-        color: context.cardColor,
-        borderRadius: BorderRadius.circular(28.r),
-        border: Border.all(
-          color: context.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
+      decoration: youngMuslimPanelDecoration(context, useGradient: true),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 28.r,
-            backgroundColor: context.primaryContainer.withValues(alpha: 0.75),
-            child: Icon(icon, color: context.primaryColor, size: 28.sp),
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: context.primaryColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: context.primaryColor, size: 32.sp),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 20.h),
           Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w900,
+              color: context.onSurfaceColor,
+            ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 10.h),
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.gray1,
-                ),
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: context.onSurfaceVariant.withValues(alpha: 0.8),
+            ),
             textAlign: TextAlign.center,
           ),
         ],

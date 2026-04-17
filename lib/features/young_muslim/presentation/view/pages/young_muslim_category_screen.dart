@@ -126,10 +126,10 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         SizedBox(height: 16.h),
         RepaintBoundary(
           child: Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: youngMuslimPanelDecoration(context),
+            padding: EdgeInsets.all(18.w),
+            decoration: youngMuslimPanelDecoration(context, useGradient: true),
             child: Wrap(
-              spacing: 10.w,
+              spacing: 12.w,
               runSpacing: 10.h,
               children: [
                 YoungMuslimMetricChip(
@@ -153,7 +153,7 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         ),
         SizedBox(height: 14.h),
         Wrap(
-          spacing: 10.w,
+          spacing: 12.w,
           runSpacing: 10.h,
           children: [
             for (final series in details.series)
@@ -167,15 +167,24 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
                   context,
                   series.accentStart,
                 ).withValues(alpha: 0.18),
-                labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: selectedSeriesId == series.id
-                          ? youngMuslimAccentColor(
-                              context,
-                              series.accentStart,
-                            )
-                          : context.gray1,
-                      fontWeight: FontWeight.w700,
-                    ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.r),
+                  side: BorderSide(
+                    color: selectedSeriesId == series.id
+                        ? youngMuslimAccentColor(context, series.accentStart)
+                        : context.outline.withValues(alpha: 0.3),
+                  ),
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 12.sp,
+                  color: selectedSeriesId == series.id
+                      ? youngMuslimAccentColor(
+                          context,
+                          series.accentStart,
+                        )
+                      : context.onSurfaceVariant.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w800,
+                ),
               ),
           ],
         ),

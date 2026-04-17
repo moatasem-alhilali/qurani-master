@@ -101,10 +101,11 @@ class _PlayerContent extends StatelessWidget {
                   // ),
                   SizedBox(height: 18.h),
                   Container(
-                    padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.all(20.w),
                     decoration: youngMuslimPanelDecoration(
                       context,
                       radius: 26,
+                      useGradient: true,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,9 +118,19 @@ class _PlayerContent extends StatelessWidget {
                         SwitchListTile.adaptive(
                           value: autoPlayEnabled,
                           contentPadding: EdgeInsets.zero,
-                          title: const Text('تشغيل الفيديو التالي تلقائيًا'),
-                          subtitle: const Text(
+                          title: Text(
+                            'تشغيل الفيديو التالي تلقائيًا',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          subtitle: Text(
                             'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: context.onSurfaceVariant.withValues(alpha: 0.7),
+                            ),
                           ),
                           onChanged: (_) => onToggleAutoPlay(),
                         ),
@@ -131,6 +142,12 @@ class _PlayerContent extends StatelessWidget {
                               icon: const Icon(Icons.skip_next_rounded),
                               label: Text(
                                 'تشغيل التالي: $nextVideoLabel',
+                                style: const TextStyle(fontWeight: FontWeight.w800),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.r),
+                                ),
                               ),
                             ),
                           ),
@@ -186,22 +203,28 @@ class _PlayerStatsRow extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            LinearProgressIndicator(
-              value: progress.clamp(0, 1),
-              minHeight: 8.h,
-              color: context.primaryColor,
-              backgroundColor: context.outline.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(20.r),
+            Stack(
+              children: [
+                LinearProgressIndicator(
+                  value: progress.clamp(0, 1),
+                  minHeight: 10.h,
+                  color: context.primaryColor,
+                  backgroundColor: context.outline.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+              ],
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 14.h),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     session.video.title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w900,
+                      color: context.onSurfaceColor,
+                    ),
                   ),
                 ),
                 YoungMuslimMetricChip(
@@ -212,12 +235,14 @@ class _PlayerStatsRow extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 8.h),
             Text(
               '${session.series.titleAr} • ${session.category.titleAr}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: context.gray1,
-                  ),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: context.onSurfaceVariant.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         );

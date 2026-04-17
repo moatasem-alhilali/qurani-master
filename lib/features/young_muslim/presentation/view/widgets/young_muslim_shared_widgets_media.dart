@@ -29,73 +29,99 @@ class YoungMuslimMediaBanner extends StatelessWidget {
       startHex: accentStart,
       endHex: accentEnd,
     );
+    final borderRadius = BorderRadius.circular(30.r);
 
-    final banner = Ink(
+    final banner = Container(
       decoration: youngMuslimPanelDecoration(context, radius: 30),
-      child: SizedBox(
-        height: height.h,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(30.r),
-              child: CachedNetworkImage(
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: SizedBox(
+          height: height.h,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
               ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.r),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    colors.first.withValues(alpha: 0.18),
-                    context.scrim.withValues(alpha: 0.18),
-                    context.scrim.withValues(alpha: 0.72),
-                  ],
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      colors.first.withValues(alpha: 0.18),
+                      context.scrim.withValues(alpha: 0.18),
+                      context.scrim.withValues(alpha: 0.72),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (badges.isNotEmpty) ...[
-                    Wrap(
-                      spacing: 8.w,
-                      runSpacing: 8.h,
-                      children: badges,
-                    ),
-                    SizedBox(height: 14.h),
-                  ],
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                        ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+              Positioned(
+                bottom: -25.h,
+                left: -25.w,
+                child: Container(
+                  width: 100.w,
+                  height: 100.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.06),
                   ),
-                  if (subtitle != null) ...[
-                    SizedBox(height: 8.h),
+                ),
+              ),
+              Positioned(
+                top: -15.h,
+                right: -15.w,
+                child: Container(
+                  width: 70.w,
+                  height: 70.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.06),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 20.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (badges.isNotEmpty) ...[
+                      Wrap(
+                        spacing: 8.w,
+                        runSpacing: 8.h,
+                        children: badges,
+                      ),
+                      SizedBox(height: 14.h),
+                    ],
                     Text(
-                      subtitle!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
+                      title,
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (subtitle != null) ...[
+                      SizedBox(height: 8.h),
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -106,7 +132,7 @@ class YoungMuslimMediaBanner extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(30.r),
+      borderRadius: borderRadius,
       child: banner,
     );
   }
@@ -131,18 +157,20 @@ class YoungMuslimCategoryCard extends StatelessWidget {
       startHex: category.accentStart,
       endHex: category.accentEnd,
     );
+    final borderRadius = BorderRadius.circular(28.r);
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(28.r),
-      child: Ink(
-        decoration: youngMuslimPanelDecoration(context),
-        child: SizedBox(
-          height: height.h,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(28.r),
+      borderRadius: borderRadius,
+      child: Container(
+        decoration: youngMuslimPanelDecoration(context, radius: 28),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: SizedBox(
+            height: height.h,
+            child: Stack(
+              children: [
+                Positioned.fill(
                   child: CachedNetworkImage(
                     imageUrl: category.bannerImage,
                     fit: BoxFit.cover,
@@ -150,72 +178,89 @@ class YoungMuslimCategoryCard extends StatelessWidget {
                     colorBlendMode: BlendMode.darken,
                   ),
                 ),
-              ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28.r),
-                    gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        colors.first.withValues(alpha: 0.3),
-                        context.scrim.withValues(alpha: 0.18),
-                        context.scrim.withValues(alpha: 0.68),
-                      ],
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                          colors.first.withValues(alpha: 0.3),
+                          context.scrim.withValues(alpha: 0.18),
+                          context.scrim.withValues(alpha: 0.68),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                right: 14.w,
-                top: 14.h,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 6.h,
+                Positioned(
+                  bottom: -20.h,
+                  left: -20.w,
+                  child: Container(
+                    width: 80.w,
+                    height: 80.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.06),
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(16.r),
+                ),
+                Positioned(
+                  right: 14.w,
+                  top: 14.h,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 6.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Text(
+                      '${category.seriesIds.length} سلسلة',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
-                  child: Text(
-                    '${category.seriesIds.length} سلسلة',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        category.titleAr,
+                        style: TextStyle(
+                          fontSize: 18.sp,
                           color: Colors.white,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w900,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        category.description,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      category.titleAr,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                          ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      category.description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

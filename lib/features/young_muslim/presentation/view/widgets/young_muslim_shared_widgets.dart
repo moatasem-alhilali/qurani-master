@@ -75,20 +75,31 @@ IconData youngMuslimAchievementIcon(String iconName) {
 
 BoxDecoration youngMuslimPanelDecoration(
   BuildContext context, {
-  double radius = 28,
+  double radius = 24,
   Color? color,
+  bool useGradient = false,
 }) {
   return BoxDecoration(
-    color: color ?? context.cardColor,
+    color: useGradient ? null : (color ?? context.cardColor),
     borderRadius: BorderRadius.circular(radius.r),
+    gradient: useGradient
+        ? LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              context.surfaceColor,
+              context.surfaceVariant.withValues(alpha: 0.42),
+            ],
+          )
+        : null,
     border: Border.all(
-      color: context.outlineVariant.withValues(alpha: 0.45),
+      color: context.outline.withValues(alpha: 0.85),
     ),
     boxShadow: [
       BoxShadow(
-        color: context.shadow.withValues(alpha: 0.04),
-        blurRadius: 12,
-        offset: const Offset(0, 6),
+        color: context.shadow.withValues(alpha: 0.05),
+        blurRadius: 10.r,
+        offset: Offset(0, 4.h),
       ),
     ],
   );
