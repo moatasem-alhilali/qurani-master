@@ -28,7 +28,6 @@ import 'package:quran_app/features/radio/data/di/injection_container.dart';
 import 'package:quran_app/features/read_quran/data/di/injection_container.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
-import 'package:quran_app/features/search/data/di/injection_container.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
 import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
@@ -48,7 +47,6 @@ Future<void> setupServiceLocator() async {
   // ─────────────────────── DATABASE ───────────────────────
   // await _initDatabaseClient();
   await registerQuranDependencies(sl);
-  await registerSearchDependencies(sl);
   await registerSurahVerseReaderDependencies(sl);
   await registerHomeDependencies(sl);
   await registerDailyWirdDependencies(sl);

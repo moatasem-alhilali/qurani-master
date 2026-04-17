@@ -1,35 +1,42 @@
-import 'package:quran_app/features/read_quran/data/data_source/full_quran_data_client.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:quran_library/quran.dart';
 
 class SurahDataSource {
   SurahDataSource(this.fullQuranDataClient);
-  final FullQuranDataClient fullQuranDataClient;
-// get database
-  Future<Database?> get db async {
-    return fullQuranDataClient.database;
+  final dynamic fullQuranDataClient; // Keep for DI compatibility but unused
+
+  List<SurahModel> get allSurahs => QuranCtrl.instance.state.surahs;
+
+  NewSurahModel _mapToNewSurah(SurahModel s) {
+    return NewSurahModel(
+      id: s.surahNumber,
+      surahNumber: s.surahNumber,
+      nameAr: s.arabicName,
+      nameEn: s.englishName,
+      revelationType: s.revelationType,
+      ayahCount: s.ayahs.length,
+    );
   }
 
-  Future<List<NewSurahModel>> getAllSurahs() async =>
-      (await (await db)!.query('surahs')).map(NewSurahModel.fromMap).toList();
+  Future<List<NewSurahModel>> getAllSurahs() async {
+    return allSurahs.map(_mapToNewSurah).toList();
+  }
 
   Future<NewSurahModel?> getSurahById(int surahId) async {
-    final result =
-        await (await db)!.query('surahs', where: 'id = ?', whereArgs: [surahId]);
-    return result.isNotEmpty ? NewSurahModel.fromMap(result.first) : null;
+    try {
+      final s = allSurahs.firstWhere((s) => s.surahNumber == surahId);
+      return _mapToNewSurah(s);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<int> getSurahsCount() async {
-    final res = await (await db)!.rawQuery('SELECT COUNT(*) as c FROM surahs');
-    return res.isNotEmpty ? (res.first['c']! as int) : 0;
+    return allSurahs.length;
   }
 
-  Future<List<NewSurahModel>> searchSurahsByName(String query) async =>
-      (await (await db)!.query(
-        'surahs',
-        where: 'name_ar LIKE ? OR name_en LIKE ?',
-        whereArgs: ['%$query%', '%$query%'],
-      ))
-          .map(NewSurahModel.fromMap)
-          .toList();
+  Future<List<NewSurahModel>> searchSurahsByName(String query) async {
+    final results = QuranCtrl.instance.searchSurah(query);
+    return results.map(_mapToNewSurah).toList();
+  }
 }

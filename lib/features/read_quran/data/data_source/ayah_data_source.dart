@@ -1,16 +1,27 @@
 import 'dart:math';
 
-import 'package:quran_app/features/read_quran/data/data_source/full_quran_data_client.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:quran_library/quran.dart';
 
 class AyahDataSource {
   AyahDataSource(this.fullQuranDataClient);
-  final FullQuranDataClient fullQuranDataClient;
+  final dynamic fullQuranDataClient; // Keep for DI compatibility but unused
 
-  // get database
-  Future<Database?> get db async {
-    return fullQuranDataClient.database;
+  List<AyahModel> get allAyahs => QuranCtrl.instance.state.allAyahs;
+
+  NewAyahModel _mapToNewAyah(AyahModel a) {
+    return NewAyahModel(
+      id: a.ayahUQNumber,
+      surahId: a.surahNumber ?? 0,
+      numberGlobal: a.ayahUQNumber,
+      ayahNumber: a.ayahNumber,
+      text: a.text,
+      textEmlaey: a.ayaTextEmlaey,
+      page: a.page,
+      juz: a.juz,
+      hizb: a.hizb,
+      sajda: a.sajda != null ? 1 : 0, // Simplified mapping
+    );
   }
 
   Future<List<NewAyahModel>> getAyahsBySurah(
@@ -18,49 +29,40 @@ class AyahDataSource {
     int? limit,
     int? offset,
   }) async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'surah_id = ?',
-      whereArgs: [surahId],
-      orderBy: 'ayah_number ASC',
-      limit: limit,
-      offset: offset,
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final filtered = allAyahs.where((a) => a.surahNumber == surahId).toList();
+    filtered.sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
+
+    var result = filtered;
+    if (offset != null) result = result.skip(offset).toList();
+    if (limit != null) result = result.take(limit).toList();
+
+    return result.map(_mapToNewAyah).toList();
   }
 
   Future<NewAyahModel?> getAyah(int surahId, int ayahNumber) async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'surah_id = ? AND ayah_number = ?',
-      whereArgs: [surahId, ayahNumber],
-    );
-    return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
+    try {
+      final a = allAyahs.firstWhere(
+        (a) => a.surahNumber == surahId && a.ayahNumber == ayahNumber,
+      );
+      return _mapToNewAyah(a);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<NewAyahModel?> getAyahById(int id) async {
-    final result =
-        await (await db)!.query('ayahs', where: 'id = ?', whereArgs: [id]);
-    return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
+    try {
+      final a = allAyahs.firstWhere((a) => a.ayahUQNumber == id);
+      return _mapToNewAyah(a);
+    } catch (_) {
+      return null;
+    }
   }
 
-  // get random ayah from database
   Future<NewAyahModel?> getRandomAyah() async {
-    final dbInstance = await db;
-    final countRes =
-        await dbInstance!.rawQuery('SELECT COUNT(*) as c FROM ayahs');
-    final total = countRes.isNotEmpty ? (countRes.first['c']! as int) : 0;
-    if (total == 0) return null;
-
-    final randomIndex = Random().nextInt(total);
-
-    final result = await dbInstance.query(
-      'ayahs',
-      orderBy: 'id ASC',
-      limit: 1,
-      offset: randomIndex,
-    );
-    return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
+    if (allAyahs.isEmpty) return null;
+    final randomIndex = Random().nextInt(allAyahs.length);
+    return _mapToNewAyah(allAyahs[randomIndex]);
   }
 
   Future<List<NewAyahModel>> searchAyahs(
@@ -69,90 +71,67 @@ class AyahDataSource {
     int? limit,
     int? offset,
   }) async {
-    final col = inTafsir ? 'tafsir' : 'text';
-    final result = await (await db)!.query(
-      'ayahs',
-      where: '$col LIKE ?',
-      whereArgs: ['%$query%'],
-      orderBy: 'surah_id ASC, ayah_number ASC',
-      limit: limit,
-      offset: offset,
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final results = QuranCtrl.instance.search(query);
+
+    var result = results;
+    if (offset != null) result = result.skip(offset).toList();
+    if (limit != null) result = result.take(limit).toList();
+
+    return result.map(_mapToNewAyah).toList();
   }
 
   Future<int> getAyahCountBySurah(int surahId) async {
-    final res = await (await db)!.rawQuery(
-      'SELECT COUNT(*) as c FROM ayahs WHERE surah_id=?',
-      [surahId],
-    );
-    return res.isNotEmpty ? (res.first['c']! as int) : 0;
+    return allAyahs.where((a) => a.surahNumber == surahId).length;
   }
 
   Future<int> getTotalAyahCount() async {
-    final res = await (await db)!.rawQuery('SELECT COUNT(*) as c FROM ayahs');
-    return res.isNotEmpty ? (res.first['c']! as int) : 0;
+    return allAyahs.length;
   }
 
-  /// جلب آية بناء على رقمها المطلق في القرآن (من 1 إلى 6236)
   Future<NewAyahModel?> getAyahByGlobalIndex(int globalIndex) async {
-    final result = await (await db)!
-        .query('ayahs', where: 'id = ?', whereArgs: [globalIndex]);
-    return result.isNotEmpty ? NewAyahModel.fromMap(result.first) : null;
+    return getAyahById(globalIndex);
   }
 
-  /// جلب آيات حسب الصفحة
   Future<List<NewAyahModel>> getAyahsByPage(
     int page, {
     int? limit,
     int? offset,
   }) async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'page = ?',
-      whereArgs: [page],
-      orderBy: 'surah_id ASC, ayah_number ASC',
-      limit: limit,
-      offset: offset,
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final filtered = allAyahs.where((a) => a.page == page).toList();
+    filtered.sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
+
+    var result = filtered;
+    if (offset != null) result = result.skip(offset).toList();
+    if (limit != null) result = result.take(limit).toList();
+
+    return result.map(_mapToNewAyah).toList();
   }
 
-  /// جلب آيات حسب الجزء
   Future<List<NewAyahModel>> getAyahsByJuz(
     int juz, {
     int? limit,
     int? offset,
   }) async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'juz = ?',
-      whereArgs: [juz],
-      orderBy: 'surah_id ASC, ayah_number ASC',
-      limit: limit,
-      offset: offset,
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final filtered = allAyahs.where((a) => a.juz == juz).toList();
+    filtered.sort((a, b) => a.ayahUQNumber.compareTo(b.ayahUQNumber));
+
+    var result = filtered;
+    if (offset != null) result = result.skip(offset).toList();
+    if (limit != null) result = result.take(limit).toList();
+
+    return result.map(_mapToNewAyah).toList();
   }
 
-  /// جلب كل الآيات التي فيها سجدة
   Future<List<NewAyahModel>> getAyahsWithSajda() async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'sajda > 0',
-      orderBy: 'surah_id ASC, ayah_number ASC',
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final filtered =
+        allAyahs.where((a) => a.sajda != null && a.sajda != false).toList();
+    return filtered.map(_mapToNewAyah).toList();
   }
 
-  /// جلب جميع آيات النطاق
   Future<List<NewAyahModel>> getAyahsByJuzRange(int fromJuz, int toJuz) async {
-    final result = await (await db)!.query(
-      'ayahs',
-      where: 'juz >= ? AND juz <= ?',
-      whereArgs: [fromJuz, toJuz],
-      orderBy: 'id ASC',
-    );
-    return result.map(NewAyahModel.fromMap).toList();
+    final filtered =
+        allAyahs.where((a) => a.juz >= fromJuz && a.juz <= toJuz).toList();
+    filtered.sort((a, b) => a.ayahUQNumber.compareTo(b.ayahUQNumber));
+    return filtered.map(_mapToNewAyah).toList();
   }
 }

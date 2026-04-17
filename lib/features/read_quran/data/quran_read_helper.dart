@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:quran_app/core/models_public/surahs_model.dart';
-import 'package:quran_app/features/read_quran/presentation/bloc/read_quran/read_quran_bloc.dart';
 
 class QuranReadHelper {
   bool isSelected = false;

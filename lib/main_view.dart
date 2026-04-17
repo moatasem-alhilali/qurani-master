@@ -31,8 +31,6 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
-import 'package:quran_app/features/search/data/database/quran_search_datasource.dart';
-import 'package:quran_app/features/search/presentation/bloc/search_bloc.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
 
 class MyApp extends StatelessWidget {
@@ -114,14 +112,7 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
 
-        ///search
-        BlocProvider(
-          create: (context) => SearchBloc(
-            repositoryImpl: sl<QuranSearchDataSource>(),
-          ),
-          // lazy: false,
-        ),
-
+       
         ///home
         BlocProvider(
           create: (context) => sl<RandomAyahBloc>()..add(GetRandomAyahEvent()),

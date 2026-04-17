@@ -1,37 +1,39 @@
-import 'package:quran_app/features/read_quran/data/data_source/full_quran_data_client.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:quran_library/src/audio/audio.dart';
 
 class SurahVerseReaderDataSource {
   SurahVerseReaderDataSource(this.fullQuranDataClient);
-  final FullQuranDataClient fullQuranDataClient;
+  final dynamic fullQuranDataClient;
 
-  // get database
-  Future<Database?> get db async {
-    return fullQuranDataClient.database;
+  List<ReaderInfo> get allReaders => ReadersConstants.activeSurahReaders;
+
+  SurahVerseReaderModel _mapToSurahVerseReader(ReaderInfo r) {
+    return SurahVerseReaderModel(
+      id: r.index,
+      identifier: r.readerNamePath,
+      language: 'ar',
+      name: r.name,
+      englishName: r.name,
+      format: 'audio',
+      type: 'surah',
+    );
   }
 
   Future<List<SurahVerseReaderModel>> getAll() async {
-    final res = await (await db)!.query(SurahVerseReaderModel.tableName);
-    return res.map(SurahVerseReaderModel.fromMap).toList();
+    return allReaders.map(_mapToSurahVerseReader).toList();
   }
 
   Future<SurahVerseReaderModel?> getByIdentifier(String identifier) async {
-    final res = await (await db)!.query(
-      SurahVerseReaderModel.tableName,
-      where: 'identifier = ?',
-      whereArgs: [identifier],
-      limit: 1,
-    );
-    return res.isNotEmpty ? SurahVerseReaderModel.fromMap(res.first) : null;
+    try {
+      final r = allReaders.firstWhere((r) => r.readerNamePath == identifier);
+      return _mapToSurahVerseReader(r);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<List<SurahVerseReaderModel>> searchByName(String query) async {
-    final res = await (await db)!.query(
-      SurahVerseReaderModel.tableName,
-      where: 'name LIKE ? OR english_name LIKE ?',
-      whereArgs: ['%$query%', '%$query%'],
-    );
-    return res.map(SurahVerseReaderModel.fromMap).toList();
+    final filtered = allReaders.where((r) => r.name.contains(query)).toList();
+    return filtered.map(_mapToSurahVerseReader).toList();
   }
 }
