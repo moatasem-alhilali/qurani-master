@@ -6,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
-import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
 import 'package:quran_app/features/traveler/data/services/flight_prayer_service.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/flight_prayer/flight_prayer_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_command_panel.dart';

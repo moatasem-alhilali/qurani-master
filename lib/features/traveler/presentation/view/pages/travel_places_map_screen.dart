@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_bottom_sheet.dart';
@@ -93,49 +95,54 @@ class _TravelPlacesMapOrchestratorState extends State<_TravelPlacesMapOrchestrat
               return const TravelPlacesErrorView();
             }
 
-            return Stack(
-              children: [
-                Positioned.fill(
-                  child: TravelPlacesMapLayer(
-                    state: state,
-                    mapController: _mapController,
-                    zoomForRadius: _zoomForRadius(state.radiusMeters),
-                  ),
-                ),
-                Positioned(
-                  top: 10.h,
-                  left: 10.w,
-                  right: 10.w,
-                  child: TravelPlacesTopControls(
-                    state: state,
-                    placeType: widget.placeType,
-                    onMoveToLocation: () {
-                      final current = state.locationContext;
-                      if (current == null) return;
-                      _moveMapTo(
-                        LatLng(current.latitude, current.longitude),
-                        _zoomForRadius(state.radiusMeters),
-                      );
-                    },
-                  ),
-                ),
-                if (state.selectedPlace != null)
-                  Positioned(
-                    left: 10.w,
-                    right: 10.w,
-                    bottom: 96.h,
-                    child: TravelPlacesSelectedCard(
-                      selected: state.selectedPlace!,
+            return SlidingBox(
+              minHeight: state.places.isEmpty ? 60.h : 90.h,
+              maxHeight: MediaQuery.of(context).size.height * 0.58,
+              color: context.scaffoldBackgroundColor.withValues(alpha: 0.96),
+              style: BoxStyle.shadow,
+              body: TravelPlacesListSheet(
+                state: state,
+                placeType: widget.placeType,
+              ),
+              backdrop: Backdrop(
+                body: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: TravelPlacesMapLayer(
+                        state: state,
+                        mapController: _mapController,
+                        zoomForRadius: _zoomForRadius(state.radiusMeters),
+                      ),
                     ),
-                  ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: TravelPlacesBottomSheet(
-                    state: state,
-                    placeType: widget.placeType,
-                  ),
+                    Positioned(
+                      top: 10.h,
+                      left: 10.w,
+                      right: 10.w,
+                      child: TravelPlacesTopControls(
+                        state: state,
+                        placeType: widget.placeType,
+                        onMoveToLocation: () {
+                          final current = state.locationContext;
+                          if (current == null) return;
+                          _moveMapTo(
+                            LatLng(current.latitude, current.longitude),
+                            _zoomForRadius(state.radiusMeters),
+                          );
+                        },
+                      ),
+                    ),
+                    if (state.selectedPlace != null)
+                      Positioned(
+                        left: 10.w,
+                        right: 10.w,
+                        bottom: 120.h,
+                        child: TravelPlacesSelectedCard(
+                          selected: state.selectedPlace!,
+                        ),
+                      ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),

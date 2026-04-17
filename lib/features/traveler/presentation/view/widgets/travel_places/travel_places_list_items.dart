@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 
@@ -9,13 +10,11 @@ class TravelPlacesListItems extends StatelessWidget {
   const TravelPlacesListItems({
     required this.state,
     required this.placeType,
-    required this.scrollController,
     super.key,
   });
 
   final TravelPlacesState state;
   final TravelerPlaceType placeType;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,8 @@ class TravelPlacesListItems extends StatelessWidget {
     }
 
     return ListView.separated(
-      controller: scrollController,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 20.h),
       itemCount: state.places.length,
       separatorBuilder: (_, __) => SizedBox(height: 8.h),
@@ -122,9 +122,23 @@ class TravelPlacesListItems extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 8.w),
-                Icon(
-                  Icons.chevron_left_rounded,
-                  color: context.onSurfaceColor.withValues(alpha: 0.45),
+                IconButton(
+                  onPressed: () async {
+                    final query = Uri.encodeComponent(
+                      '${place.name} ${place.latitude},${place.longitude}',
+                    );
+                    final url = 'https://www.google.com/maps/search/?api=1&query=$query';
+                    final launched = await UrlLauncherUtils.launchWebUrl(url);
+                    if (!context.mounted || launched) return;
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(const SnackBar(content: Text('تعذر فتح تطبيق الخرائط.')));
+                  },
+                  tooltip: 'فتح في خرائط جوجل',
+                  icon: Icon(
+                    Icons.directions_outlined,
+                    color: context.primaryColor,
+                  ),
                 ),
               ],
             ),
