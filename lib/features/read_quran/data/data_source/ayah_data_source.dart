@@ -7,7 +7,11 @@ class AyahDataSource {
   AyahDataSource(this.fullQuranDataClient);
   final dynamic fullQuranDataClient; // Keep for DI compatibility but unused
 
-  List<AyahModel> get allAyahs => QuranCtrl.instance.state.allAyahs;
+  List<AyahModel> get _allAyahs {
+    // Prefer the explicitly populated List from loadQuranDataV1 as it has better metadata (surahNumber, etc.)
+    if (QuranCtrl.instance.ayahs.isNotEmpty) return QuranCtrl.instance.ayahs;
+    return QuranCtrl.instance.state.allAyahs;
+  }
 
   NewAyahModel _mapToNewAyah(AyahModel a) {
     return NewAyahModel(
@@ -20,7 +24,7 @@ class AyahDataSource {
       page: a.page,
       juz: a.juz,
       hizb: a.hizb,
-      sajda: a.sajda != null ? 1 : 0, // Simplified mapping
+      sajda: a.sajda != null ? 1 : 0,
     );
   }
 
@@ -29,7 +33,7 @@ class AyahDataSource {
     int? limit,
     int? offset,
   }) async {
-    final filtered = allAyahs.where((a) => a.surahNumber == surahId).toList();
+    final filtered = _allAyahs.where((a) => a.surahNumber == surahId).toList();
     filtered.sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
 
     var result = filtered;
@@ -41,7 +45,7 @@ class AyahDataSource {
 
   Future<NewAyahModel?> getAyah(int surahId, int ayahNumber) async {
     try {
-      final a = allAyahs.firstWhere(
+      final a = _allAyahs.firstWhere(
         (a) => a.surahNumber == surahId && a.ayahNumber == ayahNumber,
       );
       return _mapToNewAyah(a);
@@ -52,7 +56,7 @@ class AyahDataSource {
 
   Future<NewAyahModel?> getAyahById(int id) async {
     try {
-      final a = allAyahs.firstWhere((a) => a.ayahUQNumber == id);
+      final a = _allAyahs.firstWhere((a) => a.ayahUQNumber == id);
       return _mapToNewAyah(a);
     } catch (_) {
       return null;
@@ -60,9 +64,9 @@ class AyahDataSource {
   }
 
   Future<NewAyahModel?> getRandomAyah() async {
-    if (allAyahs.isEmpty) return null;
-    final randomIndex = Random().nextInt(allAyahs.length);
-    return _mapToNewAyah(allAyahs[randomIndex]);
+    if (_allAyahs.isEmpty) return null;
+    final randomIndex = Random().nextInt(_allAyahs.length);
+    return _mapToNewAyah(_allAyahs[randomIndex]);
   }
 
   Future<List<NewAyahModel>> searchAyahs(
@@ -81,11 +85,11 @@ class AyahDataSource {
   }
 
   Future<int> getAyahCountBySurah(int surahId) async {
-    return allAyahs.where((a) => a.surahNumber == surahId).length;
+    return _allAyahs.where((a) => a.surahNumber == surahId).length;
   }
 
   Future<int> getTotalAyahCount() async {
-    return allAyahs.length;
+    return _allAyahs.length;
   }
 
   Future<NewAyahModel?> getAyahByGlobalIndex(int globalIndex) async {
@@ -97,7 +101,7 @@ class AyahDataSource {
     int? limit,
     int? offset,
   }) async {
-    final filtered = allAyahs.where((a) => a.page == page).toList();
+    final filtered = _allAyahs.where((a) => a.page == page).toList();
     filtered.sort((a, b) => a.ayahNumber.compareTo(b.ayahNumber));
 
     var result = filtered;
@@ -112,7 +116,7 @@ class AyahDataSource {
     int? limit,
     int? offset,
   }) async {
-    final filtered = allAyahs.where((a) => a.juz == juz).toList();
+    final filtered = _allAyahs.where((a) => a.juz == juz).toList();
     filtered.sort((a, b) => a.ayahUQNumber.compareTo(b.ayahUQNumber));
 
     var result = filtered;
@@ -124,13 +128,13 @@ class AyahDataSource {
 
   Future<List<NewAyahModel>> getAyahsWithSajda() async {
     final filtered =
-        allAyahs.where((a) => a.sajda != null && a.sajda != false).toList();
+        _allAyahs.where((a) => a.sajda != null && a.sajda != false).toList();
     return filtered.map(_mapToNewAyah).toList();
   }
 
   Future<List<NewAyahModel>> getAyahsByJuzRange(int fromJuz, int toJuz) async {
     final filtered =
-        allAyahs.where((a) => a.juz >= fromJuz && a.juz <= toJuz).toList();
+        _allAyahs.where((a) => a.juz >= fromJuz && a.juz <= toJuz).toList();
     filtered.sort((a, b) => a.ayahUQNumber.compareTo(b.ayahUQNumber));
     return filtered.map(_mapToNewAyah).toList();
   }

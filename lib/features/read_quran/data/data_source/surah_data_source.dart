@@ -5,7 +5,10 @@ class SurahDataSource {
   SurahDataSource(this.fullQuranDataClient);
   final dynamic fullQuranDataClient; // Keep for DI compatibility but unused
 
-  List<SurahModel> get allSurahs => QuranCtrl.instance.state.surahs;
+  List<SurahModel> get _allSurahs {
+    if (QuranCtrl.instance.surahs.isNotEmpty) return QuranCtrl.instance.surahs;
+    return QuranCtrl.instance.state.surahs;
+  }
 
   NewSurahModel _mapToNewSurah(SurahModel s) {
     return NewSurahModel(
@@ -19,12 +22,12 @@ class SurahDataSource {
   }
 
   Future<List<NewSurahModel>> getAllSurahs() async {
-    return allSurahs.map(_mapToNewSurah).toList();
+    return _allSurahs.map(_mapToNewSurah).toList();
   }
 
   Future<NewSurahModel?> getSurahById(int surahId) async {
     try {
-      final s = allSurahs.firstWhere((s) => s.surahNumber == surahId);
+      final s = _allSurahs.firstWhere((s) => s.surahNumber == surahId);
       return _mapToNewSurah(s);
     } catch (_) {
       return null;
@@ -32,7 +35,7 @@ class SurahDataSource {
   }
 
   Future<int> getSurahsCount() async {
-    return allSurahs.length;
+    return _allSurahs.length;
   }
 
   Future<List<NewSurahModel>> searchSurahsByName(String query) async {
