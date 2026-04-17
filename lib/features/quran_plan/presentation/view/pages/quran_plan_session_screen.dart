@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/card_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -101,28 +102,99 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                 return Column(
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CardWidget(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      padding: const EdgeInsets.all(16),
-                      // color: Colors.blue[50],
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            context.surfaceColor,
+                            context.surfaceVariant.withValues(alpha: 0.42),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: context.outline.withValues(alpha: 0.85),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.shadow.withValues(alpha: 0.05),
+                            blurRadius: 10.r,
+                            offset: Offset(0, 4.h),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.r),
+                        child: Stack(
                           children: [
-                            Text(
-                              'التقدم الكلي',
-                              style: context.titleMedium,
+                            Positioned(
+                              top: -20.h,
+                              left: -20.w,
+                              child: Container(
+                                width: 80.w,
+                                height: 80.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: context.primaryColor.withValues(alpha: 0.04),
+                                ),
+                              ),
                             ),
-                            const SizedBox(height: 8),
-                            LinearProgressIndicator(
-                              value: progress,
-                              minHeight: 8,
-                              borderRadius: BorderRadius.circular(4),
-                              backgroundColor: Colors.grey[300],
+                            Padding(
+                              padding: EdgeInsets.all(20.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'التقدم الكلي',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w800,
+                                          color: context.primaryColor,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                                        decoration: BoxDecoration(
+                                          color: context.primaryColor.withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        child: Text(
+                                          '$progressPercent%',
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w700,
+                                            color: context.primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    child: LinearProgressIndicator(
+                                      value: progress,
+                                      minHeight: 8.h,
+                                      backgroundColor: context.onSurfaceVariant.withValues(alpha: 0.15),
+                                      valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'أنجزت $progressPercent% من الخطة',
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: context.onSurfaceVariant.withValues(alpha: 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(height: 4),
-                            Text('$progressPercent% من الخطة'),
                           ],
                         ),
                       ),
@@ -184,12 +256,28 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'جلسات الخطة:',
-                      style: context.titleMedium,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle_outline_rounded,
+                            color: context.primaryColor,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            'جلسات الخطة',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w800,
+                              color: context.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 12.h),
                     state.requestState.when<QuranPlanSession>(
                       onSuccess: () => Column(
                         children: [

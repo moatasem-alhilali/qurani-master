@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/quran_plan/data/model/plan_progress_analysis_model.dart';
 
@@ -11,10 +11,30 @@ class SmartAnalysisPlanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final f = DateFormat('yyyy-MM-dd');
-    return CardWidget(
-      margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(18),
-      // color: Colors.blue[50],
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            context.surfaceColor,
+            context.surfaceVariant.withValues(alpha: 0.42),
+          ],
+        ),
+        border: Border.all(
+          color: context.outline.withValues(alpha: 0.85),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: context.shadow.withValues(alpha: 0.05),
+            blurRadius: 10.r,
+            offset: Offset(0, 4.h),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

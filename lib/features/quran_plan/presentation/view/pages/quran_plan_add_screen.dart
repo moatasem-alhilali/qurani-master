@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -48,103 +49,158 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(labelText: 'عنوان الخطة'),
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'أدخل عنواناً' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<int>(
-                          decoration:
-                              const InputDecoration(labelText: 'من الجزء'),
-                          value: _startJuz,
-                          items: List.generate(30, (i) => i + 1)
-                              .map(
-                                (j) => DropdownMenuItem(
-                                  value: j,
-                                  child: Text('$j'),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (v) => setState(() => _startJuz = v),
-                          validator: (v) =>
-                              v == null || v == 0 ? 'اختر البداية' : null,
-                        ),
+                  Container(
+                    padding: EdgeInsets.all(20.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          context.surfaceColor,
+                          context.surfaceVariant.withValues(alpha: 0.42),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: DropdownButtonFormField<int>(
-                          decoration:
-                              const InputDecoration(labelText: 'إلى الجزء'),
-                          value: _endJuz,
-                          items: List.generate(30, (i) => i + 1)
-                              .map(
-                                (j) => DropdownMenuItem(
-                                  value: j,
-                                  child: Text('$j'),
+                      border: Border.all(
+                        color: context.outline.withValues(alpha: 0.85),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.shadow.withValues(alpha: 0.05),
+                          blurRadius: 10.r,
+                          offset: Offset(0, 4.h),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            labelText: 'عنوان الخطة',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                          validator: (v) =>
+                              v == null || v.isEmpty ? 'أدخل عنواناً' : null,
+                        ),
+                        SizedBox(height: 16.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<int>(
+                                decoration: InputDecoration(
+                                  labelText: 'من الجزء',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
                                 ),
-                              )
-                              .toList(),
-                          onChanged: (v) => setState(() => _endJuz = v),
+                                value: _startJuz,
+                                items: List.generate(30, (i) => i + 1)
+                                    .map(
+                                      (j) => DropdownMenuItem(
+                                        value: j,
+                                        child: Text('$j'),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (v) => setState(() => _startJuz = v),
+                                validator: (v) =>
+                                    v == null || v == 0 ? 'اختر البداية' : null,
+                              ),
+                            ),
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: DropdownButtonFormField<int>(
+                                decoration: InputDecoration(
+                                  labelText: 'إلى الجزء',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                                value: _endJuz,
+                                items: List.generate(30, (i) => i + 1)
+                                    .map(
+                                      (j) => DropdownMenuItem(
+                                        value: j,
+                                        child: Text('$j'),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (v) => setState(() => _endJuz = v),
+                                validator: (v) {
+                                  if (v == null) return 'اختر النهاية';
+                                  if (_startJuz != null && v < _startJuz!) {
+                                    return 'يجب أن يكون الجزء النهائي أكبر أو يساوي البداية';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'عدد الأيام',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (v) => _totalDays = int.tryParse(v),
                           validator: (v) {
-                            if (v == null) return 'اختر النهاية';
-                            if (_startJuz != null && v < _startJuz!) {
-                              return 'يجب أن يكون الجزء النهائي أكبر أو يساوي البداية';
-                            }
+                            final num = int.tryParse(v ?? '');
+                            if (num == null || num <= 0)
+                              return 'أدخل عدد الأيام بشكل صحيح';
                             return null;
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'عدد الأيام'),
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) => _totalDays = int.tryParse(v),
-                    validator: (v) {
-                      final num = int.tryParse(v ?? '');
-                      if (num == null || num <= 0)
-                        return 'أدخل عدد الأيام بشكل صحيح';
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  ListTile(
-                    tileColor: context.surfaceColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    title: Text(
-                      _reminderTime == null
-                          ? 'حدد وقت التذكير اليومي'
-                          : 'وقت التذكير: ${_reminderTime!.format(context)}',
-                      style: context.bodyMedium,
-                    ),
-                    leading: const Icon(
-                      Icons.alarm,
-                      color: Colors.white,
-                    ),
-                    onTap: () async {
-                      final t = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      );
-                      if (t != null) setState(() => _reminderTime = t);
-                    },
-                    trailing: _reminderTime != null
-                        ? IconButton(
-                            icon: const Icon(
-                              Icons.close,
+                        SizedBox(height: 24.h),
+                        ListTile(
+                          tileColor: context.primaryColor.withValues(alpha: 0.1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          title: Text(
+                            _reminderTime == null
+                                ? 'حدد وقت التذكير اليومي'
+                                : 'وقت التذكير: ${_reminderTime!.format(context)}',
+                            style: context.bodyMedium?.copyWith(
+                              fontWeight: _reminderTime == null ? FontWeight.w500 : FontWeight.w700,
+                              color: context.primaryColor,
                             ),
-                            onPressed: () =>
-                                setState(() => _reminderTime = null),
-                          )
-                        : null,
+                          ),
+                          leading: Icon(
+                            Icons.alarm,
+                            color: context.primaryColor,
+                          ),
+                          onTap: () async {
+                            final t = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (t != null) setState(() => _reminderTime = t);
+                          },
+                          trailing: _reminderTime != null
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: context.errorColor,
+                                  ),
+                                  onPressed: () =>
+                                      setState(() => _reminderTime = null),
+                                )
+                              : Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: context.primaryColor,
+                                  size: 16.sp,
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24),
                   ProgressButtonState(

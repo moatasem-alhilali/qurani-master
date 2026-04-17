@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -27,10 +26,23 @@ class CurrentSessionWidget extends StatelessWidget {
     final isCompleted = session.completed;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: CardWidget(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.all(8),
-        // color: isCompleted ? Colors.green[50] : Colors.grey[50],
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          color: context.surfaceColor,
+          border: Border.all(
+            color: isCompleted ? context.primaryColor.withValues(alpha: 0.5) : context.outline.withValues(alpha: 0.85),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: context.shadow.withValues(alpha: 0.04),
+              blurRadius: 8.r,
+              offset: Offset(0, 3.h),
+            ),
+          ],
+        ),
         child: ListTile(
           leading: CircleAvatar(
             radius: 10.r,
