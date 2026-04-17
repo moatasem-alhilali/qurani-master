@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
-import 'package:quran_app/features/radio/presentation/view/pages/radio_now_playing_screen.dart';
+import 'package:quran_app/features/radio/presentation/view/widgets/radio_mini_player_widget.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
 
 class RadioScreen extends StatelessWidget {
@@ -48,16 +47,7 @@ class RadioScreen extends StatelessWidget {
                     isPlaying: state.isPlaying,
                     onOpenNowPlaying: state.currentStation == null
                         ? null
-                        : () {
-                            context.push(
-                              BlocProvider.value(
-                                value: context.read<RadioBloc>(),
-                                child: RadioNowPlayingScreen(
-                                  station: state.currentStation!,
-                                ),
-                              ),
-                            );
-                          },
+                        : openRadioPlayerBox,
                   ),
                   SizedBox(height: 16.h),
                   Text(
@@ -213,7 +203,7 @@ class _RadioHeroCard extends StatelessWidget {
                                   ? 'يتم الآن تشغيل الإذاعة مع دعم الخلفية '
                                       'وإشعار النظام.'
                                   : 'المحطة محددة ويمكنك متابعة التشغيل من '
-                                      'شاشة المشغل.'),
+                                      'المشغل السفلي.'),
                           style: context.bodyMedium?.copyWith(
                             color: context.onSurfaceVariant
                                 .withValues(alpha: 0.88),
@@ -262,6 +252,7 @@ class _RadioStationTile extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.read<RadioBloc>().add(RadioStationPlayRequested(station));
+        openRadioPlayerBox();
       },
       borderRadius: BorderRadius.circular(22.r),
       child: Ink(
