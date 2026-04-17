@@ -313,27 +313,105 @@ class StyleButtonWrap extends StatelessWidget {
 /// A base widget that provides a tap effect with a ripple animation.
 ///
 /// This widget is used to wrap other widgets and add a ripple effect when tapped.
+/// It has been enhanced to support all InkWell features, dynamic theming, and haptic feedback.
 class BaseOnTap extends StatelessWidget {
   const BaseOnTap({
     super.key,
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.onTapDown,
+    this.onTapUp,
+    this.onTapCancel,
+    this.onHover,
     this.child,
+    this.borderRadius,
+    this.splashColor,
+    this.hoverColor,
+    this.highlightColor,
+    this.overlayColor,
+    this.customBorder,
+    this.enableFeedback = true,
+    this.excludeFromSemantics = false,
+    this.focusNode,
+    this.autofocus = false,
+    this.splashFactory,
+    this.radius,
   });
-  final void Function()? onTap;
+
+  final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
+  final ValueChanged<TapDownDetails>? onTapDown;
+  final ValueChanged<TapUpDetails>? onTapUp;
+  final VoidCallback? onTapCancel;
+  final ValueChanged<bool>? onHover;
   final Widget? child;
+  
+  final BorderRadius? borderRadius;
+  final ShapeBorder? customBorder;
+  final Color? splashColor;
+  final Color? hoverColor;
+  final Color? highlightColor;
+  final WidgetStateProperty<Color?>? overlayColor;
+  final bool enableFeedback;
+  final bool excludeFromSemantics;
+  final FocusNode? focusNode;
+  final bool autofocus;
+  final InteractiveInkFeatureFactory? splashFactory;
+  final double? radius;
+
   @override
   Widget build(BuildContext context) {
+    if (onTap == null && onDoubleTap == null && onLongPress == null) {
+      return child ?? const SizedBox();
+    }
+
     return InkWell(
-      highlightColor: Colors.red,
-      hoverColor: Colors.red,
-      splashColor: Colors.red,
-      borderRadius: BorderRadius.circular(8.r),
-      overlayColor:
-          WidgetStatePropertyAll(context.primaryColor.withOpacity(0.1)),
-      onTap: () {
-        // HapticFeedback.lightImpact();
-        onTap?.call();
-      },
+      onTap: onTap != null
+          ? () {
+              if (enableFeedback) HapticFeedback.lightImpact();
+              onTap?.call();
+            }
+          : null,
+      onLongPress: onLongPress != null
+          ? () {
+              if (enableFeedback) HapticFeedback.mediumImpact();
+              onLongPress?.call();
+            }
+          : null,
+      onDoubleTap: onDoubleTap != null
+          ? () {
+              if (enableFeedback) HapticFeedback.lightImpact();
+              onDoubleTap?.call();
+            }
+          : null,
+      onTapDown: onTapDown,
+      onTapUp: onTapUp,
+      onTapCancel: onTapCancel,
+      onHover: onHover,
+      borderRadius: borderRadius ?? BorderRadius.circular(8.r),
+      customBorder: customBorder,
+      radius: radius,
+      splashFactory: splashFactory ?? InkRipple.splashFactory,
+      splashColor: splashColor ?? context.primaryColor.withValues(alpha: 0.1),
+      highlightColor: highlightColor ?? context.primaryColor.withValues(alpha: 0.05),
+      hoverColor: hoverColor ?? context.primaryColor.withValues(alpha: 0.04),
+      overlayColor: overlayColor ??
+          WidgetStateProperty.resolveWith<Color?>((states) {
+            if (states.contains(WidgetState.pressed)) {
+              return splashColor ?? context.primaryColor.withValues(alpha: 0.1);
+            }
+            if (states.contains(WidgetState.hovered) ||
+                states.contains(WidgetState.focused)) {
+              return hoverColor ?? context.primaryColor.withValues(alpha: 0.05);
+            }
+            return null;
+          }),
+      enableFeedback: enableFeedback,
+      excludeFromSemantics: excludeFromSemantics,
+      focusNode: focusNode,
+      autofocus: autofocus,
       child: child,
     );
   }

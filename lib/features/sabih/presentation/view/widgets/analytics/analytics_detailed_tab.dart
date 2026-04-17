@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
-import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics_period_selector.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/dhikr_stats_card.dart';
