@@ -67,7 +67,7 @@ class _SmartOutreachSchedulesViewState
       },
       builder: (context, state) {
         return AppScaffoldWidget(
-          title: 'جدولة أيقظنية',
+          title: 'صحبة الفجر',
           showLargeHeader: false,
           initialOffset: null,
           floatingActionButton: FloatingActionButton(

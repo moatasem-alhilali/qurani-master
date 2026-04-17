@@ -16,64 +16,72 @@ class RadioScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: context.read<RadioBloc>(),
-      child: AppScaffoldWidget(
-        title: 'الإذاعة',
-        initialOffset: 0,
-        body: BlocConsumer<RadioBloc, RadioState>(
-          listenWhen: (previous, current) =>
-              previous.errorMessage != current.errorMessage &&
-              current.errorMessage != null,
-          listener: (context, state) {
-            final message = state.errorMessage;
-            if (message == null) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
-            );
-          },
-          builder: (context, state) {
-            if (state.loadState == RequestState.loading &&
-                state.stations.isEmpty) {
-              return const _RadioStationsLoadingView();
-            }
+      child: Stack(
+        children: [
+          AppScaffoldWidget(
+            title: 'الإذاعة',
+            initialOffset: 0,
+            body: BlocConsumer<RadioBloc, RadioState>(
+              listenWhen: (previous, current) =>
+                  previous.errorMessage != current.errorMessage &&
+                  current.errorMessage != null,
+              listener: (context, state) {
+                final message = state.errorMessage;
+                if (message == null) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(message)),
+                );
+              },
+              builder: (context, state) {
+                if (state.loadState == RequestState.loading &&
+                    state.stations.isEmpty) {
+                  return const _RadioStationsLoadingView();
+                }
 
-            return Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 28.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _RadioHeroCard(
-                    station: state.currentStation,
-                    isPlaying: state.isPlaying,
-                    onOpenNowPlaying: state.currentStation == null
-                        ? null
-                        : openRadioPlayerBox,
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'المحطات المتاحة',
-                    style: context.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  ...state.stations.map(
-                    (station) => Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: _RadioStationTile(
-                        station: station,
-                        isCurrent: state.currentStation?.id == station.id,
-                        isPlayingCurrent:
-                            state.currentStation?.id == station.id &&
-                                state.isPlaying,
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 120.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _RadioHeroCard(
+                        station: state.currentStation,
+                        isPlaying: state.isPlaying,
+                        onOpenNowPlaying: state.currentStation == null
+                            ? null
+                            : openRadioPlayerBox,
                       ),
-                    ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'المحطات المتاحة',
+                        style: context.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      ...state.stations.map(
+                        (station) => Padding(
+                          padding: EdgeInsets.only(bottom: 12.h),
+                          child: _RadioStationTile(
+                            station: station,
+                            isCurrent: state.currentStation?.id == station.id,
+                            isPlayingCurrent:
+                                state.currentStation?.id == station.id &&
+                                    state.isPlaying,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
-        ),
+                );
+              },
+            ),
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: RadioMiniPlayerWidget(),
+          ),
+        ],
       ),
     );
   }
