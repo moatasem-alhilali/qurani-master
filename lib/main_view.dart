@@ -240,7 +240,7 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: context.scaffoldBackgroundColor,
-            body: const HomeScreenNew(),
+            body: const HomeScreen(),
           );
         },
       ),

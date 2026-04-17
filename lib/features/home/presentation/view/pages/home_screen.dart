@@ -10,14 +10,14 @@ import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
-class HomeScreenNew extends StatefulWidget {
-  const HomeScreenNew({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomeScreenNew> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreenNew> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
