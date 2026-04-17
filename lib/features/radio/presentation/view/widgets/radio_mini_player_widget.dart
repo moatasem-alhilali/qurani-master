@@ -74,31 +74,33 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
 
         return SafeArea(
           top: false,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 12.h),
-            child: SizedBox(
-              height: context.getScreenHeight() * 0.82,
-              child: SlidingBox(
-                controller: radioPlayerBoxController,
-                minHeight: 92.h,
-                maxHeight: context.getScreenHeight() * 0.82,
-                color: Color.alphaBlend(
-                  context.primaryContainer.withValues(alpha: 0.10),
-                  context.surfaceColor,
-                ),
-                style: BoxStyle.shadow,
-                draggableIconVisible: false,
-                collapsed: true,
-                borderRadius: BorderRadius.circular(28.r),
-                collapsedBody: _CollapsedRadioPlayer(
-                  station: station,
-                  isPlaying: state.isPlaying,
-                ),
-                body: _ExpandedRadioPlayer(
-                  station: station,
-                  isPlaying: state.isPlaying,
-                  isLoading: state.isLoadingPlayback,
-                ),
+          bottom: false,
+          child: SizedBox(
+            width: double.infinity,
+            height: context.getScreenHeight() * 0.90,
+            child: SlidingBox(
+              controller: radioPlayerBoxController,
+              minHeight: 92.h,
+              maxHeight: context.getScreenHeight() * 0.90,
+              color: Color.alphaBlend(
+                context.primaryContainer.withValues(alpha: 0.10),
+                context.surfaceColor,
+              ),
+              style: BoxStyle.shadow,
+              draggableIconVisible: false,
+              collapsed: true,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(28.r),
+                topRight: Radius.circular(28.r),
+              ),
+              collapsedBody: _CollapsedRadioPlayer(
+                station: station,
+                isPlaying: state.isPlaying,
+              ),
+              body: _ExpandedRadioPlayer(
+                station: station,
+                isPlaying: state.isPlaying,
+                isLoading: state.isLoadingPlayback,
               ),
             ),
           ),
@@ -282,7 +284,7 @@ class _ExpandedRadioPlayer extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Row(
                   children: [
-                    _ActionCircleButton(
+                    const _ActionCircleButton(
                       icon: Icons.keyboard_arrow_down_rounded,
                       onTap: closeRadioPlayerBox,
                     ),
@@ -295,18 +297,9 @@ class _ExpandedRadioPlayer extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      width: 44.w,
-                      height: 44.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: context.surfaceVariant.withValues(alpha: 0.24),
-                      ),
-                      child: Icon(
-                        Icons.more_horiz_rounded,
-                        color: context.onSurfaceVariant,
-                        size: 22.sp,
-                      ),
+                    const _ActionCircleButton(
+                      icon: Icons.more_horiz_rounded,
+                      onTap: closeRadioPlayerBox,
                     ),
                   ],
                 ),
