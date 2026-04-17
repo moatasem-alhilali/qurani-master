@@ -58,6 +58,7 @@ dependencies:
   flutter_qiblah: ^3.1.0+1
   equatable: ^2.0.7
   smooth_sheets: ^0.10.2
+  palette_generator_master: ^1.0.1
   share_plus: ^11.0.0
   fluttertoast: ^8.2.12
   skeletonizer: ^2.0.1

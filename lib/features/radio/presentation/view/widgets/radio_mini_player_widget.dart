@@ -4,11 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/package/flutter_sliding_box.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:palette_generator_master/palette_generator_master.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/data/service/radio_audio_service.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
-
 final BoxController radioPlayerBoxController = BoxController();
 bool _pendingRadioPlayerOpen = false;
 
@@ -223,7 +225,7 @@ class _CollapsedRadioPlayer extends StatelessWidget {
   }
 }
 
-class _ExpandedRadioPlayer extends StatelessWidget {
+class _ExpandedRadioPlayer extends StatefulWidget {
   const _ExpandedRadioPlayer({
     required this.station,
     required this.isPlaying,
@@ -235,7 +237,44 @@ class _ExpandedRadioPlayer extends StatelessWidget {
   final bool isLoading;
 
   @override
+  State<_ExpandedRadioPlayer> createState() => _ExpandedRadioPlayerState();
+}
+
+class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
+  Color? _dominantColor;
+
+  @override
+  void initState() {
+    super.initState();
+    _updatePalette();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ExpandedRadioPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.station.imageUrl != widget.station.imageUrl) {
+      _updatePalette();
+    }
+  }
+
+  Future<void> _updatePalette() async {
+    try {
+      final imageProvider = CachedNetworkImageProvider(widget.station.imageUrl);
+      final palette = await PaletteGeneratorMaster.fromImageProvider(imageProvider);
+      if (mounted) {
+        setState(() {
+          _dominantColor = palette.dominantColor?.color ?? palette.mutedColor?.color;
+        });
+      }
+    } catch (_) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final station = widget.station;
+    final isPlaying = widget.isPlaying;
+    final isLoading = widget.isLoading;
+
     final accent = context.primaryColor;
     final secondaryAccent = context.secondaryColor;
     final artworkHeight = context.getScreenHeight() * 0.28;
@@ -245,31 +284,35 @@ class _ExpandedRadioPlayer extends StatelessWidget {
     );
     final primaryText = context.onSurfaceColor;
     final secondaryText = context.onSurfaceVariant.withValues(alpha: 0.78);
+    final blurColor = (_dominantColor ?? panelSurface).withValues(alpha: 0.50);
 
     return Material(
       color: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 18.h),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(34.r),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                panelSurface,
-                Color.alphaBlend(
-                  accent.withValues(alpha: 0.08),
-                  panelSurface,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(34.r),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: station.imageUrl,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 22.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
+              ),
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+                  child: Container(
+                    color: blurColor,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 22.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
               children: [
                 Center(
                   child: Container(
@@ -505,8 +548,10 @@ class _ExpandedRadioPlayer extends StatelessWidget {
                     ),
                   ],
                 ),
-              ],
-            ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
