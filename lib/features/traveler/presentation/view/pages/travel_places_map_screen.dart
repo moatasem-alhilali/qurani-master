@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:latlong2/latlong.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
-import 'package:quran_app/features/traveler/data/services/traveler_country_policy.dart';
-import 'package:quran_app/features/traveler/data/services/traveler_places_service.dart';
+import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_error_view.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_restricted_view.dart';
 
-class TravelPlacesMapScreen extends StatefulWidget {
+class TravelPlacesMapScreen extends StatelessWidget {
   const TravelPlacesMapScreen({
     required this.placeType,
     super.key,
@@ -18,171 +20,26 @@ class TravelPlacesMapScreen extends StatefulWidget {
   final TravelerPlaceType placeType;
 
   @override
-  State<TravelPlacesMapScreen> createState() => _TravelPlacesMapScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TravelPlacesBloc(placeType: placeType),
+      child: TravelPlacesMapView(placeType: placeType),
+    );
+  }
 }
 
-class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
-  final MapController _mapController = MapController();
-
-  static const List<int> _radiusOptions = [1000, 3000, 5000, 10000];
-
-  TravelerLocationContext? _locationContext;
-  List<TravelerPlace> _places = const [];
-  TravelerPlace? _selectedPlace;
-
-  bool _isLoadingLocation = true;
-  bool _isLoadingPlaces = false;
-  bool _isRestrictedForCountry = false;
-  String? _errorMessage;
-
-  late int _radiusMeters;
+class TravelPlacesMapView extends StatefulWidget {
+  const TravelPlacesMapView({required this.placeType, super.key});
+  
+  final TravelerPlaceType placeType;
 
   @override
-  void initState() {
-    super.initState();
-    _radiusMeters = widget.placeType == TravelerPlaceType.mosque ? 3000 : 5000;
-    _bootstrap();
-  }
+  State<TravelPlacesMapView> createState() => _TravelPlacesMapViewState();
+}
 
-  Future<void> _bootstrap() async {
-    setState(() {
-      _isLoadingLocation = true;
-      _isRestrictedForCountry = false;
-      _errorMessage = null;
-    });
-
-    final hasAccess = await _ensureLocationAccess();
-    if (!hasAccess) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isLoadingLocation = false;
-      });
-      return;
-    }
-
-    try {
-      final location = await TravelerPlacesService.resolveCurrentLocation();
-      if (!mounted) {
-        return;
-      }
-
-      final restricted = widget.placeType ==
-              TravelerPlaceType.halalRestaurant &&
-          TravelerCountryPolicy.isIslamicCountryCode(location.isoCountryCode);
-
-      setState(() {
-        _locationContext = location;
-        _isRestrictedForCountry = restricted;
-        _isLoadingLocation = false;
-      });
-
-      if (restricted) {
-        return;
-      }
-
-      await _loadNearbyPlaces();
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isLoadingLocation = false;
-        _errorMessage = 'تعذر تحديد موقعك الحالي. حاول مرة أخرى.';
-      });
-    }
-  }
-
-  Future<bool> _ensureLocationAccess() async {
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      if (mounted) {
-        setState(() {
-          _errorMessage =
-              'خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.';
-        });
-      }
-      return false;
-    }
-
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'يجب منح صلاحية الموقع حتى تعمل هذه الميزة.';
-        });
-      }
-      return false;
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.';
-        });
-      }
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<void> _loadNearbyPlaces() async {
-    final location = _locationContext;
-    if (location == null) {
-      return;
-    }
-
-    setState(() {
-      _isLoadingPlaces = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final places = await TravelerPlacesService.fetchNearbyPlaces(
-        placeType: widget.placeType,
-        latitude: location.latitude,
-        longitude: location.longitude,
-        radiusMeters: _radiusMeters,
-      );
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _places = places;
-        _selectedPlace = places.isEmpty ? null : places.first;
-        _isLoadingPlaces = false;
-      });
-
-      final target = _selectedPlace;
-      if (target != null) {
-        _moveMapTo(
-          LatLng(target.latitude, target.longitude),
-          15.3,
-        );
-      } else {
-        _moveMapTo(
-          LatLng(location.latitude, location.longitude),
-          _zoomForRadius(),
-        );
-      }
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isLoadingPlaces = false;
-        _errorMessage = 'تعذر جلب النتائج القريبة الآن. حاول مجددًا.';
-      });
-    }
-  }
+class _TravelPlacesMapViewState extends State<TravelPlacesMapView> {
+  final MapController _mapController = MapController();
+  static const List<int> _radiusOptions = [1000, 3000, 5000, 10000];
 
   void _moveMapTo(LatLng center, double zoom) {
     try {
@@ -190,17 +47,19 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     } catch (_) {}
   }
 
-  double _zoomForRadius() {
-    if (_radiusMeters <= 1000) {
-      return 14.9;
-    }
-    if (_radiusMeters <= 3000) {
-      return 13.8;
-    }
-    if (_radiusMeters <= 5000) {
-      return 13;
-    }
+  double _zoomForRadius(int radiusMeters) {
+    if (radiusMeters <= 1000) return 14.9;
+    if (radiusMeters <= 3000) return 13.8;
+    if (radiusMeters <= 5000) return 13;
     return 12.1;
+  }
+
+  String _radiusLabel(int meters) {
+    if (meters >= 1000) {
+      final km = meters / 1000;
+      return '${km.toStringAsFixed(km.truncateToDouble() == km ? 0 : 1)} كم';
+    }
+    return '$meters م';
   }
 
   Future<void> _openDirections(TravelerPlace place) async {
@@ -217,11 +76,10 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     await _openUrl(url);
   }
 
-  Future<void> _openNearbySearch() async {
-    final location = _locationContext;
-    if (location == null) {
-      return;
-    }
+  Future<void> _openNearbySearch(BuildContext context) async {
+    final state = context.read<TravelPlacesBloc>().state;
+    final location = state.locationContext;
+    if (location == null) return;
 
     final query = Uri.encodeComponent(
       '${widget.placeType.queryLabel} near '
@@ -233,39 +91,24 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
 
   Future<void> _openUrl(String url) async {
     final launched = await UrlLauncherUtils.launchWebUrl(url);
-    if (!mounted || launched) {
-      return;
-    }
+    if (!mounted || launched) return;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(
-          content: Text('تعذر فتح الرابط الآن.'),
-        ),
+        const SnackBar(content: Text('تعذر فتح الرابط الآن.')),
       );
   }
 
   Future<void> _openPhone(String phoneNumber) async {
     final launched = await UrlLauncherUtils.launchPhone(phoneNumber);
-    if (!mounted || launched) {
-      return;
-    }
+    if (!mounted || launched) return;
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(
-          content: Text('تعذر فتح تطبيق الاتصال.'),
-        ),
+        const SnackBar(content: Text('تعذر فتح تطبيق الاتصال.')),
       );
-  }
-
-  void _onSelectPlace(TravelerPlace place) {
-    setState(() {
-      _selectedPlace = place;
-    });
-    _moveMapTo(LatLng(place.latitude, place.longitude), 15.3);
   }
 
   @override
@@ -275,56 +118,72 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
         title: Text(widget.placeType.title),
       ),
       body: SafeArea(
-        child: _buildBody(context),
+        child: BlocConsumer<TravelPlacesBloc, TravelPlacesState>(
+          listenWhen: (previous, current) => previous.selectedPlace != current.selectedPlace || previous.places != current.places,
+          listener: (context, state) {
+            final target = state.selectedPlace;
+            if (target != null) {
+              _moveMapTo(
+                LatLng(target.latitude, target.longitude),
+                15.3,
+              );
+            } else if (state.locationContext != null) {
+              _moveMapTo(
+                LatLng(state.locationContext!.latitude, state.locationContext!.longitude),
+                _zoomForRadius(state.radiusMeters),
+              );
+            }
+          },
+          builder: (context, state) {
+            return _buildBody(context, state);
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    if (_isLoadingLocation) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildBody(BuildContext context, TravelPlacesState state) {
+    if (state.isLoadingLocation) {
+      return const Center(child: CircularProgressIndicator());
     }
 
-    if (_isRestrictedForCountry) {
-      return _buildRestrictedView(context);
+    if (state.isRestrictedForCountry) {
+      return const TravelPlacesRestrictedView();
     }
 
-    if (_locationContext == null) {
-      return _buildErrorView(context);
+    if (state.locationContext == null) {
+      return const TravelPlacesErrorView();
     }
 
     return Stack(
       children: [
         Positioned.fill(
-          child: _buildMap(context),
+          child: _buildMap(context, state),
         ),
         Positioned(
           top: 10.h,
           left: 10.w,
           right: 10.w,
-          child: _buildFloatingTopControls(context),
+          child: _buildFloatingTopControls(context, state),
         ),
-        if (_selectedPlace != null)
+        if (state.selectedPlace != null)
           Positioned(
             left: 10.w,
             right: 10.w,
             bottom: 96.h,
-            child: _buildSelectedPlaceCard(context),
+            child: _buildSelectedPlaceCard(context, state),
           ),
         Align(
           alignment: Alignment.bottomCenter,
-          child: _buildPlacesBottomSheet(context),
+          child: _buildPlacesBottomSheet(context, state),
         ),
       ],
     );
   }
-
-  Widget _buildFloatingTopControls(BuildContext context) {
-    final location = _locationContext;
-    final countLabel =
-        _isLoadingPlaces ? 'جارِ التحديث...' : 'عدد النتائج: ${_places.length}';
+  
+  Widget _buildFloatingTopControls(BuildContext context, TravelPlacesState state) {
+    final location = state.locationContext;
+    final countLabel = state.isLoadingPlaces ? 'جارِ التحديث...' : 'عدد النتائج: ${state.places.length}';
 
     return Container(
       width: double.infinity,
@@ -362,10 +221,9 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
               ),
               SizedBox(width: 8.w),
               FilledButton(
-                onPressed: _openNearbySearch,
+                onPressed: () => _openNearbySearch(context),
                 style: FilledButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 ),
                 child: const Text('فتح التطبيق'),
               ),
@@ -386,20 +244,18 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
             child: Row(
               children: [
                 FilledButton.tonalIcon(
-                  onPressed: _isLoadingPlaces ? null : _loadNearbyPlaces,
+                  onPressed: state.isLoadingPlaces ? null : () => context.read<TravelPlacesBloc>().add(LoadNearbyPlacesEvent()),
                   icon: const Icon(Icons.refresh_rounded),
                   label: const Text('تحديث'),
                 ),
                 SizedBox(width: 8.w),
                 FilledButton.tonalIcon(
                   onPressed: () {
-                    final current = _locationContext;
-                    if (current == null) {
-                      return;
-                    }
+                    final current = state.locationContext;
+                    if (current == null) return;
                     _moveMapTo(
                       LatLng(current.latitude, current.longitude),
-                      _zoomForRadius(),
+                      _zoomForRadius(state.radiusMeters),
                     );
                   },
                   icon: const Icon(Icons.my_location_rounded),
@@ -411,17 +267,12 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
                     padding: EdgeInsets.only(left: 8.w),
                     child: ChoiceChip(
                       label: Text(_radiusLabel(radius)),
-                      selected: _radiusMeters == radius,
-                      onSelected: _isLoadingPlaces
+                      selected: state.radiusMeters == radius,
+                      onSelected: state.isLoadingPlaces
                           ? null
                           : (selected) {
-                              if (!selected || _radiusMeters == radius) {
-                                return;
-                              }
-                              setState(() {
-                                _radiusMeters = radius;
-                              });
-                              _loadNearbyPlaces();
+                              if (!selected || state.radiusMeters == radius) return;
+                              context.read<TravelPlacesBloc>().add(ChangeRadiusEvent(radius));
                             },
                     ),
                   ),
@@ -429,10 +280,10 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
               ],
             ),
           ),
-          if (_errorMessage != null) ...[
+          if (state.errorMessage != null) ...[
             SizedBox(height: 8.h),
             Text(
-              _errorMessage!,
+              state.errorMessage!,
               style: TextStyle(
                 color: context.errorColor,
                 fontSize: 12.sp,
@@ -445,8 +296,8 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     );
   }
 
-  Widget _buildMap(BuildContext context) {
-    final location = _locationContext;
+  Widget _buildMap(BuildContext context, TravelPlacesState state) {
+    final location = state.locationContext;
     final center = location == null
         ? const LatLng(15.3694, 44.1910)
         : LatLng(location.latitude, location.longitude);
@@ -464,15 +315,15 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
           ),
         ),
       ),
-      ..._places.map(
+      ...state.places.map(
         (place) {
-          final selected = _selectedPlace?.id == place.id;
+          final selected = state.selectedPlace?.id == place.id;
           return Marker(
             point: LatLng(place.latitude, place.longitude),
             width: selected ? 50.w : 42.w,
             height: selected ? 50.w : 42.w,
             child: GestureDetector(
-              onTap: () => _onSelectPlace(place),
+              onTap: () => context.read<TravelPlacesBloc>().add(SelectPlaceEvent(place)),
               child: Icon(
                 Icons.location_on_rounded,
                 color: selected ? context.primaryColor : Colors.red,
@@ -491,7 +342,7 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
             mapController: _mapController,
             options: MapOptions(
               initialCenter: center,
-              initialZoom: _zoomForRadius(),
+              initialZoom: _zoomForRadius(state.radiusMeters),
             ),
             children: [
               TileLayer(
@@ -527,8 +378,8 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     );
   }
 
-  Widget _buildPlacesBottomSheet(BuildContext context) {
-    final initialSize = _places.isEmpty ? 0.12 : 0.16;
+  Widget _buildPlacesBottomSheet(BuildContext context, TravelPlacesState state) {
+    final initialSize = state.places.isEmpty ? 0.12 : 0.16;
     return DraggableScrollableSheet(
       initialChildSize: initialSize,
       minChildSize: 0.1,
@@ -570,7 +421,7 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
-                        'عرض القائمة (${_places.length})',
+                        'عرض القائمة (${state.places.length})',
                         style: TextStyle(
                           color: context.onSurfaceColor,
                           fontSize: 13.5.sp,
@@ -578,7 +429,7 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
                         ),
                       ),
                     ),
-                    if (_isLoadingPlaces)
+                    if (state.isLoadingPlaces)
                       SizedBox(
                         width: 18.w,
                         height: 18.w,
@@ -595,6 +446,7 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
               Expanded(
                 child: _buildPlacesList(
                   context,
+                  state,
                   scrollController: scrollController,
                 ),
               ),
@@ -605,11 +457,9 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     );
   }
 
-  Widget _buildSelectedPlaceCard(BuildContext context) {
-    final selected = _selectedPlace;
-    if (selected == null) {
-      return const SizedBox.shrink();
-    }
+  Widget _buildSelectedPlaceCard(BuildContext context, TravelPlacesState state) {
+    final selected = state.selectedPlace;
+    if (selected == null) return const SizedBox.shrink();
 
     return Container(
       width: double.infinity,
@@ -688,16 +538,17 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
   }
 
   Widget _buildPlacesList(
-    BuildContext context, {
-    ScrollController? scrollController,
-  }) {
-    if (_isLoadingPlaces) {
+    BuildContext context,
+    TravelPlacesState state,
+    {ScrollController? scrollController}
+  ) {
+    if (state.isLoadingPlaces) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
-    if (_places.isEmpty) {
+    if (state.places.isEmpty) {
       return Center(
         child: Text(
           widget.placeType.emptyMessage,
@@ -713,15 +564,15 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
     return ListView.separated(
       controller: scrollController,
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 20.h),
-      itemCount: _places.length,
+      itemCount: state.places.length,
       separatorBuilder: (_, __) => SizedBox(height: 8.h),
       itemBuilder: (context, index) {
-        final place = _places[index];
-        final selected = _selectedPlace?.id == place.id;
+        final place = state.places[index];
+        final selected = state.selectedPlace?.id == place.id;
 
         return InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: () => _onSelectPlace(place),
+          onTap: () => context.read<TravelPlacesBloc>().add(SelectPlaceEvent(place)),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
             decoration: BoxDecoration(
@@ -803,148 +654,5 @@ class _TravelPlacesMapScreenState extends State<TravelPlacesMapScreen> {
         );
       },
     );
-  }
-
-  Widget _buildRestrictedView(BuildContext context) {
-    final country = _locationContext?.countryName;
-
-    return Padding(
-      padding: EdgeInsets.all(16.sp),
-      child: Center(
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.sp),
-          decoration: BoxDecoration(
-            color: context.surfaceColor,
-            borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(
-              color: context.outlineVariant.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.info_outline_rounded,
-                size: 36.sp,
-                color: context.primaryColor,
-              ),
-              SizedBox(height: 12.h),
-              Text(
-                'ميزة المطاعم الحلال مخصصة للدول غير الإسلامية.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                country == null || country.trim().isEmpty
-                    ? 'تم إيقاف هذه الصفحة وفق الدولة الحالية.'
-                    : 'موقعك الحالي في $country لذلك تم إيقافها تلقائيًا.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.onSurfaceColor.withValues(alpha: 0.62),
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 14.h),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const TravelPlacesMapScreen(
-                          placeType: TravelerPlaceType.mosque,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.mosque_rounded),
-                  label: const Text('عرض المساجد القريبة'),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.arrow_back_rounded),
-                  label: const Text('رجوع'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorView(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.sp),
-      child: Center(
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.sp),
-          decoration: BoxDecoration(
-            color: context.surfaceColor,
-            borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(
-              color: context.outlineVariant.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.location_off_rounded,
-                size: 36.sp,
-                color: context.errorColor,
-              ),
-              SizedBox(height: 12.h),
-              Text(
-                _errorMessage ?? 'تعذر الوصول للموقع الحالي.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 14.h),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _bootstrap,
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('إعادة المحاولة'),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: Geolocator.openLocationSettings,
-                  icon: const Icon(Icons.settings_rounded),
-                  label: const Text('فتح إعدادات الموقع'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _radiusLabel(int radius) {
-    if (radius < 1000) {
-      return '$radius م';
-    }
-    return '${(radius / 1000).toStringAsFixed(radius % 1000 == 0 ? 0 : 1)} كم';
   }
 }

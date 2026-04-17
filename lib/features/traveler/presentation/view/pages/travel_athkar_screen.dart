@@ -1,8 +1,8 @@
-import 'dart:convert';
+
 
 import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
@@ -11,165 +11,74 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/traveler/data/models/travel_dhikr_model.dart';
+import 'package:quran_app/features/traveler/presentation/bloc/travel_athkar/travel_athkar_bloc.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/travel_athkar/done_badge.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/travel_athkar/info_chip.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/travel_athkar/summary_info_chip.dart';
 
-class TravelAthkarScreen extends StatefulWidget {
+class TravelAthkarScreen extends StatelessWidget {
   const TravelAthkarScreen({super.key});
 
   @override
-  State<TravelAthkarScreen> createState() => _TravelAthkarScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TravelAthkarBloc(),
+      child: const TravelAthkarView(),
+    );
+  }
 }
 
-class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
-
-  List<TravelDhikrModel> _allItems = const [];
-  final Map<String, int> _repeatCounts = <String, int>{};
-
-  bool _isLoading = true;
-  String? _errorMessage;
-  String _searchQuery = '';
-  _AthkarDisplayMode _displayMode = _AthkarDisplayMode.pageView;
-  int _currentPageIndex = 0;
+class TravelAthkarView extends StatefulWidget {
+  const TravelAthkarView({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _loadContent();
-  }
+  State<TravelAthkarView> createState() => _TravelAthkarViewState();
+}
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+class _TravelAthkarViewState extends State<TravelAthkarView> {
+  final CarouselSliderController _carouselController = CarouselSliderController();
 
-  Future<void> _loadContent() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final jsonString = await rootBundle.loadString(
-        'assets/json/travel_azkar.json',
-      );
-      final rawList = jsonDecode(jsonString);
-      if (rawList is! List<dynamic>) {
-        throw const FormatException('Invalid travel azkar json');
-      }
-
-      final items = rawList
-          .whereType<Map<dynamic, dynamic>>()
-          .map(Map<String, dynamic>.from)
-          .map(TravelDhikrModel.fromJson)
-          .where((item) => item.key.isNotEmpty)
-          .toList();
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _allItems = items;
-        _isLoading = false;
-        _currentPageIndex = 0;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _errorMessage = 'تعذر تحميل أذكار السفر.';
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _incrementCounter(TravelDhikrModel item) {
-    final current = _repeatCounts[item.key] ?? 0;
-    final target = item.repeatCount;
-
-    if (target != null && !item.isDynamicRepeat && current >= target) {
-      return;
-    }
-
-    setState(() {
-      _repeatCounts[item.key] = current + 1;
-    });
-  }
-
-  void _resetCounter(String key) {
-    setState(() {
-      _repeatCounts[key] = 0;
-    });
-  }
-
-  List<TravelDhikrModel> get _visibleItems {
-    final query = _searchQuery.trim();
-
-    return _allItems.where((item) {
-      if (query.isEmpty) {
-        return true;
-      }
-
-      return _matchesSearch(item, query);
-    }).toList();
-  }
-
-  int get _fixedItemsCount {
-    return _allItems
-        .where((item) => item.repeatCount != null && !item.isDynamicRepeat)
-        .length;
-  }
-
-  int get _completedItemsCount {
-    final fixed = _allItems
-        .where((item) => item.repeatCount != null && !item.isDynamicRepeat)
-        .toList();
-
-    return fixed.where((item) {
-      final current = _repeatCounts[item.key] ?? 0;
-      return current >= (item.repeatCount ?? 0);
-    }).length;
-  }
-
-  String _triggerLabel(String trigger) {
-    return travelTriggerLabels[trigger] ?? trigger;
-  }
-
-  bool _matchesSearch(TravelDhikrModel item, String query) {
-    return item.title.contains(query) ||
-        item.text.contains(query) ||
-        item.virtue.contains(query) ||
-        _triggerLabel(item.trigger).contains(query);
-  }
-
-  Future<List<TravelDhikrModel>> _searchSuggestions(String query) async {
+  Future<List<TravelDhikrModel>> _searchSuggestions(BuildContext context, String query) async {
+    final bloc = context.read<TravelAthkarBloc>();
+    final allItems = bloc.state.allItems;
     final normalized = query.trim();
     if (normalized.isEmpty) {
-      return _allItems.take(18).toList();
+      return allItems.take(18).toList();
     }
 
-    return _allItems
+    return allItems
         .where((item) => _matchesSearch(item, normalized))
         .take(30)
         .toList();
   }
+  
+  bool _matchesSearch(TravelDhikrModel item, String query) {
+    return item.title.contains(query) ||
+        item.text.contains(query) ||
+        item.virtue.contains(query) ||
+        item.trigger.contains(query);
+  }
 
-  void _applySearch(String query) {
-    setState(() {
-      _searchQuery = query.trim();
-      _currentPageIndex = 0;
-    });
+  void _applySearch(BuildContext context, String query) {
+    context.read<TravelAthkarBloc>().add(SearchAthkarEvent(query));
     _jumpToFirstPage();
   }
 
   String _searchPreview(String text) {
     final value = text.replaceAll('\n', ' ').trim();
-    if (value.length <= 80) {
-      return value;
-    }
+    if (value.length <= 80) return value;
     return '${value.substring(0, 80)}...';
+  }
+  
+  void _jumpToFirstPage() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_carouselController.ready) return;
+      _carouselController.jumpToPage(0);
+    });
+  }
+  
+  String _triggerLabel(String trigger) {
+    return travelTriggerLabels[trigger] ?? trigger;
   }
 
   @override
@@ -186,126 +95,169 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
   }
 
   Widget _buildHeaderActions(BuildContext context) {
-    final hasQuery = _searchQuery.trim().isNotEmpty;
+    return BlocBuilder<TravelAthkarBloc, TravelAthkarState>(
+      buildWhen: (previous, current) => previous.searchQuery != current.searchQuery,
+      builder: (context, state) {
+        final hasQuery = state.searchQuery.isNotEmpty;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (hasQuery)
-          IconButton(
-            tooltip: 'إلغاء البحث',
-            onPressed: () => _applySearch(''),
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (hasQuery)
+              IconButton(
+                tooltip: 'إلغاء البحث',
+                onPressed: () => _applySearch(context, ''),
+                icon: Icon(
+                  Icons.filter_alt_off_rounded,
+                  color: context.onSurfaceColor.withValues(alpha: 0.82),
+                  size: 20.sp,
+                ),
+              ),
+            _buildDisplayModeToggle(context),
+            GenericSearchAnchorAsync<TravelDhikrModel>(
+              hintText: 'ابحث في الأذكار',
+              asyncSuggestions: (query) => _searchSuggestions(context, query),
+              onSelected: (item) {
+                _applySearch(context, item.title);
+              },
+              suggestionBuilder: (context, item) {
+                return ListTile(
+                  leading: Icon(
+                    Icons.menu_book_rounded,
+                    color: context.primaryColor,
+                  ),
+                  title: Text(
+                    item.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.onSurfaceColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  subtitle: Text(
+                    _searchPreview(item.text),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.onSurfaceColor.withValues(alpha: 0.65),
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+  Widget _buildDisplayModeToggle(BuildContext context) {
+    return BlocBuilder<TravelAthkarBloc, TravelAthkarState>(
+      buildWhen: (previous, current) => previous.displayMode != current.displayMode,
+      builder: (context, state) {
+        final isPageMode = state.displayMode == AthkarDisplayMode.pageView;
+
+        return Tooltip(
+          message: isPageMode ? 'التحويل إلى ListView' : 'التحويل إلى PageView',
+          child: IconButton(
+            visualDensity: VisualDensity.compact,
+            onPressed: () {
+              final next = isPageMode ? AthkarDisplayMode.listView : AthkarDisplayMode.pageView;
+              context.read<TravelAthkarBloc>().add(UpdateDisplayModeEvent(next));
+              if (next == AthkarDisplayMode.pageView) {
+                _jumpToFirstPage();
+              }
+            },
             icon: Icon(
-              Icons.filter_alt_off_rounded,
-              color: context.onSurfaceColor.withValues(alpha: 0.82),
-              size: 20.sp,
+              isPageMode ? Icons.view_agenda_rounded : Icons.view_carousel_rounded,
+              color: context.primaryColor,
+              size: 18.sp,
             ),
           ),
-        _buildDisplayModeToggle(context),
-        GenericSearchAnchorAsync<TravelDhikrModel>(
-          hintText: 'ابحث في الأذكار',
-          asyncSuggestions: _searchSuggestions,
-          onSelected: (item) {
-            _applySearch(item.title);
-          },
-          suggestionBuilder: (context, item) {
-            return ListTile(
-              leading: Icon(
-                Icons.menu_book_rounded,
-                color: context.primaryColor,
-              ),
-              title: Text(
-                item.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              subtitle: Text(
-                _searchPreview(item.text),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: context.onSurfaceColor.withValues(alpha: 0.65),
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildBodySliver(BuildContext context) {
-    if (_isLoading) {
-      return const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+    return BlocBuilder<TravelAthkarBloc, TravelAthkarState>(
+      builder: (context, state) {
+        if (state.status == TravelAthkarStatus.loading || state.status == TravelAthkarStatus.initial) {
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
-    if (_errorMessage != null) {
-      return SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(16.sp),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
+        if (state.status == TravelAthkarStatus.failure && state.errorMessage != null) {
+          return SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.sp),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      state.errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: context.onSurfaceColor,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    FilledButton.icon(
+                      onPressed: () => context.read<TravelAthkarBloc>().add(LoadAthkarEvent()),
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: const Text('إعادة المحاولة'),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 12.h),
-                FilledButton.icon(
-                  onPressed: _loadContent,
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('إعادة المحاولة'),
+              ),
+            ),
+          );
+        }
+
+        final visibleItems = state.filteredItems;
+
+        return SliverFillRemaining(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 12.h),
+            child: Column(
+              children: [
+                _buildSummaryCard(context, state),
+                SizedBox(height: 10.h),
+                Expanded(
+                  child: _buildAthkarContent(context, state, visibleItems),
                 ),
               ],
             ),
           ),
-        ),
-      );
-    }
-
-    final visibleItems = _visibleItems;
-
-    return SliverFillRemaining(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 12.h),
-        child: Column(
-          children: [
-            _buildSummaryCard(context),
-            SizedBox(height: 10.h),
-            Expanded(
-              child: _buildAthkarContent(
-                context,
-                visibleItems,
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSummaryCard(BuildContext context) {
-    final fixedCount = _fixedItemsCount;
-    final completed = _completedItemsCount;
-    final dynamicCount = _allItems.where((item) => item.isDynamicRepeat).length;
+  Widget _buildSummaryCard(BuildContext context, TravelAthkarState state) {
+    final fixedItemsCount = state.allItems.where((item) => item.repeatCount != null && !item.isDynamicRepeat).length;
+    final fixedItems = state.allItems.where((item) => item.repeatCount != null && !item.isDynamicRepeat).toList();
+    
+    int completedItemsCount = 0;
+    for (var item in fixedItems) {
+      final current = state.repeatCounts[item.key] ?? 0;
+      if (current >= (item.repeatCount ?? 0)) completedItemsCount++;
+    }
+
+    final fixedCount = fixedItemsCount;
+    final completed = completedItemsCount;
+    final dynamicCount = state.allItems.where((item) => item.isDynamicRepeat).length;
     final progress = fixedCount == 0 ? 0.0 : completed / fixedCount;
     final progressText = '$completed / $fixedCount';
 
@@ -368,15 +320,15 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
           Row(
             children: [
               Expanded(
-                child: _SummaryInfoChip(
+                child: SummaryInfoChip(
                   label: 'إجمالي',
-                  value: '${_allItems.length}',
+                  value: '${state.allItems.length}',
                   color: context.primaryColor,
                 ),
               ),
               SizedBox(width: 6.w),
               Expanded(
-                child: _SummaryInfoChip(
+                child: SummaryInfoChip(
                   label: 'ديناميكي',
                   value: '$dynamicCount',
                   color: context.onSurfaceColor,
@@ -384,7 +336,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
               ),
               SizedBox(width: 6.w),
               Expanded(
-                child: _SummaryInfoChip(
+                child: SummaryInfoChip(
                   label: 'المكتمل',
                   value: '$completed',
                   color: context.primaryColor,
@@ -397,56 +349,25 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     );
   }
 
-  Widget _buildDisplayModeToggle(BuildContext context) {
-    final isPageMode = _displayMode == _AthkarDisplayMode.pageView;
-
-    return Tooltip(
-      message: isPageMode ? 'التحويل إلى ListView' : 'التحويل إلى PageView',
-      child: IconButton(
-        visualDensity: VisualDensity.compact,
-        onPressed: () {
-          final next = isPageMode
-              ? _AthkarDisplayMode.listView
-              : _AthkarDisplayMode.pageView;
-          setState(() {
-            _displayMode = next;
-            _currentPageIndex = 0;
-          });
-          if (next == _AthkarDisplayMode.pageView) {
-            _jumpToFirstPage();
-          }
-        },
-        icon: Icon(
-          isPageMode ? Icons.view_agenda_rounded : Icons.view_carousel_rounded,
-          color: context.primaryColor,
-          size: 18.sp,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAthkarContent(
-    BuildContext context,
-    List<TravelDhikrModel> visibleItems,
-  ) {
+  Widget _buildAthkarContent(BuildContext context, TravelAthkarState state, List<TravelDhikrModel> visibleItems) {
     if (visibleItems.isEmpty) {
       return _buildEmptyState(context);
     }
 
-    if (_displayMode == _AthkarDisplayMode.listView) {
+    if (state.displayMode == AthkarDisplayMode.listView) {
       return ListView.separated(
         itemCount: visibleItems.length,
         separatorBuilder: (_, __) => SizedBox(height: 8.h),
         itemBuilder: (context, index) {
           final item = visibleItems[index];
-          return _buildDhikrCard(context, item);
+          return _buildDhikrCard(context, state, item);
         },
       );
     }
 
-    final safeIndex = _currentPageIndex >= visibleItems.length
+    final safeIndex = state.currentPageIndex >= visibleItems.length
         ? visibleItems.length - 1
-        : _currentPageIndex;
+        : state.currentPageIndex;
 
     return Column(
       children: [
@@ -464,9 +385,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
                   enlargeFactor: 0.04,
                   initialPage: safeIndex,
                   onPageChanged: (value, _) {
-                    setState(() {
-                      _currentPageIndex = value;
-                    });
+                    context.read<TravelAthkarBloc>().add(UpdatePageIndexEvent(value));
                   },
                 ),
                 itemBuilder: (context, index, _) {
@@ -475,7 +394,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 4.w),
                     child: SingleChildScrollView(
                       padding: EdgeInsets.only(bottom: 8.h),
-                      child: _buildDhikrCard(context, item),
+                      child: _buildDhikrCard(context, state, item),
                     ),
                   );
                 },
@@ -485,15 +404,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
         ),
       ],
     );
-  }
-
-  void _jumpToFirstPage() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_carouselController.ready) {
-        return;
-      }
-      _carouselController.jumpToPage(0);
-    });
   }
 
   Widget _buildEmptyState(BuildContext context) {
@@ -509,8 +419,8 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
     );
   }
 
-  Widget _buildDhikrCard(BuildContext context, TravelDhikrModel item) {
-    final current = _repeatCounts[item.key] ?? 0;
+  Widget _buildDhikrCard(BuildContext context, TravelAthkarState state, TravelDhikrModel item) {
+    final current = state.repeatCounts[item.key] ?? 0;
     final target = item.repeatCount;
     final done = target != null && !item.isDynamicRepeat && current >= target;
 
@@ -560,17 +470,17 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
             spacing: 8.w,
             runSpacing: 8.h,
             children: [
-              _InfoChip(
+              InfoChip(
                 label: 'المناسبة',
                 value: _triggerLabel(item.trigger),
                 color: context.primaryColor,
               ),
-              _InfoChip(
+              InfoChip(
                 label: 'التكرار',
                 value: item.repeatLabel,
                 color: context.onSurfaceColor,
               ),
-              _InfoChip(
+              InfoChip(
                 label: 'المصدر',
                 value: item.reference.source,
                 color: context.onSurfaceColor,
@@ -605,7 +515,7 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
             runSpacing: 8.h,
             children: [
               FilledButton.tonalIcon(
-                onPressed: () => _incrementCounter(item),
+                onPressed: () => context.read<TravelAthkarBloc>().add(IncrementCounterEvent(item)),
                 icon: const Icon(Icons.add_rounded),
                 label: Text(
                   item.isDynamicRepeat
@@ -614,12 +524,12 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
                 ),
               ),
               OutlinedButton.icon(
-                onPressed: () => _resetCounter(item.key),
+                onPressed: () => context.read<TravelAthkarBloc>().add(ResetCounterEvent(item.key)),
                 icon: const Icon(Icons.refresh_rounded),
                 label: const Text('تصفير العداد'),
               ),
               if (done)
-                _DoneBadge(
+                DoneBadge(
                   text: 'تم',
                   color: context.primaryColor,
                 ),
@@ -635,120 +545,6 @@ class _TravelAthkarScreenState extends State<TravelAthkarScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-enum _AthkarDisplayMode {
-  pageView,
-  listView,
-}
-
-class _SummaryInfoChip extends StatelessWidget {
-  const _SummaryInfoChip({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.11),
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-        child: Text(
-          '$label: $value',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: color,
-            fontSize: 10.2.sp,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-        child: Text(
-          '$label: $value',
-          style: TextStyle(
-            color: color,
-            fontSize: 11.5.sp,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DoneBadge extends StatelessWidget {
-  const _DoneBadge({
-    required this.text,
-    required this.color,
-  });
-
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle_rounded,
-              color: color,
-              size: 16.sp,
-            ),
-            SizedBox(width: 5.w),
-            Text(
-              text,
-              style: TextStyle(
-                color: color,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
