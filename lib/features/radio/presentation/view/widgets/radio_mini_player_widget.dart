@@ -11,22 +11,32 @@ import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/data/service/radio_audio_service.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
-final BoxController radioPlayerBoxController = BoxController();
-bool _pendingRadioPlayerOpen = false;
+class RadioPlayerUiManager {
+  RadioPlayerUiManager._();
 
-void openRadioPlayerBox() {
-  _pendingRadioPlayerOpen = true;
-  if (radioPlayerBoxController.isAttached) {
-    radioPlayerBoxController
-      ..showBox()
-      ..openBox();
+  static final RadioPlayerUiManager instance = RadioPlayerUiManager._();
+
+  final BoxController boxController = BoxController();
+  bool _pendingOpen = false;
+
+  bool get pendingOpen => _pendingOpen;
+
+  void clearPending() => _pendingOpen = false;
+
+  void openBox() {
+    _pendingOpen = true;
+    if (boxController.isAttached) {
+      boxController
+        ..showBox()
+        ..openBox();
+    }
   }
-}
 
-void closeRadioPlayerBox() {
-  _pendingRadioPlayerOpen = false;
-  if (radioPlayerBoxController.isAttached) {
-    radioPlayerBoxController.closeBox();
+  void closeBox() {
+    _pendingOpen = false;
+    if (boxController.isAttached) {
+      boxController.closeBox();
+    }
   }
 }
 
@@ -45,22 +55,23 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
           previous.currentStation != current.currentStation ||
           previous.playbackStatus != current.playbackStatus,
       listener: (context, state) {
-        if (!radioPlayerBoxController.isAttached) {
+        final manager = RadioPlayerUiManager.instance;
+        if (!manager.boxController.isAttached) {
           return;
         }
 
         if (!state.hasActiveStation ||
             state.playbackStatus == RadioPlaybackStatus.idle ||
             state.playbackStatus == RadioPlaybackStatus.stopped) {
-          _pendingRadioPlayerOpen = false;
-          radioPlayerBoxController.hideBox();
+          manager.clearPending();
+          manager.boxController.hideBox();
           return;
         }
 
-        radioPlayerBoxController.showBox();
-        if (_pendingRadioPlayerOpen) {
-          radioPlayerBoxController.openBox();
-          _pendingRadioPlayerOpen = false;
+        manager.boxController.showBox();
+        if (manager.pendingOpen) {
+          manager.boxController.openBox();
+          manager.clearPending();
         }
       },
       buildWhen: (previous, current) =>
@@ -81,13 +92,10 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
             width: double.infinity,
             height: context.getScreenHeight() * 0.90,
             child: SlidingBox(
-              controller: radioPlayerBoxController,
+              controller: RadioPlayerUiManager.instance.boxController,
               minHeight: 92.h,
               maxHeight: context.getScreenHeight() * 0.90,
-              color: Color.alphaBlend(
-                context.primaryContainer.withValues(alpha: 0.10),
-                context.surfaceColor,
-              ),
+              color: Colors.transparent,
               style: BoxStyle.shadow,
               draggableIconVisible: false,
               collapsed: true,
@@ -131,7 +139,7 @@ class _CollapsedRadioPlayer extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: openRadioPlayerBox,
+        onTap: RadioPlayerUiManager.instance.openBox,
         borderRadius: BorderRadius.circular(28.r),
         child: Ink(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
@@ -288,12 +296,10 @@ class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
 
     return Material(
       color: Colors.transparent,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 18.h),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(34.r),
-          child: Stack(
-            children: [
+      child: Container(
+        constraints: BoxConstraints(minHeight: context.getScreenHeight() * 0.90),
+        child: Stack(
+          children: [
               Positioned.fill(
                 child: CachedNetworkImage(
                   imageUrl: station.imageUrl,
@@ -309,7 +315,7 @@ class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 22.h),
+                padding: EdgeInsets.fromLTRB(28.w, 32.h, 28.w, 38.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
@@ -327,9 +333,9 @@ class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
                 SizedBox(height: 12.h),
                 Row(
                   children: [
-                    const _ActionCircleButton(
+                    _ActionCircleButton(
                       icon: Icons.keyboard_arrow_down_rounded,
-                      onTap: closeRadioPlayerBox,
+                      onTap: RadioPlayerUiManager.instance.closeBox,
                     ),
                     Expanded(
                       child: Text(
@@ -340,9 +346,9 @@ class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
                         ),
                       ),
                     ),
-                    const _ActionCircleButton(
+                    _ActionCircleButton(
                       icon: Icons.more_horiz_rounded,
-                      onTap: closeRadioPlayerBox,
+                      onTap: RadioPlayerUiManager.instance.closeBox,
                     ),
                   ],
                 ),
@@ -553,7 +559,6 @@ class _ExpandedRadioPlayerState extends State<_ExpandedRadioPlayer> {
               ),
             ],
           ),
-        ),
       ),
     );
   }

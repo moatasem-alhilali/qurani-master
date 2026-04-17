@@ -49,7 +49,7 @@ class RadioScreen extends StatelessWidget {
                         isPlaying: state.isPlaying,
                         onOpenNowPlaying: state.currentStation == null
                             ? null
-                            : openRadioPlayerBox,
+                            : RadioPlayerUiManager.instance.openBox,
                       ),
                       SizedBox(height: 16.h),
                       Text(
@@ -260,7 +260,7 @@ class _RadioStationTile extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.read<RadioBloc>().add(RadioStationPlayRequested(station));
-        openRadioPlayerBox();
+        RadioPlayerUiManager.instance.openBox();
       },
       borderRadius: BorderRadius.circular(22.r),
       child: Ink(
