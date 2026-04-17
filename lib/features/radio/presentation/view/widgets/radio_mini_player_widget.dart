@@ -59,13 +59,12 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
           bottom: false,
           child: SizedBox(
             width: double.infinity,
-            height: context.getScreenHeight() * 0.90,
+            height: context.getScreenHeight() * 0.80,
             child: SlidingBox(
               controller: RadioPlayerUiManager.instance.boxController,
               minHeight: 92.h,
-              maxHeight: context.getScreenHeight() * 0.90,
+              maxHeight: context.getScreenHeight() * 0.80,
               color: Colors.transparent,
-              style: BoxStyle.shadow,
               draggableIconVisible: false,
               collapsed: true,
               borderRadius: BorderRadius.only(
@@ -76,6 +75,7 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
                 station: station,
                 isPlaying: state.isPlaying,
               ),
+              physics: const NeverScrollableScrollPhysics(),
               body: ExpandedRadioPlayer(
                 station: station,
                 isPlaying: state.isPlaying,

@@ -5,14 +5,13 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
-import 'radio_player_ui_manager.dart';
 
 class RadioStationTile extends StatelessWidget {
   const RadioStationTile({
-    super.key,
     required this.station,
     required this.isCurrent,
     required this.isPlayingCurrent,
+    super.key,
   });
 
   final RadioStationModel station;
@@ -25,7 +24,7 @@ class RadioStationTile extends StatelessWidget {
     return InkWell(
       onTap: () {
         context.read<RadioBloc>().add(RadioStationPlayRequested(station));
-        RadioPlayerUiManager.instance.openBox();
+        // RadioPlayerUiManager.instance.openBox();
       },
       borderRadius: BorderRadius.circular(22.r),
       child: Ink(
