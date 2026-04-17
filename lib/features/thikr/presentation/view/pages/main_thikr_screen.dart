@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
-import 'package:quran_app/core/components/card_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/constant.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
@@ -103,35 +102,37 @@ class MainThikrScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = _items(context);
-    final width = MediaQuery.of(context).size.width;
-    final cardWidth = (width - 8 * 3) / 2;
+    final cardWidth = (MediaQuery.sizeOf(context).width - 32.w - 12.w) / 2;
 
     return AppScaffoldWidget(
       title: 'مكتبة الأذكار',
-      body: Column(
-        children: [
-          const ThikrSlider(),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: items
-                  .map(
-                    (item) => SizedBox(
-                      width: cardWidth,
-                      child: _Item(
-                        onPressed: item.onTap,
-                        text: item.label,
-                        icon: item.icon,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const ThikrSlider(),
+            SizedBox(height: 16.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Wrap(
+                spacing: 12.w,
+                runSpacing: 12.h,
+                children: items
+                    .map(
+                      (item) => SizedBox(
+                        width: cardWidth,
+                        child: _Item(
+                          onPressed: item.onTap,
+                          text: item.label,
+                          icon: item.icon,
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 24.h),
+          ],
+        ),
       ),
     );
   }
@@ -163,33 +164,116 @@ class _Item extends StatelessWidget {
   final void Function() onPressed;
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(20.r);
+    final accent = context.primaryColor;
+    final cardBackground = context.surfaceColor;
+    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
+    final cardBorder = context.outline.withValues(alpha: 0.85);
+    final shadow = context.shadow.withValues(alpha: 0.10);
+    final titleColor = context.onSurfaceColor;
+    final chipBackground = accent.withValues(alpha: 0.10);
+    final chipBorder = accent.withValues(alpha: 0.16);
+
     return InkWell(
       onTap: onPressed,
-      child: Column(
-        children: [
-          CardWidget(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.all(8),
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(12),
-            //   color: context.secondaryColor,
-            // ),
-            child: Icon(
-              icon,
-              size: 40,
-              color: context.primaryColor,
+      borderRadius: borderRadius,
+      child: Ink(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              cardBackground,
+              cardBackgroundSoft,
+            ],
+          ),
+          border: Border.all(
+            color: cardBorder,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: shadow,
+              blurRadius: 14.r,
+              offset: Offset(0, 7.h),
             ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                right: 0,
+                left: 0,
+                child: Container(
+                  height: 3.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      colors: [
+                        accent,
+                        accent.withValues(alpha: 0.18),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -16.h,
+                left: -18.w,
+                child: Container(
+                  width: 60.w,
+                  height: 60.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: accent.withValues(alpha: 0.06),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 18.h),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 52.w,
+                        height: 52.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: chipBackground,
+                          border: Border.all(color: chipBorder),
+                        ),
+                        child: Icon(
+                          icon,
+                          color: accent,
+                          size: 26.sp,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: titleColor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w800,
+                          height: 1.25,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          // if (isSvgImage)
-
-          const SizedBox(height: 5),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: titleSmall(context).copyWith(),
-          ),
-        ],
+        ),
       ),
     );
   }
