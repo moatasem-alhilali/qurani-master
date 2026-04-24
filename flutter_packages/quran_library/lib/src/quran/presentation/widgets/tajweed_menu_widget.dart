@@ -18,11 +18,12 @@ class TajweedMenuWidget extends StatelessWidget {
         id: 'isShowControl',
         builder: (quranCtrl) {
           final visible = quranCtrl.isShowControl.value;
-          return visible && QuranCtrl.instance.state.fontsSelected.value == 2
+          return visible && QuranCtrl.instance.state.fontsSelected.value == 0
               ? Container(
                   height: defaults.height ?? 350,
                   width: defaults.width ?? 350,
-                  padding: defaults.listPadding ?? const EdgeInsets.all(16.0),
+                  padding:
+                      defaults.containerPadding ?? const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: defaults.backgroundColor ??
                         AppColors.getBackgroundColor(isDark),
@@ -32,8 +33,9 @@ class TajweedMenuWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 12.0),
+                        padding: defaults.headerPadding ??
+                            const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 12.0),
                         child: HeaderDialogWidget(
                           isDark: isDark,
                           title: defaults.headerTitle ?? 'أحكام التجويد',
@@ -57,8 +59,7 @@ class TajweedMenuWidget extends StatelessWidget {
                           child: ListView.builder(
                             itemCount: rule.length,
                             itemBuilder: (context, i) {
-                              final Color ruleColor = Color(
-                                  isDark ? rule[i].darkColor : rule[i].color);
+                              final Color ruleColor = Color(rule[i].color);
                               return Container(
                                 margin: defaults.itemMargin ??
                                     const EdgeInsets.symmetric(

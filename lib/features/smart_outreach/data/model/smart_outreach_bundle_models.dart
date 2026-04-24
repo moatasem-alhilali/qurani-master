@@ -1,8 +1,6 @@
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_result_model.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_schedule_model.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_session_model.dart';
 
 class SmartOutreachScheduleBundle {
   const SmartOutreachScheduleBundle({
@@ -20,83 +18,6 @@ class SmartOutreachScheduleBundle {
     return SmartOutreachScheduleBundle(
       schedule: schedule ?? this.schedule,
       contacts: contacts ?? this.contacts,
-    );
-  }
-}
-
-class SmartOutreachSessionBundle {
-  const SmartOutreachSessionBundle({
-    required this.scheduleBundle,
-    required this.session,
-    required this.results,
-  });
-
-  final SmartOutreachScheduleBundle scheduleBundle;
-  final SmartOutreachSessionModel session;
-  final List<SmartOutreachContactResultModel> results;
-
-  Map<int, List<SmartOutreachContactResultType>> get resultTypesByContact {
-    final grouped = <int, List<SmartOutreachContactResultType>>{};
-    for (final result in results) {
-      grouped.putIfAbsent(
-          result.contactId, () => <SmartOutreachContactResultType>[]);
-      grouped[result.contactId]!.add(result.resultType);
-    }
-    return grouped;
-  }
-
-  bool isContactCompleted(SmartOutreachContactModel contact) {
-    final resultTypes = resultTypesByContact[contact.id] ?? const [];
-
-    if (resultTypes.contains(SmartOutreachContactResultType.skipped) ||
-        resultTypes.contains(SmartOutreachContactResultType.answered) ||
-        resultTypes.contains(SmartOutreachContactResultType.smsSent)) {
-      return true;
-    }
-
-    if (contact.actionType == SmartOutreachActionType.callOnly &&
-        resultTypes.contains(SmartOutreachContactResultType.notAnswered)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  int get completedCount =>
-      scheduleBundle.contacts.where(isContactCompleted).length;
-
-  bool get isFullyCompleted => completedCount >= scheduleBundle.contacts.length;
-
-  SmartOutreachContactModel? get currentContact {
-    if (scheduleBundle.contacts.isEmpty) {
-      return null;
-    }
-
-    final safeIndex =
-        session.currentIndex.clamp(0, scheduleBundle.contacts.length - 1);
-    return scheduleBundle.contacts[safeIndex];
-  }
-
-  int firstIncompleteIndex() {
-    for (var i = 0; i < scheduleBundle.contacts.length; i++) {
-      if (!isContactCompleted(scheduleBundle.contacts[i])) {
-        return i;
-      }
-    }
-    return scheduleBundle.contacts.isEmpty
-        ? 0
-        : scheduleBundle.contacts.length - 1;
-  }
-
-  SmartOutreachSessionBundle copyWith({
-    SmartOutreachScheduleBundle? scheduleBundle,
-    SmartOutreachSessionModel? session,
-    List<SmartOutreachContactResultModel>? results,
-  }) {
-    return SmartOutreachSessionBundle(
-      scheduleBundle: scheduleBundle ?? this.scheduleBundle,
-      session: session ?? this.session,
-      results: results ?? this.results,
     );
   }
 }

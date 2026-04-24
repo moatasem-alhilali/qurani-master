@@ -25,6 +25,9 @@ class TopAndBottomWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobileLargeOrDesktop = Responsive.isMobile(context) ||
+        Responsive.isMobileLarge(context) ||
+        Responsive.isDesktop(context);
     return UiHelper.currentOrientation(
       // شرح: التخطيط العمودي (Portrait)
       // Explanation: Portrait layout
@@ -67,26 +70,27 @@ class TopAndBottomWidget extends StatelessWidget {
 
       // شرح: التخطيط الأفقي (Landscape)
       // Explanation: Landscape layout
-      Responsive.isMobile(context) ||
-              Responsive.isMobileLarge(context) ||
-              Responsive.isDesktop(context)
-          ? Column(
-              children: [
-                BuildTopSection(
-                  isRight: isRight,
-                  languageCode: languageCode,
-                  pageIndex: pageIndex,
-                  isSurah: isSurah!,
-                  surahNumber: surahNumber,
-                ),
-                Flexible(
-                  child: child,
-                ),
-                BuildBottomSection(
-                    pageIndex: pageIndex,
-                    isRight: isRight,
-                    languageCode: languageCode!),
-              ],
+      isMobileLargeOrDesktop
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                final bounded = constraints.maxHeight.isFinite;
+                return Column(
+                  children: [
+                    BuildTopSection(
+                      isRight: isRight,
+                      languageCode: languageCode,
+                      pageIndex: pageIndex,
+                      isSurah: isSurah!,
+                      surahNumber: surahNumber,
+                    ),
+                    if (bounded) Flexible(child: child) else child,
+                    BuildBottomSection(
+                        pageIndex: pageIndex,
+                        isRight: isRight,
+                        languageCode: languageCode!),
+                  ],
+                );
+              },
             )
           : SingleChildScrollView(
               child: Column(

@@ -118,12 +118,48 @@ class QpcV4AyahSegment {
   });
 }
 
+class QpcV4WordSegment {
+  final int wordId;
+  final int ayahUq;
+  final int surahNumber;
+  final int ayahNumber;
+  final int wordNumber;
+  final String glyphs;
+  final bool isAyahEnd;
+
+  const QpcV4WordSegment({
+    required this.wordId,
+    required this.ayahUq,
+    required this.surahNumber,
+    required this.ayahNumber,
+    required this.wordNumber,
+    required this.glyphs,
+    required this.isAyahEnd,
+  });
+}
+
 class QpcV4AyahLineBlock extends QpcV4RenderBlock {
   final bool isCentered;
-  final List<QpcV4AyahSegment> segments;
+  final List<QpcV4WordSegment> segments;
 
   const QpcV4AyahLineBlock({
     required this.isCentered,
+    required this.segments,
+  });
+}
+
+/// كتلة تمثّل آية كاملة بكل كلماتها — تُستخدم في وضع التكبير (flowing text)
+/// حيث يتولّى RichText التفاف النص تلقائيًا بدلاً من تحديد موقع كل كلمة.
+class QpcV4AyahFlowBlock extends QpcV4RenderBlock {
+  final int ayahUq;
+  final int surahNumber;
+  final int ayahNumber;
+  final List<QpcV4WordSegment> segments;
+
+  const QpcV4AyahFlowBlock({
+    required this.ayahUq,
+    required this.surahNumber,
+    required this.ayahNumber,
     required this.segments,
   });
 }

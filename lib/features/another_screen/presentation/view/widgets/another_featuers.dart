@@ -8,6 +8,7 @@ import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_s
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
 import 'package:quran_app/features/daily_wird/presentation/view/pages/daily_wird_screen.dart';
+import 'package:quran_app/features/floating_adhkar/presentation/view/floating_adhkar_provider.dart';
 import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_list_screen.dart';
@@ -61,6 +62,12 @@ class AnotherFeatures extends StatelessWidget {
         subtitle: 'تسبيح سهل بعداد مريح وواضح',
         icon: FlutterIslamicIcons.tasbih2,
         onTap: () => context.push(const TasbeehProvider()),
+      ),
+      _FeatureShortcut(
+        label: 'الأذكار العائمة',
+        subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
+        icon: Icons.filter_center_focus_rounded,
+        onTap: () => context.push(const FloatingAdhkarProvider()),
       ),
       _FeatureShortcut(
         label: 'أسماء الله الحسنى',

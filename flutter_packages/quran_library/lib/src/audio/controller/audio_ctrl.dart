@@ -32,9 +32,11 @@ class AudioCtrl extends GetxController {
     ]);
     getAyahUQNumber(QuranCtrl.instance.state.currentPageNumber.value - 1);
 
-    ever(QuranCtrl.instance.state.currentPageNumber, (pageNumber) {
-      getAyahUQNumber(pageNumber - 1);
-    });
+    debounce(
+      QuranCtrl.instance.state.currentPageNumber,
+      (pageNumber) => getAyahUQNumber(pageNumber - 1),
+      time: const Duration(milliseconds: 300),
+    );
 
     state.surahsPlayList = List.generate(114, (i) {
       state.selectedSurahIndex.value = i;
@@ -49,7 +51,7 @@ class AudioCtrl extends GetxController {
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid || Platform.isMacOS)) {
       if (!state.audioServiceInitialized.value) {
         if (!QuranCtrl.instance.state.isQuranLoaded) {
-          await QuranCtrl.instance.loadQuranDataV1().then((_) async {
+          await QuranCtrl.instance.loadQuranDataV3().then((_) async {
             await initAudioService();
             await setCachedArtUri();
             await lastAudioSource();
@@ -60,7 +62,7 @@ class AudioCtrl extends GetxController {
           await lastAudioSource();
         }
       } else {
-        await QuranCtrl.instance.loadQuranDataV1();
+        await QuranCtrl.instance.loadQuranDataV3();
         log("Audio service already initialized",
             name: 'surah_audio_controller');
         // ضمن حالة التهيئة المسبقة، احرص على مزامنة صورة الغلاف وMediaItem
@@ -168,50 +170,6 @@ class AudioCtrl extends GetxController {
       state.audioServiceInitialized.value = false;
       SurahState.setAudioServiceActive(false);
     }
-  }
-
-  Future<void> playRadioStream({
-    required String id,
-    required String title,
-    required String url,
-    String? imageUrl,
-    String artist = 'إذاعة',
-  }) async {
-    await state.stopAllAudio();
-    disableSurahAutoNextListener();
-
-    if (!state.audioServiceInitialized.value &&
-        !kIsWeb &&
-        (Platform.isIOS || Platform.isAndroid || Platform.isMacOS)) {
-      await initAudioService();
-    }
-
-    state.isRadioMode.value = true;
-    state.radioStationId.value = id;
-    state.radioStationTitle.value = title;
-    state.radioStationArtist.value = artist;
-    state.radioStationUrl.value = url;
-    state.radioStationImageUrl.value = imageUrl ?? '';
-
-    final mediaItem = state.radioMediaItem;
-    if (mediaItem != null) {
-      AudioHandler.instance.mediaItem.add(mediaItem);
-    }
-
-    await state.audioPlayer.setAudioSource(
-      AudioSource.uri(
-        Uri.parse(url),
-        tag: mediaItem,
-      ),
-    );
-    state.isPlaying.value = true;
-    await state.audioPlayer.play();
-  }
-
-  Future<void> stopRadioStream() async {
-    await state.audioPlayer.stop();
-    state.isPlaying.value = false;
-    state.isRadioMode.value = false;
   }
 
   /// -------- [DownloadingMethods] ----------
@@ -550,35 +508,73 @@ class AudioCtrl extends GetxController {
   }
 
   Future<void> setCachedArtUri() async {
+    final iconRef = state.appIconUrl.value.trim();
+    if (iconRef.isEmpty) {
+      await resetAppIconToDefault();
+      return;
+    }
+
+    final parsed = Uri.tryParse(iconRef);
+    if (parsed != null &&
+        (parsed.scheme == 'http' || parsed.scheme == 'https')) {
+      state.cachedArtUri = parsed;
+      await _refreshCurrentMediaItemArt();
+      return;
+    }
+
+    if (iconRef.startsWith('assets/') || iconRef.startsWith('packages/')) {
+      await _setCachedArtUriFromAssetPath(iconRef);
+      return;
+    }
+
+    if (kIsWeb) {
+      state.cachedArtUri = Uri.base.resolve(iconRef);
+      await _refreshCurrentMediaItemArt();
+      return;
+    }
+
+    final file = File(iconRef);
+    if (await file.exists()) {
+      state.cachedArtUri = Uri.file(file.path);
+      await _refreshCurrentMediaItemArt();
+      return;
+    }
+
     await resetAppIconToDefault();
-    return;
   }
 
   Future<void> setCachedArtUriFromAsset() async {
+    // ضمن نفس الحزمة يُفضّل استخدام مسار الأصل مباشرة كما هو مُعلن في pubspec.yaml
+    const assetPath =
+        'packages/quran_library/assets/images/quran_library_logo.png';
+    await _setCachedArtUriFromAssetPath(assetPath, fallbackToDefault: false);
+  }
+
+  Future<void> _setCachedArtUriFromAssetPath(
+    String assetPath, {
+    bool fallbackToDefault = true,
+  }) async {
     try {
-      log('Setting cached art URI from asset', name: 'AudioCtrl');
+      log('Setting cached art URI from asset: $assetPath', name: 'AudioCtrl');
 
-      // ضمن نفس الحزمة يُفضّل استخدام مسار الأصل مباشرة كما هو مُعلن في pubspec.yaml
-      const assetPath =
-          'packages/quran_library/assets/images/quran_library_logo.png';
-      // 1. تحميل الصورة من مجلد assets
+      if (kIsWeb) {
+        state.cachedArtUri = Uri.base.resolve(assetPath);
+        await _refreshCurrentMediaItemArt();
+        return;
+      }
+
       final byteData = await rootBundle.load(assetPath);
-
-      // 2. إنشاء مسار مؤقت (احرص أن يكون الاسم فريدًا عشان ما يطغى على ملفات أخرى)
       final tempDir = await getTemporaryDirectory();
       final file = File('${tempDir.path}/${assetPath.split('/').last}');
 
-      // 3. كتابة البيانات في الملف المؤقت
       await file.writeAsBytes(byteData.buffer.asUint8List(), flush: true);
-
-      // 4. إرجاع URI صالح للاستخدام في MediaItem
-
       state.cachedArtUri = Uri.file(file.path);
-      log('Cached art URI set from asset successfully', name: 'AudioCtrl');
-      // أعِد بث MediaItem الحالي ليتم تحديث صورة الغلاف فورًا
       await _refreshCurrentMediaItemArt();
     } catch (e) {
       log('Exception in setCachedArtUri: $e', name: 'AudioCtrl');
+      if (fallbackToDefault) {
+        await setCachedArtUriFromAsset();
+      }
     }
   }
 
@@ -663,11 +659,11 @@ class AudioCtrl extends GetxController {
   void getAyahUQNumber(int pageNumber) {
     final ayahs =
         QuranCtrl.instance.getCurrentPageAyahsSeparatedForBasmalah(pageNumber);
-    log('Fetching AyahUQNumber for page $pageNumber', name: 'AudioCtrl');
     if (ayahs.isNotEmpty) {
-      state.currentAyahUniqueNumber.value = ayahs.first.first.ayahUQNumber;
-      log('Updated currentAyahUniqueNumber to ${state.currentAyahUniqueNumber.value} for page $pageNumber',
-          name: 'AudioCtrl');
+      final newValue = ayahs.first.first.ayahUQNumber;
+      if (state.currentAyahUniqueNumber.value != newValue) {
+        state.currentAyahUniqueNumber.value = newValue;
+      }
     }
   }
 }

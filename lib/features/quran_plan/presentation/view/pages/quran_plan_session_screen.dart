@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_extension.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/extensions/snackbar_extension.dart';
-import 'package:quran_app/core/extensions/text_styles_extension.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
 import 'package:quran_app/core/widgets/app_scaffold/normal_app_scaffold_widget.dart';
@@ -103,7 +102,8 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 20.h),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.r),
                         gradient: LinearGradient(
@@ -137,7 +137,8 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                                 height: 80.w,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: context.primaryColor.withValues(alpha: 0.04),
+                                  color: context.primaryColor
+                                      .withValues(alpha: 0.04),
                                 ),
                               ),
                             ),
@@ -147,7 +148,8 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'التقدم الكلي',
@@ -158,10 +160,13 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.w, vertical: 4.h),
                                         decoration: BoxDecoration(
-                                          color: context.primaryColor.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(10.r),
+                                          color: context.primaryColor
+                                              .withValues(alpha: 0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
                                         ),
                                         child: Text(
                                           '$progressPercent%',
@@ -180,8 +185,10 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                                     child: LinearProgressIndicator(
                                       value: progress,
                                       minHeight: 8.h,
-                                      backgroundColor: context.onSurfaceVariant.withValues(alpha: 0.15),
-                                      valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
+                                      backgroundColor: context.onSurfaceVariant
+                                          .withValues(alpha: 0.15),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          context.primaryColor),
                                     ),
                                   ),
                                   SizedBox(height: 8.h),
@@ -189,7 +196,8 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                                     'أنجزت $progressPercent% من الخطة',
                                     style: TextStyle(
                                       fontSize: 12.sp,
-                                      color: context.onSurfaceVariant.withValues(alpha: 0.8),
+                                      color: context.onSurfaceVariant
+                                          .withValues(alpha: 0.8),
                                     ),
                                   ),
                                 ],

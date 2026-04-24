@@ -37,6 +37,11 @@ class AyahAudioStyle {
   final String? readersTabText;
   final String? downloadedSurahsTabText;
   final String? noInternetConnectionText;
+  final TextStyle? headerDialogTitleStyle;
+  final TextStyle? readerDialogTitleStyle;
+  final Color? currentReaderColor;
+  final TextStyle? currentReaderTextStyle;
+  final Widget? readerDropdownWidget;
 
   AyahAudioStyle({
     this.textColor,
@@ -75,6 +80,11 @@ class AyahAudioStyle {
     this.downloadedSurahsTabText,
     this.dialogHeaderTitle,
     this.noInternetConnectionText,
+    this.headerDialogTitleStyle,
+    this.readerDialogTitleStyle,
+    this.currentReaderColor,
+    this.currentReaderTextStyle,
+    this.readerDropdownWidget,
   });
 
   AyahAudioStyle copyWith({
@@ -114,6 +124,11 @@ class AyahAudioStyle {
     String? downloadedSurahsTabText,
     String? dialogHeaderTitle,
     String? noInternetConnectionText,
+    TextStyle? headerDialogTitleStyle,
+    TextStyle? readerDialogTitleStyle,
+    Color? currentReaderColor,
+    TextStyle? currentReaderTextStyle,
+    Widget? readerDropdownWidget,
   }) {
     return AyahAudioStyle(
       textColor: textColor ?? this.textColor,
@@ -167,6 +182,14 @@ class AyahAudioStyle {
       dialogHeaderTitle: dialogHeaderTitle ?? this.dialogHeaderTitle,
       noInternetConnectionText:
           noInternetConnectionText ?? this.noInternetConnectionText,
+      headerDialogTitleStyle:
+          headerDialogTitleStyle ?? this.headerDialogTitleStyle,
+      readerDialogTitleStyle:
+          readerDialogTitleStyle ?? this.readerDialogTitleStyle,
+      currentReaderColor: currentReaderColor ?? this.currentReaderColor,
+      currentReaderTextStyle:
+          currentReaderTextStyle ?? this.currentReaderTextStyle,
+      readerDropdownWidget: readerDropdownWidget ?? this.readerDropdownWidget,
     );
   }
 
@@ -237,6 +260,11 @@ class AyahAudioStyle {
       downloadedSurahsTabText: 'السور المحملة',
       dialogHeaderTitle: 'تغيير القارئ',
       noInternetConnectionText: 'لا يوجد اتصال بالإنترنت',
+      headerDialogTitleStyle: null,
+      readerDialogTitleStyle: null,
+      currentReaderColor: onBg,
+      currentReaderTextStyle: null,
+      readerDropdownWidget: null,
     );
   }
 }

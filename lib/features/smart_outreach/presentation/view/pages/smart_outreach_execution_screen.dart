@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_execution_bloc.dart';
-import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_execution_content.dart';
+import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_call_logs_screen.dart';
 
-class SmartOutreachExecutionScreen extends StatelessWidget {
+class SmartOutreachExecutionScreen extends StatefulWidget {
   const SmartOutreachExecutionScreen({
     required this.scheduleId,
     this.launchedFromNotification = false,
@@ -15,79 +14,97 @@ class SmartOutreachExecutionScreen extends StatelessWidget {
   final bool launchedFromNotification;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<SmartOutreachExecutionBloc>(
-      create: (_) => sl<SmartOutreachExecutionBloc>()
-        ..add(
-          StartSmartOutreachSessionEvent(
-            scheduleId: scheduleId,
-            launchedFromNotification: launchedFromNotification,
-          ),
-        ),
-      child: const _SmartOutreachExecutionView(),
-    );
-  }
+  State<SmartOutreachExecutionScreen> createState() =>
+      _SmartOutreachExecutionScreenState();
 }
 
-class _SmartOutreachExecutionView extends StatefulWidget {
-  const _SmartOutreachExecutionView();
+class _SmartOutreachExecutionScreenState
+    extends State<SmartOutreachExecutionScreen> {
+  final SmartOutreachScheduleRepository _repository =
+      sl<SmartOutreachScheduleRepository>();
 
-  @override
-  State<_SmartOutreachExecutionView> createState() =>
-      _SmartOutreachExecutionViewState();
-}
+  bool _starting = true;
+  String? _message;
 
-class _SmartOutreachExecutionViewState
-    extends State<_SmartOutreachExecutionView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    _start();
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) {
-      return;
-    }
-
-    final executionState = context.read<SmartOutreachExecutionBloc>().state;
-    if (executionState.awaitingCallOutcome) {
-      context
-          .read<SmartOutreachExecutionBloc>()
-          .add(const HandleCallReturnSmartOutreachEvent());
+  Future<void> _start() async {
+    try {
+      await _repository.startScheduleNow(widget.scheduleId);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _starting = false;
+        _message = widget.launchedFromNotification
+            ? 'بدأت المكالمات من التنبيه.'
+            : 'بدأت المكالمات الآن.';
+      });
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _starting = false;
+        _message = 'تعذر بدء المكالمات الآن. حاول مرة أخرى.';
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SmartOutreachExecutionBloc,
-        SmartOutreachExecutionState>(
-      listener: (context, state) {
-        final message = state.message;
-        if (message != null && message.trim().isNotEmpty) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(message)));
-          context
-              .read<SmartOutreachExecutionBloc>()
-              .add(const ClearSmartOutreachExecutionFeedbackEvent());
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('تنفيذ جدول التواصل'),
+    return Scaffold(
+      appBar: AppBar(title: const Text('بدء المكالمات')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (_starting)
+                const CircularProgressIndicator()
+              else
+                Icon(
+                  Icons.phone_in_talk_rounded,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              const SizedBox(height: 20),
+              Text(
+                _message ?? '',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'يمكنك إغلاق هذه الصفحة الآن ومراجعة النتيجة من سجل المكالمات.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 20),
+              FilledButton.icon(
+                onPressed: _starting
+                    ? null
+                    : () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => SmartOutreachCallLogsScreen(
+                              scheduleId: widget.scheduleId,
+                            ),
+                          ),
+                        );
+                      },
+                icon: const Icon(Icons.history),
+                label: const Text('عرض السجل'),
+              ),
+            ],
           ),
-          body: SmartOutreachExecutionContent(state: state),
-        );
-      },
+        ),
+      ),
     );
   }
 }

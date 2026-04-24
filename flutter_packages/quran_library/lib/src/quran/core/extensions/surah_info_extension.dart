@@ -153,11 +153,11 @@ extension SurahInfoExtension on void {
                             children: [
                               SvgPicture.asset(
                                 AssetsPath.assets.suraNum,
-                                height: 40,
-                                width: 40,
+                                height: 50,
+                                width: 50,
                                 colorFilter: ColorFilter.mode(
-                                    surahStyle?.surahNameColor ??
-                                        AppColors.getTextColor(isDark),
+                                    surahStyle?.surahNumberDecorationColor ??
+                                        Colors.teal,
                                     BlendMode.srcIn),
                               ),
                               Transform.translate(

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -76,78 +77,50 @@ class SessionWidget extends StatelessWidget {
               // ),
               subtitle: StyleButtonWrap(
                 onTap: () {
-                  // البحث عن الآية المحددة للحصول على معلوماتها
-                  final quranLibrary = QuranLibrary();
+                  final quranCtrl = QuranCtrl.instance;
+                  final uqIndex = quranCtrl.resolveAyahUq(
+                    surahNumber: session.fromSurahId,
+                    ayahNumber: session.fromAyahNumber,
+                  );
+                  final ayah = quranCtrl.getAyahByUq(uqIndex);
 
-                  try {
-                    // الحصول على معلومات السورة (using 1-based indexing as per README)
-                    final surahInfo = quranLibrary.getSurahInfo(
-                      surahNumber: session.fromSurahId,
-                    );
+                  int targetPage = 1;
 
-                    // البحث عن الآية في السورة باستخدام اسم السورة ورقم الآية
-                    final searchQuery = surahInfo.name;
-                    final searchResults = quranLibrary.search(searchQuery);
-
-                    // البحث عن الآية المحددة في نتائج البحث
-                    AyahModel? targetAyah;
-                    for (final ayah in searchResults) {
-                      if (ayah.surahNumber == session.fromSurahId &&
-                          ayah.ayahNumber == session.fromAyahNumber) {
-                        targetAyah = ayah;
-                        break;
-                      }
+                  if (ayah.ayahUQNumber != 0) {
+                    targetPage = ayah.page;
+                    // Jump in controller so when user returns, controller is at the right page
+                    quranCtrl.jumpToPage(targetPage - 1);
+                    quranCtrl.toggleAyahSelection(ayah.ayahUQNumber);
+                  } else {
+                    final surah = quranCtrl.surahs.firstWhereOrNull(
+                        (s) => s.surahNumber == session.fromSurahId);
+                    if (surah != null && surah.ayahs.isNotEmpty) {
+                      targetPage = surah.ayahs.first.page;
+                      quranCtrl.jumpToPage(targetPage - 1);
                     }
-
-                    if (targetAyah != null) {
-                      // استخدام jumpToAyah للانتقال إلى الآية المحددة
-                      quranLibrary.jumpToAyah(
-                        targetAyah.page,
-                        targetAyah.ayahUQNumber,
-                      );
-                    } else {
-                      // إذا لم نجد الآية، انتقل إلى بداية السورة
-                      quranLibrary.jumpToSurah(session.fromSurahId);
-                    }
-
-                    final page = quranLibrary.currentPageNumber;
-
-                    context.push(
-                      ReadQuranScreen(
-                        page: page,
-                      ),
-                    );
-                  } catch (e) {
-                    // في حالة حدوث خطأ، انتقل إلى بداية السورة
-                    final quranLibrary = QuranLibrary()
-                      ..jumpToSurah(session.fromSurahId);
-                    final page = quranLibrary.currentPageNumber;
-
-                    context.push(
-                      ReadQuranScreen(
-                        page: page,
-                      ),
-                    );
                   }
+
+                  context.push(
+                    ReadQuranScreen(
+                      page: targetPage - 1,
+                    ),
+                  );
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Builder(
                       builder: (context) {
-                        final quranLibrary = QuranLibrary();
+                        final quranCtrl = QuranCtrl.instance;
 
-                        // Get surah information using QuranLibrary (1-based indexing)
-                        final fromSurah = quranLibrary.getSurahInfo(
-                          surahNumber: session.fromSurahId,
-                        );
-                        final toSurah = quranLibrary.getSurahInfo(
-                          surahNumber: session.toSurahId,
-                        );
+                        final fromSurah = quranCtrl.surahs.firstWhereOrNull(
+                            (s) => s.surahNumber == session.fromSurahId);
+                        final toSurah = quranCtrl.surahs.firstWhereOrNull(
+                            (s) => s.surahNumber == session.toSurahId);
 
                         return Text(
-                          'من ${fromSurah.name} الاية ${session.fromAyahNumber} \n'
-                          'إلى ${toSurah.name} الاية ${session.toAyahNumber}',
+                          'من ${fromSurah?.arabicName ?? ''} الاية ${session.fromAyahNumber} \n'
+                          'إلى ${toSurah?.arabicName ?? ''} الاية ${session.toAyahNumber}',
                           style: context.bodyMedium?.copyWith(
                             color: isCompleted
                                 ? context.primaryColor

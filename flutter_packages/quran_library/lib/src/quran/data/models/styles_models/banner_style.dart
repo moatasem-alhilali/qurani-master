@@ -71,14 +71,17 @@ class BannerStyle {
     );
   }
 
-  factory BannerStyle.downloadFonts({required bool isDark}) {
+  factory BannerStyle.downloadFonts(
+      {required bool isDark, required BuildContext context}) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return BannerStyle(
       isImage: false,
       bannerSvgPath: isDark
           ? AssetsPath.assets.surahSvgBannerDark
           : AssetsPath.assets.surahSvgBanner,
-      bannerSvgHeight: 30.0,
-      bannerSvgWidth: 120.0,
+      bannerSvgHeight: isLandscape ? 170.0.h : 35.0.h,
+      bannerSvgWidth: isLandscape ? 250.0.w : 120.0.w,
       bannerImagePath: '',
       bannerImageHeight: 50,
       bannerImageWidth: double.infinity,
@@ -89,9 +92,11 @@ class BannerStyle {
   factory BannerStyle.textScale({required bool isDark}) {
     return BannerStyle(
       isImage: false,
-      bannerSvgPath: AssetsPath.assets.surahSvgBanner,
-      bannerSvgHeight: 40.0,
-      bannerSvgWidth: 150.0,
+      bannerSvgPath: isDark
+          ? AssetsPath.assets.surahSvgBannerDark
+          : AssetsPath.assets.surahSvgBanner,
+      bannerSvgHeight: 40.0.h,
+      bannerSvgWidth: 150.0.w,
       bannerImagePath: '',
       bannerImageHeight: 50,
       bannerImageWidth: double.infinity,

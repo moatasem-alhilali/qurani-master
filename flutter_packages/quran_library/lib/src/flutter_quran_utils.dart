@@ -15,22 +15,52 @@ part of '/quran.dart';
 ///
 /// Note: Ensure that you have the necessary dependencies and configurations
 /// set up in your Flutter project to use this class effectively.
+
+/// A callback type for custom number conversion.
+///
+/// [text] is the original string containing numbers to convert.
+/// [languageCode] is the optional language code for the target numeral system.
+///
+/// Example:
+/// ```dart
+/// await QuranLibrary.init(
+///   numberConverter: (text, {languageCode}) {
+///     return myCustomNumberConvert(text, lang: languageCode);
+///   },
+/// );
+/// ```
+typedef NumberConverterCallback = String Function(
+  String text, {
+  String? languageCode,
+});
+
 class QuranLibrary {
   // Cache for frequently accessed data
   static final Map<String, dynamic> _cache = {};
   static bool _isInitialized = false;
 
+  /// Optional custom number converter callback.
+  ///
+  /// When set, [convertNumbersAccordingToLang] will delegate to this callback
+  /// instead of using the built-in conversion logic.
+  static NumberConverterCallback? customNumberConverter;
+
   /// [init] تقوم بتهيئة القرآن ويجب استدعاؤها قبل البدء في استخدام الحزمة
   ///
   /// [init] initializes the FlutterQuran,
   /// and must be called before starting using the package
-  static Future<void> init(
-      {Map<int, List<BookmarkModel>>? userBookmarks,
-      bool overwriteBookmarks = false}) async {
+  static Future<void> init({
+    Map<int, List<BookmarkModel>>? userBookmarks,
+    bool overwriteBookmarks = false,
+    NumberConverterCallback? numberConverter,
+  }) async {
     if (_isInitialized) return;
+    customNumberConverter = numberConverter;
 
     await GetStorage.init();
-    Get.put(InternetConnectionService(), permanent: true);
+    final connectivityService = InternetConnectionService();
+    await connectivityService.init();
+    Get.put(connectivityService, permanent: true);
     Get.put(InternetConnectionController(), permanent: true);
 
     // تهيئة backend الصوت للويندوز قبل إنشاء أي AudioPlayer
@@ -47,6 +77,7 @@ class QuranLibrary {
 
     /// Initialize SurahAudioController
     QuranCtrl.instance;
+    Get.lazyPut(() => AutoScrollCtrl(), fenix: true);
     await _initTafsir();
 
     quranCtrl.state.isFontDownloaded.value =
@@ -60,13 +91,31 @@ class QuranLibrary {
             ?.cast<int>() ??
         []);
 
-    if (!kIsWeb) {
-      QuranCtrl.instance.deleteOldFonts();
-    }
+    // إذا كان خط التجويد مختارًا، ابدأ التحميل الكسول في الخلفية
+    // if (quranCtrl.state.fontsSelected.value == 0) {
+    //   final currentPage =
+    //       (GetStorage().read<int>('lastPage') ?? 1).clamp(1, 604);
+    //   QuranFontsService.ensurePagesLoaded(currentPage, radius: 5).then((_) {
+    //     // quranCtrl.update();
+    //     quranCtrl.update(['_pageViewBuild']);
+    //     // تحميل بقية الصفحات في الخلفية
+    //     QuranFontsService.loadRemainingInBackground(
+    //       startNearPage: currentPage,
+    //       progress: quranCtrl.state.fontsLoadProgress,
+    //       ready: quranCtrl.state.fontsReady,
+    //     ).then((_) {
+    //       // quranCtrl.update();
+    //       quranCtrl.update(['_pageViewBuild']);
+    //     });
+    //   });
+    // }
+
+    // if (!kIsWeb) {
+    //   QuranCtrl.instance.deleteOldFonts();
+    // }
 
     // Load data in parallel
     final futures = <Future<void>>[
-      QuranCtrl.instance.loadQuranDataV1(),
       QuranCtrl.instance.loadQuranDataV3(),
       QuranCtrl.instance.fetchSurahs(),
     ];
@@ -97,6 +146,17 @@ class QuranLibrary {
         userBookmarks: userBookmarks, overwrite: overwriteBookmarks);
 
     _isInitialized = true;
+  }
+
+  /// تفعيل خدمة صوت الكلمات (word-by-word audio).
+  ///
+  /// تستخدم CDN عام بدون حاجة لمصادقة.
+  /// يجب استدعاؤها بعد [init].
+  /// ```dart
+  /// QuranLibrary.initWordAudio();
+  /// ```
+  static void initWordAudio() {
+    WordAudioService.instance.init();
   }
 
   /// A singleton instance of the `QuranCtrl` class.
@@ -154,8 +214,11 @@ class QuranLibrary {
   void jumpToAyah(int pageNumber, int ayahUQNumber) {
     quranCtrl.jumpToPage(pageNumber - 1);
     quranCtrl.toggleAyahSelection(ayahUQNumber);
-    Future.delayed(const Duration(seconds: 3))
-        .then((_) => quranCtrl.toggleAyahSelection(ayahUQNumber));
+    Future.delayed(const Duration(seconds: 3)).then((_) {
+      if (!quranCtrl.isClosed) {
+        quranCtrl.toggleAyahSelection(ayahUQNumber);
+      }
+    });
   }
 
   /// [jumpToPage] يتيح لك التنقل إلى أي صفحة في القرآن باستخدام رقم الصفحة.
@@ -173,16 +236,21 @@ class QuranLibrary {
 
   /// [jumpToJoz] let's you navigate to any quran jozz with jozz number
   /// Note it receives jozz number not jozz index
-  void jumpToJoz(int jozz) =>
-      jumpToPage(jozz == 1 ? 0 : (quranCtrl.quranStops[(jozz - 1) * 8 - 1]));
+  void jumpToJoz(int jozz) {
+    final page = quranCtrl.getJuzStartPage(jozz).page;
+    jumpToPage(jozz == 1 ? 0 : page);
+  }
 
   /// [jumpToHizb] يتيح لك التنقل إلى أي جزء في القرآن باستخدام رقم الجزء.
   /// ملاحظة: تستقبل هذه الطريقة رقم الجزء وليس فهرس الجزء.
   ///
   /// [jumpToHizb] let's you navigate to any quran hizb with hizb number
   /// Note it receives hizb number not hizb index
-  void jumpToHizb(int hizb) =>
-      jumpToPage(hizb == 1 ? 0 : (quranCtrl.quranStops[(hizb - 1) * 4 - 1]));
+  void jumpToHizb(int hizb) {
+    log('Jumping to Hizb $hizb');
+    final page = quranCtrl.getHizbStartPage((hizb) * 4 - 3).page;
+    jumpToPage(hizb == 1 ? 0 : page);
+  }
 
   /// [jumpToBookmark] يتيح لك التنقل إلى علامة مرجعية معينة.
   /// ملاحظة: يجب أن يكون رقم صفحة العلامة المرجعية بين 1 و604.
@@ -203,8 +271,8 @@ class QuranLibrary {
   /// [jumpToSurah] let's you navigate to any quran surah with surah number
   /// Note it receives surah number not surah index
   void jumpToSurah(int surah) {
-    jumpToPage(quranCtrl.surahsStart[surah - 1] + 1);
-    log('Jumped to Surah $surah at page ${quranCtrl.surahsStart[surah - 1] + 1}');
+    jumpToPage(quranCtrl.surahs[surah - 1].ayahs.first.page);
+    log('Jumped to Surah $surah at page ${quranCtrl.surahs[surah - 1].ayahs.first.page}');
   }
 
   /// [allJoz] returns list of all Quran joz' names
@@ -241,10 +309,8 @@ class QuranLibrary {
     if (_cache.containsKey(cacheKey)) {
       return _cache[cacheKey] as List<String>;
     }
-    final surahList = quranCtrl.surahs
-        .map((surah) => isArabic
-            ? 'سورة ${surah.arabicName}'
-            : 'Surah ${surah.englishName}')
+    final surahList = quranCtrl.surahsList
+        .map((surah) => isArabic ? surah.name : surah.englishName)
         .toList();
     _cache[cacheKey] = surahList;
     return surahList;
@@ -398,11 +464,10 @@ class QuranLibrary {
         ctrl: quranCtrl,
       );
 
-  /// للحصول على طريقة تنزيل الخطوط فقط قم بإستدعاء [getFontsDownloadMethod]
-  ///
-  /// to get the fonts download method just call [getFontsDownloadMethod]
+  /// @deprecated الخطوط مضمّنة الآن في الـ package — لا حاجة للتنزيل.
+  @Deprecated('Fonts are now bundled in the package. No download needed.')
   Future<void> getFontsDownloadMethod({required int fontIndex}) async {
-    await quranCtrl.downloadAllFontsZipFile(fontIndex);
+    // لا شيء — الخطوط مضمّنة
   }
 
   /// للحصول على طريقة إعداد الخطوط فقط قم بإستدعاء [getFontsPrepareMethod]
@@ -415,52 +480,25 @@ class QuranLibrary {
   //   await quranCtrl.loadPersistedFontsBulk(pages: pages, batchSize: batchSize);
   // }
 
-  /// لحذف الخطوط فقط قم بإستدعاء [getDeleteFontsMethod]
-  ///
-  /// to delete the fonts just call [getDeleteFontsMethod]
+  /// @deprecated الخطوط مضمّنة الآن — لا حاجة للحذف.
+  @Deprecated('Fonts are now bundled in the package. Nothing to delete.')
   Future<void> getDeleteFontsMethod() async {
-    await quranCtrl.deleteFonts();
+    // لا شيء
   }
 
-  /// للحصول على تقدم تنزيل الخطوط، ما عليك سوى إستدعاء [fontsDownloadProgress]
-  ///
-  /// to get fonts download progress just call [fontsDownloadProgress]
-  double get fontsDownloadProgress {
-    // قيمة تقدم التحميل كنسبة مئوية من 0 إلى 100
-    // Download progress value as a percentage from 0 to 100
-    double progress = quranCtrl.state.fontsDownloadProgress.value;
-    // التحويل إلى قيمة بين 0 و 1 للاستخدام في LinearProgressIndicator
-    // Convert to a value between 0 and 1 for use in LinearProgressIndicator
-    return progress / 100;
-  }
+  /// نسبة تقدّم تحميل خطوط التجويد (0.0–1.0).
+  double get fontsDownloadProgress => quranCtrl.state.fontsLoadProgress.value;
 
-  /// لمعرفة ما إذا كانت الخطوط محملة او لا، ما عليك سوى إستدعاء [isFontsDownloaded]
-  ///
-  /// To find out whether fonts are downloaded or not, just call [isFontsDownloaded]
-  bool get isFontsDownloaded {
-    // التحقق من قيمة isDownloadedV2Fonts في GetStorage
-    // Check the value of isDownloadedV2Fonts in GetStorage
-    final storageValue =
-        GetStorage().read<bool>(_StorageConstants().isDownloadedCodeV4Fonts);
-    // تحديث قيمة المتغير في state ليتوافق مع قيمة التخزين
-    // Update the state variable to match storage value
-    quranCtrl.state.isFontDownloaded.value = storageValue ?? false;
-    // إرجاع القيمة المحدثة
-    // Return the updated value
-    return quranCtrl.state.isFontDownloaded.value;
-  }
+  /// هل خطوط التجويد المضغوطة جاهزة للعرض؟
+  bool get isFontsDownloaded => quranCtrl.state.fontsReady.value;
 
   /// لمعرفة الخط الذي تم تحديده، ما عليك سوى إستدعاء [currentFontsSelected]
   ///
   /// To find out which font has been selected, just call [currentFontsSelected]
   int get currentFontsSelected => quranCtrl.state.fontsSelected.value;
 
-  /// لمعرفة ما إذا كانت الخطوط قيد التحميل، ما عليك سوى إستدعاء [isPreparingDownloadFonts]
-  ///
-  /// To find out whether fonts are being downloaded, just call [isPreparingDownloadFonts]
-  bool get isPreparingDownloadFonts =>
-      quranCtrl.state.isPreparingDownload.value ||
-      quranCtrl.state.isDownloadingFonts.value;
+  /// هل يجري تحميل خطوط التجويد حاليًا؟
+  bool get isPreparingDownloadFonts => quranCtrl.isPreparingDownloadFonts;
 
   /// لتبديل نوع الخط مع تحميله إذا لم يكن محملاً من قبل
   /// هذه الدالة تلقائيًا ستقوم بتحميل الخط إذا كان غير متوفر ثم تعيينه
@@ -692,6 +730,254 @@ class QuranLibrary {
           {required int pageNumber, String? databaseName}) async =>
       await TafsirCtrl.instance
           .fetchTafsirPage(pageNumber, databaseName: databaseName!);
+
+  //////////// [Word Info] ////////////
+
+  /// فتح نافذة معلومات الكلمة (Word Info) وتحميل البيانات عند الحاجة.
+  ///
+  /// [ref] مرجع الكلمة (سورة/آية/رقم كلمة).
+  /// [initialKind] التبويب الذي تريد فتحه أولاً (القراءات/التصريف/الإعراب).
+  ///
+  /// Opens the Word Info bottom sheet and allows downloading data on demand.
+  ///
+  /// [ref] The word reference (surah/ayah/word).
+  /// [initialKind] The initial tab to open (recitations/tasreef/eerab).
+  ///
+  /// مثال للاستخدام / Example usage:
+  /// ```dart
+  /// await QuranLibrary().showWordInfo(
+  ///   context: context,
+  ///   ref: const WordRef(surahNumber: 1, ayahNumber: 1, wordNumber: 1),
+  ///   initialKind: WordInfoKind.recitations,
+  ///   isDark: true,
+  /// );
+  /// ```
+  Future<void> showWordInfo({
+    required BuildContext context,
+    required WordRef ref,
+    WordInfoKind initialKind = WordInfoKind.recitations,
+    bool isDark = false,
+  }) async {
+    await showWordInfoBottomSheet(
+      context: context,
+      ref: ref,
+      initialKind: initialKind,
+      isDark: isDark,
+    );
+  }
+
+  /// فتح نافذة معلومات الكلمة عبر أرقام (سورة/آية/كلمة).
+  ///
+  /// Opens Word Info by passing (surah/ayah/word) numbers.
+  Future<void> showWordInfoByNumbers({
+    required BuildContext context,
+    required int surahNumber,
+    required int ayahNumber,
+    required int wordNumber,
+    WordInfoKind initialKind = WordInfoKind.recitations,
+    bool isDark = false,
+  }) async {
+    await showWordInfo(
+      context: context,
+      ref: WordRef(
+        surahNumber: surahNumber,
+        ayahNumber: ayahNumber,
+        wordNumber: wordNumber,
+      ),
+      initialKind: initialKind,
+      isDark: isDark,
+    );
+  }
+
+  /// التحقق مما إذا كانت بيانات نوع معيّن من Word Info محمّلة.
+  ///
+  /// Checks whether a Word Info kind is downloaded/enabled.
+  bool isWordInfoKindDownloaded(WordInfoKind kind) =>
+      WordInfoCtrl.instance.isKindAvailable(kind);
+
+  /// بدء تحميل بيانات Word Info لنوع معيّن (تحميل اختياري).
+  ///
+  /// Starts downloading Word Info data for a specific kind (on-demand download).
+  Future<void> downloadWordInfoKind({required WordInfoKind kind}) async =>
+      await WordInfoCtrl.instance.downloadKind(kind);
+
+  /// لمعرفة ما إذا كانت بيانات Word Info قيد التحضير/التحميل.
+  ///
+  /// Whether Word Info data is preparing/downloading.
+  bool get isPreparingDownloadWordInfo =>
+      WordInfoCtrl.instance.isPreparingDownload.value;
+
+  /// لمعرفة ما إذا كان Word Info يتم تحميله الآن.
+  ///
+  /// Whether Word Info is currently downloading.
+  bool get isDownloadingWordInfo => WordInfoCtrl.instance.isDownloading.value;
+
+  /// نوع Word Info الذي يتم تحميله حاليًا (إن وجد).
+  ///
+  /// The Word Info kind currently being downloaded (if any).
+  WordInfoKind? get downloadingWordInfoKind =>
+      WordInfoCtrl.instance.downloadingKind.value;
+
+  /// نسبة تقدم تحميل Word Info (قيمة بين 0 و 1).
+  ///
+  /// Word Info download progress as a value between 0 and 1.
+  double get wordInfoDownloadProgress =>
+      WordInfoCtrl.instance.downloadProgress.value / 100;
+
+  //////////// [Word Audio — صوت الكلمات] ////////////
+
+  /// هل تمت تهيئة خدمة صوت الكلمات عبر [initWordAudio]؟
+  ///
+  /// Whether word audio service has been initialized via [initWordAudio].
+  bool get isWordAudioInitialized => WordAudioService.instance.isInitialized;
+
+  /// هل يتم تشغيل صوت كلمة حالياً؟
+  ///
+  /// Whether a word audio is currently playing.
+  bool get isWordAudioPlaying => WordAudioService.instance.isPlaying.value;
+
+  /// هل يتم تحميل صوت كلمة حالياً؟
+  ///
+  /// Whether a word audio is currently loading.
+  bool get isWordAudioLoading => WordAudioService.instance.isLoading.value;
+
+  /// هل يتم تشغيل كلمات آية كاملة (وليس كلمة واحدة فقط)؟
+  ///
+  /// Whether all words of an ayah are being played sequentially.
+  bool get isPlayingAyahWords =>
+      WordAudioService.instance.isPlayingAyahWords.value;
+
+  /// مرجع الكلمة التي يتم تشغيلها حالياً (أو null).
+  ///
+  /// The reference of the currently playing word (or null).
+  WordRef? get currentPlayingWordRef =>
+      WordAudioService.instance.currentPlayingRef.value;
+
+  /// تشغيل صوت كلمة واحدة. إذا كانت نفس الكلمة قيد التشغيل، يتم إيقافها.
+  ///
+  /// Play audio for a single word. If the same word is playing, it will stop.
+  ///
+  /// مثال / Example:
+  /// ```dart
+  /// await QuranLibrary().playWordAudio(
+  ///   ref: const WordRef(surahNumber: 1, ayahNumber: 1, wordNumber: 1),
+  /// );
+  /// ```
+  Future<void> playWordAudio({required WordRef ref}) async {
+    await WordInfoCtrl.instance.playWordAudio(ref);
+  }
+
+  /// تشغيل صوت كلمة واحدة عبر أرقام (سورة/آية/كلمة).
+  ///
+  /// Play a single word audio by (surah/ayah/word) numbers.
+  ///
+  /// مثال / Example:
+  /// ```dart
+  /// await QuranLibrary().playWordAudioByNumbers(
+  ///   surahNumber: 1,
+  ///   ayahNumber: 1,
+  ///   wordNumber: 1,
+  /// );
+  /// ```
+  Future<void> playWordAudioByNumbers({
+    required int surahNumber,
+    required int ayahNumber,
+    required int wordNumber,
+  }) async {
+    await playWordAudio(
+      ref: WordRef(
+        surahNumber: surahNumber,
+        ayahNumber: ayahNumber,
+        wordNumber: wordNumber,
+      ),
+    );
+  }
+
+  /// تشغيل جميع كلمات آية بالتسلسل. إذا كانت نفس الآية قيد التشغيل، يتم إيقافها.
+  ///
+  /// Play all words of an ayah sequentially. If the same ayah is playing, it will stop.
+  ///
+  /// مثال / Example:
+  /// ```dart
+  /// await QuranLibrary().playAyahWordsAudio(
+  ///   ref: const WordRef(surahNumber: 1, ayahNumber: 1, wordNumber: 1),
+  /// );
+  /// ```
+  Future<void> playAyahWordsAudio({required WordRef ref}) async {
+    await WordInfoCtrl.instance.playAyahWordsAudio(ref);
+  }
+
+  /// تشغيل جميع كلمات آية عبر أرقام (سورة/آية).
+  ///
+  /// Play all words of an ayah by (surah/ayah) numbers.
+  ///
+  /// مثال / Example:
+  /// ```dart
+  /// await QuranLibrary().playAyahWordsAudioByNumbers(
+  ///   surahNumber: 1,
+  ///   ayahNumber: 1,
+  /// );
+  /// ```
+  Future<void> playAyahWordsAudioByNumbers({
+    required int surahNumber,
+    required int ayahNumber,
+  }) async {
+    await playAyahWordsAudio(
+      ref: WordRef(
+        surahNumber: surahNumber,
+        ayahNumber: ayahNumber,
+        wordNumber: 1,
+      ),
+    );
+  }
+
+  /// إيقاف صوت الكلمات.
+  ///
+  /// Stop word audio playback.
+  Future<void> stopWordAudio() async {
+    await WordInfoCtrl.instance.stopWordAudio();
+  }
+
+  /// الحصول على عدد الكلمات الفعلية في آية (بدون علامة نهاية الآية).
+  ///
+  /// Get the actual word count of an ayah (excluding end marker).
+  int getAyahWordCount({
+    required int surahNumber,
+    required int ayahNumber,
+  }) {
+    return WordAudioService.instance.getAyahWordCount(surahNumber, ayahNumber);
+  }
+
+  //////////// [Tajweed (Ayah)] ////////////
+
+  /// التحقق مما إذا كانت بيانات أحكام التجويد (على مستوى الآية) مفعّلة/محمّلة.
+  ///
+  /// Checks whether Tajweed (ayah-level) data is enabled/downloaded.
+  bool get isTajweedAyahDownloaded => TajweedAyaCtrl.instance.isAvailable;
+
+  /// بدء تحميل بيانات أحكام التجويد (على مستوى الآية).
+  ///
+  /// Starts downloading Tajweed (ayah-level) data.
+  Future<void> downloadTajweedAyah() async =>
+      await TajweedAyaCtrl.instance.download();
+
+  /// لمعرفة ما إذا كانت بيانات التجويد قيد التحضير/التحميل.
+  ///
+  /// Whether Tajweed data is preparing/downloading.
+  bool get isPreparingDownloadTajweedAyah =>
+      TajweedAyaCtrl.instance.isPreparingDownload.value;
+
+  /// لمعرفة ما إذا كان التجويد يتم تحميله الآن.
+  ///
+  /// Whether Tajweed is currently downloading.
+  bool get isDownloadingTajweedAyah =>
+      TajweedAyaCtrl.instance.isDownloading.value;
+
+  /// نسبة تقدم تحميل التجويد (قيمة بين 0 و 1).
+  ///
+  /// Tajweed download progress as a value between 0 and 1.
+  double get tajweedAyahDownloadProgress =>
+      TajweedAyaCtrl.instance.downloadProgress.value / 100;
 
   /// يقوم بتشغيل آية أو مجموعة من الآيات الصوتية بدءًا من الآية المحددة.
   /// يمكن تشغيل آية واحدة فقط أو الاستمرار في تشغيل الآيات التالية.

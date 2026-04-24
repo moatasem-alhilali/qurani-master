@@ -18,4 +18,14 @@ class SurahNameStyle {
     this.surahNameColor,
     this.surahNameSize,
   });
+
+  factory SurahNameStyle.downloadFonts(
+      {required bool isDark, required BuildContext context}) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    return SurahNameStyle(
+      surahNameColor: AppColors.getTextColor(isDark),
+      surahNameSize: isLandscape ? 120.0.sp : 40.0.sp,
+    );
+  }
 }

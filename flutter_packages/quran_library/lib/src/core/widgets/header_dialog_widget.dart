@@ -7,6 +7,7 @@ class HeaderDialogWidget extends StatelessWidget {
   final Gradient? backgroundGradient;
   final Color? titleColor;
   final Color? closeIconColor;
+  final TextStyle? titleTextStyle;
   const HeaderDialogWidget({
     super.key,
     this.isDark = false,
@@ -14,6 +15,7 @@ class HeaderDialogWidget extends StatelessWidget {
     this.backgroundGradient,
     this.titleColor,
     this.closeIconColor,
+    this.titleTextStyle,
   });
 
   @override
@@ -45,14 +47,15 @@ class HeaderDialogWidget extends StatelessWidget {
           ),
           child: Text(
             title,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'cairo',
-              height: 1.3,
-              color: titleColor ?? AppColors.getTextColor(isDark!),
-              package: 'quran_library',
-            ),
+            style: titleTextStyle ??
+                TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'cairo',
+                  height: 1.3,
+                  color: titleColor ?? AppColors.getTextColor(isDark!),
+                  package: 'quran_library',
+                ),
             textAlign: TextAlign.center,
           ),
         ),

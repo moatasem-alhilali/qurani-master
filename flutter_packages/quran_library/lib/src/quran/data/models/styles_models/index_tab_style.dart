@@ -6,6 +6,7 @@ class IndexTabStyle {
   // الألوان الأساسية
   final Color? textColor;
   final Color? accentColor;
+  final Color? surahNumberDecorationColor;
 
   // إعدادات TabBar
   final double? tabBarHeight;
@@ -46,6 +47,7 @@ class IndexTabStyle {
     this.surahRowAltBgAlpha,
     this.jozzAltBgAlpha,
     this.hizbItemAltBgAlpha,
+    this.surahNumberDecorationColor,
   });
 
   factory IndexTabStyle.defaults({
@@ -79,6 +81,7 @@ class IndexTabStyle {
       surahRowAltBgAlpha: 0.1,
       jozzAltBgAlpha: 0.1,
       hizbItemAltBgAlpha: 0.05,
+      surahNumberDecorationColor: Colors.teal.withValues(alpha: 0.6),
     );
   }
 
@@ -100,6 +103,7 @@ class IndexTabStyle {
     double? surahRowAltBgAlpha,
     double? jozzAltBgAlpha,
     double? hizbItemAltBgAlpha,
+    Color? surahNumberDecorationColor,
   }) {
     return IndexTabStyle(
       textColor: textColor ?? this.textColor,
@@ -119,6 +123,8 @@ class IndexTabStyle {
       surahRowAltBgAlpha: surahRowAltBgAlpha ?? this.surahRowAltBgAlpha,
       jozzAltBgAlpha: jozzAltBgAlpha ?? this.jozzAltBgAlpha,
       hizbItemAltBgAlpha: hizbItemAltBgAlpha ?? this.hizbItemAltBgAlpha,
+      surahNumberDecorationColor:
+          surahNumberDecorationColor ?? this.surahNumberDecorationColor,
     );
   }
 }

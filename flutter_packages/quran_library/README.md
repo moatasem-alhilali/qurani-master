@@ -80,6 +80,7 @@
   - [Adding, setting, removing, getting and navigating to bookmarks](#adding-setting-removing-getting-and-navigating-to-bookmarks)
   - [searching for any Ayah](#searching-for-any-ayah)
 - [Fonts Download](#fonts-download)
+- [Word Audio (Word-by-Word)](#word-audio-word-by-word)
 - [Tafsir](#tafsir)
 - [Audio Playback](#audio-playback)
 - [Sources](#sources)
@@ -129,7 +130,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  quran_library: ^3.0.0
+  quran_library: ^4.0.0
 ```
 
 Import it:
@@ -544,6 +545,75 @@ TextField(
 ```
 <img src="https://raw.githubusercontent.com/alheekmahlib/thegarlanded/master/Photos/Packages/quran_library/search_screen.png" width="320"/>
 
+* ### Word Info (Recitations / Tasreef / Eerab)
+
+```dart
+/// Open Word Info bottom sheet (with on-demand download)
+await QuranLibrary().showWordInfoByNumbers(
+  context: context,
+  surahNumber: 1,
+  ayahNumber: 1,
+  wordNumber: 1,
+  initialKind: WordInfoKind.recitations,
+  isDark: true,
+);
+
+/// (Optional) download a specific kind programmatically
+if (!QuranLibrary().isWordInfoKindDownloaded(WordInfoKind.recitations)) {
+  await QuranLibrary().downloadWordInfoKind(kind: WordInfoKind.recitations);
+}
+```
+
+## Word Audio (Word-by-Word)
+
+### Enable word audio playback to hear individual words or all words of an ayah sequentially.
+
+```dart
+// Initialize word audio (call once after QuranLibrary.init())
+QuranLibrary.initWordAudio();
+```
+
+* ### Play a Single Word
+
+```dart
+// Play word audio using WordRef
+await QuranLibrary().playWordAudio(
+  ref: const WordRef(surahNumber: 1, ayahNumber: 1, wordNumber: 1),
+);
+
+// Or using numbers directly
+await QuranLibrary().playWordAudioByNumbers(
+  surahNumber: 1,
+  ayahNumber: 1,
+  wordNumber: 1,
+);
+```
+
+* ### Play All Words of an Ayah
+
+```dart
+// Play all words of an ayah sequentially
+await QuranLibrary().playAyahWordsAudioByNumbers(
+  surahNumber: 1,
+  ayahNumber: 1,
+);
+```
+
+* ### Stop & State
+
+```dart
+// Stop playback
+await QuranLibrary().stopWordAudio();
+
+// Check state
+bool isPlaying = QuranLibrary().isWordAudioPlaying;
+bool isLoading = QuranLibrary().isWordAudioLoading;
+bool isAyahMode = QuranLibrary().isPlayingAyahWords;
+int wordCount = QuranLibrary().getAyahWordCount(surahNumber: 1, ayahNumber: 1);
+```
+
+> **Note:** Audio buttons also appear automatically inside the Word Info bottom sheet when word audio is initialized.
+
 ## Fonts Download
 
 ## To download Quran fonts, you have two options:
@@ -572,22 +642,9 @@ Widget getFontsDownloadWidget(context, {downloadFontsDialogStyle, languageCode})
 
 /// to get the fonts download method just call [fontsDownloadMethod]
 QuranLibrary().fontsDownloadMethod;
-
-/// to prepare the fonts was downloaded before just call [getFontsPrepareMethod]
-/// required to pass [pageIndex]
-QuranLibrary().getFontsPrepareMethod(pageIndex);
-
-/// to delete the fonts just call [deleteFontsMethod]
-QuranLibrary().deleteFontsMethod;
-
-/// to get fonts download progress just call [fontsDownloadProgress]
-QuranLibrary().fontsDownloadProgress;
-
-/// To find out whether fonts are downloaded or not, just call [isFontsDownloaded]
-QuranLibrary().isFontsDownloaded;
 ```
 
-<img src="https://raw.githubusercontent.com/alheekmahlib/thegarlanded/master/Photos/Packages/quran_library/font_download_screen.png" width="320"/>
+<img src="https://raw.githubusercontent.com/alheekmahlib/data/refs/heads/main/packages/quran_library/font_download_screen.png" width="320"/>
 
 ## Tafsir
 
@@ -638,6 +695,11 @@ QuranLibrary().fetchTranslation();
 
 /// Download the tafsir by the given index.
 QuranLibrary().tafsirDownload(int i);
+
+/// (Optional) Download Tajweed (ayah-level) data used inside the Tafsir bottom sheet
+if (!QuranLibrary().isTajweedAyahDownloaded) {
+  await QuranLibrary().downloadTajweedAyah();
+}
 ```
 
 <img src="https://raw.githubusercontent.com/alheekmahlib/thegarlanded/master/Photos/Packages/quran_library/tafsir_screen.png" width="320"/>
@@ -828,3 +890,5 @@ QuranLibrary().naskhStyle;
 MIT for code. QCF fonts are provided via Quranic Universal Library (QUL). Ensure you comply with QUL terms (and any upstream KFGQPC terms) when distributing applications that include or bundle these assets.
 
 Read more about the license [here](LICENSE).
+
+For additional terms regarding QCF fonts and QUL resources, see [NOTICE](NOTICE).

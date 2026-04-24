@@ -48,12 +48,23 @@ class RadioAudioService {
 
     _currentStation = station;
     try {
-      await AudioCtrl.instance.playRadioStream(
+      final mediaItem = MediaItem(
         id: station.id.toString(),
+        album: 'Radio',
         title: station.name,
-        url: station.streamUrl,
-        imageUrl: station.imageUrl,
+        artist: 'Quran Radio',
+        artUri: station.imageUrl.isNotEmpty ? Uri.parse(station.imageUrl) : null,
       );
+
+      AudioHandler.instance.mediaItem.add(mediaItem);
+
+      await AudioCtrl.instance.state.audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(station.streamUrl),
+          tag: mediaItem,
+        ),
+      );
+      await AudioCtrl.instance.state.audioPlayer.play();
     } catch (_) {
       playback.value = RadioPlaybackSnapshot(
         status: RadioPlaybackStatus.error,
@@ -81,7 +92,7 @@ class RadioAudioService {
 
   Future<void> stop() async {
     try {
-      await AudioCtrl.instance.stopRadioStream();
+      await AudioCtrl.instance.state.audioPlayer.stop();
       playback.value = RadioPlaybackSnapshot(
         status: RadioPlaybackStatus.stopped,
         station: _currentStation,

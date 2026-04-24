@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quran_app/core/extensions/num_duration_extensions.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -167,9 +167,9 @@ Future<void> showMyExitDialogFunction({
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            exit(0);
-                            // context.pop();
+                          onTap: () async {
+                            context.pop();
+                            await SystemNavigator.pop();
                           },
                           child: Container(
                             alignment: Alignment.center,

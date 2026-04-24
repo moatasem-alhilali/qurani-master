@@ -3,9 +3,6 @@ part of '../../audio.dart';
 extension SurahGetters on AudioCtrl {
   /// -------- [Getters] ----------
 
-  MediaItem get activeMediaItem =>
-      state.isRadioMode.value ? (state.radioMediaItem ?? mediaItem) : mediaItem;
-
   String get localSurahFilePath {
     if (kIsWeb) {
       return '';
@@ -52,11 +49,11 @@ extension SurahGetters on AudioCtrl {
 
   MediaItem get mediaItem => MediaItem(
         id: '${state.currentAudioListSurahNum.value}',
-        title: QuranCtrl.instance.state
+        title: QuranCtrl.instance
             .surahs[(state.currentAudioListSurahNum.value - 1)].arabicName,
         artist: ReadersConstants
             .activeSurahReaders[state.surahReaderIndex.value].name.tr,
-        artUri: state.cachedArtUri, // state.cachedArtUri,
+        artUri: state.cachedArtUri ?? Uri.parse(currentAppIconUrl),
       );
 
   Future<void> lastAudioSource() async {
@@ -65,7 +62,6 @@ extension SurahGetters on AudioCtrl {
   }
 
   Future<void> updateMediaItemAndPlay() async {
-    state.isRadioMode.value = false;
     final newMediaItem = mediaItem;
     AudioHandler.instance.mediaItem.add(newMediaItem);
 
@@ -73,9 +69,7 @@ extension SurahGetters on AudioCtrl {
         .isSurahDownloadedByNumber(state.currentAudioListSurahNum.value)
         .value;
     // إذا لم تكن السورة محمّلة وتبين عدم وجود اتصال، لا نحاول تحميل الشبكة
-    if (!isDownloaded &&
-        InternetConnectionController.instance.connectionStatus.value !=
-            ConnectivityStatus.connected) {
+    if (!isDownloaded && !InternetConnectionController.instance.isConnected) {
       log('Skipped setting audio source: offline and file not downloaded',
           name: 'AudioCtrl');
       return;

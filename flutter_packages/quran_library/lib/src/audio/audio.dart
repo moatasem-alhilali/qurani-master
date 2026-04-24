@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer' show log;
-import 'dart:io' show Directory, File, HttpHeaders, Platform;
+import 'dart:io' show HttpHeaders;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -11,16 +11,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:quran_library/src/audio/audio.dart';
 import 'package:rxdart/rxdart.dart' as r;
 
 import '/quran.dart';
+import '../core/platform/io_helpers_stub.dart'
+    if (dart.library.io) '../core/platform/io_helpers_io.dart';
 import '../core/utils/app_colors.dart';
 import '../core/utils/ui_helper.dart';
 import '../core/widgets/header_dialog_widget.dart';
 import '../quran/core/helpers/responsive.dart';
-import '../service/connectivity_service.dart';
 import '../service/internet_connection_controller.dart';
 import 'core/custom_paint/custom_slider.dart';
 

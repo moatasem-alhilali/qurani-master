@@ -11,13 +11,16 @@ class QpcV4AssetsStore {
 }
 
 class QpcV4AssetsLoader {
-  static const _ayahInfoPath =
-      'packages/quran_library/assets/jsons/qpc_v4_ayah_info.json';
-  static const _wordsPath = 'packages/quran_library/assets/jsons/qpc-v4.json';
+  static const _ayahInfoGzPath =
+      'packages/quran_library/assets/jsons/qpc_v4_ayah_info.json.gz';
+  static const _wordsGzPath =
+      'packages/quran_library/assets/jsons/qpc-v4.json.gz';
 
   static Future<QpcV4AssetsStore> load() async {
-    final ayahInfoRaw = await rootBundle.loadString(_ayahInfoPath);
-    final ayahInfoDecoded = jsonDecode(ayahInfoRaw);
+    const jsonService = GzipJsonAssetService();
+    final ayahInfoDecoded = await jsonService.loadJsonDynamic(
+      _ayahInfoGzPath,
+    );
     if (ayahInfoDecoded is! List) {
       throw const FormatException('qpc_v4_ayah_info.json must be a JSON List');
     }
@@ -33,8 +36,9 @@ class QpcV4AssetsLoader {
       entry.value.sort((a, b) => a.lineNumber.compareTo(b.lineNumber));
     }
 
-    final wordsRaw = await rootBundle.loadString(_wordsPath);
-    final wordsDecoded = jsonDecode(wordsRaw);
+    final wordsDecoded = await jsonService.loadJsonDynamic(
+      _wordsGzPath,
+    );
     if (wordsDecoded is! Map) {
       throw const FormatException('qpc-v4.json must be a JSON Map');
     }

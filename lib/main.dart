@@ -17,6 +17,7 @@ import 'package:quran_app/core/services/permission/location_permission_service.d
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
+import 'package:quran_app/features/floating_adhkar/overlay/floating_adhkar_overlay_entrypoint.dart';
 import 'package:quran_app/firebase_options.dart';
 import 'package:quran_app/main_view.dart';
 import 'package:quran_library/quran.dart';
@@ -37,6 +38,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Logger logger = Logger();
+
+@pragma('vm:entry-point')
+Future<void> overlayMain() async {
+  await runFloatingAdhkarOverlay();
+}
 
 void main() async {
   // Ensures plugins are ready before async startup work.

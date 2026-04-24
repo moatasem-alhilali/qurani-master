@@ -32,7 +32,9 @@ class BuildTopSection extends StatelessWidget {
         quranCtrl.getSurahsByPageNumber(pageIndex + 1);
     final juz = quranCtrl.getJuzByPage(pageIndex);
 
-    final Widget? effectiveTopTitleChild = topBottomStyle.customChild;
+    final Widget? effectiveTopTitleChild =
+        topBottomStyle.customChildBuilder?.call(context, pageIndex) ??
+            topBottomStyle.customChild;
     final String effectiveJuzName = (topBottomStyle.juzName) ?? 'الجزء';
     // final String? effectiveSurahName = topBottomStyle.surahName;
 

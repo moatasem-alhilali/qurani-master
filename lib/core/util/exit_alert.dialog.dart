@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +19,9 @@ void showMyAlert({
       ),
       actions: <CupertinoDialogAction>[
         CupertinoDialogAction(
-          onPressed: () {
-            exit(0);
+          onPressed: () async {
+            Navigator.pop(context);
+            await SystemNavigator.pop();
           },
           child: Text(
             'نعم',

@@ -14,10 +14,14 @@ class SmartOutreachContactModel {
   factory SmartOutreachContactModel.fromMap(Map<String, dynamic> map) {
     return SmartOutreachContactModel(
       id: map['id'] as int?,
-      scheduleId: (map['schedule_id'] as num?)?.toInt() ?? 0,
-      name: (map['name'] as String?)?.trim(),
-      phone: (map['phone'] as String? ?? '').trim(),
-      order: (map['contact_order'] as num?)?.toInt() ?? 0,
+      scheduleId: (map['schedule_id'] as num?)?.toInt() ??
+          (map['group_id'] as num?)?.toInt() ??
+          0,
+      name: ((map['name'] ?? map['label']) as String?)?.trim(),
+      phone: ((map['phone'] ?? map['number']) as String? ?? '').trim(),
+      order: (map['contact_order'] as num?)?.toInt() ??
+          (map['sort_order'] as num?)?.toInt() ??
+          0,
       actionType: SmartOutreachActionTypeX.fromDbValue(
         (map['action_type'] as String? ?? 'call_only').trim(),
       ),
@@ -56,12 +60,10 @@ class SmartOutreachContactModel {
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
-      'schedule_id': scheduleId,
-      'name': name?.trim(),
-      'phone': phone.trim(),
-      'contact_order': order,
-      'action_type': actionType.dbValue,
-      'sms_template': smsTemplate?.trim(),
+      'group_id': scheduleId,
+      'label': name?.trim(),
+      'number': phone.trim(),
+      'sort_order': order,
     };
   }
 

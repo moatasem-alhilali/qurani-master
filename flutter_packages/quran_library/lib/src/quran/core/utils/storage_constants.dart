@@ -7,6 +7,7 @@ class _StorageConstants {
   // final String isDownloadedCodeV2Fonts = 'isDownloadedCodeV2Fonts';
   final String fontsSelected = 'fontsSelected2';
   final String isTajweed = 'isTajweed';
+  final String isTenRecitations = 'isTenRecitations';
   final String fontsDownloadedList = 'fontsDownloadedList';
   final String loadedFontPages = 'loadedFontPages';
   final String isBold = 'IS_BOLD_BOOL';
@@ -18,6 +19,14 @@ class _StorageConstants {
   final String translationValue = 'TRANSLATE_VALUE';
   final String isTafsir = 'IS_TAFSEER';
   final String fontSize = 'FONT_SIZE';
+
+  /// Display Mode
+  final String displayMode = 'DISPLAY_MODE';
+
+  /// Auto Scroll
+  final String autoScrollSpeed = 'AUTO_SCROLL_SPEED';
+  final String autoScrollStopCondition = 'AUTO_SCROLL_STOP_CONDITION';
+  final String autoScrollPageCount = 'AUTO_SCROLL_PAGE_COUNT';
 
   ///Singleton factory
   static final _StorageConstants _instance = _StorageConstants._internal();
