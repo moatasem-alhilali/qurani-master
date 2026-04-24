@@ -13,6 +13,11 @@ class QuranLibraryTheme extends StatelessWidget {
   final BookmarksTabStyle bookmarksTabStyle;
   final TopBottomQuranStyle topBottomQuranStyle;
   final AyahDownloadManagerStyle ayahDownloadManagerStyle;
+  final DisplayModeBarStyle? displayModeBarStyle;
+  final AyahTafsirInlineStyle? ayahTafsirInlineStyle;
+  final QuranTafsirSideStyle? quranTafsirSideStyle;
+  final WordInfoBottomSheetStyle? wordInfoBottomSheetStyle;
+  final AutoScrollStyle? autoScrollStyle;
   final Widget child;
 
   const QuranLibraryTheme({
@@ -28,6 +33,11 @@ class QuranLibraryTheme extends StatelessWidget {
     required this.bookmarksTabStyle,
     required this.topBottomQuranStyle,
     required this.ayahDownloadManagerStyle,
+    this.displayModeBarStyle,
+    this.ayahTafsirInlineStyle,
+    this.quranTafsirSideStyle,
+    this.wordInfoBottomSheetStyle,
+    this.autoScrollStyle,
     required this.child,
   });
 
@@ -56,7 +66,31 @@ class QuranLibraryTheme extends StatelessWidget {
                         style: topBarStyle,
                         child: AyahDownloadManagerTheme(
                           style: ayahDownloadManagerStyle,
-                          child: child,
+                          child: _wrapIfNotNull(
+                            displayModeBarStyle,
+                            (s, c) => DisplayModeBarTheme(style: s, child: c),
+                            _wrapIfNotNull(
+                              ayahTafsirInlineStyle,
+                              (s, c) =>
+                                  AyahTafsirInlineTheme(style: s, child: c),
+                              _wrapIfNotNull(
+                                quranTafsirSideStyle,
+                                (s, c) =>
+                                    QuranTafsirSideTheme(style: s, child: c),
+                                _wrapIfNotNull(
+                                  wordInfoBottomSheetStyle,
+                                  (s, c) => WordInfoBottomSheetTheme(
+                                      style: s, child: c),
+                                  _wrapIfNotNull(
+                                    autoScrollStyle,
+                                    (s, c) =>
+                                        AutoScrollTheme(style: s, child: c),
+                                    child,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -69,6 +103,16 @@ class QuranLibraryTheme extends StatelessWidget {
       ),
     );
   }
+}
+
+/// مساعد شرطي: يلتف بالـ InheritedWidget فقط إذا كان النمط غير فارغ
+Widget _wrapIfNotNull<T>(
+  T? style,
+  Widget Function(T style, Widget child) wrapper,
+  Widget child,
+) {
+  if (style != null) return wrapper(style, child);
+  return child;
 }
 
 /// مزود نمط SnackBar
@@ -139,6 +183,23 @@ class TajweedMenuTheme extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant TajweedMenuTheme oldWidget) =>
+      style != oldWidget.style;
+}
+
+/// مزود نمط حوار معلومات الكلمة (Word Info)
+class WordInfoBottomSheetTheme extends InheritedWidget {
+  final WordInfoBottomSheetStyle style;
+  const WordInfoBottomSheetTheme({
+    super.key,
+    required this.style,
+    required super.child,
+  });
+
+  static WordInfoBottomSheetTheme? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<WordInfoBottomSheetTheme>();
+
+  @override
+  bool updateShouldNotify(covariant WordInfoBottomSheetTheme oldWidget) =>
       style != oldWidget.style;
 }
 
@@ -219,5 +280,47 @@ class AyahDownloadManagerTheme extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant AyahDownloadManagerTheme oldWidget) =>
+      style != oldWidget.style;
+}
+
+/// مزود نمط شريط أزرار أوضاع العرض
+class DisplayModeBarTheme extends InheritedWidget {
+  final DisplayModeBarStyle style;
+  const DisplayModeBarTheme(
+      {super.key, required this.style, required super.child});
+
+  static DisplayModeBarTheme? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<DisplayModeBarTheme>();
+
+  @override
+  bool updateShouldNotify(covariant DisplayModeBarTheme oldWidget) =>
+      style != oldWidget.style;
+}
+
+/// مزود نمط وضع الآية مع التفسير المدمج
+class AyahTafsirInlineTheme extends InheritedWidget {
+  final AyahTafsirInlineStyle style;
+  const AyahTafsirInlineTheme(
+      {super.key, required this.style, required super.child});
+
+  static AyahTafsirInlineTheme? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AyahTafsirInlineTheme>();
+
+  @override
+  bool updateShouldNotify(covariant AyahTafsirInlineTheme oldWidget) =>
+      style != oldWidget.style;
+}
+
+/// مزود نمط وضع المصحف مع التفسير الجانبي
+class QuranTafsirSideTheme extends InheritedWidget {
+  final QuranTafsirSideStyle style;
+  const QuranTafsirSideTheme(
+      {super.key, required this.style, required super.child});
+
+  static QuranTafsirSideTheme? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<QuranTafsirSideTheme>();
+
+  @override
+  bool updateShouldNotify(covariant QuranTafsirSideTheme oldWidget) =>
       style != oldWidget.style;
 }

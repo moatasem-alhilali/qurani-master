@@ -37,4 +37,15 @@ class BasmalaStyle {
     this.basmalaFontSize,
     this.verticalPadding,
   });
+
+  factory BasmalaStyle.downloadFonts(
+      {required bool isDark, required BuildContext context}) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    return BasmalaStyle(
+      basmalaColor: AppColors.getTextColor(isDark),
+      basmalaFontSize: isLandscape ? 80.0.sp : 20.0.sp,
+      verticalPadding: 0.0,
+    );
+  }
 }

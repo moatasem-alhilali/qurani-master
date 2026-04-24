@@ -38,6 +38,7 @@ class QuranPagesScreen extends StatelessWidget {
     this.isFontsLocal = false,
     this.fontsName = '',
     this.ayahBookmarked = const [],
+    this.isAyahBookmarked,
     this.ayahStyle,
     this.surahStyle,
     this.isShowAudioSlider = true,
@@ -64,6 +65,7 @@ class QuranPagesScreen extends StatelessWidget {
     this.snackBarStyle,
     this.ayahMenuStyle,
     this.bookmarksTabStyle,
+    this.wordInfoBottomSheetStyle,
   }) : assert(
           (page != null && startPage == null && endPage == null) ||
               (page == null && (startPage != null || endPage != null)),
@@ -100,6 +102,7 @@ class QuranPagesScreen extends StatelessWidget {
   final bool? isFontsLocal;
   final String? fontsName;
   final List<int>? ayahBookmarked;
+  final bool Function(AyahModel ayah)? isAyahBookmarked;
   final AyahAudioStyle? ayahStyle;
   final SurahAudioStyle? surahStyle;
   final bool? isShowAudioSlider;
@@ -162,6 +165,11 @@ class QuranPagesScreen extends StatelessWidget {
   ///
   /// [bookmarksTabStyle] Bookmarks tab style customization for the Quran
   final BookmarksTabStyle? bookmarksTabStyle;
+
+  /// تخصيص نمط تبويب معلومات الكلمة الخاص بالمصحف
+  ///
+  /// [wordInfoBottomSheetStyle] Word info bottom sheet style customization for the Quran
+  final WordInfoBottomSheetStyle? wordInfoBottomSheetStyle;
 
   // ——— تحديد صفحة واحدة أو نطاق صفحات ———
   final int? page; // 1..604
@@ -253,16 +261,12 @@ class QuranPagesScreen extends StatelessWidget {
     final int startIndex = sp - 1; // محول إلى 0-based
     final int count = (ep - sp) + 1; // عدد الصفحات
 
-    if (QuranCtrl.instance.isDownloadFonts) {
-      // تنفيذ بعد انتهاء الإطار لتجنّب أي تجميد
-      Future.microtask(() => QuranCtrl.instance
-          .prepareFonts(startIndex, isFontsLocal: isFontsLocal!));
-    }
     final String deviceLocale = Localizations.localeOf(context).languageCode;
     final String languageCode = appLanguageCode ?? deviceLocale;
     return PopScope(
       onPopInvokedWithResult: (b, _) async {
         QuranCtrl.instance.state.isShowMenu.value = false;
+        QuranCtrl.instance.unregisterLocalPageController();
       },
       child: ScaleKitBuilder(
         designWidth: 375,
@@ -291,6 +295,9 @@ class QuranPagesScreen extends StatelessWidget {
               TopBottomQuranStyle.defaults(isDark: isDark, context: context),
           ayahDownloadManagerStyle: ayahDownloadManagerStyle ??
               AyahDownloadManagerStyle.defaults(
+                  isDark: isDark, context: context),
+          wordInfoBottomSheetStyle: wordInfoBottomSheetStyle ??
+              WordInfoBottomSheetStyle.defaults(
                   isDark: isDark, context: context),
           child: Scaffold(
             resizeToAvoidBottomInset: false,
@@ -352,6 +359,7 @@ class QuranPagesScreen extends StatelessWidget {
                           isDark: isDark,
                           fontsName: fontsName,
                           ayahBookmarked: ayahBookmarked,
+                          isAyahBookmarked: isAyahBookmarked,
                           userContext: parentContext,
                           pageIndex: globalIndex,
                           quranCtrl: quranCtrl,
@@ -365,6 +373,9 @@ class QuranPagesScreen extends StatelessWidget {
                   if (withPageView) {
                     // PageView محلي على النطاق فقط
                     final controller = PageController(initialPage: 0);
+                    // تسجيل المتحكم المحلي لدعم التنقل من الفواصل وغيرها
+                    quranCtrl.registerLocalPageController(
+                        controller, startIndex, count);
                     body = PageView.builder(
                       itemCount: count,
                       controller: controller,
@@ -384,9 +395,6 @@ class QuranPagesScreen extends StatelessWidget {
                           quranCtrl.state.currentPageNumber.value =
                               globalIndex + 1;
                           quranCtrl.saveLastPage(globalIndex + 1);
-                          if (quranCtrl.currentRecitation.requiresDownload) {
-                            await quranCtrl.prepareFonts(globalIndex);
-                          }
                         });
                       },
                       itemBuilder: (ctx, localIndex) {

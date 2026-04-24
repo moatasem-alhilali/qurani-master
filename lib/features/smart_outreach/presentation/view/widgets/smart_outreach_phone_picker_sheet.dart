@@ -8,14 +8,14 @@ Future<String?> showSmartOutreachPhonePicker(
       .map((value) => value.trim())
       .where((value) => value.isNotEmpty)
       .toSet()
-      .toList(growable: false);
+      .toList();
 
   if (unique.isEmpty) {
-    return Future<String?>.value(null);
+    return Future.value();
   }
 
   if (unique.length == 1) {
-    return Future<String?>.value(unique.first);
+    return Future.value(unique.first);
   }
 
   return showModalBottomSheet<String>(
@@ -26,8 +26,8 @@ Future<String?> showSmartOutreachPhonePicker(
           mainAxisSize: MainAxisSize.min,
           children: [
             const ListTile(
-              title: Text('اختر رقم الهاتف'),
-              subtitle: Text('هذه الجهة تحتوي على أكثر من رقم'),
+              title: Text('اختر الرقم'),
+              subtitle: Text('هذا الاسم فيه أكثر من رقم'),
             ),
             ...unique.map(
               (phone) => ListTile(

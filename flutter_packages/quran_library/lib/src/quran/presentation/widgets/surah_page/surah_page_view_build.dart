@@ -22,6 +22,7 @@ class SurahPageViewBuild extends StatelessWidget {
     this.ayahIconColor,
     this.showAyahBookmarkedIcon = true,
     this.ayahBookmarked = const [],
+    this.isAyahBookmarked,
     this.onAyahLongPress,
     this.onSurahBannerPress,
     this.bannerStyle,
@@ -51,6 +52,7 @@ class SurahPageViewBuild extends StatelessWidget {
   final Color? ayahIconColor;
   final bool showAyahBookmarkedIcon;
   final List<int> ayahBookmarked;
+  final bool Function(AyahModel ayah)? isAyahBookmarked;
 
   final void Function(LongPressStartDetails details, AyahModel ayah)?
       onAyahLongPress;
@@ -71,95 +73,82 @@ class SurahPageViewBuild extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final lineHeight = SurahCtrl.instance.calculateDynamicLineHeight(
-          availableHeight: constraints.maxHeight,
-          pageIndex: surahPageIndex,
-          hasHeader: showHeader,
-          hasBasmala: showBasmala,
-        );
-
         Widget pageBody = RepaintBoundary(
           child: FittedBox(
             fit: BoxFit.fitWidth,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (showHeader)
-                  SurahHeaderWidget(
-                    surahNumber,
-                    bannerStyle: bannerStyle ??
-                        BannerStyle(
-                          isImage: false,
-                          bannerSvgPath: AssetsPath.assets.surahSvgBanner,
-                          bannerSvgHeight: Responsive.isDesktop(context)
-                              ? 50.0.h.clamp(70, 150)
-                              : 35.0.h.clamp(35, 90),
-                          bannerSvgWidth: 150.0.w.clamp(150, 250),
-                          bannerImagePath: '',
-                          bannerImageHeight: 50,
-                          bannerImageWidth: double.infinity,
-                        ),
-                    surahNameStyle: surahNameStyle ??
-                        SurahNameStyle(
-                          surahNameSize: Responsive.isDesktop(context)
-                              ? 40.sp.clamp(40, 80)
-                              : 27.sp.clamp(27, 64),
-                          surahNameColor: AppColors.getTextColor(isDark),
-                        ),
-                    onSurahBannerPress: onSurahBannerPress,
-                    isDark: isDark,
+            child: SizedBox(
+              width: Responsive.isDesktop(context)
+                  ? deviceSize.width - 120.w
+                  : deviceSize.width - 20,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (showHeader)
+                    SurahHeaderWidget(
+                      surahNumber,
+                      bannerStyle: bannerStyle ??
+                          BannerStyle(
+                            isImage: false,
+                            bannerSvgPath: AssetsPath.assets.surahSvgBanner,
+                            bannerSvgHeight: Responsive.isDesktop(context)
+                                ? 50.0.h.clamp(70, 150)
+                                : 35.0.h.clamp(35, 90),
+                            bannerSvgWidth: 150.0.w.clamp(150, 250),
+                            bannerImagePath: '',
+                            bannerImageHeight: 50,
+                            bannerImageWidth: double.infinity,
+                          ),
+                      surahNameStyle: surahNameStyle ??
+                          SurahNameStyle(
+                            surahNameSize: Responsive.isDesktop(context)
+                                ? 40.sp.clamp(40, 80)
+                                : 27.sp.clamp(27, 64),
+                            surahNameColor: AppColors.getTextColor(isDark),
+                          ),
+                      onSurahBannerPress: onSurahBannerPress,
+                      isDark: isDark,
+                    ),
+                  if (showBasmala)
+                    BasmallahWidget(
+                      surahNumber: surahNumber,
+                      basmalaStyle: basmalaStyle ??
+                          BasmalaStyle(
+                            basmalaColor: AppColors.getTextColor(isDark),
+                            basmalaFontSize: 22.0.sp.clamp(22, 50),
+                            verticalPadding: 0.0,
+                          ),
+                    ),
+                  GetBuilder<BookmarksCtrl>(
+                    id: 'bookmarks',
+                    builder: (bookmarksCtrl) => PageBuild(
+                      pageIndex: globalPageIndex,
+                      surahNumber: surahNumber,
+                      surahFilterNumber: surahNumber,
+                      bannerStyle: bannerStyle,
+                      isDark: isDark,
+                      surahNameStyle: surahNameStyle,
+                      onSurahBannerPress: onSurahBannerPress,
+                      basmalaStyle: basmalaStyle,
+                      textColor: ayahSelectedFontColor ?? textColor,
+                      bookmarks: bookmarksCtrl.bookmarks,
+                      onAyahLongPress: onAyahLongPress,
+                      bookmarkList: bookmarkList,
+                      ayahIconColor: ayahIconColor,
+                      showAyahBookmarkedIcon: showAyahBookmarkedIcon,
+                      bookmarksAyahs: bookmarksCtrl.bookmarksAyahs,
+                      bookmarksColor: bookmarksColor,
+                      ayahSelectedBackgroundColor: ayahSelectedBackgroundColor,
+                      isFontsLocal: false,
+                      fontsName: '',
+                      ayahBookmarked: ayahBookmarked,
+                      isAyahBookmarked: isAyahBookmarked,
+                      context: context,
+                      quranCtrl: QuranCtrl.instance,
+                    ),
                   ),
-                if (showBasmala)
-                  BasmallahWidget(
-                    surahNumber: surahNumber,
-                    basmalaStyle: basmalaStyle ??
-                        BasmalaStyle(
-                          basmalaColor: AppColors.getTextColor(isDark),
-                          basmalaFontSize: 22.0.sp.clamp(22, 50),
-                          verticalPadding: 0.0,
-                        ),
-                  ),
-                ...surahPage.lines.map(
-                  (line) => SizedBox(
-                    width: Responsive.isDesktop(context)
-                        ? deviceSize.width - 120.w
-                        : deviceSize.width - 20,
-                    height: lineHeight,
-                    child: GetBuilder<BookmarksCtrl>(
-                        id: 'bookmarks',
-                        builder: (bookmarksCtrl) => DefaultFontsBuild(
-                              context,
-                              line,
-                              bookmarksCtrl.bookmarksAyahs,
-                              bookmarksCtrl.bookmarks,
-                              isDark: isDark,
-                              boxFit: line.ayahs.last.centered!
-                                  ? BoxFit.contain
-                                  : surahNumber == 1 ||
-                                          (surahNumber == 2 &&
-                                              globalPageIndex == 1)
-                                      ? BoxFit.scaleDown
-                                      : BoxFit.fitWidth,
-                              onDefaultAyahLongPress: onAyahLongPress,
-                              bookmarksColor: bookmarksColor,
-                              textColor: ayahSelectedFontColor ??
-                                  textColor ??
-                                  AppColors.getTextColor(isDark),
-                              bookmarkList: bookmarkList,
-                              pageIndex: globalPageIndex,
-                              ayahSelectedBackgroundColor:
-                                  ayahSelectedBackgroundColor,
-                              ayahBookmarked: ayahBookmarked,
-                              ayahIconColor: ayahIconColor ??
-                                  Theme.of(context).colorScheme.primary,
-                              showAyahBookmarkedIcon: showAyahBookmarkedIcon,
-                              ayahSelectedFontColor:
-                                  ayahSelectedBackgroundColor,
-                            )),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

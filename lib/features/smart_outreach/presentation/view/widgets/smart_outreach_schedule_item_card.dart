@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 
 class SmartOutreachScheduleItemCard extends StatelessWidget {
@@ -9,7 +6,6 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
     required this.bundle,
     required this.onTap,
     required this.onStart,
-    required this.onPreviewNotification,
     required this.onDelete,
     required this.onToggle,
     super.key,
@@ -18,7 +14,6 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
   final SmartOutreachScheduleBundle bundle;
   final VoidCallback onTap;
   final VoidCallback onStart;
-  final VoidCallback onPreviewNotification;
   final VoidCallback onDelete;
   final ValueChanged<bool> onToggle;
 
@@ -30,22 +25,34 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
       minute: schedule.minute,
     ).format(context);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(12.r),
-      onTap: onTap,
-      child: CardWidget(
-        padding: EdgeInsets.all(12.w),
+    final daysLabel = schedule.isDaily
+        ? 'كل يوم'
+        : schedule.scheduleDays.map(_weekdayLabel).join('، ');
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 Expanded(
-                  child: Text(
-                    schedule.title,
-                    style: context.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        schedule.title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$timeLabel • $daysLabel',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                 ),
                 Switch(
@@ -54,29 +61,38 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 4.h),
-            Text(
-              '$timeLabel • ${bundle.contacts.length} جهات اتصال',
-              style: context.bodySmall,
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: <Widget>[
+                _MetaChip(
+                  icon: Icons.group_outlined,
+                  label: '${bundle.contacts.length} رقم',
+                ),
+                _MetaChip(
+                  icon: Icons.ring_volume_outlined,
+                  label: 'انتظار الرد ${schedule.ringTimeout}ث',
+                ),
+                _MetaChip(
+                  icon: Icons.call_end_outlined,
+                  label: 'بعد الرد ${schedule.hangupDelay}ث',
+                ),
+                _MetaChip(
+                  icon: Icons.timelapse_outlined,
+                  label: 'بين الأرقام ${schedule.delayBetweenCalls}ث',
+                ),
+              ],
             ),
-            if ((schedule.note ?? '').trim().isNotEmpty) ...[
-              SizedBox(height: 6.h),
-              Text(
-                schedule.note!,
-                style: context.bodySmall,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-            SizedBox(height: 10.h),
+            const SizedBox(height: 14),
             Row(
-              children: [
+              children: <Widget>[
                 FilledButton.icon(
                   onPressed: onStart,
                   icon: const Icon(Icons.play_arrow),
-                  label: const Text('ابدأ'),
+                  label: const Text('ابدأ الآن'),
                 ),
-                SizedBox(width: 8.w),
+                const SizedBox(width: 8),
                 OutlinedButton.icon(
                   onPressed: onTap,
                   icon: const Icon(Icons.edit_outlined),
@@ -86,17 +102,62 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
                 IconButton(
                   onPressed: onDelete,
                   icon: const Icon(Icons.delete_outline),
+                  tooltip: 'حذف القائمة',
                 ),
               ],
             ),
-            SizedBox(height: 6.h),
-            OutlinedButton.icon(
-              onPressed: onPreviewNotification,
-              icon: const Icon(Icons.notification_important_outlined),
-              label: const Text('تجربة الإشعار (بعد 5 ثوانٍ)'),
-            ),
           ],
         ),
+      ),
+    );
+  }
+
+  static String _weekdayLabel(int day) {
+    switch (day) {
+      case 1:
+        return 'الإثنين';
+      case 2:
+        return 'الثلاثاء';
+      case 3:
+        return 'الأربعاء';
+      case 4:
+        return 'الخميس';
+      case 5:
+        return 'الجمعة';
+      case 6:
+        return 'السبت';
+      case 7:
+        return 'الأحد';
+      default:
+        return '$day';
+    }
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 16),
+          const SizedBox(width: 6),
+          Text(label),
+        ],
       ),
     );
   }

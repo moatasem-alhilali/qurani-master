@@ -90,8 +90,103 @@ class FontsDownloadWidget extends StatelessWidget {
               ),
             ),
           ),
+          TajweedButtonWidget(
+              background: background,
+              outlineColor: outlineColor,
+              downloadFontsDialogStyle: downloadFontsDialogStyle,
+              textColor: textColor,
+              accent: accent),
+          AutoScrollSettingsWidget(
+            isDark: isDark,
+            accent: accent,
+            outlineColor: outlineColor,
+            textColor: textColor,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class TajweedButtonWidget extends StatelessWidget {
+  const TajweedButtonWidget({
+    super.key,
+    required this.background,
+    required this.outlineColor,
+    required this.downloadFontsDialogStyle,
+    required this.textColor,
+    required this.accent,
+  });
+
+  final Color background;
+  final Color outlineColor;
+  final DownloadFontsDialogStyle? downloadFontsDialogStyle;
+  final Color textColor;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final fontsSelected = QuranCtrl.instance.state.fontsSelected.value == 0;
+    final isTajweed = QuranCtrl.instance.state.isTajweedEnabled.value == true;
+    String tajweedNames =
+        downloadFontsDialogStyle?.tajweedOptionNames ?? 'مع التجويد';
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      child: !fontsSelected
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 12.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: InkWell(
+                  onTap: () {
+                    QuranCtrl.instance.state.isTajweedEnabled.toggle();
+                    GetStorage().write(_StorageConstants().isTajweed,
+                        QuranCtrl.instance.state.isTajweedEnabled.value);
+                    Get.forceAppUpdate();
+                  },
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: AnimatedContainer(
+                    height: isTajweed ? 55 : 45,
+                    alignment: Alignment.center,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOut,
+                    margin: const EdgeInsets.symmetric(vertical: 2.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      color: isTajweed
+                          ? outlineColor.withValues(alpha: .05)
+                          : Colors.transparent,
+                      border: Border.all(color: outlineColor, width: 1),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          tajweedNames,
+                          style: downloadFontsDialogStyle?.fontNameStyle ??
+                              TextStyle(
+                                height: 1.3,
+                                fontSize: 16,
+                                fontFamily: 'cairo',
+                                color: textColor,
+                                package: 'quran_library',
+                              ),
+                        ),
+                        Icon(
+                          isTajweed
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          color: accent,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }
@@ -124,151 +219,184 @@ class _FontsRecitationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int index = recitation.recitationIndex;
-    final bool isDownloadOption = recitation.requiresDownload;
 
     return Obx(() {
       final bool isSelected = ctrl.state.fontsSelected.value == index;
-      final bool isThisDownloading =
-          ctrl.state.downloadingFontIndex.value == index;
 
-      final bool preparing =
-          isThisDownloading ? ctrl.state.isPreparingDownload.value : false;
-      final bool downloading =
-          isThisDownloading ? ctrl.state.isDownloadingFonts.value : false;
+      // Hafs دائمًا جاهزة؛ خطوط التجويد تحتاج تحميل ديناميكي
+      final bool downloaded = index == 0 || ctrl.state.fontsReady.value;
+      final bool loading =
+          index == 1 && isSelected && !ctrl.state.fontsReady.value;
+      final double progress = ctrl.state.fontsLoadProgress.value * 100;
 
-      final double progress = ctrl.state.fontsDownloadProgress.value;
-      final bool downloaded = _isDownloaded(
-        ctrl: ctrl,
-        index: index,
-        isFontsLocal: isFontsLocal,
-        isDownloadOption: isDownloadOption,
-      );
-
-      final bool canSelect = !isDownloadOption || downloaded;
-      final bool canTap = isFontsLocal || kIsWeb || canSelect;
-
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12.0),
-        child: AnimatedContainer(
-          height: isSelected ? 65 : 55,
-          alignment: Alignment.center,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(vertical: 6.0),
-          decoration: BoxDecoration(
-            color:
-                isSelected ? accent.withValues(alpha: .05) : Colors.transparent,
-            border: Border.all(color: outlineColor, width: 1),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              _DownloadProgressBackground(
-                isVisible: isDownloadOption &&
-                    !isFontsLocal &&
-                    !kIsWeb &&
-                    (preparing || downloading),
-                progress: progress,
-                downloading: downloading,
-                style: style,
-                accent: accent,
-                background: background,
-              ),
-              InkWell(
-                onTap: canTap
-                    ? () => ctrl.selectRecitation(
-                          recitation,
-                          isFontsLocal: isFontsLocal,
-                        )
-                    : null,
-                child: SizedBox(
-                  height: isSelected ? 65 : 55,
-                  child: Row(
-                    children: [
-                      (isFontsLocal || kIsWeb || !isDownloadOption)
-                          ? const SizedBox.shrink()
-                          : _DownloadActionButton(
-                              index: index,
-                              ctrl: ctrl,
-                              isSelected: isSelected,
-                              downloaded: downloaded,
-                              preparing: preparing,
-                              downloading: downloading,
-                              accent: accent,
-                              style: style,
-                            ),
-                      Expanded(
-                        flex: 9,
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.symmetric(
-                              horizontal: 12.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 9,
-                                child: Align(
-                                  alignment: AlignmentDirectional.centerStart,
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      _titleText(
-                                        style: style,
-                                        isDownloadOption: isDownloadOption,
-                                        downloading: downloading,
-                                        progress: progress,
-                                        index: index,
-                                        recitation: recitation,
-                                        languageCode: languageCode,
-                                      ),
-                                      style: style?.fontNameStyle ??
-                                          TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: 'cairo',
-                                            color: textColor,
-                                            package: 'quran_library',
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  isSelected
-                                      ? Icons.radio_button_checked
-                                      : Icons.radio_button_unchecked,
-                                  color: accent,
-                                ),
-                              ),
-                            ],
+      return DownloadButtonWidget(
+        onTap: () => ctrl.selectRecitation(
+          recitation,
+          isFontsLocal: isFontsLocal,
+        ),
+        preparing: false,
+        downloading: loading,
+        progress: progress,
+        isSelected: isSelected,
+        downloaded: downloaded,
+        borderColor: outlineColor,
+        valueColor: style?.linearProgressColor ?? accent,
+        isVisible: loading,
+        background: (style?.linearProgressBackgroundColor ?? background)
+            .withValues(alpha: .05),
+        children: [
+          const SizedBox.shrink(),
+          Expanded(
+            flex: 9,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 12.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 9,
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          _titleText(
+                            style: style,
+                            isDownloadOption: false,
+                            downloading: false,
+                            progress: 100.0,
+                            index: index,
+                            recitation: recitation,
+                            languageCode: languageCode,
                           ),
+                          style: style?.fontNameStyle ??
+                              TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'cairo',
+                                color: textColor,
+                                package: 'quran_library',
+                              ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    flex: 1,
+                    child: Icon(
+                      isSelected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: accent,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     });
   }
 
-  static bool _isDownloaded({
-    required QuranCtrl ctrl,
-    required int index,
-    required bool isFontsLocal,
-    required bool isDownloadOption,
-  }) {
-    return isFontsLocal ||
-        (kIsWeb) ||
-        !isDownloadOption ||
-        ctrl.state.fontsDownloadedList.contains(index) ||
-        (ctrl.state.isFontDownloaded.value &&
-            ctrl.state.fontsDownloadedList.isEmpty);
-  }
+  // Widget downloadButtonWidget(
+  //     bool isDownloadOption,
+  //     bool preparing,
+  //     bool downloading,
+  //     double progress,
+  //     bool canTap,
+  //     bool isSelected,
+  //     int index,
+  //     bool downloaded) {
+  //   return Stack(
+  //     alignment: Alignment.center,
+  //     children: [
+  //       _DownloadProgressBackground(
+  //         isVisible: isDownloadOption &&
+  //             !isFontsLocal &&
+  //             !kIsWeb &&
+  //             (preparing || downloading),
+  //         progress: progress,
+  //         downloading: downloading,
+  //         style: style,
+  //         accent: accent,
+  //         background: background,
+  //       ),
+  //       InkWell(
+  //         onTap: canTap
+  //             ? () => ctrl.selectRecitation(
+  //                   recitation,
+  //                   isFontsLocal: isFontsLocal,
+  //                 )
+  //             : null,
+  //         child: SizedBox(
+  //           height: isSelected ? 65 : 55,
+  //           child: Row(
+  //             children: [
+  //               (isFontsLocal || kIsWeb || !isDownloadOption)
+  //                   ? const SizedBox.shrink()
+  //                   : _DownloadActionButton(
+  //                       index: index,
+  //                       ctrl: ctrl,
+  //                       isSelected: isSelected,
+  //                       downloaded: downloaded,
+  //                       preparing: preparing,
+  //                       downloading: downloading,
+  //                       accent: accent,
+  //                       style: style,
+  //                     ),
+  //               Expanded(
+  //                 flex: 9,
+  //                 child: Padding(
+  //                   padding:
+  //                       const EdgeInsetsDirectional.symmetric(horizontal: 12.0),
+  //                   child: Row(
+  //                     children: [
+  //                       Expanded(
+  //                         flex: 9,
+  //                         child: Align(
+  //                           alignment: AlignmentDirectional.centerStart,
+  //                           child: FittedBox(
+  //                             fit: BoxFit.scaleDown,
+  //                             child: Text(
+  //                               _titleText(
+  //                                 style: style,
+  //                                 isDownloadOption: isDownloadOption,
+  //                                 downloading: downloading,
+  //                                 progress: progress,
+  //                                 index: index,
+  //                                 recitation: recitation,
+  //                                 languageCode: languageCode,
+  //                               ),
+  //                               style: style?.fontNameStyle ??
+  //                                   TextStyle(
+  //                                     fontSize: 16,
+  //                                     fontFamily: 'cairo',
+  //                                     color: textColor,
+  //                                     package: 'quran_library',
+  //                                   ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       Expanded(
+  //                         flex: 1,
+  //                         child: Icon(
+  //                           isSelected
+  //                               ? Icons.radio_button_checked
+  //                               : Icons.radio_button_unchecked,
+  //                           color: accent,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   static String _titleText({
     required DownloadFontsDialogStyle? style,
@@ -279,11 +407,6 @@ class _FontsRecitationTile extends StatelessWidget {
     required QuranRecitation recitation,
     required String? languageCode,
   }) {
-    if (downloading && isDownloadOption) {
-      return '${style?.downloadingText ?? 'جاري التحميل'} ${progress.toStringAsFixed(1)}%'
-          .convertNumbersAccordingToLang(languageCode: languageCode ?? 'ar');
-    }
-
     final names = style?.recitationNames;
     if (names != null) {
       final int listIndex = QuranRecitation.values.indexOf(recitation);
@@ -302,120 +425,5 @@ class _FontsRecitationTile extends StatelessWidget {
     }
 
     return recitation.arabicName;
-  }
-}
-
-class _DownloadActionButton extends StatelessWidget {
-  final int index;
-  final QuranCtrl ctrl;
-  final bool isSelected;
-  final bool downloaded;
-  final bool preparing;
-  final bool downloading;
-  final Color accent;
-  final DownloadFontsDialogStyle? style;
-
-  const _DownloadActionButton({
-    required this.index,
-    required this.ctrl,
-    required this.isSelected,
-    required this.downloaded,
-    required this.preparing,
-    required this.downloading,
-    required this.accent,
-    required this.style,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const double buttonHeight = 55;
-
-    return SizedBox(
-      width: 40,
-      height: isSelected ? 65 : buttonHeight,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (preparing || downloading)
-            SizedBox(
-              width: 22,
-              height: 22,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.2,
-                color: accent,
-              ),
-            )
-          else
-            IconButton(
-              tooltip: downloaded ? 'حذف الخطوط' : 'تحميل الخطوط',
-              onPressed: () async {
-                if (downloaded) {
-                  await ctrl.deleteFontsForIndex(index);
-                  return;
-                }
-
-                if (!ctrl.state.isDownloadingFonts.value &&
-                    !ctrl.state.isPreparingDownload.value) {
-                  await ctrl.downloadAllFontsZipFile(index);
-                }
-              },
-              icon: Icon(
-                downloaded ? Icons.delete_forever : Icons.download_outlined,
-                color: style?.iconColor ?? accent,
-                size: style?.iconSize,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DownloadProgressBackground extends StatelessWidget {
-  final bool isVisible;
-  final double progress;
-  final bool downloading;
-  final DownloadFontsDialogStyle? style;
-  final Color accent;
-  final Color background;
-
-  const _DownloadProgressBackground({
-    required this.isVisible,
-    required this.progress,
-    required this.downloading,
-    required this.style,
-    required this.accent,
-    required this.background,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isVisible) return const SizedBox.shrink();
-
-    const double buttonHeight = 55;
-    const double radius = 8;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: SizedBox(
-        width: double.infinity,
-        height: buttonHeight,
-        child: TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.0, end: progress),
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.fastEaseInToSlowEaseOut,
-          builder: (context, value, child) => LinearProgressIndicator(
-            minHeight: buttonHeight,
-            value: downloading ? (value / 100).clamp(0.0, 1.0) : null,
-            backgroundColor:
-                (style?.linearProgressBackgroundColor ?? background)
-                    .withValues(alpha: .05),
-            valueColor: AlwaysStoppedAnimation<Color>(
-              (style?.linearProgressColor ?? accent).withValues(alpha: .25),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

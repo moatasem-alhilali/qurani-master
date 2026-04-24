@@ -324,6 +324,7 @@ extension AyahCtrlExtension on AudioCtrl {
       AyahAudioStyle? ayahAudioStyle,
       AyahDownloadManagerStyle? ayahDownloadManagerStyle,
       bool? isDarkMode}) async {
+    // getAyahUQNumber(QuranCtrl.instance.state.currentPageNumber.value - 1);
     if (!await validateBeforePlayAyah) {
       ToastUtils().showToast(
           context,
@@ -598,7 +599,7 @@ extension AyahCtrlExtension on AudioCtrl {
       {int? initialSurahToDownload,
       AyahAudioStyle? ayahStyle,
       AyahDownloadManagerStyle? style,
-      bool? isDark = true}) async {
+      bool? isDark = false}) async {
     // ابحث عن سياق يحوي MediaQuery لتجنّب أخطاء debugCheckHasMediaQuery
     BuildContext? resolveBottomSheetContext(BuildContext? ctx) {
       try {

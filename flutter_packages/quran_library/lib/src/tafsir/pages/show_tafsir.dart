@@ -29,6 +29,7 @@ class ShowTafseer extends StatelessWidget {
 
   final tafsirCtrl = TafsirCtrl.instance;
   final quranCtrl = QuranCtrl.instance;
+  final tajweedCtrl = TajweedAyaCtrl.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -54,86 +55,130 @@ class ShowTafseer extends StatelessWidget {
       builder: (tafsirCtrl) {
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: Container(
-            height: sheetHeight,
-            width: sheetWidth,
-            padding: const EdgeInsets.only(bottom: 16.0),
-            margin: EdgeInsets.symmetric(
-                horizontal: s.horizontalMargin ?? 0.0,
-                vertical: s.verticalMargin ?? 0.0),
-            decoration: BoxDecoration(
-              color: s.backgroundColor ??
-                  (isDark ? const Color(0xff1E1E1E) : Colors.white),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 16,
-                  offset: const Offset(0, -4),
+          child: DefaultTabController(
+            length: 2,
+            child: Container(
+              height: sheetHeight,
+              width: sheetWidth,
+              padding: const EdgeInsets.only(bottom: 16.0),
+              margin: EdgeInsets.symmetric(
+                  horizontal: s.horizontalMargin ?? 0.0,
+                  vertical: s.verticalMargin ?? 0.0),
+              decoration: BoxDecoration(
+                color: s.backgroundColor ??
+                    (isDark ? const Color(0xff1E1E1E) : Colors.white),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
-              ],
-            ),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(height: 8),
-                // خط فاصل جمالي
-                Container(
-                  width: 60,
-                  height: 5,
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: s.dividerColor ?? Colors.grey.shade500,
-                    borderRadius: BorderRadius.circular(3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 16,
+                    offset: const Offset(0, -4),
                   ),
-                ),
-                // شريط علوي احترافي
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      tafsirNameWidget,
-                      ChangeTafsirDialog(tafsirStyle: s, isDark: isDark),
-                      Row(
-                        children: [
-                          Container(
-                              width: 1,
-                              height: 24,
-                              color: Colors.grey.shade300),
-                          const SizedBox(width: 8),
-                          s.fontSizeWidget ??
-                              fontSizeDropDown(
-                                height: 30.0,
-                                tafsirStyle: s,
-                                isDark: isDark,
-                              ),
-                        ],
+                ],
+              ),
+              child: Column(
+                children: <Widget>[
+                  s.handleWidget ??
+                      Container(
+                        width: 60,
+                        height: 5,
+                        margin: const EdgeInsets.only(bottom: 8, top: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade500,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
                       ),
+                  TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelStyle: s.tabBarLabelStyle ??
+                        TextStyle(
+                          fontFamily: 'cairo',
+                          package: 'quran_library',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: AppColors.getTextColor(isDark),
+                        ),
+                    unselectedLabelStyle: s.tabBarUnselectedLabelStyle ??
+                        TextStyle(
+                          fontFamily: 'cairo',
+                          package: 'quran_library',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: AppColors.getTextColor(isDark),
+                        ),
+                    tabs: const [
+                      Tab(text: 'التفسير'),
+                      Tab(text: 'أحكام التجويد'),
                     ],
                   ),
-                ),
-                // محتوى التفسير
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      ),
-                    ),
-                    child: TafsirPagesBuild(
-                      pageIndex: pageIndex,
-                      ayahUQNumber: ayahUQNumber,
-                      tafsirStyle: s,
-                      isDark: isDark,
+                  const Divider(height: 1),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  tafsirNameWidget,
+                                  ChangeTafsirDialog(
+                                      tafsirStyle: s, isDark: isDark),
+                                  Row(
+                                    children: [
+                                      Container(
+                                          width: 1,
+                                          height: 24,
+                                          color: Colors.grey.shade300),
+                                      const SizedBox(width: 8),
+                                      s.fontSizeWidget ??
+                                          fontSizeDropDown(
+                                            height: 30.0,
+                                            tafsirStyle: s,
+                                            isDark: isDark,
+                                          ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(18),
+                                    topRight: Radius.circular(18),
+                                  ),
+                                ),
+                                child: TafsirPagesBuild(
+                                  pageIndex: pageIndex,
+                                  ayahUQNumber: ayahUQNumber,
+                                  tafsirStyle: s,
+                                  isDark: isDark,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        _TajweedAyaTab(
+                          ayahUQNumber: ayahUQNumber,
+                          ayahNumber: ayahNumber,
+                          quranCtrl: quranCtrl,
+                          tajweedCtrl: tajweedCtrl,
+                          isDark: isDark,
+                          tafsirStyle: s,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

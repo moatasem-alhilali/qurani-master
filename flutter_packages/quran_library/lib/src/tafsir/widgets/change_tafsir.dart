@@ -50,19 +50,21 @@ class ChangeTafsirDialog extends StatelessWidget {
                           .tafsirAndTranslationsItems[
                               tafsirCtrl.radioValue.value]
                           .name,
-                  style: QuranLibrary().cairoStyle.copyWith(
-                        color: tafsirStyle?.currentTafsirColor ??
-                            const Color(0xffCDAD80),
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: tafsirStyle?.currentTafsirTextStyle ??
+                      QuranLibrary().cairoStyle.copyWith(
+                            color: tafsirStyle?.currentTafsirColor ??
+                                const Color(0xffCDAD80),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 6),
-              Icon(Icons.keyboard_arrow_down_rounded,
-                  size: 24,
-                  color: tafsirStyle?.currentTafsirColor ?? Colors.grey),
+              tafsirStyle?.tafsirDropdownWidget ??
+                  Icon(Icons.keyboard_arrow_down_rounded,
+                      size: 24,
+                      color: tafsirStyle?.currentTafsirColor ?? Colors.grey),
             ],
           ),
         ),
@@ -91,7 +93,7 @@ class DailogBuild extends StatelessWidget {
       id: 'tafsirs_menu_list',
       builder: (tafsirCtrl) {
         return Dialog(
-          backgroundColor: tafsirStyle?.backgroundColor!,
+          backgroundColor: tafsirStyle?.dialogBackgroundColor!,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: ConstrainedBox(
@@ -116,6 +118,7 @@ class DailogBuild extends StatelessWidget {
                       backgroundGradient:
                           tafsirStyle?.dialogHeaderBackgroundGradient,
                       closeIconColor: tafsirStyle?.dialogCloseIconColor,
+                      titleTextStyle: tafsirStyle?.dialogHeaderTitleTextStyle,
                     ),
                   ),
                   Expanded(
@@ -169,10 +172,11 @@ class DailogBuild extends StatelessWidget {
         ),
         child: Text(
           title!,
-          style: QuranLibrary().cairoStyle.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: tafsirStyle?.textTitleColor!),
+          style: tafsirStyle?.dialogTypeTextStyle ??
+              QuranLibrary().cairoStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: tafsirStyle?.textTitleColor!),
           textAlign: TextAlign.center,
         ),
       );
@@ -244,11 +248,12 @@ class TafsirItemWidget extends StatelessWidget {
                     return isDownloaded.value
                         ? tafsirCtrl.getIsRemovableItem(tafsirIndex)
                             ? IconButton(
-                                icon: Icon(
-                                  Icons.delete_forever_outlined,
-                                  size: 22,
-                                  color: tafsirStyle.downloadIconColor,
-                                ),
+                                icon: tafsirStyle.removeTafsirIconWidget ??
+                                    Icon(
+                                      Icons.delete_forever_outlined,
+                                      size: 22,
+                                      color: tafsirStyle.downloadIconColor,
+                                    ),
                                 onPressed: () async {
                                   tafsirCtrl.update(['tafsirs_menu_list']);
                                   await tafsirCtrl.deleteTafsirOrTranslation(
@@ -258,8 +263,8 @@ class TafsirItemWidget extends StatelessWidget {
                             : Container(
                                 height: 20,
                                 width: 20,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 14),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 8),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -337,11 +342,14 @@ class TafsirItemWidget extends StatelessWidget {
                                     return Visibility(
                                       visible: !hideIcon,
                                       child: IconButton(
-                                        icon: Icon(
-                                          Icons.cloud_download_outlined,
-                                          size: 22,
-                                          color: tafsirStyle.downloadIconColor,
-                                        ),
+                                        icon: tafsirStyle
+                                                .downloadTafsirIconWidget ??
+                                            Icon(
+                                              Icons.cloud_download_outlined,
+                                              size: 22,
+                                              color:
+                                                  tafsirStyle.downloadIconColor,
+                                            ),
                                         onPressed: () async {
                                           tafsirCtrl.downloadIndex.value =
                                               tafsirIndex;
@@ -373,14 +381,16 @@ class TafsirItemWidget extends StatelessWidget {
                                 tafsirCtrl
                                     .tafsirAndTranslationsItems[tafsirIndex]
                                     .name,
-                            style: QuranLibrary().cairoStyle.copyWith(
-                                  color: tafsirCtrl.radioValue.value ==
-                                          tafsirIndex
-                                      ? tafsirStyle.selectedTafsirTextColor!
-                                      : tafsirStyle.unSelectedTafsirTextColor!,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: tafsirStyle.tafsirTextTextStyle ??
+                                QuranLibrary().cairoStyle.copyWith(
+                                      color: tafsirCtrl.radioValue.value ==
+                                              tafsirIndex
+                                          ? tafsirStyle.selectedTafsirTextColor!
+                                          : tafsirStyle
+                                              .unSelectedTafsirTextColor!,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
                           Text(
                             tafsirIndex >= 28
@@ -389,17 +399,9 @@ class TafsirItemWidget extends StatelessWidget {
                                     tafsirCtrl
                                         .tafsirAndTranslationsItems[tafsirIndex]
                                         .bookName,
-                            style: QuranLibrary().cairoStyle.copyWith(
-                                  color: tafsirCtrl.radioValue.value ==
-                                          tafsirIndex
-                                      ? tafsirStyle.selectedTafsirTextColor ??
-                                          (AppColors.getTextColor(isDark))
-                                      : tafsirStyle.unSelectedTafsirTextColor ??
-                                          (isDark
-                                              ? Colors.white
-                                              : Colors.black),
-                                  fontSize: 12,
-                                ),
+                            style: tafsirStyle.tafsirTextTextStyle!.copyWith(
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),

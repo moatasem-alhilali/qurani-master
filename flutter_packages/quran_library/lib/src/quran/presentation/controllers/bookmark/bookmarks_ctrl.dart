@@ -46,10 +46,22 @@ class BookmarksCtrl extends GetxController {
   /// color codes to lists of [BookmarkModel]s. The list contains the ayah Ids
   /// of all the bookmarks, and is used to check if an ayah has a bookmark or
   /// not.
-  List<int> get bookmarksAyahs => bookmarks.values
-      .expand((list) => list)
-      .map((bookmark) => bookmark.ayahId)
-      .toList();
+  List<int> get bookmarksAyahs => _bookmarksAyahsCache;
+
+  /// كاش داخلي لتجنب إعادة الحساب O(n) عند كل استدعاء
+  Set<int> _bookmarksAyahsSetCache = {};
+  List<int> _bookmarksAyahsCache = [];
+
+  /// Set بدل List للبحث O(1) بدل O(n)
+  Set<int> get bookmarksAyahsSet => _bookmarksAyahsSetCache;
+
+  void _rebuildBookmarksCache() {
+    _bookmarksAyahsCache = bookmarks.values
+        .expand((list) => list)
+        .map((bookmark) => bookmark.ayahId)
+        .toList();
+    _bookmarksAyahsSetCache = _bookmarksAyahsCache.toSet();
+  }
 
   // final BookmarkModel _searchBookmark =
   //     BookmarkModel(id: 3, colorCode: 0xFFF7EFE0, name: 'search Bookmark');
@@ -97,6 +109,7 @@ class BookmarksCtrl extends GetxController {
       }
     }
     _quranRepository.saveBookmarks(_flattenBookmarks());
+    _rebuildBookmarksCache();
     update(['bookmarks']);
   }
 
@@ -136,6 +149,7 @@ class BookmarksCtrl extends GetxController {
     );
 
     _quranRepository.saveBookmarks(_flattenBookmarks());
+    _rebuildBookmarksCache();
     update(['bookmarks']);
     QuranCtrl.instance.update();
   }
@@ -159,6 +173,7 @@ class BookmarksCtrl extends GetxController {
     });
 
     _quranRepository.saveBookmarks(_flattenBookmarks());
+    _rebuildBookmarksCache();
     update(['bookmarks']);
     QuranCtrl.instance.update();
   }

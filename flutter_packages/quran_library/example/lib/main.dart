@@ -1,11 +1,12 @@
 // import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quran_library/quran_library.dart';
 
 Future<void> main() async {
   await WidgetsFlutterBinding.ensureInitialized();
   await QuranLibrary.init();
+  QuranLibrary.initWordAudio();
   runApp(
     // DevicePreview(
     //   builder: (context) => const MyApp(),
@@ -27,11 +28,11 @@ class _MyAppState extends State<MyApp> {
     const TextScaler fixedScaler = TextScaler.linear(1.0);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // localizationsDelegates: const [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      // ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       supportedLocales: const [
         Locale('en'),
         Locale('ar'),
@@ -74,13 +75,27 @@ class FullQuran extends StatelessWidget {
   Widget build(BuildContext context) {
     return QuranLibraryScreen(
       parentContext: context,
-      isDark: true,
+      isDark: false,
+      isShowTabBar: true,
+      isFontsLocal: false,
+      useDefaultAppBar: true,
+      enableWordSelection: true,
+      isShowDisplayModeBar: true,
       showAyahBookmarkedIcon: true,
       appLanguageCode: 'ar',
+      // appIconPathForPlayAudioInBackground:
+      //     'assets/images/quran_library_logo.png',
+      // isAyahBookmarked: (ayah) =>
+      //     ayah.ayahUQNumber == 12 && ayah.surahNumber == 2,
+      ayahMenuStyle:
+          AyahMenuStyle.defaults(isDark: false, context: context).copyWith(
+        customMenuItems: [
+          const Icon(Icons.share, size: 28, color: Colors.teal),
+        ],
+      ),
       // ayahIconColor: Colors.teal,
       // backgroundColor: Colors.white,
       // textColor: Colors.black,
-      isFontsLocal: false,
       // tafsirStyle:
       //     TafsirStyle.defaults(isDark: false, context: context).copyWith(
       //   widthOfBottomSheet: 500,
@@ -119,7 +134,7 @@ class SingleSurah extends StatelessWidget {
   Widget build(BuildContext context) {
     return SurahDisplayScreen(
       parentContext: context,
-      surahNumber: 109,
+      surahNumber: 2,
       isDark: false,
       appLanguageCode: 'ar',
       useDefaultAppBar: true,
@@ -134,12 +149,22 @@ class SingleAyah extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: GetSingleAyah(
-        surahNumber: 10,
+        surahNumber: 1,
         ayahNumber: 2,
         fontSize: 30,
         isBold: false,
+        islocalFont: false,
+        isDark: true,
+        textHeight: 1.5,
+        enabledTajweed: true,
+        enableWordSelection: true,
+        onWordTap: (ref) {
+          print(
+              'سورة: ${ref.surahNumber}, آية: ${ref.ayahNumber}, كلمة: ${ref.wordNumber}');
+        },
+        selectedWordColor: Colors.amber.withValues(alpha: 0.3),
       ),
     );
   }
@@ -161,7 +186,7 @@ class QuranPages extends StatelessWidget {
         // },
         // page: 6,
         startPage: 6,
-        endPage: 11, // النطاق شامل
+        endPage: 60, // النطاق شامل
         // highlightedAyahNumbersInPages: [
         //   (
         //     start: 3,

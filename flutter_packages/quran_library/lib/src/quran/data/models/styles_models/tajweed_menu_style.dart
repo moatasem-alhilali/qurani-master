@@ -8,10 +8,12 @@ class TajweedMenuStyle {
   // Container
   final double? width;
   final double? height;
+  final EdgeInsetsGeometry? containerPadding;
   final Color? backgroundColor;
   final double? borderRadius;
 
   // Header
+  final EdgeInsetsGeometry? headerPadding;
   final String? headerTitle;
   final Color? headerTitleColor;
   final Color? headerCloseIconColor;
@@ -40,8 +42,10 @@ class TajweedMenuStyle {
   const TajweedMenuStyle({
     this.width,
     this.height,
+    this.containerPadding,
     this.backgroundColor,
     this.borderRadius,
+    this.headerPadding,
     this.headerTitle,
     this.headerTitleColor,
     this.headerCloseIconColor,
@@ -63,8 +67,10 @@ class TajweedMenuStyle {
   TajweedMenuStyle copyWith({
     double? width,
     double? height,
+    EdgeInsetsGeometry? containerPadding,
     Color? backgroundColor,
     double? borderRadius,
+    EdgeInsetsGeometry? headerPadding,
     String? headerTitle,
     Color? headerTitleColor,
     Color? headerCloseIconColor,
@@ -85,8 +91,10 @@ class TajweedMenuStyle {
     return TajweedMenuStyle(
       width: width ?? this.width,
       height: height ?? this.height,
+      containerPadding: containerPadding ?? this.containerPadding,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       borderRadius: borderRadius ?? this.borderRadius,
+      headerPadding: headerPadding ?? this.headerPadding,
       headerTitle: headerTitle ?? this.headerTitle,
       headerTitleColor: headerTitleColor ?? this.headerTitleColor,
       headerCloseIconColor: headerCloseIconColor ?? this.headerCloseIconColor,
@@ -118,8 +126,12 @@ class TajweedMenuStyle {
     return TajweedMenuStyle(
       width: 350,
       height: 350,
+      containerPadding:
+          const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
       backgroundColor: AppColors.getBackgroundColor(isDark),
       borderRadius: 8,
+      headerPadding:
+          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
       headerTitle: 'أحكام التجويد',
       headerTitleColor: null,
       headerCloseIconColor: null,

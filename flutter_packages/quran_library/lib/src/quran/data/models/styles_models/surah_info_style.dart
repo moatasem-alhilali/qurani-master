@@ -5,6 +5,7 @@ class SurahInfoStyle {
   final Color? closeIconColor;
   final Color? surahNameColor;
   final Color? surahNumberColor;
+  final Color? surahNumberDecorationColor;
   final Color? primaryColor;
   final Color? titleColor;
   final Color? indicatorColor;
@@ -29,6 +30,7 @@ class SurahInfoStyle {
     this.firstTabText,
     this.bottomSheetWidth,
     this.bottomSheetHeight,
+    this.surahNumberDecorationColor,
   });
 
   SurahInfoStyle copyWith({
@@ -45,6 +47,7 @@ class SurahInfoStyle {
     String? firstTabText,
     double? bottomSheetWidth,
     double? bottomSheetHeight,
+    Color? surahNumberDecorationColor,
   }) {
     return SurahInfoStyle(
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -60,6 +63,8 @@ class SurahInfoStyle {
       firstTabText: firstTabText ?? this.firstTabText,
       bottomSheetWidth: bottomSheetWidth ?? this.bottomSheetWidth,
       bottomSheetHeight: bottomSheetHeight ?? this.bottomSheetHeight,
+      surahNumberDecorationColor:
+          surahNumberDecorationColor ?? this.surahNumberDecorationColor,
     );
   }
 
@@ -81,6 +86,7 @@ class SurahInfoStyle {
       titleColor: AppColors.getTextColor(isDark),
       bottomSheetWidth: MediaQuery.of(context).size.width,
       bottomSheetHeight: MediaQuery.of(context).size.height * 0.9,
+      surahNumberDecorationColor: Colors.teal.withValues(alpha: 0.6),
     );
   }
 }

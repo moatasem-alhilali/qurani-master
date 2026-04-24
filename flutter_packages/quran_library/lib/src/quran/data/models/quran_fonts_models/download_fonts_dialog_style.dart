@@ -138,6 +138,7 @@ class DownloadFontsDialogStyle {
   // final String? downloadedNotesTitle;
   // final String? withTajweedText;
   // final String? withoutTajweedText;
+  final String? tajweedOptionNames;
 
   /// A class representing the style for the download fonts dialog.
   ///
@@ -169,6 +170,7 @@ class DownloadFontsDialogStyle {
     this.headerTitle,
     this.closeIconColor,
     this.backgroundGradient,
+    this.tajweedOptionNames,
   });
 
   /// Creates a copy of the current [DownloadFontsDialogStyle] instance with the
@@ -201,33 +203,34 @@ class DownloadFontsDialogStyle {
     String? headerTitle,
     Color? closeIconColor,
     Gradient? backgroundGradient,
+    String? tajweedOptionNames,
   }) {
     return DownloadFontsDialogStyle(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      defaultFontText: defaultFontText ?? this.defaultFontText,
-      dividerColor: dividerColor ?? this.dividerColor,
-      downloadedFontsText: downloadedFontsText ?? this.downloadedFontsText,
-      recitationNames: recitationNames ?? this.recitationNames,
-      downloadButtonBackgroundColor:
-          downloadButtonBackgroundColor ?? this.downloadButtonBackgroundColor,
-      downloadingStyle: downloadingStyle ?? this.downloadingStyle,
-      downloadingText: downloadingText ?? this.downloadingText,
-      fontNameStyle: fontNameStyle ?? this.fontNameStyle,
-      iconColor: iconColor ?? this.iconColor,
-      iconSize: iconSize ?? this.iconSize,
-      iconWidget: iconWidget ?? this.iconWidget,
-      linearProgressBackgroundColor:
-          linearProgressBackgroundColor ?? this.linearProgressBackgroundColor,
-      linearProgressColor: linearProgressColor ?? this.linearProgressColor,
-      notes: notes ?? this.notes,
-      notesColor: notesColor ?? this.notesColor,
-      notesStyle: notesStyle ?? this.notesStyle,
-      titleColor: titleColor ?? this.titleColor,
-      titleStyle: titleStyle ?? this.titleStyle,
-      headerTitle: headerTitle ?? this.headerTitle,
-      closeIconColor: closeIconColor ?? this.closeIconColor,
-      backgroundGradient: backgroundGradient ?? this.backgroundGradient,
-    );
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        defaultFontText: defaultFontText ?? this.defaultFontText,
+        dividerColor: dividerColor ?? this.dividerColor,
+        downloadedFontsText: downloadedFontsText ?? this.downloadedFontsText,
+        recitationNames: recitationNames ?? this.recitationNames,
+        downloadButtonBackgroundColor:
+            downloadButtonBackgroundColor ?? this.downloadButtonBackgroundColor,
+        downloadingStyle: downloadingStyle ?? this.downloadingStyle,
+        downloadingText: downloadingText ?? this.downloadingText,
+        fontNameStyle: fontNameStyle ?? this.fontNameStyle,
+        iconColor: iconColor ?? this.iconColor,
+        iconSize: iconSize ?? this.iconSize,
+        iconWidget: iconWidget ?? this.iconWidget,
+        linearProgressBackgroundColor:
+            linearProgressBackgroundColor ?? this.linearProgressBackgroundColor,
+        linearProgressColor: linearProgressColor ?? this.linearProgressColor,
+        notes: notes ?? this.notes,
+        notesColor: notesColor ?? this.notesColor,
+        notesStyle: notesStyle ?? this.notesStyle,
+        titleColor: titleColor ?? this.titleColor,
+        titleStyle: titleStyle ?? this.titleStyle,
+        headerTitle: headerTitle ?? this.headerTitle,
+        closeIconColor: closeIconColor ?? this.closeIconColor,
+        backgroundGradient: backgroundGradient ?? this.backgroundGradient,
+        tajweedOptionNames: tajweedOptionNames ?? this.tajweedOptionNames);
   }
 
   /// A method to create default styles for the download fonts dialog.
@@ -306,6 +309,7 @@ class DownloadFontsDialogStyle {
         fontFamily: 'cairo',
         package: 'quran_library',
       ),
+      tajweedOptionNames: 'مع التجويد',
     );
   }
 }

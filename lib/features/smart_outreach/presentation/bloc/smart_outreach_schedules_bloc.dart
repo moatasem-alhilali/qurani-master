@@ -14,7 +14,6 @@ class SmartOutreachSchedulesBloc
     on<SaveSmartOutreachScheduleEvent>(_onSaveSchedule);
     on<ToggleSmartOutreachScheduleEnabledEvent>(_onToggleEnabled);
     on<DeleteSmartOutreachScheduleEvent>(_onDeleteSchedule);
-    on<PreviewSmartOutreachScheduleNotificationEvent>(_onPreviewNotification);
     on<ClearSmartOutreachScheduleFeedbackEvent>(_onClearFeedback);
   }
 
@@ -56,6 +55,14 @@ class SmartOutreachSchedulesBloc
       hour: event.hour,
       minute: event.minute,
       isEnabled: event.isEnabled,
+      isDaily: event.isDaily,
+      scheduleDays: event.scheduleDays,
+      ringTimeout: event.ringTimeout,
+      hangupDelay: event.hangupDelay,
+      delayBetweenCalls: event.delayBetweenCalls,
+      stopOnFirstAnswered: event.stopOnFirstAnswered,
+      retryEnabled: event.retryEnabled,
+      repeatCycle: event.repeatCycle,
       smsTemplate: event.smsTemplate,
       contacts: event.contacts,
     );
@@ -125,39 +132,6 @@ class SmartOutreachSchedulesBloc
     await _repository.deleteSchedule(event.scheduleId);
     add(const LoadSmartOutreachSchedulesEvent(changeState: false));
     emit(state.copyWith(deleteState: RequestState.success));
-  }
-
-  Future<void> _onPreviewNotification(
-    PreviewSmartOutreachScheduleNotificationEvent event,
-    Emitter<SmartOutreachSchedulesState> emit,
-  ) async {
-    final canUseFullScreen = await _repository.canUseFullScreenIntent();
-    if (!canUseFullScreen) {
-      final openedSettings = await _repository.openFullScreenIntentSettings();
-      emit(
-        state.copyWith(
-          validationErrors: <String>[
-            openedSettings
-                ? 'فعّل إذن الظهور بملء الشاشة من إعدادات النظام، ثم ارجع وجرب مرة أخرى.'
-                : 'يجب تفعيل إذن الظهور بملء الشاشة يدويًا من إعدادات التطبيق.',
-          ],
-        ),
-      );
-      return;
-    }
-
-    final scheduled =
-        await _repository.schedulePreviewNotification(event.scheduleId);
-
-    emit(
-      state.copyWith(
-        validationErrors: <String>[
-          scheduled
-              ? 'تمت جدولة إشعار تجريبي بعد 5 ثوانٍ. إذا ظهر عاديًا، فعّل إذن الظهور بملء الشاشة من إعدادات التطبيق.'
-              : 'تعذر جدولة الإشعار التجريبي حاليًا.',
-        ],
-      ),
-    );
   }
 
   void _onClearFeedback(

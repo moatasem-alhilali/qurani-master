@@ -60,8 +60,8 @@ class SurahCtrl extends GetxController {
       // شرح: التأكد من تحميل القرآن الكامل أولاً
       // Explanation: Ensure full Quran is loaded first
       final quranCtrl = QuranCtrl.instance;
-      if (quranCtrl.staticPages.isEmpty) {
-        await quranCtrl.loadQuranDataV1();
+      if (quranCtrl.ayahs.isEmpty) {
+        await quranCtrl.loadQuranDataV3();
       }
 
       // شرح: فلترة آيات السورة المطلوبة
@@ -100,20 +100,13 @@ class SurahCtrl extends GetxController {
     }
   }
 
-  /// إنشاء صفحات السورة باستخدام نفس منطق QuranCtrl بالضبط
-  /// Create surah pages using exactly the same logic as QuranCtrl
+  /// إنشاء صفحات السورة من بيانات QuranCtrl
+  /// Create surah pages from QuranCtrl data
   Future<void> _createSurahPages(List<AyahModel> ayahs) async {
     surahPages.clear();
 
     if (ayahs.isEmpty) return;
 
-    // ملاحظة مهمة:
-    // التقسيم السابق كان مبنيًا على عدد الأسطر، وقد ينتج "صفحتين" داخل نفس
-    // رقم صفحة المصحف الحقيقي (مثال: 50 ثم 50)، وبالتالي يظهر أن رقم الصفحة
-    // لا يتغير عند أول قلبة.
-    //
-    // هنا نعيد بناء صفحات السورة بناءً على صفحات المصحف الحقيقية (Ayah.page)
-    // باستخدام صفحات QuranCtrl.staticPages الجاهزة.
     final quranCtrl = QuranCtrl.instance;
 
     final startPage = ayahs.first.page;
@@ -121,32 +114,21 @@ class SurahCtrl extends GetxController {
     if (startPage <= 0 || endPage <= 0) return;
 
     for (int page = startPage; page <= endPage; page++) {
-      if (page - 1 < 0 || page - 1 >= quranCtrl.staticPages.length) continue;
+      if (page - 1 < 0 || page - 1 >= quranCtrl.state.pages.length) continue;
 
-      final staticPage = quranCtrl.staticPages[page - 1];
-
-      // فلترة آيات الصفحة لتكون من السورة فقط.
-      final pageAyahs = staticPage.ayahs
+      // فلترة آيات الصفحة لتكون من السورة فقط
+      // Filter page ayahs to include only the target surah
+      final pageAyahs = quranCtrl.state.pages[page - 1]
           .where((a) => a.surahNumber == _surahNumber)
           .toList(growable: false);
 
       if (pageAyahs.isEmpty) continue;
 
-      // فلترة الأسطر مع الحفاظ على نفس التجزئة (QPC) قدر الإمكان.
-      final pageLines = <LineModel>[];
-      for (final line in staticPage.lines) {
-        final filtered = line.ayahs
-            .where((a) => a.surahNumber == _surahNumber)
-            .toList(growable: false);
-        if (filtered.isEmpty) continue;
-        pageLines.add(LineModel(filtered, centered: line.centered));
-      }
-
       surahPages.add(
         QuranPageModel(
           pageNumber: page,
           ayahs: pageAyahs,
-          lines: pageLines,
+          lines: const [],
           numberOfNewSurahs: page == startPage ? 1 : 0,
         ),
       );
@@ -161,9 +143,6 @@ class SurahCtrl extends GetxController {
       arabicName: firstAyah.arabicName!,
       englishName: firstAyah.englishName!,
       ayahs: surahAyahs,
-      isDownloadedFonts: false,
-      startPage: 1,
-      endPage: surahPages.length,
     );
   }
 

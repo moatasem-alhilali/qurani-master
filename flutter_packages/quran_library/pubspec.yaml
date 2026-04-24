@@ -1,7 +1,7 @@
 name: quran_library
 description: "An integrated package for displaying the Holy Qur’an identical to
   the Medina Quran with the narration of Hafs on the authority of Asim."
-version: 3.0.0
+version: 4.0.0
 homepage: https://github.com/alheekmahlib/quran_library
 documentation: https://alheekmahlib.github.io/quran_library_web/
 
@@ -10,43 +10,41 @@ environment:
   flutter: ">=1.20.0"
 
 dependencies:
-  archive: ^4.0.7
+  arabic_justified_text: ^1.0.2
+  archive: ^4.0.9
   audio_service: ^0.18.18
-  connectivity_plus: ^7.0.0
-  dio: ^5.9.0
+  connectivity_plus: ^7.1.0
+  dio: ^5.9.2
   flutter:
     sdk: flutter
   flutter_scale_kit: ^1.5.2
-  flutter_svg: ^2.2.3
+  flutter_svg: ^2.2.4
   get: ^4.7.3
   get_storage: ^2.1.1
   html: ^0.15.6
   just_audio: ^0.10.5
   just_audio_media_kit: ^2.1.0
-  media_kit_libs_windows_audio: ^1.0.9
+  # media_kit_libs_windows_audio: ^1.0.9  # Commented out for WASM compatibility
   path: ^1.9.1
   path_provider: ^2.1.5
   rxdart: ^0.28.0
-  arabic_justified_text: ^1.0.2
-    # git:
-    #   ref: main
-    #   url: https://github.com/AhmedAlboishe/arabic_justified_text.git
+  preload_page_view: ^0.2.0
 
 # This package supports all platforms listed below.
 # But note that it works and fits on mobile size devices
 # Additional Screen Sizes will be supported later
 platforms:
-  # linux
-  ? windows
-  ? web
-  ? android
-  ? ios
-  ? macos
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
 
 dev_dependencies:
-  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
+  flutter_lints: ^6.0.0
 
 package_rename_config:
   android:
@@ -79,8 +77,9 @@ flutter:
     - assets/jsons/
     - assets/svg/
     - assets/images/
-    - assets/saadi.json
-    - assets/en.json
+    - assets/saadi.json.gz
+    - assets/en.json.gz
+    - assets/fonts/quran_fonts_qfc4/
 
   fonts:
     - family: kufi

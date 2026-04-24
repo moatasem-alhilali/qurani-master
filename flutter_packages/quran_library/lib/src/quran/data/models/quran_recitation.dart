@@ -37,30 +37,30 @@ class DataSource {
 /// Quran recitation types with their configurations
 enum QuranRecitation {
   /// حفص - الخط الأساسي
-  hafs(
-    recitationIndex: 0,
-    arabicName: 'الخط الأساسي (حفص)',
-    englishName: 'Hafs',
-    fontFamily: 'hafs',
-    dataSource: DataSource.local('quran_hafs.json'),
-  ),
+  // hafs(
+  //   recitationIndex: 0,
+  //   arabicName: 'الخط الأساسي (حفص)',
+  //   englishName: 'Hafs',
+  //   fontFamily: 'hafs',
+  //   dataSource: DataSource.local('quran_hafs.json'),
+  // ),
 
   /// حفص - خط المصحف (requires download)
-  hafsMushaf(
-    recitationIndex: 1,
+  // hafsMushaf(
+  //   recitationIndex: 1,
+  //   arabicName: 'خط المصحف (حفص)',
+  //   englishName: 'Hafs Mushaf',
+  //   fontFamily: 'hafs',
+  //   dataSource: DataSource.downloaded(),
+  // ),
+
+  /// حفص - خط المصحف (مضمّن في assets)
+  hafsMushafTajweed(
+    recitationIndex: 0,
     arabicName: 'خط المصحف (حفص)',
     englishName: 'Hafs Mushaf',
-    fontFamily: 'hafs',
-    dataSource: DataSource.downloaded(),
-  ),
-
-  /// حفص - خط التجويد (requires download)
-  hafsMushafTajweed(
-    recitationIndex: 2,
-    arabicName: 'خط التجويد (حفص)',
-    englishName: 'Hafs Mushaf Tajweed',
     fontFamily: 'p',
-    dataSource: DataSource.downloaded(),
+    dataSource: DataSource.local('bundled'),
   );
 
   /// ورش - خط المصحف
@@ -101,7 +101,7 @@ enum QuranRecitation {
   static QuranRecitation fromIndex(int idx) {
     return QuranRecitation.values.firstWhere(
       (r) => r.recitationIndex == idx,
-      orElse: () => QuranRecitation.hafs,
+      orElse: () => QuranRecitation.hafsMushafTajweed,
     );
   }
 

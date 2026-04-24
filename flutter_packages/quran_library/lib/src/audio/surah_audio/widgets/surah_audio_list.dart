@@ -61,10 +61,10 @@ class SurahAudioList extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           addAutomaticKeepAlives: true,
           addRepaintBoundaries: true,
-          itemCount: quranCtrl.state.surahs.length,
+          itemCount: quranCtrl.surahs.length,
           scrollDirection: Axis.vertical,
           itemBuilder: (_, index) {
-            final surah = quranCtrl.state.surahs[index];
+            final surah = quranCtrl.surahs[index];
             int surahNumber = index + 1;
 
             return Container(
@@ -241,42 +241,45 @@ class BuildEnhancedSurahItem extends StatelessWidget {
                       //   ),
                       // ),
                       const SizedBox(height: 4.0),
-                      Row(
-                        children: [
-                          Text(
-                            surah.englishName,
-                            style: QuranLibrary().cairoStyle.copyWith(
-                                  fontSize: 12.0.sp.clamp(12, 20),
-                                  height: 1.3,
-                                  color: (style?.textColor ??
-                                          AppColors.getTextColor(isDark))
-                                      .withValues(alpha: 0.7),
-                                ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 3.0),
-                            decoration: BoxDecoration(
-                              color: (style?.primaryColor ??
-                                      Theme.of(context).colorScheme.primary)
-                                  .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Text(
-                              '${surah.ayahs.length} ${surahAudioCtrl.getAyahOrAyat(surah.ayahs.length, style: style)}'
-                                  .convertNumbersAccordingToLang(
-                                      languageCode: languageCode ?? 'ar'),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
+                          children: [
+                            Text(
+                              surah.englishName,
                               style: QuranLibrary().cairoStyle.copyWith(
-                                    fontSize: 10.0.sp.clamp(10, 14),
-                                    color: style?.primaryColor ??
-                                        AppColors.getTextColor(isDark),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: "kufi",
+                                    fontSize: 12.0.sp.clamp(12, 20),
+                                    height: 1.3,
+                                    color: (style?.textColor ??
+                                            AppColors.getTextColor(isDark))
+                                        .withValues(alpha: 0.7),
                                   ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8.0),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 3.0),
+                              decoration: BoxDecoration(
+                                color: (style?.primaryColor ??
+                                        Theme.of(context).colorScheme.primary)
+                                    .withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Text(
+                                '${surah.ayahs.length} ${surahAudioCtrl.getAyahOrAyat(surah.ayahs.length, style: style)}'
+                                    .convertNumbersAccordingToLang(
+                                        languageCode: languageCode ?? 'ar'),
+                                style: QuranLibrary().cairoStyle.copyWith(
+                                      fontSize: 10.0.sp.clamp(10, 14),
+                                      color: style?.primaryColor ??
+                                          AppColors.getTextColor(isDark),
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "kufi",
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

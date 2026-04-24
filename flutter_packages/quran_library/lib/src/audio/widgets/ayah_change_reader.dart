@@ -63,6 +63,7 @@ class AyahChangeReader extends StatelessWidget {
             titleColor: effectiveStyle.dialogHeaderTitleColor,
             backgroundGradient: effectiveStyle.dialogHeaderBackgroundGradient,
             closeIconColor: effectiveStyle.dialogCloseIconColor,
+            titleTextStyle: effectiveStyle.headerDialogTitleStyle,
           ),
         ),
         const SizedBox(height: 8),
@@ -77,6 +78,7 @@ class AyahChangeReader extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
                     indicatorColor: effectiveStyle.tabIndicatorColor!,
                     labelColor: effectiveStyle.tabLabelColor!,
                     unselectedLabelColor:
@@ -139,7 +141,8 @@ class AyahChangeReader extends StatelessWidget {
   }
 
   Widget _buildTitle(AyahAudioStyle effectiveStyle, bool dark) {
-    final Color textColor = effectiveStyle.textColor!;
+    final Color playIconColor = effectiveStyle.playIconColor!;
+    final Color currentReaderColor = effectiveStyle.currentReaderColor!;
     final double fontSize = effectiveStyle.readerNameFontSize!;
 
     return Row(
@@ -152,23 +155,25 @@ class AyahChangeReader extends StatelessWidget {
                 .activeAyahReaders[audioCtrl.state.ayahReaderIndex.value]
                 .name
                 .tr,
-            style: QuranLibrary().cairoStyle.copyWith(
-                  color: textColor,
-                  fontSize: fontSize,
-                ),
+            style: effectiveStyle.currentReaderTextStyle ??
+                QuranLibrary().cairoStyle.copyWith(
+                      color: currentReaderColor,
+                      fontSize: fontSize,
+                    ),
           ),
         ),
         const SizedBox(width: 4),
-        Semantics(
-          button: true,
-          enabled: true,
-          label: 'Change Reader'.tr,
-          child: Icon(
-            Icons.keyboard_arrow_down_outlined,
-            size: fontSize.clamp(16, 20),
-            color: textColor,
-          ),
-        ),
+        effectiveStyle.readerDropdownWidget ??
+            Semantics(
+              button: true,
+              enabled: true,
+              label: 'Change Reader'.tr,
+              child: Icon(
+                Icons.keyboard_arrow_down_outlined,
+                size: fontSize.clamp(16, 20),
+                color: playIconColor,
+              ),
+            ),
       ],
     );
   }
@@ -226,10 +231,11 @@ class ReaderListBuild extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             title: Text(
               info.name.tr,
-              style: QuranLibrary().cairoStyle.copyWith(
-                    color: textColor,
-                    fontSize: itemFontSize,
-                  ),
+              style: effectiveStyle.readerDialogTitleStyle ??
+                  QuranLibrary().cairoStyle.copyWith(
+                        color: textColor,
+                        fontSize: itemFontSize,
+                      ),
             ),
             trailing: _SelectionIndicator(
                 isSelected: isSelected,

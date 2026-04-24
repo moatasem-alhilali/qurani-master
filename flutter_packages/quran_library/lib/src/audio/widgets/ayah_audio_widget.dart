@@ -79,7 +79,7 @@ class AyahsAudioWidget extends StatelessWidget {
                         ),
                         AnimatedSize(
                           duration: const Duration(milliseconds: 300),
-                          alignment: Alignment.bottomCenter,
+                          alignment: AlignmentGeometry.bottomCenter,
                           child: AnimatedCrossFade(
                             // مطابقة مدة الأنيميشن مع السلايدر لتجنب overflow
                             // Match animation duration with slider to avoid overflow
@@ -98,7 +98,9 @@ class AyahsAudioWidget extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  PlayAyahWidget(style: effectiveStyle),
+                                  PlayAyahWidget(
+                                      style: effectiveStyle,
+                                      dark: isDark ?? false),
                                   AyahChangeReader(
                                       style: effectiveStyle,
                                       isDark: isDark,
@@ -163,7 +165,8 @@ class AyahsAudioWidget extends StatelessWidget {
                                                   AyahSkipToPrevious(
                                                       style: effectiveStyle),
                                                   PlayAyahWidget(
-                                                      style: effectiveStyle),
+                                                      style: effectiveStyle,
+                                                      dark: isDark ?? false),
                                                   AyahSkipToNext(
                                                       style: effectiveStyle),
                                                 ],

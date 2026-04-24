@@ -1,10 +1,8 @@
-import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
-import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_schedule_model.dart';
-import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_native_scheduler_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,99 +18,113 @@ class SmartOutreachSaveScheduleResult {
   bool get isSuccess => validation.isValid && scheduleId != null;
 }
 
+class SmartOutreachCallLogEntry {
+  const SmartOutreachCallLogEntry({
+    required this.id,
+    required this.groupId,
+    required this.number,
+    required this.status,
+    required this.reason,
+    required this.duration,
+    required this.calledAt,
+  });
+
+  factory SmartOutreachCallLogEntry.fromMap(Map<String, dynamic> map) {
+    return SmartOutreachCallLogEntry(
+      id: (map['id'] as num?)?.toInt() ?? 0,
+      groupId: (map['group_id'] as num?)?.toInt() ?? 0,
+      number: (map['number'] as String? ?? '').trim(),
+      status: (map['status'] as String? ?? '').trim(),
+      reason: (map['reason'] as String?)?.trim(),
+      duration: (map['duration'] as num?)?.toInt() ?? 0,
+      calledAt: DateTime.tryParse((map['called_at'] as String?) ?? '') ??
+          DateTime.now(),
+    );
+  }
+
+  final int id;
+  final int groupId;
+  final String number;
+  final String status;
+  final String? reason;
+  final int duration;
+  final DateTime calledAt;
+}
+
+class SmartOutreachCallStats {
+  const SmartOutreachCallStats({
+    required this.total,
+    required this.answered,
+    required this.notAnswered,
+    required this.failed,
+  });
+
+  final int total;
+  final int answered;
+  final int notAnswered;
+  final int failed;
+}
+
 class SmartOutreachScheduleRepository {
   SmartOutreachScheduleRepository({
     required SmartOutreachDatabaseService databaseService,
     required SmartOutreachValidationService validationService,
-    required SmartOutreachNotificationService notificationService,
+    required SmartOutreachNativeSchedulerService nativeSchedulerService,
   })  : _databaseService = databaseService,
         _validationService = validationService,
-        _notificationService = notificationService;
+        _nativeSchedulerService = nativeSchedulerService;
 
   final SmartOutreachDatabaseService _databaseService;
   final SmartOutreachValidationService _validationService;
-  final SmartOutreachNotificationService _notificationService;
-
-  final DatabaseService _db = DatabaseService();
+  final SmartOutreachNativeSchedulerService _nativeSchedulerService;
 
   Future<List<SmartOutreachScheduleBundle>> getAllSchedules() async {
     await _databaseService.ensureTables();
-    final db = await _db.database;
+    final db = await _databaseService.database;
 
-    final schedulesRows = await db.query(
+    final scheduleRows = await db.query(
       SmartOutreachDatabaseService.schedulesTable,
-      orderBy: 'daily_hour ASC, daily_minute ASC, updated_at DESC',
+      orderBy: 'created_at ASC',
     );
 
-    final contactsRows = await db.query(
-      SmartOutreachDatabaseService.contactsTable,
-      orderBy: 'schedule_id ASC, contact_order ASC',
-    );
-
-    final contactsBySchedule = <int, List<SmartOutreachContactModel>>{};
-    for (final row in contactsRows) {
-      final contact = SmartOutreachContactModel.fromMap(row);
-      contactsBySchedule.putIfAbsent(
-          contact.scheduleId, () => <SmartOutreachContactModel>[]);
-      contactsBySchedule[contact.scheduleId]!.add(contact);
-    }
-
-    return schedulesRows.map((row) {
-      final schedule = SmartOutreachScheduleModel.fromMap(row);
-      final contacts = (contactsBySchedule[schedule.id ?? -1] ??
-          const <SmartOutreachContactModel>[])
-        ..sort((a, b) => a.order.compareTo(b.order));
-
-      return SmartOutreachScheduleBundle(
-        schedule: schedule,
-        contacts: List<SmartOutreachContactModel>.from(contacts),
-      );
-    }).toList();
+    return _hydrateBundles(db, scheduleRows);
   }
 
   Future<SmartOutreachScheduleBundle?> getScheduleById(int scheduleId) async {
     await _databaseService.ensureTables();
-    final db = await _db.database;
+    final db = await _databaseService.database;
 
-    final scheduleRows = await db.query(
+    final rows = await db.query(
       SmartOutreachDatabaseService.schedulesTable,
       where: 'id = ?',
-      whereArgs: [scheduleId],
+      whereArgs: <Object>[scheduleId],
       limit: 1,
     );
 
-    if (scheduleRows.isEmpty) {
+    if (rows.isEmpty) {
       return null;
     }
 
-    final schedule = SmartOutreachScheduleModel.fromMap(scheduleRows.first);
-
-    final contactsRows = await db.query(
-      SmartOutreachDatabaseService.contactsTable,
-      where: 'schedule_id = ?',
-      whereArgs: [scheduleId],
-      orderBy: 'contact_order ASC',
-    );
-
-    final contacts = contactsRows
-        .map(SmartOutreachContactModel.fromMap)
-        .toList(growable: false);
-
-    return SmartOutreachScheduleBundle(
-      schedule: schedule,
-      contacts: contacts,
-    );
+    return _hydrateBundle(db, rows.first);
   }
 
   Future<SmartOutreachSaveScheduleResult> saveSchedule({
-    int? scheduleId,
     required String title,
-    String? note,
     required int hour,
     required int minute,
     required bool isEnabled,
-    String? smsTemplate,
+    required bool isDaily,
+    required List<int> scheduleDays,
+    required int ringTimeout,
+    required int hangupDelay,
+    required int delayBetweenCalls,
+    required bool stopOnFirstAnswered,
+    required bool retryEnabled,
+    required bool repeatCycle,
     required List<SmartOutreachContactDraft> contacts,
+    int? scheduleId,
+    String? note,
+    String? smsTemplate,
   }) async {
     await _databaseService.ensureTables();
 
@@ -120,98 +132,92 @@ class SmartOutreachScheduleRepository {
       title: title,
       contacts: contacts,
       isEnabled: isEnabled,
+      isDaily: isDaily,
+      scheduleDays: scheduleDays,
     );
-
     if (!validation.isValid) {
       return SmartOutreachSaveScheduleResult(validation: validation);
     }
 
+    final db = await _databaseService.database;
     final now = DateTime.now();
-    final db = await _db.database;
-
     var createdAt = now;
+
     if (scheduleId != null) {
       final existing = await getScheduleById(scheduleId);
-      if (existing != null) {
-        createdAt = existing.schedule.createdAt;
-      }
+      createdAt = existing?.schedule.createdAt ?? now;
     }
 
-    final scheduleModel = SmartOutreachScheduleModel(
+    final normalizedScheduleDays =
+        isDaily ? <int>[] : (List<int>.from(scheduleDays)..sort());
+
+    final model = SmartOutreachScheduleModel(
       id: scheduleId,
       title: title.trim(),
-      note: note?.trim().isEmpty == true ? null : note?.trim(),
-      hour: hour,
-      minute: minute,
+      note: note?.trim().isEmpty ?? false ? null : note?.trim(),
       isEnabled: isEnabled,
+      scheduleTime: '${hour.toString().padLeft(2, '0')}:'
+          '${minute.toString().padLeft(2, '0')}',
+      scheduleDays: normalizedScheduleDays,
+      isDaily: isDaily,
+      ringTimeout: ringTimeout,
+      hangupDelay: hangupDelay,
+      retryEnabled: retryEnabled,
+      delayBetweenCalls: delayBetweenCalls,
+      stopOnFirstAnswered: stopOnFirstAnswered,
+      repeatCycle: repeatCycle,
       smsTemplate:
-          smsTemplate?.trim().isEmpty == true ? null : smsTemplate?.trim(),
+          smsTemplate?.trim().isEmpty ?? false ? null : smsTemplate?.trim(),
       createdAt: createdAt,
       updatedAt: now,
     );
 
-    final savedScheduleId = await db.transaction<int>((txn) async {
-      late int finalScheduleId;
-
+    final savedId = await db.transaction<int>((txn) async {
+      late final int finalId;
       if (scheduleId == null) {
-        finalScheduleId = await txn.insert(
+        finalId = await txn.insert(
           SmartOutreachDatabaseService.schedulesTable,
-          scheduleModel.toMap(),
+          model.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       } else {
-        finalScheduleId = scheduleId;
+        finalId = scheduleId;
         await txn.update(
           SmartOutreachDatabaseService.schedulesTable,
-          scheduleModel.toMap(),
+          model.toMap(),
           where: 'id = ?',
-          whereArgs: [scheduleId],
+          whereArgs: <Object>[scheduleId],
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
-
         await txn.delete(
           SmartOutreachDatabaseService.contactsTable,
-          where: 'schedule_id = ?',
-          whereArgs: [scheduleId],
-        );
-
-        await txn.update(
-          SmartOutreachDatabaseService.sessionsTable,
-          {
-            'status': SmartOutreachSessionStatus.abandoned.dbValue,
-            'completed_at': now.toIso8601String(),
-          },
-          where: 'schedule_id = ? AND status = ?',
-          whereArgs: [scheduleId, SmartOutreachSessionStatus.active.dbValue],
+          where: 'group_id = ?',
+          whereArgs: <Object>[scheduleId],
         );
       }
 
       for (var i = 0; i < contacts.length; i++) {
-        final model = contacts[i].toModel(
-          scheduleId: finalScheduleId,
-          order: i,
-        );
-
+        final contact = contacts[i].toModel(scheduleId: finalId, order: i);
         await txn.insert(
           SmartOutreachDatabaseService.contactsTable,
-          model.toMap(),
+          contact.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       }
 
-      return finalScheduleId;
+      return finalId;
     });
 
-    final savedBundle = await getScheduleById(savedScheduleId);
-    if (savedBundle != null && savedBundle.schedule.isEnabled) {
-      await _notificationService.scheduleDailyFor(savedBundle.schedule);
+    final saved = await getScheduleById(savedId);
+    if (saved != null && saved.schedule.isEnabled) {
+      await _nativeSchedulerService.scheduleGroup(saved.schedule);
     } else {
-      await _notificationService.cancelForSchedule(savedScheduleId);
+      await _nativeSchedulerService.cancelGroup(savedId);
     }
 
     return SmartOutreachSaveScheduleResult(
       validation: SmartOutreachValidationResult.valid(),
-      scheduleId: savedScheduleId,
+      scheduleId: savedId,
     );
   }
 
@@ -219,12 +225,10 @@ class SmartOutreachScheduleRepository {
     int scheduleId,
     bool enabled,
   ) async {
-    await _databaseService.ensureTables();
-
     final bundle = await getScheduleById(scheduleId);
     if (bundle == null) {
       return SmartOutreachValidationResult.invalid(
-        <String>['لم يتم العثور على الجدول.'],
+        <String>['هذه القائمة غير موجودة.'],
       );
     }
 
@@ -233,112 +237,150 @@ class SmartOutreachScheduleRepository {
       bundle.contacts,
       enabled,
     );
-
     if (!validation.isValid) {
       return validation;
     }
 
-    final now = DateTime.now().toIso8601String();
-    await _db.update(
+    final db = await _databaseService.database;
+    await db.update(
       SmartOutreachDatabaseService.schedulesTable,
-      {
-        'is_enabled': enabled ? 1 : 0,
-        'updated_at': now,
-      },
+      <String, Object>{'is_enabled': enabled ? 1 : 0},
       where: 'id = ?',
-      whereArgs: [scheduleId],
+      whereArgs: <Object>[scheduleId],
     );
 
-    final updatedBundle = await getScheduleById(scheduleId);
-    if (updatedBundle == null) {
+    final updated = await getScheduleById(scheduleId);
+    if (updated == null) {
       return SmartOutreachValidationResult.invalid(
-        <String>['لم يتم العثور على الجدول.'],
+        <String>['هذه القائمة غير موجودة.'],
       );
     }
 
     if (enabled) {
-      await _notificationService.scheduleDailyFor(updatedBundle.schedule);
+      await _nativeSchedulerService.scheduleGroup(updated.schedule);
     } else {
-      await _notificationService.cancelForSchedule(scheduleId);
+      await _nativeSchedulerService.cancelGroup(scheduleId);
     }
 
     return SmartOutreachValidationResult.valid();
   }
 
   Future<void> deleteSchedule(int scheduleId) async {
-    await _databaseService.ensureTables();
+    final db = await _databaseService.database;
+    await _nativeSchedulerService.cancelGroup(scheduleId);
 
-    final db = await _db.database;
     await db.transaction((txn) async {
-      final sessions = await txn.query(
-        SmartOutreachDatabaseService.sessionsTable,
-        columns: <String>['id'],
-        where: 'schedule_id = ?',
-        whereArgs: [scheduleId],
-      );
-
-      for (final session in sessions) {
-        final sessionId = (session['id'] as num?)?.toInt();
-        if (sessionId == null) {
-          continue;
-        }
-
-        await txn.delete(
-          SmartOutreachDatabaseService.contactResultsTable,
-          where: 'session_id = ?',
-          whereArgs: [sessionId],
-        );
-      }
-
-      await txn.delete(
-        SmartOutreachDatabaseService.sessionsTable,
-        where: 'schedule_id = ?',
-        whereArgs: [scheduleId],
-      );
-
       await txn.delete(
         SmartOutreachDatabaseService.contactsTable,
-        where: 'schedule_id = ?',
-        whereArgs: [scheduleId],
+        where: 'group_id = ?',
+        whereArgs: <Object>[scheduleId],
       );
-
       await txn.delete(
         SmartOutreachDatabaseService.schedulesTable,
         where: 'id = ?',
-        whereArgs: [scheduleId],
+        whereArgs: <Object>[scheduleId],
       );
     });
-
-    await _notificationService.cancelForSchedule(scheduleId);
   }
 
-  Future<bool> schedulePreviewNotification(int scheduleId) async {
-    await _databaseService.ensureTables();
+  Future<void> startScheduleNow(int scheduleId) {
+    return _nativeSchedulerService.triggerGroupNow(scheduleId);
+  }
 
-    final bundle = await getScheduleById(scheduleId);
-    if (bundle == null) {
-      return false;
+  Future<void> openBatterySettings() {
+    return _nativeSchedulerService.openBatterySettings();
+  }
+
+  Future<List<SmartOutreachCallLogEntry>> getCallLogs({
+    int? scheduleId,
+    int limit = 200,
+  }) async {
+    final db = await _databaseService.database;
+    final rows = await db.query(
+      SmartOutreachDatabaseService.callLogsTable,
+      where: scheduleId == null ? null : 'group_id = ?',
+      whereArgs: scheduleId == null ? null : <Object>[scheduleId],
+      orderBy: 'called_at DESC',
+      limit: limit,
+    );
+    return rows.map(SmartOutreachCallLogEntry.fromMap).toList(growable: false);
+  }
+
+  Future<SmartOutreachCallStats> getCallStats() async {
+    final db = await _databaseService.database;
+
+    Future<int> count(String sql) async {
+      final rows = await db.rawQuery(sql);
+      return (rows.first['c'] as num?)?.toInt() ?? 0;
     }
 
-    return _notificationService.schedulePreviewInFiveSeconds(bundle.schedule);
+    return SmartOutreachCallStats(
+      total: await count(
+        'SELECT COUNT(*) AS c FROM '
+        '${SmartOutreachDatabaseService.callLogsTable}',
+      ),
+      answered: await count(
+        'SELECT COUNT(*) AS c FROM '
+        '${SmartOutreachDatabaseService.callLogsTable} '
+        "WHERE status = 'answered'",
+      ),
+      notAnswered: await count(
+        'SELECT COUNT(*) AS c FROM '
+        '${SmartOutreachDatabaseService.callLogsTable} '
+        "WHERE status = 'not_answered'",
+      ),
+      failed: await count(
+        'SELECT COUNT(*) AS c FROM '
+        '${SmartOutreachDatabaseService.callLogsTable} '
+        "WHERE status = 'failed'",
+      ),
+    );
   }
 
-  Future<bool> scheduleSnoozeNotification(int scheduleId) async {
-    await _databaseService.ensureTables();
+  Future<void> clearAllCallLogs() async {
+    final db = await _databaseService.database;
+    await db.delete(SmartOutreachDatabaseService.callLogsTable);
+  }
 
-    final bundle = await getScheduleById(scheduleId);
-    if (bundle == null) {
-      return false;
+  Future<void> clearCallLogsForSchedule(int scheduleId) async {
+    final db = await _databaseService.database;
+    await db.delete(
+      SmartOutreachDatabaseService.callLogsTable,
+      where: 'group_id = ?',
+      whereArgs: <Object>[scheduleId],
+    );
+  }
+
+  Future<SmartOutreachScheduleBundle?> _hydrateBundle(
+    Database db,
+    Map<String, dynamic> scheduleRow,
+  ) async {
+    final schedule = SmartOutreachScheduleModel.fromMap(scheduleRow);
+    final contactsRows = await db.query(
+      SmartOutreachDatabaseService.contactsTable,
+      where: 'group_id = ?',
+      whereArgs: <Object>[schedule.id ?? -1],
+      orderBy: 'sort_order ASC',
+    );
+    return SmartOutreachScheduleBundle(
+      schedule: schedule,
+      contacts: contactsRows
+          .map(SmartOutreachContactModel.fromMap)
+          .toList(growable: false),
+    );
+  }
+
+  Future<List<SmartOutreachScheduleBundle>> _hydrateBundles(
+    Database db,
+    List<Map<String, dynamic>> scheduleRows,
+  ) async {
+    final result = <SmartOutreachScheduleBundle>[];
+    for (final row in scheduleRows) {
+      final bundle = await _hydrateBundle(db, row);
+      if (bundle != null) {
+        result.add(bundle);
+      }
     }
-
-    return _notificationService.scheduleSnoozeInFiveMinutes(bundle.schedule);
-  }
-
-  Future<bool> canUseFullScreenIntent() {
-    return _notificationService.canUseFullScreenIntent();
-  }
-
-  Future<bool> openFullScreenIntentSettings() {
-    return _notificationService.openFullScreenIntentSettings();
+    return result;
   }
 }

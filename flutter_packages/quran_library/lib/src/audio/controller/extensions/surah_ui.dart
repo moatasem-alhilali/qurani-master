@@ -94,18 +94,24 @@ extension SurahUi on AudioCtrl {
     }
   }
 
-  void lastListenSurahOnTap(
-      {required BuildContext context, SurahAudioStyle? style}) {
+  Future<void> lastListenSurahOnTap(
+      {required BuildContext context, SurahAudioStyle? style}) async {
     final isConnected = InternetConnectionController.instance.isConnected;
     if (isConnected ||
         state
             .isSurahDownloadedByNumber(state.currentAudioListSurahNum.value)
             .value) {
+      // إيقاف أي صوت نشط (آيات أو سور) قبل التبديل لوضع السور
+      await state.stopAllAudio();
       state.isPlayingSurahsMode = true;
       enableSurahAutoNextListener();
-      enableSurahPositionSaving();
       loadLastSurahAndPosition();
-      state.audioPlayer.play();
+      // تعيين مصدر الصوت للسورة والانتقال للموضع المحفوظ
+      await updateMediaItemAndPlay();
+      // تفعيل حفظ الموضع بعد الـ seek لتجنّب كتابة 0 من positionStream
+      enableSurahPositionSaving();
+      state.isPlaying.value = true;
+      await state.audioPlayer.play();
       state.isSheetOpen.value = true;
     } else {
       ToastUtils().showToast(context,

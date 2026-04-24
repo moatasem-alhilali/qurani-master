@@ -18,6 +18,14 @@ class SaveSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
     required this.hour,
     required this.minute,
     required this.isEnabled,
+    required this.isDaily,
+    required this.scheduleDays,
+    required this.ringTimeout,
+    required this.hangupDelay,
+    required this.delayBetweenCalls,
+    required this.stopOnFirstAnswered,
+    required this.retryEnabled,
+    required this.repeatCycle,
     this.smsTemplate,
     required this.contacts,
   });
@@ -28,6 +36,14 @@ class SaveSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
   final int hour;
   final int minute;
   final bool isEnabled;
+  final bool isDaily;
+  final List<int> scheduleDays;
+  final int ringTimeout;
+  final int hangupDelay;
+  final int delayBetweenCalls;
+  final bool stopOnFirstAnswered;
+  final bool retryEnabled;
+  final bool repeatCycle;
   final String? smsTemplate;
   final List<SmartOutreachContactDraft> contacts;
 }
@@ -45,13 +61,6 @@ class ToggleSmartOutreachScheduleEnabledEvent
 
 class DeleteSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
   const DeleteSmartOutreachScheduleEvent(this.scheduleId);
-
-  final int scheduleId;
-}
-
-class PreviewSmartOutreachScheduleNotificationEvent
-    extends SmartOutreachSchedulesEvent {
-  const PreviewSmartOutreachScheduleNotificationEvent(this.scheduleId);
 
   final int scheduleId;
 }

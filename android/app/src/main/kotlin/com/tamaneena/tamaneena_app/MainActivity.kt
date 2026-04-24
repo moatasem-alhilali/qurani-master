@@ -7,10 +7,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.telephony.SmsManager
+import android.app.NotificationChannel
 import com.ryanheise.audioservice.AudioServiceActivity
-import com.tamaneena.tamaneena_app.smartoutreach.SmartOutreachAlarmConstants
-import com.tamaneena.tamaneena_app.smartoutreach.alarmScheduler.SmartOutreachAlarmScheduler
-import com.tamaneena.tamaneena_app.smartoutreach.alarmScheduler.SmartOutreachAlarmSchedulerImpl
+import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerCallManagerService
+import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerConstants
+import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerGroupScheduler
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
@@ -20,27 +21,24 @@ class MainActivity : AudioServiceActivity() {
             "com.tamaneena.tamaneena_app/device_identity"
         private const val SMART_OUTREACH_CHANNEL =
             "com.tamaneena.tamaneena_app/smart_outreach"
-
-        private var pendingSmartOutreachScheduleId: Int? = null
     }
 
-    private lateinit var smartOutreachAlarmScheduler: SmartOutreachAlarmScheduler
+    private lateinit var autoDialerGroupScheduler: AutoDialerGroupScheduler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cachePendingSmartOutreachIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        cachePendingSmartOutreachIntent(intent)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        smartOutreachAlarmScheduler = SmartOutreachAlarmSchedulerImpl(this)
+        autoDialerGroupScheduler = AutoDialerGroupScheduler(this)
+        createAutoDialerNotificationChannel()
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -98,105 +96,56 @@ class MainActivity : AudioServiceActivity() {
                     }
                 }
 
-                "canUseFullScreenIntent" -> {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        result.success(true)
+                "scheduleGroup" -> {
+                    val groupId = call.argument<Int>("groupId")
+                    val time = call.argument<String>("time").orEmpty().trim()
+                    val daysJson = call.argument<String>("days").orEmpty().ifBlank { "[]" }
+
+                    if (groupId == null || groupId <= 0 || time.isBlank()) {
+                        result.error("INVALID_ARGS", "Invalid scheduleGroup args", null)
                         return@setMethodCallHandler
                     }
 
-                    try {
-                        val manager = getSystemService(NotificationManager::class.java)
-                        result.success(manager?.canUseFullScreenIntent() == true)
-                    } catch (e: Exception) {
-                        result.error("FSI_CHECK_FAILED", e.message, null)
-                    }
-                }
-
-                "openFullScreenIntentSettings" -> {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        result.success(false)
-                        return@setMethodCallHandler
-                    }
-
-                    try {
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
-                                data = Uri.parse("package:$packageName")
-                            }
-                        startActivity(intent)
-                        result.success(true)
-                    } catch (e: Exception) {
-                        result.error("FSI_SETTINGS_FAILED", e.message, null)
-                    }
-                }
-
-                "scheduleSmartOutreachDailyAlarm" -> {
-                    val requestCode = call.argument<Int>("requestCode")
-                    val scheduleId = call.argument<Int>("scheduleId")
-                    val hour = call.argument<Int>("hour")
-                    val minute = call.argument<Int>("minute")
-                    val title = call.argument<String>("title").orEmpty().trim()
-                    val body = call.argument<String>("body").orEmpty().trim()
-
-                    if (requestCode == null ||
-                        scheduleId == null ||
-                        hour == null ||
-                        minute == null ||
-                        title.isBlank()
-                    ) {
-                        result.error("INVALID_ARGS", "Invalid daily alarm args", null)
-                        return@setMethodCallHandler
-                    }
-
-                    smartOutreachAlarmScheduler.scheduleDaily(
-                        requestCode = requestCode,
-                        scheduleId = scheduleId,
-                        hour = hour,
-                        minute = minute,
-                        title = title,
-                        body = body,
-                    )
+                    autoDialerGroupScheduler.scheduleNextOccurrence(groupId, daysJson, time)
                     result.success(true)
                 }
 
-                "scheduleSmartOutreachOneShotAlarm" -> {
-                    val requestCode = call.argument<Int>("requestCode")
-                    val scheduleId = call.argument<Int>("scheduleId")
-                    val triggerAtMillis = call.argument<Number>("triggerAtMillis")?.toLong()
-                    val title = call.argument<String>("title").orEmpty().trim()
-                    val body = call.argument<String>("body").orEmpty().trim()
-
-                    if (requestCode == null ||
-                        scheduleId == null ||
-                        triggerAtMillis == null ||
-                        title.isBlank()
-                    ) {
-                        result.error("INVALID_ARGS", "Invalid one-shot alarm args", null)
+                "cancelGroup" -> {
+                    val groupId = call.argument<Int>("groupId")
+                    if (groupId == null || groupId <= 0) {
+                        result.error("INVALID_ARGS", "groupId is required", null)
                         return@setMethodCallHandler
                     }
 
-                    smartOutreachAlarmScheduler.scheduleOneShot(
-                        requestCode = requestCode,
-                        scheduleId = scheduleId,
-                        triggerAtMillis = triggerAtMillis,
-                        title = title,
-                        body = body,
-                    )
+                    autoDialerGroupScheduler.cancel(groupId)
                     result.success(true)
                 }
 
-                "cancelSmartOutreachAlarm" -> {
-                    val requestCode = call.argument<Int>("requestCode")
-                    if (requestCode == null) {
-                        result.error("INVALID_ARGS", "requestCode is required", null)
+                "triggerGroupNow" -> {
+                    val groupId = call.argument<Int>("groupId")
+                    if (groupId == null || groupId <= 0) {
+                        result.error("INVALID_ARGS", "groupId is required", null)
                         return@setMethodCallHandler
                     }
-                    smartOutreachAlarmScheduler.cancel(requestCode)
+
+                    val serviceIntent = Intent(this, AutoDialerCallManagerService::class.java).apply {
+                        putExtra("group_id", groupId)
+                    }
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(serviceIntent)
+                    } else {
+                        startService(serviceIntent)
+                    }
                     result.success(true)
                 }
 
-                "consumePendingSmartOutreachScheduleId" -> {
-                    result.success(consumePendingSmartOutreachScheduleId())
+                "openBatterySettings" -> {
+                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:$packageName")
+                    }
+                    startActivity(intent)
+                    result.success(true)
                 }
 
                 else -> result.notImplemented()
@@ -204,24 +153,21 @@ class MainActivity : AudioServiceActivity() {
         }
     }
 
-    private fun cachePendingSmartOutreachIntent(intent: Intent?) {
-        if (intent?.action != SmartOutreachAlarmConstants.ACTION_OPEN_SMART_OUTREACH_ALARM) {
+    private fun createAutoDialerNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
         }
 
-        val scheduleId = intent?.getIntExtra(
-            SmartOutreachAlarmConstants.EXTRA_SCHEDULE_ID,
-            -1,
-        ) ?: -1
-
-        if (scheduleId > 0) {
-            pendingSmartOutreachScheduleId = scheduleId
+        val channel = NotificationChannel(
+            AutoDialerConstants.NOTIFICATION_CHANNEL_ID,
+            AutoDialerConstants.NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW,
+        ).apply {
+            description = "إشعارات خدمة الاتصال التلقائي"
+            setShowBadge(false)
         }
-    }
 
-    private fun consumePendingSmartOutreachScheduleId(): Int? {
-        val value = pendingSmartOutreachScheduleId
-        pendingSmartOutreachScheduleId = null
-        return value
+        val manager = getSystemService(NotificationManager::class.java)
+        manager?.createNotificationChannel(channel)
     }
 }

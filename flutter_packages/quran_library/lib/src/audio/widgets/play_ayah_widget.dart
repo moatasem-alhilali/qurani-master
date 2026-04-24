@@ -2,12 +2,12 @@ part of '../audio.dart';
 
 class PlayAyahWidget extends StatelessWidget {
   final AyahAudioStyle? style;
-  const PlayAyahWidget({super.key, this.style});
+  final bool dark;
+  const PlayAyahWidget({super.key, this.style, this.dark = false});
 
   @override
   Widget build(BuildContext context) {
     final audioCtrl = AudioCtrl.instance;
-    final bool dark = Theme.of(context).brightness == Brightness.dark;
     final AyahAudioStyle effectiveStyle =
         style ?? AyahAudioStyle.defaults(isDark: dark, context: context);
 

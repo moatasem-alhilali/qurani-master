@@ -31,7 +31,6 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
-import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_notification_router_service.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -112,7 +111,6 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
 
-       
         ///home
         BlocProvider(
           create: (context) => sl<RandomAyahBloc>()..add(GetRandomAyahEvent()),
@@ -198,7 +196,6 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     sl<AthanAlarmNotificationRouterService>().initialize();
-    sl<SmartOutreachNotificationRouterService>().initialize();
     unawaited(sl<DailyWirdRepository>().syncReminderSchedules());
   }
 

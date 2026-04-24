@@ -1,4 +1,5 @@
-import 'package:quran_app/core/local_database/database_service.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SmartOutreachDatabaseService {
   factory SmartOutreachDatabaseService() => _instance;
@@ -8,68 +9,106 @@ class SmartOutreachDatabaseService {
   static final SmartOutreachDatabaseService _instance =
       SmartOutreachDatabaseService._internal();
 
-  final DatabaseService _db = DatabaseService();
+  static const String databaseName = 'autodialer.db';
+  static const int databaseVersion = 3;
 
-  static const String schedulesTable = 'smart_outreach_schedules';
-  static const String contactsTable = 'smart_outreach_contacts';
-  static const String sessionsTable = 'smart_outreach_sessions';
-  static const String contactResultsTable = 'smart_outreach_contact_results';
+  static const String schedulesTable = 'groups';
+  static const String contactsTable = 'phone_numbers';
+  static const String callLogsTable = 'call_logs';
+  static const String settingsTable = 'settings';
+
+  Database? _database;
+
+  Future<Database> get database async {
+    _database ??= await _open();
+    return _database!;
+  }
+
+  Future<void> ensureTables() async {
+    await database;
+  }
+
+  Future<Database> _open() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, databaseName);
+
+    return openDatabase(
+      path,
+      version: databaseVersion,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+      onConfigure: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute(schedulesTableSql);
+    await db.execute(contactsTableSql);
+    await db.execute(callLogsTableSql);
+    await db.execute(settingsTableSql);
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+        'ALTER TABLE $schedulesTable '
+        'ADD COLUMN repeat_cycle INTEGER NOT NULL DEFAULT 0',
+      );
+    }
+    if (oldVersion < 3) {
+      await db.execute(
+        'ALTER TABLE $callLogsTable ADD COLUMN reason TEXT',
+      );
+    }
+  }
 
   static const String schedulesTableSql = '''
-CREATE TABLE IF NOT EXISTS $schedulesTable (
+CREATE TABLE IF NOT EXISTS groups (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  note TEXT,
-  daily_hour INTEGER NOT NULL,
-  daily_minute INTEGER NOT NULL,
-  is_enabled INTEGER NOT NULL DEFAULT 0,
-  sms_template TEXT,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  name TEXT NOT NULL,
+  is_enabled INTEGER NOT NULL DEFAULT 1,
+  schedule_time TEXT NOT NULL DEFAULT '08:00',
+  schedule_days TEXT NOT NULL DEFAULT '[]',
+  is_daily INTEGER NOT NULL DEFAULT 1,
+  ring_timeout INTEGER NOT NULL DEFAULT 20,
+  hangup_delay INTEGER NOT NULL DEFAULT 30,
+  retry_enabled INTEGER NOT NULL DEFAULT 0,
+  delay_between_calls INTEGER NOT NULL DEFAULT 3,
+  stop_on_first_answered INTEGER NOT NULL DEFAULT 0,
+  repeat_cycle INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL
 );
 ''';
 
   static const String contactsTableSql = '''
-CREATE TABLE IF NOT EXISTS $contactsTable (
+CREATE TABLE IF NOT EXISTS phone_numbers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  schedule_id INTEGER NOT NULL,
-  name TEXT,
-  phone TEXT NOT NULL,
-  contact_order INTEGER NOT NULL,
-  action_type TEXT NOT NULL,
-  sms_template TEXT,
-  UNIQUE(schedule_id, contact_order)
+  group_id INTEGER NOT NULL,
+  number TEXT NOT NULL,
+  label TEXT,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
 ''';
 
-  static const String sessionsTableSql = '''
-CREATE TABLE IF NOT EXISTS $sessionsTable (
+  static const String callLogsTableSql = '''
+CREATE TABLE IF NOT EXISTS call_logs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  schedule_id INTEGER NOT NULL,
-  current_index INTEGER NOT NULL DEFAULT 0,
+  group_id INTEGER NOT NULL,
+  number TEXT NOT NULL,
   status TEXT NOT NULL,
-  started_at TEXT NOT NULL,
-  completed_at TEXT,
-  trigger_source TEXT NOT NULL,
-  session_date TEXT NOT NULL
+  reason TEXT,
+  duration INTEGER NOT NULL DEFAULT 0,
+  called_at TEXT NOT NULL
 );
 ''';
 
-  static const String contactResultsTableSql = '''
-CREATE TABLE IF NOT EXISTS $contactResultsTable (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  session_id INTEGER NOT NULL,
-  contact_id INTEGER NOT NULL,
-  result_type TEXT NOT NULL,
-  timestamp TEXT NOT NULL
+  static const String settingsTableSql = '''
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
 );
 ''';
-
-  Future<void> ensureTables() async {
-    final db = await _db.database;
-    await db.execute(schedulesTableSql);
-    await db.execute(contactsTableSql);
-    await db.execute(sessionsTableSql);
-    await db.execute(contactResultsTableSql);
-  }
 }

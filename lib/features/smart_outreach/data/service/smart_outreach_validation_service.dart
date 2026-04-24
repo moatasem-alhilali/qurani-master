@@ -2,59 +2,53 @@ import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bund
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
 
 class SmartOutreachValidationService {
-  static const int maxContacts = 5;
-
   SmartOutreachValidationResult validateScheduleDraft({
     required String title,
     required List<SmartOutreachContactDraft> contacts,
     required bool isEnabled,
+    required bool isDaily,
+    required List<int> scheduleDays,
   }) {
     final errors = <String>[];
 
-    final cleanTitle = title.trim();
-    if (cleanTitle.isEmpty) {
-      errors.add('عنوان الجدول مطلوب.');
+    if (title.trim().isEmpty) {
+      errors.add('اكتب اسمًا للقائمة.');
     }
 
     if (contacts.isEmpty) {
-      errors.add('يجب إضافة جهة اتصال واحدة على الأقل.');
+      errors.add('أضف رقمًا واحدًا على الأقل.');
     }
 
-    if (contacts.length > maxContacts) {
-      errors.add('الحد الأقصى لجهات الاتصال هو $maxContacts.');
-    }
-
-    final normalizedSet = <String>{};
-
-    for (var i = 0; i < contacts.length; i++) {
-      final contact = contacts[i];
-      final normalized = normalizePhone(contact.phone);
-      final index = i + 1;
-
-      if (normalized.isEmpty) {
-        errors.add('رقم جهة الاتصال رقم $index مطلوب.');
+    final normalizedNumbers = <String>{};
+    for (final contact in contacts) {
+      final phone = contact.phone.trim();
+      if (phone.isEmpty) {
+        errors.add('كل خانة يجب أن تحتوي على رقم هاتف.');
         continue;
       }
 
-      if (!isValidPhone(contact.phone)) {
-        errors.add('رقم جهة الاتصال رقم $index غير صالح.');
-        continue;
+      if (phone.length < 7) {
+        errors.add('يوجد رقم غير مكتمل.');
       }
 
-      if (normalizedSet.contains(normalized)) {
-        errors.add('لا يمكن تكرار نفس رقم الهاتف داخل نفس الجدول.');
-      } else {
-        normalizedSet.add(normalized);
+      final normalized = phone.replaceAll(RegExp('[^0-9+]'), '');
+      if (!normalizedNumbers.add(normalized)) {
+        errors.add('يوجد رقم مكرر في نفس القائمة.');
       }
     }
 
-    if (isEnabled && errors.isNotEmpty) {
-      errors.add('لا يمكن تفعيل الجدول قبل حل الأخطاء.');
+    if (!isDaily && scheduleDays.isEmpty) {
+      errors.add('اختر يومًا واحدًا على الأقل.');
+    }
+
+    if (isEnabled && contacts.isEmpty) {
+      errors.add('لا يمكن تشغيل قائمة بدون أرقام.');
     }
 
     if (errors.isEmpty) {
       return SmartOutreachValidationResult.valid();
     }
+
     return SmartOutreachValidationResult.invalid(errors);
   }
 
@@ -63,49 +57,14 @@ class SmartOutreachValidationService {
     List<SmartOutreachContactModel> contacts,
     bool isEnabled,
   ) {
-    final drafts = contacts
-        .map(
-          (contact) => SmartOutreachContactDraft(
-            id: contact.id,
-            name: contact.name,
-            phone: contact.phone,
-            actionType: contact.actionType,
-            smsTemplate: contact.smsTemplate,
-          ),
-        )
-        .toList();
-
     return validateScheduleDraft(
       title: title,
-      contacts: drafts,
+      contacts: contacts
+          .map(SmartOutreachContactDraft.fromModel)
+          .toList(growable: false),
       isEnabled: isEnabled,
+      isDaily: true,
+      scheduleDays: const <int>[],
     );
-  }
-
-  bool isValidPhone(String input) {
-    final normalized = normalizePhone(input);
-    if (normalized.isEmpty) {
-      return false;
-    }
-
-    final regex = RegExp(r'^\+?[0-9]{7,15}$');
-    return regex.hasMatch(normalized);
-  }
-
-  String normalizePhone(String input) {
-    final trimmed = input.trim();
-    if (trimmed.isEmpty) {
-      return '';
-    }
-
-    var cleaned = trimmed.replaceAll(RegExp(r'[^0-9+]'), '');
-
-    if (cleaned.startsWith('+')) {
-      cleaned = '+${cleaned.substring(1).replaceAll('+', '')}';
-    } else {
-      cleaned = cleaned.replaceAll('+', '');
-    }
-
-    return cleaned;
   }
 }

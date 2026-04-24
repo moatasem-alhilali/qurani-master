@@ -4,7 +4,6 @@ import 'package:quran_app/features/notification_schedules/data/database/database
 import 'package:quran_app/features/quran_plan/data/data_source/quran_plan_data_source.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
-import 'package:quran_app/features/smart_outreach/data/database/smart_outreach_database_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -19,14 +18,6 @@ class DatabaseTables {
   static const String doua = 'doua';
   static const String quranPlan = 'quran_plans';
   static const String quranPlanSession = 'quran_plan_sessions';
-  static const String smartOutreachSchedules =
-      SmartOutreachDatabaseService.schedulesTable;
-  static const String smartOutreachContacts =
-      SmartOutreachDatabaseService.contactsTable;
-  static const String smartOutreachSessions =
-      SmartOutreachDatabaseService.sessionsTable;
-  static const String smartOutreachContactResults =
-      SmartOutreachDatabaseService.contactResultsTable;
   static const String dailyWirdSettings =
       DailyWirdDatabaseService.settingsTable;
   static const String dailyWirdCustomizations =
@@ -35,6 +26,11 @@ class DatabaseTables {
       DailyWirdDatabaseService.programsTable;
   static const String dailyWirdProgramItems =
       DailyWirdDatabaseService.programItemsTable;
+  static const String floatingAdhkarSettings = 'floating_adhkar_settings';
+  static const String floatingAdhkarCustomPreferences =
+      'floating_adhkar_custom_preferences';
+  static const String floatingAdhkarBuiltInOverrides =
+      'floating_adhkar_builtin_overrides';
 }
 
 /// A singleton service to manage the local SQLite database.
@@ -57,7 +53,7 @@ class DatabaseService {
   static const _dbName = 'quran_app_test7.db';
 
   /// Database version (used for future upgrades)
-  static const _dbVersion = 3;
+  static const _dbVersion = 5;
 
   /// Accessor that returns the database instance
   Future<Database> get database async {
@@ -102,30 +98,30 @@ class DatabaseService {
     // await db.execute(GroupPlanDataSource.planGroupMemberTable);
     // await db.execute(GroupPlanDataSource.planGroupActivityLogsTable);
     // await db.execute(GroupPlanDataSource.planGroupOfflineActionsTable);
-    await db.execute(SmartOutreachDatabaseService.schedulesTableSql);
-    await db.execute(SmartOutreachDatabaseService.contactsTableSql);
-    await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
-    await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
     await db.execute(DailyWirdDatabaseService.settingsTableSql);
     await db.execute(DailyWirdDatabaseService.customizationsTableSql);
     await db.execute(DailyWirdDatabaseService.programsTableSql);
     await db.execute(DailyWirdDatabaseService.programItemsTableSql);
+    await db.execute(_floatingAdhkarSettings);
+    await db.execute(_floatingAdhkarCustomPreferences);
+    await db.execute(_floatingAdhkarBuiltInOverrides);
 
     logger.i('✅ Database initialized and tables created.');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute(SmartOutreachDatabaseService.schedulesTableSql);
-      await db.execute(SmartOutreachDatabaseService.contactsTableSql);
-      await db.execute(SmartOutreachDatabaseService.sessionsTableSql);
-      await db.execute(SmartOutreachDatabaseService.contactResultsTableSql);
-    }
     if (oldVersion < 3) {
       await db.execute(DailyWirdDatabaseService.settingsTableSql);
       await db.execute(DailyWirdDatabaseService.customizationsTableSql);
       await db.execute(DailyWirdDatabaseService.programsTableSql);
       await db.execute(DailyWirdDatabaseService.programItemsTableSql);
+    }
+    if (oldVersion < 4) {
+      await db.execute(_floatingAdhkarSettings);
+      await db.execute(_floatingAdhkarCustomPreferences);
+    }
+    if (oldVersion < 5) {
+      await db.execute(_floatingAdhkarBuiltInOverrides);
     }
   }
 
@@ -189,6 +185,39 @@ class DatabaseService {
       id INTEGER PRIMARY KEY,
       title TEXT NOT NULL,
       content TEXT NOT NULL
+    );
+  ''';
+
+  static const String _floatingAdhkarSettings = '''
+    CREATE TABLE IF NOT EXISTS ${DatabaseTables.floatingAdhkarSettings} (
+      id INTEGER PRIMARY KEY CHECK (id = 1),
+      is_enabled INTEGER NOT NULL DEFAULT 0,
+      interval_minutes INTEGER NOT NULL DEFAULT 60,
+      visible_seconds INTEGER NOT NULL DEFAULT 20,
+      include_builtin INTEGER NOT NULL DEFAULT 1,
+      include_custom INTEGER NOT NULL DEFAULT 1,
+      mix_sources INTEGER NOT NULL DEFAULT 1,
+      last_item_id TEXT,
+      last_source TEXT,
+      updated_at TEXT NOT NULL
+    );
+  ''';
+
+  static const String _floatingAdhkarCustomPreferences = '''
+    CREATE TABLE IF NOT EXISTS ${DatabaseTables.floatingAdhkarCustomPreferences} (
+      subih_id INTEGER PRIMARY KEY,
+      is_enabled INTEGER NOT NULL DEFAULT 1,
+      updated_at TEXT NOT NULL
+    );
+  ''';
+
+  static const String _floatingAdhkarBuiltInOverrides = '''
+    CREATE TABLE IF NOT EXISTS ${DatabaseTables.floatingAdhkarBuiltInOverrides} (
+      item_id TEXT PRIMARY KEY,
+      custom_title TEXT,
+      custom_text TEXT,
+      is_deleted INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL
     );
   ''';
 

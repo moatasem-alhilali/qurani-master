@@ -5,6 +5,7 @@ class PageBuild extends StatelessWidget {
     super.key,
     required this.pageIndex,
     required this.surahNumber,
+    this.surahFilterNumber,
     required this.bannerStyle,
     required this.isDark,
     required this.surahNameStyle,
@@ -22,12 +23,15 @@ class PageBuild extends StatelessWidget {
     required this.isFontsLocal,
     required this.fontsName,
     required this.ayahBookmarked,
+    this.isAyahBookmarked,
     required this.context,
     required this.quranCtrl,
+    this.onPagePress,
   });
 
   final int pageIndex;
   final int? surahNumber;
+  final int? surahFilterNumber;
   final BannerStyle? bannerStyle;
   final bool isDark;
   final SurahNameStyle? surahNameStyle;
@@ -46,21 +50,31 @@ class PageBuild extends StatelessWidget {
   final bool? isFontsLocal;
   final String? fontsName;
   final List<int> ayahBookmarked;
+  final bool Function(AyahModel ayah)? isAyahBookmarked;
   final BuildContext context;
   final QuranCtrl quranCtrl;
+  final VoidCallback? onPagePress;
 
   @override
   Widget build(BuildContext context) {
-    if (!quranCtrl.isQpcV4Enabled) {
-      // الخطوط المُحمّلة أصبحت تعتمد على QPC v4 فقط.
-      // الخط الأساسي (0) سيتم التعامل معه في المرحلة القادمة.
+    if (!quranCtrl.isQpcLayoutEnabled) {
       return const SizedBox.shrink();
     }
 
-    final blocks = quranCtrl.getQpcV4BlocksForPageSync(pageIndex + 1);
+    // التحميل الكسول: تأكد أن خط هذه الصفحة جاهز
+    final int pageNumber = pageIndex + 1;
+    if (!QuranFontsService.isPageReady(pageNumber)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        QuranFontsService.ensurePagesLoaded(pageNumber, radius: 10).then((_) {
+          quranCtrl.update();
+          quranCtrl.update(['_pageViewBuild']);
+        });
+      });
+      return const Center(child: CircularProgressIndicator.adaptive());
+    }
+
+    final blocks = quranCtrl.getQpcLayoutBlocksForPageSync(pageNumber);
     if (blocks.isEmpty) {
-      // ابدأ التحضير الكامل مرة واحدة؛ أثناء ذلك نعرض مؤشر تحميل بدل بناء متزامن.
-      Future(() => quranCtrl.ensureQpcV4AllPagesPrebuilt());
       return const Center(child: CircularProgressIndicator.adaptive());
     }
 
@@ -70,35 +84,45 @@ class PageBuild extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: blocks.map((b) {
+            // عند عرض سورة واحدة: نتجاهل الهيدر/البسملة من الـ layout ونتركها للـ SurahPage.
+            if (surahFilterNumber != null &&
+                (b is QpcV4SurahHeaderBlock || b is QpcV4BasmallahBlock)) {
+              return const SizedBox.shrink();
+            }
+
             if (b is QpcV4SurahHeaderBlock) {
               return SurahHeaderWidget(
                 b.surahNumber,
-                bannerStyle: bannerStyle ?? BannerStyle(),
+                bannerStyle: bannerStyle ??
+                    BannerStyle.downloadFonts(isDark: isDark, context: context),
                 surahNameStyle: surahNameStyle ??
-                    SurahNameStyle(
-                      surahNameSize: 120,
-                      surahNameColor: AppColors.getTextColor(isDark),
-                    ),
+                    SurahNameStyle.downloadFonts(
+                        isDark: isDark, context: context),
                 onSurahBannerPress: onSurahBannerPress,
                 isDark: isDark,
               );
             }
 
             if (b is QpcV4BasmallahBlock) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: BasmallahWidget(
-                  surahNumber: b.surahNumber,
-                  basmalaStyle: basmalaStyle ??
-                      BasmalaStyle(
-                        basmalaColor: isDark ? Colors.white : Colors.black,
-                        basmalaFontSize: 100.0,
-                      ),
-                ),
+              return BasmallahWidget(
+                surahNumber: b.surahNumber,
+                basmalaStyle: basmalaStyle ??
+                    BasmalaStyle.downloadFonts(
+                        isDark: isDark, context: context),
               );
             }
 
             if (b is QpcV4AyahLineBlock) {
+              final filteredSegments = (surahFilterNumber == null)
+                  ? b.segments
+                  : b.segments
+                      .where((s) => s.surahNumber == surahFilterNumber)
+                      .toList(growable: false);
+
+              if (filteredSegments.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
               return RepaintBoundary(
                 child: QpcV4RichTextLine(
                   pageIndex: pageIndex,
@@ -114,11 +138,16 @@ class PageBuild extends StatelessWidget {
                   ayahSelectedBackgroundColor: ayahSelectedBackgroundColor,
                   context: context,
                   quranCtrl: quranCtrl,
-                  segments: b.segments,
-                  isFontsLocal: isFontsLocal!,
-                  fontsName: fontsName!,
+                  segments: filteredSegments,
+                  isFontsLocal: isFontsLocal ?? false,
+                  fontsName: fontsName ?? '',
+                  fontFamilyOverride: null,
+                  fontPackageOverride: null,
+                  usePaintColoring: true,
                   ayahBookmarked: ayahBookmarked,
+                  isAyahBookmarked: isAyahBookmarked,
                   isCentered: b.isCentered,
+                  onPagePress: onPagePress,
                 ),
               );
             }
