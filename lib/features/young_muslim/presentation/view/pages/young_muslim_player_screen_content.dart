@@ -91,7 +91,7 @@ class _PlayerContent extends StatelessWidget {
               child: player,
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(18.w, 12.h, 18.w, 28.h),
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 28.h),
               child: Column(
                 children: [
                   // SizedBox(height: 16.h),
@@ -104,8 +104,7 @@ class _PlayerContent extends StatelessWidget {
                     padding: EdgeInsets.all(20.w),
                     decoration: youngMuslimPanelDecoration(
                       context,
-                      radius: 26,
-                      useGradient: true,
+                      radius: 16,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +128,7 @@ class _PlayerContent extends StatelessWidget {
                             'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
                             style: TextStyle(
                               fontSize: 12.sp,
-                              color: context.onSurfaceVariant.withValues(alpha: 0.7),
+                              color: context.onSurfaceVariant.withOpacity(0.7),
                             ),
                           ),
                           onChanged: (_) => onToggleAutoPlay(),
@@ -206,11 +205,11 @@ class _PlayerStatsRow extends StatelessWidget {
             Stack(
               children: [
                 LinearProgressIndicator(
-                  value: progress.clamp(0, 1),
-                  minHeight: 10.h,
+                   value: progress.clamp(0, 1),
+                  minHeight: 8.h,
                   color: context.primaryColor,
-                  backgroundColor: context.outline.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20.r),
+                  backgroundColor: context.outline.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ],
             ),
@@ -240,7 +239,7 @@ class _PlayerStatsRow extends StatelessWidget {
               '${session.series.titleAr} • ${session.category.titleAr}',
               style: TextStyle(
                 fontSize: 12.sp,
-                color: context.onSurfaceVariant.withValues(alpha: 0.7),
+                color: context.onSurfaceVariant.withOpacity(0.7),
                 fontWeight: FontWeight.w600,
               ),
             ),

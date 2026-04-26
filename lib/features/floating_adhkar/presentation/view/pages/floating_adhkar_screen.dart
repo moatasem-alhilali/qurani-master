@@ -80,13 +80,20 @@ class FloatingAdhkarScreen extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends StatefulWidget {
   const _Body({required this.state});
-
   final FloatingAdhkarState state;
 
   @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  bool _showAdvancedSettings = false;
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     final settings = state.settings;
     if (settings == null) {
       return const SizedBox.shrink();
@@ -97,87 +104,140 @@ class _Body extends StatelessWidget {
         '${state.counts.customEnabledCount}/${state.counts.customTotalCount}';
 
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _StatusCard(state: state),
-          SizedBox(height: 14.h),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  title: 'الأذكار الافتراضية',
-                  value: '${state.counts.builtInCount}',
-                  icon: Icons.auto_awesome_rounded,
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _StatCard(
-                  title: 'أذكارك الخاصة',
-                  value: customCountLabel,
-                  icon: Icons.menu_book_rounded,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 14.h),
-          _PreviewCard(item: state.previewItem),
-          SizedBox(height: 14.h),
-          DecoratedBox(
+          _StatusAndStatsHeader(state: state),
+          SizedBox(height: 16.h),
+
+          // Main Service Toggle
+          Container(
             decoration: BoxDecoration(
-              color: context.surfaceColor,
-              borderRadius: BorderRadius.circular(20.r),
+              color: Theme.of(context).primaryColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
-                color: context.outline.withValues(alpha: 0.3),
+                  color: Theme.of(context).primaryColor.withOpacity(0.15)),
+            ),
+            child: SwitchListTile(
+              secondary: Icon(
+                Icons.power_settings_new_rounded,
+                color: settings.enabled
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey,
+                size: 22.r,
+              ),
+              value: settings.enabled,
+              onChanged: state.isSupportedPlatform
+                  ? (value) {
+                      context.read<FloatingAdhkarBloc>().add(
+                            FloatingAdhkarToggleFeatureEvent(value),
+                          );
+                    }
+                  : null,
+              title: Text(
+                'تشغيل الخدمة العائمة',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                state.isSupportedPlatform
+                    ? 'عرض ذكر عشوائي فوق التطبيقات'
+                    : 'غير مدعوم على هذه المنصة',
+                style: TextStyle(fontSize: 11.sp),
               ),
             ),
-            child: Column(
-              children: [
-                SwitchListTile.adaptive(
-                  value: settings.enabled,
-                  onChanged: state.isSupportedPlatform
-                      ? (value) {
-                          context.read<FloatingAdhkarBloc>().add(
-                                FloatingAdhkarToggleFeatureEvent(value),
-                              );
-                        }
-                      : null,
-                  title: const Text('تشغيل الخدمة'),
-                  subtitle: Text(
-                    state.isSupportedPlatform
-                        ? 'تستمر بالعمل في الخلفية وتعرض '
-                            'ذكرًا واحدًا في كل مرة.'
-                        : 'الظهور فوق التطبيقات الأخرى '
-                            'غير مدعوم على هذه المنصة.',
-                  ),
+          ),
+
+          SizedBox(height: 16.h),
+          _PreviewCard(item: state.previewItem),
+          SizedBox(height: 12.h),
+
+          // Advanced Settings Toggle
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _showAdvancedSettings = !_showAdvancedSettings;
+                });
+              },
+              borderRadius: BorderRadius.circular(12.r),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                child: Row(
+                  children: [
+                    Icon(
+                      _showAdvancedSettings
+                          ? Icons.settings_suggest_rounded
+                          : Icons.settings_outlined,
+                      size: 18.r,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    SizedBox(width: 10.w),
+                    Text(
+                      'إعدادات متقدمة',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      _showAdvancedSettings
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: Colors.grey,
+                      size: 20.r,
+                    ),
+                  ],
                 ),
-                Divider(
-                  height: 1,
-                  color: context.outline.withValues(alpha: 0.16),
-                ),
-                ListTile(
-                  leading: Icon(Icons.timer_outlined, color: accent),
-                  title: const Text('معدل الظهور'),
-                  subtitle: Text(_formatIntervalText(settings.intervalMinutes)),
-                ),
-                ListTile(
-                  leading: Icon(Icons.visibility_outlined, color: accent),
-                  title: const Text('مدة بقاء الذكر'),
-                  subtitle: Text('${settings.visibleSeconds} ثانية'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.merge_type_rounded, color: accent),
-                  title: const Text('مصادر الأذكار'),
-                  subtitle: Text(
-                    _describeSources(settings),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-          SizedBox(height: 14.h),
+
+          if (_showAdvancedSettings) ...[
+            SizedBox(height: 8.h),
+            Container(
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                    color: Theme.of(context).primaryColor.withOpacity(0.12)),
+              ),
+              child: Column(
+                children: [
+                  _SettingsTile(
+                    icon: Icons.timer_outlined,
+                    title: 'معدل الظهور',
+                    subtitle: _formatIntervalText(settings.intervalMinutes),
+                  ),
+                  Divider(
+                      height: 24.h,
+                      color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                  _SettingsTile(
+                    icon: Icons.visibility_outlined,
+                    title: 'مدة بقاء الذكر',
+                    subtitle: '${settings.visibleSeconds} ثانية',
+                  ),
+                  Divider(
+                      height: 24.h,
+                      color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                  _SettingsTile(
+                    icon: Icons.merge_type_rounded,
+                    title: 'مصادر الأذكار',
+                    subtitle: _describeSources(settings),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          SizedBox(height: 24.h),
+
           FilledButton.icon(
             onPressed: settings.enabled && state.hasOverlayPermission
                 ? () {
@@ -186,37 +246,43 @@ class _Body extends StatelessWidget {
                         .add(const FloatingAdhkarPreviewNowEvent());
                   }
                 : null,
-            icon: const Icon(Icons.play_circle_outline_rounded),
-            label: const Text('عرض ذكر الآن'),
-          ),
-          SizedBox(height: 8.h),
-          OutlinedButton.icon(
-            onPressed: state.isSupportedPlatform && !state.hasOverlayPermission
-                ? () {
-                    context.read<FloatingAdhkarBloc>().add(
-                          const FloatingAdhkarRequestOverlayPermissionEvent(),
-                        );
-                  }
-                : () {
-                    context.push(
-                      BlocProvider.value(
-                        value: context.read<FloatingAdhkarBloc>(),
-                        child: const FloatingAdhkarSettingsScreen(),
-                      ),
-                    );
-                  },
-            icon: Icon(
-              state.isSupportedPlatform && !state.hasOverlayPermission
-                  ? Icons.security_rounded
-                  : Icons.tune_rounded,
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r)),
             ),
-            label: Text(
-              state.isSupportedPlatform && !state.hasOverlayPermission
-                  ? 'منح الصلاحية المطلوبة'
-                  : 'فتح الإعدادات',
-            ),
+            icon: Icon(Icons.play_circle_outline_rounded, size: 20.r),
+            label: Text('عرض ذكر الآن',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
-          SizedBox(height: 8.h),
+
+          SizedBox(height: 12.h),
+
+          if (state.isSupportedPlatform && !state.hasOverlayPermission)
+            Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  context.read<FloatingAdhkarBloc>().add(
+                        const FloatingAdhkarRequestOverlayPermissionEvent(),
+                      );
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
+                  side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r)),
+                ),
+                icon:
+                    Icon(Icons.security_rounded, size: 20.r, color: Colors.red),
+                label: Text('منح الصلاحية المطلوبة',
+                    style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ),
+
           OutlinedButton.icon(
             onPressed: () {
               context.push(
@@ -226,167 +292,129 @@ class _Body extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.edit_note_rounded),
-            label: const Text('إدارة الأذكار'),
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              side: BorderSide(
+                  color: Theme.of(context).primaryColor.withOpacity(0.2)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r)),
+            ),
+            icon: Icon(Icons.edit_note_rounded, size: 20.r),
+            label: Text('إدارة الأذكار',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
   }
-
-  String _describeSources(FloatingAdhkarSettings settings) {
-    if (settings.includeBuiltIn && settings.includeCustom) {
-      return settings.mixSources
-          ? 'دمج بين الافتراضي والمخصص'
-          : 'تناوب بين الافتراضي والمخصص';
-    }
-    if (settings.includeBuiltIn) {
-      return 'الأذكار الافتراضية فقط';
-    }
-    if (settings.includeCustom) {
-      return 'أذكار المستخدم فقط';
-    }
-    return 'لا يوجد مصدر مفعّل';
-  }
-
-  String _formatIntervalText(int minutes) {
-    if (minutes == 1) {
-      return 'كل دقيقة';
-    }
-
-    return 'كل $minutes دقائق';
-  }
 }
 
-class _StatusCard extends StatelessWidget {
-  const _StatusCard({required this.state});
+String _describeSources(FloatingAdhkarSettings settings) {
+  if (settings.includeBuiltIn && settings.includeCustom) {
+    return settings.mixSources
+        ? 'دمج بين الافتراضي والمخصص'
+        : 'تناوب بين الافتراضي والمخصص';
+  }
+  if (settings.includeBuiltIn) {
+    return 'الأذكار الافتراضية فقط';
+  }
+  if (settings.includeCustom) {
+    return 'أذكار المستخدم فقط';
+  }
+  return 'لا يوجد مصدر مفعّل';
+}
+
+String _formatIntervalText(int minutes) {
+  if (minutes == 1) {
+    return 'كل دقيقة';
+  }
+
+  return 'كل $minutes دقائق';
+}
+
+class _StatusAndStatsHeader extends StatelessWidget {
+  const _StatusAndStatsHeader({required this.state});
 
   final FloatingAdhkarState state;
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.primaryColor;
+    final accent = Theme.of(context).primaryColor;
     final status = state.status;
     final settings = state.settings;
-    final titleColor = context.onSurfaceColor;
-    final subtitleColor = context.onSurfaceVariant.withValues(alpha: 0.88);
 
-    return DecoratedBox(
+    return Container(
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.r),
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            context.surfaceColor,
-            context.surfaceVariant.withValues(alpha: 0.55),
-          ],
-        ),
-        border: Border.all(
-          color: accent.withValues(alpha: 0.18),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.shadow.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+        color: accent.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: accent.withOpacity(0.15)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.r),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child:
+                    Icon(Icons.layers_clear_rounded, color: accent, size: 22.r),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'حالة الخدمة',
+                      style: TextStyle(
+                          fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      status.label,
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: accent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+          Row(
+            children: [
+              Expanded(
+                child: _HeaderStatItem(
+                  title: 'الافتراضية',
+                  value: '${state.counts.builtInCount}',
+                  icon: Icons.auto_awesome_rounded,
+                ),
+              ),
+              Container(width: 1, height: 30.h, color: accent.withOpacity(0.1)),
+              Expanded(
+                child: _HeaderStatItem(
+                  title: 'الخاصة',
+                  value:
+                      '${state.counts.customEnabledCount}/${state.counts.customTotalCount}',
+                  icon: Icons.menu_book_rounded,
+                ),
+              ),
+            ],
           ),
         ],
       ),
-      child: Padding(
-        padding: EdgeInsets.all(18.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(18.r),
-                  ),
-                  child: Icon(
-                    Icons.layers_clear_rounded,
-                    color: accent,
-                    size: 24.sp,
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'حالة الميزة',
-                        style: TextStyle(
-                          color: titleColor,
-                          fontSize: 17.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        status.label,
-                        style: TextStyle(
-                          color: accent,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 14.h),
-            Text(
-              _buildDescription(
-                status: status,
-                isEnabled: settings?.enabled ?? false,
-              ),
-              style: TextStyle(
-                color: subtitleColor,
-                fontSize: 12.2.sp,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
-  }
-
-  String _buildDescription({
-    required FloatingAdhkarFeatureStatus status,
-    required bool isEnabled,
-  }) {
-    switch (status) {
-      case FloatingAdhkarFeatureStatus.unsupported:
-        return 'النافذة العائمة فوق التطبيقات الأخرى '
-            'متاحة على أندرويد فقط. يمكنك إدارة الأذكار '
-            'من داخل التطبيق، لكن التشغيل الخارجي غير متوفر هنا.';
-      case FloatingAdhkarFeatureStatus.permissionRequired:
-        return 'الميزة جاهزة، لكنها تحتاج إلى صلاحية '
-            'الظهور فوق التطبيقات الأخرى قبل البدء.';
-      case FloatingAdhkarFeatureStatus.misconfigured:
-        return 'فعّل مصدرًا واحدًا على الأقل، أو فعّل '
-            'بعض أذكارك الخاصة حتى يبدأ التدوير العشوائي.';
-      case FloatingAdhkarFeatureStatus.active:
-        return 'الخدمة تعمل الآن في الخلفية. سيظهر ذكر '
-            'واحد ثم يختفي عند الضغط أو بعد انتهاء المدة المحددة.';
-      case FloatingAdhkarFeatureStatus.inactive:
-        return isEnabled
-            ? 'الإعدادات محفوظة، لكن الخدمة ليست نشطة '
-                'حاليًا. يمكنك إعادة المعاينة أو فتح الإعدادات.'
-            : 'الميزة متوقفة الآن. عند تشغيلها ستعرض '
-                'الأذكار فوق التطبيقات الأخرى حسب ضبطك.';
-    }
   }
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
+class _HeaderStatItem extends StatelessWidget {
+  const _HeaderStatItem({
     required this.title,
     required this.value,
     required this.icon,
@@ -398,42 +426,64 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.primaryColor;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.22),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(14.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: accent, size: 22.sp),
-            SizedBox(height: 10.h),
-            Text(
-              value,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 4.h),
+            Icon(icon,
+                size: 14.r,
+                color: Theme.of(context).primaryColor.withOpacity(0.7)),
+            SizedBox(width: 4.w),
             Text(
               title,
-              style: TextStyle(
-                color: context.onSurfaceVariant,
-                fontSize: 11.4.sp,
-              ),
+              style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
             ),
           ],
         ),
-      ),
+        Text(
+          value,
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon,
+            size: 18.r, color: Theme.of(context).primaryColor.withOpacity(0.8)),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+              ),
+              Text(
+                subtitle,
+                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -445,75 +495,57 @@ class _PreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.primaryColor;
+    final accent = Theme.of(context).primaryColor;
     final text = item?.text.trim().isNotEmpty ?? false
         ? item!.text
         : 'اللهم أعني على ذكرك وشكرك وحسن عبادتك';
     final title = item?.title ?? 'معاينة شكل البطاقة';
     final source = item?.sourceLabel ?? 'افتراضي';
 
-    return DecoratedBox(
+    return Container(
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(22.r),
-        border: Border.all(color: accent.withValues(alpha: 0.35)),
-        boxShadow: [
-          BoxShadow(
-            color: accent.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+        color: accent.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: accent.withOpacity(0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                      color: accent,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                source,
+                style: TextStyle(color: Colors.grey, fontSize: 10.sp),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.bold,
+              height: 1.6,
+            ),
           ),
         ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(18.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(999.r),
-                  ),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: accent,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  source,
-                  style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: 10.5.sp,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 14.h),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              textDirection: TextDirection.rtl,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.7,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_co
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_settings_store.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_phone_picker_sheet.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SmartOutreachUpsertScheduleScreen extends StatefulWidget {
   const SmartOutreachUpsertScheduleScreen({
@@ -46,6 +47,7 @@ class _SmartOutreachUpsertScheduleScreenState
   late bool _retryEnabled;
   late bool _repeatCycle;
   bool _loadingDefaults = false;
+  bool _showAdvancedSettings = false;
 
   final List<_EditablePhoneRow> _rows = <_EditablePhoneRow>[];
 
@@ -86,8 +88,10 @@ class _SmartOutreachUpsertScheduleScreenState
     }
 
     if (_rows.isEmpty) {
-      _rows.add(_EditablePhoneRow.empty());
       _loadDefaults();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _useFajrTime(silent: true);
+      });
     }
   }
 
@@ -174,253 +178,381 @@ class _SmartOutreachUpsertScheduleScreenState
             : Form(
                 key: _formKey,
                 child: ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   children: <Widget>[
                     TextFormField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'اسم القائمة',
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      decoration: InputDecoration(
+                        labelText: 'اسم المجموعة',
                         hintText: 'مثال: تذكير الفجر',
+                        isDense: true,
+                        filled: true,
+                        fillColor: Theme.of(context).primaryColor.withOpacity(0.08),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: Icon(Icons.edit_note_outlined, size: 20.r),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'اكتب اسمًا للقائمة';
+                          return 'اكتب اسمًا للمجموعة';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('وقت الاتصال'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(_selectedTime.format(context)),
-                          if (fajrPrayer != null)
-                            Text(
-                              'وقت الفجر اليوم: '
-                              '${_formatPrayerTime(context, fajrPrayer)}',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                        ],
-                      ),
-                      trailing: OutlinedButton(
-                        onPressed: _showTimeOptionsSheet,
-                        child: const Text('اختيار'),
-                      ),
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _isEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _isEnabled = value;
-                        });
-                      },
-                      title: const Text('تشغيل هذه القائمة'),
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _isDaily,
-                      onChanged: (value) {
-                        setState(() {
-                          _isDaily = value;
-                        });
-                      },
-                      title: const Text('تكرار يومي'),
-                    ),
-                    if (!_isDaily) ...<Widget>[
-                      const SizedBox(height: 8),
-                      Text(
-                        'اختر الأيام التي تريد تشغيل القائمة فيها',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        children: List<Widget>.generate(7, (index) {
-                          final day = index + 1;
-                          final selected = _selectedDays.contains(day);
-                          return FilterChip(
-                            selected: selected,
-                            label: Text(_weekdayLabel(day)),
-                            onSelected: (value) {
-                              setState(() {
-                                if (value) {
-                                  _selectedDays
-                                    ..add(day)
-                                    ..sort();
-                                } else {
-                                  _selectedDays.remove(day);
-                                }
-                              });
-                            },
-                          );
-                        }),
-                      ),
-                    ],
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     Text(
-                      'طريقة الاتصال',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      'جهات الاتصال',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp,
+                          ),
                     ),
-                    const SizedBox(height: 8),
-                    _SliderField(
-                      label: 'مدة انتظار الرد',
-                      value: _ringTimeout.toDouble(),
-                      min: 5,
-                      max: 60,
-                      divisions: 55,
-                      suffix: '$_ringTimeoutث',
-                      onChanged: (value) {
-                        setState(() {
-                          _ringTimeout = value.round();
-                        });
-                      },
-                    ),
-                    _SliderField(
-                      label: 'الانتظار بعد الرد',
-                      value: _hangupDelay.toDouble(),
-                      min: 5,
-                      max: 120,
-                      divisions: 23,
-                      suffix: '$_hangupDelayث',
-                      onChanged: (value) {
-                        setState(() {
-                          _hangupDelay = value.round();
-                        });
-                      },
-                    ),
-                    _SliderField(
-                      label: 'الفاصل بين كل رقم',
-                      value: _delayBetweenCalls.toDouble(),
-                      min: 1,
-                      max: 30,
-                      divisions: 29,
-                      suffix: '$_delayBetweenCallsث',
-                      onChanged: (value) {
-                        setState(() {
-                          _delayBetweenCalls = value.round();
-                        });
-                      },
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _stopOnFirstAnswered,
-                      onChanged: (value) {
-                        setState(() {
-                          _stopOnFirstAnswered = value;
-                        });
-                      },
-                      title: const Text('إيقاف القائمة بعد أول رد'),
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _retryEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _retryEnabled = value;
-                        });
-                      },
-                      title: const Text('إعادة الاتصال إذا لم يتم الرد'),
-                    ),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _repeatCycle,
-                      onChanged: (value) {
-                        setState(() {
-                          _repeatCycle = value;
-                        });
-                      },
-                      title: const Text(
-                        'إعادة البدء من أول القائمة بعد الانتهاء',
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            'الأرقام التي سيتم الاتصال بها',
-                            style: Theme.of(context).textTheme.titleMedium,
+                    SizedBox(height: 12.h),
+                    SizedBox(
+                      width: 1.sw,
+                      child: OutlinedButton.icon(
+                        onPressed: _addFromContacts,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
                           ),
                         ),
-                        TextButton.icon(
-                          onPressed: _addManualRow,
-                          icon: const Icon(Icons.add),
-                          label: const Text('إضافة يدويًا'),
+                        icon: Icon(Icons.person_add_outlined, size: 18.r),
+                        label: Text(
+                          'اختيار من جهات الاتصال',
+                          style: TextStyle(fontSize: 13.sp),
                         ),
-                        TextButton.icon(
-                          onPressed: _addFromContacts,
-                          icon: const Icon(Icons.contacts_outlined),
-                          label: const Text('من جهات الاتصال'),
-                        ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     ...List<Widget>.generate(_rows.length, (index) {
                       final row = _rows[index];
                       return Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                controller: row.labelController,
-                                decoration: InputDecoration(
-                                  labelText: 'اسم صاحب الرقم ${index + 1}',
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: row.phoneController,
-                                keyboardType: TextInputType.phone,
-                                decoration: const InputDecoration(
-                                  labelText: 'رقم الهاتف',
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'اكتب رقم الهاتف';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    onPressed: index == 0
-                                        ? null
-                                        : () => _move(index, index - 1),
-                                    icon: const Icon(Icons.arrow_upward),
-                                  ),
-                                  IconButton(
-                                    onPressed: index == _rows.length - 1
-                                        ? null
-                                        : () => _move(index, index + 1),
-                                    icon: const Icon(Icons.arrow_downward),
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                    onPressed: _rows.length == 1
-                                        ? null
-                                        : () => _remove(index),
-                                    icon: const Icon(Icons.delete_outline),
-                                  ),
-                                ],
-                              ),
-                            ],
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                          side: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                        ),
+                        margin: EdgeInsets.only(bottom: 10.h),
+                        color: Colors.transparent,
+                        child: ListTile(
+                          dense: true,
+                          visualDensity: VisualDensity.compact,
+                          leading: CircleAvatar(
+                            radius: 14.r,
+                            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                            child: Icon(Icons.person_outline, size: 14.r, color: Theme.of(context).primaryColor),
+                          ),
+                          title: Text(
+                            row.labelController.text.isNotEmpty
+                                ? row.labelController.text
+                                : 'بدون اسم',
+                            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500),
+                          ),
+                          subtitle: Text(
+                            row.phoneController.text,
+                            style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () => _remove(index),
+                            icon: Icon(Icons.delete_outline_rounded,
+                                color: Colors.red[400], size: 18.r),
                           ),
                         ),
                       );
                     }),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.15)),
+                      ),
+                      child: ListTile(
+                        dense: true,
+                        leading: Container(
+                          padding: EdgeInsets.all(8.r),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(Icons.access_time_rounded, color: Theme.of(context).primaryColor, size: 20.r),
+                        ),
+                        title: Text('وقت الاتصال',
+                            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(_selectedTime.format(context),
+                                style: TextStyle(fontSize: 16.sp, color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
+                            if (fajrPrayer != null)
+                              Padding(
+                                padding: EdgeInsets.only(top: 2.h),
+                                child: Text(
+                                  'وقت الفجر: ${_formatPrayerTime(context, fajrPrayer)}',
+                                  style: TextStyle(fontSize: 10.sp, color: Colors.grey),
+                                ),
+                              ),
+                          ],
+                        ),
+                        trailing: Container(
+                          height: 30.h,
+                          child: TextButton(
+                            onPressed: _showTimeOptionsSheet,
+                            style: TextButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                            ),
+                            child: Text('تغيير', style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.h),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            _showAdvancedSettings = !_showAdvancedSettings;
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _showAdvancedSettings
+                                    ? Icons.settings_suggest_rounded
+                                    : Icons.settings_outlined,
+                                size: 18.r,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              SizedBox(width: 10.w),
+                              Text(
+                                'إعدادات متقدمة',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13.sp,
+                                ),
+                              ),
+                              const Spacer(),
+                              Icon(
+                                _showAdvancedSettings
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: Colors.grey,
+                                size: 20.r,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (_showAdvancedSettings) ...[
+                      Container(
+                        padding: EdgeInsets.all(16.r),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor.withOpacity(0.06),
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.12)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SwitchListTile(
+                              dense: true,
+                              secondary: Icon(Icons.power_settings_new_rounded,
+                                  size: 18.r, color: _isEnabled ? Theme.of(context).primaryColor : Colors.grey),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                              value: _isEnabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isEnabled = value;
+                                });
+                              },
+                              title: Text('تشغيل هذه القائمة',
+                                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),
+                            ),
+                            Divider(height: 1.h),
+                            SwitchListTile(
+                              dense: true,
+                              secondary: Icon(Icons.calendar_today_rounded,
+                                  size: 18.r, color: _isDaily ? Theme.of(context).primaryColor : Colors.grey),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                              value: _isDaily,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isDaily = value;
+                                });
+                              },
+                              title: Text('تكرار يومي',
+                                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),
+                            ),
+                            if (!_isDaily) ...<Widget>[
+                              SizedBox(height: 8.h),
+                              Text(
+                                'الأيام المختارة:',
+                                style: TextStyle(fontSize: 11.sp, color: Theme.of(context).textTheme.bodySmall?.color),
+                              ),
+                              SizedBox(height: 8.h),
+                              Wrap(
+                                spacing: 6.w,
+                                runSpacing: 0,
+                                children: List<Widget>.generate(7, (index) {
+                                  final day = index + 1;
+                                  final selected = _selectedDays.contains(day);
+                                  return ChoiceChip(
+                                    selected: selected,
+                                    label: Text(_weekdayLabel(day),
+                                        style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: selected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color)),
+                                    selectedColor: Theme.of(context).primaryColor,
+                                    onSelected: (value) {
+                                      setState(() {
+                                        if (value) {
+                                          _selectedDays
+                                            ..add(day)
+                                            ..sort();
+                                        } else {
+                                          _selectedDays.remove(day);
+                                        }
+                                      });
+                                    },
+                                  );
+                                }),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.all(16.r),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor.withOpacity(0.06),
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.12)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _SliderField(
+                              label: 'مدة انتظار الرد',
+                              value: _ringTimeout.toDouble(),
+                              min: 5,
+                              max: 60,
+                              divisions: 55,
+                              suffix: '$_ringTimeout ثانية',
+                              onChanged: (value) {
+                                setState(() {
+                                  _ringTimeout = value.round();
+                                });
+                              },
+                            ),
+                            Divider(height: 24.h),
+                            _SliderField(
+                              label: 'الانتظار بعد الرد',
+                              value: _hangupDelay.toDouble(),
+                              min: 5,
+                              max: 120,
+                              divisions: 23,
+                              suffix: '$_hangupDelay ثانية',
+                              onChanged: (value) {
+                                setState(() {
+                                  _hangupDelay = value.round();
+                                });
+                              },
+                            ),
+                            Divider(height: 24.h),
+                            _SliderField(
+                              label: 'الفاصل بين الأرقام',
+                              value: _delayBetweenCalls.toDouble(),
+                              min: 1,
+                              max: 30,
+                              divisions: 29,
+                              suffix: '$_delayBetweenCalls ثانية',
+                              onChanged: (value) {
+                                setState(() {
+                                  _delayBetweenCalls = value.round();
+                                });
+                              },
+                            ),
+                            Divider(height: 24.h),
+                            SwitchListTile(
+                              dense: true,
+                              secondary: Icon(Icons.stop_circle_outlined, size: 18.r),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                              value: _stopOnFirstAnswered,
+                              onChanged: (value) {
+                                setState(() {
+                                  _stopOnFirstAnswered = value;
+                                });
+                              },
+                              title: Text('إيقاف بعد أول رد',
+                                  style: TextStyle(fontSize: 12.sp)),
+                            ),
+                            SwitchListTile(
+                              dense: true,
+                              secondary: Icon(Icons.replay_circle_filled_rounded, size: 18.r),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                              value: _retryEnabled,
+                              onChanged: (value) {
+                                setState(() {
+                                  _retryEnabled = value;
+                                });
+                              },
+                              title: Text('إعادة عند عدم الرد',
+                                  style: TextStyle(fontSize: 12.sp)),
+                            ),
+                            SwitchListTile(
+                              dense: true,
+                              secondary: Icon(Icons.loop_rounded, size: 18.r),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                              value: _repeatCycle,
+                              onChanged: (value) {
+                                setState(() {
+                                  _repeatCycle = value;
+                                });
+                              },
+                              title: Text('تكرار الحلقة بالكامل',
+                                  style: TextStyle(fontSize: 12.sp)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 32),
                     FilledButton.icon(
                       onPressed: _onSavePressed,
-                      icon: const Icon(Icons.save_outlined),
-                      label: const Text('حفظ القائمة'),
+                      style: FilledButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                      ),
+                      icon: Icon(Icons.save_outlined, size: 20.r),
+                      label: Text(
+                        'حفظ القائمة',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -521,7 +653,7 @@ class _SmartOutreachUpsertScheduleScreenState
     }
   }
 
-  void _useFajrTime() {
+  void _useFajrTime({bool silent = false}) {
     final fajrPrayer = _getFajrPrayer(context);
     if (fajrPrayer == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -539,21 +671,17 @@ class _SmartOutreachUpsertScheduleScreenState
       );
     });
 
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(
-            'تم استخدام وقت الفجر: ${_formatPrayerTime(context, fajrPrayer)}',
+    if (!silent) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              'تم استخدام وقت الفجر: ${_formatPrayerTime(context, fajrPrayer)}',
+            ),
           ),
-        ),
-      );
-  }
-
-  void _addManualRow() {
-    setState(() {
-      _rows.add(_EditablePhoneRow.empty());
-    });
+        );
+    }
   }
 
   Future<void> _addFromContacts() async {
@@ -718,28 +846,41 @@ class _SliderField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(child: Text(label)),
-                Text(suffix),
-              ],
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8)),
+              ),
             ),
-            Slider(
-              value: value,
-              min: min,
-              max: max,
-              divisions: divisions,
-              onChanged: onChanged,
+            Text(
+              suffix,
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
             ),
           ],
         ),
-      ),
+        SizedBox(height: 4.h),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            trackHeight: 2.h,
+            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.r),
+            overlayShape: RoundSliderOverlayShape(overlayRadius: 12.r),
+            activeTrackColor: Theme.of(context).primaryColor,
+            inactiveTrackColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          ),
+          child: Slider(
+            value: value,
+            min: min,
+            max: max,
+            divisions: divisions,
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 }

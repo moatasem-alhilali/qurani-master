@@ -45,19 +45,18 @@ extension _YoungMuslimVideoDetailsScreenContent
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () => _openPlayer(details.video.id),
-                icon: const Icon(Icons.play_circle_fill_rounded),
+                icon: Icon(Icons.play_circle_fill_rounded, size: 24.r),
                 label: Text(
                   details.video.hasProgress ? 'متابعة المشاهدة' : 'تشغيل الآن',
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColor,
                   foregroundColor: context.onPrimaryColor,
-                  padding: EdgeInsets.symmetric(vertical: 18.h),
-                  elevation: 4,
-                  shadowColor: context.primaryColor.withValues(alpha: 0.3),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.r),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                 ),
               ),
@@ -91,8 +90,8 @@ extension _YoungMuslimVideoDetailsScreenContent
         SizedBox(height: 18.h),
         RepaintBoundary(
           child: Container(
-            padding: EdgeInsets.all(18.w),
-            decoration: youngMuslimPanelDecoration(context, useGradient: true),
+            padding: EdgeInsets.all(16.r),
+            decoration: youngMuslimPanelDecoration(context),
             child: Wrap(
               spacing: 12.w,
               runSpacing: 10.h,
@@ -122,8 +121,8 @@ extension _YoungMuslimVideoDetailsScreenContent
         ),
         SizedBox(height: 22.h),
         Container(
-          padding: EdgeInsets.all(20.w),
-          decoration: youngMuslimPanelDecoration(context, useGradient: true),
+          padding: EdgeInsets.all(16.r),
+          decoration: youngMuslimPanelDecoration(context),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -131,7 +130,7 @@ extension _YoungMuslimVideoDetailsScreenContent
                 title: 'معلومات الحلقة',
                 subtitle: 'تفاصيل بسيطة وواضحة للطفل وولي الأمر',
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
               _buildInfoRow(context, 'القصة', details.video.topicTitle, isBold: true),
               _buildInfoRow(context, 'القسم', details.category.titleAr),
               _buildInfoRow(context, 'السلسلة', details.series.titleAr),
@@ -139,7 +138,7 @@ extension _YoungMuslimVideoDetailsScreenContent
                 _buildInfoRow(context, 'رقم الحلقة', '${details.video.episodeNumber}'),
               
               if (details.videoQuiz != null) ...[
-                SizedBox(height: 18.h),
+                SizedBox(height: 16.h),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -150,10 +149,11 @@ extension _YoungMuslimVideoDetailsScreenContent
                         title: 'سؤال بعد المشاهدة',
                       );
                     },
-                    icon: const Icon(Icons.quiz_outlined),
-                    label: const Text('أسئلة الحلقة'),
+                    icon: Icon(Icons.quiz_outlined, size: 20.r),
+                    label: Text('أسئلة الحلقة', style: TextStyle(fontSize: 13.sp)),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
+                      side: BorderSide(color: context.primaryColor.withOpacity(0.3)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                       ),
@@ -172,10 +172,11 @@ extension _YoungMuslimVideoDetailsScreenContent
                       achievements: details.achievements,
                     );
                   },
-                  icon: const Icon(Icons.emoji_events_outlined),
-                  label: const Text('نقاطي وإنجازاتي'),
+                  icon: Icon(Icons.emoji_events_outlined, size: 20.r),
+                  label: Text('نقاطي وإنجازاتي', style: TextStyle(fontSize: 13.sp)),
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
+                    side: BorderSide(color: context.primaryColor.withOpacity(0.3)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r),
                     ),
@@ -243,7 +244,7 @@ extension _YoungMuslimVideoDetailsScreenContent
             '$label: ',
             style: TextStyle(
               fontSize: 13.sp,
-              color: context.onSurfaceVariant.withValues(alpha: 0.7),
+              color: context.onSurfaceVariant.withOpacity(0.7),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -319,10 +320,10 @@ class _ActionCircleButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18.r),
       child: Ink(
-        width: 52.w,
-        height: 52.w,
-        decoration: youngMuslimPanelDecoration(context, radius: 18),
-        child: Icon(icon, color: color),
+        width: 48.w,
+        height: 48.w,
+        decoration: youngMuslimPanelDecoration(context, radius: 16),
+        child: Icon(icon, color: color, size: 22.r),
       ),
     );
   }

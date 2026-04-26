@@ -32,7 +32,7 @@ class YoungMuslimQuizSheet extends StatelessWidget {
       useSafeArea: true,
       backgroundColor: context.scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
       ),
       builder: (sheetContext) {
         return RepositoryProvider.value(

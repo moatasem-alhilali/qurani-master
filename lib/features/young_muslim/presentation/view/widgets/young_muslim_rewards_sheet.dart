@@ -65,8 +65,8 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                         height: 56.w,
                         decoration: BoxDecoration(
                           color: youngMuslimRewardColor(context)
-                              .withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(18.r),
+                              .withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(16.r),
                         ),
                         child: Icon(
                           Icons.bolt_rounded,
@@ -128,9 +128,9 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                   SizedBox(height: 10.h),
                   LinearProgressIndicator(
                     value: levelProgress,
-                    minHeight: 10.h,
-                    borderRadius: BorderRadius.circular(20.r),
-                    backgroundColor: context.outline.withValues(alpha: 0.18),
+                    minHeight: 8.h,
+                    borderRadius: BorderRadius.circular(16.r),
+                    backgroundColor: context.outline.withOpacity(0.15),
                     color: youngMuslimRewardColor(context),
                   ),
                   SizedBox(height: 18.h),

@@ -128,96 +128,59 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
             startHex: firstCategory.accentStart,
             endHex: firstCategory.accentEnd,
           );
+
     return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: youngMuslimPanelDecoration(context, radius: 28, useGradient: true),
-      child: Stack(
+      padding: EdgeInsets.all(20.r),
+      decoration:
+          youngMuslimPanelDecoration(context, radius: 16, useGradient: true),
+      child: Row(
         children: [
-          Positioned(
-            bottom: -30.h,
-            left: -20.w,
-            child: Container(
-              width: 100.w,
-              height: 100.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colors.first.withValues(alpha: 0.04),
+          Container(
+            width: 60.w,
+            height: 60.w,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: colors,
               ),
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.first.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
+            child: Icon(Icons.auto_awesome_rounded,
+                color: Colors.white, size: 28.r),
           ),
-          Row(
-            children: [
-              Container(
-                width: 64.w,
-                height: 64.w,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: colors,
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'المسلم الصغير',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
                   ),
-                  borderRadius: BorderRadius.circular(22.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colors.first.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
-                child: Icon(
-                  Icons.auto_awesome_rounded,
-                  color: Colors.white,
-                  size: 32.sp,
+                SizedBox(height: 4.h),
+                Text(
+                  dashboard == null
+                      ? 'مرحباً بك في عالم القصص والتعلم'
+                      : 'لديك ${dashboard.continueWatching.length} حلقات بانتظارك لتعود إليها!',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[600],
+                    height: 1.4,
+                  ),
                 ),
-              ),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'المسلم الصغير',
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w900,
-                        color: context.onSurfaceColor,
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      dashboard == null
-                          ? 'قصص مرئية، متابعة ذكية، وأسئلة بسيطة بعد المشاهدة.'
-                          : 'لديك ${dashboard.continueWatching.length} عناصر'
-                              ' يمكنك إكمالها الآن.',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: context.onSurfaceVariant.withValues(alpha: 0.7),
-                      ),
-                    ),
-                    if (dashboard != null) ...[
-                      SizedBox(height: 14.h),
-                      Wrap(
-                        spacing: 8.w,
-                        runSpacing: 8.h,
-                        children: [
-                          YoungMuslimMetricChip(
-                            label: '${dashboard.categories.length} أقسام',
-                            icon: Icons.grid_view_rounded,
-                            color: context.primaryColor,
-                          ),
-                          YoungMuslimMetricChip(
-                            label: '${dashboard.favorites.length} مفضلة',
-                            icon: Icons.favorite_rounded,
-                            color: youngMuslimRewardColor(context),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -284,7 +247,7 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                   color: context.cardColor,
                   borderRadius: BorderRadius.circular(18.r),
                   border: Border.all(
-                    color: context.outlineVariant.withValues(alpha: 0.45),
+                    color: context.outlineVariant.withOpacity(0.45),
                   ),
                 ),
                 child: Icon(
@@ -320,26 +283,30 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
     return CarouselSlider.builder(
       itemCount: dashboard.categories.length,
       options: CarouselOptions(
-        height: 198.h,
+        height: 190.h,
         viewportFraction: 0.9,
         enableInfiniteScroll: dashboard.categories.length > 1,
+        autoPlay: true,
       ),
       itemBuilder: (context, index, realIndex) {
         final category = dashboard.categories[index];
-        return YoungMuslimMediaBanner(
-          title: category.titleAr,
-          subtitle: category.description,
-          imageUrl: category.bannerImage,
-          accentStart: category.accentStart,
-          accentEnd: category.accentEnd,
-          onTap: () => _openCategory(context, category.id),
-          badges: [
-            YoungMuslimMetricChip(
-              label: category.audience == 'kids' ? 'للأطفال' : 'عام',
-              icon: Icons.shield_moon_rounded,
-              color: Colors.white,
-            ),
-          ],
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5.w),
+          child: YoungMuslimMediaBanner(
+            title: category.titleAr,
+            subtitle: category.description,
+            imageUrl: category.bannerImage,
+            accentStart: category.accentStart,
+            accentEnd: category.accentEnd,
+            onTap: () => _openCategory(context, category.id),
+            badges: [
+              YoungMuslimMetricChip(
+                label: category.audience == 'kids' ? 'للأطفال' : 'عام',
+                icon: Icons.shield_moon_rounded,
+                color: Colors.white,
+              ),
+            ],
+          ),
         );
       },
     );
@@ -351,6 +318,8 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
   ) {
     final rewards = dashboard.rewardsSummary;
     final levelProgress = (rewards.xpIntoCurrentLevel / 100).clamp(0.0, 1.0);
+    final accent = Theme.of(context).primaryColor;
+    final rewardColor = youngMuslimRewardColor(context);
 
     return InkWell(
       onTap: () {
@@ -360,159 +329,103 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
           achievements: dashboard.achievements,
         );
       },
-      borderRadius: BorderRadius.circular(28.r),
+      borderRadius: BorderRadius.circular(16.r),
       child: Container(
-        padding: EdgeInsets.all(20.w),
-        decoration: youngMuslimPanelDecoration(context, radius: 28, useGradient: true),
-        child: Stack(
+        padding: EdgeInsets.all(16.r),
+        decoration: youngMuslimPanelDecoration(context, radius: 16),
+        child: Column(
           children: [
-            Positioned(
-              top: -30.h,
-              left: -30.w,
-              child: Container(
-                width: 120.w,
-                height: 120.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: context.primaryColor.withValues(alpha: 0.04),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10.r),
+                  decoration: BoxDecoration(
+                    color: rewardColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child:
+                      Icon(Icons.stars_rounded, color: rewardColor, size: 24.r),
                 ),
-              ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'لوحة الإنجازات',
+                        style: TextStyle(
+                            fontSize: 14.sp, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'المستوى ${rewards.level} • ${rewards.xp} XP',
+                        style:
+                            TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_left_rounded, color: Colors.grey, size: 20.r),
+              ],
             ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Expanded(
+                  child: _RewardStatItem(
+                    label: 'إنجازات',
+                    value: '${rewards.unlockedAchievements}',
+                    icon: Icons.emoji_events_outlined,
+                    color: accent,
+                  ),
+                ),
+                Container(
+                    width: 1, height: 30.h, color: accent.withOpacity(0.1)),
+                Expanded(
+                  child: _RewardStatItem(
+                    label: 'حلقات',
+                    value: '${rewards.completedVideos}',
+                    icon: Icons.play_circle_outline_rounded,
+                    color: Colors.green,
+                  ),
+                ),
+                Container(
+                    width: 1, height: 30.h, color: accent.withOpacity(0.1)),
+                Expanded(
+                  child: _RewardStatItem(
+                    label: 'إجابات',
+                    value: '${rewards.correctAnswers}',
+                    icon: Icons.quiz_outlined,
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(10.w),
-                      decoration: BoxDecoration(
-                        color: youngMuslimRewardColor(context).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(14.r),
-                      ),
-                      child: Icon(
-                        Icons.auto_awesome_rounded,
-                        color: youngMuslimRewardColor(context),
-                        size: 22.sp,
-                      ),
-                    ),
-                    SizedBox(width: 14.w),
-                    const Expanded(
-                      child: YoungMuslimSectionHeader(
-                        title: 'نقاطك وإنجازاتك',
-                        subtitle: 'تقدّمك الكامل في رحلة التعلم والنمو',
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 14.sp,
-                      color: context.onSurfaceVariant.withValues(alpha: 0.4),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: YoungMuslimMetricChip(
-                        label: '${rewards.xp} XP',
-                        icon: Icons.bolt_rounded,
-                        color: youngMuslimRewardColor(context),
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: YoungMuslimMetricChip(
-                        label: 'المستوى ${rewards.level}',
-                        icon: Icons.emoji_events_rounded,
-                        color: context.primaryColor,
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: YoungMuslimMetricChip(
-                        label: '${rewards.unlockedAchievements} إنجاز',
-                        icon: Icons.stars_rounded,
-                        color: context.secondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'التقدّم للمستوى التالي',
+                    Text('التقدم للمستوى التالي',
                         style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w800,
-                          color: context.onSurfaceColor,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '${rewards.xpIntoCurrentLevel}/100',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: context.onSurfaceVariant.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+                            fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                    Text('${rewards.xpIntoCurrentLevel}%',
+                        style: TextStyle(
+                            fontSize: 11.sp,
+                            color: accent,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
-                SizedBox(height: 10.h),
-                Stack(
-                  children: [
-                    Container(
-                      height: 10.h,
-                      decoration: BoxDecoration(
-                        color: context.outline.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: levelProgress,
-                      child: Container(
-                        height: 10.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              youngMuslimRewardColor(context),
-                              youngMuslimRewardColor(context).withValues(alpha: 0.7),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: youngMuslimRewardColor(context).withValues(alpha: 0.2),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 18.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: YoungMuslimMetricChip(
-                        label: '${rewards.completedVideos} فيديو مكتمل',
-                        icon: Icons.play_lesson_rounded,
-                        color: context.primaryColor,
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: YoungMuslimMetricChip(
-                        label: '${rewards.correctAnswers} إجابة صحيحة',
-                        icon: Icons.quiz_rounded,
-                        color: context.secondaryColor,
-                      ),
-                    ),
-                  ],
+                SizedBox(height: 6.h),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.r),
+                  child: LinearProgressIndicator(
+                    value: levelProgress,
+                    minHeight: 8.h,
+                    backgroundColor: accent.withOpacity(0.1),
+                    valueColor: AlwaysStoppedAnimation<Color>(accent),
+                  ),
                 ),
               ],
             ),
@@ -552,7 +465,7 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                     ),
                   );
             },
-            selectedColor: context.primaryContainer.withValues(alpha: 0.9),
+            selectedColor: context.primaryContainer.withOpacity(0.9),
             labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: selected ? context.primaryColor : context.gray1,
                   fontWeight: FontWeight.w700,
@@ -825,6 +738,38 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
           },
         );
       },
+    );
+  }
+}
+
+class _RewardStatItem extends StatelessWidget {
+  const _RewardStatItem({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, size: 18.r, color: color.withOpacity(0.8)),
+        SizedBox(height: 4.h),
+        Text(
+          value,
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          label,
+          style: TextStyle(fontSize: 10.sp, color: Colors.grey[600]),
+        ),
+      ],
     );
   }
 }

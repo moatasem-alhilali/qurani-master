@@ -42,8 +42,8 @@ class _QuizResultView extends StatelessWidget {
                       width: 56.w,
                       height: 56.w,
                       decoration: BoxDecoration(
-                        color: passedColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(18.r),
+                        color: passedColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: Icon(
                         result.passed
@@ -110,9 +110,9 @@ class _QuizResultView extends StatelessWidget {
                 SizedBox(height: 14.h),
                 LinearProgressIndicator(
                   value: result.scorePercent,
-                  minHeight: 10.h,
-                  borderRadius: BorderRadius.circular(18.r),
-                  backgroundColor: context.outline.withValues(alpha: 0.18),
+                  minHeight: 8.h,
+                  borderRadius: BorderRadius.circular(16.r),
+                  backgroundColor: context.outline.withOpacity(0.15),
                   color: passedColor,
                 ),
               ],
@@ -161,8 +161,9 @@ class _QuizResultView extends StatelessWidget {
               label: const Text('إنهاء'),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16.h),
+                elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
             ),
@@ -187,66 +188,82 @@ class _AnswerReviewCard extends StatelessWidget {
         : context.errorColor;
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.r),
       decoration: youngMuslimPanelDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 38.w,
-                height: 38.w,
+                width: 32.w,
+                height: 32.w,
                 decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14.r),
+                  color: accentColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
                 ),
                 child: Icon(
                   review.isCorrect
-                      ? Icons.check_circle_rounded
-                      : Icons.cancel_rounded,
+                      ? Icons.check_rounded
+                      : Icons.close_rounded,
                   color: accentColor,
-                  size: 22.sp,
+                  size: 18.sp,
                 ),
               ),
-              SizedBox(width: 10.w),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   review.question.prompt,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w800,
+                        height: 1.5,
                       ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 20.h),
           _AnswerLine(
             title: 'إجابتك',
             value: review.submittedAnswer,
             color: review.isCorrect ? accentColor : context.errorColor,
+            isCorrect: review.isCorrect,
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 12.h),
           _AnswerLine(
             title: 'الإجابة الصحيحة',
             value: review.correctAnswer,
             color: youngMuslimCompletionColor(context),
+            isCorrect: true,
+            isReference: true,
           ),
           if (review.question.explanation.trim().isNotEmpty) ...[
-            SizedBox(height: 12.h),
+            SizedBox(height: 16.h),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(12.w),
+              padding: EdgeInsets.all(16.r),
               decoration: BoxDecoration(
-                color: context.primaryContainer.withValues(alpha: 0.36),
-                borderRadius: BorderRadius.circular(16.r),
+                color: context.primaryColor.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: context.primaryColor.withOpacity(0.1)),
               ),
-              child: Text(
-                review.question.explanation,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.gray1,
-                      height: 1.45,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline_rounded, size: 16.r, color: context.primaryColor),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Text(
+                      review.question.explanation,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: context.onSurfaceColor.withOpacity(0.8),
+                            height: 1.6,
+                            fontSize: 11.5.sp,
+                          ),
                     ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -261,36 +278,59 @@ class _AnswerLine extends StatelessWidget {
     required this.title,
     required this.value,
     required this.color,
+    this.isCorrect = false,
+    this.isReference = false,
   });
 
   final String title;
   final String value;
   final Color color;
+  final bool isCorrect;
+  final bool isReference;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16.r),
+        color: isReference 
+            ? color.withOpacity(0.05)
+            : color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12.r),
+        border: isReference 
+            ? Border.all(color: color.withOpacity(0.2)) 
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w800,
+          Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: color.withOpacity(0.8),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
                 ),
+              ),
+              const Spacer(),
+              if (!isReference)
+                Icon(
+                  isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                  size: 14.r,
+                  color: color,
+                ),
+            ],
           ),
           SizedBox(height: 6.h),
           Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w700,
+                  color: context.onSurfaceColor,
                 ),
           ),
         ],
@@ -319,8 +359,8 @@ class _UnlockedAchievementCard extends StatelessWidget {
             width: 46.w,
             height: 46.w,
             decoration: BoxDecoration(
-              color: rewardColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(16.r),
+              color: rewardColor.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(
               youngMuslimAchievementIcon(achievement.icon),

@@ -53,7 +53,7 @@ class _YoungMuslimVideoDetailsScreenState
         builder: (context, title) => Text(title),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 30.h),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
         child: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
           buildWhen: (previous, current) {
             return previous.videoState != current.videoState ||

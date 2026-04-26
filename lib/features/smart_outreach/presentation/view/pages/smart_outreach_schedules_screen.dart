@@ -92,10 +92,10 @@ class _SmartOutreachSchedulesViewState
                 .read<SmartOutreachSchedulesBloc>()
                 .add(const LoadSmartOutreachSchedulesEvent());
           },
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: FloatingActionButton(
             onPressed: () => _openUpsertScreen(context),
-            icon: const Icon(Icons.add),
-            label: const Text('إضافة قائمة'),
+            child: const Icon(Icons.add),
+            // label: const Text('إضافة قائمة'),
           ),
           slivers: _buildSlivers(context, state),
         );

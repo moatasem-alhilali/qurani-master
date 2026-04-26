@@ -35,119 +35,157 @@ class _FloatingAdhkarSettingsScreenState
       showLargeHeader: false,
       initialOffset: null,
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // General Feature Enable
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.15)),
+              ),
+              child: SwitchListTile(
+                secondary: Icon(
+                  Icons.power_settings_new_rounded,
+                  color: _draft.enabled ? Theme.of(context).primaryColor : Colors.grey,
+                  size: 22.r,
+                ),
+                value: _draft.enabled,
+                onChanged: (value) {
+                  setState(() {
+                    _draft = _draft.copyWith(enabled: value);
+                  });
+                },
+                title: Text('تشغيل الميزة بالكامل',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                  'عند التفعيل تبدأ الخدمة الخلفية في الظهور',
+                  style: TextStyle(fontSize: 11.sp),
+                ),
+              ),
+            ),
+            
+            SizedBox(height: 16.h),
+            
             _SectionCard(
-              title: 'التشغيل العام',
+              title: 'توقيت الظهور',
+              icon: Icons.timer_outlined,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SwitchListTile.adaptive(
-                    value: _draft.enabled,
-                    onChanged: (value) {
-                      setState(() {
-                        _draft = _draft.copyWith(enabled: value);
-                      });
-                    },
-                    title: const Text('تشغيل الميزة بالكامل'),
-                    subtitle: const Text(
-                      'عند التفعيل تبدأ الخدمة الخلفية '
-                      'وتنتظر وقت العرض التالي.',
-                    ),
+                  Text('معدل تكرار الظهور:', style: TextStyle(fontSize: 12.sp, color: Colors.grey[600])),
+                  SizedBox(height: 8.h),
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: _intervalOptions.map((value) {
+                      final selected = _draft.intervalMinutes == value;
+                      return ChoiceChip(
+                        label: Text(_formatIntervalLabel(value), 
+                          style: TextStyle(fontSize: 11.sp, color: selected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color)),
+                        selected: selected,
+                        selectedColor: Theme.of(context).primaryColor,
+                        onSelected: (_) {
+                          setState(() {
+                            _draft = _draft.copyWith(intervalMinutes: value);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  Divider(height: 24.h, color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                  Text('مدة بقاء الذكر (بالثواني):', style: TextStyle(fontSize: 12.sp, color: Colors.grey[600])),
+                  SizedBox(height: 8.h),
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 8.h,
+                    children: _visibleOptions.map((value) {
+                      final selected = _draft.visibleSeconds == value;
+                      return ChoiceChip(
+                        label: Text('$value ث', 
+                          style: TextStyle(fontSize: 11.sp, color: selected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color)),
+                        selected: selected,
+                        selectedColor: Theme.of(context).primaryColor,
+                        onSelected: (_) {
+                          setState(() {
+                            _draft = _draft.copyWith(visibleSeconds: value);
+                          });
+                        },
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 12.h),
-            _SectionCard(
-              title: 'معدل الظهور',
-              child: Wrap(
-                spacing: 8.w,
-                runSpacing: 8.h,
-                children: _intervalOptions.map((value) {
-                  return ChoiceChip(
-                    label: Text(_formatIntervalLabel(value)),
-                    selected: _draft.intervalMinutes == value,
-                    onSelected: (_) {
-                      setState(() {
-                        _draft = _draft.copyWith(intervalMinutes: value);
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-            SizedBox(height: 12.h),
-            _SectionCard(
-              title: 'مدة بقاء الذكر ظاهرًا',
-              child: Wrap(
-                spacing: 8.w,
-                runSpacing: 8.h,
-                children: _visibleOptions.map((value) {
-                  return ChoiceChip(
-                    label: Text('$value ث'),
-                    selected: _draft.visibleSeconds == value,
-                    onSelected: (_) {
-                      setState(() {
-                        _draft = _draft.copyWith(visibleSeconds: value);
-                      });
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-            SizedBox(height: 12.h),
+
+            SizedBox(height: 16.h),
+
             _SectionCard(
               title: 'مصادر الأذكار',
+              icon: Icons.merge_type_rounded,
               child: Column(
                 children: [
-                  SwitchListTile.adaptive(
+                  SwitchListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
                     value: _draft.includeBuiltIn,
                     onChanged: (value) {
                       setState(() {
                         _draft = _draft.copyWith(includeBuiltIn: value);
                       });
                     },
-                    title: const Text('إظهار الأذكار الافتراضية'),
-                    subtitle: const Text(
-                      'من المصدر الداخلي القصير والمنظم داخل التطبيق.',
-                    ),
+                    title: Text('الأذكار الافتراضية', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                    subtitle: Text('المصدر الداخلي الأساسي للتطبيق', style: TextStyle(fontSize: 11.sp)),
                   ),
-                  SwitchListTile.adaptive(
+                  Divider(height: 16.h, color: Theme.of(context).primaryColor.withOpacity(0.05)),
+                  SwitchListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
                     value: _draft.includeCustom,
                     onChanged: (value) {
                       setState(() {
                         _draft = _draft.copyWith(includeCustom: value);
                       });
                     },
-                    title: const Text('إظهار أذكاري الخاصة'),
-                    subtitle: const Text(
-                      'يدخل ما أضفته بنفسك ضمن الدوران العشوائي.',
-                    ),
+                    title: Text('أذكاري الخاصة', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                    subtitle: Text('الأذكار التي قمت بإضافتها يدوياً', style: TextStyle(fontSize: 11.sp)),
                   ),
-                  if (_draft.includeBuiltIn && _draft.includeCustom)
-                    SwitchListTile.adaptive(
+                  if (_draft.includeBuiltIn && _draft.includeCustom) ...[
+                    Divider(height: 16.h, color: Theme.of(context).primaryColor.withOpacity(0.05)),
+                    SwitchListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
                       value: _draft.mixSources,
                       onChanged: (value) {
                         setState(() {
                           _draft = _draft.copyWith(mixSources: value);
                         });
                       },
-                      title: const Text('الخلط بين المصدرين'),
+                      title: Text('الخلط بين المصادر', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
                       subtitle: Text(
                         _draft.mixSources
                             ? 'يتم الاختيار من قائمة موحدة.'
                             : 'يتم التناوب بين الافتراضي والمخصص.',
+                        style: TextStyle(fontSize: 11.sp),
                       ),
                     ),
+                  ],
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
-            FilledButton(
+            
+            SizedBox(height: 32.h),
+            
+            FilledButton.icon(
               onPressed: _saveSettings,
-              child: const Text('حفظ الإعدادات'),
+              style: FilledButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+              ),
+              icon: Icon(Icons.save_outlined, size: 20.r),
+              label: Text('حفظ الإعدادات', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
             ),
           ],
         ),
@@ -183,39 +221,43 @@ class _FloatingAdhkarSettingsScreenState
 class _SectionCard extends StatelessWidget {
   const _SectionCard({
     required this.title,
+    required this.icon,
     required this.child,
   });
 
   final String title;
+  final IconData icon;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    final accent = Theme.of(context).primaryColor;
+    return Container(
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.22),
-        ),
+        color: accent.withOpacity(0.06),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: accent.withOpacity(0.12)),
       ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 10.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w800,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18.r, color: accent),
+              SizedBox(width: 8.w),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 10.h),
-            child,
-          ],
-        ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+          child,
+        ],
       ),
     );
   }

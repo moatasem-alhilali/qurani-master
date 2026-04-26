@@ -50,7 +50,7 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         builder: (context, title) => Text(title),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 28.h),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
         child: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
           buildWhen: (previous, current) {
             return previous.categoryState != current.categoryState ||
@@ -126,8 +126,8 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         SizedBox(height: 16.h),
         RepaintBoundary(
           child: Container(
-            padding: EdgeInsets.all(18.w),
-            decoration: youngMuslimPanelDecoration(context, useGradient: true),
+            padding: EdgeInsets.all(16.r),
+            decoration: youngMuslimPanelDecoration(context),
             child: Wrap(
               spacing: 12.w,
               runSpacing: 10.h,
@@ -166,13 +166,13 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
                 selectedColor: youngMuslimAccentColor(
                   context,
                   series.accentStart,
-                ).withValues(alpha: 0.18),
+                ).withOpacity(0.15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14.r),
+                  borderRadius: BorderRadius.circular(16.r),
                   side: BorderSide(
                     color: selectedSeriesId == series.id
                         ? youngMuslimAccentColor(context, series.accentStart)
-                        : context.outline.withValues(alpha: 0.3),
+                        : context.outline.withOpacity(0.2),
                   ),
                 ),
                 labelStyle: TextStyle(
@@ -182,8 +182,8 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
                           context,
                           series.accentStart,
                         )
-                      : context.onSurfaceVariant.withValues(alpha: 0.8),
-                  fontWeight: FontWeight.w800,
+                      : context.onSurfaceVariant.withOpacity(0.8),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
           ],

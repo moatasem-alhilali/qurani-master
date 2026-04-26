@@ -42,42 +42,29 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildFilterAction(context, state),
-              SizedBox(width: 8.w),
+              SizedBox(width: 10.w),
               GenericSearchAnchorAsync<_YoungMuslimSearchSuggestion>(
-                hintText: 'ابحث عن قصة أو حلقة',
+                hintText: 'ابحث عن قصة...',
                 asyncSuggestions: (query) async {
                   final trimmed = query.trim();
-                  if (trimmed.isEmpty) {
-                    return const <_YoungMuslimSearchSuggestion>[];
-                  }
-
+                  if (trimmed.isEmpty) return const [];
                   final repository = context.read<YoungMuslimRepository>();
                   final dashboard = await repository.getDashboard(
                     query: trimmed,
                     filters: state.filters,
                   );
-
                   return dashboard.searchResults
-                      .take(12)
-                      .map(
-                        (video) => _YoungMuslimSearchSuggestion(
-                          videoId: video.id,
-                          title: video.title,
-                          subtitle: _searchSuggestionSubtitle(
-                            dashboard,
-                            video,
-                          ),
-                          duration: youngMuslimDuration(
-                            video.durationSeconds,
-                          ),
-                        ),
-                      )
-                      .toList(growable: false);
+                      .take(10)
+                      .map((video) => _YoungMuslimSearchSuggestion(
+                            videoId: video.id,
+                            title: video.title,
+                            subtitle: _searchSuggestionSubtitle(dashboard, video),
+                            duration: youngMuslimDuration(video.durationSeconds),
+                          ))
+                      .toList();
                 },
                 onSelected: (item) => _openVideo(context, item.videoId),
-                suggestionBuilder: (context, item) {
-                  return _YoungMuslimSearchSuggestionTile(item: item);
-                },
+                suggestionBuilder: (context, item) => _YoungMuslimSearchSuggestionTile(item: item),
               ),
             ],
           );
@@ -87,7 +74,7 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
         context.read<YoungMuslimBloc>().add(const YoungMuslimRefreshed());
       },
       body: Padding(
-        padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 120.h),
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 100.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

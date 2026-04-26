@@ -29,15 +29,15 @@ class _YoungMuslimSearchSuggestionTile extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       padding: EdgeInsets.all(14.w),
-      decoration: youngMuslimPanelDecoration(context, radius: 22),
+      decoration: youngMuslimPanelDecoration(context, radius: 16),
       child: Row(
         children: [
           Container(
             width: 42.w,
             height: 42.w,
             decoration: BoxDecoration(
-              color: context.primaryContainer.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(14.r),
+              color: context.primaryContainer.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(
               Icons.play_circle_fill_rounded,
