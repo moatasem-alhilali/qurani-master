@@ -2,7 +2,7 @@ name: quran_app
 description: A new Flutter project.
 publish_to: "none"
 
-version: 1.0.7+7
+version: 1.0.9+9
 
 environment:
   # sdk: ">=3.3.3 <4.0.0"
