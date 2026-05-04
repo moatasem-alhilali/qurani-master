@@ -94,6 +94,8 @@ dev_dependencies:
   very_good_analysis: ^5.1.0
   flutter_gen_runner: ^5.11.0
   build_runner: ^2.6.0
+  flutter_launcher_icons: ^0.14.3
+
   # flutter_native_splash: ^2.4.6
 
 # flutter_native_splash:
@@ -193,3 +195,18 @@ flutter:
         - asset: assets/fonts/scheherazade-new-regular.ttf
 
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: false
+  ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo.png"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
+  image_path: "assets/images/logo.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
