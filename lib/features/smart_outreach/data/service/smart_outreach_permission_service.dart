@@ -14,21 +14,21 @@ class SmartOutreachPermissionSnapshot {
   final PermissionStatus notifications;
 
   bool get allGranted =>
-      phone.isGranted &&
+      (!_requiresPhonePermission || phone.isGranted) &&
       contacts.isGranted &&
       (notifications.isGranted ||
           notifications.isLimited ||
           !_usesRuntimeNotificationPermission);
 
   bool get hasPermanentlyDenied =>
-      phone.isPermanentlyDenied ||
+      (_requiresPhonePermission && phone.isPermanentlyDenied) ||
       contacts.isPermanentlyDenied ||
       notifications.isPermanentlyDenied;
 
   List<String> get missingPermissionLabels {
     final labels = <String>[];
 
-    if (!phone.isGranted) {
+    if (_requiresPhonePermission && !phone.isGranted) {
       labels.add('الاتصال');
     }
     if (!contacts.isGranted) {
@@ -45,23 +45,32 @@ class SmartOutreachPermissionSnapshot {
 
   static bool get _usesRuntimeNotificationPermission =>
       Platform.isAndroid || Platform.isIOS;
+
+  static bool get _requiresPhonePermission => Platform.isAndroid;
 }
 
 class SmartOutreachPermissionService {
   Future<SmartOutreachPermissionSnapshot> getCurrentStatus() async {
     return SmartOutreachPermissionSnapshot(
-      phone: await Permission.phone.status,
+      phone: Platform.isAndroid
+          ? await Permission.phone.status
+          : PermissionStatus.granted,
       contacts: await Permission.contacts.status,
       notifications: await Permission.notification.status,
     );
   }
 
   Future<SmartOutreachPermissionSnapshot> requestRequiredPermissions() async {
-    await <Permission>[
-      Permission.phone,
+    final permissions = <Permission>[
       Permission.contacts,
       Permission.notification,
-    ].request();
+    ];
+
+    if (Platform.isAndroid) {
+      permissions.insert(0, Permission.phone);
+    }
+
+    await permissions.request();
 
     return getCurrentStatus();
   }

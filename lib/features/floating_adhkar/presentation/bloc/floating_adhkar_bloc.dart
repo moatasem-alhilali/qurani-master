@@ -8,6 +8,7 @@ import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_i
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_overlay_command.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
+import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_ios_reminder_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_overlay_controller.dart';
 
 part 'floating_adhkar_event.dart';
@@ -18,8 +19,10 @@ class FloatingAdhkarBloc
   FloatingAdhkarBloc({
     required FloatingAdhkarRepository repository,
     required FloatingAdhkarOverlayController overlayController,
+    required FloatingAdhkarIosReminderService iosReminderService,
   })  : _repository = repository,
         _overlayController = overlayController,
+        _iosReminderService = iosReminderService,
         super(const FloatingAdhkarState()) {
     on<FloatingAdhkarLoadEvent>(_onLoad);
     on<FloatingAdhkarToggleFeatureEvent>(_onToggleFeature);
@@ -39,6 +42,7 @@ class FloatingAdhkarBloc
 
   final FloatingAdhkarRepository _repository;
   final FloatingAdhkarOverlayController _overlayController;
+  final FloatingAdhkarIosReminderService _iosReminderService;
 
   Future<void> _onLoad(
     FloatingAdhkarLoadEvent event,
@@ -50,6 +54,10 @@ class FloatingAdhkarBloc
         clearErrorMessage: true,
       ),
     );
+    final settings = await _repository.loadSettings();
+    if (_iosReminderService.isSupportedPlatform && settings.enabled) {
+      await _iosReminderService.scheduleReminders(settings);
+    }
     await _refreshState(emit, loadState: RequestState.success);
   }
 
@@ -67,27 +75,29 @@ class FloatingAdhkarBloc
     final settings = state.settings ?? await _repository.loadSettings();
 
     if (event.enabled) {
-      final supported = _overlayController.isSupportedPlatform;
+      final supported = _isFeatureSupported;
       if (!supported) {
         emit(
           state.copyWith(
             actionState: RequestState.error,
-            errorMessage: 'الميزة متاحة على أندرويد فقط.',
+            errorMessage: 'هذه الميزة غير متاحة على هذه المنصة.',
           ),
         );
         return;
       }
 
-      var granted = await _overlayController.hasPermission();
+      var granted = await _hasPlatformPermission();
       if (!granted) {
-        granted = await _overlayController.requestPermission();
+        granted = await _requestPlatformPermission();
       }
 
       if (!granted) {
         await _refreshState(
           emit,
           actionState: RequestState.error,
-          errorMessage: 'يجب منح صلاحية الظهور فوق التطبيقات الأخرى أولًا.',
+          errorMessage: _iosReminderService.isSupportedPlatform
+              ? 'يجب السماح بالإشعارات لتشغيل تذكيرات الأذكار على iPhone.'
+              : 'يجب منح صلاحية الظهور فوق التطبيقات الأخرى أولًا.',
         );
         return;
       }
@@ -100,14 +110,20 @@ class FloatingAdhkarBloc
     await _repository.updateSettings(updated);
 
     if (event.enabled) {
-      await _overlayController.startService();
-      await _overlayController.sendCommand(
-        const FloatingAdhkarOverlayCommand(
-          type: FloatingAdhkarOverlayCommandType.previewNow,
-        ),
-      );
+      if (_iosReminderService.isSupportedPlatform) {
+        await _iosReminderService.scheduleReminders(updated);
+        await _iosReminderService.showPreviewNow(updated);
+      } else {
+        await _overlayController.startService();
+        await _overlayController.sendCommand(
+          const FloatingAdhkarOverlayCommand(
+            type: FloatingAdhkarOverlayCommandType.previewNow,
+          ),
+        );
+      }
     } else {
       await _overlayController.stopService();
+      await _iosReminderService.cancelReminders();
     }
 
     await _refreshState(emit, actionState: RequestState.success);
@@ -139,26 +155,33 @@ class FloatingAdhkarBloc
     );
 
     if (event.settings.enabled) {
-      final granted = await _overlayController.hasPermission();
+      final granted = await _hasPlatformPermission();
       if (!granted) {
         emit(
           state.copyWith(
             actionState: RequestState.error,
-            errorMessage: 'الصلاحية مطلوبة لتشغيل النافذة العائمة.',
+            errorMessage: _iosReminderService.isSupportedPlatform
+                ? 'صلاحية الإشعارات مطلوبة لتشغيل تذكيرات iPhone.'
+                : 'الصلاحية مطلوبة لتشغيل النافذة العائمة.',
           ),
         );
         await _refreshState(emit);
         return;
       }
 
-      await _overlayController.startService();
-      await _overlayController.sendCommand(
-        const FloatingAdhkarOverlayCommand(
-          type: FloatingAdhkarOverlayCommandType.reload,
-        ),
-      );
+      if (_iosReminderService.isSupportedPlatform) {
+        await _iosReminderService.scheduleReminders(event.settings);
+      } else {
+        await _overlayController.startService();
+        await _overlayController.sendCommand(
+          const FloatingAdhkarOverlayCommand(
+            type: FloatingAdhkarOverlayCommandType.reload,
+          ),
+        );
+      }
     } else {
       await _overlayController.stopService();
+      await _iosReminderService.cancelReminders();
     }
 
     await _refreshState(emit, actionState: RequestState.success);
@@ -282,12 +305,15 @@ class FloatingAdhkarBloc
       ),
     );
 
-    final granted = await _overlayController.requestPermission();
+    final granted = await _requestPlatformPermission();
     await _refreshState(
       emit,
       actionState: granted ? RequestState.success : RequestState.error,
-      errorMessage:
-          granted ? null : 'لم يتم منح صلاحية الظهور فوق التطبيقات الأخرى.',
+      errorMessage: granted
+          ? null
+          : _iosReminderService.isSupportedPlatform
+              ? 'لم يتم منح صلاحية الإشعارات.'
+              : 'لم يتم منح صلاحية الظهور فوق التطبيقات الأخرى.',
     );
   }
 
@@ -313,23 +339,30 @@ class FloatingAdhkarBloc
       return;
     }
 
-    final granted = await _overlayController.hasPermission();
+    final granted = await _hasPlatformPermission();
     if (!granted) {
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: 'الصلاحية مطلوبة لعرض الذكر العائم.',
+          errorMessage: _iosReminderService.isSupportedPlatform
+              ? 'صلاحية الإشعارات مطلوبة لعرض ذكر الآن.'
+              : 'الصلاحية مطلوبة لعرض الذكر العائم.',
         ),
       );
       return;
     }
 
-    await _overlayController.startService();
-    await _overlayController.sendCommand(
-      const FloatingAdhkarOverlayCommand(
-        type: FloatingAdhkarOverlayCommandType.previewNow,
-      ),
-    );
+    if (_iosReminderService.isSupportedPlatform) {
+      await _iosReminderService.showPreviewNow(settings);
+      await _iosReminderService.scheduleReminders(settings);
+    } else {
+      await _overlayController.startService();
+      await _overlayController.sendCommand(
+        const FloatingAdhkarOverlayCommand(
+          type: FloatingAdhkarOverlayCommandType.previewNow,
+        ),
+      );
+    }
 
     await _refreshState(emit, actionState: RequestState.success);
   }
@@ -353,9 +386,8 @@ class FloatingAdhkarBloc
     final builtInItems =
         await _repository.loadBuiltInItems(includeDeleted: true);
     final selectionMap = await _repository.loadCustomSelectionMap();
-    final isSupportedPlatform = _overlayController.isSupportedPlatform;
-    final hasPermission =
-        isSupportedPlatform && await _overlayController.hasPermission();
+    final isSupportedPlatform = _isFeatureSupported;
+    final hasPermission = isSupportedPlatform && await _hasPlatformPermission();
     final isOverlayActive =
         isSupportedPlatform && await _overlayController.isServiceActive();
 
@@ -369,8 +401,11 @@ class FloatingAdhkarBloc
         builtInItems: builtInItems,
         customSelectionMap: selectionMap,
         isSupportedPlatform: isSupportedPlatform,
+        usesIosReminders: _iosReminderService.isSupportedPlatform,
         hasOverlayPermission: hasPermission,
-        isOverlayActive: isOverlayActive,
+        isOverlayActive: _iosReminderService.isSupportedPlatform
+            ? settings.enabled
+            : isOverlayActive,
         errorMessage: errorMessage,
         clearErrorMessage: errorMessage == null,
       ),
@@ -383,10 +418,33 @@ class FloatingAdhkarBloc
       return;
     }
 
+    if (_iosReminderService.isSupportedPlatform) {
+      await _iosReminderService.scheduleReminders(settings);
+      return;
+    }
+
     await _overlayController.sendCommand(
       const FloatingAdhkarOverlayCommand(
         type: FloatingAdhkarOverlayCommandType.reload,
       ),
     );
+  }
+
+  bool get _isFeatureSupported =>
+      _overlayController.isSupportedPlatform ||
+      _iosReminderService.isSupportedPlatform;
+
+  Future<bool> _hasPlatformPermission() {
+    if (_iosReminderService.isSupportedPlatform) {
+      return _iosReminderService.hasPermission();
+    }
+    return _overlayController.hasPermission();
+  }
+
+  Future<bool> _requestPlatformPermission() {
+    if (_iosReminderService.isSupportedPlatform) {
+      return _iosReminderService.requestPermission();
+    }
+    return _overlayController.requestPermission();
   }
 }

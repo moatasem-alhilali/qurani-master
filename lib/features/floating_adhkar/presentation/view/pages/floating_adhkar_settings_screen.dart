@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
 import 'package:quran_app/features/floating_adhkar/presentation/bloc/floating_adhkar_bloc.dart';
@@ -30,8 +29,13 @@ class _FloatingAdhkarSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isIosReminderMode =
+        context.watch<FloatingAdhkarBloc>().state.usesIosReminders;
+
     return AppScaffoldWidget(
-      title: 'إعدادات الأذكار العائمة',
+      title: isIosReminderMode
+          ? 'إعدادات تذكيرات الأذكار'
+          : 'إعدادات الأذكار العائمة',
       showLargeHeader: false,
       initialOffset: null,
       body: SingleChildScrollView(
@@ -44,12 +48,15 @@ class _FloatingAdhkarSettingsScreenState
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(16.r),
-                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.15)),
+                border: Border.all(
+                    color: Theme.of(context).primaryColor.withOpacity(0.15)),
               ),
               child: SwitchListTile(
                 secondary: Icon(
                   Icons.power_settings_new_rounded,
-                  color: _draft.enabled ? Theme.of(context).primaryColor : Colors.grey,
+                  color: _draft.enabled
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
                   size: 22.r,
                 ),
                 value: _draft.enabled,
@@ -59,23 +66,31 @@ class _FloatingAdhkarSettingsScreenState
                   });
                 },
                 title: Text('تشغيل الميزة بالكامل',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 14.sp, fontWeight: FontWeight.bold)),
                 subtitle: Text(
-                  'عند التفعيل تبدأ الخدمة الخلفية في الظهور',
+                  isIosReminderMode
+                      ? 'عند التفعيل يتم جدولة تنبيهات أذكار على iPhone'
+                      : 'عند التفعيل تبدأ الخدمة الخلفية في الظهور',
                   style: TextStyle(fontSize: 11.sp),
                 ),
               ),
             ),
-            
+
             SizedBox(height: 16.h),
-            
+
             _SectionCard(
-              title: 'توقيت الظهور',
+              title: isIosReminderMode ? 'توقيت التذكير' : 'توقيت الظهور',
               icon: Icons.timer_outlined,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('معدل تكرار الظهور:', style: TextStyle(fontSize: 12.sp, color: Colors.grey[600])),
+                  Text(
+                    isIosReminderMode
+                        ? 'معدل تكرار التنبيه:'
+                        : 'معدل تكرار الظهور:',
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                  ),
                   SizedBox(height: 8.h),
                   Wrap(
                     spacing: 8.w,
@@ -83,8 +98,15 @@ class _FloatingAdhkarSettingsScreenState
                     children: _intervalOptions.map((value) {
                       final selected = _draft.intervalMinutes == value;
                       return ChoiceChip(
-                        label: Text(_formatIntervalLabel(value), 
-                          style: TextStyle(fontSize: 11.sp, color: selected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color)),
+                        label: Text(_formatIntervalLabel(value),
+                            style: TextStyle(
+                                fontSize: 11.sp,
+                                color: selected
+                                    ? Colors.white
+                                    : Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color)),
                         selected: selected,
                         selectedColor: Theme.of(context).primaryColor,
                         onSelected: (_) {
@@ -95,27 +117,40 @@ class _FloatingAdhkarSettingsScreenState
                       );
                     }).toList(),
                   ),
-                  Divider(height: 24.h, color: Theme.of(context).primaryColor.withOpacity(0.1)),
-                  Text('مدة بقاء الذكر (بالثواني):', style: TextStyle(fontSize: 12.sp, color: Colors.grey[600])),
-                  SizedBox(height: 8.h),
-                  Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.h,
-                    children: _visibleOptions.map((value) {
-                      final selected = _draft.visibleSeconds == value;
-                      return ChoiceChip(
-                        label: Text('$value ث', 
-                          style: TextStyle(fontSize: 11.sp, color: selected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color)),
-                        selected: selected,
-                        selectedColor: Theme.of(context).primaryColor,
-                        onSelected: (_) {
-                          setState(() {
-                            _draft = _draft.copyWith(visibleSeconds: value);
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
+                  if (!isIosReminderMode) ...[
+                    Divider(
+                        height: 24.h,
+                        color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                    Text('مدة بقاء الذكر (بالثواني):',
+                        style: TextStyle(
+                            fontSize: 12.sp, color: Colors.grey[600])),
+                    SizedBox(height: 8.h),
+                    Wrap(
+                      spacing: 8.w,
+                      runSpacing: 8.h,
+                      children: _visibleOptions.map((value) {
+                        final selected = _draft.visibleSeconds == value;
+                        return ChoiceChip(
+                          label: Text('$value ث',
+                              style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: selected
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color)),
+                          selected: selected,
+                          selectedColor: Theme.of(context).primaryColor,
+                          onSelected: (_) {
+                            setState(() {
+                              _draft = _draft.copyWith(visibleSeconds: value);
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -136,10 +171,15 @@ class _FloatingAdhkarSettingsScreenState
                         _draft = _draft.copyWith(includeBuiltIn: value);
                       });
                     },
-                    title: Text('الأذكار الافتراضية', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
-                    subtitle: Text('المصدر الداخلي الأساسي للتطبيق', style: TextStyle(fontSize: 11.sp)),
+                    title: Text('الأذكار الافتراضية',
+                        style: TextStyle(
+                            fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                    subtitle: Text('المصدر الداخلي الأساسي للتطبيق',
+                        style: TextStyle(fontSize: 11.sp)),
                   ),
-                  Divider(height: 16.h, color: Theme.of(context).primaryColor.withOpacity(0.05)),
+                  Divider(
+                      height: 16.h,
+                      color: Theme.of(context).primaryColor.withOpacity(0.05)),
                   SwitchListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
@@ -149,11 +189,17 @@ class _FloatingAdhkarSettingsScreenState
                         _draft = _draft.copyWith(includeCustom: value);
                       });
                     },
-                    title: Text('أذكاري الخاصة', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
-                    subtitle: Text('الأذكار التي قمت بإضافتها يدوياً', style: TextStyle(fontSize: 11.sp)),
+                    title: Text('أذكاري الخاصة',
+                        style: TextStyle(
+                            fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                    subtitle: Text('الأذكار التي قمت بإضافتها يدوياً',
+                        style: TextStyle(fontSize: 11.sp)),
                   ),
                   if (_draft.includeBuiltIn && _draft.includeCustom) ...[
-                    Divider(height: 16.h, color: Theme.of(context).primaryColor.withOpacity(0.05)),
+                    Divider(
+                        height: 16.h,
+                        color:
+                            Theme.of(context).primaryColor.withOpacity(0.05)),
                     SwitchListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -163,7 +209,9 @@ class _FloatingAdhkarSettingsScreenState
                           _draft = _draft.copyWith(mixSources: value);
                         });
                       },
-                      title: Text('الخلط بين المصادر', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                      title: Text('الخلط بين المصادر',
+                          style: TextStyle(
+                              fontSize: 13.sp, fontWeight: FontWeight.w600)),
                       subtitle: Text(
                         _draft.mixSources
                             ? 'يتم الاختيار من قائمة موحدة.'
@@ -175,17 +223,20 @@ class _FloatingAdhkarSettingsScreenState
                 ],
               ),
             ),
-            
+
             SizedBox(height: 32.h),
-            
+
             FilledButton.icon(
               onPressed: _saveSettings,
               style: FilledButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r)),
               ),
               icon: Icon(Icons.save_outlined, size: 20.r),
-              label: Text('حفظ الإعدادات', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+              label: Text('حفظ الإعدادات',
+                  style:
+                      TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
             ),
           ],
         ),

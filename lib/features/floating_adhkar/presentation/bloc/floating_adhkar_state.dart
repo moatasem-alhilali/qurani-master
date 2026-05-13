@@ -39,6 +39,7 @@ class FloatingAdhkarState extends Equatable {
     this.builtInItems = const [],
     this.customSelectionMap = const {},
     this.isSupportedPlatform = false,
+    this.usesIosReminders = false,
     this.hasOverlayPermission = false,
     this.isOverlayActive = false,
     this.errorMessage,
@@ -52,6 +53,7 @@ class FloatingAdhkarState extends Equatable {
   final List<FloatingAdhkarItem> builtInItems;
   final Map<int, bool> customSelectionMap;
   final bool isSupportedPlatform;
+  final bool usesIosReminders;
   final bool hasOverlayPermission;
   final bool isOverlayActive;
   final String? errorMessage;
@@ -88,6 +90,7 @@ class FloatingAdhkarState extends Equatable {
     List<FloatingAdhkarItem>? builtInItems,
     Map<int, bool>? customSelectionMap,
     bool? isSupportedPlatform,
+    bool? usesIosReminders,
     bool? hasOverlayPermission,
     bool? isOverlayActive,
     String? errorMessage,
@@ -103,6 +106,7 @@ class FloatingAdhkarState extends Equatable {
       builtInItems: builtInItems ?? this.builtInItems,
       customSelectionMap: customSelectionMap ?? this.customSelectionMap,
       isSupportedPlatform: isSupportedPlatform ?? this.isSupportedPlatform,
+      usesIosReminders: usesIosReminders ?? this.usesIosReminders,
       hasOverlayPermission: hasOverlayPermission ?? this.hasOverlayPermission,
       isOverlayActive: isOverlayActive ?? this.isOverlayActive,
       errorMessage:
@@ -120,6 +124,7 @@ class FloatingAdhkarState extends Equatable {
         builtInItems,
         customSelectionMap,
         isSupportedPlatform,
+        usesIosReminders,
         hasOverlayPermission,
         isOverlayActive,
         errorMessage,

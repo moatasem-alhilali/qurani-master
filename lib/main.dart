@@ -97,7 +97,7 @@ void main() async {
   await NotificationPermissionService.handelNotification();
   runApp(
     DevicePreview(
-      enabled: false,
+      enabled: true,
       builder: (context) => const MyApp(), // Wrap your app
     ),
   );

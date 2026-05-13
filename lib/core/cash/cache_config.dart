@@ -1,5 +1,4 @@
 import 'package:quran_app/core/cash/cache_service.dart';
-import 'package:quran_app/core/constant.dart';
 
 /// Handles domain-specific logic related to app-level cache initialization and state.
 class CacheConfig {
@@ -20,7 +19,6 @@ class CacheConfig {
   // 🔁 Getters for Cached App State
   // ─────────────────────────────────────────────
 
-
   static Future<void> _loadInitFlag() async {
     hasInitLocal = CacheService().getBool('hasInitLocal') ?? false;
   }
@@ -28,8 +26,6 @@ class CacheConfig {
   // ─────────────────────────────────────────────
   // 💾 Setters to Save State
   // ─────────────────────────────────────────────
-
- 
 
   static Future<void> markInitDone() async {
     await CacheService().setBool('hasInitLocal', true);

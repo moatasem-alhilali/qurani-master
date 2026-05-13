@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
@@ -99,9 +98,7 @@ class _BodyState extends State<_Body> {
       return const SizedBox.shrink();
     }
 
-    final accent = context.primaryColor;
-    final customCountLabel =
-        '${state.counts.customEnabledCount}/${state.counts.customTotalCount}';
+    final isIosReminderMode = state.usesIosReminders;
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.w),
@@ -111,7 +108,6 @@ class _BodyState extends State<_Body> {
           _StatusAndStatsHeader(state: state),
           SizedBox(height: 16.h),
 
-          // Main Service Toggle
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor.withOpacity(0.08),
@@ -136,13 +132,13 @@ class _BodyState extends State<_Body> {
                     }
                   : null,
               title: Text(
-                'تشغيل الخدمة العائمة',
+                isIosReminderMode
+                    ? 'تشغيل تذكيرات iPhone'
+                    : 'تشغيل الخدمة العائمة',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                state.isSupportedPlatform
-                    ? 'عرض ذكر عشوائي فوق التطبيقات'
-                    : 'غير مدعوم على هذه المنصة',
+                _featureSubtitle(state),
                 style: TextStyle(fontSize: 11.sp),
               ),
             ),
@@ -218,14 +214,16 @@ class _BodyState extends State<_Body> {
                   Divider(
                       height: 24.h,
                       color: Theme.of(context).primaryColor.withOpacity(0.1)),
-                  _SettingsTile(
-                    icon: Icons.visibility_outlined,
-                    title: 'مدة بقاء الذكر',
-                    subtitle: '${settings.visibleSeconds} ثانية',
-                  ),
-                  Divider(
-                      height: 24.h,
-                      color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                  if (!isIosReminderMode) ...[
+                    _SettingsTile(
+                      icon: Icons.visibility_outlined,
+                      title: 'مدة بقاء الذكر',
+                      subtitle: '${settings.visibleSeconds} ثانية',
+                    ),
+                    Divider(
+                        height: 24.h,
+                        color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                  ],
                   _SettingsTile(
                     icon: Icons.merge_type_rounded,
                     title: 'مصادر الأذكار',
@@ -252,7 +250,7 @@ class _BodyState extends State<_Body> {
                   borderRadius: BorderRadius.circular(16.r)),
             ),
             icon: Icon(Icons.play_circle_outline_rounded, size: 20.r),
-            label: Text('عرض ذكر الآن',
+            label: Text(isIosReminderMode ? 'إرسال ذكر الآن' : 'عرض ذكر الآن',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
 
@@ -275,7 +273,10 @@ class _BodyState extends State<_Body> {
                 ),
                 icon:
                     Icon(Icons.security_rounded, size: 20.r, color: Colors.red),
-                label: Text('منح الصلاحية المطلوبة',
+                label: Text(
+                    isIosReminderMode
+                        ? 'السماح بالإشعارات'
+                        : 'منح الصلاحية المطلوبة',
                     style: TextStyle(
                         fontSize: 14.sp,
                         color: Colors.red,
@@ -307,6 +308,16 @@ class _BodyState extends State<_Body> {
       ),
     );
   }
+}
+
+String _featureSubtitle(FloatingAdhkarState state) {
+  if (!state.isSupportedPlatform) {
+    return 'غير مدعوم على هذه المنصة';
+  }
+  if (state.usesIosReminders) {
+    return 'إرسال أذكار متكررة كتنبيهات على iPhone';
+  }
+  return 'عرض ذكر عشوائي فوق التطبيقات';
 }
 
 String _describeSources(FloatingAdhkarSettings settings) {
@@ -341,7 +352,6 @@ class _StatusAndStatsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).primaryColor;
     final status = state.status;
-    final settings = state.settings;
 
     return Container(
       padding: EdgeInsets.all(16.r),

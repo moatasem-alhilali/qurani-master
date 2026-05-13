@@ -210,7 +210,10 @@ class SmartOutreachScheduleRepository {
 
     final saved = await getScheduleById(savedId);
     if (saved != null && saved.schedule.isEnabled) {
-      await _nativeSchedulerService.scheduleGroup(saved.schedule);
+      await _nativeSchedulerService.scheduleGroup(
+        saved.schedule,
+        phoneNumbers: _phoneNumbersFor(saved.contacts),
+      );
     } else {
       await _nativeSchedulerService.cancelGroup(savedId);
     }
@@ -257,7 +260,10 @@ class SmartOutreachScheduleRepository {
     }
 
     if (enabled) {
-      await _nativeSchedulerService.scheduleGroup(updated.schedule);
+      await _nativeSchedulerService.scheduleGroup(
+        updated.schedule,
+        phoneNumbers: _phoneNumbersFor(updated.contacts),
+      );
     } else {
       await _nativeSchedulerService.cancelGroup(scheduleId);
     }
@@ -283,12 +289,25 @@ class SmartOutreachScheduleRepository {
     });
   }
 
-  Future<void> startScheduleNow(int scheduleId) {
-    return _nativeSchedulerService.triggerGroupNow(scheduleId);
+  Future<void> startScheduleNow(int scheduleId) async {
+    final bundle = await getScheduleById(scheduleId);
+    final phoneNumbers = _phoneNumbersFor(bundle?.contacts ?? const []);
+
+    await _nativeSchedulerService.triggerGroupNow(
+      scheduleId,
+      phoneNumbers: phoneNumbers,
+    );
   }
 
   Future<void> openBatterySettings() {
     return _nativeSchedulerService.openBatterySettings();
+  }
+
+  List<String> _phoneNumbersFor(List<SmartOutreachContactModel> contacts) {
+    return contacts
+        .map((contact) => contact.phone.trim())
+        .where((number) => number.isNotEmpty)
+        .toList(growable: false);
   }
 
   Future<List<SmartOutreachCallLogEntry>> getCallLogs({
