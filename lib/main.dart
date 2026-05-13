@@ -10,6 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
+import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/firebase_notification.dart';
@@ -89,6 +90,14 @@ void main() async {
     debugPrint('QuranLibrary initialization failed: $e');
   }
 
+  try {
+    final homeWidgetsService = HomeWidgetsService();
+    await homeWidgetsService.refreshAll();
+    await homeWidgetsService.startBackgroundUpdates();
+  } catch (e) {
+    debugPrint('Home widgets refresh failed: $e');
+  }
+
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
@@ -97,7 +106,6 @@ void main() async {
   await NotificationPermissionService.handelNotification();
   runApp(
     DevicePreview(
-      enabled: true,
       builder: (context) => const MyApp(), // Wrap your app
     ),
   );

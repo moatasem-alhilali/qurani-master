@@ -100,6 +100,54 @@
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
 
         <receiver
+            android:name=".HomePrayerWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - الصلاة القادمة">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_prayer_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeDhikrWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - ذكر عشوائي">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_dhikr_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeAyahWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - آية اليوم">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_ayah_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeWirdWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - ورد اليوم">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_wird_widget_info" />
+        </receiver>
+
+        <receiver
             android:name=".smartoutreach.autodialer.AutoDialerAlarmReceiver"
             android:exported="false">
             <intent-filter>

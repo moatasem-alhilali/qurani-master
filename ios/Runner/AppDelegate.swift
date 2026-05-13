@@ -2,7 +2,9 @@ import Flutter
 import UIKit
 import flutter_downloader
 import flutter_local_notifications
+import home_widget
 import UserNotifications
+import workmanager_apple
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -19,6 +21,21 @@ import UserNotifications
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
       GeneratedPluginRegistrant.register(with: registry)
     }
+    WorkmanagerPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
+    if #available(iOS 13.0, *) {
+      WorkmanagerPlugin.registerPeriodicTask(
+        withIdentifier: "tamaneena.home_widgets.refresh",
+        frequency: NSNumber(value: 30 * 60)
+      )
+    }
+    if #available(iOS 17.0, *) {
+      HomeWidgetBackgroundWorker.setPluginRegistrantCallback { registry in
+        GeneratedPluginRegistrant.register(with: registry)
+      }
+    }
+    UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60 * 30))
 
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self

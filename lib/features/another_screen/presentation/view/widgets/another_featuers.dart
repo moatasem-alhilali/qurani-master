@@ -10,6 +10,7 @@ import 'package:quran_app/features/another_screen/presentation/view/widgets/sura
 import 'package:quran_app/features/daily_wird/presentation/view/pages/daily_wird_screen.dart';
 import 'package:quran_app/features/floating_adhkar/presentation/view/floating_adhkar_provider.dart';
 import 'package:quran_app/features/hadith_40/presentation/view/pages/hadith_40_screen.dart';
+import 'package:quran_app/features/home_widgets/presentation/home_widgets_screen.dart';
 import 'package:quran_app/features/my_adia/presentation/view/my_doa_provider.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_list_screen.dart';
 import 'package:quran_app/features/radio/presentation/view/pages/radio_screen.dart';
@@ -68,6 +69,12 @@ class AnotherFeatures extends StatelessWidget {
         subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
         icon: Icons.filter_center_focus_rounded,
         onTap: () => context.push(const FloatingAdhkarProvider()),
+      ),
+      _FeatureShortcut(
+        label: 'التطبيقات المصغرة',
+        subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
+        icon: Icons.widgets_rounded,
+        onTap: () => context.push(const HomeWidgetsScreen()),
       ),
       _FeatureShortcut(
         label: 'أسماء الله الحسنى',
