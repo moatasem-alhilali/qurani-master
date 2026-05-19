@@ -18,6 +18,9 @@ import 'package:workmanager/workmanager.dart';
 const String homeWidgetsBackgroundTaskUniqueName =
     'tamaneena.home_widgets.refresh';
 const String homeWidgetsBackgroundTaskName = 'homeWidgetsBackgroundRefresh';
+const String homeWidgetsPrayerTaskUniqueName =
+    'tamaneena.home_widgets.prayer_refresh';
+const String homeWidgetsPrayerTaskName = 'homeWidgetsPrayerBoundaryRefresh';
 
 @pragma('vm:entry-point')
 void tamaneenaHomeWidgetsCallbackDispatcher() {
@@ -31,7 +34,9 @@ void tamaneenaHomeWidgetsCallbackDispatcher() {
     }
 
     try {
-      await HomeWidgetsService().refreshAll();
+      final service = HomeWidgetsService();
+      await service.refreshAll();
+      await service.startBackgroundUpdates();
       return true;
     } catch (error) {
       debugPrint('HomeWidgetsService: background refresh failed: $error');
@@ -72,6 +77,7 @@ class HomeWidgetsService {
 
   final AdhanPrayerTimeService _prayerTimeService;
   final FloatingAdhkarRepository _floatingAdhkarRepository;
+  Duration? _nextPrayerRefreshDelay;
 
   Future<void> initializeBackgroundUpdates() async {
     await Workmanager().initialize(
@@ -90,6 +96,7 @@ class HomeWidgetsService {
         networkType: NetworkType.notRequired,
       ),
     );
+    await _scheduleNextPrayerBoundaryRefresh();
   }
 
   Future<void> stopBackgroundUpdates() {
@@ -153,6 +160,7 @@ class HomeWidgetsService {
           ? next.time
           : next.time.add(const Duration(days: 1));
       final remaining = nextTime.difference(now);
+      _nextPrayerRefreshDelay = remaining + const Duration(minutes: 1);
 
       await Future.wait(<Future<bool?>>[
         HomeWidget.saveWidgetData<String>('prayer_name', next.name),
@@ -163,6 +171,10 @@ class HomeWidgetsService {
         ),
         HomeWidget.saveWidgetData<String>('prayer_label', 'الصلاة القادمة'),
         HomeWidget.saveWidgetData<String>('prayer_city', 'طمأنينة'),
+        HomeWidget.saveWidgetData<int>(
+          'prayer_next_epoch_millis',
+          nextTime.millisecondsSinceEpoch,
+        ),
       ]);
     } catch (error) {
       debugPrint('HomeWidgetsService: prayer data fallback: $error');
@@ -309,6 +321,27 @@ class HomeWidgetsService {
       } catch (error) {
         debugPrint('HomeWidgetsService: iOS update $kind skipped: $error');
       }
+    }
+  }
+
+  Future<void> _scheduleNextPrayerBoundaryRefresh() async {
+    final delay = _nextPrayerRefreshDelay;
+    if (delay == null || delay.isNegative || delay.inMinutes > 24 * 60) {
+      return;
+    }
+
+    try {
+      await Workmanager().registerOneOffTask(
+        homeWidgetsPrayerTaskUniqueName,
+        homeWidgetsPrayerTaskName,
+        initialDelay: delay,
+        existingWorkPolicy: ExistingWorkPolicy.replace,
+        constraints: Constraints(
+          networkType: NetworkType.notRequired,
+        ),
+      );
+    } catch (error) {
+      debugPrint('HomeWidgetsService: prayer boundary task skipped: $error');
     }
   }
 
