@@ -27,6 +27,7 @@ class AyahWithTafsirInline extends StatelessWidget {
     this.isAyahBookmarked,
     this.showAyahBookmarkedIcon = true,
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.usePageView = true,
     this.withOptionsBar = true,
     this.showAyahNumber = false,
@@ -49,6 +50,7 @@ class AyahWithTafsirInline extends StatelessWidget {
   final bool Function(AyahModel ayah)? isAyahBookmarked;
   final bool showAyahBookmarkedIcon;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
 
   /// عند `false` يُعرض المحتوى بدون PageView ويستمع لتغيّر الصفحة من [QuranCtrl].
   /// عند استخدامه داخل [QuranWithTafsirSide] يجب أن يكون `false`.
@@ -88,6 +90,7 @@ class AyahWithTafsirInline extends StatelessWidget {
             isAyahBookmarked: isAyahBookmarked,
             showAyahBookmarkedIcon: showAyahBookmarkedIcon,
             bookmarksColor: bookmarksColor,
+            customBookmarksColor: customBookmarksColor,
             withOptionsBar: withOptionsBar,
             showAyahNumber: showAyahNumber,
           );
@@ -141,6 +144,7 @@ class AyahWithTafsirInline extends StatelessWidget {
             isAyahBookmarked: isAyahBookmarked,
             showAyahBookmarkedIcon: showAyahBookmarkedIcon,
             bookmarksColor: bookmarksColor,
+            customBookmarksColor: customBookmarksColor,
             withOptionsBar: withOptionsBar,
             showAyahNumber: showAyahNumber,
           ),
@@ -168,6 +172,7 @@ class _AyahTafsirInlinePage extends StatefulWidget {
     this.isAyahBookmarked,
     this.showAyahBookmarkedIcon = true,
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.withOptionsBar = true,
     this.showAyahNumber = false,
   });
@@ -186,6 +191,7 @@ class _AyahTafsirInlinePage extends StatefulWidget {
   final bool Function(AyahModel ayah)? isAyahBookmarked;
   final bool showAyahBookmarkedIcon;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final bool? withOptionsBar;
   final bool? showAyahNumber;
 
@@ -354,6 +360,7 @@ class _AyahTafsirInlinePageState extends State<_AyahTafsirInlinePage>
                               showAyahBookmarkedIcon:
                                   widget.showAyahBookmarkedIcon,
                               bookmarksColor: widget.bookmarksColor,
+                              customBookmarksColor: widget.customBookmarksColor,
                               withOptionsBar: widget.withOptionsBar,
                               showAyahNumber: widget.showAyahNumber,
                               translation: translation,
@@ -444,6 +451,7 @@ class _InlineAyahTafsirItem extends StatelessWidget {
     this.isAyahBookmarked,
     this.showAyahBookmarkedIcon = true,
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.withOptionsBar = true,
     this.showAyahNumber = false,
     this.translation,
@@ -469,6 +477,7 @@ class _InlineAyahTafsirItem extends StatelessWidget {
   final bool Function(AyahModel ayah)? isAyahBookmarked;
   final bool showAyahBookmarkedIcon;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final bool? withOptionsBar;
   final bool? showAyahNumber;
   final TranslationModel? translation;
@@ -901,6 +910,7 @@ class _ExpandableTafsirTextState extends State<_ExpandableTafsirText> {
             TextSpan(children: _getFullSpans(), style: textStyle),
             textDirection: widget.textDirection,
             textAlign: TextAlign.justify,
+            overflow: TextOverflow.visible,
           ),
           _buildToggleButton(widget.readLessText, buttonStyle, buttonColor,
               Icons.keyboard_arrow_up),

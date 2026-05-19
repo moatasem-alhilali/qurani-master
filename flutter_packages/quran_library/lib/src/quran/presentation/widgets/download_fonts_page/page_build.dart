@@ -19,6 +19,7 @@ class PageBuild extends StatelessWidget {
     required this.showAyahBookmarkedIcon,
     required this.bookmarksAyahs,
     required this.bookmarksColor,
+    this.customBookmarksColor,
     required this.ayahSelectedBackgroundColor,
     required this.isFontsLocal,
     required this.fontsName,
@@ -46,6 +47,7 @@ class PageBuild extends StatelessWidget {
   final bool showAyahBookmarkedIcon;
   final List<int> bookmarksAyahs;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? ayahSelectedBackgroundColor;
   final bool? isFontsLocal;
   final String? fontsName;
@@ -135,6 +137,7 @@ class PageBuild extends StatelessWidget {
                   showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                   bookmarksAyahs: bookmarksAyahs,
                   bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                   ayahSelectedBackgroundColor: ayahSelectedBackgroundColor,
                   context: context,
                   quranCtrl: quranCtrl,

@@ -17,6 +17,7 @@ class QpcV4FlowingText extends StatefulWidget {
     required this.showAyahBookmarkedIcon,
     required this.bookmarksAyahs,
     required this.bookmarksColor,
+    this.customBookmarksColor,
     required this.ayahSelectedBackgroundColor,
     required this.isFontsLocal,
     required this.fontsName,
@@ -37,6 +38,7 @@ class QpcV4FlowingText extends StatefulWidget {
   final bool showAyahBookmarkedIcon;
   final List<int> bookmarksAyahs;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? ayahSelectedBackgroundColor;
   final bool isFontsLocal;
   final String fontsName;

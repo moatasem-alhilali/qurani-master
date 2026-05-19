@@ -5,33 +5,47 @@ class WordInfoRepository {
 
   static const _downloadedKindsKey = 'word_info_downloaded_kinds';
 
+  static const String _glPkg =
+      'https://gitlab.com/api/v4/projects/haozo89%2Fislamic_database/packages/generic';
+  static const String _glRaw =
+      'https://gitlab.com/haozo89/islamic_database/-/raw/main';
+
   static const Map<WordInfoKind, _WordInfoKindConfig> _configs = {
     WordInfoKind.recitations: _WordInfoKindConfig(
       zipName: 'word_qeraat.zip',
       dirName: 'word_qeraat',
       zipUrls: [
         'https://github.com/alheekmahlib/Islamic_database/releases/download/word_qeraat/word_qeraat.zip',
+        '$_glPkg/word_qeraat/1.0.0/word_qeraat.zip',
       ],
       webBaseUrl:
           'https://raw.githubusercontent.com/alheekmahlib/Islamic_database/main/quran_database/Quran%20Font/word_qeraat',
+      webBaseUrlGitLab:
+          '$_glRaw/quran_database/Quran%20Font/word_qeraat?ref_type=heads',
     ),
     WordInfoKind.tasreef: _WordInfoKindConfig(
       zipName: 'word_tasreef.zip',
       dirName: 'word_tasreef',
       zipUrls: [
         'https://github.com/alheekmahlib/Islamic_database/releases/download/word_tasreef/word_tasreef.zip',
+        '$_glPkg/word_tasreef/1.0.0/word_tasreef.zip',
       ],
       webBaseUrl:
           'https://raw.githubusercontent.com/alheekmahlib/Islamic_database/main/quran_database/quran_data/word_tasreef',
+      webBaseUrlGitLab:
+          '$_glRaw/quran_database/quran_data/word_tasreef?ref_type=heads',
     ),
     WordInfoKind.eerab: _WordInfoKindConfig(
       zipName: 'word_eerab.zip',
       dirName: 'word_eerab',
       zipUrls: [
         'https://github.com/alheekmahlib/Islamic_database/releases/download/word_eerab/word_eerab.zip',
+        '$_glPkg/word_eerab/1.0.0/word_eerab.zip',
       ],
       webBaseUrl:
           'https://raw.githubusercontent.com/alheekmahlib/Islamic_database/main/quran_database/quran_data/word_eerab',
+      webBaseUrlGitLab:
+          '$_glRaw/quran_database/quran_data/word_eerab?ref_type=heads',
     ),
   };
 
@@ -110,14 +124,27 @@ class WordInfoRepository {
     final config = _configs[kind]!;
 
     if (kIsWeb) {
-      final url =
-          '${config.webBaseUrl}/sura_${surahNumber.toString().padLeft(3, '0')}.json';
+      final fileName = 'sura_${surahNumber.toString().padLeft(3, '0')}.json';
+      final urls = <String>[
+        '${config.webBaseUrl}/$fileName',
+        if (config.webBaseUrlGitLab != null)
+          '${config.webBaseUrlGitLab}/$fileName',
+      ];
+
       final dio = Dio()
         ..options.connectTimeout = const Duration(seconds: 20)
         ..options.receiveTimeout = const Duration(seconds: 20);
 
-      final response = await dio.get<String>(url);
-      final text = response.data;
+      String? text;
+      for (final url in urls) {
+        try {
+          final response = await dio.get<String>(url);
+          text = response.data;
+          if (text != null && text.isNotEmpty) break;
+        } catch (_) {
+          continue;
+        }
+      }
       if (text == null || text.isEmpty) return null;
 
       final decoded = jsonDecode(text);
@@ -235,11 +262,13 @@ class _WordInfoKindConfig {
   final String dirName;
   final List<String> zipUrls;
   final String webBaseUrl;
+  final String? webBaseUrlGitLab;
 
   const _WordInfoKindConfig({
     required this.zipName,
     required this.dirName,
     required this.zipUrls,
     required this.webBaseUrl,
+    this.webBaseUrlGitLab,
   });
 }

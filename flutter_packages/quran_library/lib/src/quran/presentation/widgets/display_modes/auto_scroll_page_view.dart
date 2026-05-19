@@ -20,6 +20,7 @@ class AutoScrollPageView extends StatelessWidget {
     required this.showAyahBookmarkedIcon,
     required this.onAyahLongPress,
     required this.bookmarksColor,
+    this.customBookmarksColor,
     required this.surahNameStyle,
     required this.bannerStyle,
     required this.basmalaStyle,
@@ -47,6 +48,7 @@ class AutoScrollPageView extends StatelessWidget {
   final void Function(LongPressStartDetails details, AyahModel ayah)?
       onAyahLongPress;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final SurahNameStyle? surahNameStyle;
   final BannerStyle? bannerStyle;
   final BasmalaStyle? basmalaStyle;
@@ -88,6 +90,7 @@ class AutoScrollPageView extends StatelessWidget {
                 showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                 onAyahLongPress: onAyahLongPress,
                 bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                 surahNameStyle: surahNameStyle,
                 bannerStyle: bannerStyle,
                 basmalaStyle: basmalaStyle,

@@ -6,11 +6,16 @@ class TajweedAyaRepository {
   static const _downloadedKey = 'tajweed_aya_downloaded_v1';
   static const String _zipName = 'tajweed_aya.zip';
   static const String _dirName = 'tajweed_aya';
+  static const String _glPkg =
+      'https://gitlab.com/api/v4/projects/haozo89%2Fislamic_database/packages/generic';
   static const List<String> _zipUrls = <String>[
     'https://github.com/alheekmahlib/Islamic_database/releases/download/tajweed_aya/tajweed_aya.zip',
+    '$_glPkg/tajweed_aya/1.0.0/tajweed_aya.zip',
   ];
   static const String _webBaseUrl =
       'https://raw.githubusercontent.com/alheekmahlib/Islamic_database/main/quran_database/quran_data/tajweed_aya';
+  static const String _webBaseUrlGitLab =
+      'https://gitlab.com/haozo89/islamic_database/-/raw/main/quran_database/quran_data/tajweed_aya?ref_type=heads';
 
   TajweedAyaRepository({SuraJsonFilesService? filesService})
       : _filesService = filesService ??
@@ -20,6 +25,7 @@ class TajweedAyaRepository {
               dirName: _dirName,
               zipUrls: _zipUrls,
               webBaseUrl: _webBaseUrl,
+              webBaseUrlGitLab: _webBaseUrlGitLab,
               minZipSizeBytes: 50 * 1024,
               logName: 'TajweedAyaDownload',
             );

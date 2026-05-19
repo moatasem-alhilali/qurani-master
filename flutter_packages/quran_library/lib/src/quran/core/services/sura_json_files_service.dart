@@ -12,6 +12,7 @@ class SuraJsonFilesService {
     required this.dirName,
     required this.zipUrls,
     required this.webBaseUrl,
+    this.webBaseUrlGitLab,
     this.minZipSizeBytes = 50 * 1024,
     this.logName,
   });
@@ -21,6 +22,7 @@ class SuraJsonFilesService {
   final String dirName;
   final List<String> zipUrls;
   final String webBaseUrl;
+  final String? webBaseUrlGitLab;
   final int minZipSizeBytes;
   final String? logName;
 
@@ -70,17 +72,29 @@ class SuraJsonFilesService {
     if (!isEnabled()) return null;
 
     if (kIsWeb) {
-      final url =
-          '$webBaseUrl/sura_${surahNumber.toString().padLeft(3, '0')}.json';
+      final fileName = 'sura_${surahNumber.toString().padLeft(3, '0')}.json';
+      final urls = <String>[
+        '$webBaseUrl/$fileName',
+        if (webBaseUrlGitLab != null) '$webBaseUrlGitLab/$fileName',
+      ];
+
       final dio = Dio()
         ..options.connectTimeout = const Duration(seconds: 20)
         ..options.receiveTimeout = const Duration(seconds: 20);
 
-      final response = await dio.get<String>(
-        url,
-        options: Options(responseType: ResponseType.plain),
-      );
-      final text = response.data;
+      String? text;
+      for (final url in urls) {
+        try {
+          final response = await dio.get<String>(
+            url,
+            options: Options(responseType: ResponseType.plain),
+          );
+          text = response.data;
+          if (text != null && text.isNotEmpty) break;
+        } catch (_) {
+          continue;
+        }
+      }
       if (text == null || text.isEmpty) return null;
 
       final decoded = jsonDecode(text);

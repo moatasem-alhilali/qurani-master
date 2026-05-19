@@ -94,6 +94,9 @@ class AutoScrollCtrl extends GetxController with GetTickerProviderStateMixin {
     // حفظ الصفحة الحالية قبل الإيقاف
     final reachedPage = state.currentScrollPage.value;
 
+    // هل كان السكرول التلقائي فعّالاً؟
+    final wasActive = state.isActive.value;
+
     state.isActive.value = false;
     state.isPaused.value = false;
     _ticker?.stop();
@@ -101,7 +104,8 @@ class AutoScrollCtrl extends GetxController with GetTickerProviderStateMixin {
     _ticker = null;
 
     // تحديث صفحة QuranCtrl والانتقال إليها في الـ PageView الأفقي
-    if (reachedPage > 0) {
+    // لا تحفظ إذا لم يكن السكرول التلقائي فعّالاً (مثلاً عند onClose بدون تشغيل)
+    if (wasActive && reachedPage > 0) {
       final quranCtrl = QuranCtrl.instance;
       quranCtrl.state.currentPageNumber.value = reachedPage;
       quranCtrl.saveLastPage(reachedPage);
@@ -114,7 +118,7 @@ class AutoScrollCtrl extends GetxController with GetTickerProviderStateMixin {
 
   /// تحديث السرعة من الـ Slider (أثناء السكرول)
   void updateSpeed(double newSpeed) {
-    state.speed.value = newSpeed.clamp(0.1, 5.0);
+    state.speed.value = newSpeed.clamp(0.05, 5.0);
     _saveSettings();
   }
 
@@ -238,7 +242,7 @@ class AutoScrollCtrl extends GetxController with GetTickerProviderStateMixin {
 
   void _loadSettings() {
     state.speed.value =
-        (_storage.read<double>(_keys.autoScrollSpeed) ?? 1.5).clamp(0.1, 5.0);
+        (_storage.read<double>(_keys.autoScrollSpeed) ?? 1.5).clamp(0.05, 5.0);
     state.stopCondition.value = AutoScrollStopConditionX.fromStorageIndex(
         _storage.read<int>(_keys.autoScrollStopCondition) ?? 3);
     state.targetPageCount.value =

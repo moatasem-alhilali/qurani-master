@@ -28,6 +28,7 @@ class QuranLibraryScreen extends StatelessWidget {
     this.backgroundColor,
     this.bookmarkList = const [],
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.circularProgressWidget,
     this.downloadFontsDialogStyle,
     this.isDark = false,
@@ -109,6 +110,7 @@ class QuranLibraryScreen extends StatelessWidget {
   ///
   /// [bookmarksColor] Change the bookmark color (optional)
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
 
   /// إذا كنت تريد تغيير لون خلفية صفحة القرآن [backgroundColor]
   ///
@@ -494,6 +496,7 @@ class QuranLibraryScreen extends StatelessWidget {
                                       showAyahBookmarkedIcon,
                                   onAyahLongPress: onAyahLongPress,
                                   bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                                   surahNameStyle: surahNameStyle,
                                   bannerStyle: bannerStyle,
                                   basmalaStyle: basmalaStyle,
@@ -529,6 +532,7 @@ class QuranLibraryScreen extends StatelessWidget {
                                         showAyahBookmarkedIcon,
                                     onAyahLongPress: onAyahLongPress,
                                     bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                                     surahNameStyle: surahNameStyle,
                                     bannerStyle: bannerStyle,
                                     basmalaStyle: basmalaStyle,
@@ -561,6 +565,7 @@ class QuranLibraryScreen extends StatelessWidget {
                                         showAyahBookmarkedIcon,
                                     onAyahLongPress: onAyahLongPress,
                                     bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                                     surahNameStyle: surahNameStyle,
                                     bannerStyle: bannerStyle,
                                     basmalaStyle: basmalaStyle,
@@ -593,6 +598,7 @@ class QuranLibraryScreen extends StatelessWidget {
                                         showAyahBookmarkedIcon,
                                     onAyahLongPress: onAyahLongPress,
                                     bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                                     surahNameStyle: surahNameStyle,
                                     bannerStyle: bannerStyle,
                                     basmalaStyle: basmalaStyle,
@@ -624,6 +630,7 @@ class QuranLibraryScreen extends StatelessWidget {
                                     showAyahBookmarkedIcon:
                                         showAyahBookmarkedIcon,
                                     bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                                     style: ayahTafsirInlineStyle ??
                                         AyahTafsirInlineStyle.defaults(
                                           isDark: isDark,
@@ -721,6 +728,7 @@ class QuranLibraryScreen extends StatelessWidget {
             showAyahBookmarkedIcon: showAyahBookmarkedIcon,
             onAyahLongPress: onAyahLongPress,
             bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
             surahNameStyle: surahNameStyle,
             bannerStyle: bannerStyle,
             basmalaStyle: basmalaStyle,
@@ -750,6 +758,7 @@ class QuranLibraryScreen extends StatelessWidget {
       showAyahBookmarkedIcon: showAyahBookmarkedIcon,
       onAyahLongPress: onAyahLongPress,
       bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
       surahNameStyle: surahNameStyle,
       bannerStyle: bannerStyle,
       basmalaStyle: basmalaStyle,
@@ -936,6 +945,7 @@ class _ItemBuilderWidget extends StatelessWidget {
     required this.showAyahBookmarkedIcon,
     required this.onAyahLongPress,
     required this.bookmarksColor,
+    this.customBookmarksColor,
     required this.surahNameStyle,
     required this.bannerStyle,
     required this.basmalaStyle,
@@ -963,6 +973,7 @@ class _ItemBuilderWidget extends StatelessWidget {
   final void Function(LongPressStartDetails details, AyahModel ayah)?
       onAyahLongPress;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final SurahNameStyle? surahNameStyle;
   final BannerStyle? bannerStyle;
   final BasmalaStyle? basmalaStyle;
@@ -1004,6 +1015,7 @@ class _ItemBuilderWidget extends StatelessWidget {
             showAyahBookmarkedIcon: showAyahBookmarkedIcon,
             onAyahLongPress: onAyahLongPress,
             bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
             surahNameStyle: surahNameStyle,
             bannerStyle: bannerStyle,
             basmalaStyle: basmalaStyle,

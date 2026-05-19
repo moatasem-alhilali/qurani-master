@@ -19,6 +19,7 @@ TextSpan _qpcV4SpanSegment({
   required List<int> ayahBookmarked,
   required List<BookmarkModel> allBookmarksList,
   Color? bookmarksColor,
+  Color? Function(AyahModel)? customBookmarksColor,
   Color? ayahSelectedBackgroundColor,
   bool Function(AyahModel ayah)? isAyahBookmarked,
   required bool isFontsLocal,

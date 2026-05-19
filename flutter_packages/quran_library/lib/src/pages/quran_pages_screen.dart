@@ -19,6 +19,7 @@ class QuranPagesScreen extends StatelessWidget {
     this.backgroundColor,
     this.bookmarkList = const [],
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.circularProgressWidget,
     this.downloadFontsDialogStyle,
     this.isDark = false,
@@ -81,6 +82,7 @@ class QuranPagesScreen extends StatelessWidget {
   final BannerStyle? bannerStyle;
   final List bookmarkList;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? backgroundColor;
   final Widget? circularProgressWidget;
   final DownloadFontsDialogStyle? downloadFontsDialogStyle;
@@ -348,6 +350,7 @@ class QuranPagesScreen extends StatelessWidget {
                           showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                           onAyahLongPress: onAyahLongPress,
                           bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                           surahNameStyle: surahNameStyle,
                           bannerStyle: bannerStyle,
                           basmalaStyle: basmalaStyle,

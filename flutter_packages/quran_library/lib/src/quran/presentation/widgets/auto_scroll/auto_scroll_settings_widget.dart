@@ -32,6 +32,8 @@ class AutoScrollSettingsWidget extends StatelessWidget {
     final speedLabel = style?.speedLabelText ?? 'السرعة:';
     final slowText = style?.slowLabelText ?? 'بطيء';
     final fastText = style?.fastLabelText ?? 'سريع';
+    final notesText =
+        style?.notesLabelText ?? 'ضبط سرعة السكرول والتوقف التلقائي';
 
     // ─── Resolve styles ─────────────────────────────────────────
     final titleStyle = style?.settingsTitleStyle ??
@@ -94,6 +96,19 @@ class AutoScrollSettingsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+            Text(
+              notesText,
+              style: style?.notesStyle ??
+                  TextStyle(
+                    fontSize: 14.0,
+                    fontFamily: 'cairo',
+                    color: style?.textColor ?? textColor,
+                    height: 1.5,
+                    package: 'quran_library',
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
 
             // شرط التوقف
             Text(

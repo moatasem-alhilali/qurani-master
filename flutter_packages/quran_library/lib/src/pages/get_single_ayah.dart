@@ -17,6 +17,7 @@ class GetSingleAyah extends StatelessWidget {
   final Color? ayahIconColor;
   final bool showAyahBookmarkedIcon;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? ayahSelectedBackgroundColor;
   final TextAlign? textAlign;
   final bool? enabledTajweed;
@@ -61,6 +62,7 @@ class GetSingleAyah extends StatelessWidget {
     this.ayahIconColor,
     this.showAyahBookmarkedIcon = false,
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.ayahSelectedBackgroundColor,
     this.textAlign,
     this.enabledTajweed,
@@ -247,6 +249,7 @@ class GetSingleAyah extends StatelessWidget {
             allBookmarksList: allBookmarksList,
             bookmarksAyahs: bookmarksAyahs,
             bookmarksColor: bookmarksColor,
+            customBookmarksColor: customBookmarksColor,
             ayahSelectedBackgroundColor: ayahSelectedBackgroundColor,
             isFontsLocal: islocalFont ?? false,
             fontsName: fontsName ?? '',

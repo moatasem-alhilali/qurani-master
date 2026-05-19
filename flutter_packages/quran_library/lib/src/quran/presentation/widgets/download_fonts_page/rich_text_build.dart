@@ -13,6 +13,7 @@ class QpcV4RichTextLine extends StatefulWidget {
     required this.showAyahBookmarkedIcon,
     required this.bookmarksAyahs,
     required this.bookmarksColor,
+    this.customBookmarksColor,
     required this.ayahSelectedBackgroundColor,
     required this.context,
     required this.quranCtrl,
@@ -39,6 +40,7 @@ class QpcV4RichTextLine extends StatefulWidget {
   final bool showAyahBookmarkedIcon;
   final List<int> bookmarksAyahs;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? ayahSelectedBackgroundColor;
   final BuildContext context;
   final QuranCtrl quranCtrl;
@@ -303,8 +305,13 @@ class _QpcV4RichTextLineState extends State<QpcV4RichTextLine> {
           ? widget.isAyahBookmarked!(widget.quranCtrl.getAyahByUq(uq))
           : (ayahBookmarkedSet.contains(uq) || bookmarksSet.contains(uq));
       if (isBookmarked) {
+        final ayah = widget.quranCtrl.getAyahByUq(uq);
         Color bmColor;
-        if (widget.isAyahBookmarked != null) {
+        if (widget.customBookmarksColor != null) {
+          bmColor = widget.customBookmarksColor!(ayah) ??
+              widget.bookmarksColor ??
+              const Color(0xffCDAD80).withValues(alpha: 0.3);
+        } else if (widget.isAyahBookmarked != null) {
           bmColor = widget.bookmarksColor ??
               const Color(0xffCDAD80).withValues(alpha: 0.3);
         } else if (widget.bookmarksColor != null) {

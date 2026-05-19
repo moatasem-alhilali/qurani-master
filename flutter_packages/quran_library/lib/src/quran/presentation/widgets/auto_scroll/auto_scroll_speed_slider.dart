@@ -86,7 +86,7 @@ class AutoScrollSpeedSlider extends StatelessWidget {
                       ),
                       child: Slider(
                         value: speed,
-                        min: 0.1,
+                        min: 0.05,
                         max: 5.0,
                         onChanged: (v) => autoScrollCtrl.updateSpeed(v),
                       ),

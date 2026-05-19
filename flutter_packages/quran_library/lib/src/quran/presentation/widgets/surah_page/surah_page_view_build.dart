@@ -16,6 +16,7 @@ class SurahPageViewBuild extends StatelessWidget {
     this.circularProgressWidget,
     this.bookmarkList,
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.textColor,
     this.ayahSelectedFontColor,
     this.ayahSelectedBackgroundColor,
@@ -46,6 +47,7 @@ class SurahPageViewBuild extends StatelessWidget {
   final Widget? circularProgressWidget;
   final List? bookmarkList;
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
   final Color? textColor;
   final Color? ayahSelectedFontColor;
   final Color? ayahSelectedBackgroundColor;
@@ -138,6 +140,7 @@ class SurahPageViewBuild extends StatelessWidget {
                       showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                       bookmarksAyahs: bookmarksCtrl.bookmarksAyahs,
                       bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                       ayahSelectedBackgroundColor: ayahSelectedBackgroundColor,
                       isFontsLocal: false,
                       fontsName: '',

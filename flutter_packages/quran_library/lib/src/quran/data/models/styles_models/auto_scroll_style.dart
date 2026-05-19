@@ -36,6 +36,9 @@ class AutoScrollStyle {
   /// نص تسمية "سريع" (افتراضي: 'سريع')
   final String? fastLabelText;
 
+  /// نص تسمية "ملاحظات" (افتراضي: 'ملاحظات')
+  final String? notesLabelText;
+
   /// أسماء شروط التوقف المخصصة (ترتيب: nextHizb, nextJuz, pageCount, manual)
   final Map<AutoScrollStopCondition, String>? stopConditionLabels;
 
@@ -54,6 +57,9 @@ class AutoScrollStyle {
 
   /// نمط نصوص بطيء/سريع
   final TextStyle? sliderHintStyle;
+
+  /// نمط نصوص الملاحظات
+  final TextStyle? notesStyle;
 
   /// لون حدود الـ Chip المحدد
   final Color? chipSelectedBorderColor;
@@ -104,6 +110,8 @@ class AutoScrollStyle {
     this.chipSelectedBackgroundColor,
     this.chipUnselectedBackgroundColor,
     this.pageCountButtonColor,
+    this.notesLabelText,
+    this.notesStyle,
   });
 
   AutoScrollStyle copyWith({
@@ -137,6 +145,8 @@ class AutoScrollStyle {
     Color? chipSelectedBackgroundColor,
     Color? chipUnselectedBackgroundColor,
     Color? pageCountButtonColor,
+    String? notesLabelText,
+    TextStyle? notesStyle,
   }) {
     return AutoScrollStyle(
       sliderActiveColor: sliderActiveColor ?? this.sliderActiveColor,
@@ -176,6 +186,8 @@ class AutoScrollStyle {
       chipUnselectedBackgroundColor:
           chipUnselectedBackgroundColor ?? this.chipUnselectedBackgroundColor,
       pageCountButtonColor: pageCountButtonColor ?? this.pageCountButtonColor,
+      notesLabelText: notesLabelText ?? this.notesLabelText,
+      notesStyle: notesStyle ?? this.notesStyle,
     );
   }
 
@@ -208,6 +220,13 @@ class AutoScrollStyle {
         color: primary,
         package: 'quran_library',
       ),
+      notesStyle: TextStyle(
+        fontSize: 14,
+        fontFamily: 'cairo',
+        color: AppColors.getTextColor(isDark),
+        package: 'quran_library',
+      ),
+      notesLabelText: 'ضبط سرعة السكرول والتوقف التلقائي',
     );
   }
 }

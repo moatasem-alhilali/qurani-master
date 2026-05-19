@@ -18,6 +18,7 @@ class SurahDisplayScreen extends StatelessWidget {
     this.backgroundColor,
     this.bookmarkList = const [],
     this.bookmarksColor,
+    this.customBookmarksColor,
     this.circularProgressWidget,
     this.isDark = false,
     this.appLanguageCode,
@@ -85,6 +86,7 @@ class SurahDisplayScreen extends StatelessWidget {
   /// لون الإشارات المرجعية
   /// Bookmarks color
   final Color? bookmarksColor;
+  final Color? Function(AyahModel)? customBookmarksColor;
 
   /// لون الخلفية
   /// Background color
@@ -553,6 +555,7 @@ class SurahDisplayScreen extends StatelessWidget {
                 showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                 onAyahLongPress: onAyahLongPress,
                 bookmarksColor: bookmarksColor,
+                                  customBookmarksColor: customBookmarksColor,
                 surahNameStyle: surahNameStyle,
                 bannerStyle: bannerStyle,
                 basmalaStyle: basmalaStyle,
