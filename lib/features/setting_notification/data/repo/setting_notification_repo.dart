@@ -128,7 +128,6 @@ class SettingNotificationRepo {
               : null,
           category: isAthan ? AndroidNotificationCategory.alarm : null,
           visibility: isAthan ? NotificationVisibility.public : null,
-          fullScreenIntent: isAthan,
           ongoing: false,
           autoCancel: true,
         );

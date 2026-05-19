@@ -126,7 +126,6 @@ class NotificationOrchestratorService {
             colorized: true,
             category: AndroidNotificationCategory.alarm,
             visibility: NotificationVisibility.public,
-            fullScreenIntent: true,
             ongoing: false,
             autoCancel: true,
           );
