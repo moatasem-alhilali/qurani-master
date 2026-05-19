@@ -64,73 +64,76 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
   Widget build(BuildContext context) {
     return AppScaffoldWidget(
       title: 'التطبيقات المصغرة',
-      body: ListView(
+      body: Padding(
         padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 28.h),
-        children: [
-          _InfoPanel(
-            title: defaultTargetPlatform == TargetPlatform.iOS
-                ? 'ويدجتات iPhone جاهزة'
-                : 'ويدجتات Android جاهزة',
-            subtitle: defaultTargetPlatform == TargetPlatform.iOS
-                ? 'أضفها من شاشة التطبيقات المصغرة، وتشمل ويدجتات شاشة '
-                    'القفل للصلاة والذكر.'
-                : 'يمكنك إضافتها يدويا، أو تثبيتها مباشرة من الأزرار إذا '
-                    'كان المشغل يدعم ذلك.',
-            icon: Icons.widgets_rounded,
-          ),
-          SizedBox(height: 14.h),
-          FilledButton.icon(
-            onPressed: _isRefreshing ? null : _refreshWidgets,
-            icon: _isRefreshing
-                ? SizedBox(
-                    width: 18.w,
-                    height: 18.w,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.refresh_rounded),
-            label: const Text('تحديث وتفعيل التحديث بالخلفية'),
-          ),
-          SizedBox(height: 14.h),
-          _WidgetOptionTile(
-            title: 'الصلاة القادمة',
-            subtitle: 'وقت الصلاة القادمة والوقت المتبقي',
-            icon: Icons.access_time_filled_rounded,
-            canPin: _isPinSupported,
-            onPin: () => _pin(HomeWidgetType.prayer),
-          ),
-          _WidgetOptionTile(
-            title: 'ذكر عشوائي',
-            subtitle: 'ذكر متجدد من مصادر الأذكار',
-            icon: Icons.auto_awesome_rounded,
-            canPin: _isPinSupported,
-            onPin: () => _pin(HomeWidgetType.dhikr),
-          ),
-          _WidgetOptionTile(
-            title: 'آية عشوائية',
-            subtitle: 'آية متجددة من مكتبة القرآن داخل التطبيق',
-            icon: Icons.menu_book_rounded,
-            canPin: _isPinSupported,
-            onPin: () => _pin(HomeWidgetType.ayah),
-          ),
-          _WidgetOptionTile(
-            title: 'ورد اليوم',
-            subtitle: 'متابعة مختصرة للتقدم اليومي',
-            icon: Icons.task_alt_rounded,
-            canPin: _isPinSupported,
-            onPin: () => _pin(HomeWidgetType.wird),
-          ),
-          if (defaultTargetPlatform == TargetPlatform.iOS) ...[
-            const SizedBox(height: 10),
-            const _InfoPanel(
-              title: 'شاشة القفل',
-              subtitle:
-                  'أضفت ويدجت صلاة القفل وذكر القفل بصيغ iOS Lock Screen: '
-                  'Inline وRectangular وCircular.',
-              icon: Icons.lock_rounded,
-              compact: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _InfoPanel(
+              title: defaultTargetPlatform == TargetPlatform.iOS
+                  ? 'ويدجتات iPhone جاهزة'
+                  : 'ويدجتات Android جاهزة',
+              subtitle: defaultTargetPlatform == TargetPlatform.iOS
+                  ? 'أضفها من شاشة التطبيقات المصغرة، وتشمل ويدجتات شاشة '
+                      'القفل للصلاة والذكر.'
+                  : 'يمكنك إضافتها يدويا، أو تثبيتها مباشرة من الأزرار إذا '
+                      'كان المشغل يدعم ذلك.',
+              icon: Icons.widgets_rounded,
             ),
+            SizedBox(height: 14.h),
+            FilledButton.icon(
+              onPressed: _isRefreshing ? null : _refreshWidgets,
+              icon: _isRefreshing
+                  ? SizedBox(
+                      width: 18.w,
+                      height: 18.w,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.refresh_rounded),
+              label: const Text('تحديث وتفعيل التحديث بالخلفية'),
+            ),
+            SizedBox(height: 14.h),
+            _WidgetOptionTile(
+              title: 'الصلاة القادمة',
+              subtitle: 'وقت الصلاة القادمة والوقت المتبقي',
+              icon: Icons.access_time_filled_rounded,
+              canPin: _isPinSupported,
+              onPin: () => _pin(HomeWidgetType.prayer),
+            ),
+            _WidgetOptionTile(
+              title: 'ذكر عشوائي',
+              subtitle: 'ذكر متجدد من مصادر الأذكار',
+              icon: Icons.auto_awesome_rounded,
+              canPin: _isPinSupported,
+              onPin: () => _pin(HomeWidgetType.dhikr),
+            ),
+            _WidgetOptionTile(
+              title: 'آية عشوائية',
+              subtitle: 'آية متجددة من مكتبة القرآن داخل التطبيق',
+              icon: Icons.menu_book_rounded,
+              canPin: _isPinSupported,
+              onPin: () => _pin(HomeWidgetType.ayah),
+            ),
+            _WidgetOptionTile(
+              title: 'ورد اليوم',
+              subtitle: 'متابعة مختصرة للتقدم اليومي',
+              icon: Icons.task_alt_rounded,
+              canPin: _isPinSupported,
+              onPin: () => _pin(HomeWidgetType.wird),
+            ),
+            if (defaultTargetPlatform == TargetPlatform.iOS) ...[
+              const SizedBox(height: 10),
+              const _InfoPanel(
+                title: 'شاشة القفل',
+                subtitle:
+                    'أضفت ويدجت صلاة القفل وذكر القفل بصيغ iOS Lock Screen: '
+                    'Inline وRectangular وCircular.',
+                icon: Icons.lock_rounded,
+                compact: true,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

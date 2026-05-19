@@ -1,11 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/manage_version/data/models/app_version_model.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/manage_version/presentation/view/widgets/update_download_options_sheet.dart';
 
@@ -17,93 +17,267 @@ class VersionManagementScreen extends StatefulWidget {
       _VersionManagementScreenState();
 }
 
-class _VersionManagementScreenState extends State<VersionManagementScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _staggerController;
-  late AnimationController _pulseController;
-  late List<Animation<double>> _cardAnimations;
-  late Animation<double> _pulseAnimation;
-
+class _VersionManagementScreenState extends State<VersionManagementScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize animation controllers
-    _staggerController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-
-    // Create staggered animations for cards
-    _cardAnimations = List.generate(5, (index) {
-      final start = index * 0.1;
-      final end = start + 0.6;
-      return Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(
-          parent: _staggerController,
-          curve: Interval(start, end, curve: Curves.easeOutCubic),
-        ),
-      );
-    });
-
-    // Create pulse animation for loading states
-    _pulseAnimation = Tween<double>(begin: 0.8, end: 1).animate(
-      CurvedAnimation(
-        parent: _pulseController,
-        curve: Curves.easeInOut,
-      ),
-    );
-
-    // Start animations
-    _staggerController.forward();
-    _pulseController.repeat(reverse: true);
-
-    // Trigger a version check when screen loads
     context.read<VersionBloc>().add(
           CheckForUpdatesEvent(forceRefresh: true, isManualCheck: true),
         );
   }
 
   @override
-  void dispose() {
-    _staggerController.dispose();
-    _pulseController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AppScaffoldWidget(
       title: 'إدارة الإصدارات',
-      // showBackground: false,
+      onRefresh: () async {
+        context.read<VersionBloc>().add(
+              CheckForUpdatesEvent(forceRefresh: true, isManualCheck: true),
+            );
+      },
       body: BlocConsumer<VersionBloc, VersionState>(
         listener: (context, state) {
-          // Handle error messages
           if (state.versionCheckState == RequestState.error &&
               state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  state.errorMessage!,
-                  style: titleMedium(context).copyWith(color: Colors.white),
-                ),
-                backgroundColor: Colors.red,
+                content: Text(state.errorMessage!),
+                backgroundColor: context.errorColor,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
               ),
             );
           }
         },
         builder: (context, state) {
-          return RefreshIndicator(
-            onRefresh: () async {
+          final versionInfo = state.latestVersionInfo;
+          final isLoading = state.versionCheckState == RequestState.loading;
+
+          return Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 28.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _StatusSummaryCard(state: state, isLoading: isLoading),
+                SizedBox(height: 10.h),
+                _VersionInfoCard(state: state, versionInfo: versionInfo),
+                if (versionInfo != null) ...[
+                  SizedBox(height: 10.h),
+                  _ReleaseInfoCard(versionInfo: versionInfo),
+                ],
+                SizedBox(height: 10.h),
+                _ActionsCard(
+                  state: state,
+                  versionInfo: versionInfo,
+                  isLoading: isLoading,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _StatusSummaryCard extends StatelessWidget {
+  const _StatusSummaryCard({
+    required this.state,
+    required this.isLoading,
+  });
+
+  final VersionState state;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final status = _statusMeta(context, state);
+
+    return _CompactCard(
+      child: Row(
+        children: [
+          _IconBadge(icon: status.icon, color: status.color),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  status.title,
+                  style: _titleStyle(context),
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  status.subtitle,
+                  style: _subtitleStyle(context),
+                ),
+              ],
+            ),
+          ),
+          if (isLoading)
+            SizedBox(
+              width: 18.w,
+              height: 18.w,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.w,
+                color: context.primaryColor,
+              ),
+            )
+          else
+            _TinyPill(label: state.isConnected ? 'متصل' : 'بدون اتصال'),
+        ],
+      ),
+    );
+  }
+
+  _StatusMeta _statusMeta(BuildContext context, VersionState state) {
+    if (!state.isConnected) {
+      return _StatusMeta(
+        title: 'لا يوجد اتصال',
+        subtitle: 'سيتم استخدام آخر بيانات محفوظة إن وجدت',
+        icon: CupertinoIcons.wifi_slash,
+        color: context.errorColor,
+      );
+    }
+    if (state.isUpdateRequired) {
+      return const _StatusMeta(
+        title: 'تحديث ضروري',
+        subtitle: 'يوجد إصدار مطلوب قبل متابعة الاستخدام',
+        icon: CupertinoIcons.exclamationmark_triangle_fill,
+        color: Colors.red,
+      );
+    }
+    if (state.hasUpdateAvailable) {
+      return const _StatusMeta(
+        title: 'تحديث جديد متاح',
+        subtitle: 'يمكنك تحميل الإصدار الأخير من الخيارات المتاحة',
+        icon: CupertinoIcons.arrow_down_circle_fill,
+        color: Colors.orange,
+      );
+    }
+    return const _StatusMeta(
+      title: 'أنت على آخر إصدار',
+      subtitle: 'لا توجد تحديثات مطلوبة الآن',
+      icon: CupertinoIcons.check_mark_circled_solid,
+      color: Colors.green,
+    );
+  }
+}
+
+class _VersionInfoCard extends StatelessWidget {
+  const _VersionInfoCard({
+    required this.state,
+    required this.versionInfo,
+  });
+
+  final VersionState state;
+  final AppVersionModel? versionInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    return _CompactCard(
+      child: Column(
+        children: [
+          _InfoRow(
+            icon: CupertinoIcons.device_phone_portrait,
+            label: 'الإصدار الحالي',
+            value: state.currentVersion ??
+                versionInfo?.currentVersion ??
+                'غير محدد',
+          ),
+          _ThinDivider(),
+          _InfoRow(
+            icon: CupertinoIcons.cloud_download,
+            label: 'آخر إصدار',
+            value: versionInfo?.latestVersion ?? 'لم يتم الفحص بعد',
+          ),
+          if (versionInfo?.downloadSize?.trim().isNotEmpty ?? false) ...[
+            _ThinDivider(),
+            _InfoRow(
+              icon: CupertinoIcons.archivebox,
+              label: 'حجم التحميل',
+              value: versionInfo!.downloadSize!,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ReleaseInfoCard extends StatelessWidget {
+  const _ReleaseInfoCard({required this.versionInfo});
+
+  final AppVersionModel versionInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    final notes = versionInfo.releaseNotes?.trim();
+
+    return _CompactCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                CupertinoIcons.doc_text_fill,
+                color: context.primaryColor,
+                size: 17.sp,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'تفاصيل الإصدار',
+                  style: _titleStyle(context),
+                ),
+              ),
+              _TinyPill(label: versionInfo.updatePriority.displayText),
+            ],
+          ),
+          if (notes?.isNotEmpty ?? false) ...[
+            SizedBox(height: 8.h),
+            Text(
+              notes!,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: _subtitleStyle(context).copyWith(height: 1.35),
+            ),
+          ],
+          if (versionInfo.lastChecked != null) ...[
+            SizedBox(height: 8.h),
+            Text(
+              'آخر فحص: ${_formatDateTime(versionInfo.lastChecked!)}',
+              style: _captionStyle(context),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionsCard extends StatelessWidget {
+  const _ActionsCard({
+    required this.state,
+    required this.versionInfo,
+    required this.isLoading,
+  });
+
+  final VersionState state;
+  final AppVersionModel? versionInfo;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return _CompactCard(
+      child: Column(
+        children: [
+          _ActionTile(
+            icon: CupertinoIcons.refresh,
+            title: 'فحص التحديثات',
+            subtitle: 'جلب آخر بيانات من الخادم',
+            enabled: !isLoading,
+            onTap: () {
               context.read<VersionBloc>().add(
                     CheckForUpdatesEvent(
                       forceRefresh: true,
@@ -111,726 +285,324 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
                     ),
                   );
             },
-            color: context.primaryColor,
-            backgroundColor: context.backgroundColor,
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
+          ),
+          if (state.hasUpdateAvailable && versionInfo != null) ...[
+            _ThinDivider(),
+            _ActionTile(
+              icon: CupertinoIcons.arrow_down_circle,
+              title: 'تحميل التحديث',
+              subtitle: 'اختر منصة التحميل المناسبة',
+              onTap: () => showUpdateDownloadOptionsSheet(
+                context,
+                versionInfo!,
+              ),
+            ),
+            if (!state.isUpdateRequired) ...[
+              _ThinDivider(),
+              _ActionTile(
+                icon: CupertinoIcons.forward_end,
+                title: 'تخطي هذا الإصدار',
+                subtitle: 'عدم عرض تنبيه لهذا الإصدار',
+                onTap: () {
+                  context.read<VersionBloc>().add(
+                        SkipVersionEvent(version: versionInfo!.latestVersion),
+                      );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('تم تخطي هذا الإصدار'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ],
+          _ThinDivider(),
+          _ActionTile(
+            icon: CupertinoIcons.trash,
+            title: 'مسح الكاش',
+            subtitle: 'حذف بيانات الإصدارات المحفوظة',
+            onTap: () {
+              context.read<VersionBloc>().add(ClearVersionCacheEvent());
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('تم مسح ذاكرة التخزين المؤقت'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionTile extends StatelessWidget {
+  const _ActionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.enabled = true,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = enabled ? context.primaryColor : context.onSurfaceVariant;
+
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 7.h),
+        child: Row(
+          children: [
+            _IconBadge(
+              icon: icon,
+              color: color.withValues(alpha: enabled ? 1 : 0.45),
+              size: 34.w,
+              iconSize: 16.sp,
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Connection Status Card
-                  _buildAnimatedCard(
-                    animation: _cardAnimations[0],
-                    child: _buildConnectionStatusCard(state),
-                  ),
-                  SizedBox(height: 16.h),
-
-                  // Current Version Card
-                  _buildAnimatedCard(
-                    animation: _cardAnimations[1],
-                    child: _buildCurrentVersionCard(state),
-                  ),
-                  SizedBox(height: 16.h),
-
-                  // Latest Version Card
-                  if (state.latestVersionInfo != null)
-                    _buildAnimatedCard(
-                      animation: _cardAnimations[2],
-                      child: _buildLatestVersionCard(state),
+                  Text(
+                    title,
+                    style: _titleStyle(context).copyWith(
+                      fontSize: 12.5.sp,
+                      color: enabled
+                          ? context.onSurfaceColor
+                          : context.onSurfaceVariant.withValues(alpha: 0.55),
                     ),
-
-                  if (state.latestVersionInfo != null) SizedBox(height: 16.h),
-
-                  // Update Status Card
-                  _buildAnimatedCard(
-                    animation: _cardAnimations[3],
-                    child: _buildUpdateStatusCard(state),
                   ),
-                  SizedBox(height: 16.h),
-
-                  // Actions Card
-                  if (state.latestVersionInfo != null)
-                    _buildAnimatedCard(
-                      animation: _cardAnimations[4],
-                      child: _buildActionsCard(state),
-                    ),
-
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 2.h),
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _captionStyle(context),
+                  ),
                 ],
               ),
             ),
-          );
-        },
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: context.onSurfaceVariant.withValues(alpha: 0.32),
+              size: 13.sp,
+            ),
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildAnimatedCard({
-    required Animation<double> animation,
-    required Widget child,
-  }) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, 30 * (1 - animation.value)),
-          child: Opacity(
-            opacity: animation.value,
-            child: child,
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 7.h),
+      child: Row(
+        children: [
+          _IconBadge(
+            icon: icon,
+            color: context.primaryColor,
+            size: 34.w,
+            iconSize: 16.sp,
           ),
-        );
-      },
-      child: child,
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              label,
+              style: _subtitleStyle(context),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: _titleStyle(context).copyWith(fontSize: 12.5.sp),
+            ),
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildEnhancedCard({
-    required Widget child,
-    Color? backgroundColor,
-    Gradient? gradient,
-    bool elevated = true,
-  }) {
-    return Container(
+class _CompactCard extends StatelessWidget {
+  const _CompactCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: gradient,
-        color: backgroundColor ?? context.surfaceColor,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            context.surfaceColor,
+            context.surfaceVariant.withValues(alpha: 0.42),
+          ],
+        ),
+        border: Border.all(
+          color: context.outline.withValues(alpha: 0.82),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: context.shadow.withValues(alpha: 0.05),
+            blurRadius: 12.r,
+            offset: Offset(0, 6.h),
+          ),
+        ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
+      child: Padding(
+        padding: EdgeInsets.all(13.w),
         child: child,
       ),
     );
   }
+}
 
-  Widget _buildConnectionStatusCard(VersionState state) {
-    final isConnected = state.isConnected;
-    final isLoading = state.versionCheckState == RequestState.loading;
+class _IconBadge extends StatelessWidget {
+  const _IconBadge({
+    required this.icon,
+    required this.color,
+    this.size,
+    this.iconSize,
+  });
 
-    return _buildEnhancedCard(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: isConnected
-            ? [
-                Colors.green.withOpacity(0.1),
-                Colors.green.withOpacity(0.05),
-              ]
-            : [
-                Colors.red.withOpacity(0.1),
-                Colors.red.withOpacity(0.05),
-              ],
+  final IconData icon;
+  final Color color;
+  final double? size;
+  final double? iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedSize = size ?? 40.w;
+
+    return Container(
+      width: resolvedSize,
+      height: resolvedSize,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Row(
-          children: [
-            // Animated Icon Container
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: isConnected
-                    ? Colors.green.withOpacity(0.2)
-                    : Colors.red.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isConnected ? Icons.wifi : Icons.wifi_off,
-                color: isConnected ? Colors.green : Colors.red,
-                size: 24.sp,
-              ),
-            ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'حالة الاتصال',
-                    style: titleMedium(context).copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Text(
-                      isConnected ? 'متصل بالإنترنت' : 'غير متصل بالإنترنت',
-                      key: ValueKey(isConnected),
-                      style: titleMedium(context).copyWith(
-                        fontSize: 14.sp,
-                        color: isConnected ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (isLoading)
-              AnimatedBuilder(
-                animation: _pulseAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _pulseAnimation.value,
-                    child: Container(
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                        color: context.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: SizedBox(
-                        width: 20.sp,
-                        height: 20.sp,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.w,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            context.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-          ],
+      child: Icon(
+        icon,
+        color: color,
+        size: iconSize ?? 18.sp,
+      ),
+    );
+  }
+}
+
+class _TinyPill extends StatelessWidget {
+  const _TinyPill({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: context.primaryColor.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999.r),
+        border: Border.all(
+          color: context.primaryColor.withValues(alpha: 0.16),
+        ),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 9.5.sp,
+          fontWeight: FontWeight.w700,
+          color: context.primaryColor,
         ),
       ),
     );
   }
+}
 
-  Widget _buildCurrentVersionCard(VersionState state) {
-    return _buildEnhancedCard(
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: context.primaryColor.withAlpha(20),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.phone_android,
-                color: context.primaryColor,
-                size: 24.sp,
-              ),
-            ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'الإصدار الحالي',
-                    style: titleMedium(context).copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: context.primaryColor.withAlpha(20),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text(
-                      state.currentVersion ?? 'غير محدد',
-                      style: titleMedium(context).copyWith(
-                        fontSize: 14.sp,
-                        color: context.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+class _ThinDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 1.h,
+      color: context.outline.withValues(alpha: 0.55),
     );
   }
+}
 
-  Widget _buildLatestVersionCard(VersionState state) {
-    final versionInfo = state.latestVersionInfo!;
-    return _buildEnhancedCard(
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.cloud_download,
-                  color: context.primaryColor,
-                  size: 24.sp,
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Text(
-                    'أحدث إصدار متاح',
-                    style: titleMedium(context).copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12.h),
-            _buildVersionDetailRow('الإصدار:', versionInfo.latestVersion),
-            if (versionInfo.releaseNotes != null) ...[
-              SizedBox(height: 8.h),
-              _buildVersionDetailRow(
-                'ملاحظات الإصدار:',
-                versionInfo.releaseNotes!,
-              ),
-            ],
-            if (versionInfo.downloadSize != null) ...[
-              SizedBox(height: 8.h),
-              _buildVersionDetailRow('حجم التحميل:', versionInfo.downloadSize!),
-            ],
-            SizedBox(height: 8.h),
-            _buildVersionDetailRow(
-              'أولوية التحديث:',
-              versionInfo.updatePriority.displayText,
-            ),
-            if (versionInfo.lastChecked != null) ...[
-              SizedBox(height: 8.h),
-              _buildVersionDetailRow(
-                'آخر فحص:',
-                _formatDateTime(versionInfo.lastChecked!),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+class _StatusMeta {
+  const _StatusMeta({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+  });
 
-  Widget _buildUpdateStatusCard(VersionState state) {
-    Color statusColor;
-    String statusText;
-    IconData statusIcon;
-    Gradient? statusGradient;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+}
 
-    if (state.hasUpdateAvailable) {
-      if (state.isUpdateRequired) {
-        statusColor = Colors.red;
-        statusText = 'تحديث مطلوب';
-        statusIcon = Icons.warning;
-        statusGradient = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.red.withOpacity(0.1),
-            Colors.red.withOpacity(0.05),
-          ],
-        );
-      } else {
-        statusColor = Colors.orange;
-        statusText = 'تحديث متاح';
-        statusIcon = Icons.info;
-        statusGradient = LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.orange.withOpacity(0.1),
-            Colors.orange.withOpacity(0.05),
-          ],
-        );
-      }
-    } else {
-      statusColor = Colors.green;
-      statusText = 'أنت تستخدم أحدث إصدار';
-      statusIcon = Icons.check_circle;
-      statusGradient = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Colors.green.withOpacity(0.1),
-          Colors.green.withOpacity(0.05),
-        ],
-      );
-    }
+TextStyle _titleStyle(BuildContext context) {
+  return TextStyle(
+    fontSize: 13.5.sp,
+    fontWeight: FontWeight.w800,
+    color: context.onSurfaceColor,
+  );
+}
 
-    return _buildEnhancedCard(
-      gradient: statusGradient,
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: statusColor.withAlpha(20),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                statusIcon,
-                color: statusColor,
-                size: 24.sp,
-              ),
-            ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'حالة التحديث',
-                    style: titleMedium(context).copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusColor.withAlpha(20),
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: statusColor.withAlpha(30),
-                      ),
-                    ),
-                    child: Text(
-                      statusText,
-                      style: titleMedium(context).copyWith(
-                        fontSize: 14.sp,
-                        color: statusColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Animated indicator for required updates
-            if (state.isUpdateRequired)
-              AnimatedBuilder(
-                animation: _pulseAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _pulseAnimation.value,
-                    child: Container(
-                      padding: EdgeInsets.all(6.w),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withAlpha(20),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.priority_high,
-                        color: Colors.red,
-                        size: 16.sp,
-                      ),
-                    ),
-                  );
-                },
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+TextStyle _subtitleStyle(BuildContext context) {
+  return TextStyle(
+    fontSize: 11.sp,
+    color: context.onSurfaceVariant.withValues(alpha: 0.78),
+    height: 1.25,
+  );
+}
 
-  Widget _buildActionsCard(VersionState state) {
-    final versionInfo = state.latestVersionInfo!;
+TextStyle _captionStyle(BuildContext context) {
+  return TextStyle(
+    fontSize: 10.sp,
+    color: context.onSurfaceVariant.withValues(alpha: 0.64),
+  );
+}
 
-    return _buildEnhancedCard(
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'الإجراءات',
-              style: titleMedium(context).copyWith(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 12.h),
-
-            // Refresh Button
-            _buildActionButton(
-              icon: Icons.refresh,
-              title: 'فحص التحديثات',
-              subtitle: 'تحقق من وجود إصدارات جديدة',
-              onTap: state.versionCheckState == RequestState.loading
-                  ? null
-                  : () {
-                      context.read<VersionBloc>().add(
-                            CheckForUpdatesEvent(
-                              forceRefresh: true,
-                              isManualCheck: true,
-                            ),
-                          );
-                    },
-            ),
-
-            SizedBox(height: 8.h),
-
-            // Open Download Link Button
-            if (state.hasUpdateAvailable)
-              _buildActionButton(
-                icon: Icons.download,
-                title: 'تحميل التحديث',
-                subtitle: 'اختر منصة التحميل المناسبة',
-                onTap: () => showUpdateDownloadOptionsSheet(
-                  context,
-                  versionInfo,
-                ),
-              ),
-
-            if (state.hasUpdateAvailable) ...[
-              SizedBox(height: 8.h),
-
-              // Skip Version Button (only for non-required updates)
-              if (!state.isUpdateRequired)
-                _buildActionButton(
-                  icon: Icons.skip_next,
-                  title: 'تخطي هذا الإصدار',
-                  subtitle: 'عدم عرض تنبيهات لهذا الإصدار',
-                  onTap: () {
-                    context.read<VersionBloc>().add(
-                          SkipVersionEvent(version: versionInfo.latestVersion),
-                        );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'تم تخطي الإصدار ${versionInfo.latestVersion}',
-                          style: titleMedium(context)
-                              .copyWith(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.green,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-            ],
-
-            SizedBox(height: 8.h),
-
-            // Clear Cache Button
-            _buildActionButton(
-              icon: Icons.clear_all,
-              title: 'مسح ذاكرة التخزين المؤقت',
-              subtitle: 'مسح بيانات الإصدارات المحفوظة',
-              onTap: () {
-                context.read<VersionBloc>().add(ClearVersionCacheEvent());
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'تم مسح ذاكرة التخزين المؤقت',
-                      style: titleMedium(context).copyWith(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildVersionDetailRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120.w,
-          child: Text(
-            label,
-            style: titleMedium(context).copyWith(
-              fontSize: 14.sp,
-              color: context.gray1,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: titleMedium(context).copyWith(
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback? onTap,
-  }) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      margin: EdgeInsets.only(bottom: 12.h),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12.r),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              gradient: onTap != null
-                  ? LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        context.primaryColor.withAlpha(5),
-                        context.primaryColor.withAlpha(2),
-                      ],
-                    )
-                  : null,
-              color: onTap != null ? null : context.gray1.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: onTap != null
-                    ? context.primaryColor.withAlpha(20)
-                    : context.gray1.withAlpha(20),
-                width: 1.5,
-              ),
-              boxShadow: onTap != null
-                  ? [
-                      BoxShadow(
-                        color: context.primaryColor.withOpacity(0.1),
-                        blurRadius: 8.r,
-                        offset: Offset(0, 2.h),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Row(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(10.w),
-                  decoration: BoxDecoration(
-                    color: onTap != null
-                        ? context.primaryColor.withOpacity(0.1)
-                        : context.gray1.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    icon,
-                    color: onTap != null ? context.primaryColor : context.gray1,
-                    size: 20.sp,
-                  ),
-                ),
-                SizedBox(width: 16.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: titleMedium(context).copyWith(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w600,
-                          color: onTap != null ? null : context.gray1,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        subtitle,
-                        style: titleMedium(context).copyWith(
-                          fontSize: 12.sp,
-                          color: context.gray1,
-                          height: 1.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AnimatedRotation(
-                  turns: onTap != null ? 0 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16.sp,
-                    color: onTap != null
-                        ? context.primaryColor.withOpacity(0.7)
-                        : context.gray1.withOpacity(0.5),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 1) {
-      return 'الآن';
-    } else if (difference.inHours < 1) {
-      return 'منذ ${difference.inMinutes} دقيقة';
-    } else if (difference.inDays < 1) {
-      return 'منذ ${difference.inHours} ساعة';
-    } else {
-      return 'منذ ${difference.inDays} يوم';
-    }
-  }
-
-  String _getRequestStateText(RequestState state) {
-    switch (state) {
-      case RequestState.initial:
-        return 'ابتدائي';
-      case RequestState.loading:
-        return 'جاري التحميل';
-      case RequestState.success:
-        return 'نجح';
-      case RequestState.error:
-        return 'خطأ';
-    }
-  }
-
-  Future<void> _copyToClipboard(String text) async {
-    await Clipboard.setData(ClipboardData(text: text));
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'تم نسخ الرابط إلى الحافظة',
-            style: titleMedium(context).copyWith(color: Colors.white),
-          ),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
-  }
+String _formatDateTime(DateTime dateTime) {
+  final difference = DateTime.now().difference(dateTime);
+  if (difference.inMinutes < 1) return 'الآن';
+  if (difference.inHours < 1) return 'منذ ${difference.inMinutes} دقيقة';
+  if (difference.inDays < 1) return 'منذ ${difference.inHours} ساعة';
+  return 'منذ ${difference.inDays} يوم';
 }
