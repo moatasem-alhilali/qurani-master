@@ -43,7 +43,7 @@ class VersionState extends Equatable {
   /// Helper getters
   bool get hasUpdateAvailable => latestVersionInfo?.isUpdateAvailable ?? false;
   bool get isUpdateRequired => latestVersionInfo?.isUpdateRequired ?? false;
-  bool get canDownload => latestVersionInfo?.downloadUrl.isNotEmpty ?? false;
+  bool get canDownload => latestVersionInfo != null && hasUpdateAvailable;
   String get downloadSizeText => latestVersionInfo?.downloadSize ?? 'غير محدد';
 
   @override

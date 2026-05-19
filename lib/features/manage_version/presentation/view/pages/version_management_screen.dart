@@ -7,6 +7,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
+import 'package:quran_app/features/manage_version/presentation/view/widgets/update_download_options_sheet.dart';
 
 class VersionManagementScreen extends StatefulWidget {
   const VersionManagementScreen({super.key});
@@ -585,16 +586,15 @@ class _VersionManagementScreenState extends State<VersionManagementScreen>
             SizedBox(height: 8.h),
 
             // Open Download Link Button
-            if (versionInfo.downloadUrl.isNotEmpty)
+            if (state.hasUpdateAvailable)
               _buildActionButton(
                 icon: Icons.download,
                 title: 'تحميل التحديث',
-                subtitle: 'فتح رابط التحميل في المتصفح',
-                onTap: () => context.read<VersionBloc>().add(
-                      OpenDownloadLinkEvent(
-                        downloadUrl: versionInfo.downloadUrl,
-                      ),
-                    ),
+                subtitle: 'اختر منصة التحميل المناسبة',
+                onTap: () => showUpdateDownloadOptionsSheet(
+                  context,
+                  versionInfo,
+                ),
               ),
 
             if (state.hasUpdateAvailable) ...[

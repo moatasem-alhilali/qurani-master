@@ -4,30 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_wird_background"
-    android:gravity="center"
+    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="18dp"
+    android:padding="10dp"
     android:textDirection="rtl">
 
     <TextView
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="end"
         android:text="ورد اليوم"
-        android:textColor="#163A35"
-        android:textSize="14sp"
+        android:textColor="#CDAD80"
+        android:textSize="10sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="42%"
-        android:textColor="#102F2B"
-        android:textSize="46sp"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -35,18 +35,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="أكملت جزءًا من وردك، أكمل النور."
-        android:textColor="#244C47"
-        android:textSize="14sp" />
+        android:textColor="#CDAD80"
+        android:textSize="9sp" />
 
     <TextView
         android:id="@+id/widget_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:layout_marginTop="2dp"
+        android:gravity="end"
         android:text="تحديث الآن"
-        android:textColor="#2F625B"
-        android:textSize="11sp" />
+        android:textColor="#CDAD80"
+        android:textSize="8sp" />
 </LinearLayout>

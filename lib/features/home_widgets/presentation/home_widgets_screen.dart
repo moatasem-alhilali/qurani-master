@@ -106,8 +106,8 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
             onPin: () => _pin(HomeWidgetType.dhikr),
           ),
           _WidgetOptionTile(
-            title: 'آية اليوم',
-            subtitle: 'آية يومية من مكتبة القرآن داخل التطبيق',
+            title: 'آية عشوائية',
+            subtitle: 'آية متجددة من مكتبة القرآن داخل التطبيق',
             icon: Icons.menu_book_rounded,
             canPin: _isPinSupported,
             onPin: () => _pin(HomeWidgetType.ayah),

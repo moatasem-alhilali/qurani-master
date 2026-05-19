@@ -23,6 +23,10 @@ struct TamaneenaWidgetData {
     let wirdProgress: String
     let wirdSummary: String
     let updatedAt: String
+    let accentHex: String
+    let surfaceHex: String
+    let onSurfaceHex: String
+    let mutedHex: String
 
     static func load() -> TamaneenaWidgetData {
         let defaults = UserDefaults(suiteName: appGroupId) ?? .standard
@@ -34,14 +38,30 @@ struct TamaneenaWidgetData {
             dhikrTitle: defaults.string(forKey: "dhikr_title") ?? "ذكر اليوم",
             dhikrText: defaults.string(forKey: "dhikr_text") ?? "لا إله إلا الله وحده لا شريك له",
             dhikrSource: defaults.string(forKey: "dhikr_source") ?? "أذكار طمأنينة",
-            ayahTitle: defaults.string(forKey: "ayah_title") ?? "آية اليوم",
+            ayahTitle: defaults.string(forKey: "ayah_title") ?? "آية عشوائية",
             ayahText: defaults.string(forKey: "ayah_text") ?? "ألا بذكر الله تطمئن القلوب",
             ayahSource: defaults.string(forKey: "ayah_source") ?? "الرعد: 28",
             wirdTitle: defaults.string(forKey: "wird_title") ?? "ورد اليوم",
             wirdProgress: defaults.string(forKey: "wird_progress") ?? "0%",
             wirdSummary: defaults.string(forKey: "wird_summary") ?? "ابدأ وردك الآن",
-            updatedAt: defaults.string(forKey: "widget_updated_at") ?? "طمأنينة"
+            updatedAt: defaults.string(forKey: "widget_updated_at") ?? "طمأنينة",
+            accentHex: defaults.string(forKey: "widget_accent_hex") ?? "#404C6E",
+            surfaceHex: defaults.string(forKey: "widget_surface_hex") ?? "#2C2C2C",
+            onSurfaceHex: defaults.string(forKey: "widget_on_surface_hex") ?? "#FFFFFF",
+            mutedHex: defaults.string(forKey: "widget_muted_hex") ?? "#CDAD80"
         )
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let clean = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var value: UInt64 = 0
+        Scanner(string: clean).scanHexInt64(&value)
+        let red = Double((value >> 16) & 0xFF) / 255.0
+        let green = Double((value >> 8) & 0xFF) / 255.0
+        let blue = Double(value & 0xFF) / 255.0
+        self.init(red: red, green: green, blue: blue)
     }
 }
 
@@ -56,7 +76,7 @@ struct TamaneenaProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<TamaneenaWidgetEntry>) -> Void) {
         let entry = TamaneenaWidgetEntry(date: Date(), data: TamaneenaWidgetData.load())
-        let nextRefresh = Calendar.current.date(byAdding: .minute, value: 30, to: Date()) ?? Date().addingTimeInterval(1800)
+        let nextRefresh = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date().addingTimeInterval(900)
         completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
     }
 }
@@ -66,35 +86,32 @@ private struct PrayerWidgetView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color(red: 0.10, green: 0.14, blue: 0.16), Color(red: 0.73, green: 0.60, blue: 0.36)]),
-                startPoint: .topTrailing,
-                endPoint: .bottomLeading
-            )
-            VStack(alignment: .trailing, spacing: 8) {
+            Color(hex: entry.data.surfaceHex)
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(entry.data.prayerLabel)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.white.opacity(0.78))
-                Spacer(minLength: 2)
-                Text(entry.data.prayerName)
-                    .font(.title.bold())
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                Text(entry.data.prayerTime)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(red: 0.96, green: 0.82, blue: 0.50))
-                    .lineLimit(1)
-                Spacer(minLength: 2)
-                HStack {
-                    Text(entry.data.updatedAt)
-                    Spacer()
-                    Text(entry.data.prayerRemaining)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(entry.data.prayerTime)
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundColor(Color(hex: entry.data.onSurfaceHex))
+                        .lineLimit(1)
+                    Spacer(minLength: 2)
+                    Text(entry.data.prayerName)
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(Color(hex: entry.data.onSurfaceHex))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
-                .font(.caption2.weight(.medium))
-                .foregroundColor(.white.opacity(0.78))
+                Text(entry.data.prayerRemaining)
+                    .font(.caption2.weight(.medium))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
+                    .lineLimit(1)
+                Text(entry.data.updatedAt)
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.82))
             }
-            .padding(16)
+            .padding(10)
             .environment(\.layoutDirection, .rightToLeft)
         }
     }
@@ -104,29 +121,29 @@ private struct TextWidgetView: View {
     let title: String
     let bodyText: String
     let footer: String
-    let colors: [Color]
+    let entry: TamaneenaWidgetEntry
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: colors), startPoint: .topTrailing, endPoint: .bottomLeading)
-            VStack(alignment: .trailing, spacing: 10) {
+            Color(hex: entry.data.surfaceHex)
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(title)
-                    .font(.caption.weight(.bold))
-                    .foregroundColor(.white.opacity(0.78))
+                    .font(.caption2.weight(.bold))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
                 Spacer(minLength: 0)
                 Text(bodyText)
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(hex: entry.data.onSurfaceHex))
                     .multilineTextAlignment(.trailing)
-                    .lineLimit(5)
-                    .minimumScaleFactor(0.72)
+                    .lineLimit(4)
+                    .minimumScaleFactor(0.68)
                 Spacer(minLength: 0)
                 Text(footer)
-                    .font(.caption2.weight(.medium))
-                    .foregroundColor(.white.opacity(0.75))
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
                     .lineLimit(1)
             }
-            .padding(16)
+            .padding(10)
             .environment(\.layoutDirection, .rightToLeft)
         }
     }
@@ -137,32 +154,28 @@ private struct WirdWidgetView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color(red: 0.07, green: 0.18, blue: 0.17), Color(red: 0.34, green: 0.48, blue: 0.37)]),
-                startPoint: .topTrailing,
-                endPoint: .bottomLeading
-            )
-            VStack(alignment: .trailing, spacing: 10) {
+            Color(hex: entry.data.surfaceHex)
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(entry.data.wirdTitle)
-                    .font(.caption.weight(.bold))
-                    .foregroundColor(.white.opacity(0.78))
+                    .font(.caption2.weight(.bold))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
                 Spacer(minLength: 0)
                 Text(entry.data.wirdProgress)
-                    .font(.system(size: 38, weight: .heavy, design: .rounded))
-                    .foregroundColor(Color(red: 0.96, green: 0.82, blue: 0.50))
+                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .foregroundColor(Color(hex: entry.data.onSurfaceHex))
                     .lineLimit(1)
                 Text(entry.data.wirdSummary)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.white)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(Color(hex: entry.data.mutedHex))
                     .multilineTextAlignment(.trailing)
-                    .lineLimit(3)
+                    .lineLimit(1)
                     .minimumScaleFactor(0.75)
                 Spacer(minLength: 0)
                 Text(entry.data.updatedAt)
-                    .font(.caption2.weight(.medium))
-                    .foregroundColor(.white.opacity(0.74))
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.82))
             }
-            .padding(16)
+            .padding(10)
             .environment(\.layoutDirection, .rightToLeft)
         }
     }
@@ -234,6 +247,34 @@ private struct LockDhikrWidgetView: View {
     }
 }
 
+@available(iOSApplicationExtension 16.0, *)
+private struct LockAyahWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: TamaneenaWidgetEntry
+
+    var body: some View {
+        switch family {
+        case .accessoryCircular:
+            Text("آية")
+                .font(.caption.weight(.bold))
+        case .accessoryInline:
+            Text(entry.data.ayahText)
+                .lineLimit(1)
+        default:
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(entry.data.ayahTitle)
+                    .font(.caption2.weight(.semibold))
+                Text(entry.data.ayahText)
+                    .font(.headline.weight(.bold))
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.72)
+            }
+            .environment(\.layoutDirection, .rightToLeft)
+        }
+    }
+}
+
 struct TamaneenaPrayerWidget: Widget {
     let kind = "TamaneenaPrayerWidget"
 
@@ -244,7 +285,7 @@ struct TamaneenaPrayerWidget: Widget {
         }
         .configurationDisplayName("طمأنينة - الصلاة القادمة")
         .description("يعرض الصلاة القادمة والوقت المتبقي.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall])
     }
 }
 
@@ -257,13 +298,13 @@ struct TamaneenaDhikrWidget: Widget {
                 title: entry.data.dhikrTitle,
                 bodyText: entry.data.dhikrText,
                 footer: entry.data.dhikrSource,
-                colors: [Color(red: 0.14, green: 0.14, blue: 0.16), Color(red: 0.58, green: 0.44, blue: 0.25)]
+                entry: entry
             )
             .widgetURL(URL(string: "tamaneena://widgets/dhikr"))
         }
         .configurationDisplayName("طمأنينة - ذكر عشوائي")
         .description("ذكر متجدد من أذكار طمأنينة.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall])
     }
 }
 
@@ -276,13 +317,13 @@ struct TamaneenaAyahWidget: Widget {
                 title: entry.data.ayahTitle,
                 bodyText: entry.data.ayahText,
                 footer: entry.data.ayahSource,
-                colors: [Color(red: 0.11, green: 0.15, blue: 0.18), Color(red: 0.24, green: 0.42, blue: 0.48)]
+                entry: entry
             )
             .widgetURL(URL(string: "tamaneena://widgets/ayah"))
         }
-        .configurationDisplayName("طمأنينة - آية اليوم")
-        .description("آية مختارة تظهر على الشاشة الرئيسية.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .configurationDisplayName("طمأنينة - آية عشوائية")
+        .description("آية متجددة تظهر على الشاشة الرئيسية.")
+        .supportedFamilies([.systemSmall])
     }
 }
 
@@ -296,7 +337,7 @@ struct TamaneenaWirdWidget: Widget {
         }
         .configurationDisplayName("طمأنينة - ورد اليوم")
         .description("متابعة لطيفة لورد اليوم.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall])
     }
 }
 
@@ -330,6 +371,21 @@ struct TamaneenaLockDhikrWidget: Widget {
     }
 }
 
+@available(iOSApplicationExtension 16.0, *)
+struct TamaneenaLockAyahWidget: Widget {
+    let kind = "TamaneenaLockAyahWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: TamaneenaProvider()) { entry in
+            LockAyahWidgetView(entry: entry)
+                .widgetURL(URL(string: "tamaneena://widgets/ayah"))
+        }
+        .configurationDisplayName("طمأنينة - آية القفل")
+        .description("آية مختصرة على شاشة القفل.")
+        .supportedFamilies([.accessoryRectangular, .accessoryInline, .accessoryCircular])
+    }
+}
+
 @main
 struct TamaneenaWidgets: WidgetBundle {
     var body: some Widget {
@@ -340,6 +396,7 @@ struct TamaneenaWidgets: WidgetBundle {
         if #available(iOSApplicationExtension 16.0, *) {
             TamaneenaLockPrayerWidget()
             TamaneenaLockDhikrWidget()
+            TamaneenaLockAyahWidget()
         }
     }
 }

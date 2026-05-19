@@ -8,8 +8,10 @@ import 'package:quran_app/main.dart';
 
 /// Remote data source for version management using Firebase Remote Config
 abstract class VersionRemoteDataSource {
-  Future<AppVersionModel> checkForUpdates(
-      {bool forceRefresh = false, bool isManualCheck = false});
+  Future<AppVersionModel> checkForUpdates({
+    bool forceRefresh = false,
+    bool isManualCheck = false,
+  });
   Future<String> getCurrentAppVersion();
   Future<void> initialize();
   Stream<AppVersionModel> watchConfigChanges();
@@ -37,6 +39,7 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
     'latest': 'app_latest_version',
     'minimum': 'app_minimum_version',
     'url': 'app_download_url',
+    'googlePlayUrl': 'app_google_play_url',
     'notes': 'app_release_notes',
     'priority': 'app_update_priority',
     'size': 'app_download_size',
@@ -47,6 +50,7 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
     'app_latest_version': '1.0.0',
     'app_minimum_version': '1.0.0',
     'app_download_url': '',
+    'app_google_play_url': '',
     'app_release_notes': 'تحديث جديد متاح',
     'app_update_priority': 'normal',
     'app_download_size': '',
@@ -86,9 +90,12 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
   }
 
   @override
-  Future<AppVersionModel> checkForUpdates(
-      {bool forceRefresh = false, bool isManualCheck = false}) async {
-    // For manual checks, attempt to connect regardless of global connectivity state
+  Future<AppVersionModel> checkForUpdates({
+    bool forceRefresh = false,
+    bool isManualCheck = false,
+  }) async {
+    // For manual checks, attempt to connect regardless of global
+    // connectivity state.
     // For automatic checks, respect the connectivity state
     if (!ISCONNECTED && !isManualCheck) {
       throw Exception('Device is offline');
@@ -116,8 +123,11 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
       final currentVersion = await getCurrentAppVersion();
       final configData = <String, dynamic>{
         'latest_version': _remoteConfig.getString(_keys['latest']!),
-        'minimum_required_version': _remoteConfig.getString(_keys['minimum']!),
+        'minimum_required_version': _remoteConfig.getString(
+          _keys['minimum']!,
+        ),
         'download_url': _remoteConfig.getString(_keys['url']!),
+        'google_play_url': _remoteConfig.getString(_keys['googlePlayUrl']!),
         'release_notes': _remoteConfig.getString(_keys['notes']!),
         'update_priority': _remoteConfig.getString(_keys['priority']!),
         'download_size': _remoteConfig.getString(_keys['size']!),
@@ -133,7 +143,8 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
       // For manual checks, provide a more informative error
       if (isManualCheck) {
         throw Exception(
-            'فشل في الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.');
+          'فشل في الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.',
+        );
       }
 
       // For automatic checks, fall back to current version
@@ -166,7 +177,7 @@ class VersionRemoteDataSourceImpl implements VersionRemoteDataSource {
             _configChangesController.add(versionModel);
           }
         },
-        onError: (error) => logger.e('Config stream error: $error'),
+        onError: (Object error) => logger.e('Config stream error: $error'),
       );
     } catch (e) {
       logger.e('Failed to start listening: $e');

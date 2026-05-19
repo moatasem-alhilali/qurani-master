@@ -3,7 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:quran_app/core/cash/cache_config.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/constant.dart' as constants;
+import 'package:quran_app/core/theme/theme_manager.dart';
 import 'package:quran_app/features/floating_adhkar/data/database/floating_adhkar_database_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_built_in_source.dart';
@@ -20,6 +23,7 @@ const String homeWidgetsBackgroundTaskName = 'homeWidgetsBackgroundRefresh';
 void tamaneenaHomeWidgetsCallbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
+    await CacheConfig.loadConfig();
     try {
       await QuranLibrary.init();
     } catch (error) {
@@ -56,6 +60,7 @@ class HomeWidgetsService {
     'TamaneenaWirdWidget',
     'TamaneenaLockPrayerWidget',
     'TamaneenaLockDhikrWidget',
+    'TamaneenaLockAyahWidget',
   ];
 
   static const List<String> androidWidgetProviders = <String>[
@@ -79,7 +84,7 @@ class HomeWidgetsService {
     await Workmanager().registerPeriodicTask(
       homeWidgetsBackgroundTaskUniqueName,
       homeWidgetsBackgroundTaskName,
-      frequency: const Duration(minutes: 30),
+      frequency: const Duration(minutes: 15),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
       constraints: Constraints(
         networkType: NetworkType.notRequired,
@@ -123,6 +128,7 @@ class HomeWidgetsService {
     await _saveDhikrData();
     await _saveAyahData();
     await _saveWirdData();
+    await _saveThemeData();
     await _saveSharedData();
     await _updateNativeWidgets();
   }
@@ -218,25 +224,23 @@ class HomeWidgetsService {
         throw StateError('Quran ayahs are empty');
       }
 
-      final now = DateTime.now();
-      final daySeed = DateTime(now.year, now.month, now.day)
-          .difference(DateTime(now.year))
-          .inDays;
-      final ayah = ayahs[daySeed % ayahs.length];
+      final refreshSeed = DateTime.now().millisecondsSinceEpoch ~/
+          const Duration(minutes: 30).inMilliseconds;
+      final ayah = ayahs[refreshSeed % ayahs.length];
       final text = ayah.text.trim().isNotEmpty
           ? ayah.text.trim()
           : ayah.ayaTextEmlaey.trim();
       final source = '${ayah.arabicName ?? 'القرآن'}: ${ayah.ayahNumber}';
 
       await Future.wait(<Future<bool?>>[
-        HomeWidget.saveWidgetData<String>('ayah_title', 'آية اليوم'),
+        HomeWidget.saveWidgetData<String>('ayah_title', 'آية عشوائية'),
         HomeWidget.saveWidgetData<String>('ayah_text', '﴿$text﴾'),
         HomeWidget.saveWidgetData<String>('ayah_source', source),
       ]);
     } catch (error) {
       debugPrint('HomeWidgetsService: quran ayah fallback: $error');
       await Future.wait(<Future<bool?>>[
-        HomeWidget.saveWidgetData<String>('ayah_title', 'آية اليوم'),
+        HomeWidget.saveWidgetData<String>('ayah_title', 'آية عشوائية'),
         HomeWidget.saveWidgetData<String>('ayah_text', constants.ayah),
         HomeWidget.saveWidgetData<String>('ayah_source', 'القرآن الكريم'),
       ]);
@@ -257,6 +261,25 @@ class HomeWidgetsService {
             : 'أكملت $completed% من وردك، أكمل النور.',
       ),
       HomeWidget.saveWidgetData<int>('wird_progress_value', completed),
+    ]);
+  }
+
+  Future<void> _saveThemeData() async {
+    final themeType = CacheService().getString(ThemeColorsManager.cacheKey) ??
+        ThemeColorsManager.blue;
+    final accent = switch (themeType) {
+      ThemeColorsManager.brown => '#77554B',
+      ThemeColorsManager.green => '#618264',
+      ThemeColorsManager.dark => '#42796C',
+      _ => '#404C6E',
+    };
+
+    await Future.wait(<Future<bool?>>[
+      HomeWidget.saveWidgetData<String>('widget_theme_type', themeType),
+      HomeWidget.saveWidgetData<String>('widget_accent_hex', accent),
+      HomeWidget.saveWidgetData<String>('widget_surface_hex', '#2C2C2C'),
+      HomeWidget.saveWidgetData<String>('widget_on_surface_hex', '#FFFFFF'),
+      HomeWidget.saveWidgetData<String>('widget_muted_hex', '#CDAD80'),
     ]);
   }
 

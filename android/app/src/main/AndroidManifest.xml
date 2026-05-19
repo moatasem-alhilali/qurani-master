@@ -124,7 +124,7 @@
         <receiver
             android:name=".HomeAyahWidgetProvider"
             android:exported="true"
-            android:label="طمأنينة - آية اليوم">
+            android:label="طمأنينة - آية عشوائية">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

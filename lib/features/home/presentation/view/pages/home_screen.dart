@@ -7,6 +7,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
+import 'package:quran_app/features/manage_version/presentation/view/widgets/update_download_options_sheet.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
@@ -257,11 +258,7 @@ class _HomeUpdateTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               onTap: () {
-                context.read<VersionBloc>().add(
-                      OpenDownloadLinkEvent(
-                        downloadUrl: versionInfo.downloadUrl,
-                      ),
-                    );
+                showUpdateDownloadOptionsSheet(context, versionInfo);
               },
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 14.w,

@@ -4,41 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_text_background"
-    android:gravity="center"
+    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="18dp"
+    android:padding="10dp"
     android:textDirection="rtl">
 
     <TextView
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="ذكر اليوم"
-        android:textColor="#D6B66D"
-        android:textSize="14sp"
+        android:gravity="end"
+        android:maxLines="1"
+        android:text="ذكر عشوائي"
+        android:textColor="#CDAD80"
+        android:textSize="10sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="6"
+        android:gravity="center_vertical|end"
+        android:maxLines="3"
         android:text="لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="end"
+        android:maxLines="1"
         android:text="أذكار طمأنينة"
-        android:textColor="#D8C087"
-        android:textSize="12sp" />
+        android:textColor="#CDAD80"
+        android:textSize="8sp" />
 </LinearLayout>

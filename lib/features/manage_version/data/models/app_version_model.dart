@@ -8,6 +8,7 @@ class AppVersionModel extends Equatable {
     required this.downloadUrl,
     required this.isUpdateRequired,
     required this.isUpdateAvailable,
+    this.googlePlayUrl = '',
     this.releaseNotes,
     this.minimumRequiredVersion,
     this.updatePriority = UpdatePriority.normal,
@@ -24,6 +25,7 @@ class AppVersionModel extends Equatable {
     final minimumVersion =
         remoteConfigData['minimum_required_version'] as String?;
     final downloadUrl = remoteConfigData['download_url'] as String? ?? '';
+    final googlePlayUrl = remoteConfigData['google_play_url'] as String? ?? '';
     final releaseNotes = remoteConfigData['release_notes'] as String?;
     final downloadSize = remoteConfigData['download_size'] as String?;
     final updatePriorityString =
@@ -42,6 +44,7 @@ class AppVersionModel extends Equatable {
       latestVersion: latestVersion,
       currentVersion: currentVersion,
       downloadUrl: downloadUrl,
+      googlePlayUrl: googlePlayUrl,
       isUpdateRequired: isUpdateRequired,
       isUpdateAvailable: isUpdateAvailable,
       releaseNotes: releaseNotes,
@@ -58,6 +61,7 @@ class AppVersionModel extends Equatable {
       latestVersion: cached['latest_version'] as String? ?? '',
       currentVersion: cached['current_version'] as String? ?? '',
       downloadUrl: cached['download_url'] as String? ?? '',
+      googlePlayUrl: cached['google_play_url'] as String? ?? '',
       isUpdateRequired: cached['is_update_required'] as bool? ?? false,
       isUpdateAvailable: cached['is_update_available'] as bool? ?? false,
       releaseNotes: cached['release_notes'] as String?,
@@ -77,6 +81,7 @@ class AppVersionModel extends Equatable {
   final String latestVersion;
   final String currentVersion;
   final String downloadUrl;
+  final String googlePlayUrl;
   final bool isUpdateRequired;
   final bool isUpdateAvailable;
   final String? releaseNotes;
@@ -91,6 +96,7 @@ class AppVersionModel extends Equatable {
       'latest_version': latestVersion,
       'current_version': currentVersion,
       'download_url': downloadUrl,
+      'google_play_url': googlePlayUrl,
       'is_update_required': isUpdateRequired,
       'is_update_available': isUpdateAvailable,
       'release_notes': releaseNotes,
@@ -112,6 +118,7 @@ class AppVersionModel extends Equatable {
     String? latestVersion,
     String? currentVersion,
     String? downloadUrl,
+    String? googlePlayUrl,
     bool? isUpdateRequired,
     bool? isUpdateAvailable,
     String? releaseNotes,
@@ -124,6 +131,7 @@ class AppVersionModel extends Equatable {
       latestVersion: latestVersion ?? this.latestVersion,
       currentVersion: currentVersion ?? this.currentVersion,
       downloadUrl: downloadUrl ?? this.downloadUrl,
+      googlePlayUrl: googlePlayUrl ?? this.googlePlayUrl,
       isUpdateRequired: isUpdateRequired ?? this.isUpdateRequired,
       isUpdateAvailable: isUpdateAvailable ?? this.isUpdateAvailable,
       releaseNotes: releaseNotes ?? this.releaseNotes,
@@ -159,8 +167,12 @@ class AppVersionModel extends Equatable {
           ? newParts.length
           : currentParts.length;
 
-      while (newParts.length < maxLength) newParts.add(0);
-      while (currentParts.length < maxLength) currentParts.add(0);
+      while (newParts.length < maxLength) {
+        newParts.add(0);
+      }
+      while (currentParts.length < maxLength) {
+        currentParts.add(0);
+      }
 
       // Compare each part from left to right
       for (var i = 0; i < maxLength; i++) {
@@ -184,6 +196,7 @@ class AppVersionModel extends Equatable {
         latestVersion,
         currentVersion,
         downloadUrl,
+        googlePlayUrl,
         isUpdateRequired,
         isUpdateAvailable,
         releaseNotes,
@@ -202,6 +215,7 @@ class AppVersionModel extends Equatable {
         'updateRequired: $isUpdateRequired, '
         'priority: ${updatePriority.name}, '
         'downloadUrl: ${downloadUrl.isNotEmpty ? "present" : "empty"}, '
+        'googlePlayUrl: ${googlePlayUrl.isNotEmpty ? "present" : "empty"}, '
         'lastChecked: $lastChecked'
         ')';
   }

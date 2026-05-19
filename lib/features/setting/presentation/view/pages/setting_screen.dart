@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/url_launcher_utils.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/theme_mode_widget.dart';
 import 'package:quran_app/features/download/presentation/view/pages/download_screen.dart';
 import 'package:quran_app/features/manage_version/presentation/view/pages/version_management_screen.dart';
+import 'package:quran_app/features/setting/data/services/social_links_service.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/setting_notification_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -17,6 +19,14 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  late final Future<SocialLinks> _socialLinksFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _socialLinksFuture = SocialLinksService().getLinks();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffoldWidget(
@@ -51,6 +61,21 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             SizedBox(height: 24.h),
+            const _SettingsSectionTitle(title: 'تابع آخر الأخبار'),
+            SizedBox(height: 12.h),
+            FutureBuilder<SocialLinks>(
+              future: _socialLinksFuture,
+              builder: (context, snapshot) {
+                return _SocialLinksCard(
+                  links: snapshot.data ?? SocialLinks.defaults(),
+                  isLoading:
+                      snapshot.connectionState == ConnectionState.waiting,
+                );
+              },
+            ),
+            SizedBox(height: 18.h),
+            const _DeveloperInfoCard(),
+            SizedBox(height: 24.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Text(
@@ -70,6 +95,304 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
     );
   }
+}
+
+class _SettingsSectionTitle extends StatelessWidget {
+  const _SettingsSectionTitle({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w800,
+          color: context.primaryColor,
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialLinksCard extends StatelessWidget {
+  const _SocialLinksCard({
+    required this.links,
+    required this.isLoading,
+  });
+
+  final SocialLinks links;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      _SocialItem('تليجرام', links.telegram, Icons.send_rounded),
+      _SocialItem('واتس اب', links.whatsapp, Icons.chat_rounded),
+      _SocialItem('فيسبوك', links.facebook, Icons.public_rounded),
+      _SocialItem('انستجرام', links.instagram, Icons.camera_alt_rounded),
+      _SocialItem('تويتر', links.twitter, Icons.alternate_email_rounded),
+    ];
+
+    return _SettingsCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                CupertinoIcons.news_solid,
+                color: context.primaryColor,
+                size: 18.sp,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'تابع آخر الأخبار حول التطبيق',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w800,
+                    color: context.onSurfaceColor,
+                  ),
+                ),
+              ),
+              if (isLoading)
+                SizedBox(
+                  width: 14.w,
+                  height: 14.w,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.w,
+                    color: context.primaryColor,
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Wrap(
+            spacing: 8.w,
+            runSpacing: 8.h,
+            children: [
+              for (final item in items) _SocialChip(item: item),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SocialChip extends StatelessWidget {
+  const _SocialChip({required this.item});
+
+  final _SocialItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final isEnabled = item.url.trim().isNotEmpty;
+    final color = isEnabled ? context.primaryColor : context.onSurfaceVariant;
+
+    return InkWell(
+      onTap: isEnabled
+          ? () => UrlLauncherUtils.launchWebUrl(item.url.trim())
+          : null,
+      borderRadius: BorderRadius.circular(999.r),
+      child: Ink(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: isEnabled ? 0.10 : 0.07),
+          borderRadius: BorderRadius.circular(999.r),
+          border: Border.all(
+            color: color.withValues(alpha: isEnabled ? 0.18 : 0.12),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              item.icon,
+              size: 15.sp,
+              color: color.withValues(alpha: isEnabled ? 1 : 0.46),
+            ),
+            SizedBox(width: 6.w),
+            Text(
+              item.title,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w700,
+                color: color.withValues(alpha: isEnabled ? 1 : 0.50),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DeveloperInfoCard extends StatelessWidget {
+  const _DeveloperInfoCard();
+
+  static const String _website = 'https://moatasem.dev';
+  static const String _phone = '+966537502257';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _SettingsSectionTitle(title: 'حول المطور'),
+        SizedBox(height: 12.h),
+        _SettingsCard(
+          child: Column(
+            children: [
+              const _DeveloperRow(
+                icon: CupertinoIcons.person_fill,
+                title: 'معتصم الهلالي',
+                subtitle: 'مطور التطبيق',
+                onTap: null,
+              ),
+              Divider(
+                height: 18.h,
+                color: context.outline.withValues(alpha: 0.55),
+              ),
+              _DeveloperRow(
+                icon: CupertinoIcons.globe,
+                title: 'moatasem.dev',
+                subtitle: 'الموقع الشخصي',
+                onTap: () => UrlLauncherUtils.launchWebUrl(_website),
+              ),
+              Divider(
+                height: 18.h,
+                color: context.outline.withValues(alpha: 0.55),
+              ),
+              _DeveloperRow(
+                icon: CupertinoIcons.phone_fill,
+                title: _phone,
+                subtitle: 'رقم التواصل',
+                onTap: () => UrlLauncherUtils.launchPhone(_phone),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeveloperRow extends StatelessWidget {
+  const _DeveloperRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        child: Row(
+          children: [
+            Container(
+              width: 38.w,
+              height: 38.w,
+              decoration: BoxDecoration(
+                color: context.primaryColor.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(
+                icon,
+                color: context.primaryColor,
+                size: 18.sp,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w800,
+                      color: context.onSurfaceColor,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 10.5.sp,
+                      color: context.onSurfaceVariant.withValues(alpha: 0.72),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (onTap != null)
+              Icon(
+                Icons.open_in_new_rounded,
+                color: context.onSurfaceVariant.withValues(alpha: 0.45),
+                size: 16.sp,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsCard extends StatelessWidget {
+  const _SettingsCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.surfaceColor,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(
+            color: context.outline.withValues(alpha: 0.82),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: context.shadow.withValues(alpha: 0.05),
+              blurRadius: 12.r,
+              offset: Offset(0, 6.h),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(14.w),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialItem {
+  const _SocialItem(this.title, this.url, this.icon);
+
+  final String title;
+  final String url;
+  final IconData icon;
 }
 
 class _SettingTile extends StatelessWidget {
@@ -171,7 +494,8 @@ class _SettingTile extends StatelessWidget {
                               subtitle,
                               style: TextStyle(
                                 fontSize: 12.sp,
-                                color: context.onSurfaceVariant.withValues(alpha: 0.8),
+                                color: context.onSurfaceVariant
+                                    .withValues(alpha: 0.8),
                                 height: 1.3,
                               ),
                             ),

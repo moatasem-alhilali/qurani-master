@@ -10,6 +10,6 @@
     <string name="flutter_downloader_notification_paused">تم إيقاف التنزيل مؤقتًا</string>
     <string name="widget_prayer_description">طمأنينة - الصلاة القادمة</string>
     <string name="widget_dhikr_description">طمأنينة - ذكر عشوائي</string>
-    <string name="widget_ayah_description">طمأنينة - آية اليوم</string>
+    <string name="widget_ayah_description">طمأنينة - آية عشوائية</string>
     <string name="widget_wird_description">طمأنينة - ورد اليوم</string>
 </resources>
