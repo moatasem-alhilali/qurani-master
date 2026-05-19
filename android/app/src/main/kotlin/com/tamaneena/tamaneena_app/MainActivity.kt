@@ -21,9 +21,12 @@ class MainActivity : AudioServiceActivity() {
             "com.tamaneena.tamaneena_app/device_identity"
         private const val SMART_OUTREACH_CHANNEL =
             "com.tamaneena.tamaneena_app/smart_outreach"
+        private const val PRAYER_SILENT_MODE_CHANNEL =
+            "com.tamaneena.tamaneena_app/prayer_silent_mode"
     }
 
     private lateinit var autoDialerGroupScheduler: AutoDialerGroupScheduler
+    private lateinit var prayerSilentModeScheduler: PrayerSilentModeScheduler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,7 @@ class MainActivity : AudioServiceActivity() {
         super.configureFlutterEngine(flutterEngine)
 
         autoDialerGroupScheduler = AutoDialerGroupScheduler(this)
+        prayerSilentModeScheduler = PrayerSilentModeScheduler(applicationContext)
         createAutoDialerNotificationChannel()
 
         MethodChannel(
@@ -145,6 +149,43 @@ class MainActivity : AudioServiceActivity() {
                         data = Uri.parse("package:$packageName")
                     }
                     startActivity(intent)
+                    result.success(true)
+                }
+
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            PRAYER_SILENT_MODE_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isSupported" -> result.success(true)
+
+                "hasNotificationPolicyAccess" -> {
+                    result.success(prayerSilentModeScheduler.hasNotificationPolicyAccess())
+                }
+
+                "openNotificationPolicySettings" -> {
+                    prayerSilentModeScheduler.openNotificationPolicySettings()
+                    result.success(true)
+                }
+
+                "schedule" -> {
+                    val args = call.arguments as? Map<*, *>
+                    val durationMinutes =
+                        (args?.get("durationMinutes") as? Number)?.toInt() ?: 30
+                    val rawWindows = args?.get("windows") as? List<*> ?: emptyList<Any>()
+                    val windows = rawWindows.mapNotNull { raw ->
+                        (raw as? Map<*, *>)?.mapKeys { entry -> entry.key.toString() }
+                    }
+                    prayerSilentModeScheduler.schedule(windows, durationMinutes)
+                    result.success(true)
+                }
+
+                "cancel" -> {
+                    prayerSilentModeScheduler.cancel()
                     result.success(true)
                 }
 

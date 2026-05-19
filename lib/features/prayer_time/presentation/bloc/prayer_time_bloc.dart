@@ -13,6 +13,8 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_location_select
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_native_service.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_settings_store.dart';
 import 'package:quran_app/main.dart';
 
 part 'prayer_time_event.dart';
@@ -38,6 +40,10 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
 
   final AdhanPrayerTimeService prayerTimeService;
   final DatabaseCoordinatesService coordinatesService;
+  final PrayerSilentModeSettingsStore _silentModeSettingsStore =
+      PrayerSilentModeSettingsStore();
+  final PrayerSilentModeNativeService _silentModeNativeService =
+      PrayerSilentModeNativeService();
 
   Timer? _prayerProgressTimer;
   bool _isBackgroundRefreshInProgress = false;
@@ -344,7 +350,22 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
             : _buildPrayerModel(resolvedPrayerState.nextPrayer!),
       ),
     );
+    unawaited(_syncPrayerSilentModeSchedule(list));
     _startPrayerProgressTicker();
+  }
+
+  Future<void> _syncPrayerSilentModeSchedule(
+    List<PrayerInfoModel> prayers,
+  ) async {
+    try {
+      final settings = _silentModeSettingsStore.load();
+      await _silentModeNativeService.applySchedule(
+        settings: settings,
+        prayers: prayers,
+      );
+    } catch (e) {
+      logger.w('Failed to sync prayer silent mode schedule: $e');
+    }
   }
 
   TimePrayerModel _buildPrayerModel(PrayerInfoModel prayer) {

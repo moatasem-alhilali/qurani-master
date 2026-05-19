@@ -8,11 +8,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_settings_screen.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_location_picker_sheet.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
@@ -27,6 +29,18 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   Widget build(BuildContext context) {
     return AppScaffoldWidget(
       title: 'أوقات الصلاة',
+      trailing: IconButton(
+        tooltip: 'إعدادات أوقات الصلاة',
+        onPressed: () {
+          context.push(
+            BlocProvider.value(
+              value: context.read<PrayerTimeBloc>(),
+              child: const PrayerTimeSettingsScreen(),
+            ),
+          );
+        },
+        icon: const AppIcon(AppIcons.settings, size: 15),
+      ),
       body: BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
         builder: (context, state) {
           final list = state.prayerState == RequestState.loading
@@ -1007,59 +1021,6 @@ class _EmptyPrayerState extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.subtitle,
-  });
-
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 5.w,
-          height: 5.w,
-          decoration: BoxDecoration(
-            color: context.primaryColor,
-            shape: BoxShape.circle,
-          ),
-        ),
-        SizedBox(width: 7.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              SizedBox(height: 1.h),
-              Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: context.onSurfaceVariant,
-                  fontSize: 9.5.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
