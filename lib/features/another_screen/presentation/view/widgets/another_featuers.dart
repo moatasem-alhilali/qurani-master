@@ -301,10 +301,10 @@ class _FeaturedShortcutCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 52.w,
-                      height: 52.w,
+                      width: 44.w,
+                      height: 44.w,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18.r),
+                        borderRadius: BorderRadius.circular(15.r),
                         color: chipBackground,
                         border: Border.all(
                           color: chipBorder,
@@ -313,7 +313,7 @@ class _FeaturedShortcutCard extends StatelessWidget {
                       child: AppIcon(
                         item.icon,
                         color: accent,
-                        size: 24.sp,
+                        size: 19.sp,
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -438,39 +438,39 @@ class _FeatureTile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 38.w,
-                        height: 38.w,
+                        width: 32.w,
+                        height: 32.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: accentSoft,
+                          color: accentColor.withValues(alpha: 0.10),
                           border: Border.all(
-                            color: accentColor.withValues(alpha: 0.18),
+                            color: accentColor.withValues(alpha: 0.14),
                           ),
                         ),
                         child: Center(
                           child: Container(
-                            width: 24.w,
-                            height: 24.w,
+                            width: 20.w,
+                            height: 20.w,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(9.r),
+                              borderRadius: BorderRadius.circular(7.r),
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  accentColor.withValues(alpha: 0.72),
-                                  accentStrong,
+                                  accentColor.withValues(alpha: 0.56),
+                                  accentColor.withValues(alpha: 0.82),
                                 ],
                               ),
                             ),
                             child: AppIcon(
                               item.icon,
                               color: context.onPrimaryColor,
-                              size: 12.sp,
+                              size: 9.5.sp,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 7.h),
+                      SizedBox(height: 6.h),
                       item.label.autoSize(
                         context,
                         maxLines: 2,

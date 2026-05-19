@@ -161,8 +161,8 @@ class _QuickActionButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 34.w,
-              height: 34.w,
+              width: 29.w,
+              height: 29.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -187,10 +187,11 @@ class _QuickActionButton extends StatelessWidget {
               child: AppIcon(
                 item.icon,
                 color: _kHeroDeep,
-                size: 16.sp,
+                size: 12.5.sp,
+                strokeWidth: 1.55,
               ),
             ),
-            SizedBox(height: 5.h),
+            SizedBox(height: 4.h),
             Text(
               item.label,
               maxLines: 2,
