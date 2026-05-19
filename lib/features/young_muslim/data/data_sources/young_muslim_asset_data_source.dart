@@ -74,8 +74,9 @@ class YoungMuslimAssetDataSource {
           (item) =>
               YoungMuslimQuizSetModel.fromJson(item as Map<String, dynamic>),
         )
-        .where((item) =>
-            item.seriesId == null || seriesIds.contains(item.seriesId))
+        .where(
+          (item) => seriesIds.contains(item.seriesId),
+        )
         .toList();
 
     final achievements =
