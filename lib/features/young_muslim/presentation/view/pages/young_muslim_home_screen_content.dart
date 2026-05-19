@@ -364,7 +364,8 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_left_rounded, color: Colors.grey, size: 20.r),
+                Icon(Icons.chevron_left_rounded,
+                    color: Colors.grey, size: 20.r),
               ],
             ),
             SizedBox(height: 16.h),
@@ -698,13 +699,6 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                         selected: selectedContentType == 'story_series',
                         onSelected: (_) => setState(
                           () => selectedContentType = 'story_series',
-                        ),
-                      ),
-                      ChoiceChip(
-                        label: const Text('كواليس'),
-                        selected: selectedContentType == 'behind_the_scenes',
-                        onSelected: (_) => setState(
-                          () => selectedContentType = 'behind_the_scenes',
                         ),
                       ),
                     ]),

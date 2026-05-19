@@ -51,6 +51,7 @@ class YoungMuslimAssetDataSource {
         )
         .toList()
       ..sort((first, second) => first.order.compareTo(second.order));
+    final seriesIds = series.map((item) => item.id).toSet();
 
     final videos = <YoungMuslimVideoModel>[];
     for (final seriesModel in series) {
@@ -73,6 +74,8 @@ class YoungMuslimAssetDataSource {
           (item) =>
               YoungMuslimQuizSetModel.fromJson(item as Map<String, dynamic>),
         )
+        .where((item) =>
+            item.seriesId == null || seriesIds.contains(item.seriesId))
         .toList();
 
     final achievements =

@@ -246,33 +246,54 @@ class _DeveloperInfoCard extends StatelessWidget {
         const _SettingsSectionTitle(title: 'حول المطور'),
         SizedBox(height: 12.h),
         _SettingsCard(
-          child: Column(
+          child: Row(
             children: [
-              const _DeveloperRow(
-                icon: CupertinoIcons.person_fill,
-                title: 'معتصم الهلالي',
-                subtitle: 'مطور التطبيق',
-                onTap: null,
+              Container(
+                width: 40.w,
+                height: 40.w,
+                decoration: BoxDecoration(
+                  color: context.primaryColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Icon(
+                  CupertinoIcons.person_fill,
+                  color: context.primaryColor,
+                  size: 18.sp,
+                ),
               ),
-              Divider(
-                height: 18.h,
-                color: context.outline.withValues(alpha: 0.55),
-              ),
-              _DeveloperRow(
-                icon: CupertinoIcons.globe,
-                title: 'moatasem.dev',
-                subtitle: 'الموقع الشخصي',
-                onTap: () => UrlLauncherUtils.launchWebUrl(_website),
-              ),
-              Divider(
-                height: 18.h,
-                color: context.outline.withValues(alpha: 0.55),
-              ),
-              _DeveloperRow(
-                icon: CupertinoIcons.phone_fill,
-                title: _phone,
-                subtitle: 'رقم التواصل',
-                onTap: () => UrlLauncherUtils.launchPhone(_phone),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'معتصم الهلالي',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w800,
+                        color: context.onSurfaceColor,
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Row(
+                      children: [
+                        _DeveloperIconButton(
+                          tooltip: 'الموقع الشخصي',
+                          icon: CupertinoIcons.globe,
+                          onTap: () => UrlLauncherUtils.launchWebUrl(_website),
+                        ),
+                        SizedBox(width: 8.w),
+                        _DeveloperIconButton(
+                          tooltip: 'واتس اب',
+                          icon: Icons.chat_rounded,
+                          onTap: () => UrlLauncherUtils.launchWhatsAppUrl(
+                            _phone,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -282,72 +303,39 @@ class _DeveloperInfoCard extends StatelessWidget {
   }
 }
 
-class _DeveloperRow extends StatelessWidget {
-  const _DeveloperRow({
+class _DeveloperIconButton extends StatelessWidget {
+  const _DeveloperIconButton({
+    required this.tooltip,
     required this.icon,
-    required this.title,
-    required this.subtitle,
     required this.onTap,
   });
 
+  final String tooltip;
   final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        child: Row(
-          children: [
-            Container(
-              width: 38.w,
-              height: 38.w,
-              decoration: BoxDecoration(
-                color: context.primaryColor.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Icon(
-                icon,
-                color: context.primaryColor,
-                size: 18.sp,
-              ),
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(11.r),
+        child: Ink(
+          width: 34.w,
+          height: 34.w,
+          decoration: BoxDecoration(
+            color: context.primaryColor.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(11.r),
+            border: Border.all(
+              color: context.primaryColor.withValues(alpha: 0.14),
             ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w800,
-                      color: context.onSurfaceColor,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 10.5.sp,
-                      color: context.onSurfaceVariant.withValues(alpha: 0.72),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (onTap != null)
-              Icon(
-                Icons.open_in_new_rounded,
-                color: context.onSurfaceVariant.withValues(alpha: 0.45),
-                size: 16.sp,
-              ),
-          ],
+          ),
+          child: Icon(
+            icon,
+            color: context.primaryColor,
+            size: 17.sp,
+          ),
         ),
       ),
     );

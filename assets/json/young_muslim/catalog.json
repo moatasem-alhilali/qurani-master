@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "generated_at": "2026-03-30T11:19:48.651Z",
+  "version": 3,
+  "generated_at": "2026-05-19T00:00:00.000Z",
   "categories": [
     {
       "id": "human_stories",
@@ -121,31 +121,6 @@
       ],
       "banner_image": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCSKX-rATYwaj41wMs90NdqwaFO4A",
       "thumbnail": "https://i.ytimg.com/vi/8aO-jm-3Oc0/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCDS1C-Wwss60OZU406MC0_STjiwQ",
-      "file_name": null
-    },
-    {
-      "id": "behind_the_scenes",
-      "title_ar": "كواليس السلاسل",
-      "title_en": "Behind The Scenes",
-      "description": "مقاطع قصيرة تكشف كواليس إنتاج بعض السلاسل بطريقة مناسبة وآمنة داخل التطبيق.",
-      "order": 6,
-      "audience": "general",
-      "language": "mixed",
-      "content_type": "behind_the_scenes",
-      "tags": [
-        "كواليس",
-        "إنتاج",
-        "قصص"
-      ],
-      "source_key": "behind_the_scenes",
-      "accent_start": "#355C7D",
-      "accent_end": "#6C5B7B",
-      "series_ids": [
-        "verses_stories_bts",
-        "marvellous_stories_bts"
-      ],
-      "banner_image": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwExCNACELwBSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYciBhKDwwDw==&rs=AOn4CLCG9uiuGqCl7woVXUhCJgVkmavmIQ",
-      "thumbnail": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhyIGEoPDAP&rs=AOn4CLDq_14ETiDeOkblulqMdYocrsDyoA",
       "file_name": null
     }
   ],
@@ -316,62 +291,6 @@
       "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4_vDPS0Xlaf3E2LgUz7pJsp&si=GI7aQoO6oeB15fUw",
       "total_videos": 32,
       "total_duration_seconds": 28422,
-      "is_featured": false
-    },
-    {
-      "id": "verses_stories_bts",
-      "category_id": "behind_the_scenes",
-      "title_ar": "كواليس قصص الآيات في القرآن",
-      "title_en": "Verses Stories Behind The Scenes",
-      "description": "مشاهد قصيرة من كواليس إنتاج قصص الآيات في القرآن بطريقة بسيطة وآمنة للأطفال.",
-      "banner_image": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwExCNACELwBSFryq4qpAyMIARUAAIhCGAHwAQH4Af4JgALQBYoCDAgAEAEYciBhKDwwDw==&rs=AOn4CLCG9uiuGqCl7woVXUhCJgVkmavmIQ",
-      "thumbnail": "https://i.ytimg.com/vi/6gEgrO_87rg/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhyIGEoPDAP&rs=AOn4CLDq_14ETiDeOkblulqMdYocrsDyoA",
-      "file_name": "assets/json/young_muslim/playlists/verses_stories_from_quran_bts.json",
-      "source_key": "behind_the_scenes",
-      "tags": [
-        "كواليس",
-        "آيات",
-        "إنتاج",
-        "قصص"
-      ],
-      "order": 7,
-      "audience": "general",
-      "language": "mixed",
-      "content_type": "behind_the_scenes",
-      "accent_start": "#355C7D",
-      "accent_end": "#6C5B7B",
-      "playlist_id": "PLJ0WU3XQoz4-wwPNqabuNIVS6_0LQJGwe",
-      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-wwPNqabuNIVS6_0LQJGwe&si=enXky-A4L2vFEsc3",
-      "total_videos": 30,
-      "total_duration_seconds": 4433,
-      "is_featured": false
-    },
-    {
-      "id": "marvellous_stories_bts",
-      "category_id": "behind_the_scenes",
-      "title_ar": "كواليس قصص العجائب في القرآن",
-      "title_en": "Marvellous Stories Behind The Scenes",
-      "description": "مقاطع كواليس قصيرة تعرّف الطفل بكيفية صنع الحلقات بطريقة مرئية خفيفة.",
-      "banner_image": "https://i.ytimg.com/vi/v08TPkQkn8c/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDT8fu8Y0WdDw2RIRS3F7AblFbuBA",
-      "thumbnail": "https://i.ytimg.com/vi/v08TPkQkn8c/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDagfiAce72kzNLuC5lcqG2p3E6qw",
-      "file_name": "assets/json/young_muslim/playlists/marvellous_stories_from_quran_bts.json",
-      "source_key": "behind_the_scenes",
-      "tags": [
-        "كواليس",
-        "عجائب",
-        "إنتاج",
-        "قصص"
-      ],
-      "order": 8,
-      "audience": "general",
-      "language": "mixed",
-      "content_type": "behind_the_scenes",
-      "accent_start": "#264653",
-      "accent_end": "#2A9D8F",
-      "playlist_id": "PLJ0WU3XQoz4-R323nu-Gng8D5xTB1Py4-",
-      "playlist_url": "https://www.youtube.com/playlist?list=PLJ0WU3XQoz4-R323nu-Gng8D5xTB1Py4-&si=DqzeCfdEFl1_d0ib",
-      "total_videos": 30,
-      "total_duration_seconds": 4314,
       "is_featured": false
     }
   ]
