@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class AppBarWidget extends StatelessWidget {
   const AppBarWidget({
@@ -30,7 +31,7 @@ class AppBarWidget extends StatelessWidget {
                 () {
                   context.pop();
                 },
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            icon: const AppIcon(AppIcons.back),
           ),
           if (isCenterTitle) Text(title),
           const SizedBox(),

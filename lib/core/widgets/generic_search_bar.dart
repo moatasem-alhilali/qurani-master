@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/extensions/colors_extension.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/icon_button_widget.dart';
 
 typedef AsyncSuggestionCallback<T> = Future<List<T>> Function(String query);
@@ -66,9 +67,9 @@ class _GenericSearchAnchorAsyncState<T>
   Widget build(BuildContext context) {
     return SearchAnchor(
       builder: (context, controller) => IconButtonWidget(
-        icon: Icon(
-          widget.icon ?? Icons.search,
-        ),
+        icon: widget.icon == null
+            ? const AppIcon(AppIcons.search)
+            : Icon(widget.icon),
         onPressed: controller.openView,
         tooltip: widget.hintText ?? 'بحث',
         // backgroundColor: context.surfaceColor,
@@ -77,10 +78,7 @@ class _GenericSearchAnchorAsyncState<T>
       viewLeading: IconButtonWidget(
         // size: 50.sp,
         icon: const FittedBox(
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            // size: 50.sp,
-          ),
+          child: AppIcon(AppIcons.back),
         ),
         onPressed: () {
           searchController.closeView('');
@@ -90,7 +88,7 @@ class _GenericSearchAnchorAsyncState<T>
       viewTrailing: [
         IconButtonWidget(
           icon: const FittedBox(
-            child: Icon(Icons.close),
+            child: AppIcon(AppIcons.close),
           ),
           onPressed: searchController.clear,
           backgroundColor: context.surfaceColor,

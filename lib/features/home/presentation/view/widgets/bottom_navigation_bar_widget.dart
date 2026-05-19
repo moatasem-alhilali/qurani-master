@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 /// Custom bottom navigation bar with smooth animations and modern design
 class CustomBottomNavigationBarWidget extends StatefulWidget {
@@ -55,12 +55,12 @@ class _CustomBottomNavigationBarWidgetState
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(
-              icon: CupertinoIcons.home,
+              icon: AppIcons.home,
               label: 'الرئيسية',
               index: 0,
             ),
             _buildNavItem(
-              icon: CupertinoIcons.collections,
+              icon: AppIcons.sections,
               label: 'الاقسام',
               index: 1,
             ),
@@ -71,7 +71,7 @@ class _CustomBottomNavigationBarWidgetState
   }
 
   Widget _buildNavItem({
-    required IconData icon,
+    required HugeIconData icon,
     required String label,
     required int index,
   }) {
@@ -109,7 +109,7 @@ class BottomNavItem extends StatefulWidget {
     this.onTap,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String label;
   final bool selected;
   final VoidCallback? onTap;
@@ -195,7 +195,7 @@ class _BottomNavItemState extends State<BottomNavItem>
                   // Animated icon with bounce effect
                   Transform.translate(
                     offset: Offset(0, -2 * _bounceAnimation.value),
-                    child: Icon(
+                    child: AppIcon(
                       widget.icon,
                       size: isCompact ? 20 : (isMedium ? 22 : 26),
                       color: widget.selected

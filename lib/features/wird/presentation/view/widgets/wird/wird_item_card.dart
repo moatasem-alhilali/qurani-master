@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/card_widget.dart';
+import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/copy_service.dart';
 import 'package:quran_app/core/services/url_launcher_service.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/data/models/wird_model.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_info_row.dart';
 
@@ -64,7 +65,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
       return const IconButton.filledTonal(
         tooltip: 'لا يوجد ملف صوتي',
         onPressed: null,
-        icon: Icon(Icons.volume_off_rounded),
+        icon: AppIcon(AppIcons.mute),
       );
     }
 
@@ -99,21 +100,21 @@ class _WirdItemCardState extends State<WirdItemCard> {
     final isCompleted = widget.isCurrentAudio &&
         widget.audioProcessingState == ProcessingState.completed;
 
-    var icon = Icons.play_arrow_rounded;
+    var icon = AppIcons.play;
     var tooltip = 'تشغيل الصوت';
 
     if (widget.isCurrentAudio && widget.isAudioPlaying) {
-      icon = Icons.pause_rounded;
+      icon = AppIcons.pause;
       tooltip = 'إيقاف مؤقت';
     } else if (isCompleted) {
-      icon = Icons.replay_rounded;
+      icon = AppIcons.replay;
       tooltip = 'إعادة التشغيل';
     }
 
     return IconButton.filledTonal(
       tooltip: tooltip,
       onPressed: widget.onAudioPressed,
-      icon: Icon(icon),
+      icon: AppIcon(icon),
     );
   }
 
@@ -186,13 +187,14 @@ class _WirdItemCardState extends State<WirdItemCard> {
                   children: [
                     TextButton.icon(
                       onPressed: widget.onReset,
-                      icon: const Icon(Icons.refresh_rounded),
+                      icon: const AppIcon(AppIcons.refresh),
                       label: const Text('إعادة'),
                     ),
                     const SizedBox(width: 4),
                     FilledButton.icon(
-                      onPressed: widget.remaining == 0 ? null : widget.onDecrement,
-                      icon: const Icon(Icons.check_rounded),
+                      onPressed:
+                          widget.remaining == 0 ? null : widget.onDecrement,
+                      icon: const AppIcon(AppIcons.checkSmall),
                       label: Text(widget.remaining == 0 ? 'تم' : 'قرأت مرة'),
                     ),
                   ],
@@ -209,7 +211,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
                   onPressed: () async {
                     await CopyService.copyToClipboard(item.text);
                   },
-                  icon: const Icon(Icons.copy_rounded),
+                  icon: const AppIcon(AppIcons.copy),
                 ),
                 _buildAudioButton(),
                 IconButton.filledTonal(
@@ -217,7 +219,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
                   onPressed: item.sourceUrl.trim().isEmpty
                       ? null
                       : () async => _openLink(item.sourceUrl),
-                  icon: const Icon(Icons.link_rounded),
+                  icon: const AppIcon(AppIcons.link),
                 ),
                 TextButton.icon(
                   onPressed: () {

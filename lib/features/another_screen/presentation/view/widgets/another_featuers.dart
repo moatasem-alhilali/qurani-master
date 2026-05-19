@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
@@ -30,80 +30,80 @@ class AnotherFeatures extends StatelessWidget {
       _FeatureShortcut(
         label: 'زاد اليوم والليلة',
         subtitle: 'ورد تعبدي منظم لأذكارك وتلاوتك اليومية',
-        icon: FlutterIslamicIcons.tasbih,
+        icon: AppIcons.dailyWird,
         onTap: () => context.push(const DailyWirdScreen()),
         isHighlighted: true,
       ),
       _FeatureShortcut(
         label: 'المسافر',
         subtitle: 'أذكار السفر ومواقيت الرحلات وأماكن نافعة',
-        icon: Icons.travel_explore_rounded,
+        icon: AppIcons.traveler,
         onTap: () => _openTravelerSheet(context),
       ),
       _FeatureShortcut(
         label: 'الإذاعة',
         subtitle: 'إذاعات قرآنية وإسلامية ببث مباشر متواصل',
-        icon: Icons.radio_rounded,
+        icon: AppIcons.radio,
         onTap: () => context.push(const RadioScreen()),
       ),
       _FeatureShortcut(
         label: 'خطط الختمة',
         subtitle: 'خطط مرتبة لإتمام الختمة بما يناسبك',
-        icon: FlutterIslamicIcons.solidQuran2,
+        icon: AppIcons.quran,
         onTap: () => context.push(const QuranPlanListScreen()),
       ),
       _FeatureShortcut(
         label: 'صحبة الفجر',
         subtitle: 'تذكيرات دعوية واتصالات مجدولة',
-        icon: Icons.phone_in_talk_rounded,
+        icon: AppIcons.phone,
         onTap: () => context.push(const SmartOutreachSchedulesScreen()),
       ),
       _FeatureShortcut(
         label: 'المسبحة',
         subtitle: 'تسبيح سهل بعداد مريح وواضح',
-        icon: FlutterIslamicIcons.tasbih2,
+        icon: AppIcons.tasbih,
         onTap: () => context.push(const TasbeehProvider()),
       ),
       _FeatureShortcut(
         label: 'الأذكار العائمة',
         subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
-        icon: Icons.filter_center_focus_rounded,
+        icon: AppIcons.focus,
         onTap: () => context.push(const FloatingAdhkarProvider()),
       ),
       _FeatureShortcut(
         label: 'التطبيقات المصغرة',
         subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
-        icon: Icons.widgets_rounded,
+        icon: AppIcons.widgets,
         onTap: () => context.push(const HomeWidgetsScreen()),
       ),
       _FeatureShortcut(
         label: 'أسماء الله الحسنى',
         subtitle: 'تأمل الأسماء ومعانيها المباركة',
-        icon: FlutterIslamicIcons.allah,
+        icon: AppIcons.allah,
         onTap: () => context.push(const AllhNameScreen()),
       ),
       _FeatureShortcut(
         label: 'حصن المسلم',
         subtitle: 'أذكار جامعة مرتبة للأحوال والمناسبات',
-        icon: FlutterIslamicIcons.quran,
+        icon: AppIcons.bookOpen,
         onTap: () => context.push(const HisnMuslimScreen()),
       ),
       _FeatureShortcut(
         label: 'الأربعون النووية',
         subtitle: 'أحاديث جامعة في أبواب الدين',
-        icon: FlutterIslamicIcons.quran2,
+        icon: AppIcons.book,
         onTap: () => context.push(const Hadith40Screen()),
       ),
       _FeatureShortcut(
         label: 'موسوعة السور',
         subtitle: 'استعراض السور وفضائلها وموضوعاتها',
-        icon: FlutterIslamicIcons.quran,
+        icon: AppIcons.quran,
         onTap: () => context.push(const SurahWithAllDetailScreen()),
       ),
       _FeatureShortcut(
         label: 'أدعيتي الخاصة',
         subtitle: 'احتفظ بأدعيتك الشخصية في مكان واحد',
-        icon: FlutterIslamicIcons.muslim2,
+        icon: AppIcons.user,
         onTap: () => context.push(const MuDoaProvider()),
       ),
     ];
@@ -216,7 +216,7 @@ class _FeatureShortcut {
 
   final String label;
   final String subtitle;
-  final IconData icon;
+  final HugeIconData icon;
   final VoidCallback onTap;
   final bool isHighlighted;
 }
@@ -310,7 +310,7 @@ class _FeaturedShortcutCard extends StatelessWidget {
                           color: chipBorder,
                         ),
                       ),
-                      child: Icon(
+                      child: AppIcon(
                         item.icon,
                         color: accent,
                         size: 24.sp,
@@ -462,7 +462,7 @@ class _FeatureTile extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            child: Icon(
+                            child: AppIcon(
                               item.icon,
                               color: context.onPrimaryColor,
                               size: 12.sp,

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/manage_version/data/models/app_version_model.dart';
 
 const String kTamaneenaTelegramUrl = 'https://t.me/tamaneenaquran';
@@ -96,7 +97,7 @@ List<_DownloadOption> _buildDownloadOptions(AppVersionModel versionInfo) {
         title: 'App Store',
         subtitle: 'تحميل الإصدار من متجر أبل',
         url: kTamaneenaAppStoreUrl,
-        icon: Icons.storefront_rounded,
+        icon: AppIcons.download,
       ),
     ];
   }
@@ -106,7 +107,7 @@ List<_DownloadOption> _buildDownloadOptions(AppVersionModel versionInfo) {
       title: 'تليجرام',
       subtitle: 'قناة طمأنينة الرسمية',
       url: kTamaneenaTelegramUrl,
-      icon: Icons.send_rounded,
+      icon: AppIcons.telegram,
     ),
   ];
 
@@ -117,7 +118,7 @@ List<_DownloadOption> _buildDownloadOptions(AppVersionModel versionInfo) {
         title: 'MediaFire',
         subtitle: 'رابط التحميل المباشر',
         url: mediaFireUrl,
-        icon: Icons.cloud_download_rounded,
+        icon: AppIcons.download,
       ),
     );
   }
@@ -129,7 +130,7 @@ List<_DownloadOption> _buildDownloadOptions(AppVersionModel versionInfo) {
         title: 'Google Play',
         subtitle: 'تحميل الإصدار من المتجر',
         url: googlePlayUrl,
-        icon: Icons.shop_rounded,
+        icon: AppIcons.globe,
       ),
     );
   }
@@ -168,7 +169,7 @@ class _DownloadOptionTile extends StatelessWidget {
                 color: context.primaryColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12.r),
               ),
-              child: Icon(
+              child: AppIcon(
                 option.icon,
                 color: context.primaryColor,
                 size: 21.sp,
@@ -197,8 +198,8 @@ class _DownloadOptionTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.open_in_new_rounded,
+            AppIcon(
+              AppIcons.forward,
               color: context.primaryColor.withValues(alpha: 0.78),
               size: 18.sp,
             ),
@@ -220,5 +221,5 @@ class _DownloadOption {
   final String title;
   final String subtitle;
   final String url;
-  final IconData icon;
+  final HugeIconData icon;
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_program_item_model.dart';
 import 'package:quran_app/features/daily_wird/presentation/bloc/daily_wird_bloc.dart';
@@ -375,20 +376,20 @@ Color _accentColor(BuildContext context, DailyWirdItem item) {
   }
 }
 
-IconData _itemIcon(DailyWirdItem item) {
+HugeIconData _itemIcon(DailyWirdItem item) {
   switch (item.type) {
     case 'dhikr_set':
-      return Icons.nights_stay_rounded;
+      return AppIcons.moon;
     case 'counted_dhikr':
-      return Icons.repeat_rounded;
+      return AppIcons.tasbih;
     case 'quran':
-      return Icons.menu_book_rounded;
+      return AppIcons.quran;
     case 'dua':
-      return Icons.volunteer_activism_rounded;
+      return AppIcons.heart;
     case 'surah':
-      return Icons.auto_stories_rounded;
+      return AppIcons.bookOpen;
     default:
-      return Icons.star_rounded;
+      return AppIcons.check;
   }
 }
 
@@ -398,7 +399,7 @@ class _FocusBadge extends StatelessWidget {
     required this.color,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final Color color;
 
   @override
@@ -428,7 +429,7 @@ class _FocusBadge extends StatelessWidget {
               ],
             ),
           ),
-          child: Icon(
+          child: AppIcon(
             icon,
             size: 18.sp,
             color: context.onPrimaryColor,

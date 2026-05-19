@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/copy_service.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class CopyIconWidget extends StatefulWidget {
   const CopyIconWidget({required this.text, super.key});
@@ -103,10 +103,8 @@ class _CopyIconWidgetState extends State<CopyIconWidget>
                   ),
                 );
               },
-              child: Icon(
-                _isCopied
-                    ? CupertinoIcons.check_mark
-                    : CupertinoIcons.doc_on_clipboard,
+              child: AppIcon(
+                _isCopied ? AppIcons.copyDone : AppIcons.copy,
                 key: ValueKey(_isCopied),
                 color: _isCopied ? Colors.green : context.primaryColor,
                 size: 20.sp,

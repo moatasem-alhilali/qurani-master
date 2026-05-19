@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class ErrorRetryWidget extends StatelessWidget {
   const ErrorRetryWidget({
@@ -41,21 +42,21 @@ class ErrorRetryWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            icon ?? Icon(Icons.error, color: iconColor),
+            icon ?? AppIcon(AppIcons.error, color: iconColor),
             if (title != null) ...[
               const SizedBox(height: 8),
               Text(
                 title!,
-                style: context.titleMedium?.copyWith(
-                    color: iconColor, fontWeight: FontWeight.bold),
+                style: context.titleMedium
+                    ?.copyWith(color: iconColor, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ],
             const SizedBox(height: 8),
             Text(
               message,
-              style: context.bodyMedium?.copyWith(
-                  color: iconColor, fontWeight: FontWeight.w500),
+              style: context.bodyMedium
+                  ?.copyWith(color: iconColor, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
             if (statusCode != null) ...[
@@ -66,8 +67,8 @@ class ErrorRetryWidget extends StatelessWidget {
                   if (statusCode != null)
                     Text(
                       'الحالة: $statusCode',
-                      style: context.titleMedium?.copyWith(
-                          color: iconColor.withValues(alpha: 0.7)),
+                      style: context.titleMedium
+                          ?.copyWith(color: iconColor.withValues(alpha: 0.7)),
                     ),
                 ],
               ),
@@ -76,7 +77,7 @@ class ErrorRetryWidget extends StatelessWidget {
               const SizedBox(height: 18),
               TextButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh, color: Colors.black),
+                icon: const AppIcon(AppIcons.refresh, color: Colors.black),
                 label: const Text(
                   'إعادة المحاولة',
                   style: TextStyle(color: Colors.black),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 
 class SmartOutreachScheduleItemCard extends StatelessWidget {
@@ -67,19 +68,19 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
               runSpacing: 8,
               children: <Widget>[
                 _MetaChip(
-                  icon: Icons.group_outlined,
+                  icon: AppIcons.contacts,
                   label: '${bundle.contacts.length} رقم',
                 ),
                 _MetaChip(
-                  icon: Icons.ring_volume_outlined,
+                  icon: AppIcons.notifications,
                   label: 'انتظار الرد ${schedule.ringTimeout}ث',
                 ),
                 _MetaChip(
-                  icon: Icons.call_end_outlined,
+                  icon: AppIcons.phone,
                   label: 'بعد الرد ${schedule.hangupDelay}ث',
                 ),
                 _MetaChip(
-                  icon: Icons.timelapse_outlined,
+                  icon: AppIcons.clock,
                   label: 'بين الأرقام ${schedule.delayBetweenCalls}ث',
                 ),
               ],
@@ -89,19 +90,19 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
               children: <Widget>[
                 FilledButton.icon(
                   onPressed: onStart,
-                  icon: const Icon(Icons.play_arrow),
+                  icon: const AppIcon(AppIcons.play),
                   label: const Text('ابدأ الآن'),
                 ),
                 const SizedBox(width: 8),
                 OutlinedButton.icon(
                   onPressed: onTap,
-                  icon: const Icon(Icons.edit_outlined),
+                  icon: const AppIcon(AppIcons.edit),
                   label: const Text('تعديل'),
                 ),
                 const Spacer(),
                 IconButton(
                   onPressed: onDelete,
-                  icon: const Icon(Icons.delete_outline),
+                  icon: const AppIcon(AppIcons.delete),
                   tooltip: 'حذف القائمة',
                 ),
               ],
@@ -140,7 +141,7 @@ class _MetaChip extends StatelessWidget {
     required this.label,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String label;
 
   @override
@@ -154,7 +155,7 @@ class _MetaChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(icon, size: 16),
+          AppIcon(icon, size: 16),
           const SizedBox(width: 6),
           Text(label),
         ],

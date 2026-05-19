@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_permission_service.dart';
@@ -94,7 +95,7 @@ class _SmartOutreachSchedulesViewState
           },
           floatingActionButton: FloatingActionButton(
             onPressed: () => _openUpsertScreen(context),
-            child: const Icon(Icons.add),
+            child: const AppIcon(AppIcons.add),
             // label: const Text('إضافة قائمة'),
           ),
           slivers: _buildSlivers(context, state),
@@ -136,7 +137,7 @@ class _SmartOutreachSchedulesViewState
                       ),
                     );
                   },
-                  icon: const Icon(Icons.history),
+                  icon: const AppIcon(AppIcons.clock),
                   label: const Text('السجل'),
                 ),
               ),
@@ -150,7 +151,7 @@ class _SmartOutreachSchedulesViewState
                       ),
                     );
                   },
-                  icon: const Icon(Icons.settings_outlined),
+                  icon: const AppIcon(AppIcons.settings),
                   label: const Text('الإعدادات'),
                 ),
               ),
@@ -338,14 +339,14 @@ class _SmartOutreachSchedulesViewState
                   onPressed: () {
                     _ensurePermissions(requestIfNeeded: true);
                   },
-                  icon: const Icon(Icons.verified_user_outlined),
+                  icon: const AppIcon(AppIcons.shield),
                   label: const Text('منح الصلاحيات'),
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {
                     await _permissionService.openSettings();
                   },
-                  icon: const Icon(Icons.settings_outlined),
+                  icon: const AppIcon(AppIcons.settings),
                   label: const Text('فتح الإعدادات'),
                 ),
               ],

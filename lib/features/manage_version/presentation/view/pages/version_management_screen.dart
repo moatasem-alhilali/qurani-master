@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/manage_version/data/models/app_version_model.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
@@ -134,7 +134,7 @@ class _StatusSummaryCard extends StatelessWidget {
       return _StatusMeta(
         title: 'لا يوجد اتصال',
         subtitle: 'سيتم استخدام آخر بيانات محفوظة إن وجدت',
-        icon: CupertinoIcons.wifi_slash,
+        icon: AppIcons.error,
         color: context.errorColor,
       );
     }
@@ -142,7 +142,7 @@ class _StatusSummaryCard extends StatelessWidget {
       return const _StatusMeta(
         title: 'تحديث ضروري',
         subtitle: 'يوجد إصدار مطلوب قبل متابعة الاستخدام',
-        icon: CupertinoIcons.exclamationmark_triangle_fill,
+        icon: AppIcons.warning,
         color: Colors.red,
       );
     }
@@ -150,14 +150,14 @@ class _StatusSummaryCard extends StatelessWidget {
       return const _StatusMeta(
         title: 'تحديث جديد متاح',
         subtitle: 'يمكنك تحميل الإصدار الأخير من الخيارات المتاحة',
-        icon: CupertinoIcons.arrow_down_circle_fill,
+        icon: AppIcons.download,
         color: Colors.orange,
       );
     }
     return const _StatusMeta(
       title: 'أنت على آخر إصدار',
       subtitle: 'لا توجد تحديثات مطلوبة الآن',
-      icon: CupertinoIcons.check_mark_circled_solid,
+      icon: AppIcons.check,
       color: Colors.green,
     );
   }
@@ -178,7 +178,7 @@ class _VersionInfoCard extends StatelessWidget {
       child: Column(
         children: [
           _InfoRow(
-            icon: CupertinoIcons.device_phone_portrait,
+            icon: AppIcons.phone,
             label: 'الإصدار الحالي',
             value: state.currentVersion ??
                 versionInfo?.currentVersion ??
@@ -186,14 +186,14 @@ class _VersionInfoCard extends StatelessWidget {
           ),
           _ThinDivider(),
           _InfoRow(
-            icon: CupertinoIcons.cloud_download,
+            icon: AppIcons.download,
             label: 'آخر إصدار',
             value: versionInfo?.latestVersion ?? 'لم يتم الفحص بعد',
           ),
           if (versionInfo?.downloadSize?.trim().isNotEmpty ?? false) ...[
             _ThinDivider(),
             _InfoRow(
-              icon: CupertinoIcons.archivebox,
+              icon: AppIcons.bookmark,
               label: 'حجم التحميل',
               value: versionInfo!.downloadSize!,
             ),
@@ -219,8 +219,8 @@ class _ReleaseInfoCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                CupertinoIcons.doc_text_fill,
+              AppIcon(
+                AppIcons.bookOpen,
                 color: context.primaryColor,
                 size: 17.sp,
               ),
@@ -273,7 +273,7 @@ class _ActionsCard extends StatelessWidget {
       child: Column(
         children: [
           _ActionTile(
-            icon: CupertinoIcons.refresh,
+            icon: AppIcons.refresh,
             title: 'فحص التحديثات',
             subtitle: 'جلب آخر بيانات من الخادم',
             enabled: !isLoading,
@@ -289,7 +289,7 @@ class _ActionsCard extends StatelessWidget {
           if (state.hasUpdateAvailable && versionInfo != null) ...[
             _ThinDivider(),
             _ActionTile(
-              icon: CupertinoIcons.arrow_down_circle,
+              icon: AppIcons.download,
               title: 'تحميل التحديث',
               subtitle: 'اختر منصة التحميل المناسبة',
               onTap: () => showUpdateDownloadOptionsSheet(
@@ -300,7 +300,7 @@ class _ActionsCard extends StatelessWidget {
             if (!state.isUpdateRequired) ...[
               _ThinDivider(),
               _ActionTile(
-                icon: CupertinoIcons.forward_end,
+                icon: AppIcons.forward,
                 title: 'تخطي هذا الإصدار',
                 subtitle: 'عدم عرض تنبيه لهذا الإصدار',
                 onTap: () {
@@ -319,7 +319,7 @@ class _ActionsCard extends StatelessWidget {
           ],
           _ThinDivider(),
           _ActionTile(
-            icon: CupertinoIcons.trash,
+            icon: AppIcons.delete,
             title: 'مسح الكاش',
             subtitle: 'حذف بيانات الإصدارات المحفوظة',
             onTap: () {
@@ -347,7 +347,7 @@ class _ActionTile extends StatelessWidget {
     this.enabled = true,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -394,8 +394,8 @@ class _ActionTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
+            AppIcon(
+              AppIcons.forward,
               color: context.onSurfaceVariant.withValues(alpha: 0.32),
               size: 13.sp,
             ),
@@ -413,7 +413,7 @@ class _InfoRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String label;
   final String value;
 
@@ -497,7 +497,7 @@ class _IconBadge extends StatelessWidget {
     this.iconSize,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final Color color;
   final double? size;
   final double? iconSize;
@@ -513,7 +513,7 @@ class _IconBadge extends StatelessWidget {
         color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Icon(
+      child: AppIcon(
         icon,
         color: color,
         size: iconSize ?? 18.sp,
@@ -572,7 +572,7 @@ class _StatusMeta {
 
   final String title;
   final String subtitle;
-  final IconData icon;
+  final HugeIconData icon;
   final Color color;
 }
 

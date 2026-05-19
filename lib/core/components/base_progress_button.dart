@@ -4,6 +4,7 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class MyProgressButton extends StatelessWidget {
   MyProgressButton({
@@ -49,8 +50,7 @@ class MyProgressButton extends StatelessWidget {
       ),
       child: TextButton(
         onPressed: onPressed,
-        child: getWidget(state, text, context, colorText)
-        ,
+        child: getWidget(state, text, context, colorText),
       ),
     );
   }
@@ -102,8 +102,8 @@ Widget getWidget(
     case RequestState.success:
       return const CircleAvatar(
         backgroundColor: Colors.transparent,
-        child: Icon(
-          Icons.check,
+        child: AppIcon(
+          AppIcons.checkSmall,
           color: Colors.black,
         ),
       );
@@ -111,8 +111,8 @@ Widget getWidget(
     case RequestState.error:
       return const CircleAvatar(
         backgroundColor: Colors.transparent,
-        child: Icon(
-          Icons.cancel,
+        child: AppIcon(
+          AppIcons.cancel,
           color: Colors.white,
         ),
       );

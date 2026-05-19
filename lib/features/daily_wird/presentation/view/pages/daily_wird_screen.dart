@@ -1,12 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/extensions/snackbar_export.dart';
 import 'package:quran_app/core/extensions/snackbar_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_preset_model.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_program_item_model.dart';
@@ -41,7 +42,7 @@ class DailyWirdScreen extends StatelessWidget {
               onPressed: state.settings == null
                   ? null
                   : () => _showSettingsSheet(context, state),
-              icon: const Icon(Icons.tune_rounded),
+              icon: const AppIcon(AppIcons.settings),
             ),
             body: _Body(state: state),
           );
@@ -384,7 +385,7 @@ class _PresetSelectionSection extends StatelessWidget {
                           children: [
                             _IconBadge(
                               heroTag: 'preset_${preset.id}',
-                              icon: Icons.menu_book_rounded,
+                              icon: AppIcons.quran,
                               color: context.primaryColor,
                             ),
                             SizedBox(width: 14.w),
@@ -456,6 +457,8 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stats = state.stats;
+    final completionPercent =
+        (state.program?.completionPercentage ?? 0).round();
     final progress = ((state.program?.completionPercentage ?? 0) / 100)
         .clamp(0, 1)
         .toDouble();
@@ -501,7 +504,7 @@ class _SummaryCard extends StatelessWidget {
                     children: [
                       _IconBadge(
                         heroTag: 'daily_wird_program_badge',
-                        icon: Icons.auto_stories_rounded,
+                        icon: AppIcons.bookOpen,
                         color: context.primaryColor,
                       ),
                       SizedBox(width: 12.w),
@@ -540,12 +543,9 @@ class _SummaryCard extends StatelessWidget {
                       ),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 260),
-                        child: _SoftValuePill(
-                          key: ValueKey(
-                            (state.program?.completionPercentage ?? 0).round(),
-                          ),
-                          value:
-                              '${(state.program?.completionPercentage ?? 0).round()}%',
+                          child: _SoftValuePill(
+                          key: ValueKey(completionPercent),
+                          value: '$completionPercent%',
                           color: context.primaryColor,
                         ),
                       ),
@@ -567,7 +567,7 @@ class _SummaryCard extends StatelessWidget {
                           SizedBox(height: 8.h),
                           Text(
                             'أكملت '
-                            '${(state.program?.completionPercentage ?? 0).round()}%'
+                            '$completionPercent%'
                             ' من زادك اليوم',
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -770,7 +770,8 @@ class _ItemCard extends StatelessWidget {
                           child: _SoftValuePill(
                             key: ValueKey(
                               item.hasCounter
-                                  ? '${item.countCompleted}_${item.countRequired}'
+                                  ? '${item.countCompleted}_'
+                                      '${item.countRequired}'
                                   : item.isCompleted,
                             ),
                             value: item.hasCounter
@@ -996,20 +997,20 @@ class _ItemCard extends StatelessWidget {
     }
   }
 
-  IconData _itemIcon(DailyWirdItem item) {
+  HugeIconData _itemIcon(DailyWirdItem item) {
     switch (item.type) {
       case 'dhikr_set':
-        return Icons.nights_stay_rounded;
+        return AppIcons.moon;
       case 'counted_dhikr':
-        return Icons.repeat_rounded;
+        return AppIcons.tasbih;
       case 'quran':
-        return Icons.menu_book_rounded;
+        return AppIcons.quran;
       case 'dua':
-        return Icons.volunteer_activism_rounded;
+        return AppIcons.heart;
       case 'surah':
-        return Icons.auto_stories_rounded;
+        return AppIcons.bookOpen;
       default:
-        return Icons.star_rounded;
+        return AppIcons.check;
     }
   }
 
@@ -1116,7 +1117,7 @@ class _IconBadge extends StatelessWidget {
   });
 
   final String? heroTag;
-  final IconData icon;
+  final HugeIconData icon;
   final Color color;
 
   @override
@@ -1139,7 +1140,7 @@ class _IconBadge extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
             color: color.withValues(alpha: 0.90),
           ),
-          child: Icon(
+          child: AppIcon(
             icon,
             color: context.onPrimaryColor,
             size: 14.sp,

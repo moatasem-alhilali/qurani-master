@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class BackSliverAppBar extends StatelessWidget {
   const BackSliverAppBar({super.key});
@@ -22,8 +23,8 @@ class BackSliverAppBar extends StatelessWidget {
           child: FittedBox(
             child: IconButton(
               onPressed: () => context.pop(),
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
+              icon: const AppIcon(
+                AppIcons.back,
                 color: Colors.white,
                 size: 25,
               ),

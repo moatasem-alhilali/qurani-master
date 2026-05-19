@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/theme_mode_widget.dart';
 import 'package:quran_app/features/download/presentation/view/pages/download_screen.dart';
@@ -39,7 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
             _SettingTile(
               title: 'اعدادات الاشعارات',
               subtitle: 'قم بتعديل اعدادات الاشعارات',
-              icon: CupertinoIcons.bell_fill,
+              icon: AppIcons.notifications,
               onTap: () {
                 context.push(const SettingNotificationScreen());
               },
@@ -47,7 +47,7 @@ class _SettingScreenState extends State<SettingScreen> {
             _SettingTile(
               title: 'اعدادات التنزيل',
               subtitle: 'قم بتعديل اعدادات التنزيل والمساحة',
-              icon: CupertinoIcons.arrow_down_to_line,
+              icon: AppIcons.download,
               onTap: () {
                 context.push(const DownloadScreen());
               },
@@ -55,7 +55,7 @@ class _SettingScreenState extends State<SettingScreen> {
             _SettingTile(
               title: 'إدارة الإصدارات',
               subtitle: 'تحقق من التحديثات وإدارة إصدارات التطبيق',
-              icon: CupertinoIcons.arrow_up_circle_fill,
+              icon: AppIcons.update,
               onTap: () {
                 context.push(const VersionManagementScreen());
               },
@@ -130,11 +130,11 @@ class _SocialLinksCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _SocialItem('تليجرام', links.telegram, Icons.send_rounded),
-      _SocialItem('واتس اب', links.whatsapp, Icons.chat_rounded),
-      _SocialItem('فيسبوك', links.facebook, Icons.public_rounded),
-      _SocialItem('انستجرام', links.instagram, Icons.camera_alt_rounded),
-      _SocialItem('تويتر', links.twitter, Icons.alternate_email_rounded),
+      _SocialItem('تليجرام', links.telegram, AppIcons.telegram),
+      _SocialItem('واتس اب', links.whatsapp, AppIcons.whatsapp),
+      _SocialItem('فيسبوك', links.facebook, AppIcons.facebook),
+      _SocialItem('انستجرام', links.instagram, AppIcons.instagram),
+      _SocialItem('تويتر', links.twitter, AppIcons.twitter),
     ];
 
     return _SettingsCard(
@@ -143,8 +143,8 @@ class _SocialLinksCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                CupertinoIcons.news_solid,
+              AppIcon(
+                AppIcons.news,
                 color: context.primaryColor,
                 size: 18.sp,
               ),
@@ -211,7 +211,7 @@ class _SocialChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            AppIcon(
               item.icon,
               size: 15.sp,
               color: color.withValues(alpha: isEnabled ? 1 : 0.46),
@@ -255,8 +255,8 @@ class _DeveloperInfoCard extends StatelessWidget {
                   color: context.primaryColor.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: Icon(
-                  CupertinoIcons.person_fill,
+                child: AppIcon(
+                  AppIcons.user,
                   color: context.primaryColor,
                   size: 18.sp,
                 ),
@@ -279,13 +279,13 @@ class _DeveloperInfoCard extends StatelessWidget {
                       children: [
                         _DeveloperIconButton(
                           tooltip: 'الموقع الشخصي',
-                          icon: CupertinoIcons.globe,
+                          icon: AppIcons.globe,
                           onTap: () => UrlLauncherUtils.launchWebUrl(_website),
                         ),
                         SizedBox(width: 8.w),
                         _DeveloperIconButton(
                           tooltip: 'واتس اب',
-                          icon: Icons.chat_rounded,
+                          icon: AppIcons.whatsapp,
                           onTap: () => UrlLauncherUtils.launchWhatsAppUrl(
                             _phone,
                           ),
@@ -311,7 +311,7 @@ class _DeveloperIconButton extends StatelessWidget {
   });
 
   final String tooltip;
-  final IconData icon;
+  final HugeIconData icon;
   final VoidCallback onTap;
 
   @override
@@ -331,7 +331,7 @@ class _DeveloperIconButton extends StatelessWidget {
               color: context.primaryColor.withValues(alpha: 0.14),
             ),
           ),
-          child: Icon(
+          child: AppIcon(
             icon,
             color: context.primaryColor,
             size: 17.sp,
@@ -380,7 +380,7 @@ class _SocialItem {
 
   final String title;
   final String url;
-  final IconData icon;
+  final HugeIconData icon;
 }
 
 class _SettingTile extends StatelessWidget {
@@ -393,7 +393,7 @@ class _SettingTile extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final IconData icon;
+  final HugeIconData icon;
   final VoidCallback onTap;
 
   @override
@@ -458,7 +458,7 @@ class _SettingTile extends StatelessWidget {
                           color: accent.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(14.r),
                         ),
-                        child: Icon(
+                        child: AppIcon(
                           icon,
                           color: accent,
                           size: 24.sp,
@@ -490,8 +490,8 @@ class _SettingTile extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
+                      AppIcon(
+                        AppIcons.forward,
                         color: context.onSurfaceVariant.withValues(alpha: 0.3),
                         size: 16.sp,
                       ),

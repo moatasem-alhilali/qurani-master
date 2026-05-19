@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 
 class HomeWidgetsScreen extends StatefulWidget {
@@ -78,7 +79,7 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
                       'القفل للصلاة والذكر.'
                   : 'يمكنك إضافتها يدويا، أو تثبيتها مباشرة من الأزرار إذا '
                       'كان المشغل يدعم ذلك.',
-              icon: Icons.widgets_rounded,
+              icon: AppIcons.widgets,
             ),
             SizedBox(height: 14.h),
             FilledButton.icon(
@@ -89,35 +90,35 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
                       height: 18.w,
                       child: const CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.refresh_rounded),
+                  : const AppIcon(AppIcons.refresh),
               label: const Text('تحديث وتفعيل التحديث بالخلفية'),
             ),
             SizedBox(height: 14.h),
             _WidgetOptionTile(
               title: 'الصلاة القادمة',
               subtitle: 'وقت الصلاة القادمة والوقت المتبقي',
-              icon: Icons.access_time_filled_rounded,
+              icon: AppIcons.clock,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.prayer),
             ),
             _WidgetOptionTile(
               title: 'ذكر عشوائي',
               subtitle: 'ذكر متجدد من مصادر الأذكار',
-              icon: Icons.auto_awesome_rounded,
+              icon: AppIcons.tasbih,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.dhikr),
             ),
             _WidgetOptionTile(
               title: 'آية عشوائية',
               subtitle: 'آية متجددة من مكتبة القرآن داخل التطبيق',
-              icon: Icons.menu_book_rounded,
+              icon: AppIcons.quran,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.ayah),
             ),
             _WidgetOptionTile(
               title: 'ورد اليوم',
               subtitle: 'متابعة مختصرة للتقدم اليومي',
-              icon: Icons.task_alt_rounded,
+              icon: AppIcons.check,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.wird),
             ),
@@ -128,7 +129,7 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
                 subtitle:
                     'أضفت ويدجت صلاة القفل وذكر القفل بصيغ iOS Lock Screen: '
                     'Inline وRectangular وCircular.',
-                icon: Icons.lock_rounded,
+                icon: AppIcons.shield,
                 compact: true,
               ),
             ],
@@ -149,7 +150,7 @@ class _InfoPanel extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final IconData icon;
+  final HugeIconData icon;
   final bool compact;
 
   @override
@@ -163,7 +164,7 @@ class _InfoPanel extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
+          AppIcon(
             icon,
             color: context.primaryColor,
             size: compact ? 20.sp : 26.sp,
@@ -210,7 +211,7 @@ class _WidgetOptionTile extends StatelessWidget {
 
   final String title;
   final String subtitle;
-  final IconData icon;
+  final HugeIconData icon;
   final bool canPin;
   final VoidCallback onPin;
 
@@ -226,7 +227,7 @@ class _WidgetOptionTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: context.primaryColor, size: 24.sp),
+          AppIcon(icon, color: context.primaryColor, size: 24.sp),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(
@@ -257,7 +258,7 @@ class _WidgetOptionTile extends StatelessWidget {
           IconButton(
             tooltip: 'تثبيت',
             onPressed: canPin ? onPin : null,
-            icon: const Icon(Icons.push_pin_rounded),
+            icon: const AppIcon(AppIcons.bookmarkAdd),
           ),
         ],
       ),

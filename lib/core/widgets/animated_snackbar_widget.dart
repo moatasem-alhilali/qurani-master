@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 enum SnackbarPosition { top, center, bottom }
 
@@ -10,25 +11,26 @@ class SnackBarType {
     required this.iconColor,
   });
   final Color backgroundColor;
-  final IconData icon;
+  final HugeIconData icon;
   final Color iconColor;
 
   static const success = SnackBarType(
     backgroundColor: Color(0xFF4CB782),
-    icon: Icons.check_circle_rounded,
+    icon: AppIcons.check,
     iconColor: Colors.white,
   );
   static const error = SnackBarType(
     backgroundColor: Color(0xFFE35D6A),
-    icon: Icons.cancel_rounded,
+    icon: AppIcons.cancel,
     iconColor: Colors.white,
   );
   static const warning = SnackBarType(
     backgroundColor: Color(0xFFFFC94B),
-    icon: Icons.warning_rounded,
+    icon: AppIcons.warning,
     iconColor: Colors.brown,
   );
 }
+
 class AnimatedSnackbarWidget extends StatefulWidget {
   const AnimatedSnackbarWidget({
     required this.message,
@@ -99,7 +101,7 @@ class _AnimatedSnackbarWidgetState extends State<AnimatedSnackbarWidget>
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: widget.style.backgroundColor.withOpacity(.22),
+            color: widget.style.backgroundColor.withValues(alpha: .22),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -138,9 +140,7 @@ class _AnimatedSnackbarWidgetState extends State<AnimatedSnackbarWidget>
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   foregroundColor: widget.actionTextColor ??
-                      (isWarning
-                          ? Colors.brown.shade800
-                          : Colors.white),
+                      (isWarning ? Colors.brown.shade800 : Colors.white),
                   textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -175,7 +175,7 @@ class _AnimatedSnackbarIcon extends StatelessWidget {
 
   final Animation<double> scale;
   final Animation<double> rotate;
-  final IconData icon;
+  final HugeIconData icon;
   final Color iconColor;
   final Color mainColor;
 
@@ -250,7 +250,7 @@ class _AnimatedSnackbarIcon extends StatelessWidget {
           angle: rotate.value,
           child: Transform.scale(
             scale: scale.value,
-            child: Icon(icon, size: 18, color: iconColor),
+            child: AppIcon(icon, size: 18, color: iconColor),
           ),
         ),
       ],
