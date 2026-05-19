@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 
 class SmartOutreachCallLogsScreen extends StatefulWidget {
@@ -32,17 +36,12 @@ class _SmartOutreachCallLogsScreenState
   }
 
   Future<void> _load() async {
-    setState(() {
-      _loading = true;
-    });
+    setState(() => _loading = true);
 
     final logs = await _repository.getCallLogs(scheduleId: widget.scheduleId);
     final stats = await _repository.getCallStats();
 
-    if (!mounted) {
-      return;
-    }
-
+    if (!mounted) return;
     setState(() {
       _logs = logs;
       _stats = stats;
@@ -61,97 +60,260 @@ class _SmartOutreachCallLogsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('سجل المكالمات'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: _loading ? null : _clear,
-            icon: const Icon(Icons.delete_sweep_outlined),
-            tooltip: 'مسح السجل',
-          ),
-        ],
+    return AppScaffoldWidget(
+      title: 'سجل المكالمات',
+      showLargeHeader: false,
+      initialOffset: null,
+      trailing: IconButton(
+        onPressed: _loading ? null : _clear,
+        icon: const AppIcon(AppIcons.delete),
+        tooltip: 'مسح السجل',
       ),
+      onRefresh: _load,
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
+          ? Center(
+              child: CircularProgressIndicator(color: context.primaryColor),
+            )
+          : Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if (_stats != null) ...<Widget>[
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: <Widget>[
-                        _StatCard(
-                          label: 'الإجمالي',
-                          value: '${_stats!.total}',
-                        ),
-                        _StatCard(
-                          label: 'تم الرد',
-                          value: '${_stats!.answered}',
-                        ),
-                        _StatCard(
-                          label: 'لم يتم الرد',
-                          value: '${_stats!.notAnswered}',
-                        ),
-                        _StatCard(
-                          label: 'فشل',
-                          value: '${_stats!.failed}',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
+                  if (_stats != null) ...[
+                    _StatsGrid(stats: _stats!),
+                    SizedBox(height: 12.h),
                   ],
                   if (_logs.isEmpty)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(32),
-                        child: Text('لا توجد نتائج بعد.'),
-                      ),
-                    )
+                    const _EmptyLogsState()
                   else
-                    ..._logs.map(_buildTile),
+                    ..._logs.map(_LogTile.new),
+                  SizedBox(height: 32.h),
                 ],
               ),
             ),
     );
   }
+}
 
-  Widget _buildTile(SmartOutreachCallLogEntry log) {
+class _StatsGrid extends StatelessWidget {
+  const _StatsGrid({required this.stats});
+
+  final SmartOutreachCallStats stats;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                label: 'الإجمالي',
+                value: '${stats.total}',
+                icon: AppIcons.list,
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: _StatCard(
+                label: 'تم الرد',
+                value: '${stats.answered}',
+                icon: AppIcons.checkSmall,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+        Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                label: 'لم يتم الرد',
+                value: '${stats.notAnswered}',
+                icon: AppIcons.phone,
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: _StatCard(
+                label: 'فشل',
+                value: '${stats.failed}',
+                icon: AppIcons.warning,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final String label;
+  final String value;
+  final HugeIconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(16.r),
+        border:
+            Border.all(color: context.outlineVariant.withValues(alpha: 0.24)),
+      ),
+      child: Row(
+        children: [
+          AppIcon(
+            icon,
+            size: 14.sp,
+            color: context.primaryColor,
+            strokeWidth: 1.55,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: context.onSurfaceColor,
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: context.onSurfaceVariant,
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LogTile extends StatelessWidget {
+  const _LogTile(this.log);
+
+  final SmartOutreachCallLogEntry log;
+
+  @override
+  Widget build(BuildContext context) {
     final timeText =
-        DateFormat('yyyy/MM/dd - HH:mm', 'ar').format(log.calledAt);
-    final subtitle = StringBuffer()
-      ..writeln(timeText)
-      ..write(_statusLabel(log.status));
+        intl.DateFormat('yyyy/MM/dd - HH:mm', 'ar').format(log.calledAt);
+    final reason = log.reason?.trim();
+    final color = _statusColor(context, log.status);
 
-    final reason = log.reason;
-    if (reason != null && reason.trim().isNotEmpty) {
-      subtitle
-        ..writeln()
-        ..write(reason.trim());
-    }
-
-    return Card(
-      child: ListTile(
-        leading: Icon(_statusIcon(log.status)),
-        title: Text(log.number),
-        subtitle: Text(subtitle.toString()),
-        trailing: log.duration > 0 ? Text('${log.duration}ث') : null,
-        isThreeLine: reason != null && reason.trim().isNotEmpty,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Container(
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: context.surfaceColor,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: color.withValues(alpha: 0.18)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36.w,
+              height: 36.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: AppIcon(
+                _statusIcon(log.status),
+                color: color,
+                size: 15.sp,
+                strokeWidth: 1.55,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    log.number,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: TextDirection.ltr,
+                    style: TextStyle(
+                      color: context.onSurfaceColor,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    reason == null || reason.isEmpty
+                        ? '$timeText • ${_statusLabel(log.status)}'
+                        : '$timeText • ${_statusLabel(log.status)} • $reason',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.onSurfaceVariant,
+                      fontSize: 10.sp,
+                      height: 1.35,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (log.duration > 0) ...[
+              SizedBox(width: 8.w),
+              Text(
+                '${log.duration}ث',
+                style: TextStyle(
+                  color: context.primaryColor,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
 
-  static IconData _statusIcon(String status) {
+  static HugeIconData _statusIcon(String status) {
     switch (status) {
       case 'answered':
-        return Icons.call_received_outlined;
+        return AppIcons.checkSmall;
       case 'not_answered':
-        return Icons.call_missed_outgoing_outlined;
+        return AppIcons.phone;
       default:
-        return Icons.call_end_outlined;
+        return AppIcons.warning;
+    }
+  }
+
+  static Color _statusColor(BuildContext context, String status) {
+    switch (status) {
+      case 'answered':
+        return context.primaryColor;
+      case 'not_answered':
+        return Colors.orange;
+      default:
+        return context.errorColor;
     }
   }
 
@@ -169,33 +331,36 @@ class _SmartOutreachCallLogsScreenState
   }
 }
 
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
+class _EmptyLogsState extends StatelessWidget {
+  const _EmptyLogsState();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 110,
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(18.r),
+        border:
+            Border.all(color: context.outlineVariant.withValues(alpha: 0.24)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall,
+        children: [
+          AppIcon(
+            AppIcons.clock,
+            size: 23.sp,
+            color: context.primaryColor,
+            strokeWidth: 1.55,
           ),
-          const SizedBox(height: 6),
-          Text(label),
+          SizedBox(height: 9.h),
+          Text(
+            'لا توجد نتائج بعد.',
+            style: TextStyle(
+              color: context.onSurfaceVariant,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );

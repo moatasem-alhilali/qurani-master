@@ -60,7 +60,8 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
               children: <Widget>[
                 _IconBubble(
                   icon: enabled ? AppIcons.phone : AppIcons.power,
-                  color: enabled ? context.primaryColor : context.onSurfaceVariant,
+                  color:
+                      enabled ? context.primaryColor : context.onSurfaceVariant,
                 ),
                 SizedBox(width: 10.w),
                 Expanded(

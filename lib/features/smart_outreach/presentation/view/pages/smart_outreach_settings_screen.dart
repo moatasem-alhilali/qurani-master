@@ -172,7 +172,7 @@ class _SettingsHero extends StatelessWidget {
       padding: EdgeInsets.all(14.w),
       child: Row(
         children: [
-          _IconBubble(icon: AppIcons.sliders),
+          const _IconBubble(icon: AppIcons.sliders),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(
@@ -188,7 +188,8 @@ class _SettingsHero extends StatelessWidget {
                 ),
                 SizedBox(height: 3.h),
                 Text(
-                  'انتظار $ringTimeoutث، بعد الرد $hangupDelayث، بين الأرقام $delayBetweenCallsث',
+                  'انتظار $ringTimeoutث، بعد الرد $hangupDelayث، '
+                  'بين الأرقام $delayBetweenCallsث',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -525,7 +526,8 @@ class _SoftPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.surfaceColor,
         borderRadius: BorderRadius.circular(17.r),
-        border: Border.all(color: context.outlineVariant.withValues(alpha: 0.25)),
+        border:
+            Border.all(color: context.outlineVariant.withValues(alpha: 0.25)),
       ),
       child: child,
     );

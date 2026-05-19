@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
@@ -96,130 +98,126 @@ class _SmartOutreachSchedulesViewState
           floatingActionButton: FloatingActionButton(
             onPressed: () => _openUpsertScreen(context),
             child: const AppIcon(AppIcons.add),
-            // label: const Text('إضافة قائمة'),
           ),
-          slivers: _buildSlivers(context, state),
+          body: _buildBody(context, state),
         );
       },
     );
   }
 
-  List<Widget> _buildSlivers(
+  Widget _buildBody(
     BuildContext context,
     SmartOutreachSchedulesState state,
   ) {
     final permissionCard = _buildPermissionsCard();
+    final enabledCount =
+        state.schedules.where((bundle) => bundle.schedule.isEnabled).length;
+    final contactsCount = state.schedules.fold<int>(
+      0,
+      (total, bundle) => total + bundle.contacts.length,
+    );
 
-    return <Widget>[
-      if (permissionCard != null)
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: permissionCard,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _OutreachHero(
+            total: state.schedules.length,
+            enabled: enabledCount,
+            contacts: contactsCount,
           ),
-        ),
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            permissionCard == null ? 16 : 12,
-            16,
-            0,
-          ),
-          child: Row(
+          if (permissionCard != null) ...[
+            SizedBox(height: 10.h),
+            permissionCard,
+          ],
+          SizedBox(height: 10.h),
+          Row(
             children: <Widget>[
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
+                child: _QuickAction(
+                  icon: AppIcons.clock,
+                  label: 'السجل',
+                  onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const SmartOutreachCallLogsScreen(),
                       ),
                     );
                   },
-                  icon: const AppIcon(AppIcons.clock),
-                  label: const Text('السجل'),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
+                child: _QuickAction(
+                  icon: AppIcons.settings,
+                  label: 'الإعدادات',
+                  onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const SmartOutreachSettingsScreen(),
                       ),
                     );
                   },
-                  icon: const AppIcon(AppIcons.settings),
-                  label: const Text('الإعدادات'),
                 ),
               ),
             ],
           ),
-        ),
+          SizedBox(height: 14.h),
+          const _SectionHeader(
+            title: 'قوائم الاتصال',
+            subtitle: 'تشغيل سريع وتعديل مختصر لكل قائمة',
+          ),
+          SizedBox(height: 10.h),
+          _buildContent(context, state),
+          SizedBox(height: 38.h),
+        ],
       ),
-      _buildContentSliver(context, state),
-    ];
+    );
   }
 
-  Widget _buildContentSliver(
+  Widget _buildContent(
     BuildContext context,
     SmartOutreachSchedulesState state,
   ) {
     if (state.loadState == RequestState.loading && state.schedules.isEmpty) {
-      return const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(child: CircularProgressIndicator()),
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 28.h),
+        child: Center(
+          child: CircularProgressIndicator(color: context.primaryColor),
+        ),
       );
     }
 
     if (state.schedules.isEmpty) {
-      return const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Text(
-              'لا توجد قوائم مكالمات حتى الآن.\n'
-              'أضف قائمة جديدة وحدد الوقت والأرقام التي تريد الاتصال بها.',
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      );
+      return _EmptySchedulesCard(onTap: () => _openUpsertScreen(context));
     }
 
-    return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final bundle = state.schedules[index];
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: index == state.schedules.length - 1 ? 0 : 12,
-              ),
-              child: SmartOutreachScheduleItemCard(
-                bundle: bundle,
-                onTap: () => _openUpsertScreen(context, bundle: bundle),
-                onStart: () => _handleStartNow(context, bundle.schedule.id!),
-                onDelete: () {
-                  context.read<SmartOutreachSchedulesBloc>().add(
-                        DeleteSmartOutreachScheduleEvent(bundle.schedule.id!),
-                      );
-                },
-                onToggle: (enabled) => _handleToggle(
-                  context,
-                  scheduleId: bundle.schedule.id!,
-                  enabled: enabled,
-                ),
-              ),
-            );
-          },
-          childCount: state.schedules.length,
-        ),
-      ),
+    return Column(
+      children: state.schedules.asMap().entries.map((entry) {
+        final index = entry.key;
+        final bundle = entry.value;
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index == state.schedules.length - 1 ? 0 : 10.h,
+          ),
+          child: SmartOutreachScheduleItemCard(
+            bundle: bundle,
+            onTap: () => _openUpsertScreen(context, bundle: bundle),
+            onStart: () => _handleStartNow(context, bundle.schedule.id!),
+            onDelete: () {
+              context.read<SmartOutreachSchedulesBloc>().add(
+                    DeleteSmartOutreachScheduleEvent(bundle.schedule.id!),
+                  );
+            },
+            onToggle: (enabled) => _handleToggle(
+              context,
+              scheduleId: bundle.schedule.id!,
+              enabled: enabled,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -315,44 +313,69 @@ class _SmartOutreachSchedulesViewState
 
     final missing = snapshot.missingPermissionLabels.join('، ');
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'الصلاحيات المطلوبة غير مكتملة',
-              style: TextStyle(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'لتشغيل المكالمات المجدولة بشكل صحيح، فعّل هذه الصلاحيات: '
-              '$missing',
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: <Widget>[
-                FilledButton.icon(
-                  onPressed: () {
-                    _ensurePermissions(requestIfNeeded: true);
-                  },
-                  icon: const AppIcon(AppIcons.shield),
-                  label: const Text('منح الصلاحيات'),
+    return Container(
+      padding: EdgeInsets.all(13.w),
+      decoration: BoxDecoration(
+        color: context.errorContainer.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(17.r),
+        border: Border.all(color: context.errorColor.withValues(alpha: 0.22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              AppIcon(
+                AppIcons.shield,
+                color: context.errorColor,
+                size: 16.sp,
+                strokeWidth: 1.55,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'الصلاحيات المطلوبة غير مكتملة',
+                  style: TextStyle(
+                    color: context.onSurfaceColor,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-                OutlinedButton.icon(
-                  onPressed: () async {
-                    await _permissionService.openSettings();
-                  },
-                  icon: const AppIcon(AppIcons.settings),
-                  label: const Text('فتح الإعدادات'),
-                ),
-              ],
+              ),
+            ],
+          ),
+          SizedBox(height: 7.h),
+          Text(
+            'لتشغيل المكالمات المجدولة بشكل صحيح، فعّل: $missing',
+            style: TextStyle(
+              color: context.onSurfaceVariant,
+              fontSize: 10.sp,
+              height: 1.45,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 10.h),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: _PermissionButton(
+                  label: 'منح الصلاحيات',
+                  icon: AppIcons.shield,
+                  filled: true,
+                  onTap: () => _ensurePermissions(requestIfNeeded: true),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: _PermissionButton(
+                  label: 'الإعدادات',
+                  icon: AppIcons.settings,
+                  onTap: _permissionService.openSettings,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -383,6 +406,340 @@ class _SmartOutreachSchedulesViewState
       ToggleSmartOutreachScheduleEnabledEvent(
         scheduleId: scheduleId,
         enabled: enabled,
+      ),
+    );
+  }
+}
+
+class _OutreachHero extends StatelessWidget {
+  const _OutreachHero({
+    required this.total,
+    required this.enabled,
+    required this.contacts,
+  });
+
+  final int total;
+  final int enabled;
+  final int contacts;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(14.w),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: context.primaryColor.withValues(alpha: 0.22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 42.w,
+                height: 42.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: context.primaryColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(14.r),
+                ),
+                child: AppIcon(
+                  AppIcons.phone,
+                  color: context.primaryColor,
+                  size: 18.sp,
+                  strokeWidth: 1.55,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'صحبة الفجر',
+                      style: TextStyle(
+                        color: context.onSurfaceColor,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      'قوائم اتصال هادئة ومنظمة',
+                      style: TextStyle(
+                        color: context.onSurfaceVariant,
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Row(
+            children: [
+              Expanded(child: _HeroStat(label: 'القوائم', value: '$total')),
+              SizedBox(width: 8.w),
+              Expanded(child: _HeroStat(label: 'المفعلة', value: '$enabled')),
+              SizedBox(width: 8.w),
+              Expanded(child: _HeroStat(label: 'الأرقام', value: '$contacts')),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroStat extends StatelessWidget {
+  const _HeroStat({
+    required this.label,
+    required this.value,
+  });
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: context.surfaceVariant.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              color: context.onSurfaceColor,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: context.onSurfaceVariant,
+              fontSize: 9.sp,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final HugeIconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14.r),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
+        decoration: BoxDecoration(
+          color: context.surfaceColor,
+          borderRadius: BorderRadius.circular(14.r),
+          border:
+              Border.all(color: context.outlineVariant.withValues(alpha: 0.24)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppIcon(
+              icon,
+              color: context.primaryColor,
+              size: 14.sp,
+              strokeWidth: 1.55,
+            ),
+            SizedBox(width: 7.w),
+            Text(
+              label,
+              style: TextStyle(
+                color: context.onSurfaceColor,
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 5.w,
+          height: 5.w,
+          decoration: BoxDecoration(
+            color: context.primaryColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 7.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: context.onSurfaceColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: context.onSurfaceVariant,
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmptySchedulesCard extends StatelessWidget {
+  const _EmptySchedulesCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 22.h),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(18.r),
+        border:
+            Border.all(color: context.outlineVariant.withValues(alpha: 0.24)),
+      ),
+      child: Column(
+        children: [
+          AppIcon(
+            AppIcons.contacts,
+            color: context.primaryColor,
+            size: 24.sp,
+            strokeWidth: 1.55,
+          ),
+          SizedBox(height: 9.h),
+          Text(
+            'لا توجد قوائم مكالمات حتى الآن.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: context.onSurfaceColor,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          SizedBox(height: 5.h),
+          Text(
+            'أضف قائمة وحدد الوقت والأرقام التي تريد الاتصال بها.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: context.onSurfaceVariant,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 12.h),
+          _PermissionButton(
+            label: 'إضافة قائمة',
+            icon: AppIcons.add,
+            filled: true,
+            onTap: onTap,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermissionButton extends StatelessWidget {
+  const _PermissionButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.filled = false,
+  });
+
+  final String label;
+  final HugeIconData icon;
+  final VoidCallback onTap;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12.r),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+        decoration: BoxDecoration(
+          color: filled
+              ? context.primaryColor
+              : context.primaryColor.withValues(alpha: 0.09),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(
+              icon,
+              color: filled ? context.onPrimaryColor : context.primaryColor,
+              size: 13.sp,
+              strokeWidth: 1.55,
+            ),
+            SizedBox(width: 6.w),
+            Text(
+              label,
+              style: TextStyle(
+                color: filled ? context.onPrimaryColor : context.primaryColor,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
