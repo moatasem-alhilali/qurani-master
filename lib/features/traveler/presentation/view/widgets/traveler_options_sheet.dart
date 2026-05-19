@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 
 class TravelerOptionsSheet extends StatelessWidget {
   const TravelerOptionsSheet({
@@ -54,7 +55,7 @@ class TravelerOptionsSheet extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close_rounded),
+                  icon: const AppIcon(AppIcons.close, size: 18),
                 ),
               ],
             ),
@@ -69,25 +70,25 @@ class TravelerOptionsSheet extends StatelessWidget {
             ),
             SizedBox(height: 14.h),
             _TravelerOptionTile(
-              icon: Icons.mosque_rounded,
+              icon: AppIcons.mosque,
               title: 'المساجد القريبة',
               subtitle: 'خريطة مباشرة مع أقرب المساجد والاتجاهات',
               onTap: onOpenNearbyMosques,
             ),
             _TravelerOptionTile(
-              icon: Icons.menu_book_rounded,
+              icon: AppIcons.bookOpen,
               title: 'أذكار السفر',
               subtitle: 'أذكار موثقة مع عداد ونسخ ومشاركة ومفضلة',
               onTap: onOpenTravelAzkar,
             ),
             _TravelerOptionTile(
-              icon: Icons.restaurant_rounded,
+              icon: AppIcons.restaurant,
               title: 'مطاعم حلال',
               subtitle: 'تظهر في الدول غير الإسلامية مع خريطة واضحة',
               onTap: onOpenHalalRestaurants,
             ),
             _TravelerOptionTile(
-              icon: Icons.flight_rounded,
+              icon: AppIcons.flight,
               title: 'الصلاة أثناء الطيران',
               subtitle: 'إدخال رقم الرحلة لعرض مواقيت الصلاة على المسار',
               onTap: onOpenFlightPrayerTimes,
@@ -107,7 +108,7 @@ class _TravelerOptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -131,16 +132,17 @@ class _TravelerOptionTile extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 42.w,
-                height: 42.w,
+                width: 38.w,
+                height: 38.w,
                 decoration: BoxDecoration(
                   color: context.primaryColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: Icon(
+                child: AppIcon(
                   icon,
                   color: context.primaryColor,
-                  size: 23.sp,
+                  size: 17.sp,
+                  strokeWidth: 1.6,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -169,9 +171,10 @@ class _TravelerOptionTile extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 6.w),
-              Icon(
-                Icons.chevron_left_rounded,
+              AppIcon(
+                AppIcons.chevronLeft,
                 color: context.onSurfaceColor.withValues(alpha: 0.45),
+                size: 15.sp,
               ),
             ],
           ),

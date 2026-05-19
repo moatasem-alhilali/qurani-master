@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
 import 'package:quran_app/features/floating_adhkar/presentation/bloc/floating_adhkar_bloc.dart';
@@ -52,12 +53,13 @@ class _FloatingAdhkarSettingsScreenState
                     color: Theme.of(context).primaryColor.withOpacity(0.15)),
               ),
               child: SwitchListTile(
-                secondary: Icon(
-                  Icons.power_settings_new_rounded,
+                secondary: AppIcon(
+                  AppIcons.power,
                   color: _draft.enabled
                       ? Theme.of(context).primaryColor
                       : Colors.grey,
-                  size: 22.r,
+                  size: 16.r,
+                  strokeWidth: 1.55,
                 ),
                 value: _draft.enabled,
                 onChanged: (value) {
@@ -81,7 +83,7 @@ class _FloatingAdhkarSettingsScreenState
 
             _SectionCard(
               title: isIosReminderMode ? 'توقيت التذكير' : 'توقيت الظهور',
-              icon: Icons.timer_outlined,
+              icon: AppIcons.clock,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -159,7 +161,7 @@ class _FloatingAdhkarSettingsScreenState
 
             _SectionCard(
               title: 'مصادر الأذكار',
-              icon: Icons.merge_type_rounded,
+              icon: AppIcons.source,
               child: Column(
                 children: [
                   SwitchListTile(
@@ -233,7 +235,7 @@ class _FloatingAdhkarSettingsScreenState
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r)),
               ),
-              icon: Icon(Icons.save_outlined, size: 20.r),
+              icon: const AppIcon(AppIcons.save, size: 17),
               label: Text('حفظ الإعدادات',
                   style:
                       TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
@@ -277,7 +279,7 @@ class _SectionCard extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final HugeIconData icon;
   final Widget child;
 
   @override
@@ -295,7 +297,12 @@ class _SectionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 18.r, color: accent),
+              AppIcon(
+                icon,
+                size: 14.5.r,
+                color: accent,
+                strokeWidth: 1.55,
+              ),
               SizedBox(width: 8.w),
               Text(
                 title,

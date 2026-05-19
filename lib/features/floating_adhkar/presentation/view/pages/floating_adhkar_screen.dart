@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_item.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
@@ -52,7 +53,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.menu_book_rounded),
+                icon: const AppIcon(AppIcons.bookOpen, size: 18),
               ),
               IconButton(
                 tooltip: 'الإعدادات',
@@ -66,7 +67,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
                           ),
                         );
                       },
-                icon: const Icon(Icons.tune_rounded),
+                icon: const AppIcon(AppIcons.sliders, size: 18),
               ),
             ],
           ),
@@ -116,8 +117,8 @@ class _BodyState extends State<_Body> {
                   color: Theme.of(context).primaryColor.withOpacity(0.15)),
             ),
             child: SwitchListTile(
-              secondary: Icon(
-                Icons.power_settings_new_rounded,
+              secondary: AppIcon(
+                AppIcons.power,
                 color: settings.enabled
                     ? Theme.of(context).primaryColor
                     : Colors.grey,
@@ -165,10 +166,8 @@ class _BodyState extends State<_Body> {
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                 child: Row(
                   children: [
-                    Icon(
-                      _showAdvancedSettings
-                          ? Icons.settings_suggest_rounded
-                          : Icons.settings_outlined,
+                    AppIcon(
+                      AppIcons.settings,
                       size: 18.r,
                       color: Theme.of(context).primaryColor,
                     ),
@@ -181,12 +180,10 @@ class _BodyState extends State<_Body> {
                       ),
                     ),
                     const Spacer(),
-                    Icon(
-                      _showAdvancedSettings
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
+                    AppIcon(
+                      _showAdvancedSettings ? AppIcons.up : AppIcons.down,
                       color: Colors.grey,
-                      size: 20.r,
+                      size: 16.r,
                     ),
                   ],
                 ),
@@ -207,7 +204,7 @@ class _BodyState extends State<_Body> {
               child: Column(
                 children: [
                   _SettingsTile(
-                    icon: Icons.timer_outlined,
+                    icon: AppIcons.clock,
                     title: 'معدل الظهور',
                     subtitle: _formatIntervalText(settings.intervalMinutes),
                   ),
@@ -216,7 +213,7 @@ class _BodyState extends State<_Body> {
                       color: Theme.of(context).primaryColor.withOpacity(0.1)),
                   if (!isIosReminderMode) ...[
                     _SettingsTile(
-                      icon: Icons.visibility_outlined,
+                      icon: AppIcons.eye,
                       title: 'مدة بقاء الذكر',
                       subtitle: '${settings.visibleSeconds} ثانية',
                     ),
@@ -225,7 +222,7 @@ class _BodyState extends State<_Body> {
                         color: Theme.of(context).primaryColor.withOpacity(0.1)),
                   ],
                   _SettingsTile(
-                    icon: Icons.merge_type_rounded,
+                    icon: AppIcons.source,
                     title: 'مصادر الأذكار',
                     subtitle: _describeSources(settings),
                   ),
@@ -249,7 +246,7 @@ class _BodyState extends State<_Body> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r)),
             ),
-            icon: Icon(Icons.play_circle_outline_rounded, size: 20.r),
+            icon: const AppIcon(AppIcons.play, size: 17),
             label: Text(isIosReminderMode ? 'إرسال ذكر الآن' : 'عرض ذكر الآن',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
@@ -271,8 +268,11 @@ class _BodyState extends State<_Body> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r)),
                 ),
-                icon:
-                    Icon(Icons.security_rounded, size: 20.r, color: Colors.red),
+                icon: const AppIcon(
+                  AppIcons.security,
+                  size: 17,
+                  color: Colors.red,
+                ),
                 label: Text(
                     isIosReminderMode
                         ? 'السماح بالإشعارات'
@@ -300,7 +300,7 @@ class _BodyState extends State<_Body> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r)),
             ),
-            icon: Icon(Icons.edit_note_rounded, size: 20.r),
+            icon: const AppIcon(AppIcons.noteEdit, size: 17),
             label: Text('إدارة الأذكار',
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
@@ -370,8 +370,12 @@ class _StatusAndStatsHeader extends StatelessWidget {
                   color: accent.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child:
-                    Icon(Icons.layers_clear_rounded, color: accent, size: 22.r),
+                child: AppIcon(
+                  AppIcons.layers,
+                  color: accent,
+                  size: 17.r,
+                  strokeWidth: 1.55,
+                ),
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -403,7 +407,7 @@ class _StatusAndStatsHeader extends StatelessWidget {
                 child: _HeaderStatItem(
                   title: 'الافتراضية',
                   value: '${state.counts.builtInCount}',
-                  icon: Icons.auto_awesome_rounded,
+                  icon: AppIcons.tasbih,
                 ),
               ),
               Container(width: 1, height: 30.h, color: accent.withOpacity(0.1)),
@@ -412,7 +416,7 @@ class _StatusAndStatsHeader extends StatelessWidget {
                   title: 'الخاصة',
                   value:
                       '${state.counts.customEnabledCount}/${state.counts.customTotalCount}',
-                  icon: Icons.menu_book_rounded,
+                  icon: AppIcons.bookOpen,
                 ),
               ),
             ],
@@ -432,7 +436,7 @@ class _HeaderStatItem extends StatelessWidget {
 
   final String title;
   final String value;
-  final IconData icon;
+  final HugeIconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -441,9 +445,12 @@ class _HeaderStatItem extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,
-                size: 14.r,
-                color: Theme.of(context).primaryColor.withOpacity(0.7)),
+            AppIcon(
+              icon,
+              size: 11.5.r,
+              strokeWidth: 1.55,
+              color: Theme.of(context).primaryColor.withOpacity(0.7),
+            ),
             SizedBox(width: 4.w),
             Text(
               title,
@@ -467,7 +474,7 @@ class _SettingsTile extends StatelessWidget {
     required this.subtitle,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final String title;
   final String subtitle;
 
@@ -475,8 +482,12 @@ class _SettingsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon,
-            size: 18.r, color: Theme.of(context).primaryColor.withOpacity(0.8)),
+        AppIcon(
+          icon,
+          size: 14.5.r,
+          strokeWidth: 1.55,
+          color: Theme.of(context).primaryColor.withOpacity(0.8),
+        ),
         SizedBox(width: 12.w),
         Expanded(
           child: Column(

@@ -5,6 +5,7 @@ import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_item.dart';
 import 'package:quran_app/features/floating_adhkar/presentation/bloc/floating_adhkar_bloc.dart';
@@ -110,7 +111,7 @@ class _FloatingAdhkarMyAdhkarViewState
             : FloatingActionButton(
                 onPressed: () => _showAddDialog(context),
                 tooltip: 'إضافة ذكر خاص',
-                child: const Icon(Icons.add_rounded),
+                child: const AppIcon(AppIcons.add, size: 18),
               ),
         body: BlocBuilder<SabihBloc, SabihState>(
           builder: (context, sabihState) {
@@ -507,7 +508,7 @@ class _SectionEmptyCard extends StatelessWidget {
               SizedBox(height: 12.h),
               FilledButton.icon(
                 onPressed: onAction,
-                icon: const Icon(Icons.add_rounded),
+                icon: const AppIcon(AppIcons.add, size: 16),
                 label: Text(actionLabel!),
               ),
             ],
@@ -707,12 +708,12 @@ class _CustomAdhkarCard extends StatelessWidget {
               children: [
                 OutlinedButton.icon(
                   onPressed: onEdit,
-                  icon: const Icon(Icons.edit_rounded),
+                  icon: const AppIcon(AppIcons.edit, size: 15),
                   label: const Text('تعديل'),
                 ),
                 OutlinedButton.icon(
                   onPressed: onDelete,
-                  icon: const Icon(Icons.delete_outline_rounded),
+                  icon: const AppIcon(AppIcons.delete, size: 15),
                   label: const Text('حذف'),
                 ),
               ],

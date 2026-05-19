@@ -55,6 +55,8 @@ abstract final class AppIcons {
   static const contacts = HugeIcons.strokeRoundedUserGroup;
   static const notifications = HugeIcons.strokeRoundedNotification03;
   static const settings = HugeIcons.strokeRoundedSettings02;
+  static const sliders = HugeIcons.strokeRoundedSlidersHorizontal;
+  static const power = HugeIcons.strokeRoundedPower;
   static const download = HugeIcons.strokeRoundedDownload04;
   static const upload = HugeIcons.strokeRoundedUpload04;
   static const update = HugeIcons.strokeRoundedUploadCircle01;
@@ -71,6 +73,8 @@ abstract final class AppIcons {
   static const close = HugeIcons.strokeRoundedCancel01;
   static const back = HugeIcons.strokeRoundedArrowLeft01;
   static const forward = HugeIcons.strokeRoundedArrowRight01;
+  static const up = HugeIcons.strokeRoundedArrowUp01;
+  static const down = HugeIcons.strokeRoundedArrowDown01;
   static const chevronRight = HugeIcons.strokeRoundedArrowRight01;
   static const chevronLeft = HugeIcons.strokeRoundedArrowLeft01;
   static const check = HugeIcons.strokeRoundedCheckmarkCircle02;
@@ -112,5 +116,10 @@ abstract final class AppIcons {
   static const location = HugeIcons.strokeRoundedLocation01;
   static const direction = HugeIcons.strokeRoundedNavigation03;
   static const shield = HugeIcons.strokeRoundedShieldUser;
+  static const security = HugeIcons.strokeRoundedSecurity;
   static const battery = HugeIcons.strokeRoundedBatteryCharging01;
+  static const eye = HugeIcons.strokeRoundedEye;
+  static const layers = HugeIcons.strokeRoundedLayers01;
+  static const noteEdit = HugeIcons.strokeRoundedNoteEdit;
+  static const source = HugeIcons.strokeRoundedSourceCode;
 }
