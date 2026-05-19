@@ -509,6 +509,7 @@ class _IconBadge extends StatelessWidget {
     return Container(
       width: resolvedSize,
       height: resolvedSize,
+      padding: EdgeInsets.all(6.sp),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12.r),
@@ -516,7 +517,7 @@ class _IconBadge extends StatelessWidget {
       child: AppIcon(
         icon,
         color: color,
-        size: iconSize ?? 18.sp,
+        size: iconSize ?? 15.sp,
       ),
     );
   }
