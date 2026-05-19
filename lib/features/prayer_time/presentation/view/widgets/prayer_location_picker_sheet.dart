@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
 
@@ -147,7 +148,7 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
     return SafeArea(
       top: false,
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: MediaQuery.of(context).size.height * 0.84,
         child: DefaultTabController(
           length: 2,
           child: DecoratedBox(
@@ -159,92 +160,28 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
             ),
             child: Column(
               children: [
-                SizedBox(height: 10.h),
-                Container(
-                  width: 42.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: _alpha(context.outlineVariant, 0.55),
-                    borderRadius: BorderRadius.circular(999.r),
+                SizedBox(height: 9.h),
+                _SheetHandle(color: _alpha(context.outlineVariant, 0.55)),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
+                  child: _PickerHeader(
+                    onClose: () => Navigator.of(context).pop(),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'اختيار المنطقة',
-                              style: TextStyle(
-                                color: context.onSurfaceColor,
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            SizedBox(height: 6.h),
-                            Text(
-                              'ابحث عن مدينة أو حدّد نقطة مباشرة من الخريطة',
-                              style: TextStyle(
-                                color: _alpha(context.onSurfaceColor, 0.56),
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.close_rounded),
-                      ),
-                    ],
+                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                  child: _CurrentLocationButton(
+                    isLoading: _isApplyingCurrentLocation,
+                    onTap: _selectCurrentLocation,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: _isApplyingCurrentLocation
-                          ? null
-                          : _selectCurrentLocation,
-                      icon: const Icon(Icons.my_location_rounded),
-                      label: Text(
-                        _isApplyingCurrentLocation
-                            ? 'جارِ استخدام موقع الجهاز...'
-                            : 'استخدام موقع الجهاز الحالي',
-                      ),
-                    ),
+                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                  child: _PickerTabs(
+                    color: context.primaryColor,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 0),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: context.surfaceColor,
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: TabBar(
-                      dividerColor: Colors.transparent,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicator: BoxDecoration(
-                        color: _alpha(context.primaryColor, 0.16),
-                        borderRadius: BorderRadius.circular(14.r),
-                      ),
-                      labelColor: context.onSurfaceColor,
-                      unselectedLabelColor:
-                          _alpha(context.onSurfaceColor, 0.56),
-                      tabs: const [
-                        Tab(text: 'بحث'),
-                        Tab(text: 'الخريطة'),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 14.h),
+                SizedBox(height: 12.h),
                 Expanded(
                   child: TabBarView(
                     children: [
@@ -263,115 +200,34 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
 
   Widget _buildSearchTab(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 18.h),
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
         children: [
-          TextField(
+          _SearchField(
             controller: _searchController,
             onChanged: _onSearchChanged,
-            decoration: InputDecoration(
-              hintText: 'ابحث باسم المدينة أو المحافظة أو الدولة',
-              prefixIcon: const Icon(Icons.search_rounded),
-              filled: true,
-              fillColor: context.surfaceColor,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18.r),
-                borderSide: BorderSide.none,
-              ),
-            ),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 12.h),
           Expanded(
             child: _isSearching
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: context.primaryColor,
+                      strokeWidth: 2.w,
+                    ),
+                  )
                 : _searchResults.isEmpty
-                    ? Center(
-                        child: Text(
-                          _searchController.text.trim().isEmpty
-                              ? 'ابدأ بكتابة اسم مدينة لعرض النتائج'
-                              : 'لم نعثر على نتائج مطابقة',
-                          style: TextStyle(
-                            color: _alpha(context.onSurfaceColor, 0.56),
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                    ? _SearchEmptyState(
+                        hasQuery: _searchController.text.trim().isNotEmpty,
                       )
                     : ListView.separated(
                         itemCount: _searchResults.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                        separatorBuilder: (_, __) => SizedBox(height: 8.h),
                         itemBuilder: (context, index) {
                           final result = _searchResults[index];
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(18.r),
+                          return _LocationResultTile(
+                            result: result,
                             onTap: () => _selectSearchResult(result),
-                            child: Container(
-                              padding: EdgeInsets.all(14.sp),
-                              decoration: BoxDecoration(
-                                color: context.surfaceColor,
-                                borderRadius: BorderRadius.circular(18.r),
-                                border: Border.all(
-                                  color: _alpha(context.outlineVariant, 0.35),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 38.w,
-                                    height: 38.w,
-                                    decoration: BoxDecoration(
-                                      color: _alpha(context.primaryColor, 0.12),
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    child: Icon(
-                                      Icons.place_outlined,
-                                      color: context.primaryColor,
-                                      size: 20.sp,
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          result.label,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: context.onSurfaceColor,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        if (result.detailsLabel.isNotEmpty) ...[
-                                          SizedBox(height: 5.h),
-                                          Text(
-                                            result.detailsLabel,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: _alpha(
-                                                context.onSurfaceColor,
-                                                0.56,
-                                              ),
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Icon(
-                                    Icons.chevron_left_rounded,
-                                    color: _alpha(context.onSurfaceColor, 0.5),
-                                  ),
-                                ],
-                              ),
-                            ),
                           );
                         },
                       ),
@@ -385,12 +241,12 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
     final selected = _selectedMapLocation;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 18.h),
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
       child: Column(
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(22.r),
+              borderRadius: BorderRadius.circular(18.r),
               child: Stack(
                 children: [
                   FlutterMap(
@@ -416,10 +272,10 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
                               ),
                               width: 48.w,
                               height: 48.w,
-                              child: Icon(
-                                Icons.location_on_rounded,
+                              child: AppIcon(
+                                AppIcons.mapPin,
                                 color: context.primaryColor,
-                                size: 42.sp,
+                                size: 34.sp,
                               ),
                             ),
                           ],
@@ -438,16 +294,34 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
                       decoration: BoxDecoration(
                         color: _alpha(context.scaffoldBackgroundColor, 0.92),
                         borderRadius: BorderRadius.circular(14.r),
-                      ),
-                      child: Text(
-                        _isResolvingMapLocation
-                            ? 'جارِ قراءة اسم الموقع المحدد...'
-                            : 'اضغط على أي نقطة في الخريطة لتحديد المنطقة',
-                        style: TextStyle(
-                          color: context.onSurfaceColor,
-                          fontSize: 12.5.sp,
-                          fontWeight: FontWeight.w600,
+                        border: Border.all(
+                          color: _alpha(context.outlineVariant, 0.18),
                         ),
+                      ),
+                      child: Row(
+                        children: [
+                          AppIcon(
+                            _isResolvingMapLocation
+                                ? AppIcons.refresh
+                                : AppIcons.mapPin,
+                            color: context.primaryColor,
+                            size: 14.sp,
+                            strokeWidth: 1.55,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              _isResolvingMapLocation
+                                  ? 'جارِ قراءة اسم الموقع المحدد...'
+                                  : 'اضغط على الخريطة لتحديد المنطقة',
+                              style: TextStyle(
+                                color: context.onSurfaceColor,
+                                fontSize: 11.5.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -455,60 +329,11 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
               ),
             ),
           ),
-          SizedBox(height: 14.h),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(14.sp),
-            decoration: BoxDecoration(
-              color: context.surfaceColor,
-              borderRadius: BorderRadius.circular(18.r),
-              border: Border.all(
-                color: _alpha(context.outlineVariant, 0.35),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  selected?.label ?? 'لم يتم تحديد موقع من الخريطة بعد',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (selected != null && selected.detailsLabel.isNotEmpty) ...[
-                  SizedBox(height: 5.h),
-                  Text(
-                    selected.detailsLabel,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: _alpha(context.onSurfaceColor, 0.56),
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-                SizedBox(height: 12.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: selected == null || _isApplyingMapLocation
-                        ? null
-                        : _applyMapLocation,
-                    icon: const Icon(Icons.check_circle_outline_rounded),
-                    label: Text(
-                      _isApplyingMapLocation
-                          ? 'جارِ اعتماد الموقع...'
-                          : 'اعتماد الموقع المحدد',
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          SizedBox(height: 10.h),
+          _MapSelectionCard(
+            selected: selected,
+            isApplying: _isApplyingMapLocation,
+            onApply: _applyMapLocation,
           ),
         ],
       ),
@@ -517,3 +342,468 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
 }
 
 Color _alpha(Color color, double value) => color.withValues(alpha: value);
+
+class _SheetHandle extends StatelessWidget {
+  const _SheetHandle({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 38.w,
+      height: 4.h,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(999.r),
+      ),
+    );
+  }
+}
+
+class _PickerHeader extends StatelessWidget {
+  const _PickerHeader({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'اختيار المنطقة',
+                style: TextStyle(
+                  color: context.onSurfaceColor,
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              SizedBox(height: 3.h),
+              Text(
+                'ابحث أو حدّد نقطة من الخريطة',
+                style: TextStyle(
+                  color: _alpha(context.onSurfaceColor, 0.55),
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        InkWell(
+          borderRadius: BorderRadius.circular(12.r),
+          onTap: onClose,
+          child: Container(
+            width: 36.w,
+            height: 36.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: context.surfaceColor,
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: _alpha(context.outlineVariant, 0.2)),
+            ),
+            child: AppIcon(
+              AppIcons.close,
+              color: context.onSurfaceVariant,
+              size: 15.sp,
+              strokeWidth: 1.6,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CurrentLocationButton extends StatelessWidget {
+  const _CurrentLocationButton({
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14.r),
+      onTap: isLoading ? null : onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
+        decoration: BoxDecoration(
+          color: context.primaryColor,
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isLoading)
+              SizedBox(
+                width: 14.w,
+                height: 14.w,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.w,
+                  color: context.onPrimaryColor,
+                ),
+              )
+            else
+              AppIcon(
+                AppIcons.location,
+                color: context.onPrimaryColor,
+                size: 14.sp,
+                strokeWidth: 1.6,
+              ),
+            SizedBox(width: 8.w),
+            Text(
+              isLoading
+                  ? 'جارِ استخدام موقع الجهاز...'
+                  : 'استخدام موقع الجهاز الحالي',
+              style: TextStyle(
+                color: context.onPrimaryColor,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PickerTabs extends StatelessWidget {
+  const _PickerTabs({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: _alpha(context.outlineVariant, 0.18)),
+      ),
+      child: TabBar(
+        dividerColor: Colors.transparent,
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          color: color.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        labelColor: context.onSurfaceColor,
+        labelStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w900),
+        unselectedLabelColor: _alpha(context.onSurfaceColor, 0.5),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w700,
+        ),
+        tabs: const [
+          Tab(text: 'بحث'),
+          Tab(text: 'الخريطة'),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  const _SearchField({
+    required this.controller,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      style: TextStyle(
+        color: context.onSurfaceColor,
+        fontSize: 12.5.sp,
+        fontWeight: FontWeight.w700,
+      ),
+      decoration: InputDecoration(
+        hintText: 'اسم المدينة أو الدولة',
+        hintStyle: TextStyle(
+          color: _alpha(context.onSurfaceColor, 0.45),
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+        ),
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(12.w),
+          child: AppIcon(
+            AppIcons.search,
+            color: context.primaryColor,
+            size: 15.sp,
+            strokeWidth: 1.6,
+          ),
+        ),
+        filled: true,
+        fillColor: context.surfaceColor,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.r),
+          borderSide: BorderSide(
+            color: _alpha(context.outlineVariant, 0.24),
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.r),
+          borderSide: BorderSide(
+            color: _alpha(context.outlineVariant, 0.24),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.r),
+          borderSide: BorderSide(
+            color: _alpha(context.primaryColor, 0.55),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchEmptyState extends StatelessWidget {
+  const _SearchEmptyState({required this.hasQuery});
+
+  final bool hasQuery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
+        decoration: BoxDecoration(
+          color: context.surfaceColor,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: _alpha(context.outlineVariant, 0.2)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(
+              hasQuery ? AppIcons.searchOff : AppIcons.search,
+              color: context.primaryColor,
+              size: 22.sp,
+              strokeWidth: 1.55,
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              hasQuery ? 'لم نعثر على نتائج مطابقة' : 'ابدأ بكتابة اسم المدينة',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _alpha(context.onSurfaceColor, 0.62),
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LocationResultTile extends StatelessWidget {
+  const _LocationResultTile({
+    required this.result,
+    required this.onTap,
+  });
+
+  final PrayerLocationSelection result;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(16.r),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(11.w),
+        decoration: BoxDecoration(
+          color: context.surfaceColor,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: _alpha(context.outlineVariant, 0.24)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 34.w,
+              height: 34.w,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: _alpha(context.primaryColor, 0.1),
+                borderRadius: BorderRadius.circular(11.r),
+              ),
+              child: AppIcon(
+                AppIcons.mapPin,
+                color: context.primaryColor,
+                size: 15.sp,
+                strokeWidth: 1.55,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    result.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.onSurfaceColor,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  if (result.detailsLabel.isNotEmpty) ...[
+                    SizedBox(height: 3.h),
+                    Text(
+                      result.detailsLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: _alpha(context.onSurfaceColor, 0.55),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            AppIcon(
+              AppIcons.chevronLeft,
+              color: _alpha(context.onSurfaceColor, 0.45),
+              size: 14.sp,
+              strokeWidth: 1.55,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MapSelectionCard extends StatelessWidget {
+  const _MapSelectionCard({
+    required this.selected,
+    required this.isApplying,
+    required this.onApply,
+  });
+
+  final PrayerLocationSelection? selected;
+  final bool isApplying;
+  final VoidCallback onApply;
+
+  @override
+  Widget build(BuildContext context) {
+    final canApply = selected != null && !isApplying;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: _alpha(context.outlineVariant, 0.24)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  selected?.label ?? 'لم يتم تحديد موقع بعد',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: context.onSurfaceColor,
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  (selected?.detailsLabel.isNotEmpty ?? false)
+                      ? selected!.detailsLabel
+                      : 'اضغط على الخريطة لاختيار المنطقة',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: _alpha(context.onSurfaceColor, 0.55),
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 10.w),
+          InkWell(
+            borderRadius: BorderRadius.circular(12.r),
+            onTap: canApply ? onApply : null,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
+              decoration: BoxDecoration(
+                color: canApply
+                    ? context.primaryColor
+                    : _alpha(context.onSurfaceColor, 0.08),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Row(
+                children: [
+                  if (isApplying)
+                    SizedBox(
+                      width: 13.w,
+                      height: 13.w,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.w,
+                        color: context.onPrimaryColor,
+                      ),
+                    )
+                  else
+                    AppIcon(
+                      AppIcons.checkSmall,
+                      color: canApply
+                          ? context.onPrimaryColor
+                          : _alpha(context.onSurfaceColor, 0.42),
+                      size: 13.sp,
+                      strokeWidth: 1.6,
+                    ),
+                  SizedBox(width: 6.w),
+                  Text(
+                    isApplying ? 'جارِ' : 'اعتماد',
+                    style: TextStyle(
+                      color: canApply || isApplying
+                          ? context.onPrimaryColor
+                          : _alpha(context.onSurfaceColor, 0.42),
+                      fontSize: 10.5.sp,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
