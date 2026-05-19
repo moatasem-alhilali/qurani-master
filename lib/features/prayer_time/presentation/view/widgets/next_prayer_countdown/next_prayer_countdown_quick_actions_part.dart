@@ -161,8 +161,9 @@ class _QuickActionButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 29.w,
-              height: 29.w,
+              width: 35.w,
+              height: 35.w,
+              padding: EdgeInsets.all(4.sp),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(

@@ -301,8 +301,8 @@ class _FeaturedShortcutCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 44.w,
-                      height: 44.w,
+                      width: 52.w,
+                      height: 52.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.r),
                         color: chipBackground,
@@ -449,8 +449,9 @@ class _FeatureTile extends StatelessWidget {
                         ),
                         child: Center(
                           child: Container(
-                            width: 20.w,
-                            height: 20.w,
+                            width: 30.w,
+                            height: 30.w,
+                            padding: EdgeInsets.all(2.sp),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(7.r),
                               gradient: LinearGradient(
@@ -465,7 +466,7 @@ class _FeatureTile extends StatelessWidget {
                             child: AppIcon(
                               item.icon,
                               color: context.onPrimaryColor,
-                              size: 9.5.sp,
+                              size: 9.sp,
                             ),
                           ),
                         ),
