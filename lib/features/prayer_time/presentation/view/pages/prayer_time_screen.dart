@@ -255,11 +255,11 @@ class _PrayerTimesTodayView extends StatelessWidget {
             entries: entries,
             locationNow: locationNow,
           ),
-          SizedBox(height: 14.h),
-          const _SectionHeader(
-            title: 'جدول اليوم',
-            subtitle: 'كل وقت بحالته الحالية بدون ازدحام',
-          ),
+          // SizedBox(height: 14.h),
+          // const _SectionHeader(
+          //   title: 'جدول اليوم',
+          //   subtitle: 'كل وقت بحالته الحالية بدون ازدحام',
+          // ),
           SizedBox(height: 10.h),
           if (entries.isEmpty)
             _EmptyPrayerState(onChangeLocation: onChangeLocation)
