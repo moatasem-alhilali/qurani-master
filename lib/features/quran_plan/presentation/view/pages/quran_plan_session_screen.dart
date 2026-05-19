@@ -16,7 +16,7 @@ import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
-import 'package:quran_library/quran_library.dart';
+import 'package:quran_library/quran.dart';
 
 class QuranPlanSessionScreen extends StatefulWidget {
   const QuranPlanSessionScreen({
@@ -130,7 +130,7 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                         _QuietAnalysisCard(analysis: state.analysis!),
                       ],
                       SizedBox(height: 16.h),
-                      _SectionHeader(
+                      const _SectionHeader(
                         title: 'مسار الختمة',
                         subtitle: 'جلسات مختصرة، افتح أي جلسة للانتقال لموضعها',
                       ),
@@ -1028,7 +1028,7 @@ String _sessionRangeText(QuranPlanSession session) {
       '$toName ${session.toAyahNumber}';
 }
 
-dynamic _findSurah(int surahId) {
+SurahModel? _findSurah(int surahId) {
   for (final surah in QuranCtrl.instance.surahs) {
     if (surah.surahNumber == surahId) return surah;
   }
