@@ -543,7 +543,7 @@ class _SummaryCard extends StatelessWidget {
                       ),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 260),
-                          child: _SoftValuePill(
+                        child: _SoftValuePill(
                           key: ValueKey(completionPercent),
                           value: '$completionPercent%',
                           color: context.primaryColor,

@@ -7,22 +7,22 @@ class _QuickActionsPanel extends StatelessWidget {
     return [
       _QuickActionItem(
         label: 'المصحف',
-        icon: Icons.menu_book_outlined,
+        icon: AppIcons.quran,
         onTap: () => context.push(const ReadQuranScreen()),
       ),
       _QuickActionItem(
         label: 'مواقيت الصلاة',
-        icon: Icons.schedule_outlined,
+        icon: AppIcons.clock,
         onTap: () => context.push(const PrayerTimeScreen()),
       ),
       _QuickActionItem(
         label: 'القبلة',
-        icon: Icons.explore_outlined,
+        icon: AppIcons.compass,
         onTap: () => context.push(const QiblahMainScreen()),
       ),
       _QuickActionItem(
         label: 'مكتبة الأذكار',
-        icon: Icons.volunteer_activism_outlined,
+        icon: AppIcons.tasbih,
         onTap: () => context.push(const MainThikrScreen()),
       ),
       // _QuickActionItem(
@@ -184,7 +184,7 @@ class _QuickActionButton extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(
+              child: AppIcon(
                 item.icon,
                 color: _kHeroDeep,
                 size: 16.sp,
@@ -218,6 +218,6 @@ class _QuickActionItem {
   });
 
   final String label;
-  final IconData icon;
+  final HugeIconData icon;
   final VoidCallback onTap;
 }

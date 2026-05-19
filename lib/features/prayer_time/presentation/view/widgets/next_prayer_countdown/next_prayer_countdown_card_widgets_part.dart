@@ -136,8 +136,8 @@ class _NextPrayerHeroCard extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.location_on_outlined,
+                                AppIcon(
+                                  AppIcons.mapPin,
                                   color: _kAccentGold.withValues(alpha: 0.96),
                                   size: 14.sp,
                                 ),
@@ -167,7 +167,7 @@ class _NextPrayerHeroCard extends StatelessWidget {
                         // ),
                         SizedBox(width: 6.w),
                         _HeaderActionIcon(
-                          icon: Icons.settings_outlined,
+                          icon: AppIcons.settings,
                           onTap: onSettingsTap,
                         ),
                       ],
@@ -329,8 +329,8 @@ class _NoticeActionChip extends StatelessWidget {
               color: _kAccentGold.withValues(alpha: 0.54),
             ),
           ),
-          child: Icon(
-            Icons.refresh_rounded,
+          child: AppIcon(
+            AppIcons.refresh,
             color: _kAccentGold,
             size: 17.sp,
           ),
@@ -366,12 +366,12 @@ class _HeaderActionIcon extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final iconWidget = Icon(
+    final iconWidget = AppIcon(
       icon,
       color: _kAccentGold,
       size: 20.sp,
@@ -399,7 +399,7 @@ class _PrayerTimeMiniTile extends StatelessWidget {
   });
 
   final _PrayerMiniEntry entry;
-  final IconData icon;
+  final HugeIconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -445,7 +445,7 @@ class _PrayerTimeMiniTile extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            AppIcon(
               icon,
               color: foregroundColor,
               size: 17.sp,

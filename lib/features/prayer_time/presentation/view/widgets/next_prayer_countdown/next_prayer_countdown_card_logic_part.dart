@@ -60,22 +60,22 @@ String _buildCountdownLine(String prayerName, Duration remaining) {
   return '$prayerName بعد $hours س $minutes د';
 }
 
-IconData _iconForPrayer(Prayer prayer) {
+HugeIconData _iconForPrayer(Prayer prayer) {
   switch (prayer) {
     case Prayer.none:
-      return Icons.access_time_rounded;
+      return AppIcons.clock;
     case Prayer.fajr:
-      return Icons.wb_twilight_rounded;
+      return AppIcons.moon;
     case Prayer.sunrise:
-      return Icons.wb_sunny_outlined;
+      return AppIcons.sunrise;
     case Prayer.dhuhr:
-      return Icons.light_mode_rounded;
+      return AppIcons.sun;
     case Prayer.asr:
-      return Icons.wb_sunny_rounded;
+      return AppIcons.sun;
     case Prayer.maghrib:
-      return Icons.brightness_5_rounded;
+      return AppIcons.sunset;
     case Prayer.isha:
-      return Icons.nightlight_round;
+      return AppIcons.moon;
   }
 }
 

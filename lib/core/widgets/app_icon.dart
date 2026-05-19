@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 typedef HugeIconData = List<List<dynamic>>;
@@ -25,7 +26,7 @@ class AppIcon extends StatelessWidget {
       icon: icon,
       color: color ?? IconTheme.of(context).color,
       secondaryColor: secondaryColor,
-      size: size ?? IconTheme.of(context).size,
+      size: size ?? 18.sp,
       strokeWidth: strokeWidth,
     );
   }
@@ -102,6 +103,8 @@ abstract final class AppIcons {
   static const sun = HugeIcons.strokeRoundedSun03;
   static const sunrise = HugeIcons.strokeRoundedSunrise;
   static const sunset = HugeIcons.strokeRoundedSunset;
+  static const prayerRug = HugeIcons.strokeRoundedPrayerRug01;
+  static const mapPin = HugeIcons.strokeRoundedMapPin;
   static const more = HugeIcons.strokeRoundedMoreVertical;
   static const list = HugeIcons.strokeRoundedLeftToRightListBullet;
   static const menuBook = HugeIcons.strokeRoundedBookOpenText;

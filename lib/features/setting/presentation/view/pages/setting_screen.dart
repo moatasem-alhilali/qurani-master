@@ -244,56 +244,40 @@ class _DeveloperInfoCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _SettingsSectionTitle(title: 'حول المطور'),
-        SizedBox(height: 12.h),
+        SizedBox(height: 8.h),
         _SettingsCard(
           child: Row(
             children: [
-              Container(
-                width: 40.w,
-                height: 40.w,
-                decoration: BoxDecoration(
-                  color: context.primaryColor.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: AppIcon(
-                  AppIcons.user,
-                  color: context.primaryColor,
-                  size: 18.sp,
+              Expanded(
+                child: Text(
+                  'معتصم الهلالي',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w800,
+                    color: context.onSurfaceColor,
+                  ),
                 ),
               ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'معتصم الهلالي',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w800,
-                        color: context.onSurfaceColor,
-                      ),
+              SizedBox(width: 10.w),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _DeveloperIconButton(
+                    tooltip: 'الموقع الشخصي',
+                    icon: AppIcons.globe,
+                    onTap: () => UrlLauncherUtils.launchWebUrl(_website),
+                  ),
+                  SizedBox(width: 7.w),
+                  _DeveloperIconButton(
+                    tooltip: 'واتس اب',
+                    icon: AppIcons.whatsapp,
+                    onTap: () => UrlLauncherUtils.launchWhatsAppUrl(
+                      _phone,
                     ),
-                    SizedBox(height: 6.h),
-                    Row(
-                      children: [
-                        _DeveloperIconButton(
-                          tooltip: 'الموقع الشخصي',
-                          icon: AppIcons.globe,
-                          onTap: () => UrlLauncherUtils.launchWebUrl(_website),
-                        ),
-                        SizedBox(width: 8.w),
-                        _DeveloperIconButton(
-                          tooltip: 'واتس اب',
-                          icon: AppIcons.whatsapp,
-                          onTap: () => UrlLauncherUtils.launchWhatsAppUrl(
-                            _phone,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -320,21 +304,21 @@ class _DeveloperIconButton extends StatelessWidget {
       message: tooltip,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(11.r),
+        borderRadius: BorderRadius.circular(9.r),
         child: Ink(
-          width: 34.w,
-          height: 34.w,
+          width: 30.w,
+          height: 30.w,
           decoration: BoxDecoration(
-            color: context.primaryColor.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(11.r),
+            color: context.primaryColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(9.r),
             border: Border.all(
-              color: context.primaryColor.withValues(alpha: 0.14),
+              color: context.primaryColor.withValues(alpha: 0.12),
             ),
           ),
           child: AppIcon(
             icon,
             color: context.primaryColor,
-            size: 17.sp,
+            size: 15.sp,
           ),
         ),
       ),
