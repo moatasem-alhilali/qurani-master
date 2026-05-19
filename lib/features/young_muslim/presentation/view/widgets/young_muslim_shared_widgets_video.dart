@@ -22,15 +22,15 @@ class YoungMuslimVideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = compact ? 170.w : 220.w;
+    final width = compact ? 158.w : 210.w;
     final cardWidth = fillWidth ? double.infinity : width;
-    final imageHeight = compact ? 110.h : 138.h;
+    final imageHeight = compact ? 98.h : 126.h;
     final progress = video.progressPercent.clamp(0, 1);
-    final borderRadius = BorderRadius.circular(26.r);
+    final borderRadius = BorderRadius.circular(18.r);
 
     return Container(
       width: cardWidth,
-      decoration: youngMuslimPanelDecoration(context, radius: 26, useGradient: true),
+      decoration: youngMuslimPanelDecoration(context, radius: 18),
       child: ClipRRect(
         borderRadius: borderRadius,
         child: InkWell(
@@ -61,18 +61,6 @@ class YoungMuslimVideoCard extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    bottom: -15.h,
-                    left: -15.w,
-                    child: Container(
-                      width: 50.w,
-                      height: 50.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
-                    ),
-                  ),
-                  Positioned(
                     right: 10.w,
                     top: 10.h,
                     child: Row(
@@ -81,8 +69,8 @@ class YoungMuslimVideoCard extends StatelessWidget {
                           _IconCircleButton(
                             onTap: onFavoriteToggle!,
                             icon: video.isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                                ? AppIcons.heartFilled
+                                : AppIcons.heart,
                             active: video.isFavorite,
                           ),
                         if (onWatchLaterToggle != null) ...[
@@ -90,8 +78,8 @@ class YoungMuslimVideoCard extends StatelessWidget {
                           _IconCircleButton(
                             onTap: onWatchLaterToggle!,
                             icon: video.isWatchLater
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
+                                ? AppIcons.bookmark
+                                : AppIcons.bookmarkAdd,
                             active: video.isWatchLater,
                           ),
                         ],
@@ -103,8 +91,8 @@ class YoungMuslimVideoCard extends StatelessWidget {
                     top: 10.h,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 6.h,
+                        horizontal: 9.w,
+                        vertical: 5.h,
                       ),
                       decoration: BoxDecoration(
                         color: context.scrim.withValues(alpha: 0.25),
@@ -118,7 +106,7 @@ class YoungMuslimVideoCard extends StatelessWidget {
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
-                          fontSize: 10.sp,
+                          fontSize: 9.sp,
                         ),
                       ),
                     ),
@@ -127,11 +115,11 @@ class YoungMuslimVideoCard extends StatelessWidget {
                     left: 12.w,
                     bottom: 12.h,
                     child: Container(
-                      width: 42.w,
-                      height: 42.w,
+                      width: 34.w,
+                      height: 34.w,
                       decoration: BoxDecoration(
                         color: context.surfaceColor.withValues(alpha: 0.95),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(12.r),
                         boxShadow: [
                           BoxShadow(
                             color: context.shadow.withValues(alpha: 0.1),
@@ -140,47 +128,49 @@ class YoungMuslimVideoCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Icon(
-                        Icons.play_arrow_rounded,
-                        size: 28.sp,
+                      child: AppIcon(
+                        AppIcons.play,
+                        size: 16.sp,
                         color: context.primaryColor,
+                        strokeWidth: 1.6,
                       ),
                     ),
                   ),
                 ],
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
+                padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 13.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       video.title,
                       style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: 12.5.sp,
                         fontWeight: FontWeight.w900,
                         color: context.onSurfaceColor,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 6.h),
+                    SizedBox(height: 5.h),
                     Text(
                       seriesTitle,
                       style: TextStyle(
-                        fontSize: 11.sp,
+                        fontSize: 9.5.sp,
                         color: context.onSurfaceVariant.withValues(alpha: 0.7),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 10.h),
                     Stack(
                       children: [
                         LinearProgressIndicator(
                           value: progress.toDouble(),
-                          minHeight: 7.h,
-                          backgroundColor: context.outline.withValues(alpha: 0.15),
+                          minHeight: 5.h,
+                          backgroundColor:
+                              context.outline.withValues(alpha: 0.15),
                           color: video.isCompleted
                               ? youngMuslimCompletionColor(context)
                               : context.primaryColor,
@@ -188,7 +178,7 @@ class YoungMuslimVideoCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
                         Expanded(
@@ -199,7 +189,7 @@ class YoungMuslimVideoCard extends StatelessWidget {
                                     ? 'تقدّم ${(progress * 100).round()}%'
                                     : 'جاهز للمشاهدة',
                             style: TextStyle(
-                              fontSize: 11.sp,
+                              fontSize: 9.5.sp,
                               fontWeight: FontWeight.w800,
                               color: video.isCompleted
                                   ? youngMuslimCompletionColor(context)
@@ -211,8 +201,9 @@ class YoungMuslimVideoCard extends StatelessWidget {
                           Text(
                             'حلقة ${video.episodeNumber}',
                             style: TextStyle(
-                              fontSize: 10.sp,
-                              color: context.onSurfaceVariant.withValues(alpha: 0.6),
+                              fontSize: 9.sp,
+                              color: context.onSurfaceVariant
+                                  .withValues(alpha: 0.6),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -253,13 +244,13 @@ class YoungMuslimVideoCarousel extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final cardWidth = compact ? 170.w : 220.w;
+    final cardWidth = compact ? 158.w : 210.w;
     final itemPadding = 6.w;
 
     return CarouselSlider.builder(
       itemCount: videos.length,
       options: CarouselOptions(
-        height: compact ? 252.h : 305.h,
+        height: compact ? 226.h : 278.h,
         viewportFraction: youngMuslimCarouselViewportFraction(
           context,
           itemWidth: cardWidth + (itemPadding * 2),
@@ -298,7 +289,7 @@ class _IconCircleButton extends StatelessWidget {
   });
 
   final VoidCallback onTap;
-  final IconData icon;
+  final HugeIconData icon;
   final bool active;
 
   @override
@@ -307,30 +298,33 @@ class _IconCircleButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
-        width: 38.w,
-        height: 38.w,
+        width: 32.w,
+        height: 32.w,
         decoration: BoxDecoration(
           color: active
               ? context.primaryColor
               : context.surfaceColor.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: active 
+            color: active
                 ? Colors.white.withValues(alpha: 0.2)
                 : context.outline.withValues(alpha: 0.2),
           ),
-          boxShadow: active ? [
-            BoxShadow(
-              color: context.primaryColor.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: active
+              ? [
+                  BoxShadow(
+                    color: context.primaryColor.withValues(alpha: 0.22),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
-        child: Icon(
+        child: AppIcon(
           icon,
-          size: 18.sp,
+          size: 13.sp,
           color: active ? context.onPrimaryColor : context.onSurfaceVariant,
+          strokeWidth: 1.55,
         ),
       ),
     );

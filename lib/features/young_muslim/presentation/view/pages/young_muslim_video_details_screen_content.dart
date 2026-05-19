@@ -45,10 +45,16 @@ extension _YoungMuslimVideoDetailsScreenContent
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () => _openPlayer(details.video.id),
-                icon: Icon(Icons.play_circle_fill_rounded, size: 24.r),
+                icon: AppIcon(
+                  AppIcons.play,
+                  size: 15.sp,
+                  color: context.onPrimaryColor,
+                  strokeWidth: 1.55,
+                ),
                 label: Text(
                   details.video.hasProgress ? 'متابعة المشاهدة' : 'تشغيل الآن',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.primaryColor,
@@ -64,8 +70,8 @@ extension _YoungMuslimVideoDetailsScreenContent
             SizedBox(width: 10.w),
             _ActionCircleButton(
               icon: details.video.isFavorite
-                  ? Icons.favorite
-                  : Icons.favorite_border,
+                  ? AppIcons.heartFilled
+                  : AppIcons.heart,
               color: details.video.isFavorite
                   ? youngMuslimRewardColor(context)
                   : context.primaryColor,
@@ -76,8 +82,8 @@ extension _YoungMuslimVideoDetailsScreenContent
             SizedBox(width: 10.w),
             _ActionCircleButton(
               icon: details.video.isWatchLater
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
+                  ? AppIcons.bookmark
+                  : AppIcons.bookmarkAdd,
               color: details.video.isWatchLater
                   ? context.secondaryColor
                   : context.primaryColor,
@@ -131,12 +137,20 @@ extension _YoungMuslimVideoDetailsScreenContent
                 subtitle: 'تفاصيل بسيطة وواضحة للطفل وولي الأمر',
               ),
               SizedBox(height: 16.h),
-              _buildInfoRow(context, 'القصة', details.video.topicTitle, isBold: true),
+              _buildInfoRow(
+                context,
+                'القصة',
+                details.video.topicTitle,
+                isBold: true,
+              ),
               _buildInfoRow(context, 'القسم', details.category.titleAr),
               _buildInfoRow(context, 'السلسلة', details.series.titleAr),
               if (details.video.episodeNumber != null)
-                _buildInfoRow(context, 'رقم الحلقة', '${details.video.episodeNumber}'),
-              
+                _buildInfoRow(
+                  context,
+                  'رقم الحلقة',
+                  '${details.video.episodeNumber}',
+                ),
               if (details.videoQuiz != null) ...[
                 SizedBox(height: 16.h),
                 SizedBox(
@@ -149,11 +163,21 @@ extension _YoungMuslimVideoDetailsScreenContent
                         title: 'سؤال بعد المشاهدة',
                       );
                     },
-                    icon: Icon(Icons.quiz_outlined, size: 20.r),
-                    label: Text('أسئلة الحلقة', style: TextStyle(fontSize: 13.sp)),
+                    icon: AppIcon(
+                      AppIcons.target,
+                      size: 14.sp,
+                      color: context.primaryColor,
+                      strokeWidth: 1.55,
+                    ),
+                    label: Text(
+                      'أسئلة الحلقة',
+                      style: TextStyle(fontSize: 12.sp),
+                    ),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                      side: BorderSide(color: context.primaryColor.withOpacity(0.3)),
+                      side: BorderSide(
+                        color: context.primaryColor.withValues(alpha: 0.3),
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
                       ),
@@ -172,11 +196,21 @@ extension _YoungMuslimVideoDetailsScreenContent
                       achievements: details.achievements,
                     );
                   },
-                  icon: Icon(Icons.emoji_events_outlined, size: 20.r),
-                  label: Text('نقاطي وإنجازاتي', style: TextStyle(fontSize: 13.sp)),
+                  icon: AppIcon(
+                    AppIcons.target,
+                    size: 14.sp,
+                    color: context.primaryColor,
+                    strokeWidth: 1.55,
+                  ),
+                  label: Text(
+                    'نقاطي وإنجازاتي',
+                    style: TextStyle(fontSize: 12.sp),
+                  ),
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
-                    side: BorderSide(color: context.primaryColor.withOpacity(0.3)),
+                    side: BorderSide(
+                      color: context.primaryColor.withValues(alpha: 0.3),
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r),
                     ),
@@ -234,7 +268,12 @@ extension _YoungMuslimVideoDetailsScreenContent
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String value, {bool isBold = false}) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    String label,
+    String value, {
+    bool isBold = false,
+  }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
@@ -244,7 +283,7 @@ extension _YoungMuslimVideoDetailsScreenContent
             '$label: ',
             style: TextStyle(
               fontSize: 13.sp,
-              color: context.onSurfaceVariant.withOpacity(0.7),
+              color: context.onSurfaceVariant.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -310,7 +349,7 @@ class _ActionCircleButton extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final HugeIconData icon;
   final Color color;
   final VoidCallback onTap;
 
@@ -320,10 +359,15 @@ class _ActionCircleButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18.r),
       child: Ink(
-        width: 48.w,
-        height: 48.w,
-        decoration: youngMuslimPanelDecoration(context, radius: 16),
-        child: Icon(icon, color: color, size: 22.r),
+        width: 42.w,
+        height: 42.w,
+        decoration: youngMuslimPanelDecoration(context, radius: 14),
+        child: AppIcon(
+          icon,
+          color: color,
+          size: 16.sp,
+          strokeWidth: 1.55,
+        ),
       ),
     );
   }

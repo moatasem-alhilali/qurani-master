@@ -35,6 +35,8 @@ class DailyWirdScreen extends StatelessWidget {
         builder: (context, state) {
           return AppScaffoldWidget(
             title: 'زاد اليوم والليلة',
+            showLargeHeader: false,
+            initialOffset: null,
             onRefresh: () async {
               context.read<DailyWirdBloc>().add(const DailyWirdLoadEvent());
             },
@@ -72,16 +74,54 @@ class DailyWirdScreen extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             return Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+              padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 24.h),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'إعدادات الزاد التعبدي',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
+                    Center(
+                      child: Container(
+                        width: 38.w,
+                        height: 4.h,
+                        decoration: BoxDecoration(
+                          color: context.outlineVariant.withValues(alpha: 0.55),
+                          borderRadius: BorderRadius.circular(999.r),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 14.h),
+                    Row(
+                      children: [
+                        _IconBadge(
+                          icon: AppIcons.settings,
+                          color: context.primaryColor,
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'إعدادات الزاد التعبدي',
+                                style: TextStyle(
+                                  color: context.onSurfaceColor,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              SizedBox(height: 3.h),
+                              Text(
+                                'التذكيرات والبرنامج اليومي في مكان واحد',
+                                style: TextStyle(
+                                  color: context.onSurfaceVariant,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 16.h),
                     _ReminderTile(
@@ -185,11 +225,9 @@ class DailyWirdScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 12.h),
-                    Text(
-                      'اختيار البرنامج التعبدي',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                    const _SectionTitle(
+                      title: 'اختيار البرنامج',
+                      subtitle: 'اختر قالب الزاد المناسب ليومك',
                     ),
                     SizedBox(height: 8.h),
                     Wrap(
@@ -213,8 +251,9 @@ class DailyWirdScreen extends StatelessWidget {
                           .toList(),
                     ),
                     SizedBox(height: 20.h),
-                    FilledButton(
-                      onPressed: () {
+                    InkWell(
+                      borderRadius: BorderRadius.circular(14.r),
+                      onTap: () {
                         Navigator.of(sheetContext).pop();
                         if (draft.selectedPresetId !=
                                 settings.selectedPresetId &&
@@ -229,7 +268,33 @@ class DailyWirdScreen extends StatelessWidget {
                           DailyWirdUpdateSettingsEvent(draft),
                         );
                       },
-                      child: const Text('حفظ التهيئة'),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: context.primaryColor,
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AppIcon(
+                              AppIcons.save,
+                              color: context.onPrimaryColor,
+                              size: 14.sp,
+                              strokeWidth: 1.55,
+                            ),
+                            SizedBox(width: 7.w),
+                            Text(
+                              'حفظ التهيئة',
+                              style: TextStyle(
+                                color: context.onPrimaryColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -272,7 +337,9 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.requestState == RequestState.loading && state.settings == null) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: CircularProgressIndicator(color: context.primaryColor),
+      );
     }
 
     if (state.requiresPresetSelection) {
@@ -292,21 +359,30 @@ class _Body extends StatelessWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 28.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (state.actionState == RequestState.loading)
-            const LinearProgressIndicator(),
+          if (state.actionState == RequestState.loading) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999.r),
+              child: LinearProgressIndicator(
+                minHeight: 3.h,
+                color: context.primaryColor,
+                backgroundColor: context.primaryColor.withValues(alpha: 0.08),
+              ),
+            ),
+            SizedBox(height: 8.h),
+          ],
           _SummaryCard(
             preset: selectedPreset,
             state: state,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
           ...program.items.asMap().entries.map<Widget>(
                 (MapEntry<int, DailyWirdItem> entry) => Padding(
-                  padding: EdgeInsets.only(bottom: 12.h),
+                  padding: EdgeInsets.only(bottom: 9.h),
                   child: _ItemCard(
                     index: entry.key,
                     item: entry.value,
@@ -329,117 +405,213 @@ class _PresetSelectionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 24.h),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'اختر زادك التعبدي',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
+          _SoftPanel(
+            padding: EdgeInsets.all(14.w),
+            child: Row(
+              children: [
+                _IconBadge(
+                  icon: AppIcons.bookOpen,
+                  color: context.primaryColor,
                 ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'ابدأ ببرنامج تعبدي جاهز، ثم خصص العدد وأخف ما لا تريد '
-            'ورتب عناصر الزاد كما يناسبك.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: context.onSurfaceColor.withValues(alpha: 0.74),
-                ),
-          ),
-          SizedBox(height: 20.h),
-          ...presets.map(
-            (preset) => Padding(
-              padding: EdgeInsets.only(bottom: 12.h),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22.r),
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      context.surfaceColor,
-                      context.surfaceVariant.withValues(alpha: 0.9),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: context.outline.withValues(alpha: 0.12),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.shadow.withValues(alpha: 0.08),
-                      blurRadius: 18.r,
-                      offset: Offset(0, 10.h),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22.r),
-                  child: Stack(
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _TopAccentLine(color: context.primaryColor),
-                      Padding(
-                        padding: EdgeInsets.all(18.w),
-                        child: Row(
-                          children: [
-                            _IconBadge(
-                              heroTag: 'preset_${preset.id}',
-                              icon: AppIcons.quran,
-                              color: context.primaryColor,
-                            ),
-                            SizedBox(width: 14.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    preset.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  Text(
-                                    preset.description,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: context.onSurfaceColor
-                                              .withValues(alpha: 0.72),
-                                        ),
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: FilledButton(
-                                      onPressed: () {
-                                        context.read<DailyWirdBloc>().add(
-                                              DailyWirdSelectPresetEvent(
-                                                preset.id,
-                                              ),
-                                            );
-                                      },
-                                      child: const Text('اعتماد البرنامج'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      Text(
+                        'اختر زادك التعبدي',
+                        style: TextStyle(
+                          color: context.onSurfaceColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+                      Text(
+                        'ابدأ ببرنامج جاهز ثم خصصه كما يناسبك',
+                        style: TextStyle(
+                          color: context.onSurfaceVariant,
+                          fontSize: 10.5.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+          SizedBox(height: 14.h),
+          ...presets.map(
+            (preset) => Padding(
+              padding: EdgeInsets.only(bottom: 10.h),
+              child: _SoftPanel(
+                padding: EdgeInsets.all(13.w),
+                child: Row(
+                  children: [
+                    _IconBadge(
+                      heroTag: 'preset_${preset.id}',
+                      icon: AppIcons.quran,
+                      color: context.primaryColor,
+                    ),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            preset.name,
+                            style: TextStyle(
+                              color: context.onSurfaceColor,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            preset.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: context.onSurfaceVariant,
+                              fontSize: 10.sp,
+                              height: 1.35,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    _SmallTextButton(
+                      label: 'اعتماد',
+                      onTap: () {
+                        context.read<DailyWirdBloc>().add(
+                              DailyWirdSelectPresetEvent(preset.id),
+                            );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 5.w,
+          height: 5.w,
+          decoration: BoxDecoration(
+            color: context.primaryColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 7.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: context.onSurfaceColor,
+                  fontSize: 12.5.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: context.onSurfaceVariant,
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SoftPanel extends StatelessWidget {
+  const _SoftPanel({
+    required this.child,
+    this.padding,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return CardWidget(
+      padding: padding ?? EdgeInsets.all(12.w),
+      borderRadius: BorderRadius.circular(17.r),
+      border: Border.all(
+        color: context.outline.withValues(alpha: 0.10),
+      ),
+      color: context.surfaceColor,
+      child: child,
+    );
+  }
+}
+
+class _SmallTextButton extends StatelessWidget {
+  const _SmallTextButton({
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12.r),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: context.primaryColor.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: context.primaryColor.withValues(alpha: 0.12),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: context.primaryColor,
+            fontSize: 10.5.sp,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
       ),
     );
   }
@@ -465,7 +637,7 @@ class _SummaryCard extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(18.r),
         color: context.surfaceColor,
         border: Border.all(
           color: context.outline.withValues(alpha: 0.10),
@@ -473,30 +645,18 @@ class _SummaryCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: context.shadow.withValues(alpha: 0.05),
-            blurRadius: 14.r,
-            offset: Offset(0, 8.h),
+            blurRadius: 10.r,
+            offset: Offset(0, 5.h),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Stack(
           children: [
             _TopAccentLine(color: context.primaryColor),
-            Positioned(
-              left: -18.w,
-              top: 14.h,
-              child: Container(
-                width: 58.w,
-                height: 58.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: context.primaryColor.withValues(alpha: 0.04),
-                ),
-              ),
-            ),
             Padding(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(13.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -507,7 +667,7 @@ class _SummaryCard extends StatelessWidget {
                         icon: AppIcons.bookOpen,
                         color: context.primaryColor,
                       ),
-                      SizedBox(width: 12.w),
+                      SizedBox(width: 10.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -516,24 +676,27 @@ class _SummaryCard extends StatelessWidget {
                               label: 'برنامج اليوم',
                               color: context.primaryColor,
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 3.h),
                             Text(
                               preset.name,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
                                   ?.copyWith(
-                                    fontSize: 18.sp,
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 3.h),
                             Text(
                               preset.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(
+                                    fontSize: 10.5.sp,
                                     color: context.onSurfaceColor
                                         .withValues(alpha: 0.72),
                                   ),
@@ -551,7 +714,7 @@ class _SummaryCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 14.h),
+                  SizedBox(height: 11.h),
                   TweenAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeOutCubic,
@@ -564,7 +727,7 @@ class _SummaryCard extends StatelessWidget {
                             value: value,
                             color: context.primaryColor,
                           ),
-                          SizedBox(height: 8.h),
+                          SizedBox(height: 6.h),
                           Text(
                             'أكملت '
                             '$completionPercent%'
@@ -579,7 +742,7 @@ class _SummaryCard extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 10.h),
                   Row(
                     children: [
                       Expanded(
@@ -589,7 +752,7 @@ class _SummaryCard extends StatelessWidget {
                           color: context.primaryColor,
                         ),
                       ),
-                      SizedBox(width: 10.w),
+                      SizedBox(width: 8.w),
                       Expanded(
                         child: _StatBox(
                           label: 'نسبة المواظبة',
@@ -625,26 +788,28 @@ class _StatBox extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(13.r),
         border: Border.all(
           color: color.withValues(alpha: 0.12),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 10.sp,
                     color: context.onSurfaceColor.withValues(alpha: 0.68),
                   ),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 3.h),
             Text(
               value,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                     color: color,
                   ),
@@ -690,7 +855,7 @@ class _ItemCard extends StatelessWidget {
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(17.r),
           color: context.surfaceColor,
           border: Border.all(
             color: item.isCompleted
@@ -700,18 +865,18 @@ class _ItemCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: context.shadow.withValues(alpha: 0.04),
-              blurRadius: 12.r,
-              offset: Offset(0, 7.h),
+              blurRadius: 9.r,
+              offset: Offset(0, 5.h),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(17.r),
           child: Stack(
             children: [
               _TopAccentLine(color: accentColor),
               Padding(
-                padding: EdgeInsets.fromLTRB(14.w, 13.h, 14.w, 12.h),
+                padding: EdgeInsets.fromLTRB(12.w, 11.h, 12.w, 10.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -727,7 +892,7 @@ class _ItemCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12.w),
+                        SizedBox(width: 10.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -738,14 +903,14 @@ class _ItemCard extends StatelessWidget {
                                     .textTheme
                                     .titleMedium
                                     ?.copyWith(
-                                      fontSize: 16.sp,
+                                      fontSize: 13.5.sp,
                                       fontWeight: FontWeight.w700,
                                       decoration: item.isCompleted
                                           ? TextDecoration.lineThrough
                                           : null,
                                     ),
                               ),
-                              SizedBox(height: 3.h),
+                              SizedBox(height: 4.h),
                               Wrap(
                                 spacing: 6.w,
                                 runSpacing: 4.h,
@@ -783,7 +948,7 @@ class _ItemCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 8.h),
                     TweenAnimationBuilder<double>(
                       duration: const Duration(milliseconds: 360),
                       curve: Curves.easeOutCubic,
@@ -795,7 +960,7 @@ class _ItemCard extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 8.h),
                     Text(
                       item.contentEntries.isNotEmpty
                           ? item.contentEntries.first.text
@@ -803,20 +968,20 @@ class _ItemCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 13.sp,
-                            height: 1.6,
+                            fontSize: 11.5.sp,
+                            height: 1.55,
                             color:
                                 context.onSurfaceColor.withValues(alpha: 0.82),
                           ),
                     ),
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 9.h),
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => _openItem(context),
                             style: OutlinedButton.styleFrom(
-                              minimumSize: Size.fromHeight(38.h),
+                              minimumSize: Size.fromHeight(34.h),
                               padding: EdgeInsets.symmetric(vertical: 0.h),
                               side: BorderSide(
                                 color: accentColor.withValues(alpha: 0.18),
@@ -825,11 +990,11 @@ class _ItemCard extends StatelessWidget {
                             child: const Text('دخول'),
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 7.w),
                         Expanded(
                           child: FilledButton(
                             style: FilledButton.styleFrom(
-                              minimumSize: Size.fromHeight(38.h),
+                              minimumSize: Size.fromHeight(34.h),
                               padding: EdgeInsets.symmetric(vertical: 0.h),
                               backgroundColor:
                                   accentColor.withValues(alpha: 0.16),
@@ -864,7 +1029,7 @@ class _ItemCard extends StatelessWidget {
                         ),
                         PopupMenuButton<_ItemAction>(
                           style: IconButton.styleFrom(
-                            minimumSize: Size(38.w, 38.w),
+                            minimumSize: Size(34.w, 34.w),
                             padding: EdgeInsets.zero,
                           ),
                           onSelected: (value) async {
@@ -1093,7 +1258,7 @@ class _TopAccentLine extends StatelessWidget {
       right: 0,
       left: 0,
       child: Container(
-        height: 2.h,
+        height: 1.5.h,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerRight,
@@ -1123,10 +1288,10 @@ class _IconBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final badge = Container(
-      width: 42.w,
-      height: 42.w,
+      width: 36.w,
+      height: 36.w,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(12.r),
         color: color.withValues(alpha: 0.08),
         border: Border.all(
           color: color.withValues(alpha: 0.10),
@@ -1134,16 +1299,17 @@ class _IconBadge extends StatelessWidget {
       ),
       child: Center(
         child: Container(
-          width: 28.w,
-          height: 28.w,
+          width: 24.w,
+          height: 24.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(8.r),
             color: color.withValues(alpha: 0.90),
           ),
           child: AppIcon(
             icon,
             color: context.onPrimaryColor,
-            size: 14.sp,
+            size: 12.5.sp,
+            strokeWidth: 1.55,
           ),
         ),
       ),
@@ -1175,7 +1341,7 @@ class _SoftLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(999.r),
@@ -1186,6 +1352,7 @@ class _SoftLabel extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontSize: 10.sp,
               color: color,
               fontWeight: FontWeight.w700,
             ),
@@ -1207,10 +1374,10 @@ class _SoftValuePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: color.withValues(alpha: 0.08),
         ),
@@ -1218,7 +1385,7 @@ class _SoftValuePill extends StatelessWidget {
       child: Text(
         value,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontSize: 12.sp,
+              fontSize: 10.5.sp,
               color: color,
               fontWeight: FontWeight.w700,
             ),
@@ -1241,7 +1408,7 @@ class _SoftProgressBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(999.r),
       child: LinearProgressIndicator(
-        minHeight: 6.h,
+        minHeight: 5.h,
         value: value,
         backgroundColor: color.withValues(alpha: 0.08),
         valueColor: AlwaysStoppedAnimation<Color>(color),
@@ -1262,7 +1429,7 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(999.r),
@@ -1270,7 +1437,7 @@ class _MetaChip extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontSize: 10.sp,
+              fontSize: 9.5.sp,
               color: color,
               fontWeight: FontWeight.w600,
             ),
@@ -1297,19 +1464,74 @@ class _ReminderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardWidget(
-      margin: EdgeInsets.only(bottom: 10.h),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
-        title: Text(label),
-        subtitle: Text(time),
-        leading: Switch(
-          value: value,
-          onChanged: onChanged,
-        ),
-        trailing: TextButton(
-          onPressed: onPickTime,
-          child: const Text('الوقت'),
-        ),
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+      borderRadius: BorderRadius.circular(15.r),
+      border: Border.all(color: context.outline.withValues(alpha: 0.10)),
+      color: context.surfaceColor,
+      child: Row(
+        children: [
+          Switch(
+            value: value,
+            onChanged: onChanged,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: context.onSurfaceColor,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  time,
+                  style: TextStyle(
+                    color: context.onSurfaceVariant,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          InkWell(
+            borderRadius: BorderRadius.circular(12.r),
+            onTap: onPickTime,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 7.h),
+              decoration: BoxDecoration(
+                color: context.primaryColor.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppIcon(
+                    AppIcons.clock,
+                    size: 12.sp,
+                    color: context.primaryColor,
+                    strokeWidth: 1.55,
+                  ),
+                  SizedBox(width: 5.w),
+                  Text(
+                    'الوقت',
+                    style: TextStyle(
+                      color: context.primaryColor,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -32,10 +32,11 @@ class _AchievementCard extends StatelessWidget {
                   color: accentColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(16.r),
                 ),
-                child: Icon(
+                child: AppIcon(
                   youngMuslimAchievementIcon(achievement.icon),
                   color: accentColor,
-                  size: 24.sp,
+                  size: 18.sp,
+                  strokeWidth: 1.55,
                 ),
               ),
               SizedBox(width: 12.w),

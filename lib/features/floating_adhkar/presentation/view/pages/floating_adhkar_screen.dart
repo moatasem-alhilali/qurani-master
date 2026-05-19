@@ -35,6 +35,8 @@ class FloatingAdhkarScreen extends StatelessWidget {
 
         return AppScaffoldWidget(
           title: 'الأذكار العشوائية العائمة',
+          showLargeHeader: false,
+          initialOffset: null,
           onRefresh: () async {
             context
                 .read<FloatingAdhkarBloc>()
@@ -53,7 +55,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
                     ),
                   );
                 },
-                icon: const AppIcon(AppIcons.bookOpen, size: 18),
+                icon: const AppIcon(AppIcons.bookOpen, size: 15),
               ),
               IconButton(
                 tooltip: 'الإعدادات',
@@ -67,12 +69,16 @@ class FloatingAdhkarScreen extends StatelessWidget {
                           ),
                         );
                       },
-                icon: const AppIcon(AppIcons.sliders, size: 18),
+                icon: const AppIcon(AppIcons.sliders, size: 15),
               ),
             ],
           ),
           body: settings == null && state.loadState == RequestState.loading
-              ? const Center(child: CircularProgressIndicator())
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                )
               : _Body(state: state),
         );
       },
@@ -102,19 +108,20 @@ class _BodyState extends State<_Body> {
     final isIosReminderMode = state.usesIosReminders;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _StatusAndStatsHeader(state: state),
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
 
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(16.r),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(15.r),
               border: Border.all(
-                  color: Theme.of(context).primaryColor.withOpacity(0.15)),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.12),
+              ),
             ),
             child: SwitchListTile(
               secondary: AppIcon(
@@ -122,7 +129,8 @@ class _BodyState extends State<_Body> {
                 color: settings.enabled
                     ? Theme.of(context).primaryColor
                     : Colors.grey,
-                size: 22.r,
+                size: 15.r,
+                strokeWidth: 1.55,
               ),
               value: settings.enabled,
               onChanged: state.isSupportedPlatform
@@ -136,24 +144,28 @@ class _BodyState extends State<_Body> {
                 isIosReminderMode
                     ? 'تشغيل تذكيرات iPhone'
                     : 'تشغيل الخدمة العائمة',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(fontSize: 12.5.sp, fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 _featureSubtitle(state),
-                style: TextStyle(fontSize: 11.sp),
+                style: TextStyle(fontSize: 10.sp),
               ),
             ),
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: 10.h),
           _PreviewCard(item: state.previewItem),
-          SizedBox(height: 12.h),
+          SizedBox(height: 10.h),
 
           // Advanced Settings Toggle
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(12.r),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(13.r),
+              border: Border.all(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.08),
+              ),
             ),
             child: InkWell(
               onTap: () {
@@ -163,12 +175,13 @@ class _BodyState extends State<_Body> {
               },
               borderRadius: BorderRadius.circular(12.r),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                padding: EdgeInsets.symmetric(vertical: 9.h, horizontal: 11.w),
                 child: Row(
                   children: [
                     AppIcon(
                       AppIcons.settings,
-                      size: 18.r,
+                      size: 13.r,
+                      strokeWidth: 1.55,
                       color: Theme.of(context).primaryColor,
                     ),
                     SizedBox(width: 10.w),
@@ -176,14 +189,15 @@ class _BodyState extends State<_Body> {
                       'إعدادات متقدمة',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
                     const Spacer(),
                     AppIcon(
                       _showAdvancedSettings ? AppIcons.up : AppIcons.down,
-                      color: Colors.grey,
-                      size: 16.r,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      size: 13.r,
+                      strokeWidth: 1.55,
                     ),
                   ],
                 ),
@@ -194,12 +208,13 @@ class _BodyState extends State<_Body> {
           if (_showAdvancedSettings) ...[
             SizedBox(height: 8.h),
             Container(
-              padding: EdgeInsets.all(16.r),
+              padding: EdgeInsets.all(12.r),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(16.r),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(15.r),
                 border: Border.all(
-                    color: Theme.of(context).primaryColor.withOpacity(0.12)),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.10),
+                ),
               ),
               child: Column(
                 children: [
@@ -209,8 +224,10 @@ class _BodyState extends State<_Body> {
                     subtitle: _formatIntervalText(settings.intervalMinutes),
                   ),
                   Divider(
-                      height: 24.h,
-                      color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                    height: 18.h,
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.08),
+                  ),
                   if (!isIosReminderMode) ...[
                     _SettingsTile(
                       icon: AppIcons.eye,
@@ -218,8 +235,11 @@ class _BodyState extends State<_Body> {
                       subtitle: '${settings.visibleSeconds} ثانية',
                     ),
                     Divider(
-                        height: 24.h,
-                        color: Theme.of(context).primaryColor.withOpacity(0.1)),
+                      height: 18.h,
+                      color: Theme.of(context)
+                          .primaryColor
+                          .withValues(alpha: 0.08),
+                    ),
                   ],
                   _SettingsTile(
                     icon: AppIcons.source,
@@ -231,7 +251,7 @@ class _BodyState extends State<_Body> {
             ),
           ],
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 16.h),
 
           FilledButton.icon(
             onPressed: settings.enabled && state.hasOverlayPermission
@@ -242,13 +262,17 @@ class _BodyState extends State<_Body> {
                   }
                 : null,
             style: FilledButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 14.h),
+              minimumSize: Size.fromHeight(38.h),
+              padding: EdgeInsets.symmetric(vertical: 0.h),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r)),
+                borderRadius: BorderRadius.circular(13.r),
+              ),
             ),
-            icon: const AppIcon(AppIcons.play, size: 17),
-            label: Text(isIosReminderMode ? 'إرسال ذكر الآن' : 'عرض ذكر الآن',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+            icon: const AppIcon(AppIcons.play, size: 13),
+            label: Text(
+              isIosReminderMode ? 'إرسال ذكر الآن' : 'عرض ذكر الآن',
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+            ),
           ),
 
           SizedBox(height: 12.h),
@@ -263,24 +287,28 @@ class _BodyState extends State<_Body> {
                       );
                 },
                 style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                  minimumSize: Size.fromHeight(38.h),
+                  padding: EdgeInsets.symmetric(vertical: 0.h),
+                  side: BorderSide(color: Colors.red.withValues(alpha: 0.45)),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r)),
+                    borderRadius: BorderRadius.circular(13.r),
+                  ),
                 ),
                 icon: const AppIcon(
                   AppIcons.security,
-                  size: 17,
+                  size: 13,
                   color: Colors.red,
                 ),
                 label: Text(
-                    isIosReminderMode
-                        ? 'السماح بالإشعارات'
-                        : 'منح الصلاحية المطلوبة',
-                    style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold)),
+                  isIosReminderMode
+                      ? 'السماح بالإشعارات'
+                      : 'منح الصلاحية المطلوبة',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
 
@@ -296,13 +324,17 @@ class _BodyState extends State<_Body> {
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 14.h),
               side: BorderSide(
-                  color: Theme.of(context).primaryColor.withOpacity(0.2)),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.16),
+              ),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r)),
+                borderRadius: BorderRadius.circular(13.r),
+              ),
             ),
-            icon: const AppIcon(AppIcons.noteEdit, size: 17),
-            label: Text('إدارة الأذكار',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+            icon: const AppIcon(AppIcons.noteEdit, size: 13),
+            label: Text(
+              'إدارة الأذكار',
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -354,26 +386,26 @@ class _StatusAndStatsHeader extends StatelessWidget {
     final status = state.status;
 
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: accent.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: accent.withOpacity(0.15)),
+        color: accent.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: accent.withValues(alpha: 0.12)),
       ),
       child: Column(
         children: [
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(10.r),
+                padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12.r),
+                  color: accent.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(11.r),
                 ),
                 child: AppIcon(
                   AppIcons.layers,
                   color: accent,
-                  size: 17.r,
+                  size: 13.r,
                   strokeWidth: 1.55,
                 ),
               ),
@@ -385,12 +417,14 @@ class _StatusAndStatsHeader extends StatelessWidget {
                     Text(
                       'حالة الخدمة',
                       style: TextStyle(
-                          fontSize: 14.sp, fontWeight: FontWeight.bold),
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       status.label,
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 10.5.sp,
                         color: accent,
                         fontWeight: FontWeight.bold,
                       ),
@@ -400,7 +434,7 @@ class _StatusAndStatsHeader extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 11.h),
           Row(
             children: [
               Expanded(
@@ -410,7 +444,11 @@ class _StatusAndStatsHeader extends StatelessWidget {
                   icon: AppIcons.tasbih,
                 ),
               ),
-              Container(width: 1, height: 30.h, color: accent.withOpacity(0.1)),
+              Container(
+                width: 1,
+                height: 26.h,
+                color: accent.withValues(alpha: 0.08),
+              ),
               Expanded(
                 child: _HeaderStatItem(
                   title: 'الخاصة',
@@ -449,18 +487,21 @@ class _HeaderStatItem extends StatelessWidget {
               icon,
               size: 11.5.r,
               strokeWidth: 1.55,
-              color: Theme.of(context).primaryColor.withOpacity(0.7),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.70),
             ),
             SizedBox(width: 4.w),
             Text(
               title,
-              style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: 10.sp,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
         Text(
           value,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 13.5.sp, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -484,9 +525,9 @@ class _SettingsTile extends StatelessWidget {
       children: [
         AppIcon(
           icon,
-          size: 14.5.r,
+          size: 12.5.r,
           strokeWidth: 1.55,
-          color: Theme.of(context).primaryColor.withOpacity(0.8),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.80),
         ),
         SizedBox(width: 12.w),
         Expanded(
@@ -495,11 +536,15 @@ class _SettingsTile extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               Text(
                 subtitle,
-                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
+                style:
+                    TextStyle(fontSize: 11.5.sp, fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -524,11 +569,11 @@ class _PreviewCard extends StatelessWidget {
     final source = item?.sourceLabel ?? 'افتراضي';
 
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: accent.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: accent.withOpacity(0.12)),
+        color: accent.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: accent.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -538,30 +583,34 @@ class _PreviewCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.1),
+                  color: accent.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
                   title,
                   style: TextStyle(
-                      color: accent,
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.bold),
+                    color: accent,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const Spacer(),
               Text(
                 source,
-                style: TextStyle(color: Colors.grey, fontSize: 10.sp),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 9.5.sp,
+                ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 10.h),
           Text(
             text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 15.sp,
+              fontSize: 13.5.sp,
               fontWeight: FontWeight.bold,
               height: 1.6,
             ),

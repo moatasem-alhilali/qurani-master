@@ -130,33 +130,25 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
           );
 
     return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration:
-          youngMuslimPanelDecoration(context, radius: 16, useGradient: true),
+      padding: EdgeInsets.all(14.w),
+      decoration: youngMuslimPanelDecoration(context, radius: 18),
       child: Row(
         children: [
           Container(
-            width: 60.w,
-            height: 60.w,
+            width: 42.w,
+            height: 42.w,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: colors,
-              ),
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.first.withOpacity(0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: colors.first.withValues(alpha: 0.13),
+              borderRadius: BorderRadius.circular(14.r),
             ),
-            child: Icon(Icons.auto_awesome_rounded,
-                color: Colors.white, size: 28.r),
+            child: AppIcon(
+              AppIcons.bookOpen,
+              color: colors.first,
+              size: 18.sp,
+              strokeWidth: 1.55,
+            ),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,8 +156,8 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                 Text(
                   'المسلم الصغير',
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
                 SizedBox(height: 4.h),
@@ -173,10 +165,13 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                   dashboard == null
                       ? 'مرحباً بك في عالم القصص والتعلم'
                       : 'لديك ${dashboard.continueWatching.length} حلقات بانتظارك لتعود إليها!',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                    height: 1.4,
+                    fontSize: 10.5.sp,
+                    color: context.onSurfaceVariant,
+                    height: 1.35,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -196,9 +191,11 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
       decoration: youngMuslimPanelDecoration(context),
       child: Row(
         children: [
-          Icon(
-            Icons.tune_rounded,
+          AppIcon(
+            AppIcons.sliders,
             color: context.primaryColor,
+            size: 15.sp,
+            strokeWidth: 1.55,
           ),
           SizedBox(width: 10.w),
           Expanded(
@@ -244,16 +241,17 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                 width: 42.w,
                 height: 42.w,
                 decoration: BoxDecoration(
-                  color: context.cardColor,
-                  borderRadius: BorderRadius.circular(18.r),
+                  color: context.surfaceColor,
+                  borderRadius: BorderRadius.circular(13.r),
                   border: Border.all(
-                    color: context.outlineVariant.withOpacity(0.45),
+                    color: context.outlineVariant.withValues(alpha: 0.32),
                   ),
                 ),
-                child: Icon(
-                  Icons.tune_rounded,
+                child: AppIcon(
+                  AppIcons.sliders,
                   color: context.primaryColor,
-                  size: 20.sp,
+                  size: 15.sp,
+                  strokeWidth: 1.55,
                 ),
               ),
             ),
@@ -331,20 +329,24 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
       },
       borderRadius: BorderRadius.circular(16.r),
       child: Container(
-        padding: EdgeInsets.all(16.r),
-        decoration: youngMuslimPanelDecoration(context, radius: 16),
+        padding: EdgeInsets.all(14.w),
+        decoration: youngMuslimPanelDecoration(context, radius: 18),
         child: Column(
           children: [
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(10.r),
+                  padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
                     color: rewardColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child:
-                      Icon(Icons.stars_rounded, color: rewardColor, size: 24.r),
+                  child: AppIcon(
+                    AppIcons.target,
+                    color: rewardColor,
+                    size: 16.sp,
+                    strokeWidth: 1.55,
+                  ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -354,18 +356,25 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
                       Text(
                         'لوحة الإنجازات',
                         style: TextStyle(
-                            fontSize: 14.sp, fontWeight: FontWeight.bold),
+                            fontSize: 12.sp, fontWeight: FontWeight.w900),
                       ),
                       Text(
                         'المستوى ${rewards.level} • ${rewards.xp} XP',
-                        style:
-                            TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: context.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_left_rounded,
-                    color: Colors.grey, size: 20.r),
+                AppIcon(
+                  AppIcons.chevronLeft,
+                  color: context.onSurfaceVariant,
+                  size: 13.sp,
+                  strokeWidth: 1.55,
+                ),
               ],
             ),
             SizedBox(height: 16.h),

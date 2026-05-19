@@ -204,9 +204,7 @@ class _AnswerReviewCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  review.isCorrect
-                      ? Icons.check_rounded
-                      : Icons.close_rounded,
+                  review.isCorrect ? Icons.check_rounded : Icons.close_rounded,
                   color: accentColor,
                   size: 18.sp,
                 ),
@@ -246,12 +244,14 @@ class _AnswerReviewCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.primaryColor.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: context.primaryColor.withOpacity(0.1)),
+                border:
+                    Border.all(color: context.primaryColor.withOpacity(0.1)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 16.r, color: context.primaryColor),
+                  Icon(Icons.info_outline_rounded,
+                      size: 16.r, color: context.primaryColor),
                   SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
@@ -294,13 +294,9 @@ class _AnswerLine extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: isReference 
-            ? color.withOpacity(0.05)
-            : color.withOpacity(0.08),
+        color: isReference ? color.withOpacity(0.05) : color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12.r),
-        border: isReference 
-            ? Border.all(color: color.withOpacity(0.2)) 
-            : null,
+        border: isReference ? Border.all(color: color.withOpacity(0.2)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,10 +358,11 @@ class _UnlockedAchievementCard extends StatelessWidget {
               color: rewardColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(
+            child: AppIcon(
               youngMuslimAchievementIcon(achievement.icon),
               color: rewardColor,
-              size: 24.sp,
+              size: 18.sp,
+              strokeWidth: 1.55,
             ),
           ),
           SizedBox(width: 12.w),

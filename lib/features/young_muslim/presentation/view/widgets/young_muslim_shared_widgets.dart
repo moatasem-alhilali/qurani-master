@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 
 part 'young_muslim_shared_widgets_basics.dart';
@@ -56,20 +57,20 @@ Color youngMuslimRewardColor(BuildContext context) {
       context.secondaryColor;
 }
 
-IconData youngMuslimAchievementIcon(String iconName) {
+HugeIconData youngMuslimAchievementIcon(String iconName) {
   switch (iconName) {
     case 'play_circle':
-      return Icons.play_circle_rounded;
+      return AppIcons.play;
     case 'movie_filter':
-      return Icons.movie_filter_rounded;
+      return AppIcons.play;
     case 'auto_awesome':
-      return Icons.auto_awesome_rounded;
+      return AppIcons.heart;
     case 'emoji_events':
-      return Icons.emoji_events_rounded;
+      return AppIcons.target;
     case 'bookmark_added':
-      return Icons.bookmark_added_rounded;
+      return AppIcons.bookmark;
     default:
-      return Icons.stars_rounded;
+      return AppIcons.heart;
   }
 }
 
@@ -89,18 +90,18 @@ BoxDecoration youngMuslimPanelDecoration(
             end: Alignment.bottomRight,
             colors: [
               context.surfaceColor,
-              context.surfaceVariant.withOpacity(0.4),
+              context.surfaceVariant.withValues(alpha: 0.24),
             ],
           )
         : null,
     border: Border.all(
-      color: accent.withOpacity(0.12),
+      color: accent.withValues(alpha: 0.12),
     ),
     boxShadow: [
       BoxShadow(
-        color: context.shadow.withOpacity(0.04),
-        blurRadius: 12.r,
-        offset: Offset(0, 4.h),
+        color: context.shadow.withValues(alpha: 0.035),
+        blurRadius: 14.r,
+        offset: Offset(0, 7.h),
       ),
     ],
   );

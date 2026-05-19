@@ -16,23 +16,38 @@ class YoungMuslimSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Container(
+          width: 5.w,
+          height: 5.w,
+          decoration: BoxDecoration(
+            color: context.primaryColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 7.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                style: TextStyle(
+                  color: context.onSurfaceColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               if (subtitle != null) ...[
-                SizedBox(height: 4.h),
+                SizedBox(height: 2.h),
                 Text(
                   subtitle!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: context.gray1,
-                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: context.onSurfaceVariant,
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ],
@@ -61,14 +76,14 @@ class YoungMuslimMetricChip extends StatelessWidget {
     final resolvedColor = color ?? context.primaryColor;
     final isWhite = resolvedColor == Colors.white;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: isWhite
             ? Colors.white.withValues(alpha: 0.18)
             : resolvedColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(11.r),
         border: Border.all(
-          color: isWhite 
+          color: isWhite
               ? Colors.white.withValues(alpha: 0.25)
               : resolvedColor.withValues(alpha: 0.15),
         ),
@@ -76,7 +91,7 @@ class YoungMuslimMetricChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13.sp, color: resolvedColor),
+          Icon(icon, size: 12.sp, color: resolvedColor),
           SizedBox(width: 6.w),
           Flexible(
             child: Text(
@@ -86,7 +101,7 @@ class YoungMuslimMetricChip extends StatelessWidget {
               style: TextStyle(
                 color: resolvedColor,
                 fontWeight: FontWeight.w800,
-                fontSize: 11.sp,
+                fontSize: 10.sp,
               ),
             ),
           ),
@@ -112,33 +127,33 @@ class YoungMuslimEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(24.w),
-      decoration: youngMuslimPanelDecoration(context, useGradient: true),
+      padding: EdgeInsets.all(18.w),
+      decoration: youngMuslimPanelDecoration(context, radius: 18),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: context.primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(14.r),
             ),
-            child: Icon(icon, color: context.primaryColor, size: 32.sp),
+            child: Icon(icon, color: context.primaryColor, size: 22.sp),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 12.h),
           Text(
             title,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w900,
               color: context.onSurfaceColor,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 6.h),
           Text(
             subtitle,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 10.5.sp,
               color: context.onSurfaceVariant.withValues(alpha: 0.8),
             ),
             textAlign: TextAlign.center,

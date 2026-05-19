@@ -42,21 +42,24 @@ class DailyWirdFocusScreen extends StatelessWidget {
 
         return AppScaffoldWidget(
           title: resolvedItem.title,
+          showLargeHeader: false,
+          initialOffset: null,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
+            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 22.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 _FocusHeaderCard(item: resolvedItem),
-                SizedBox(height: 16.h),
+                SizedBox(height: 10.h),
                 _FocusContentCard(item: resolvedItem),
-                SizedBox(height: 16.h),
+                SizedBox(height: 10.h),
                 if (resolvedItem.hasCounter)
                   _CounterActionCard(item: resolvedItem)
                 else
                   FilledButton(
                     style: FilledButton.styleFrom(
+                      minimumSize: Size.fromHeight(38.h),
                       backgroundColor: _accentColor(context, resolvedItem),
                       foregroundColor: context.onPrimaryColor,
                     ),
@@ -123,45 +126,26 @@ class _FocusHeaderCard extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.r),
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            context.surfaceColor,
-            accentColor.withValues(alpha: 0.08),
-          ],
-        ),
+        borderRadius: BorderRadius.circular(18.r),
+        color: context.surfaceColor,
         border: Border.all(
           color: accentColor.withValues(alpha: 0.14),
         ),
         boxShadow: [
           BoxShadow(
-            color: context.shadow.withValues(alpha: 0.08),
-            blurRadius: 18.r,
-            offset: Offset(0, 10.h),
+            color: context.shadow.withValues(alpha: 0.05),
+            blurRadius: 10.r,
+            offset: Offset(0, 5.h),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Stack(
           children: [
             _FocusTopAccentLine(color: accentColor),
-            Positioned(
-              left: -22.w,
-              top: 18.h,
-              child: Container(
-                width: 72.w,
-                height: 72.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: accentColor.withValues(alpha: 0.06),
-                ),
-              ),
-            ),
             Padding(
-              padding: EdgeInsets.all(18.w),
+              padding: EdgeInsets.all(13.w),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -175,15 +159,15 @@ class _FocusHeaderCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 14.w),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 6.h,
+                            horizontal: 8.w,
+                            vertical: 4.h,
                           ),
                           decoration: BoxDecoration(
                             color: accentColor.withValues(alpha: 0.08),
@@ -197,28 +181,33 @@ class _FocusHeaderCard extends StatelessWidget {
                                 .textTheme
                                 .labelMedium
                                 ?.copyWith(
+                                  fontSize: 10.sp,
                                   color: accentColor,
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 8.h),
                         Text(
                           item.title,
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
                         ),
                         if ((item.fadhl ?? '').isNotEmpty) ...[
-                          SizedBox(height: 8.h),
+                          SizedBox(height: 6.h),
                           Text(
                             item.fadhl!,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  height: 1.7,
+                                  fontSize: 11.5.sp,
+                                  height: 1.55,
                                   color: context.onSurfaceColor
                                       .withValues(alpha: 0.78),
                                 ),
@@ -247,8 +236,8 @@ class _FocusContentCard extends StatelessWidget {
     final accentColor = _accentColor(context, item);
 
     return CardWidget(
-      padding: EdgeInsets.all(18.w),
-      borderRadius: BorderRadius.circular(22.r),
+      padding: EdgeInsets.all(13.w),
+      borderRadius: BorderRadius.circular(17.r),
       border: Border.all(
         color: context.outline.withValues(alpha: 0.12),
       ),
@@ -256,19 +245,32 @@ class _FocusContentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'نص الورد',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: accentColor,
-                  fontWeight: FontWeight.w700,
-                ),
+          Row(
+            children: [
+              AppIcon(
+                AppIcons.bookOpen,
+                size: 13.sp,
+                color: accentColor,
+                strokeWidth: 1.55,
+              ),
+              SizedBox(width: 7.w),
+              Text(
+                'نص الورد',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontSize: 13.sp,
+                      color: accentColor,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ],
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 10.h),
           SelectableText(
             DailyWirdFocusScreen.contentText(item),
             textAlign: TextAlign.start,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  height: 1.95,
+                  fontSize: 15.sp,
+                  height: 1.9,
                   fontFamily: 'naskh',
                 ),
           ),
@@ -288,8 +290,8 @@ class _CounterActionCard extends StatelessWidget {
     final accentColor = _accentColor(context, item);
 
     return CardWidget(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      borderRadius: BorderRadius.circular(22.r),
+      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 13.h),
+      borderRadius: BorderRadius.circular(17.r),
       border: Border.all(
         color: accentColor.withValues(alpha: 0.14),
       ),
@@ -304,22 +306,23 @@ class _CounterActionCard extends StatelessWidget {
                   : '${item.countCompleted} / ${item.countRequired ?? 0} ${item.countUnit}',
               key: ValueKey('${item.countCompleted}_${item.countRequired}'),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontSize: 21.sp,
                     fontWeight: FontWeight.w700,
                     color: accentColor,
                   ),
             ),
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 8.h),
           ClipRRect(
             borderRadius: BorderRadius.circular(999.r),
             child: LinearProgressIndicator(
-              minHeight: 8.h,
+              minHeight: 6.h,
               value: item.progress,
               backgroundColor: accentColor.withValues(alpha: 0.08),
               valueColor: AlwaysStoppedAnimation<Color>(accentColor),
             ),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 11.h),
           Row(
             children: [
               Expanded(
@@ -330,6 +333,7 @@ class _CounterActionCard extends StatelessWidget {
                         );
                   },
                   style: OutlinedButton.styleFrom(
+                    minimumSize: Size.fromHeight(36.h),
                     side: BorderSide(
                       color: accentColor.withValues(alpha: 0.24),
                     ),
@@ -341,6 +345,7 @@ class _CounterActionCard extends StatelessWidget {
               Expanded(
                 child: FilledButton(
                   style: FilledButton.styleFrom(
+                    minimumSize: Size.fromHeight(36.h),
                     backgroundColor: accentColor,
                     foregroundColor: context.onPrimaryColor,
                   ),
@@ -405,10 +410,10 @@ class _FocusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 52.w,
-      height: 52.w,
+      width: 38.w,
+      height: 38.w,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(13.r),
         color: color.withValues(alpha: 0.10),
         border: Border.all(
           color: color.withValues(alpha: 0.14),
@@ -416,23 +421,17 @@ class _FocusBadge extends StatelessWidget {
       ),
       child: Center(
         child: Container(
-          width: 36.w,
-          height: 36.w,
+          width: 25.w,
+          height: 25.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: [
-                color.withValues(alpha: 0.28),
-                color,
-              ],
-            ),
+            borderRadius: BorderRadius.circular(9.r),
+            color: color.withValues(alpha: 0.90),
           ),
           child: AppIcon(
             icon,
-            size: 18.sp,
+            size: 12.5.sp,
             color: context.onPrimaryColor,
+            strokeWidth: 1.55,
           ),
         ),
       ),
@@ -452,7 +451,7 @@ class _FocusTopAccentLine extends StatelessWidget {
       right: 0,
       left: 0,
       child: Container(
-        height: 3.h,
+        height: 1.5.h,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerRight,

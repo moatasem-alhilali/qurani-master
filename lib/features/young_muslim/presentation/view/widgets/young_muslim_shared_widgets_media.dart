@@ -29,10 +29,10 @@ class YoungMuslimMediaBanner extends StatelessWidget {
       startHex: accentStart,
       endHex: accentEnd,
     );
-    final borderRadius = BorderRadius.circular(30.r);
+    final borderRadius = BorderRadius.circular(20.r);
 
     final banner = Container(
-      decoration: youngMuslimPanelDecoration(context, radius: 30),
+      decoration: youngMuslimPanelDecoration(context, radius: 20),
       child: ClipRRect(
         borderRadius: borderRadius,
         child: SizedBox(
@@ -52,37 +52,13 @@ class YoungMuslimMediaBanner extends StatelessWidget {
                     colors: [
                       colors.first.withValues(alpha: 0.18),
                       context.scrim.withValues(alpha: 0.18),
-                      context.scrim.withValues(alpha: 0.72),
+                      context.scrim.withValues(alpha: 0.68),
                     ],
                   ),
                 ),
               ),
-              Positioned(
-                bottom: -25.h,
-                left: -25.w,
-                child: Container(
-                  width: 100.w,
-                  height: 100.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.06),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: -15.h,
-                right: -15.w,
-                child: Container(
-                  width: 70.w,
-                  height: 70.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.06),
-                  ),
-                ),
-              ),
               Padding(
-                padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 20.h),
+                padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -93,12 +69,12 @@ class YoungMuslimMediaBanner extends StatelessWidget {
                         runSpacing: 8.h,
                         children: badges,
                       ),
-                      SizedBox(height: 14.h),
+                      SizedBox(height: 10.h),
                     ],
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 22.sp,
+                        fontSize: 18.sp,
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
                       ),
@@ -106,11 +82,11 @@ class YoungMuslimMediaBanner extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (subtitle != null) ...[
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 5.h),
                       Text(
                         subtitle!,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 10.5.sp,
                           color: Colors.white.withValues(alpha: 0.9),
                         ),
                         maxLines: 2,
@@ -157,13 +133,13 @@ class YoungMuslimCategoryCard extends StatelessWidget {
       startHex: category.accentStart,
       endHex: category.accentEnd,
     );
-    final borderRadius = BorderRadius.circular(28.r);
+    final borderRadius = BorderRadius.circular(18.r);
 
     return InkWell(
       onTap: onTap,
       borderRadius: borderRadius,
       child: Container(
-        decoration: youngMuslimPanelDecoration(context, radius: 28),
+        decoration: youngMuslimPanelDecoration(context, radius: 18),
         child: ClipRRect(
           borderRadius: borderRadius,
           child: SizedBox(
@@ -194,24 +170,12 @@ class YoungMuslimCategoryCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: -20.h,
-                  left: -20.w,
-                  child: Container(
-                    width: 80.w,
-                    height: 80.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.06),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 14.w,
-                  top: 14.h,
+                  right: 12.w,
+                  top: 12.h,
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 6.h,
+                      horizontal: 9.w,
+                      vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.14),
@@ -223,7 +187,7 @@ class YoungMuslimCategoryCard extends StatelessWidget {
                     child: Text(
                       '${category.seriesIds.length} سلسلة',
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 9.sp,
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
                       ),
@@ -231,7 +195,7 @@ class YoungMuslimCategoryCard extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(16.w),
+                  padding: EdgeInsets.all(14.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -239,18 +203,18 @@ class YoungMuslimCategoryCard extends StatelessWidget {
                       Text(
                         category.titleAr,
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 15.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 6.h),
+                      SizedBox(height: 5.h),
                       Text(
                         category.description,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 10.5.sp,
                           color: Colors.white.withValues(alpha: 0.9),
                         ),
                         maxLines: 2,

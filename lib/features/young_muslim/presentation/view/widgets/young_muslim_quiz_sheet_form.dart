@@ -178,10 +178,12 @@ class _QuestionCard extends StatelessWidget {
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
               decoration: InputDecoration(
                 hintText: 'اكتب إجابتك هنا بوضوح...',
-                hintStyle: TextStyle(fontSize: 13.sp, color: context.gray1.withOpacity(0.5)),
+                hintStyle: TextStyle(
+                    fontSize: 13.sp, color: context.gray1.withOpacity(0.5)),
                 filled: true,
                 fillColor: context.scaffoldBackgroundColor,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
                   borderSide: BorderSide.none,
@@ -194,7 +196,8 @@ class _QuestionCard extends StatelessWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(color: context.primaryColor, width: 1.5),
+                  borderSide:
+                      BorderSide(color: context.primaryColor, width: 1.5),
                 ),
               ),
             )
@@ -228,7 +231,7 @@ class _OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeColor = context.primaryColor;
-    
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12.r),
@@ -236,13 +239,13 @@ class _OptionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? activeColor.withOpacity(0.08) 
+          color: isSelected
+              ? activeColor.withOpacity(0.08)
               : context.scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected 
-                ? activeColor 
+            color: isSelected
+                ? activeColor
                 : context.outlineVariant.withOpacity(0.2),
             width: isSelected ? 1.8 : 1,
           ),
@@ -257,12 +260,13 @@ class _OptionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isSelected ? activeColor : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? activeColor : context.gray1.withOpacity(0.3),
+                  color:
+                      isSelected ? activeColor : context.gray1.withOpacity(0.3),
                   width: 2,
                 ),
               ),
-              child: isSelected 
-                  ? Icon(Icons.check, size: 14.r, color: Colors.white) 
+              child: isSelected
+                  ? Icon(Icons.check, size: 14.r, color: Colors.white)
                   : null,
             ),
             SizedBox(width: 14.w),
@@ -270,7 +274,8 @@ class _OptionCard extends StatelessWidget {
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontWeight:
+                          isSelected ? FontWeight.w800 : FontWeight.w600,
                       color: isSelected ? activeColor : context.onSurfaceColor,
                     ),
               ),

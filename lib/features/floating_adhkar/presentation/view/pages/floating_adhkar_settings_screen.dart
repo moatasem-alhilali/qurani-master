@@ -40,25 +40,26 @@ class _FloatingAdhkarSettingsScreenState
       showLargeHeader: false,
       initialOffset: null,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // General Feature Enable
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(16.r),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(15.r),
                 border: Border.all(
-                    color: Theme.of(context).primaryColor.withOpacity(0.15)),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.12),
+                ),
               ),
               child: SwitchListTile(
+                dense: true,
                 secondary: AppIcon(
                   AppIcons.power,
                   color: _draft.enabled
                       ? Theme.of(context).primaryColor
-                      : Colors.grey,
-                  size: 16.r,
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                  size: 13.r,
                   strokeWidth: 1.55,
                 ),
                 value: _draft.enabled,
@@ -67,20 +68,22 @@ class _FloatingAdhkarSettingsScreenState
                     _draft = _draft.copyWith(enabled: value);
                   });
                 },
-                title: Text('تشغيل الميزة بالكامل',
-                    style: TextStyle(
-                        fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                title: Text(
+                  'تشغيل الميزة بالكامل',
+                  style: TextStyle(
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 subtitle: Text(
                   isIosReminderMode
                       ? 'عند التفعيل يتم جدولة تنبيهات أذكار على iPhone'
                       : 'عند التفعيل تبدأ الخدمة الخلفية في الظهور',
-                  style: TextStyle(fontSize: 11.sp),
+                  style: TextStyle(fontSize: 10.sp),
                 ),
               ),
             ),
-
-            SizedBox(height: 16.h),
-
+            SizedBox(height: 10.h),
             _SectionCard(
               title: isIosReminderMode ? 'توقيت التذكير' : 'توقيت الظهور',
               icon: AppIcons.clock,
@@ -91,24 +94,27 @@ class _FloatingAdhkarSettingsScreenState
                     isIosReminderMode
                         ? 'معدل تكرار التنبيه:'
                         : 'معدل تكرار الظهور:',
-                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 10.5.sp,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 7.h),
                   Wrap(
                     spacing: 8.w,
                     runSpacing: 8.h,
                     children: _intervalOptions.map((value) {
                       final selected = _draft.intervalMinutes == value;
                       return ChoiceChip(
-                        label: Text(_formatIntervalLabel(value),
-                            style: TextStyle(
-                                fontSize: 11.sp,
-                                color: selected
-                                    ? Colors.white
-                                    : Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.color)),
+                        label: Text(
+                          _formatIntervalLabel(value),
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: selected
+                                ? Colors.white
+                                : Theme.of(context).textTheme.bodyMedium?.color,
+                          ),
+                        ),
                         selected: selected,
                         selectedColor: Theme.of(context).primaryColor,
                         onSelected: (_) {
@@ -121,27 +127,37 @@ class _FloatingAdhkarSettingsScreenState
                   ),
                   if (!isIosReminderMode) ...[
                     Divider(
-                        height: 24.h,
-                        color: Theme.of(context).primaryColor.withOpacity(0.1)),
-                    Text('مدة بقاء الذكر (بالثواني):',
-                        style: TextStyle(
-                            fontSize: 12.sp, color: Colors.grey[600])),
-                    SizedBox(height: 8.h),
+                      height: 20.h,
+                      color: Theme.of(context)
+                          .primaryColor
+                          .withValues(alpha: 0.08),
+                    ),
+                    Text(
+                      'مدة بقاء الذكر (بالثواني):',
+                      style: TextStyle(
+                        fontSize: 10.5.sp,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    SizedBox(height: 7.h),
                     Wrap(
                       spacing: 8.w,
                       runSpacing: 8.h,
                       children: _visibleOptions.map((value) {
                         final selected = _draft.visibleSeconds == value;
                         return ChoiceChip(
-                          label: Text('$value ث',
-                              style: TextStyle(
-                                  fontSize: 11.sp,
-                                  color: selected
-                                      ? Colors.white
-                                      : Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.color)),
+                          label: Text(
+                            '$value ث',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: selected
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
+                            ),
+                          ),
                           selected: selected,
                           selectedColor: Theme.of(context).primaryColor,
                           onSelected: (_) {
@@ -156,9 +172,7 @@ class _FloatingAdhkarSettingsScreenState
                 ],
               ),
             ),
-
-            SizedBox(height: 16.h),
-
+            SizedBox(height: 10.h),
             _SectionCard(
               title: 'مصادر الأذكار',
               icon: AppIcons.source,
@@ -173,15 +187,23 @@ class _FloatingAdhkarSettingsScreenState
                         _draft = _draft.copyWith(includeBuiltIn: value);
                       });
                     },
-                    title: Text('الأذكار الافتراضية',
-                        style: TextStyle(
-                            fontSize: 13.sp, fontWeight: FontWeight.w600)),
-                    subtitle: Text('المصدر الداخلي الأساسي للتطبيق',
-                        style: TextStyle(fontSize: 11.sp)),
+                    title: Text(
+                      'الأذكار الافتراضية',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'المصدر الداخلي الأساسي للتطبيق',
+                      style: TextStyle(fontSize: 11.sp),
+                    ),
                   ),
                   Divider(
-                      height: 16.h,
-                      color: Theme.of(context).primaryColor.withOpacity(0.05)),
+                    height: 12.h,
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                  ),
                   SwitchListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
@@ -191,17 +213,25 @@ class _FloatingAdhkarSettingsScreenState
                         _draft = _draft.copyWith(includeCustom: value);
                       });
                     },
-                    title: Text('أذكاري الخاصة',
-                        style: TextStyle(
-                            fontSize: 13.sp, fontWeight: FontWeight.w600)),
-                    subtitle: Text('الأذكار التي قمت بإضافتها يدوياً',
-                        style: TextStyle(fontSize: 11.sp)),
+                    title: Text(
+                      'أذكاري الخاصة',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'الأذكار التي قمت بإضافتها يدوياً',
+                      style: TextStyle(fontSize: 10.sp),
+                    ),
                   ),
                   if (_draft.includeBuiltIn && _draft.includeCustom) ...[
                     Divider(
-                        height: 16.h,
-                        color:
-                            Theme.of(context).primaryColor.withOpacity(0.05)),
+                      height: 12.h,
+                      color: Theme.of(context)
+                          .primaryColor
+                          .withValues(alpha: 0.05),
+                    ),
                     SwitchListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -211,34 +241,39 @@ class _FloatingAdhkarSettingsScreenState
                           _draft = _draft.copyWith(mixSources: value);
                         });
                       },
-                      title: Text('الخلط بين المصادر',
-                          style: TextStyle(
-                              fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                      title: Text(
+                        'الخلط بين المصادر',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       subtitle: Text(
                         _draft.mixSources
                             ? 'يتم الاختيار من قائمة موحدة.'
                             : 'يتم التناوب بين الافتراضي والمخصص.',
-                        style: TextStyle(fontSize: 11.sp),
+                        style: TextStyle(fontSize: 10.sp),
                       ),
                     ),
                   ],
                 ],
               ),
             ),
-
-            SizedBox(height: 32.h),
-
+            SizedBox(height: 16.h),
             FilledButton.icon(
               onPressed: _saveSettings,
               style: FilledButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.h),
+                minimumSize: Size.fromHeight(38.h),
+                padding: EdgeInsets.symmetric(vertical: 0.h),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r)),
+                  borderRadius: BorderRadius.circular(13.r),
+                ),
               ),
-              icon: const AppIcon(AppIcons.save, size: 17),
-              label: Text('حفظ الإعدادات',
-                  style:
-                      TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+              icon: const AppIcon(AppIcons.save, size: 13),
+              label: Text(
+                'حفظ الإعدادات',
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
@@ -286,11 +321,11 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).primaryColor;
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: accent.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: accent.withOpacity(0.12)),
+        color: accent.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: accent.withValues(alpha: 0.10)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,21 +334,21 @@ class _SectionCard extends StatelessWidget {
             children: [
               AppIcon(
                 icon,
-                size: 14.5.r,
+                size: 12.5.r,
                 color: accent,
                 strokeWidth: 1.55,
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 7.w),
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 12.5.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 11.h),
           child,
         ],
       ),

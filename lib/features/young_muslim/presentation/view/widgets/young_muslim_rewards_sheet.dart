@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/sheet/full_screen_sheet.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 
@@ -64,8 +65,8 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                         width: 56.w,
                         height: 56.w,
                         decoration: BoxDecoration(
-                          color: youngMuslimRewardColor(context)
-                              .withOpacity(0.12),
+                          color:
+                              youngMuslimRewardColor(context).withOpacity(0.12),
                           borderRadius: BorderRadius.circular(16.r),
                         ),
                         child: Icon(

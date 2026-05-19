@@ -17,10 +17,11 @@ class _PlayerErrorBody extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.error_outline_rounded,
+              AppIcon(
+                AppIcons.warning,
                 size: 44.sp,
                 color: context.errorColor,
+                strokeWidth: 1.55,
               ),
               SizedBox(height: 12.h),
               Text(
@@ -101,7 +102,7 @@ class _PlayerContent extends StatelessWidget {
                   // ),
                   SizedBox(height: 18.h),
                   Container(
-                    padding: EdgeInsets.all(20.w),
+                    padding: EdgeInsets.all(14.w),
                     decoration: youngMuslimPanelDecoration(
                       context,
                       radius: 16,
@@ -138,10 +139,12 @@ class _PlayerContent extends StatelessWidget {
                             width: double.infinity,
                             child: OutlinedButton.icon(
                               onPressed: onPlayNext,
-                              icon: const Icon(Icons.skip_next_rounded),
+                              icon: const AppIcon(AppIcons.forward),
                               label: Text(
                                 'تشغيل التالي: $nextVideoLabel',
-                                style: const TextStyle(fontWeight: FontWeight.w800),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                               style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -168,79 +171,6 @@ class _PlayerContent extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _PlayerStatsRow extends StatelessWidget {
-  const _PlayerStatsRow({
-    required this.controller,
-    required this.session,
-  });
-
-  final YoutubePlayerController controller;
-  final YoungMuslimPlayerSessionEntity session;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<YoutubePlayerValue>(
-      valueListenable: controller,
-      builder: (context, value, _) {
-        final duration = value.metaData.duration.inSeconds > 0
-            ? value.metaData.duration
-            : Duration(seconds: session.video.durationSeconds);
-        final position = value.position;
-        final progress = duration.inSeconds <= 0
-            ? 0.0
-            : position.inSeconds / duration.inSeconds;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                LinearProgressIndicator(
-                   value: progress.clamp(0, 1),
-                  minHeight: 8.h,
-                  color: context.primaryColor,
-                  backgroundColor: context.outline.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-              ],
-            ),
-            SizedBox(height: 14.h),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    session.video.title,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w900,
-                      color: context.onSurfaceColor,
-                    ),
-                  ),
-                ),
-                YoungMuslimMetricChip(
-                  label:
-                      '${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')} / ${youngMuslimDuration(duration.inSeconds)}',
-                  icon: Icons.timer_outlined,
-                  color: context.primaryColor,
-                ),
-              ],
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              '${session.series.titleAr} • ${session.category.titleAr}',
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: context.onSurfaceVariant.withOpacity(0.7),
-                fontWeight: FontWeight.w600,
               ),
             ),
           ],

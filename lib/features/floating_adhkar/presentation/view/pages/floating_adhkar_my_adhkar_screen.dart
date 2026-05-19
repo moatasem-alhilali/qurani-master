@@ -102,6 +102,8 @@ class _FloatingAdhkarMyAdhkarViewState
       ],
       child: AppScaffoldWidget(
         title: 'إدارة الأذكار',
+        showLargeHeader: false,
+        initialOffset: null,
         onRefresh: () async {
           context.read<SabihBloc>().add(RefreshAllSubihEvent());
           floatingBloc.add(const FloatingAdhkarLoadEvent());
@@ -111,7 +113,7 @@ class _FloatingAdhkarMyAdhkarViewState
             : FloatingActionButton(
                 onPressed: () => _showAddDialog(context),
                 tooltip: 'إضافة ذكر خاص',
-                child: const AppIcon(AppIcons.add, size: 18),
+                child: const AppIcon(AppIcons.add, size: 15),
               ),
         body: BlocBuilder<SabihBloc, SabihState>(
           builder: (context, sabihState) {
@@ -143,14 +145,14 @@ class _FloatingAdhkarMyAdhkarViewState
                 }
 
                 return Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 24.h),
+                  padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _AdhkarTabs(
                         controller: _tabController,
                       ),
-                      SizedBox(height: 14.h),
+                      SizedBox(height: 10.h),
                       if (_showBuiltInTab)
                         _BuiltInTabContent(
                           items: builtInItems,
@@ -256,29 +258,29 @@ class _AdhkarTabs extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: context.outline.withValues(alpha: 0.22),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(6.w),
+        padding: EdgeInsets.all(4.w),
         child: TabBar(
           controller: controller,
           dividerColor: Colors.transparent,
           indicatorSize: TabBarIndicatorSize.tab,
           indicator: BoxDecoration(
             color: context.primaryColor,
-            borderRadius: BorderRadius.circular(14.r),
+            borderRadius: BorderRadius.circular(11.r),
           ),
           labelColor: context.onPrimaryColor,
           unselectedLabelColor: context.onSurfaceVariant,
           labelStyle: TextStyle(
-            fontSize: 13.sp,
+            fontSize: 11.sp,
             fontWeight: FontWeight.w800,
           ),
           unselectedLabelStyle: TextStyle(
-            fontSize: 13.sp,
+            fontSize: 11.sp,
             fontWeight: FontWeight.w700,
           ),
           tabs: const [
@@ -313,7 +315,7 @@ class _BuiltInTabContent extends StatelessWidget {
               'إيقاف ظهوره ضمن الأذكار العائمة.',
           countLabel: '$activeCount/${items.length}',
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: 8.h),
         if (items.isEmpty)
           const _SectionEmptyCard(
             title: 'لا توجد أذكار افتراضية متاحة',
@@ -323,7 +325,7 @@ class _BuiltInTabContent extends StatelessWidget {
         else
           ...items.map(
             (item) => Padding(
-              padding: EdgeInsets.only(bottom: 10.h),
+              padding: EdgeInsets.only(bottom: 8.h),
               child: _BuiltInAdhkarCard(
                 item: item,
                 enabled: !item.isDeleted,
@@ -364,7 +366,7 @@ class _CustomTabContent extends StatelessWidget {
               'أو إيقافها من الظهور.',
           countLabel: '${items.length}',
         ),
-        SizedBox(height: 10.h),
+        SizedBox(height: 8.h),
         if (items.isEmpty)
           _SectionEmptyCard(
             title: 'لا توجد أذكار خاصة بعد',
@@ -380,7 +382,7 @@ class _CustomTabContent extends StatelessWidget {
               final enabled = itemId != null && (selectionMap[itemId] ?? true);
 
               return Padding(
-                padding: EdgeInsets.only(bottom: 10.h),
+                padding: EdgeInsets.only(bottom: 8.h),
                 child: _CustomAdhkarCard(
                   item: item,
                   enabled: enabled,
@@ -422,25 +424,25 @@ class _SectionHeader extends StatelessWidget {
                 title,
                 style: TextStyle(
                   color: context.onSurfaceColor,
-                  fontSize: 16.sp,
+                  fontSize: 13.5.sp,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: 3.h),
               Text(
                 subtitle,
                 style: TextStyle(
                   color: context.onSurfaceVariant,
-                  fontSize: 11.5.sp,
-                  height: 1.5,
+                  fontSize: 10.sp,
+                  height: 1.4,
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 8.w),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           decoration: BoxDecoration(
             color: context.primaryColor.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(999.r),
@@ -449,7 +451,7 @@ class _SectionHeader extends StatelessWidget {
             countLabel,
             style: TextStyle(
               color: context.primaryColor,
-              fontSize: 12.sp,
+              fontSize: 10.5.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -477,13 +479,13 @@ class _SectionEmptyCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: context.outline.withValues(alpha: 0.22),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(12.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -491,24 +493,27 @@ class _SectionEmptyCard extends StatelessWidget {
               title,
               style: TextStyle(
                 color: context.onSurfaceColor,
-                fontSize: 14.sp,
+                fontSize: 12.5.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 4.h),
             Text(
               subtitle,
               style: TextStyle(
                 color: context.onSurfaceVariant,
-                fontSize: 12.sp,
-                height: 1.5,
+                fontSize: 10.5.sp,
+                height: 1.45,
               ),
             ),
             if (actionLabel != null && onAction != null) ...[
-              SizedBox(height: 12.h),
+              SizedBox(height: 9.h),
               FilledButton.icon(
                 onPressed: onAction,
-                icon: const AppIcon(AppIcons.add, size: 16),
+                style: FilledButton.styleFrom(
+                  minimumSize: Size.fromHeight(34.h),
+                ),
+                icon: const AppIcon(AppIcons.add, size: 12.5),
                 label: Text(actionLabel!),
               ),
             ],
@@ -542,7 +547,7 @@ class _BuiltInAdhkarCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: enabled
               ? context.outline.withValues(alpha: 0.22)
@@ -550,7 +555,7 @@ class _BuiltInAdhkarCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(14.w),
+        padding: EdgeInsets.all(11.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -561,7 +566,7 @@ class _BuiltInAdhkarCard extends StatelessWidget {
                     item.title,
                     style: TextStyle(
                       color: titleColor,
-                      fontSize: 15.sp,
+                      fontSize: 12.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -572,10 +577,10 @@ class _BuiltInAdhkarCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 6.h),
             Wrap(
-              spacing: 8.w,
-              runSpacing: 8.h,
+              spacing: 6.w,
+              runSpacing: 6.h,
               children: [
                 _InfoChip(
                   label: item.sourceLabel,
@@ -593,15 +598,15 @@ class _BuiltInAdhkarCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 7.h),
             Text(
               item.text,
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: bodyColor,
-                fontSize: 12.sp,
-                height: 1.5,
+                fontSize: 10.5.sp,
+                height: 1.45,
               ),
             ),
           ],
@@ -625,7 +630,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(999.r),
@@ -634,7 +639,7 @@ class _InfoChip extends StatelessWidget {
         label,
         style: TextStyle(
           color: foregroundColor,
-          fontSize: 11.sp,
+          fontSize: 9.8.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -662,13 +667,13 @@ class _CustomAdhkarCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: context.outline.withValues(alpha: 0.22),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(14.w),
+        padding: EdgeInsets.all(11.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -679,7 +684,7 @@ class _CustomAdhkarCard extends StatelessWidget {
                     item.title,
                     style: TextStyle(
                       color: context.onSurfaceColor,
-                      fontSize: 15.sp,
+                      fontSize: 12.5.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -690,30 +695,38 @@ class _CustomAdhkarCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 6.h),
             Text(
               item.content,
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: context.onSurfaceVariant,
-                fontSize: 12.sp,
-                height: 1.5,
+                fontSize: 10.5.sp,
+                height: 1.45,
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 8.h),
             Wrap(
-              spacing: 8.w,
-              runSpacing: 8.h,
+              spacing: 6.w,
+              runSpacing: 6.h,
               children: [
                 OutlinedButton.icon(
                   onPressed: onEdit,
-                  icon: const AppIcon(AppIcons.edit, size: 15),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size(0, 32.h),
+                    padding: EdgeInsets.symmetric(horizontal: 11.w),
+                  ),
+                  icon: const AppIcon(AppIcons.edit, size: 12),
                   label: const Text('تعديل'),
                 ),
                 OutlinedButton.icon(
                   onPressed: onDelete,
-                  icon: const AppIcon(AppIcons.delete, size: 15),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size(0, 32.h),
+                    padding: EdgeInsets.symmetric(horizontal: 11.w),
+                  ),
+                  icon: const AppIcon(AppIcons.delete, size: 12),
                   label: const Text('حذف'),
                 ),
               ],
