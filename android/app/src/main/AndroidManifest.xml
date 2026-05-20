@@ -38,7 +38,7 @@
         android:supportsRtl="true"
         android:enableOnBackInvokedCallback="true">
  <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyClJchSAuHzo5eLYcpbntzMbMA-zzpX0WI"/>
+           android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
