@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/firebase_notification.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -19,12 +17,6 @@ class NotificationPermissionService {
     if (permissionStatus.isDenied) {
       await Permission.notification.request();
     }
-    await sl<NotificationPermissionsService>().requestExactAlarmPermission();
-    final androidPlugin = sl<NotificationService>()
-        .plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-    await androidPlugin?.requestFullScreenIntentPermission();
     await sl<NotificationService>().setupNotificationActions();
   }
 }

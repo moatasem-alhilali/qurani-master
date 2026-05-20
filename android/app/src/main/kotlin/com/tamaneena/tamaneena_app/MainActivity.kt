@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.telephony.SmsManager
 import android.app.NotificationChannel
 import com.ryanheise.audioservice.AudioServiceActivity
 import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerCallManagerService
@@ -75,31 +74,6 @@ class MainActivity : AudioServiceActivity() {
             SMART_OUTREACH_CHANNEL,
         ).setMethodCallHandler { call, result ->
             when (call.method) {
-                "sendSmsDirect" -> {
-                    val phone = call.argument<String>("phone").orEmpty().trim()
-                    val message = call.argument<String>("message").orEmpty()
-
-                    if (phone.isBlank()) {
-                        result.error("INVALID_PHONE", "Phone number is empty", null)
-                        return@setMethodCallHandler
-                    }
-
-                    try {
-                        val smsManager: SmsManager =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                applicationContext.getSystemService(SmsManager::class.java)
-                            } else {
-                                @Suppress("DEPRECATION")
-                                SmsManager.getDefault()
-                            }
-
-                        smsManager.sendTextMessage(phone, null, message, null, null)
-                        result.success(true)
-                    } catch (e: Exception) {
-                        result.error("SMS_FAILED", e.message, null)
-                    }
-                }
-
                 "scheduleGroup" -> {
                     val groupId = call.argument<Int>("groupId")
                     val time = call.argument<String>("time").orEmpty().trim()
