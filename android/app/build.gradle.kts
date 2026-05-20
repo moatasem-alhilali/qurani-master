@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tamaneena.tamaneena_app"
+        applicationId = "com.nanohive.tamaneena"
         minSdk = 24
         targetSdk = 35
 

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:673349646615:android:5188e42e61027157575f52",
+        "mobilesdk_app_id": "1:673349646615:android:3d03b92485c61008575f52",
         "android_client_info": {
-          "package_name": "com.tamaneena.tamaneena_app"
+          "package_name": "com.nanohive.tamaneena"
         }
       },
       "oauth_client": [],

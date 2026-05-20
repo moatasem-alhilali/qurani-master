@@ -41,18 +41,18 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDPboTwAeAYuVLUCrvvRl7CfmGiTOJCPec',
-    appId: '1:673349646615:web:8943b087f72456ad575f52',
+    apiKey: 'AIzaSyCatnpFuMfv0nvFedoe3sPWTnBeT-85kfg',
+    appId: '1:673349646615:web:7c352e1c4030634f575f52',
     messagingSenderId: '673349646615',
     projectId: 'ecommerce-nefko-e5fb3',
     authDomain: 'ecommerce-nefko-e5fb3.firebaseapp.com',
     storageBucket: 'ecommerce-nefko-e5fb3.firebasestorage.app',
-    measurementId: 'G-G1ST9ELKC5',
+    measurementId: 'G-BSWT3FM07R',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA8U-Ac5dGcyr5MJi4deqW_4hN1w-J6B2g',
-    appId: '1:673349646615:android:5188e42e61027157575f52',
+    appId: '1:673349646615:android:3d03b92485c61008575f52',
     messagingSenderId: '673349646615',
     projectId: 'ecommerce-nefko-e5fb3',
     storageBucket: 'ecommerce-nefko-e5fb3.firebasestorage.app',
@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAYCAssz1BMsUcydE66H62fFjwTWNPsuaA',
-    appId: '1:673349646615:ios:50efb3f9df2657e0575f52',
+    appId: '1:673349646615:ios:11187bccc4c92984575f52',
     messagingSenderId: '673349646615',
     projectId: 'ecommerce-nefko-e5fb3',
     storageBucket: 'ecommerce-nefko-e5fb3.firebasestorage.app',
-    iosBundleId: 'com.tamaneena.tamaneenaApp',
+    iosBundleId: 'com.tamaanina.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'ecommerce-nefko-e5fb3.firebasestorage.app',
     measurementId: 'G-BSWT3FM07R',
   );
+
 }
