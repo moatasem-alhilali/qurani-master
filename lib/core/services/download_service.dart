@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/main.dart';
 
@@ -69,22 +68,19 @@ class DownloadService {
 
   Future<void> download(String url, String description) async {
     try {
-      await _permission();
-
       final di = await getDownloadPath();
       if (di == null) {
         throw Exception('Cannot resolve a writable download directory');
       }
 
       final extension = url.split('/').last.split('.').last;
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch.toString() + description}.$extension';
+      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      final fileName = '$timestamp$description.$extension';
       ToastServes.showToast(message: 'التنزيل بدأ');
 
       await FlutterDownloader.enqueue(
         url: url,
         savedDir: di,
-        saveInPublicStorage: Platform.isAndroid,
         fileName: fileName,
       ).then((value) => logger.i(value));
       try {
@@ -96,21 +92,6 @@ class DownloadService {
       logger.e('Error during download: $e');
     }
   }
-
-  Future<void> _permission() async {
-    if (!Platform.isAndroid) {
-      return;
-    }
-
-    final storage = await Permission.storage.status;
-    if (storage.isDenied) {
-      await Permission.storage.request();
-    }
-    final manageExternalStorage = await Permission.manageExternalStorage.status;
-    if (manageExternalStorage.isDenied) {
-      await Permission.manageExternalStorage.request();
-    }
-  }
 }
 
 Future<String?> getDownloadPath() async {
@@ -119,11 +100,7 @@ Future<String?> getDownloadPath() async {
     if (Platform.isIOS) {
       directory = await getApplicationDocumentsDirectory();
     } else {
-      directory = Directory('/storage/emulated/0/Download');
-
-      if (!await directory.exists()) {
-        directory = await getExternalStorageDirectory();
-      }
+      directory = await getExternalStorageDirectory();
     }
   } catch (err) {
     print('Cannot get download folder path');

@@ -113,7 +113,7 @@ class NotificationPermissionsService {
 
   /// Show settings dialog when permissions are permanently denied
   Future<void> showSettingsDialog(BuildContext context) async {
-    await showDialog(
+    await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -152,17 +152,12 @@ class NotificationPermissionsService {
         AndroidFlutterLocalNotificationsPlugin>();
     final areEnabled = await androidPlugin?.areNotificationsEnabled() ?? false;
 
-    // Check exact alarm permission
-    final hasExactAlarm = await hasExactAlarmPermission();
-
-    if (notificationStatus.isGranted && areEnabled && hasExactAlarm) {
+    if (notificationStatus.isGranted && areEnabled) {
       return NotificationPermissionStatus.granted;
     } else if (notificationStatus.isDenied || !areEnabled) {
       return NotificationPermissionStatus.denied;
     } else if (notificationStatus.isPermanentlyDenied) {
       return NotificationPermissionStatus.permanentlyDenied;
-    } else if (!hasExactAlarm) {
-      return NotificationPermissionStatus.partiallyGranted;
     }
 
     return NotificationPermissionStatus.unknown;
@@ -205,14 +200,7 @@ class NotificationPermissionsService {
     }
 
     if (notificationStatus.isGranted) {
-      // Also request exact alarm permission
-      final exactAlarmGranted = await requestExactAlarmPermission();
-
-      if (exactAlarmGranted) {
-        return NotificationPermissionResult.granted;
-      } else {
-        return NotificationPermissionResult.partiallyGranted;
-      }
+      return NotificationPermissionResult.granted;
     }
 
     return NotificationPermissionResult.denied;
@@ -228,11 +216,9 @@ class NotificationPermissionsService {
       sound: true,
     );
 
-    if (result == true) {
-      return NotificationPermissionResult.granted;
-    } else {
-      return NotificationPermissionResult.denied;
-    }
+    return (result ?? false)
+        ? NotificationPermissionResult.granted
+        : NotificationPermissionResult.denied;
   }
 }
 

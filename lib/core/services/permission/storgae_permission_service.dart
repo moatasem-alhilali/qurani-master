@@ -28,9 +28,5 @@ class StoragePermissionService {
     if (storage.isDenied) {
       await Permission.storage.request();
     }
-    final manageExternalStorage = await Permission.manageExternalStorage.status;
-    if (manageExternalStorage.isDenied) {
-      await Permission.manageExternalStorage.request();
-    }
   }
 }

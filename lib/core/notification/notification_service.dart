@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' show Color;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -82,7 +83,7 @@ class NotificationService extends BaseNotificationService {
       time,
       details,
       payload: payload ?? '$title|$body',
-      androidScheduleMode: scheduleMode,
+      androidScheduleMode: await _safeAndroidScheduleMode(scheduleMode),
       matchDateTimeComponents:
           matchDateTimeComponents ?? DateTimeComponents.time,
     );
@@ -169,7 +170,9 @@ class NotificationService extends BaseNotificationService {
         details,
         payload: payload,
         matchDateTimeComponents: DateTimeComponents.time,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: await _safeAndroidScheduleMode(
+          AndroidScheduleMode.exactAllowWhileIdle,
+        ),
       );
       return true;
     } catch (e) {
@@ -192,7 +195,9 @@ class NotificationService extends BaseNotificationService {
         body,
         RepeatInterval.hourly,
         details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: await _safeAndroidScheduleMode(
+          AndroidScheduleMode.exactAllowWhileIdle,
+        ),
         payload: payload,
       );
       return true;
@@ -218,7 +223,9 @@ class NotificationService extends BaseNotificationService {
         Duration(minutes: schedule.intervalMinutes!),
         details,
         payload: payload,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: await _safeAndroidScheduleMode(
+          AndroidScheduleMode.exactAllowWhileIdle,
+        ),
       );
       return true;
     } catch (e) {
@@ -241,7 +248,9 @@ class NotificationService extends BaseNotificationService {
         body,
         RepeatInterval.everyMinute,
         details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: await _safeAndroidScheduleMode(
+          AndroidScheduleMode.exactAllowWhileIdle,
+        ),
         payload: payload,
       );
       return true;
@@ -276,7 +285,9 @@ class NotificationService extends BaseNotificationService {
             scheduled,
             details,
             payload: payload,
-            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            androidScheduleMode: await _safeAndroidScheduleMode(
+              AndroidScheduleMode.exactAllowWhileIdle,
+            ),
             matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
           );
           successCount++;
@@ -314,7 +325,9 @@ class NotificationService extends BaseNotificationService {
             dateTime,
             details,
             payload: payload,
-            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            androidScheduleMode: await _safeAndroidScheduleMode(
+              AndroidScheduleMode.exactAllowWhileIdle,
+            ),
           );
           successCount++;
         } catch (e) {
@@ -328,8 +341,33 @@ class NotificationService extends BaseNotificationService {
     }
   }
 
+  Future<AndroidScheduleMode> _safeAndroidScheduleMode(
+    AndroidScheduleMode requestedMode,
+  ) async {
+    if (!Platform.isAndroid ||
+        (requestedMode != AndroidScheduleMode.exact &&
+            requestedMode != AndroidScheduleMode.exactAllowWhileIdle)) {
+      return requestedMode;
+    }
+
+    try {
+      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      final canScheduleExact =
+          await androidPlugin?.canScheduleExactNotifications() ?? true;
+
+      if (canScheduleExact) {
+        return requestedMode;
+      }
+    } catch (e) {
+      logger.e('Error checking exact alarm permission: $e');
+    }
+
+    return AndroidScheduleMode.inexactAllowWhileIdle;
+  }
+
   /// Schedule a notification based on a flexible schedule model
-  /// This method provides backward compatibility while using the unified base class
+  /// Keeps older callers working through the unified base class.
   Future<bool> scheduleNotificationCompatType({
     required int id,
     required String title,

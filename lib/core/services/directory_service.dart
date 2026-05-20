@@ -7,7 +7,7 @@ class DirectoryService {
   static Future<String?> getExternalStoragePath() async {
     try {
       // For Android 11+ (API 30+), use app-specific external storage
-      // This doesn't require MANAGE_EXTERNAL_STORAGE permission
+      // App-specific external storage avoids broad storage access.
       final directory = await getExternalStorageDirectory();
 
       if (directory != null) {
@@ -34,10 +34,9 @@ class DirectoryService {
     }
   }
 
-  /// Get public downloads directory (requires MANAGE_EXTERNAL_STORAGE on API 30+)
+  /// Get public downloads directory when the platform allows scoped access.
   static Future<String?> getPublicDownloadsPath() async {
     try {
-      // This requires MANAGE_EXTERNAL_STORAGE permission on Android 11+
       final directory = Directory('/storage/emulated/0/Download');
 
       if (await directory.exists()) {

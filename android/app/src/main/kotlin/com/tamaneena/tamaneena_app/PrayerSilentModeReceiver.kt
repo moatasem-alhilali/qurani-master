@@ -120,11 +120,29 @@ class PrayerSilentModeReceiver : BroadcastReceiver() {
             pendingIntent: PendingIntent,
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerAtMillis,
-                    pendingIntent,
-                )
+                try {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                        alarmManager.canScheduleExactAlarms()
+                    ) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerAtMillis,
+                            pendingIntent,
+                        )
+                    } else {
+                        alarmManager.setAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerAtMillis,
+                            pendingIntent,
+                        )
+                    }
+                } catch (_: SecurityException) {
+                    alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerAtMillis,
+                        pendingIntent,
+                    )
+                }
             } else {
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
