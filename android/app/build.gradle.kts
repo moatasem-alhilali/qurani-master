@@ -79,7 +79,11 @@ flutter {
 configurations.all {
     resolutionStrategy {
         force("com.android.billingclient:billing:7.0.0")
+        force("androidx.glance:glance:1.1.0")
+        force("androidx.glance:glance-appwidget:1.1.0")
+        force("androidx.glance:glance-material3:1.1.0")
     }
+    exclude(group = "androidx.compose.remote", module = "remote-creation-android")
 }
 
 

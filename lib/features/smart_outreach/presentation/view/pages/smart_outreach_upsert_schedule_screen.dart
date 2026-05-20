@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
@@ -414,8 +417,26 @@ class _SmartOutreachUpsertScheduleScreenState
     });
   }
 
-  void _onSavePressed() {
+  Future<void> _onSavePressed() async {
     if (!_formKey.currentState!.validate()) return;
+
+    if (_isEnabled && Platform.isAndroid) {
+      final exactAlarmGranted = await sl<NotificationPermissionsService>()
+          .requestExactAlarmPermission();
+      if (!mounted) return;
+
+      if (!exactAlarmGranted) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'لضمان صحبة الفجر في وقتها بدقة، فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.',
+              ),
+            ),
+          );
+      }
+    }
 
     final contacts = _rows
         .map(
