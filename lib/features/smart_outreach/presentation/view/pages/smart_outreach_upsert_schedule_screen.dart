@@ -431,7 +431,8 @@ class _SmartOutreachUpsertScheduleScreenState
           ..showSnackBar(
             const SnackBar(
               content: Text(
-                'لضمان صحبة الفجر في وقتها بدقة، فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.',
+                'لضمان صحبة الفجر في وقتها بدقة، '
+                'فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.',
               ),
             ),
           );

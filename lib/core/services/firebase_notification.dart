@@ -23,11 +23,10 @@ class FirebaseNotificationService {
   static const String _chatChannelId = 'chat_channel';
   static const String _orderChannelId = 'order_channel';
 
-  static const String _highImportanceChannelName =
-      'High Importance Notifications';
-  static const String _defaultChannelName = 'Default Notifications';
-  static const String _chatChannelName = 'Chat Notifications';
-  static const String _orderChannelName = 'Order Notifications';
+  static const String _highImportanceChannelName = 'طمأنينة - إشعارات مهمة';
+  static const String _defaultChannelName = 'طمأنينة - الإشعارات العامة';
+  static const String _chatChannelName = 'طمأنينة - الرسائل';
+  static const String _orderChannelName = 'طمأنينة - التحديثات';
 
   // Notification action IDs
   static const String _actionReply = 'reply';
@@ -156,8 +155,7 @@ class FirebaseNotificationService {
           const AndroidNotificationChannel(
             _highImportanceChannelId,
             _highImportanceChannelName,
-            description:
-                'This channel is used for high importance notifications.',
+            description: 'قناة الإشعارات المهمة في تطبيق طمأنينة.',
             importance: Importance.high,
             enableLights: true,
           ),
@@ -168,7 +166,7 @@ class FirebaseNotificationService {
           const AndroidNotificationChannel(
             _defaultChannelId,
             _defaultChannelName,
-            description: 'This channel is used for general notifications.',
+            description: 'قناة الإشعارات العامة في تطبيق طمأنينة.',
             enableLights: true,
           ),
         );
@@ -178,7 +176,7 @@ class FirebaseNotificationService {
           const AndroidNotificationChannel(
             _chatChannelId,
             _chatChannelName,
-            description: 'This channel is used for chat notifications.',
+            description: 'قناة رسائل وتنبيهات تطبيق طمأنينة.',
             importance: Importance.high,
             enableLights: true,
           ),
@@ -189,7 +187,7 @@ class FirebaseNotificationService {
           const AndroidNotificationChannel(
             _orderChannelId,
             _orderChannelName,
-            description: 'This channel is used for order notifications.',
+            description: 'قناة تحديثات تطبيق طمأنينة.',
             importance: Importance.high,
             enableLights: true,
           ),
@@ -353,13 +351,13 @@ class FirebaseNotificationService {
   String _getChannelDescription(String? type) {
     switch (type) {
       case 'chat':
-        return 'Notifications for chat messages';
+        return 'قناة رسائل وتنبيهات تطبيق طمأنينة';
       case 'order':
-        return 'Notifications for order updates';
+        return 'قناة تحديثات تطبيق طمأنينة';
       case 'high_importance':
-        return 'High importance notifications';
+        return 'قناة الإشعارات المهمة في تطبيق طمأنينة';
       default:
-        return 'General notifications';
+        return 'قناة الإشعارات العامة في تطبيق طمأنينة';
     }
   }
 

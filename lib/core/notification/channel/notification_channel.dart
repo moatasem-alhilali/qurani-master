@@ -29,73 +29,73 @@ enum NotificationChannel {
 extension NotificationChannelMeta on NotificationChannel {
   static const Map<NotificationChannel, NotificationChannelData> _map = {
     NotificationChannel.athan: NotificationChannelData(
-      id: 'athan_android_channel',
-      name: 'Athan',
+      id: 'athan_android_channel_v2',
+      name: 'طمأنينة - الأذان',
       sound: 'athan',
     ),
     NotificationChannel.mohammed: NotificationChannelData(
       id: 'sound_mohamed_android_channel',
-      name: 'Mohammed',
+      name: 'طمأنينة - الصلاة على النبي',
       sound: 'mohummed',
     ),
     NotificationChannel.morning: NotificationChannelData(
       id: 'sound_morning_android_channel',
-      name: 'Morning Azkar',
+      name: 'طمأنينة - أذكار الصباح',
       sound: 'morning',
     ),
     NotificationChannel.night: NotificationChannelData(
       id: 'sound_night_android_channel',
-      name: 'Night Azkar',
+      name: 'طمأنينة - أذكار المساء',
       sound: 'night',
     ),
     NotificationChannel.sleep: NotificationChannelData(
       id: 'thikr_sleep_channel',
-      name: 'Sleep Thikr',
+      name: 'طمأنينة - أذكار النوم',
       sound: 'default_custom',
     ),
     NotificationChannel.getUp: NotificationChannelData(
       id: 'thikr_getup_channel',
-      name: 'Wake Up Thikr',
+      name: 'طمأنينة - أذكار الاستيقاظ',
       sound: 'default_custom',
     ),
     NotificationChannel.middleNight: NotificationChannelData(
       id: 'sound_middle_night_android_channel',
-      name: 'Middle Night',
+      name: 'طمأنينة - قيام الليل',
       sound: 'middlenight',
     ),
     NotificationChannel.randomThikr: NotificationChannelData(
       id: 'random_thikr_channel',
-      name: 'Random Thikr',
+      name: 'طمأنينة - أذكار عشوائية',
       sound: 'default_custom',
     ),
     NotificationChannel.astgferAllh: NotificationChannelData(
       id: 'astgfer_allh_id',
-      name: 'Astaghfirullah',
+      name: 'طمأنينة - الاستغفار',
       sound: 'astgfer_allh',
     ),
     NotificationChannel.hasbnaAllh: NotificationChannelData(
       id: 'hasbna_allh_id',
-      name: 'Hasbuna Allah',
+      name: 'طمأنينة - حسبنا الله',
       sound: 'hasbna_allh',
     ),
     NotificationChannel.laHawla: NotificationChannelData(
       id: 'lahawla_wlaquoah_id',
-      name: 'La Hawla',
+      name: 'طمأنينة - لا حول ولا قوة إلا بالله',
       sound: 'lahawla_wlaquoah',
     ),
     NotificationChannel.subhanAllh: NotificationChannelData(
       id: 'subhan_allh_id',
-      name: 'Subhan Allah',
+      name: 'طمأنينة - سبحان الله',
       sound: 'subhan_allh',
     ),
     NotificationChannel.defaultChannel: NotificationChannelData(
       id: 'default_android_channel',
-      name: 'Default',
+      name: 'طمأنينة - الإشعارات العامة',
       sound: 'default_custom',
     ),
     NotificationChannel.smartOutreach: NotificationChannelData(
       id: 'smart_outreach_channel',
-      name: 'أيقظني',
+      name: 'طمأنينة - صحبة الفجر',
       sound: 'default_custom',
     ),
   };

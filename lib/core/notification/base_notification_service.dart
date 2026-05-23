@@ -14,7 +14,6 @@ import 'package:timezone/timezone.dart' as tz;
 /// Unified ID management for all notifications
 class NotificationIdManager {
   static final Map<String, int> _keyToIdMap = {};
-  static int _nextIdCounter = 1000; // Start from 1000 to avoid conflicts
 
   /// Generate a unique notification ID for a given key
   /// If the key already exists, return the existing ID
@@ -34,7 +33,7 @@ class NotificationIdManager {
     return _keyToIdMap[key];
   }
 
-  /// Generate a sequential ID for range-based notifications (like hourly notifications)
+  /// Generate a sequential ID for range-based notifications.
   static int generateSequentialId(String baseKey, int index) {
     final baseId = generateNotificationId(baseKey);
     return baseId + index;
@@ -43,7 +42,6 @@ class NotificationIdManager {
   /// Clear all stored IDs (useful for testing or reset)
   static void clearAll() {
     _keyToIdMap.clear();
-    _nextIdCounter = 1000;
   }
 
   /// Get all registered keys and their IDs
@@ -141,6 +139,8 @@ abstract class BaseNotificationService {
       await androidPlugin?.createNotificationChannelGroup(channelGroup);
       logger.d('Android notification channels initialized');
 
+      await androidPlugin?.deleteNotificationChannel('athan_android_channel');
+
       for (final channel in NotificationChannel.values) {
         final data = channel.data;
 
@@ -150,6 +150,9 @@ abstract class BaseNotificationService {
           description: 'قناة ${data.name} للإشعارات الإسلامية',
           importance: Importance.max,
           sound: RawResourceAndroidNotificationSound(data.sound),
+          audioAttributesUsage: channel == NotificationChannel.athan
+              ? AudioAttributesUsage.alarm
+              : AudioAttributesUsage.notification,
           vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
           enableLights: true,
           ledColor: const Color.fromARGB(255, 0, 255, 0),
@@ -286,7 +289,7 @@ abstract class BaseNotificationService {
           sound: true,
         );
 
-        return result == true;
+        return result ?? false;
       }
 
       return true;
@@ -382,6 +385,9 @@ abstract class BaseNotificationService {
       channelDescription: 'قناة ${data.name}',
       icon: icon,
       sound: RawResourceAndroidNotificationSound(data.sound),
+      audioAttributesUsage: channel == NotificationChannel.athan
+          ? AudioAttributesUsage.alarm
+          : AudioAttributesUsage.notification,
       priority: fullScreenIntent ? Priority.max : Priority.high,
       importance: Importance.max,
       channelBypassDnd: channelBypassDnd,

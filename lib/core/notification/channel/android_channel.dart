@@ -3,8 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //قيام اليل
 var soundMiddleNightAndroidChannel = const AndroidNotificationChannel(
   'sound_middle_night_android_channel',
-  'Sound Middle Night Android Channel',
-  description: 'Description for Default Notification Channel',
+  'طمأنينة - قيام الليل',
+  description: 'قناة إشعارات قيام الليل في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("middlenight"),
@@ -13,8 +13,8 @@ var soundMiddleNightAndroidChannel = const AndroidNotificationChannel(
 //الاذكار الصباحيه
 var soundMorningAndroidChannel = const AndroidNotificationChannel(
   'sound_morning_android_channel',
-  'Sound Morning Android Channel',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - أذكار الصباح',
+  description: 'قناة إشعارات أذكار الصباح في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("morning"),
@@ -23,8 +23,8 @@ var soundMorningAndroidChannel = const AndroidNotificationChannel(
 //الاذكار المسائيه
 var soundNightAndroidChannel = const AndroidNotificationChannel(
   'sound_night_android_channel',
-  'Sound Night Android Channel',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - أذكار المساء',
+  description: 'قناة إشعارات أذكار المساء في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("night"),
@@ -33,27 +33,28 @@ var soundNightAndroidChannel = const AndroidNotificationChannel(
 //الصلاة على محمد
 var soundMohamedAndroidChannel = const AndroidNotificationChannel(
   'sound_mohamed_android_channel',
-  'Sound Mohamed Android Channel',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - الصلاة على النبي',
+  description: 'قناة إشعارات الصلاة على النبي في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("mohummed"),
 );
 //الاذان
 var soundAthanAndroidChannel = const AndroidNotificationChannel(
-  'athan_android_channel',
-  'athan  Android Channel',
-  description: 'Description for Custom Notification Channel',
+  'athan_android_channel_v2',
+  'طمأنينة - الأذان',
+  description: 'قناة إشعارات الأذان في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("athan"),
+  audioAttributesUsage: AudioAttributesUsage.alarm,
 );
 
 //بقية الإشعارات
 var defaultAndroidChannel = const AndroidNotificationChannel(
   'default_android_channel',
-  'default  Android Channel',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - الإشعارات العامة',
+  description: 'قناة الإشعارات العامة في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("default_custom"),
@@ -62,8 +63,8 @@ var defaultAndroidChannel = const AndroidNotificationChannel(
 //استغفر الله
 var astgfer_allh = const AndroidNotificationChannel(
   'astgfer_allh_id',
-  'astgfer allh name',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - الاستغفار',
+  description: 'قناة إشعارات الاستغفار في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("astgfer_allh"),
@@ -72,8 +73,8 @@ var astgfer_allh = const AndroidNotificationChannel(
 //حسبنا الله ونعم الوكيل
 var hasbna_allh = const AndroidNotificationChannel(
   'hasbna_allh id',
-  'hasbna allh name',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - حسبنا الله',
+  description: 'قناة إشعارات حسبنا الله في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("hasbna_allh"),
@@ -81,8 +82,8 @@ var hasbna_allh = const AndroidNotificationChannel(
 //لا حول ولا قوة الا بالله
 var lahawla_wlaquoah = const AndroidNotificationChannel(
   'lahawla_wlaquoah_id',
-  'lahawla wlaquoah name',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - لا حول ولا قوة إلا بالله',
+  description: 'قناة إشعارات لا حول ولا قوة إلا بالله في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("lahawla_wlaquoah"),
@@ -90,8 +91,8 @@ var lahawla_wlaquoah = const AndroidNotificationChannel(
 //سبحان الله
 var subhan_allh = const AndroidNotificationChannel(
   'subhan_allh_id',
-  'subhan allh name',
-  description: 'Description for Custom Notification Channel',
+  'طمأنينة - سبحان الله',
+  description: 'قناة إشعارات سبحان الله في تطبيق طمأنينة',
   importance: Importance.max,
   playSound: true,
   sound: RawResourceAndroidNotificationSound("subhan_allh"),
