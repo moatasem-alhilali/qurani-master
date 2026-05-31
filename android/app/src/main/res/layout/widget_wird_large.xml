@@ -9,15 +9,31 @@
     android:padding="10dp"
     android:textDirection="rtl">
 
-    <TextView
-        android:id="@+id/widget_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:text="ورد اليوم"
-        android:textColor="#CDAD80"
-        android:textSize="10sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:alpha="0.92"
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="ورد اليوم"
+            android:textColor="#D4B873"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/widget_primary"
@@ -26,7 +42,7 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="42%"
-        android:textColor="#FFFFFF"
+        android:textColor="#FFF7E1"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -37,7 +53,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:text="أكملت جزءًا من وردك، أكمل النور."
-        android:textColor="#CDAD80"
+        android:textColor="#D4B873"
         android:textSize="9sp" />
 
     <TextView
@@ -47,6 +63,6 @@
         android:layout_marginTop="2dp"
         android:gravity="end"
         android:text="تحديث الآن"
-        android:textColor="#CDAD80"
+        android:textColor="#D4B873"
         android:textSize="8sp" />
 </LinearLayout>

@@ -12,4 +12,5 @@
     <string name="widget_dhikr_description">طمأنينة - ذكر عشوائي</string>
     <string name="widget_ayah_description">طمأنينة - آية عشوائية</string>
     <string name="widget_wird_description">طمأنينة - ورد اليوم</string>
+    <string name="widget_prayer_times_description">طمأنينة - مواقيت الصلاة</string>
 </resources>

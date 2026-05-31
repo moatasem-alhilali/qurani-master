@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/extensions/list_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
@@ -353,6 +354,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
       ),
     );
     unawaited(_syncPrayerSilentModeSchedule(list));
+    unawaited(_refreshHomeWidgets());
     _startPrayerProgressTicker();
   }
 
@@ -421,6 +423,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
             : _buildPrayerModel(resolvedPrayerState.nextPrayer!),
       ),
     );
+    unawaited(_refreshHomeWidgets());
   }
 
   Future<void> _refreshForDayRolloverIfNeeded(
@@ -522,6 +525,16 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     );
 
     return distance >= _locationChangeThresholdInMeters;
+  }
+
+  Future<void> _refreshHomeWidgets() async {
+    try {
+      final service = HomeWidgetsService();
+      await service.refreshAll();
+      await service.startBackgroundUpdates();
+    } catch (e) {
+      logger.w('Failed to refresh home widgets from prayer times: $e');
+    }
   }
 }
 

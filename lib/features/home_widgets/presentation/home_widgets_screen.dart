@@ -102,6 +102,13 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
               onPin: () => _pin(HomeWidgetType.prayer),
             ),
             _WidgetOptionTile(
+              title: 'مواقيت الصلاة',
+              subtitle: 'الفجر، الشروق، الظهر، العصر، المغرب والعشاء',
+              icon: AppIcons.calendar,
+              canPin: _isPinSupported,
+              onPin: () => _pin(HomeWidgetType.prayerTimes),
+            ),
+            _WidgetOptionTile(
               title: 'ذكر عشوائي',
               subtitle: 'ذكر متجدد من مصادر الأذكار',
               icon: AppIcons.tasbih,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:adhan/adhan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +13,8 @@ import 'package:quran_app/features/floating_adhkar/data/database/floating_adhkar
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_built_in_source.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_selector.dart';
-import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
+import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
+import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -47,10 +50,8 @@ void tamaneenaHomeWidgetsCallbackDispatcher() {
 
 class HomeWidgetsService {
   HomeWidgetsService({
-    AdhanPrayerTimeService? prayerTimeService,
     FloatingAdhkarRepository? floatingAdhkarRepository,
-  })  : _prayerTimeService = prayerTimeService ?? AdhanPrayerTimeService(),
-        _floatingAdhkarRepository = floatingAdhkarRepository ??
+  }) : _floatingAdhkarRepository = floatingAdhkarRepository ??
             FloatingAdhkarRepository(
               databaseService: FloatingAdhkarDatabaseService(),
               builtInSource: FloatingAdhkarBuiltInSource(),
@@ -63,6 +64,7 @@ class HomeWidgetsService {
     'TamaneenaDhikrWidget',
     'TamaneenaAyahWidget',
     'TamaneenaWirdWidget',
+    'TamaneenaPrayerTimesWidget',
     'TamaneenaLockPrayerWidget',
     'TamaneenaLockDhikrWidget',
     'TamaneenaLockAyahWidget',
@@ -73,10 +75,12 @@ class HomeWidgetsService {
     'HomeDhikrWidgetProvider',
     'HomeAyahWidgetProvider',
     'HomeWirdWidgetProvider',
+    'HomePrayerTimesWidgetProvider',
   ];
 
-  final AdhanPrayerTimeService _prayerTimeService;
   final FloatingAdhkarRepository _floatingAdhkarRepository;
+  final DatabaseCoordinatesService _coordinatesService =
+      DatabaseCoordinatesService();
   Duration? _nextPrayerRefreshDelay;
 
   Future<void> initializeBackgroundUpdates() async {
@@ -142,48 +146,77 @@ class HomeWidgetsService {
 
   Future<void> _savePrayerData() async {
     try {
-      final prayers = await _prayerTimeService.getTodayPrayerTimes();
-      final now = DateTime.now();
-      final futurePrayers = prayers
-          .where(
-            (prayer) =>
-                prayer.type != Prayer.sunrise && prayer.time.isAfter(now),
-          )
-          .toList();
-      final next = futurePrayers.isNotEmpty
-          ? futurePrayers.first
-          : prayers.firstWhere(
-              (prayer) => prayer.type == Prayer.fajr,
-              orElse: () => prayers.first,
-            );
-      final nextTime = futurePrayers.isNotEmpty
-          ? next.time
-          : next.time.add(const Duration(days: 1));
+      final savedLocation = await _coordinatesService.getSavedLocation();
+      if (savedLocation == null) {
+        throw StateError('No saved prayer location for widgets');
+      }
+
+      final schedule = _buildPrayerSchedule(savedLocation);
+      if (schedule.isEmpty) {
+        throw StateError('Prayer widget schedule is empty');
+      }
+
+      final now = _locationNow(savedLocation.utcOffsetMinutes);
+      final next = schedule.firstWhere(
+        (item) => item.isPrayer && item.time.isAfter(now),
+        orElse: () => schedule.firstWhere((item) => item.isPrayer),
+      );
+      final nextTime = next.time;
       final remaining = nextTime.difference(now);
       _nextPrayerRefreshDelay = remaining + const Duration(minutes: 1);
+      final todayItems = schedule.takeWhile((item) {
+        final first = schedule.first.time;
+        return _isSameDate(item.time, first);
+      }).toList();
 
       await Future.wait(<Future<bool?>>[
         HomeWidget.saveWidgetData<String>('prayer_name', next.name),
-        HomeWidget.saveWidgetData<String>('prayer_time', next.time12),
+        HomeWidget.saveWidgetData<String>(
+          'prayer_time',
+          _formatTime(next.time),
+        ),
         HomeWidget.saveWidgetData<String>(
           'prayer_remaining',
           _formatRemaining(remaining),
         ),
         HomeWidget.saveWidgetData<String>('prayer_label', 'الصلاة القادمة'),
-        HomeWidget.saveWidgetData<String>('prayer_city', 'طمأنينة'),
+        HomeWidget.saveWidgetData<String>(
+          'prayer_city',
+          savedLocation.label,
+        ),
         HomeWidget.saveWidgetData<int>(
           'prayer_next_epoch_millis',
           nextTime.millisecondsSinceEpoch,
         ),
+        HomeWidget.saveWidgetData<int>(
+          'prayer_location_utc_offset_minutes',
+          savedLocation.utcOffsetMinutes,
+        ),
+        HomeWidget.saveWidgetData<String>(
+          'prayer_schedule_json',
+          jsonEncode(schedule.map((item) => item.toJson()).toList()),
+        ),
+        HomeWidget.saveWidgetData<String>(
+          'prayer_times_summary',
+          _buildPrayerTimesSummary(todayItems),
+        ),
+        ..._prayerTimeKeyWrites(todayItems),
       ]);
     } catch (error) {
       debugPrint('HomeWidgetsService: prayer data fallback: $error');
+      _nextPrayerRefreshDelay = const Duration(minutes: 30);
       await Future.wait(<Future<bool?>>[
         HomeWidget.saveWidgetData<String>('prayer_name', 'الفجر'),
         HomeWidget.saveWidgetData<String>('prayer_time', '04:18 ص'),
         HomeWidget.saveWidgetData<String>('prayer_remaining', 'قريبًا'),
         HomeWidget.saveWidgetData<String>('prayer_label', 'الصلاة القادمة'),
         HomeWidget.saveWidgetData<String>('prayer_city', 'طمأنينة'),
+        HomeWidget.saveWidgetData<String>('prayer_schedule_json', '[]'),
+        HomeWidget.saveWidgetData<String>(
+          'prayer_times_summary',
+          'الفجر 04:18 | الظهر 12:05 | العصر 03:14 | '
+              'المغرب 06:32 | العشاء 07:51',
+        ),
       ]);
     }
   }
@@ -196,16 +229,22 @@ class HomeWidgetsService {
           ) ??
           await _floatingAdhkarRepository.loadPreviewItem(settings: settings);
 
+      final title = _cleanDhikrTitle(
+        itemTitle: item?.title,
+        itemText: item?.text,
+      );
+      final text = (item?.text.trim().isNotEmpty ?? false)
+          ? item!.text.trim()
+          : constants.thikr;
+
       await Future.wait(<Future<bool?>>[
         HomeWidget.saveWidgetData<String>(
           'dhikr_title',
-          (item?.title.trim().isNotEmpty ?? false) ? item!.title : 'ذكر اليوم',
+          title,
         ),
         HomeWidget.saveWidgetData<String>(
           'dhikr_text',
-          (item?.text.trim().isNotEmpty ?? false)
-              ? item!.text
-              : constants.thikr,
+          text,
         ),
         HomeWidget.saveWidgetData<String>(
           'dhikr_source',
@@ -248,6 +287,10 @@ class HomeWidgetsService {
         HomeWidget.saveWidgetData<String>('ayah_title', 'آية عشوائية'),
         HomeWidget.saveWidgetData<String>('ayah_text', '﴿$text﴾'),
         HomeWidget.saveWidgetData<String>('ayah_source', source),
+        HomeWidget.saveWidgetData<int>(
+          'ayah_last_updated_epoch_millis',
+          DateTime.now().millisecondsSinceEpoch,
+        ),
       ]);
     } catch (error) {
       debugPrint('HomeWidgetsService: quran ayah fallback: $error');
@@ -280,18 +323,18 @@ class HomeWidgetsService {
     final themeType = CacheService().getString(ThemeColorsManager.cacheKey) ??
         ThemeColorsManager.blue;
     final accent = switch (themeType) {
-      ThemeColorsManager.brown => '#77554B',
-      ThemeColorsManager.green => '#618264',
-      ThemeColorsManager.dark => '#42796C',
-      _ => '#404C6E',
+      ThemeColorsManager.brown => '#C9A46A',
+      ThemeColorsManager.green => '#BFA16A',
+      ThemeColorsManager.dark => '#D6B977',
+      _ => '#C9A46A',
     };
 
     await Future.wait(<Future<bool?>>[
       HomeWidget.saveWidgetData<String>('widget_theme_type', themeType),
       HomeWidget.saveWidgetData<String>('widget_accent_hex', accent),
-      HomeWidget.saveWidgetData<String>('widget_surface_hex', '#2C2C2C'),
-      HomeWidget.saveWidgetData<String>('widget_on_surface_hex', '#FFFFFF'),
-      HomeWidget.saveWidgetData<String>('widget_muted_hex', '#CDAD80'),
+      HomeWidget.saveWidgetData<String>('widget_surface_hex', '#17130D'),
+      HomeWidget.saveWidgetData<String>('widget_on_surface_hex', '#FFF7E1'),
+      HomeWidget.saveWidgetData<String>('widget_muted_hex', '#D4B873'),
     ]);
   }
 
@@ -356,15 +399,155 @@ class HomeWidgetsService {
     }
     return 'بعد $hours س $minutes د';
   }
+
+  List<_PrayerWidgetScheduleItem> _buildPrayerSchedule(
+    PrayerLocationSelection selection,
+  ) {
+    final params = CalculationMethod.muslim_world_league.getParameters()
+      ..madhab = Madhab.shafi;
+    final coordinates = Coordinates(selection.latitude, selection.longitude);
+    final offset = Duration(minutes: selection.utcOffsetMinutes);
+    final nowAtLocation = _locationNow(selection.utcOffsetMinutes);
+    final baseDate = DateTime(
+      nowAtLocation.year,
+      nowAtLocation.month,
+      nowAtLocation.day,
+    );
+    final items = <_PrayerWidgetScheduleItem>[];
+
+    for (var day = 0; day < 2; day++) {
+      final date = baseDate.add(Duration(days: day));
+      final prayerTimes = PrayerTimes.utcOffset(
+        coordinates,
+        DateComponents.from(date),
+        params,
+        offset,
+      );
+      items.addAll(<_PrayerWidgetScheduleItem>[
+        _PrayerWidgetScheduleItem(
+          key: 'fajr',
+          name: 'الفجر',
+          time: prayerTimes.fajr,
+        ),
+        _PrayerWidgetScheduleItem(
+          key: 'sunrise',
+          name: 'الشروق',
+          time: prayerTimes.sunrise,
+          isPrayer: false,
+        ),
+        _PrayerWidgetScheduleItem(
+          key: 'dhuhr',
+          name: 'الظهر',
+          time: prayerTimes.dhuhr,
+        ),
+        _PrayerWidgetScheduleItem(
+          key: 'asr',
+          name: 'العصر',
+          time: prayerTimes.asr,
+        ),
+        _PrayerWidgetScheduleItem(
+          key: 'maghrib',
+          name: 'المغرب',
+          time: prayerTimes.maghrib,
+        ),
+        _PrayerWidgetScheduleItem(
+          key: 'isha',
+          name: 'العشاء',
+          time: prayerTimes.isha,
+        ),
+      ]);
+    }
+
+    items.sort((a, b) => a.time.compareTo(b.time));
+    return items;
+  }
+
+  List<Future<bool?>> _prayerTimeKeyWrites(
+    List<_PrayerWidgetScheduleItem> items,
+  ) {
+    final byKey = <String, _PrayerWidgetScheduleItem>{
+      for (final item in items) item.key: item,
+    };
+    return <Future<bool?>>[
+      for (final key in <String>[
+        'fajr',
+        'sunrise',
+        'dhuhr',
+        'asr',
+        'maghrib',
+        'isha',
+      ])
+        HomeWidget.saveWidgetData<String>(
+          'prayer_${key}_time',
+          byKey[key] == null ? '--:--' : _formatTime(byKey[key]!.time),
+        ),
+    ];
+  }
+
+  String _buildPrayerTimesSummary(List<_PrayerWidgetScheduleItem> items) {
+    return items
+        .where((item) => item.isPrayer)
+        .map((item) => '${item.name} ${_formatTime(item.time)}')
+        .join(' | ');
+  }
+
+  String _formatTime(DateTime time) {
+    return DateFormat.jm('ar').format(time);
+  }
+
+  DateTime _locationNow(int utcOffsetMinutes) {
+    return DateTime.now().toUtc().add(Duration(minutes: utcOffsetMinutes));
+  }
+
+  bool _isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  String _cleanDhikrTitle({
+    required String? itemTitle,
+    required String? itemText,
+  }) {
+    final title = itemTitle?.trim() ?? '';
+    final text = itemText?.trim() ?? '';
+    if (title.isEmpty || title == text || text.startsWith(title)) {
+      return 'ذكر اليوم';
+    }
+    return title;
+  }
 }
 
 enum HomeWidgetType {
   prayer('HomePrayerWidgetProvider'),
   dhikr('HomeDhikrWidgetProvider'),
   ayah('HomeAyahWidgetProvider'),
-  wird('HomeWirdWidgetProvider');
+  wird('HomeWirdWidgetProvider'),
+  prayerTimes('HomePrayerTimesWidgetProvider');
 
   const HomeWidgetType(this.androidProvider);
 
   final String androidProvider;
+}
+
+class _PrayerWidgetScheduleItem {
+  const _PrayerWidgetScheduleItem({
+    required this.key,
+    required this.name,
+    required this.time,
+    this.isPrayer = true,
+  });
+
+  final String key;
+  final String name;
+  final DateTime time;
+  final bool isPrayer;
+
+  Map<String, Object> toJson() => <String, Object>{
+        'key': key,
+        'name': name,
+        'time': _timeFormat.format(time),
+        'epochMillis': time.millisecondsSinceEpoch,
+        'isPrayer': isPrayer,
+      };
+
+  static final DateFormat _timeFormat = DateFormat.jm('ar');
 }
