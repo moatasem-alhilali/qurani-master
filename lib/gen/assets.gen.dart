@@ -12,7 +12,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart' as _svg;
-import 'package:lottie/lottie.dart' as _lottie;
 import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
 class $AssetsAthoresGen {
@@ -84,8 +83,29 @@ class $AssetsImageGen {
 class $AssetsJsonGen {
   const $AssetsJsonGen();
 
+  /// File path: assets/json/adhkar_funeral.json
+  String get adhkarFuneral => 'assets/json/adhkar_funeral.json';
+
+  /// File path: assets/json/adhkar_hajj_umrah.json
+  String get adhkarHajjUmrah => 'assets/json/adhkar_hajj_umrah.json';
+
+  /// File path: assets/json/adhkar_quran_duas.json
+  String get adhkarQuranDuas => 'assets/json/adhkar_quran_duas.json';
+
+  /// File path: assets/json/adhkar_quranic_duas.json
+  String get adhkarQuranicDuas => 'assets/json/adhkar_quranic_duas.json';
+
+  /// File path: assets/json/adhkar_salah_jumuah.json
+  String get adhkarSalahJumuah => 'assets/json/adhkar_salah_jumuah.json';
+
+  /// File path: assets/json/adhkar_sleep_dreams.json
+  String get adhkarSleepDreams => 'assets/json/adhkar_sleep_dreams.json';
+
   /// File path: assets/json/allah_names.json
   String get allahNames => 'assets/json/allah_names.json';
+
+  /// File path: assets/json/daily_wird_program.json
+  String get dailyWirdProgram => 'assets/json/daily_wird_program.json';
 
   /// File path: assets/json/hadith_40.json
   String get hadith40 => 'assets/json/hadith_40.json';
@@ -96,26 +116,45 @@ class $AssetsJsonGen {
   /// File path: assets/json/most_reader.json
   String get mostReader => 'assets/json/most_reader.json';
 
+  /// File path: assets/json/radio_stations.json
+  String get radioStations => 'assets/json/radio_stations.json';
+
   /// File path: assets/json/ruqia_shareia.json
   String get ruqiaShareia => 'assets/json/ruqia_shareia.json';
 
   /// File path: assets/json/surah_info.json
   String get surahInfo => 'assets/json/surah_info.json';
 
+  /// File path: assets/json/travel_azkar.json
+  String get travelAzkar => 'assets/json/travel_azkar.json';
+
   /// File path: assets/json/wird_night_morning.json
   String get wirdNightMorning => 'assets/json/wird_night_morning.json';
+
+  /// Directory path: assets/json/young_muslim
+  $AssetsJsonYoungMuslimGen get youngMuslim =>
+      const $AssetsJsonYoungMuslimGen();
 
   /// File path: assets/json/zkar-after-pray.json
   String get zkarAfterPray => 'assets/json/zkar-after-pray.json';
 
   /// List of all assets
   List<String> get values => [
+        adhkarFuneral,
+        adhkarHajjUmrah,
+        adhkarQuranDuas,
+        adhkarQuranicDuas,
+        adhkarSalahJumuah,
+        adhkarSleepDreams,
         allahNames,
+        dailyWirdProgram,
         hadith40,
         hisnMuslim,
         mostReader,
+        radioStations,
         ruqiaShareia,
         surahInfo,
+        travelAzkar,
         wirdNightMorning,
         zkarAfterPray
       ];
@@ -150,17 +189,6 @@ class $AssetsLogoGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [bg, splashIcon, splashIconDark];
-}
-
-class $AssetsLottieGen {
-  const $AssetsLottieGen();
-
-  /// File path: assets/lottie/reading- quran.json
-  LottieGenImage get readingQuran =>
-      const LottieGenImage('assets/lottie/reading- quran.json');
-
-  /// List of all assets
-  List<LottieGenImage> get values => [readingQuran];
 }
 
 class $AssetsSvgGen {
@@ -533,6 +561,26 @@ class $AssetsSvgGen {
         user,
         yaser
       ];
+}
+
+class $AssetsJsonYoungMuslimGen {
+  const $AssetsJsonYoungMuslimGen();
+
+  /// File path: assets/json/young_muslim/catalog.json
+  String get catalog => 'assets/json/young_muslim/catalog.json';
+
+  /// Directory path: assets/json/young_muslim/playlists
+  $AssetsJsonYoungMuslimPlaylistsGen get playlists =>
+      const $AssetsJsonYoungMuslimPlaylistsGen();
+
+  /// File path: assets/json/young_muslim/quizzes.json
+  String get quizzes => 'assets/json/young_muslim/quizzes.json';
+
+  /// File path: assets/json/young_muslim/rewards.json
+  String get rewards => 'assets/json/young_muslim/rewards.json';
+
+  /// List of all assets
+  List<String> get values => [catalog, quizzes, rewards];
 }
 
 class $AssetsSvgAlwaqfGen {
@@ -1080,6 +1128,44 @@ class $AssetsSvgSurahNameGen {
       ];
 }
 
+class $AssetsJsonYoungMuslimPlaylistsGen {
+  const $AssetsJsonYoungMuslimPlaylistsGen();
+
+  /// File path: assets/json/young_muslim/playlists/animal_stories_from_quran_ar.json
+  String get animalStoriesFromQuranAr =>
+      'assets/json/young_muslim/playlists/animal_stories_from_quran_ar.json';
+
+  /// File path: assets/json/young_muslim/playlists/animal_stories_from_quran_fr.json
+  String get animalStoriesFromQuranFr =>
+      'assets/json/young_muslim/playlists/animal_stories_from_quran_fr.json';
+
+  /// File path: assets/json/young_muslim/playlists/human_stories_from_quran.json
+  String get humanStoriesFromQuran =>
+      'assets/json/young_muslim/playlists/human_stories_from_quran.json';
+
+  /// File path: assets/json/young_muslim/playlists/marvellous_stories_from_quran.json
+  String get marvellousStoriesFromQuran =>
+      'assets/json/young_muslim/playlists/marvellous_stories_from_quran.json';
+
+  /// File path: assets/json/young_muslim/playlists/verses_stories_from_quran.json
+  String get versesStoriesFromQuran =>
+      'assets/json/young_muslim/playlists/verses_stories_from_quran.json';
+
+  /// File path: assets/json/young_muslim/playlists/women_stories_from_quran.json
+  String get womenStoriesFromQuran =>
+      'assets/json/young_muslim/playlists/women_stories_from_quran.json';
+
+  /// List of all assets
+  List<String> get values => [
+        animalStoriesFromQuranAr,
+        animalStoriesFromQuranFr,
+        humanStoriesFromQuran,
+        marvellousStoriesFromQuran,
+        versesStoriesFromQuran,
+        womenStoriesFromQuran
+      ];
+}
+
 class Assets {
   const Assets._();
 
@@ -1088,12 +1174,7 @@ class Assets {
   static const $AssetsJsonGen json = $AssetsJsonGen();
   static const $AssetsLangGen lang = $AssetsLangGen();
   static const $AssetsLogoGen logo = $AssetsLogoGen();
-  static const $AssetsLottieGen lottie = $AssetsLottieGen();
-  static const String quranWithTafser = 'assets/quran_with_tafser.sqlite';
   static const $AssetsSvgGen svg = $AssetsSvgGen();
-
-  /// List of all assets
-  static List<String> get values => [quranWithTafser];
 }
 
 class AssetGenImage {
@@ -1262,79 +1343,6 @@ class SvgGenImage {
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
-    );
-  }
-
-  String get path => _assetName;
-
-  String get keyName => _assetName;
-}
-
-class LottieGenImage {
-  const LottieGenImage(
-    this._assetName, {
-    this.flavors = const {},
-  });
-
-  final String _assetName;
-  final Set<String> flavors;
-
-  _lottie.LottieBuilder lottie({
-    Animation<double>? controller,
-    bool? animate,
-    _lottie.FrameRate? frameRate,
-    bool? repeat,
-    bool? reverse,
-    _lottie.LottieDelegates? delegates,
-    _lottie.LottieOptions? options,
-    void Function(_lottie.LottieComposition)? onLoaded,
-    _lottie.LottieImageProviderFactory? imageProviderFactory,
-    Key? key,
-    AssetBundle? bundle,
-    Widget Function(
-      BuildContext,
-      Widget,
-      _lottie.LottieComposition?,
-    )? frameBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    double? width,
-    double? height,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    String? package,
-    bool? addRepaintBoundary,
-    FilterQuality? filterQuality,
-    void Function(String)? onWarning,
-    _lottie.LottieDecoder? decoder,
-    _lottie.RenderCache? renderCache,
-    bool? backgroundLoading,
-  }) {
-    return _lottie.Lottie.asset(
-      _assetName,
-      controller: controller,
-      animate: animate,
-      frameRate: frameRate,
-      repeat: repeat,
-      reverse: reverse,
-      delegates: delegates,
-      options: options,
-      onLoaded: onLoaded,
-      imageProviderFactory: imageProviderFactory,
-      key: key,
-      bundle: bundle,
-      frameBuilder: frameBuilder,
-      errorBuilder: errorBuilder,
-      width: width,
-      height: height,
-      fit: fit,
-      alignment: alignment,
-      package: package,
-      addRepaintBoundary: addRepaintBoundary,
-      filterQuality: filterQuality,
-      onWarning: onWarning,
-      decoder: decoder,
-      renderCache: renderCache,
-      backgroundLoading: backgroundLoading,
     );
   }
 

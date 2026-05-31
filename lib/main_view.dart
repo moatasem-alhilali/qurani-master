@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,9 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
+import 'package:quran_app/src/core/update/app_update_cubit.dart';
+import 'package:quran_app/src/core/update/app_update_service.dart';
+import 'package:upgrader/upgrader.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -120,6 +124,10 @@ class MyApp extends StatelessWidget {
           create: (context) => sl<RadioBloc>()..add(const RadioInitialized()),
           lazy: false,
         ),
+        BlocProvider(
+          create: (context) => AppUpdateCubit(),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
@@ -191,12 +199,20 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> with WidgetsBindingObserver {
+  final _upgrader = Upgrader(languageCode: 'ar');
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     sl<AthanAlarmNotificationRouterService>().initialize();
     unawaited(sl<DailyWirdRepository>().syncReminderSchedules());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(context.read<AppUpdateCubit>().checkForUpdate());
+    });
   }
 
   @override
@@ -218,7 +234,7 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
+    final scaffold = PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, res) async {
         showMyAlert(context: context);
@@ -232,6 +248,31 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
           );
         },
       ),
+    );
+
+    final child = Platform.isIOS
+        ? UpgradeAlert(
+            upgrader: _upgrader,
+            child: scaffold,
+          )
+        : scaffold;
+
+    return BlocListener<AppUpdateCubit, AppUpdateStatus>(
+      listenWhen: (previous, current) => current is AppUpdateAndroidReady,
+      listener: (context, state) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('تم تحميل التحديث، يمكنك تثبيته الآن.'),
+            action: SnackBarAction(
+              label: 'تثبيت الآن',
+              onPressed: () {
+                context.read<AppUpdateCubit>().installAndroidUpdate();
+              },
+            ),
+          ),
+        );
+      },
+      child: child,
     );
   }
 }
