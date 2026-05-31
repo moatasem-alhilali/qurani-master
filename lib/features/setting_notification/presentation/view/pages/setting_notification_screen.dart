@@ -42,7 +42,7 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
 
     // Create individual controllers for each section
     _itemControllers = List.generate(
-      4, // Number of sections
+      7, // Number of sections
       (index) => AnimationController(
         duration: Duration(milliseconds: 400 + (index * 100)),
         vsync: this,
@@ -132,7 +132,8 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: context.primaryColor.withValues(alpha: 0.2),
+                                  color: context.primaryColor
+                                      .withValues(alpha: 0.2),
                                   blurRadius: 12.r,
                                   offset: Offset(0, 6.h),
                                 ),
@@ -178,6 +179,24 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                         SizedBox(height: 24.h),
                         _buildSection(
                           0,
+                          'عام',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotify,
+                              'كل إشعارات التطبيق',
+                              CupertinoIcons.bell_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationFirebaseGeneral,
+                              'إشعارات التطبيق العامة',
+                              CupertinoIcons.sparkles,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          1,
                           'الأذان',
                           s,
                           [
@@ -215,10 +234,30 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                         ),
                         SizedBox(height: 32.h),
                         _buildSection(
-                          1,
+                          2,
                           'الورد اليومي',
                           s,
                           [
+                            _NotifItem(
+                              NotificationKeys.isNotificationDailyWirdMorning,
+                              'ورد الصباح',
+                              CupertinoIcons.sunrise_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationDailyWirdEvening,
+                              'ورد المساء',
+                              CupertinoIcons.sunset_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationDailyWirdNight,
+                              'ورد ما قبل النوم',
+                              CupertinoIcons.bed_double_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationDailyWirdSummary,
+                              'ملخص الورد اليومي',
+                              CupertinoIcons.checkmark_circle_fill,
+                            ),
                             _NotifItem(
                               NotificationKeys.isNotificationThikrMorning,
                               'أذكار الصباح',
@@ -233,7 +272,7 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                         ),
                         SizedBox(height: 32.h),
                         _buildSection(
-                          2,
+                          3,
                           'العشوائي',
                           s,
                           [
@@ -247,11 +286,68 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                               'الأذكار الصوتية العشوائية',
                               CupertinoIcons.speaker_2_fill,
                             ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationFloatingAdhkar,
+                              'الأذكار العائمة والتنبيهات البديلة',
+                              CupertinoIcons.bubble_left_bubble_right_fill,
+                            ),
                           ],
                         ),
                         SizedBox(height: 32.h),
                         _buildSection(
-                          3,
+                          4,
+                          'القرآن',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadQuran,
+                              'الورد القرآني',
+                              CupertinoIcons.textformat,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadSurahMulk,
+                              'قراءة سورة الملك',
+                              CupertinoIcons.book_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadSurah,
+                              'قراءة سورة محددة',
+                              CupertinoIcons.book,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationReadSurahAlkahf,
+                              'قراءة سورة الكهف',
+                              CupertinoIcons.bookmark_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationQuranPlan,
+                              'تذكير خطط القرآن',
+                              CupertinoIcons.calendar_badge_plus,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          5,
+                          'أقسام التطبيق',
+                          s,
+                          [
+                            _NotifItem(
+                              NotificationKeys.isNotificationYoungMuslimResume,
+                              'تذكير المسلم الصغير',
+                              CupertinoIcons.play_rectangle_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys
+                                  .isNotificationPrayerSilentModeReminder,
+                              'تذكير وضع الصلاة على iPhone',
+                              CupertinoIcons.moon_fill,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 32.h),
+                        _buildSection(
+                          6,
                           'أخرى',
                           s,
                           [
@@ -266,19 +362,44 @@ class _SettingNotificationScreenState extends State<SettingNotificationScreen>
                               CupertinoIcons.bed_double_fill,
                             ),
                             _NotifItem(
-                              NotificationKeys.isNotificationReadSurahMulk,
-                              'قراءة سورة الملك',
-                              CupertinoIcons.book_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationReadQuran,
-                              'الورد القرآني',
-                              CupertinoIcons.textformat,
-                            ),
-                            _NotifItem(
                               NotificationKeys.isNotificationMiddleNight,
                               'قيام الليل',
                               CupertinoIcons.moon_stars,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationFasting,
+                              'تذكير بالصيام',
+                              CupertinoIcons.calendar,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationFastingMonday,
+                              'صيام الاثنين',
+                              CupertinoIcons.calendar_today,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationFastingThursday,
+                              'صيام الخميس',
+                              CupertinoIcons.calendar_today,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationAstgferAllh,
+                              'استغفر الله',
+                              CupertinoIcons.repeat,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationHasbnaAllh,
+                              'حسبنا الله',
+                              CupertinoIcons.hand_raised_fill,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationLahawlaWlaquoah,
+                              'لا حول ولا قوة إلا بالله',
+                              CupertinoIcons.wind,
+                            ),
+                            _NotifItem(
+                              NotificationKeys.isNotificationSubhanAllh,
+                              'سبحان الله',
+                              CupertinoIcons.star_fill,
                             ),
                           ],
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
@@ -17,6 +18,7 @@ class SettingNotificationRepo {
   final NotificationService notificationService;
   final AthanAlarmPayloadService _athanPayloadService =
       AthanAlarmPayloadService();
+  final DatabaseService _databaseService = DatabaseService();
 
   /// Get NotificationSettingModel by key
   Future<NotificationSettingModel?> getSetting(String key) async {
@@ -50,6 +52,7 @@ class SettingNotificationRepo {
 
       final updated = setting.copyWith(enabled: val);
       await DatabaseNotificationSettingService().upsert(updated);
+      BaseNotificationService.clearNotificationSettingsCache();
       await _applyNotificationChange(updated);
 
       logger.d('Toggled notification setting $key to $val');
@@ -65,6 +68,7 @@ class SettingNotificationRepo {
   ) async {
     try {
       await DatabaseNotificationSettingService().upsert(newSchedule);
+      BaseNotificationService.clearNotificationSettingsCache();
       await _applyNotificationChange(newSchedule);
 
       logger.d('Updated schedule for notification setting: $key');
@@ -87,6 +91,15 @@ class SettingNotificationRepo {
         range: NotificationDataConst.resolveIdRange(setting),
       );
 
+      if (!setting.enabled) {
+        await _cancelFeatureOwnedNotifications(setting.key);
+      }
+
+      if (setting.key == NotificationKeys.isNotify && !setting.enabled) {
+        await notificationService.cancelAll();
+        return;
+      }
+
       // Only schedule if enabled and not a settings-only notification
       if (setting.enabled && !setting.onlySetting) {
         final isAthan = _athanPayloadService.isAthanKey(setting.key);
@@ -105,6 +118,7 @@ class SettingNotificationRepo {
           body: body,
           channel: NotificationDataConst.resolveChannel(setting.key),
           schedule: setting.schedule,
+          settingKey: setting.key,
           payload: isAthan
               ? _athanPayloadService.buildPayload(
                   key: setting.key,
@@ -120,7 +134,9 @@ class SettingNotificationRepo {
               : null,
           iosThreadIdentifier: isAthan ? 'athan_notifications' : null,
           iosCategoryIdentifier: isAthan ? 'islamic_notifications' : null,
-          iosInterruptionLevel: isAthan ? InterruptionLevel.active : null,
+          iosInterruptionLevel:
+              isAthan ? InterruptionLevel.timeSensitive : null,
+          iosSound: isAthan ? 'athan.caf' : null,
           bigText: isAthan
               ? _athanPayloadService.buildAthanExpandedBody(
                   prayerName: prayerName,
@@ -173,6 +189,101 @@ class SettingNotificationRepo {
       logger.d('Cancelled all notifications for key: $key');
     } catch (e) {
       logger.e('Error cancelling notifications for key $key: $e');
+    }
+  }
+
+  Future<void> _cancelFeatureOwnedNotifications(String key) async {
+    switch (key) {
+      case NotificationKeys.isNotificationDailyWirdMorning:
+        await notificationService.cancelNotificationById(
+          id: NotificationIdManager.generateNotificationId(
+            'daily_wird_morning_reminder',
+          ),
+        );
+        return;
+      case NotificationKeys.isNotificationDailyWirdEvening:
+        await notificationService.cancelNotificationById(
+          id: NotificationIdManager.generateNotificationId(
+            'daily_wird_evening_reminder',
+          ),
+        );
+        return;
+      case NotificationKeys.isNotificationDailyWirdNight:
+        await notificationService.cancelNotificationById(
+          id: NotificationIdManager.generateNotificationId(
+            'daily_wird_night_reminder',
+          ),
+        );
+        return;
+      case NotificationKeys.isNotificationDailyWirdSummary:
+        await notificationService.cancelNotificationById(
+          id: NotificationIdManager.generateNotificationId(
+            'daily_wird_summary_reminder',
+          ),
+        );
+        return;
+      case NotificationKeys.isNotificationFloatingAdhkar:
+        await notificationService.cancelNotificationById(
+          id: 74200,
+          range: 33,
+        );
+        return;
+      case NotificationKeys.isNotificationPrayerSilentModeReminder:
+        await notificationService.cancelNotificationById(
+          id: 76800,
+          range: 8,
+        );
+        return;
+      case NotificationKeys.isNotificationQuranPlan:
+        await _cancelQuranPlanNotifications();
+        return;
+      case NotificationKeys.isNotificationYoungMuslimResume:
+        await _cancelYoungMuslimResumeNotifications();
+        return;
+    }
+  }
+
+  Future<void> _cancelQuranPlanNotifications() async {
+    try {
+      final rows = await _databaseService.query(
+        DatabaseTables.quranPlan,
+        columns: ['id'],
+        where: 'reminder_time IS NOT NULL',
+      );
+      for (final row in rows) {
+        final id = row['id'];
+        if (id is int) {
+          await notificationService.cancelNotificationById(id: id);
+        }
+      }
+    } catch (e) {
+      logger.e('Error cancelling Quran plan notifications: $e');
+    }
+  }
+
+  Future<void> _cancelYoungMuslimResumeNotifications() async {
+    try {
+      final database = await _databaseService.database;
+      final rows = await database.query(
+        'ym_video_progress',
+        columns: ['video_id'],
+        where: 'reminder_scheduled_at IS NOT NULL',
+      );
+      for (final row in rows) {
+        final videoId = row['video_id'];
+        if (videoId is String) {
+          await notificationService.cancelNotificationById(
+            id: ('young_muslim_$videoId').hashCode.abs() % 100000,
+          );
+        }
+      }
+      await database.update(
+        'ym_video_progress',
+        {'reminder_scheduled_at': null},
+        where: 'reminder_scheduled_at IS NOT NULL',
+      );
+    } catch (e) {
+      logger.e('Error cancelling young muslim resume notifications: $e');
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class FloatingAdhkarIosReminderService {
@@ -44,6 +45,11 @@ class FloatingAdhkarIosReminderService {
     }
 
     if (!await hasPermission() && !await requestPermission()) {
+      return;
+    }
+    if (!await _notificationService.isNotificationAllowed(
+      settingKey: NotificationKeys.isNotificationFloatingAdhkar,
+    )) {
       return;
     }
 
@@ -88,6 +94,11 @@ class FloatingAdhkarIosReminderService {
     if (!await hasPermission() && !await requestPermission()) {
       return;
     }
+    if (!await _notificationService.isNotificationAllowed(
+      settingKey: NotificationKeys.isNotificationFloatingAdhkar,
+    )) {
+      return;
+    }
 
     final item = await _repository.pickNextItem(settings: settings);
     if (item == null) {
@@ -100,6 +111,7 @@ class FloatingAdhkarIosReminderService {
       body: item.text.trim(),
       channel: NotificationChannel.randomThikr,
       payload: 'floating_adhkar_ios:${item.id}',
+      settingKey: NotificationKeys.isNotificationFloatingAdhkar,
     );
     await _repository.recordShownItem(item);
   }

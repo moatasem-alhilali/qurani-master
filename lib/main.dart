@@ -13,8 +13,6 @@ import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/firebase_notification.dart';
-import 'package:quran_app/core/services/permission/location_permission_service.dart';
-import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/features/floating_adhkar/overlay/floating_adhkar_overlay_entrypoint.dart';
@@ -80,9 +78,6 @@ void main() async {
   // Initialize local cache.
   await CacheConfig.loadConfig();
 
-  // Prime location permission service.
-  await LocationPermissionService.init();
-
   try {
     await QuranLibrary.init();
   } catch (e) {
@@ -101,8 +96,6 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  //
-  await NotificationPermissionService.handelNotification();
   runApp(
     const MyApp(),
   );

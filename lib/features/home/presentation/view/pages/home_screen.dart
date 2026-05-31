@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/components/base_header_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/manage_version/presentation/view/widgets/update_download_options_sheet.dart';
+import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 
@@ -19,9 +24,52 @@ class HomeScreenNew extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreenNew> {
+  bool _didStartPrayerBootstrap = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_startPrayerTimeBootstrap());
+    });
+  }
+
+  Future<void> _startPrayerTimeBootstrap() async {
+    if (_didStartPrayerBootstrap || !mounted) {
+      return;
+    }
+    _didStartPrayerBootstrap = true;
+
+    var canUseCurrentLocation = false;
+    try {
+      if (await Geolocator.isLocationServiceEnabled()) {
+        var permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+        canUseCurrentLocation = _hasLocationPermission(permission);
+      }
+    } catch (_) {
+      // PrayerTimeBloc will resolve the final UI state and show the notice.
+    }
+
+    if (!mounted) {
+      return;
+    }
+    context.read<PrayerTimeBloc>().add(
+          canUseCurrentLocation
+              ? const PrayerTimeUpdateLocationRequested()
+              : const PrayerTimeInitRequested(),
+        );
+
+    unawaited(
+      NotificationPermissionService.handelNotification().catchError((_) {}),
+    );
+  }
+
+  bool _hasLocationPermission(LocationPermission permission) {
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
   }
 
   @override

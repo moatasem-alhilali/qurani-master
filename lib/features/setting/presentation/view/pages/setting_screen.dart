@@ -9,6 +9,7 @@ import 'package:quran_app/core/widgets/theme_mode_widget.dart';
 import 'package:quran_app/features/download/presentation/view/pages/download_screen.dart';
 import 'package:quran_app/features/manage_version/presentation/view/pages/version_management_screen.dart';
 import 'package:quran_app/features/setting/data/services/social_links_service.dart';
+import 'package:quran_app/features/setting/presentation/view/pages/app_information_pages.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/setting_notification_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -58,6 +59,41 @@ class _SettingScreenState extends State<SettingScreen> {
               icon: AppIcons.update,
               onTap: () {
                 context.push(const VersionManagementScreen());
+              },
+            ),
+            SizedBox(height: 18.h),
+            const _SettingsSectionTitle(title: 'معلومات التطبيق'),
+            SizedBox(height: 6.h),
+            _SettingTile(
+              title: 'من نحن',
+              subtitle: 'تعرف على تطبيق طمأنينة ورسالته',
+              icon: AppIcons.quran,
+              onTap: () {
+                context.push(const AboutAppScreen());
+              },
+            ),
+            _SettingTile(
+              title: 'سياسة الخصوصية',
+              subtitle: 'كيف يتعامل التطبيق مع بياناتك وصلاحياتك',
+              icon: AppIcons.shield,
+              onTap: () {
+                context.push(const PrivacyPolicyScreen());
+              },
+            ),
+            _SettingTile(
+              title: 'أمان البيانات',
+              subtitle: 'ملخص البيانات والصلاحيات وطريقة استخدامها',
+              icon: AppIcons.security,
+              onTap: () {
+                context.push(const DataSafetyScreen());
+              },
+            ),
+            _SettingTile(
+              title: 'حول المطور',
+              subtitle: 'معلومات وروابط التواصل الخاصة بالمطور',
+              icon: AppIcons.user,
+              onTap: () {
+                context.push(const DeveloperAboutScreen());
               },
             ),
             SizedBox(height: 24.h),

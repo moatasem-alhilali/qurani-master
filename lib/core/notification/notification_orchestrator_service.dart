@@ -101,6 +101,7 @@ class NotificationOrchestratorService {
               hour: info.time.hour,
               minute: info.time.minute,
             ),
+            settingKey: key,
             payload: athanPayloadService.buildPayload(
               key: key,
               prayerName: prayerName,
@@ -117,7 +118,8 @@ class NotificationOrchestratorService {
             ),
             iosThreadIdentifier: 'athan_notifications',
             iosCategoryIdentifier: 'islamic_notifications',
-            iosInterruptionLevel: InterruptionLevel.active,
+            iosInterruptionLevel: InterruptionLevel.timeSensitive,
+            iosSound: 'athan.caf',
             bigText: athanPayloadService.buildAthanExpandedBody(
               prayerName: prayerName,
               prayerTimeLabel: prayerTimeLabel,
@@ -204,6 +206,7 @@ class NotificationOrchestratorService {
           body: NotificationDataConst.resolveNotificationBody(setting.key),
           channel: NotificationDataConst.resolveChannel(setting.key),
           schedule: setting.schedule,
+          settingKey: setting.key,
         );
 
         if (success) {
@@ -260,6 +263,7 @@ class NotificationOrchestratorService {
                     NotificationDataConst.resolveNotificationBody(key),
                 channel: NotificationDataConst.resolveChannel(key),
                 schedule: schedule.toScheduleModel(),
+                settingKey: key,
               );
 
               if (success) {

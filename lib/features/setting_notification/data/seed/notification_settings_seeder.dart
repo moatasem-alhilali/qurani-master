@@ -11,9 +11,6 @@ class NotificationSettingsSeeder {
       NotificationSettingsSeeder._internal();
 
   Future<void> runIfNeeded() async {
-    final all = await DatabaseNotificationSettingService().getAll();
-
-    if (all.isNotEmpty) return;
     await _seed();
   }
 
@@ -155,6 +152,21 @@ class NotificationSettingsSeeder {
           enabled: false,
           scheduleType: ScheduleType.hourly,
         ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationRandomThikr,
+          label: 'الأذكار الصوتية العشوائية',
+          enabled: false,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 30,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationFloatingAdhkar,
+          label: 'الأذكار العائمة والتنبيهات البديلة',
+          enabled: true,
+          scheduleType: ScheduleType.everyNMinutes,
+          intervalMinutes: 30,
+          onlySetting: true,
+        ),
 
         // Quran reading reminders
         NotificationSettingSeedData(
@@ -247,6 +259,76 @@ class NotificationSettingsSeeder {
           label: 'سبحان الله والحمدلله ولا اله الا الله والله اكبر',
           enabled: false,
           scheduleType: ScheduleType.hourly,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationDailyWirdMorning,
+          label: 'ورد الصباح',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 7,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationDailyWirdEvening,
+          label: 'ورد المساء',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 18,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationDailyWirdNight,
+          label: 'ورد ما قبل النوم',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 21,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationDailyWirdSummary,
+          label: 'ملخص الورد اليومي',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 22,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationYoungMuslimResume,
+          label: 'تذكير المسلم الصغير',
+          enabled: true,
+          scheduleType: ScheduleType.customDates,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationPrayerSilentModeReminder,
+          label: 'تذكير وضع الصلاة على iPhone',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 0,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationQuranPlan,
+          label: 'تذكير خطط القرآن',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 18,
+          minute: 0,
+          onlySetting: true,
+        ),
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationFirebaseGeneral,
+          label: 'إشعارات التطبيق العامة',
+          enabled: true,
+          scheduleType: ScheduleType.daily,
+          hour: 0,
+          minute: 0,
+          onlySetting: true,
         ),
       ];
 

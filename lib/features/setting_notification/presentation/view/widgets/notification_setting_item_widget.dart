@@ -40,6 +40,14 @@ class _NotificationSettingItemWidgetState
   }
 
   @override
+  void didUpdateWidget(covariant NotificationSettingItemWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.setting?.enabled != widget.setting?.enabled) {
+      isEnabled = widget.setting?.enabled ?? false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
       builder: (context, state) {
@@ -103,7 +111,8 @@ class _NotificationSettingItemWidgetState
                                 ),
                               ),
                             ),
-                            if (isEnabled) ...[
+                            if (widget.setting!.enabled &&
+                                !widget.setting!.onlySetting) ...[
                               GestureDetector(
                                 onTap: () {
                                   context.showBottomSheetUIHeader(
@@ -139,7 +148,7 @@ class _NotificationSettingItemWidgetState
                               SizedBox(width: 8.w),
                             ],
                             CupertinoSwitch(
-                              value: isEnabled,
+                              value: widget.setting!.enabled,
                               activeTrackColor: context.primaryColor,
                               onChanged: (val) {
                                 setState(() {

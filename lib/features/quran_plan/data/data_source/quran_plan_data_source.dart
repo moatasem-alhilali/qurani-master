@@ -4,6 +4,7 @@ import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/read_quran/data/data_source/ayah_data_source.dart';
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:sqflite/sqflite.dart';
 
 class QuranPlanDataSource {
@@ -157,6 +158,7 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
       title: 'خطة ختم القرآن: ${plan.title}',
       body: 'لا تنس جلسة اليوم في خطتك "${plan.title}"!',
       payload: 'planId:${plan.id}',
+      settingKey: NotificationKeys.isNotificationQuranPlan,
     );
   }
 

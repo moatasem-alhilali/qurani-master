@@ -31,6 +31,7 @@ class NotificationService extends BaseNotificationService {
     required String title,
     required String body,
     NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? settingKey,
     String? payload,
     String? largeIcon,
     List<AndroidNotificationAction>? actions,
@@ -44,6 +45,7 @@ class NotificationService extends BaseNotificationService {
       title: title,
       body: body,
       channel: channel,
+      settingKey: settingKey,
       payload: payload ?? '$title|$body',
       largeIcon: largeIcon,
       groupKey: groupKey,
@@ -60,6 +62,7 @@ class NotificationService extends BaseNotificationService {
     required String title,
     required String body,
     NotificationChannel channel = NotificationChannel.defaultChannel,
+    String? settingKey,
     String? payload,
     String? largeIcon,
     List<AndroidNotificationAction>? actions,
@@ -67,6 +70,9 @@ class NotificationService extends BaseNotificationService {
     AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle,
     DateTimeComponents? matchDateTimeComponents,
   }) async {
+    if (!await isNotificationAllowed(settingKey: settingKey)) {
+      return;
+    }
     final details = await buildNotificationDetails(
       channel,
       largeIcon: largeIcon,
@@ -155,8 +161,12 @@ class NotificationService extends BaseNotificationService {
     NotificationDetails details,
     NotificationScheduleModel schedule,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       final nextInstanceOf = this.nextInstanceOf(
         hour: schedule.hour!,
         minute: schedule.minute!,
@@ -187,8 +197,12 @@ class NotificationService extends BaseNotificationService {
     String body,
     NotificationDetails details,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       await plugin.periodicallyShow(
         id,
         title,
@@ -214,8 +228,12 @@ class NotificationService extends BaseNotificationService {
     NotificationDetails details,
     NotificationScheduleModel schedule,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       await plugin.periodicallyShowWithDuration(
         id,
         title,
@@ -240,8 +258,12 @@ class NotificationService extends BaseNotificationService {
     String body,
     NotificationDetails details,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       await plugin.periodicallyShow(
         id,
         title,
@@ -267,8 +289,12 @@ class NotificationService extends BaseNotificationService {
     NotificationDetails details,
     NotificationScheduleModel schedule,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       var successCount = 0;
       for (final weekday in schedule.weekdays!) {
         try {
@@ -311,8 +337,12 @@ class NotificationService extends BaseNotificationService {
     NotificationDetails details,
     NotificationScheduleModel schedule,
     String? payload,
+    String? settingKey,
   ) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       var successCount = 0;
       for (var i = 0; i < schedule.customDates!.length; i++) {
         try {
@@ -398,8 +428,12 @@ class NotificationService extends BaseNotificationService {
     bool autoCancel = true,
     bool fullScreenIntent = false,
     bool channelBypassDnd = false,
+    String? settingKey,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       final trimmedBigText = bigText?.trim();
       final details = await buildNotificationDetails(
         channel,
@@ -443,6 +477,7 @@ class NotificationService extends BaseNotificationService {
             details,
             schedule,
             payload,
+            settingKey,
           );
 
         case ScheduleType.hourly:
@@ -452,6 +487,7 @@ class NotificationService extends BaseNotificationService {
             body,
             details,
             payload,
+            settingKey,
           );
 
         case ScheduleType.everyNMinutes:
@@ -462,6 +498,7 @@ class NotificationService extends BaseNotificationService {
               body,
               details,
               payload,
+              settingKey,
             );
           } else {
             return await scheduleCustomIntervalNotification(
@@ -471,6 +508,7 @@ class NotificationService extends BaseNotificationService {
               details,
               schedule,
               payload,
+              settingKey,
             );
           }
 
@@ -482,6 +520,7 @@ class NotificationService extends BaseNotificationService {
             details,
             schedule,
             payload,
+            settingKey,
           );
 
         case ScheduleType.customDates:
@@ -492,6 +531,7 @@ class NotificationService extends BaseNotificationService {
             details,
             schedule,
             payload,
+            settingKey,
           );
       }
     } catch (e) {

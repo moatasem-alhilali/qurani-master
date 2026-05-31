@@ -130,6 +130,7 @@ class NotificationSchedulesRepo {
         body: body,
         channel: channel,
         schedule: newSchedule.toScheduleModel(),
+        settingKey: newSchedule.notifKey,
       );
     }
   }
@@ -168,6 +169,7 @@ class NotificationSchedulesRepo {
           body: body,
           channel: channel,
           schedule: schedule.toScheduleModel(),
+          settingKey: notifKey,
         );
       } catch (e) {
         // Log error but continue with other schedules

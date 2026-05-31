@@ -3,6 +3,7 @@ import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_settings_model.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 
 class DailyWirdReminderService {
   DailyWirdReminderService({
@@ -32,6 +33,7 @@ class DailyWirdReminderService {
         title: 'زاد الصباح',
         body: 'ابدأ نهارك بذكر الله وتلاوة كتابه والدعاء.',
         channel: NotificationChannel.morning,
+        settingKey: NotificationKeys.isNotificationDailyWirdMorning,
       );
     }
 
@@ -42,6 +44,7 @@ class DailyWirdReminderService {
         title: 'زاد المساء',
         body: 'جدد صلتك بالله، وأتم ما تيسر من زاد المساء.',
         channel: NotificationChannel.night,
+        settingKey: NotificationKeys.isNotificationDailyWirdEvening,
       );
     }
 
@@ -52,6 +55,7 @@ class DailyWirdReminderService {
         title: 'زاد ما قبل النوم',
         body: 'اختم يومك بالذكر والدعاء وما بقي من زادك التعبدي.',
         channel: NotificationChannel.sleep,
+        settingKey: NotificationKeys.isNotificationDailyWirdNight,
       );
     }
 
@@ -62,6 +66,7 @@ class DailyWirdReminderService {
         title: 'محاسبة آخر اليوم',
         body: 'راجع زادك التعبدي اليوم، وانظر ما أتممت منه.',
         channel: NotificationChannel.defaultChannel,
+        settingKey: NotificationKeys.isNotificationDailyWirdSummary,
       );
     }
   }
@@ -87,6 +92,7 @@ class DailyWirdReminderService {
     required String title,
     required String body,
     required NotificationChannel channel,
+    required String settingKey,
   }) async {
     final parts = time.split(':');
     final hour = int.tryParse(parts.first) ?? 0;
@@ -98,6 +104,7 @@ class DailyWirdReminderService {
       body: body,
       channel: channel,
       payload: key,
+      settingKey: settingKey,
       schedule: NotificationScheduleModel.daily(
         hour: hour,
         minute: minute,

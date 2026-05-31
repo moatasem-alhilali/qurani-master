@@ -8,6 +8,7 @@ import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_silent_mode_settings.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class PrayerSilentModeNativeService {
@@ -111,6 +112,11 @@ class PrayerSilentModeNativeService {
     final hasPermission = await notificationService.areNotificationsEnabled() ||
         await notificationService.requestNotificationPermissions();
     if (!hasPermission) {
+      return;
+    }
+    if (!await notificationService.isNotificationAllowed(
+      settingKey: NotificationKeys.isNotificationPrayerSilentModeReminder,
+    )) {
       return;
     }
 

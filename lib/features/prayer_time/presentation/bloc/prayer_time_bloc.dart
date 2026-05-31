@@ -115,6 +115,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     await _loadUsingDeviceLocation(
       emit: emit,
       fallbackLocation: fallbackLocation,
+      requestPermission: true,
     );
   }
 
@@ -186,7 +187,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.medium,
         ),
-      );
+      ).timeout(const Duration(seconds: 12));
       final liveSelection = await PrayerLocationResolver.fromCoordinates(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -220,6 +221,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
   Future<void> _loadUsingDeviceLocation({
     required Emitter<PrayerTimeState> emit,
     PrayerLocationSelection? fallbackLocation,
+    bool requestPermission = false,
   }) async {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -234,7 +236,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
       }
 
       var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
+      if (permission == LocationPermission.denied && requestPermission) {
         permission = await Geolocator.requestPermission();
       }
 
@@ -263,7 +265,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
         ),
-      );
+      ).timeout(const Duration(seconds: 15));
       final selection = await PrayerLocationResolver.fromCoordinates(
         latitude: position.latitude,
         longitude: position.longitude,

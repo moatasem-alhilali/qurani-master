@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/firebase_options.dart';
 
 class FirebaseNotificationService {
@@ -243,6 +245,9 @@ class FirebaseNotificationService {
 
   Future<void> showNotification(RemoteMessage message) async {
     try {
+      if (!await _isNotificationAllowed()) {
+        return;
+      }
       final notification = message.notification;
 
       if (notification != null) {
@@ -319,6 +324,23 @@ class FirebaseNotificationService {
       }
     } catch (e) {
       debugPrint('Error showing notification: $e');
+    }
+  }
+
+  Future<bool> _isNotificationAllowed() async {
+    try {
+      final database = DatabaseNotificationSettingService();
+      final master = await database.getByKey(NotificationKeys.isNotify);
+      if (master != null && !master.enabled) {
+        return false;
+      }
+      final setting = await database.getByKey(
+        NotificationKeys.isNotificationFirebaseGeneral,
+      );
+      return setting?.enabled ?? true;
+    } catch (e) {
+      debugPrint('Error reading firebase notification setting: $e');
+      return true;
     }
   }
 

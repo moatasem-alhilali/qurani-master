@@ -2,6 +2,7 @@ import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/young_muslim/data/data_sources/young_muslim_local_data_source.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 
 class YoungMuslimReminderService {
   YoungMuslimReminderService({
@@ -28,6 +29,7 @@ class YoungMuslimReminderService {
       channel: NotificationChannel.defaultChannel,
       schedule: NotificationScheduleModel.customDates([reminderTime]),
       payload: 'young_muslim:$videoId',
+      settingKey: NotificationKeys.isNotificationYoungMuslimResume,
     );
 
     await _localDataSource.updateReminderScheduledAt(videoId, reminderTime);

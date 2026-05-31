@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           create: (context) => PrayerTimeBloc(
             prayerTimeService: AdhanPrayerTimeService(),
             coordinatesService: DatabaseCoordinatesService(),
-          )..add(const PrayerTimeInitRequested()),
+          ),
         ),
 
         ///connectivity

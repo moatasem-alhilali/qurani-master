@@ -7,6 +7,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -55,6 +56,40 @@ abstract class BaseNotificationService {
   BaseNotificationService(this.plugin);
 
   final FlutterLocalNotificationsPlugin plugin;
+  static final Map<String, (bool, DateTime)> _settingsCache = {};
+  static const Duration _settingsCacheTtl = Duration(seconds: 10);
+
+  Future<bool> isNotificationAllowed({String? settingKey}) async {
+    if (!await _isSettingEnabled('ISNOTIFY', fallback: true)) {
+      return false;
+    }
+    if (settingKey == null || settingKey.trim().isEmpty) {
+      return true;
+    }
+    return _isSettingEnabled(settingKey, fallback: true);
+  }
+
+  static void clearNotificationSettingsCache() {
+    _settingsCache.clear();
+  }
+
+  Future<bool> _isSettingEnabled(String key, {required bool fallback}) async {
+    final cached = _settingsCache[key];
+    final now = DateTime.now();
+    if (cached != null && now.difference(cached.$2) < _settingsCacheTtl) {
+      return cached.$1;
+    }
+
+    try {
+      final setting = await DatabaseNotificationSettingService().getByKey(key);
+      final enabled = setting?.enabled ?? fallback;
+      _settingsCache[key] = (enabled, now);
+      return enabled;
+    } catch (e) {
+      logger.e('Error reading notification setting $key: $e');
+      return fallback;
+    }
+  }
 
   Future<void> initialize() async {
     // Initialize timezone using base class method
@@ -452,6 +487,7 @@ abstract class BaseNotificationService {
     required String title,
     required String body,
     required NotificationChannel channel,
+    String? settingKey,
     String? payload,
     String? largeIcon,
     String? groupKey,
@@ -461,6 +497,9 @@ abstract class BaseNotificationService {
     List<AndroidNotificationAction>? actions,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       final id = NotificationIdManager.generateNotificationId(key);
       final details = await buildNotificationDetails(
         channel,
@@ -486,6 +525,7 @@ abstract class BaseNotificationService {
     required String title,
     required String body,
     required NotificationChannel channel,
+    String? settingKey,
     String? payload,
     String? largeIcon,
     String? groupKey,
@@ -495,6 +535,9 @@ abstract class BaseNotificationService {
     List<AndroidNotificationAction>? actions,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       final details = await buildNotificationDetails(
         channel,
         largeIcon: largeIcon,
@@ -521,12 +564,16 @@ abstract class BaseNotificationService {
     required String body,
     required String bigText,
     required NotificationChannel channel,
+    String? settingKey,
     String? key,
     int? id,
     String? payload,
     String? summaryText,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       assert(key != null || id != null, 'Either key or id must be provided');
 
       final notificationId =
@@ -559,6 +606,7 @@ abstract class BaseNotificationService {
     required String title,
     required int progress,
     required int maxProgress,
+    String? settingKey,
     String? key,
     int? id,
     String? body,
@@ -566,6 +614,9 @@ abstract class BaseNotificationService {
     NotificationChannel channel = NotificationChannel.defaultChannel,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       assert(key != null || id != null, 'Either key or id must be provided');
 
       final notificationId =
@@ -601,12 +652,16 @@ abstract class BaseNotificationService {
     required String title,
     required String body,
     required String imagePath,
+    String? settingKey,
     String? key,
     int? id,
     NotificationChannel channel = NotificationChannel.defaultChannel,
     String? payload,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       assert(key != null || id != null, 'Either key or id must be provided');
 
       final notificationId =
@@ -638,9 +693,13 @@ abstract class BaseNotificationService {
     required String groupKey,
     required String groupTitle,
     required List<Map<String, dynamic>> notifications,
+    String? settingKey,
     NotificationChannel channel = NotificationChannel.defaultChannel,
   }) async {
     try {
+      if (!await isNotificationAllowed(settingKey: settingKey)) {
+        return false;
+      }
       // Show individual notifications
       for (var i = 0; i < notifications.length; i++) {
         final notification = notifications[i];

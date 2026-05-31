@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/main.dart';
 
 class NotificationSettingModel {
   NotificationSettingModel({
@@ -80,14 +79,13 @@ class NotificationSettingModel {
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-
   /// Converts back to NotificationScheduleModel (to use with scheduling service)
   NotificationScheduleModel get schedule {
     switch (scheduleType) {
       case ScheduleType.daily:
         return NotificationScheduleModel.daily(hour: hour!, minute: minute!);
       case ScheduleType.hourly:
-        return NotificationScheduleModel.hourly(minute: minute!);
+        return NotificationScheduleModel.hourly(minute: minute ?? 0);
       case ScheduleType.everyNMinutes:
         return NotificationScheduleModel.everyNMinutes(
           intervalMinutes: intervalMinutes!,

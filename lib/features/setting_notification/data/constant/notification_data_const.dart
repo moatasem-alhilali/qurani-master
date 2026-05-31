@@ -17,20 +17,30 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationMohammed:
         return NotificationChannel.mohammed;
       case NotificationKeys.isNotificationRandomThikr:
+      case NotificationKeys.isNotificationFloatingAdhkar:
         return NotificationChannel.randomThikr;
       case NotificationKeys.isNotificationReadQuran:
       case NotificationKeys.isNotificationReadSurahMulk:
       case NotificationKeys.isNotificationReadSurah:
       case NotificationKeys.isNotificationReadSurahAlkahf:
+      case NotificationKeys.isNotificationDailyWirdSummary:
+      case NotificationKeys.isNotificationYoungMuslimResume:
+      case NotificationKeys.isNotificationQuranPlan:
+      case NotificationKeys.isNotificationFirebaseGeneral:
       case NotificationKeys.isNotificationAstgferAllh:
       case NotificationKeys.isNotificationHasbnaAllh:
       case NotificationKeys.isNotificationLahawlaWlaquoah:
       case NotificationKeys.isNotificationSubhanAllh:
         return NotificationChannel.defaultChannel;
       case NotificationKeys.isNotificationWridSleep:
+      case NotificationKeys.isNotificationDailyWirdNight:
         return NotificationChannel.sleep;
       case NotificationKeys.isNotificationWridGetup:
         return NotificationChannel.getUp;
+      case NotificationKeys.isNotificationDailyWirdMorning:
+        return NotificationChannel.morning;
+      case NotificationKeys.isNotificationDailyWirdEvening:
+        return NotificationChannel.night;
       case NotificationKeys.isNotificationFasting:
       case NotificationKeys.isNotificationFastingMonday:
       case NotificationKeys.isNotificationFastingThursday:
@@ -40,6 +50,7 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationAthanAsr:
       case NotificationKeys.isNotificationAthanMagrib:
       case NotificationKeys.isNotificationAthanIsha:
+      case NotificationKeys.isNotificationPrayerSilentModeReminder:
       case NotificationKeys.isNotificationAllAthan:
         return NotificationChannel.athan;
       default:
@@ -58,6 +69,7 @@ class NotificationDataConst {
   static int? resolveIdRange(NotificationSettingModel setting) {
     switch (setting.key) {
       case NotificationKeys.isNotificationRandomThikr:
+      case NotificationKeys.isNotificationFloatingAdhkar:
         // Allow up to 100 random thikr notifications per day
         return 100;
       case NotificationKeys.isNotificationMohammed:
@@ -78,6 +90,14 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationFasting:
       case NotificationKeys.isNotificationFastingMonday:
       case NotificationKeys.isNotificationFastingThursday:
+      case NotificationKeys.isNotificationDailyWirdMorning:
+      case NotificationKeys.isNotificationDailyWirdEvening:
+      case NotificationKeys.isNotificationDailyWirdNight:
+      case NotificationKeys.isNotificationDailyWirdSummary:
+      case NotificationKeys.isNotificationYoungMuslimResume:
+      case NotificationKeys.isNotificationPrayerSilentModeReminder:
+      case NotificationKeys.isNotificationQuranPlan:
+      case NotificationKeys.isNotificationFirebaseGeneral:
       case NotificationKeys.isNotificationAthanFagr:
       case NotificationKeys.isNotificationAthanDuhr:
       case NotificationKeys.isNotificationAthanAsr:
@@ -102,6 +122,8 @@ class NotificationDataConst {
         return seeder.notificationMohummed.title;
       case NotificationKeys.isNotificationRandomThikr:
         return 'ذكر عشوائي';
+      case NotificationKeys.isNotificationFloatingAdhkar:
+        return 'الأذكار العائمة';
       case NotificationKeys.isNotificationReadQuran:
         return seeder.readQuran.title;
       case NotificationKeys.isNotificationReadSurahMulk:
@@ -126,6 +148,22 @@ class NotificationDataConst {
         return 'أذان العشاء';
       case NotificationKeys.isNotificationAthanSunrise:
         return 'أذان الشروق';
+      case NotificationKeys.isNotificationDailyWirdMorning:
+        return 'ورد الصباح';
+      case NotificationKeys.isNotificationDailyWirdEvening:
+        return 'ورد المساء';
+      case NotificationKeys.isNotificationDailyWirdNight:
+        return 'ورد ما قبل النوم';
+      case NotificationKeys.isNotificationDailyWirdSummary:
+        return 'ملخص الورد اليومي';
+      case NotificationKeys.isNotificationYoungMuslimResume:
+        return 'تذكير المسلم الصغير';
+      case NotificationKeys.isNotificationPrayerSilentModeReminder:
+        return 'تذكير وضع الصلاة';
+      case NotificationKeys.isNotificationQuranPlan:
+        return 'تذكير خطط القرآن';
+      case NotificationKeys.isNotificationFirebaseGeneral:
+        return 'إشعارات التطبيق العامة';
 
       default:
         return key;
@@ -144,6 +182,7 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationMohammed:
         return 'صلِّ على النبي ﷺ تسعد في يومك.';
       case NotificationKeys.isNotificationRandomThikr:
+      case NotificationKeys.isNotificationFloatingAdhkar:
         return 'اذكر الله يذكرك!';
       case NotificationKeys.isNotificationReadQuran:
         return 'خصص وقتًا لوردك القرآني اليومي.';
@@ -180,6 +219,22 @@ class NotificationDataConst {
         return 'سبحان الله والحمدلله ولا اله الا الله والله اكبر';
       case NotificationKeys.isNotificationAthanSunrise:
         return 'أذان الشروق';
+      case NotificationKeys.isNotificationDailyWirdMorning:
+        return 'ابدأ نهارك بزادك التعبدي.';
+      case NotificationKeys.isNotificationDailyWirdEvening:
+        return 'جدد صلتك بالله في زاد المساء.';
+      case NotificationKeys.isNotificationDailyWirdNight:
+        return 'اختم يومك بالذكر والدعاء.';
+      case NotificationKeys.isNotificationDailyWirdSummary:
+        return 'راجع زادك التعبدي اليوم.';
+      case NotificationKeys.isNotificationYoungMuslimResume:
+        return 'تذكير للعودة إلى محتوى المسلم الصغير.';
+      case NotificationKeys.isNotificationPrayerSilentModeReminder:
+        return 'تذكير بتفعيل الصامت أو التركيز وقت الصلاة.';
+      case NotificationKeys.isNotificationQuranPlan:
+        return 'لا تنس جلسة اليوم من خطتك القرآنية.';
+      case NotificationKeys.isNotificationFirebaseGeneral:
+        return 'إشعارات وتنبيهات عامة من تطبيق طمأنينة.';
       default:
         return key; // fallback
     }
@@ -335,6 +390,8 @@ class NotificationKeys {
   /// إشعارات الأذكار العشوائية
   static const isNotificationRandomThikr = 'isNotificationRandomThikr';
 
+  static const isNotificationFloatingAdhkar = 'isNotificationFloatingAdhkar';
+
   /// إشعارات القراءة القرآنية اليومية
   static const isNotificationReadQuran = 'isNotificationReadQuran';
 
@@ -373,4 +430,18 @@ class NotificationKeys {
 
   /// إشعارات الأذكار العشوائية
   static const isNotificationSubhanAllh = 'isNotificationSubhanAllh';
+
+  static const isNotificationDailyWirdMorning =
+      'isNotificationDailyWirdMorning';
+  static const isNotificationDailyWirdEvening =
+      'isNotificationDailyWirdEvening';
+  static const isNotificationDailyWirdNight = 'isNotificationDailyWirdNight';
+  static const isNotificationDailyWirdSummary =
+      'isNotificationDailyWirdSummary';
+  static const isNotificationYoungMuslimResume =
+      'isNotificationYoungMuslimResume';
+  static const isNotificationPrayerSilentModeReminder =
+      'isNotificationPrayerSilentModeReminder';
+  static const isNotificationQuranPlan = 'isNotificationQuranPlan';
+  static const isNotificationFirebaseGeneral = 'isNotificationFirebaseGeneral';
 }
