@@ -116,7 +116,6 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     await _loadUsingDeviceLocation(
       emit: emit,
       fallbackLocation: fallbackLocation,
-      requestPermission: true,
     );
   }
 
@@ -184,11 +183,9 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
           permission == LocationPermission.whileInUse;
       if (!hasPermission) return;
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-        ),
-      ).timeout(const Duration(seconds: 12));
+      final position = await _getDevicePosition(
+        accuracy: LocationAccuracy.medium,
+      );
       final liveSelection = await PrayerLocationResolver.fromCoordinates(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -222,7 +219,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
   Future<void> _loadUsingDeviceLocation({
     required Emitter<PrayerTimeState> emit,
     PrayerLocationSelection? fallbackLocation,
-    bool requestPermission = false,
+    bool requestPermission = true,
   }) async {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -262,11 +259,9 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         return;
       }
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      ).timeout(const Duration(seconds: 15));
+      final position = await _getDevicePosition(
+        accuracy: LocationAccuracy.high,
+      );
       final selection = await PrayerLocationResolver.fromCoordinates(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -318,6 +313,37 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         locationStatusMessage: message,
       ),
     );
+  }
+
+  Future<Position> _getDevicePosition({
+    required LocationAccuracy accuracy,
+  }) async {
+    final lastKnownPosition = await _getLastKnownPositionSafely();
+
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(
+          accuracy: accuracy,
+          timeLimit: const Duration(seconds: 12),
+        ),
+      ).timeout(const Duration(seconds: 14));
+    } catch (e) {
+      if (lastKnownPosition != null) {
+        logger.w('Using last known position after current location failed: $e');
+        return lastKnownPosition;
+      }
+      rethrow;
+    }
+  }
+
+  Future<Position?> _getLastKnownPositionSafely() async {
+    try {
+      return await Geolocator.getLastKnownPosition()
+          .timeout(const Duration(seconds: 2));
+    } catch (e) {
+      logger.w('Failed to read last known position: $e');
+      return null;
+    }
   }
 
   Future<void> _loadPrayerTimesForSelection(

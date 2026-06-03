@@ -13,6 +13,7 @@ import 'package:quran_app/core/bloc/device_sync/device_sync_bloc.dart';
 import 'package:quran_app/core/bloc/theme/theme_bloc.dart';
 import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
@@ -221,9 +222,14 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       return;
     }
 
-    context.read<PrayerTimeBloc>().add(
-          const PrayerTimeRefreshOnAppResumeRequested(),
-        );
+    final prayerBloc = context.read<PrayerTimeBloc>()
+      ..add(const PrayerTimeRefreshOnAppResumeRequested());
+
+    final currentState = prayerBloc.state;
+    if (currentState.prayerState != RequestState.success ||
+        currentState.nextPrayer == null) {
+      prayerBloc.add(const PrayerTimeInitRequested());
+    }
   }
 
   @override

@@ -65,10 +65,19 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                     const PrayerTimeUseCurrentDeviceLocationRequested(),
                   );
             },
-            onResolveNotice: () => _resolveLocationNotice(context, state),
+            onOpenSettings: () => _openSettingsForLocationStatus(
+              context,
+              state,
+            ),
+            onRetry: () {
+              context
+                  .read<PrayerTimeBloc>()
+                  .add(const PrayerTimeInitRequested());
+            },
           );
 
-          if (state.prayerState == RequestState.loading) {
+          if (state.prayerState == RequestState.loading &&
+              state.locationStatus == PrayerLocationStatus.resolving) {
             return ShimmerSkeletonizerWidget(child: content);
           }
 
@@ -134,7 +143,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     );
   }
 
-  Future<void> _resolveLocationNotice(
+  Future<void> _openSettingsForLocationStatus(
     BuildContext context,
     PrayerTimeState state,
   ) async {
@@ -223,7 +232,8 @@ class _PrayerTimesTodayView extends StatelessWidget {
     required this.locationNow,
     required this.onChangeLocation,
     required this.onUseCurrentLocation,
-    required this.onResolveNotice,
+    required this.onOpenSettings,
+    required this.onRetry,
   });
 
   final PrayerTimeState state;
@@ -231,7 +241,8 @@ class _PrayerTimesTodayView extends StatelessWidget {
   final DateTime locationNow;
   final VoidCallback onChangeLocation;
   final VoidCallback onUseCurrentLocation;
-  final Future<void> Function() onResolveNotice;
+  final Future<void> Function() onOpenSettings;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +272,9 @@ class _PrayerTimesTodayView extends StatelessWidget {
             SizedBox(height: 10.h),
             _LocationNoticeCard(
               state: state,
-              onResolveNotice: onResolveNotice,
+              onGrantPermission: onUseCurrentLocation,
+              onOpenSettings: onOpenSettings,
+              onRetry: onRetry,
             ),
           ],
           SizedBox(height: 12.h),
@@ -650,11 +663,15 @@ class _TinyActionButton extends StatelessWidget {
 class _LocationNoticeCard extends StatelessWidget {
   const _LocationNoticeCard({
     required this.state,
-    required this.onResolveNotice,
+    required this.onGrantPermission,
+    required this.onOpenSettings,
+    required this.onRetry,
   });
 
   final PrayerTimeState state;
-  final Future<void> Function() onResolveNotice;
+  final VoidCallback onGrantPermission;
+  final Future<void> Function() onOpenSettings;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -689,29 +706,62 @@ class _LocationNoticeCard extends StatelessWidget {
               ),
             ),
           ),
-          if (needsAction) ...[
-            SizedBox(width: 8.w),
-            InkWell(
-              borderRadius: BorderRadius.circular(10.r),
-              onTap: onResolveNotice,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
-                decoration: BoxDecoration(
-                  color: context.errorColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10.r),
+          SizedBox(width: 8.w),
+          Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
+            alignment: WrapAlignment.end,
+            children: [
+              if (needsAction)
+                _NoticeActionButton(
+                  label: 'منح',
+                  onTap: onGrantPermission,
                 ),
-                child: Text(
-                  'فتح',
-                  style: TextStyle(
-                    color: context.errorColor,
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w900,
-                  ),
+              if (needsAction)
+                _NoticeActionButton(
+                  label: 'الإعدادات',
+                  onTap: onOpenSettings,
                 ),
+              _NoticeActionButton(
+                label: 'تحديث',
+                onTap: onRetry,
               ),
-            ),
-          ],
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _NoticeActionButton extends StatelessWidget {
+  const _NoticeActionButton({
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10.r),
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 7.h),
+        decoration: BoxDecoration(
+          color: context.errorColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: context.errorColor,
+            fontSize: 9.5.sp,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
       ),
     );
   }
