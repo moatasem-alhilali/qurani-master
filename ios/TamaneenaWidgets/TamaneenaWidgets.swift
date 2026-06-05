@@ -355,43 +355,65 @@ private struct PrayerTimesWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: TamaneenaWidgetEntry
 
+    private var isSmallFamily: Bool {
+        family == .systemSmall
+    }
+
     private var columns: [GridItem] {
         Array(
-            repeating: GridItem(.flexible(), spacing: 6),
-            count: family == .systemSmall ? 2 : 3
+            repeating: GridItem(.flexible(), spacing: isSmallFamily ? 3 : 5),
+            count: isSmallFamily ? 2 : 3
         )
+    }
+
+    private var prayerItems: [(title: String, time: String)] {
+        [
+            ("الفجر", entry.data.prayerFajrTime),
+            ("الشروق", entry.data.prayerSunriseTime),
+            ("الظهر", entry.data.prayerDhuhrTime),
+            ("العصر", entry.data.prayerAsrTime),
+            ("المغرب", entry.data.prayerMaghribTime),
+            ("العشاء", entry.data.prayerIshaTime),
+        ]
     }
 
     var body: some View {
         ZStack {
             Color(hex: entry.data.surfaceHex)
             WidgetDecor(data: entry.data)
-            VStack(alignment: .trailing, spacing: 7) {
+            VStack(alignment: .trailing, spacing: isSmallFamily ? 4 : 6) {
                 HStack(spacing: 4) {
                     WidgetBrandMark(data: entry.data)
-                    Text(entry.data.prayerCity)
-                        .font(.system(size: 8, weight: .medium))
-                        .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.86))
-                        .lineLimit(1)
+                    if !isSmallFamily {
+                        Text(entry.data.prayerCity)
+                            .font(.system(size: 7, weight: .medium))
+                            .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.86))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
                     Spacer(minLength: 2)
+                    Text(entry.data.updatedAt)
+                        .font(.system(size: isSmallFamily ? 6 : 7, weight: .medium))
+                        .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.72))
+                        .lineLimit(1)
                     Text("مواقيت الصلاة")
-                        .font(.caption2.weight(.bold))
+                        .font(.system(size: isSmallFamily ? 8 : 9, weight: .bold))
                         .foregroundColor(Color(hex: entry.data.mutedHex))
+                        .lineLimit(1)
                 }
-                LazyVGrid(columns: columns, spacing: 7) {
-                    PrayerTimeCell(title: "الفجر", time: entry.data.prayerFajrTime, entry: entry)
-                    PrayerTimeCell(title: "الشروق", time: entry.data.prayerSunriseTime, entry: entry)
-                    PrayerTimeCell(title: "الظهر", time: entry.data.prayerDhuhrTime, entry: entry)
-                    PrayerTimeCell(title: "العصر", time: entry.data.prayerAsrTime, entry: entry)
-                    PrayerTimeCell(title: "المغرب", time: entry.data.prayerMaghribTime, entry: entry)
-                    PrayerTimeCell(title: "العشاء", time: entry.data.prayerIshaTime, entry: entry)
+                LazyVGrid(columns: columns, spacing: isSmallFamily ? 3 : 5) {
+                    ForEach(Array(prayerItems.enumerated()), id: \.offset) { pair in
+                        PrayerTimeCell(
+                            title: pair.element.title,
+                            time: pair.element.time,
+                            entry: entry,
+                            compact: isSmallFamily,
+                            isHighlighted: pair.element.title == entry.data.prayerName
+                        )
+                    }
                 }
-                Text(entry.data.updatedAt)
-                    .font(.system(size: 8, weight: .medium))
-                    .foregroundColor(Color(hex: entry.data.mutedHex).opacity(0.82))
-                    .lineLimit(1)
             }
-            .padding(10)
+            .padding(isSmallFamily ? 8 : 10)
             .environment(\.layoutDirection, .rightToLeft)
         }
     }
@@ -401,20 +423,32 @@ private struct PrayerTimeCell: View {
     let title: String
     let time: String
     let entry: TamaneenaWidgetEntry
+    let compact: Bool
+    let isHighlighted: Bool
 
     var body: some View {
-        VStack(spacing: 1) {
+        VStack(spacing: compact ? 0 : 1) {
             Text(title)
-                .font(.system(size: 8, weight: .semibold))
-                .foregroundColor(Color(hex: entry.data.mutedHex))
+                .font(.system(size: compact ? 7 : 8, weight: .semibold))
+                .foregroundColor(Color(hex: entry.data.mutedHex).opacity(isHighlighted ? 1 : 0.9))
                 .lineLimit(1)
             Text(time)
-                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .font(.system(size: compact ? 10 : 12, weight: .bold, design: .rounded))
                 .foregroundColor(Color(hex: entry.data.onSurfaceHex))
                 .lineLimit(1)
                 .minimumScaleFactor(0.72)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, minHeight: compact ? 23 : 31)
+        .padding(.horizontal, compact ? 2 : 4)
+        .padding(.vertical, compact ? 2 : 3)
+        .background(
+            RoundedRectangle(cornerRadius: compact ? 7 : 9)
+                .fill(Color(hex: entry.data.accentHex).opacity(isHighlighted ? 0.18 : 0.07))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: compact ? 7 : 9)
+                .stroke(Color(hex: entry.data.accentHex).opacity(isHighlighted ? 0.34 : 0.14), lineWidth: 0.7)
+        )
     }
 }
 
