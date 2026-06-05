@@ -5,8 +5,10 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
+.swiftpm/
 .svn/
 migrate_working_dir/
 /Dynamic-Phone-Calls--main
