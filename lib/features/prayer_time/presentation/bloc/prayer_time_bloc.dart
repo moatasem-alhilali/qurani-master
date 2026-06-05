@@ -379,19 +379,21 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
             : _buildPrayerModel(resolvedPrayerState.nextPrayer!),
       ),
     );
-    unawaited(_syncPrayerSilentModeSchedule(list));
+    unawaited(_syncPrayerSilentModeSchedule(list, selection));
     unawaited(_refreshHomeWidgets());
     _startPrayerProgressTicker();
   }
 
   Future<void> _syncPrayerSilentModeSchedule(
     List<PrayerInfoModel> prayers,
+    PrayerLocationSelection selectedLocation,
   ) async {
     try {
       final settings = _silentModeSettingsStore.load();
       await _silentModeNativeService.applySchedule(
         settings: settings,
         prayers: prayers,
+        selectedLocation: selectedLocation,
       );
     } catch (e) {
       logger.w('Failed to sync prayer silent mode schedule: $e');

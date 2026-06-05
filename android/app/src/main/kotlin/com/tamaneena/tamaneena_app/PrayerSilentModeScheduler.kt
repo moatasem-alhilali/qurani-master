@@ -29,22 +29,28 @@ class PrayerSilentModeScheduler(private val context: Context) {
     }
 
     fun schedule(windows: List<Map<String, Any?>>, durationMinutes: Int) {
-        cancel()
+        cancelScheduledAlarms(restoreActiveSession = false)
         val now = System.currentTimeMillis()
         val durationMillis = durationMinutes.coerceAtLeast(1) * 60L * 1000L
         val requestCodes = mutableSetOf<String>()
 
         windows.forEachIndexed { index, window ->
             val triggerAtMillis = (window["timeMillis"] as? Number)?.toLong() ?: return@forEachIndexed
-            if (triggerAtMillis <= now) {
+            val endAtMillis = (window["endMillis"] as? Number)?.toLong()
+                ?: (triggerAtMillis + durationMillis)
+            if (triggerAtMillis <= now || endAtMillis <= now) {
                 return@forEachIndexed
             }
 
-            val requestCode = REQUEST_CODE_BASE + index
+            val requestCode = (window["requestCode"] as? Number)?.toInt()
+                ?: (REQUEST_CODE_BASE + index)
             val intent = Intent(context, PrayerSilentModeReceiver::class.java).apply {
                 action = PrayerSilentModeReceiver.ACTION_ENTER_SILENT
                 putExtra(PrayerSilentModeReceiver.EXTRA_TRIGGER_ID, requestCode)
                 putExtra(PrayerSilentModeReceiver.EXTRA_DURATION_MILLIS, durationMillis)
+                putExtra(PrayerSilentModeReceiver.EXTRA_PRAYER_TIME_MILLIS, triggerAtMillis)
+                putExtra(PrayerSilentModeReceiver.EXTRA_END_TIME_MILLIS, endAtMillis)
+                putExtra(PrayerSilentModeReceiver.EXTRA_PRAYER_NAME, window["name"] as? String ?: "")
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
@@ -61,12 +67,16 @@ class PrayerSilentModeScheduler(private val context: Context) {
         }
 
         prefs.edit()
-            .putStringSet(KEY_REQUEST_CODES, requestCodes)
+            .putStringSet(KEY_ENTER_REQUEST_CODES, requestCodes)
             .apply()
     }
 
     fun cancel() {
-        val requestCodes = prefs.getStringSet(KEY_REQUEST_CODES, emptySet()).orEmpty()
+        cancelScheduledAlarms(restoreActiveSession = true)
+    }
+
+    private fun cancelScheduledAlarms(restoreActiveSession: Boolean) {
+        val requestCodes = prefs.getStringSet(KEY_ENTER_REQUEST_CODES, emptySet()).orEmpty()
         requestCodes.forEach { code ->
             val requestCode = code.toIntOrNull() ?: return@forEach
             cancelPendingIntent(
@@ -78,8 +88,11 @@ class PrayerSilentModeScheduler(private val context: Context) {
                 action = PrayerSilentModeReceiver.ACTION_RESTORE_SOUND,
             )
         }
+        if (restoreActiveSession) {
+            PrayerSilentModeReceiver.restoreIfActiveNow(context)
+        }
         prefs.edit()
-            .remove(KEY_REQUEST_CODES)
+            .remove(KEY_ENTER_REQUEST_CODES)
             .apply()
     }
 
@@ -101,7 +114,7 @@ class PrayerSilentModeScheduler(private val context: Context) {
 
     companion object {
         private const val PREFS_NAME = "prayer_silent_mode"
-        private const val KEY_REQUEST_CODES = "request_codes"
+        private const val KEY_ENTER_REQUEST_CODES = "enter_request_codes"
         private const val REQUEST_CODE_BASE = 630000
         private const val RESTORE_REQUEST_CODE_BASE = 700000
     }

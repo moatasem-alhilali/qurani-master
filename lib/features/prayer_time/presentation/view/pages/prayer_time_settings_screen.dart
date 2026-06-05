@@ -146,6 +146,7 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
       await _nativeService.applySchedule(
         settings: _settings,
         prayers: state.prayerList,
+        selectedLocation: state.selectedLocation,
       );
 
       if (!mounted) {
