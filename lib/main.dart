@@ -118,3 +118,9 @@ void main() async {
 // flutter build apk --release --analyze-size --target-platform=android-arm64
 
 // استخدم في حق القرأن صوت نفس البتوم شيت حق قراءة قرأن
+
+
+// com.tamaneena.tamaneena_app old telegram
+// com.nanohive.tamaneena
+// dart pub global run rename setBundleId --targets android --value "com.nanohive.tamaneena"
+// dart pub global run rename setBundleId --targets android --value "com.tamaneena.tamaneena_app"
