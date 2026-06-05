@@ -3,7 +3,7 @@
     android:description="@string/widget_prayer_times_description"
     android:initialLayout="@layout/widget_prayer_times_large"
     android:minWidth="166dp"
-    android:minHeight="70dp"
+    android:minHeight="64dp"
     android:previewLayout="@layout/widget_prayer_times_large"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
