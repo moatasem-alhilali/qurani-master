@@ -58,7 +58,7 @@ class HomeWidgetsService {
               selector: FloatingAdhkarSelector(),
             );
 
-  static const String appGroupId = 'group.com.tamaneena.tamaneena_app.widgets';
+  static const String appGroupId = 'group.com.tamaneena.tamaneenaapp.widgets';
   static const List<String> iosWidgetKinds = <String>[
     'TamaneenaPrayerWidget',
     'TamaneenaDhikrWidget',

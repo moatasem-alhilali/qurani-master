@@ -1,7 +1,7 @@
 import SwiftUI
 import WidgetKit
 
-private let appGroupId = "group.com.tamaneena.tamaneena_app.widgets"
+private let appGroupId = "group.com.tamaneena.tamaneenaapp.widgets"
 
 struct TamaneenaWidgetEntry: TimelineEntry {
     let date: Date
