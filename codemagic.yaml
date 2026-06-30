@@ -11,7 +11,7 @@ workflows:
     # "integration not found" error, double-check this string in:
     #   Codemagic UI > Teams (or User) settings > Integrations > App Store Connect
     integrations:
-      app_store_connect: Tamaanina Quran
+      app_store_connect: "Tamaanina Quran"
 
     environment:
       # NOTE: We deliberately do NOT use the managed `ios_signing` block here.
