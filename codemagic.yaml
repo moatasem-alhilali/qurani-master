@@ -1,0 +1,66 @@
+workflows:
+  ios-appstore:
+    name: iOS App Store (Tamaanina Quran)
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+
+    # App Store Connect API key integration.
+    # This name must EXACTLY match the API key name shown in your Codemagic
+    # settings. Your UI shows "Tamaanina Quran (Key: Z5PVYNU5MD)", so the
+    # integration name is "Tamaanina Quran". If signing fails with an
+    # "integration not found" error, double-check this string in:
+    #   Codemagic UI > Teams (or User) settings > Integrations > App Store Connect
+    integrations:
+      app_store_connect: Tamaanina Quran
+
+    environment:
+      ios_signing:
+        # Automatic managed signing. Do NOT restrict to a single bundle id —
+        # leaving the list out makes Codemagic create/fetch App Store profiles
+        # for EVERY bundle id in the project, including the widget extension
+        # com.tamaanina.app.TamaneenaWidgets (this is what fixes the build).
+        distribution_type: app_store
+      vars:
+        BUNDLE_ID: "com.tamaanina.app"
+        WIDGET_BUNDLE_ID: "com.tamaanina.app.TamaneenaWidgets"
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      - name: Set up code signing (app + widget extension)
+        script: |
+          set -e
+          keychain initialize
+          # Create/fetch App Store profiles for BOTH the app and the widget.
+          # --create registers the App ID + provisioning profile if missing.
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "$WIDGET_BUNDLE_ID" \
+            --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Flutter pub get
+        script: flutter pub get
+
+      - name: Install CocoaPods
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+
+      - name: Flutter build ipa
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+
+    publishing:
+      # Uploads to App Store Connect and submits to TestFlight beta review,
+      # matching what you had enabled in the UI workflow.
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
