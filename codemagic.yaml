@@ -5,13 +5,13 @@ workflows:
     max_build_duration: 60
 
     # App Store Connect API key integration.
-    # This name must EXACTLY match the API key name shown in your Codemagic
-    # settings. Your UI shows "Tamaanina Quran (Key: Z5PVYNU5MD)", so the
-    # integration name is "Tamaanina Quran". If signing fails with an
-    # "integration not found" error, double-check this string in:
-    #   Codemagic UI > Teams (or User) settings > Integrations > App Store Connect
+    # This MUST match the name of an integration you added under:
+    #   Codemagic > Team/Account settings > Integrations > Developer Portal.
+    # NOTE: a "code signing identity" shown in the UI workflow is NOT the same
+    # as a named integration — only integrations registered here are referable.
+    # If you used a different name when adding the key, change it below.
     integrations:
-      app_store_connect: "Tamaanina Quran"
+      app_store_connect: tamaanina_asc
 
     environment:
       # NOTE: We deliberately do NOT use the managed `ios_signing` block here.
