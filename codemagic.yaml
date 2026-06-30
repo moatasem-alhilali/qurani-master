@@ -11,7 +11,7 @@ workflows:
     # as a named integration — only integrations registered here are referable.
     # If you used a different name when adding the key, change it below.
     integrations:
-      app_store_connect: tamaanina_asc
+      app_store_connect: "App Store Pinpaiss"
 
     environment:
       # NOTE: We deliberately do NOT use the managed `ios_signing` block here.
