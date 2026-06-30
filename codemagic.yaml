@@ -14,12 +14,11 @@ workflows:
       app_store_connect: Tamaanina Quran
 
     environment:
-      ios_signing:
-        # Automatic managed signing. Do NOT restrict to a single bundle id —
-        # leaving the list out makes Codemagic create/fetch App Store profiles
-        # for EVERY bundle id in the project, including the widget extension
-        # com.tamaanina.app.TamaneenaWidgets (this is what fixes the build).
-        distribution_type: app_store
+      # NOTE: We deliberately do NOT use the managed `ios_signing` block here.
+      # That block requires a single bundle_identifier and would only sign the
+      # main app, leaving the widget extension unsigned. Instead, the
+      # "Set up code signing" script below fetches App Store profiles for BOTH
+      # bundle ids explicitly. The integration above authenticates the CLI.
       vars:
         BUNDLE_ID: "com.tamaanina.app"
         WIDGET_BUNDLE_ID: "com.tamaanina.app.TamaneenaWidgets"
