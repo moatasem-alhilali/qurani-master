@@ -71,8 +71,8 @@ class AnotherFeatures extends StatelessWidget {
         icon: AppIcons.focus,
         onTap: () => context.push(const FloatingAdhkarProvider()),
       ),
-      // Home-screen widgets are disabled on iOS only (widget extension signing is
-      // unresolved). Android keeps the entry.
+      // Widgets disabled on iOS only (extension signing unresolved);
+      // Android keeps the entry.
       if (defaultTargetPlatform != TargetPlatform.iOS)
         _FeatureShortcut(
           label: 'التطبيقات المصغرة',
