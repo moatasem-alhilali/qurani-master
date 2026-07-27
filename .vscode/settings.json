@@ -15,5 +15,6 @@
   "dart.enableSdkFormatter": true,
   "dart.showTodos": true,
   "dart.renameFilesWithClasses": true,
-  "dart.openDevToolsOnStart": false
+  "dart.openDevToolsOnStart": false,
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

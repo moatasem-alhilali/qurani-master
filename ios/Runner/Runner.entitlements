@@ -2,8 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- App Store / TestFlight builds sign with a production APNs profile, so this
+	     must be "production" to match (FCM uses the production APNs env there).
+	     Switch back to "development" only for local on-device push debugging. -->
 	<key>aps-environment</key>
-	<string>development</string>
+	<string>production</string>
 	<!-- WIDGET DISABLED (iOS): App Group removed so automatic signing can issue an
 	     explicit profile (with Push) instead of a wildcard. Re-enable together with
 	     the TamaneenaWidgets extension.
