@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:adhan/adhan.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -556,6 +557,11 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
   }
 
   Future<void> _refreshHomeWidgets() async {
+    // Home-screen widgets are disabled on iOS only (widget extension signing is
+    // unresolved). Android keeps working normally.
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return;
+    }
     try {
       final service = HomeWidgetsService();
       await service.refreshAll();

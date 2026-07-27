@@ -84,12 +84,16 @@ void main() async {
     debugPrint('QuranLibrary initialization failed: $e');
   }
 
-  try {
-    final homeWidgetsService = HomeWidgetsService();
-    await homeWidgetsService.refreshAll();
-    await homeWidgetsService.startBackgroundUpdates();
-  } catch (e) {
-    debugPrint('Home widgets refresh failed: $e');
+  // Home-screen widgets are disabled on iOS only (widget extension signing is
+  // unresolved). Android keeps working normally.
+  if (!kIsWeb && defaultTargetPlatform != TargetPlatform.iOS) {
+    try {
+      final homeWidgetsService = HomeWidgetsService();
+      await homeWidgetsService.refreshAll();
+      await homeWidgetsService.startBackgroundUpdates();
+    } catch (e) {
+      debugPrint('Home widgets refresh failed: $e');
+    }
   }
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -70,12 +71,15 @@ class AnotherFeatures extends StatelessWidget {
         icon: AppIcons.focus,
         onTap: () => context.push(const FloatingAdhkarProvider()),
       ),
-      _FeatureShortcut(
-        label: 'التطبيقات المصغرة',
-        subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
-        icon: AppIcons.widgets,
-        onTap: () => context.push(const HomeWidgetsScreen()),
-      ),
+      // Home-screen widgets are disabled on iOS only (widget extension signing is
+      // unresolved). Android keeps the entry.
+      if (defaultTargetPlatform != TargetPlatform.iOS)
+        _FeatureShortcut(
+          label: 'التطبيقات المصغرة',
+          subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
+          icon: AppIcons.widgets,
+          onTap: () => context.push(const HomeWidgetsScreen()),
+        ),
       _FeatureShortcut(
         label: 'أسماء الله الحسنى',
         subtitle: 'تأمل الأسماء ومعانيها المباركة',

@@ -53,7 +53,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D4F1A0020000000000000001 /* TamaneenaWidgets.appex in Embed App Extensions */,
+				/* WIDGET DISABLED (iOS) — re-enable by restoring: D4F1A0020000000000000001 TamaneenaWidgets.appex in Embed App Extensions */
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,7 +204,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				D4F1A00D0000000000000001 /* PBXTargetDependency */,
+				/* WIDGET DISABLED (iOS) — re-enable by restoring: D4F1A00D0000000000000001 PBXTargetDependency (TamaneenaWidgets) */
 			);
 			name = Runner;
 			productName = Runner;
