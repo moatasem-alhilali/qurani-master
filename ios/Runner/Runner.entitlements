@@ -4,9 +4,13 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
+	<!-- WIDGET DISABLED (iOS): App Group removed so automatic signing can issue an
+	     explicit profile (with Push) instead of a wildcard. Re-enable together with
+	     the TamaneenaWidgets extension.
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.tamaneena.tamaneenaapp.widgets</string>
 	</array>
+	-->
 </dict>
 </plist>
