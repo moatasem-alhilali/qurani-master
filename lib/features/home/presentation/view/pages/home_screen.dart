@@ -8,7 +8,6 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/permission/location_permission_service.dart';
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
@@ -16,6 +15,7 @@ import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_pr
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
 import 'package:quran_app/src/core/update/app_update_cubit.dart';
 import 'package:quran_app/src/core/update/app_update_service.dart';
+import 'package:quran_app/src/core/update/update_prompts.dart';
 
 class HomeScreenNew extends StatefulWidget {
   const HomeScreenNew({super.key});
@@ -263,7 +263,6 @@ class _HomeUpdateTile extends StatelessWidget {
         }
 
         final accentColor = context.primaryColor;
-        final storeUrl = state.storeUrl;
 
         return Padding(
           padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
@@ -287,9 +286,15 @@ class _HomeUpdateTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               onTap: () {
-                if (storeUrl != null && storeUrl.isNotEmpty) {
-                  UrlLauncherUtils.launchWebUrl(storeUrl);
-                }
+                // Same dialog used on launch and in Settings — one consistent
+                // iOS update experience. No `onLater` here: the tile is a
+                // persistent reminder the user can reopen anytime.
+                showIosUpdateDialog(
+                  context,
+                  storeVersion: state.storeVersion,
+                  storeUrl: state.storeUrl,
+                  releaseNotes: state.releaseNotes,
+                );
               },
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 14.w,
