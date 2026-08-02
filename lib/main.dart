@@ -48,24 +48,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Networking is a plain synchronous object build. It must exist before any
-  // request because `DioHelper.dio` is `late` (a request before init would throw
-  // a LateInitializationError), so we set it up immediately — it costs nothing.
+  // request because `DioHelper.dio` is `late` (a request before init would
+  // throw a LateInitializationError), so we build it now — it costs nothing.
   DioHelper.init();
 
-  // These initializers are mutually independent and none of them is needed to
-  // paint the first frame by itself, so we run them concurrently. Cold start is
-  // then bounded by the slowest one instead of their sum. Each is self-guarded so
-  // a single failure can't reject the whole batch.
+  // These initializers are mutually independent, so we run them concurrently:
+  // cold start is then bounded by the slowest one instead of their sum. Each is
+  // self-guarded so a single failure can't reject the whole batch.
   //
   // They still complete BEFORE runApp on purpose: the widget tree resolves
   // `sl<...>()` synchronously during the first build and the eager (lazy:false)
-  // blocs immediately fire data/DB/network events, so their prerequisites must be
-  // ready. In particular:
+  // blocs immediately fire data/DB/network events, so their prerequisites must
+  // be ready. Notably:
   //  - Firebase must be up before setupServiceLocator (it reads
-  //    Firestore/Messaging `.instance`), which is why DI stays after this batch.
-  //  - The database is pre-warmed here (not left to lazy first-access) to avoid a
-  //    concurrent `openDatabase` race, since `DatabaseService.database` has no
-  //    in-flight guard.
+  //    Firestore/Messaging `.instance`), so DI stays after this batch.
+  //  - The DB is pre-warmed here (not left to lazy first-access) to avoid a
+  //    concurrent `openDatabase` race (`DatabaseService.database` is unguarded).
   await Future.wait([
     _guardedInit('Firebase', () async {
       await Firebase.initializeApp(
@@ -73,8 +71,8 @@ void main() async {
       );
     }),
     _guardedInit('Timezone', () => TimeZoneService().setupTimezone()),
-    _guardedInit('Cache', () => CacheConfig.loadConfig()),
-    _guardedInit('QuranLibrary', () => QuranLibrary.init()),
+    _guardedInit('Cache', CacheConfig.loadConfig),
+    _guardedInit('QuranLibrary', QuranLibrary.init),
     _guardedInit('Database', () => DatabaseService().database),
   ]);
 
@@ -104,11 +102,11 @@ Future<void> _guardedInit<T>(String label, Future<T> Function() task) async {
   }
 }
 
-/// Heavy / non-critical startup work moved off the launch critical path. None of
-/// it is required to render the first frame or by the eager startup blocs:
-///  - Download service is only needed once the user actually downloads something.
+/// Non-critical startup work moved off the launch critical path. None of it is
+/// required to render the first frame or by the eager startup blocs:
+///  - Download service is only needed once the user downloads something.
 ///  - Home-screen widgets are a background convenience (Android only).
-///  - The iOS background-message handler only matters once the app is backgrounded.
+///  - The iOS background-message handler only matters once app is backgrounded.
 Future<void> _initAfterFirstFrame() async {
   await _guardedInit('DownloadService', () => DownloadService().initialize());
 
