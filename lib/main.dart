@@ -19,6 +19,7 @@ import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/features/floating_adhkar/overlay/floating_adhkar_overlay_entrypoint.dart';
 import 'package:quran_app/firebase_options.dart';
 import 'package:quran_app/main_view.dart';
+import 'package:quran_app/src/core/review/app_review_service.dart';
 import 'package:quran_library/quran.dart';
 
 // Background message handler must be a top-level function
@@ -63,7 +64,7 @@ void main() async {
   //  - Firebase must be up before setupServiceLocator (it reads
   //    Firestore/Messaging `.instance`), so DI stays after this batch.
   //  - The DB is pre-warmed here (not left to lazy first-access) to avoid a
-  //    concurrent `openDatabase` race (`DatabaseService.database` is unguarded).
+  //    concurrent `openDatabase` race (the getter has no in-flight guard).
   await Future.wait([
     _guardedInit('Firebase', () async {
       await Firebase.initializeApp(
@@ -109,6 +110,10 @@ Future<void> _guardedInit<T>(String label, Future<T> Function() task) async {
 ///  - The iOS background-message handler only matters once app is backgrounded.
 Future<void> _initAfterFirstFrame() async {
   await _guardedInit('DownloadService', () => DownloadService().initialize());
+
+  // Count this launch for the in-app review eligibility policy (days since
+  // install + number of opens). Purely local; never blocks or prompts here.
+  await _guardedInit('AppReview', () => AppReviewService().registerAppOpen());
 
   // Home-screen widgets are disabled on iOS only (widget extension signing is
   // unresolved). Android keeps working normally.

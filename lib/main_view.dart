@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -24,18 +23,15 @@ import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/features/daily_wird/data/repo/daily_wird_repository.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
-import 'package:quran_app/features/manage_version/data/datasources/version_cache_datasource.dart';
-import 'package:quran_app/features/manage_version/data/datasources/version_remote_datasource.dart';
-import 'package:quran_app/features/manage_version/data/repositories/version_repository_impl.dart';
-import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
+import 'package:quran_app/src/core/review/app_review_service.dart';
 import 'package:quran_app/src/core/update/app_update_cubit.dart';
 import 'package:quran_app/src/core/update/app_update_service.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:quran_app/src/core/update/update_prompts.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -64,18 +60,6 @@ class MyApp extends StatelessWidget {
             repository: sl<DeviceSyncRepository>(),
             connectivityBloc: context.read<ConnectivityBloc>(),
           )..add(const DeviceSyncStarted()),
-          lazy: false,
-        ),
-
-        ///version management
-        BlocProvider(
-          create: (context) => VersionBloc(
-            versionRepository: VersionRepositoryImpl(
-              remoteDataSource: VersionRemoteDataSourceImpl(),
-              cacheDataSource: VersionCacheDataSourceImpl(),
-            ),
-            connectivityBloc: context.read<ConnectivityBloc>(),
-          )..add(InitializeVersionManagementEvent()),
           lazy: false,
         ),
 
@@ -200,8 +184,6 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> with WidgetsBindingObserver {
-  final _upgrader = Upgrader(languageCode: 'ar');
-
   @override
   void initState() {
     super.initState();
@@ -213,7 +195,24 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
         return;
       }
       unawaited(context.read<AppUpdateCubit>().checkForUpdate());
+      unawaited(_maybeAskForReview());
     });
+  }
+
+  /// Fires the native in-app review at a calm, post-launch moment for engaged
+  /// users. The heavy lifting (eligibility, OS throttling, connectivity) lives
+  /// in [AppReviewService]; here we only add a small delay to let the launch
+  /// settle, and yield priority to an update prompt if one is about to show.
+  Future<void> _maybeAskForReview() async {
+    await Future<void>.delayed(const Duration(seconds: 5));
+    if (!mounted) return;
+
+    final updateState = context.read<AppUpdateCubit>().state;
+    if (updateState is AppUpdateIosAvailable && updateState.shouldPrompt) {
+      return;
+    }
+
+    await AppReviewService().requestReviewIfAppropriate();
   }
 
   @override
@@ -256,29 +255,41 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       ),
     );
 
-    final child = Platform.isIOS
-        ? UpgradeAlert(
-            upgrader: _upgrader,
-            child: scaffold,
-          )
-        : scaffold;
-
     return BlocListener<AppUpdateCubit, AppUpdateStatus>(
-      listenWhen: (previous, current) => current is AppUpdateAndroidReady,
+      listenWhen: (previous, current) =>
+          current is AppUpdateAndroidReady ||
+          (current is AppUpdateIosAvailable && current.shouldPrompt),
       listener: (context, state) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('تم تحميل التحديث، يمكنك تثبيته الآن.'),
-            action: SnackBarAction(
-              label: 'تثبيت الآن',
-              onPressed: () {
-                context.read<AppUpdateCubit>().installAndroidUpdate();
-              },
+        // Android: a flexible update finished downloading — offer to install.
+        if (state is AppUpdateAndroidReady) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('تم تحميل التحديث، يمكنك تثبيته الآن.'),
+              action: SnackBarAction(
+                label: 'تثبيت الآن',
+                onPressed: () {
+                  context.read<AppUpdateCubit>().installAndroidUpdate();
+                },
+              ),
             ),
-          ),
-        );
+          );
+          return;
+        }
+
+        // iOS: a newer App Store version exists — prompt to update.
+        if (state is AppUpdateIosAvailable) {
+          showIosUpdateDialog(
+            context,
+            storeVersion: state.storeVersion,
+            storeUrl: state.storeUrl,
+            releaseNotes: state.releaseNotes,
+            onLater: () => context
+                .read<AppUpdateCubit>()
+                .skipIosVersion(state.storeVersion),
+          );
+        }
       },
-      child: child,
+      child: scaffold,
     );
   }
 }

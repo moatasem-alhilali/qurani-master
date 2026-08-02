@@ -114,6 +114,7 @@ abstract final class AppIcons {
   static const mute = HugeIcons.strokeRoundedVolumeMute01;
   static const heart = HugeIcons.strokeRoundedFavourite;
   static const heartFilled = HugeIcons.strokeRoundedFavourite;
+  static const star = HugeIcons.strokeRoundedStar;
   static const bookmark = HugeIcons.strokeRoundedBookmark02;
   static const bookmarkAdd = HugeIcons.strokeRoundedBookmarkAdd02;
   static const calendar = HugeIcons.strokeRoundedCalendar03;

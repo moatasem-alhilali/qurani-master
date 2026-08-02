@@ -90,7 +90,7 @@ dependencies:
   workmanager: ^0.9.0+3
   hugeicons: ^1.1.7
   in_app_update: ^4.2.3
-  upgrader: ^13.4.0
+  in_app_review: ^2.0.10
   # ---------------------------------------
 
 dev_dependencies:

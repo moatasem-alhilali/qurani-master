@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -7,10 +8,13 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/theme_mode_widget.dart';
 import 'package:quran_app/features/download/presentation/view/pages/download_screen.dart';
-import 'package:quran_app/features/manage_version/presentation/view/pages/version_management_screen.dart';
 import 'package:quran_app/features/setting/data/services/social_links_service.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/app_information_pages.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/setting_notification_screen.dart';
+import 'package:quran_app/src/core/review/app_review_service.dart';
+import 'package:quran_app/src/core/update/app_update_cubit.dart';
+import 'package:quran_app/src/core/update/app_update_service.dart';
+import 'package:quran_app/src/core/update/update_prompts.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -26,6 +30,46 @@ class _SettingScreenState extends State<SettingScreen> {
   void initState() {
     super.initState();
     _socialLinksFuture = SocialLinksService().getLinks();
+  }
+
+  /// Manual "check for updates". Android hands off to Google Play's native
+  /// in-app update UI; iOS shows the store-update dialog. Gives explicit
+  /// feedback when the app is already up to date or the check fails.
+  Future<void> _checkForUpdates(BuildContext context) async {
+    final cubit = context.read<AppUpdateCubit>();
+    final messenger = ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(content: Text('جارٍ التحقق من التحديثات...')),
+      );
+
+    final result = await cubit.checkNow();
+    if (!context.mounted) return;
+    messenger.hideCurrentSnackBar();
+
+    switch (result.outcome) {
+      case ManualUpdateOutcome.updateAvailableIos:
+        await showIosUpdateDialog(
+          context,
+          storeVersion: result.storeVersion ?? '',
+          storeUrl: result.storeUrl,
+          releaseNotes: result.releaseNotes,
+        );
+      case ManualUpdateOutcome.updateStartedAndroid:
+        messenger.showSnackBar(
+          const SnackBar(content: Text('جارٍ بدء تحديث التطبيق...')),
+        );
+      case ManualUpdateOutcome.upToDate:
+        messenger.showSnackBar(
+          const SnackBar(content: Text('أنت تستخدم أحدث إصدار من التطبيق.')),
+        );
+      case ManualUpdateOutcome.error:
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('تعذّر التحقق من التحديثات، حاول لاحقاً.'),
+          ),
+        );
+    }
   }
 
   @override
@@ -54,12 +98,10 @@ class _SettingScreenState extends State<SettingScreen> {
               },
             ),
             _SettingTile(
-              title: 'إدارة الإصدارات',
-              subtitle: 'تحقق من التحديثات وإدارة إصدارات التطبيق',
+              title: 'التحقق من التحديثات',
+              subtitle: 'تأكد من أنك تستخدم أحدث إصدار من التطبيق',
               icon: AppIcons.update,
-              onTap: () {
-                context.push(const VersionManagementScreen());
-              },
+              onTap: () => _checkForUpdates(context),
             ),
             SizedBox(height: 18.h),
             const _SettingsSectionTitle(title: 'معلومات التطبيق'),
@@ -94,6 +136,14 @@ class _SettingScreenState extends State<SettingScreen> {
               icon: AppIcons.user,
               onTap: () {
                 context.push(const DeveloperAboutScreen());
+              },
+            ),
+            _SettingTile(
+              title: 'قيّم التطبيق',
+              subtitle: 'ساهم في نشر الخير بتقييمك على المتجر',
+              icon: AppIcons.star,
+              onTap: () {
+                AppReviewService().openStoreListing();
               },
             ),
             SizedBox(height: 24.h),

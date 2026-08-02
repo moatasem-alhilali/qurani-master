@@ -8,13 +8,14 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/permission/location_permission_service.dart';
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
-import 'package:quran_app/features/manage_version/presentation/bloc/version_bloc.dart';
-import 'package:quran_app/features/manage_version/presentation/view/widgets/update_download_options_sheet.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
+import 'package:quran_app/src/core/update/app_update_cubit.dart';
+import 'package:quran_app/src/core/update/app_update_service.dart';
 
 class HomeScreenNew extends StatefulWidget {
   const HomeScreenNew({super.key});
@@ -253,19 +254,16 @@ class _HomeUpdateTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VersionBloc, VersionState>(
+    // Reminder tile is iOS-only: on Android, Google Play In-App Updates shows
+    // its own native UI, so no in-app tile is needed there.
+    return BlocBuilder<AppUpdateCubit, AppUpdateStatus>(
       builder: (context, state) {
-        if (!state.isConnected ||
-            !state.hasUpdateAvailable ||
-            !state.canDownload ||
-            state.latestVersionInfo == null) {
+        if (state is! AppUpdateIosAvailable) {
           return const SizedBox.shrink();
         }
 
-        final versionInfo = state.latestVersionInfo!;
-        final accentColor = versionInfo.isUpdateRequired
-            ? const Color(0xFFCC9D2F)
-            : context.primaryColor;
+        final accentColor = context.primaryColor;
+        final storeUrl = state.storeUrl;
 
         return Padding(
           padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
@@ -289,7 +287,9 @@ class _HomeUpdateTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               onTap: () {
-                showUpdateDownloadOptionsSheet(context, versionInfo);
+                if (storeUrl != null && storeUrl.isNotEmpty) {
+                  UrlLauncherUtils.launchWebUrl(storeUrl);
+                }
               },
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 14.w,
@@ -317,11 +317,7 @@ class _HomeUpdateTile extends StatelessWidget {
               subtitle: Padding(
                 padding: EdgeInsets.only(top: 4.h),
                 child: Text(
-                  [
-                    'الإصدار ${versionInfo.latestVersion}',
-                    if (versionInfo.downloadSize?.isNotEmpty ?? false)
-                      versionInfo.downloadSize!,
-                  ].join(' • '),
+                  'الإصدار ${state.storeVersion}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: context.onSurfaceColor.withValues(alpha: 0.72),
                       ),
@@ -337,7 +333,7 @@ class _HomeUpdateTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                 ),
                 child: Text(
-                  'تحميل',
+                  'تحديث',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: accentColor,
                         fontWeight: FontWeight.w700,
