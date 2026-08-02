@@ -84,6 +84,9 @@ abstract final class AppIcons {
   static const searchOff = HugeIcons.strokeRoundedSearchRemove;
   static const close = HugeIcons.strokeRoundedCancel01;
   static const back = HugeIcons.strokeRoundedArrowLeft01;
+  // back right
+    static const backRight = HugeIcons.strokeRoundedArrowRight01;
+
   static const forward = HugeIcons.strokeRoundedArrowRight01;
   static const up = HugeIcons.strokeRoundedArrowUp01;
   static const down = HugeIcons.strokeRoundedArrowDown01;

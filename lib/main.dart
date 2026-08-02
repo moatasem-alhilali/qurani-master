@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -5,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logger/logger.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
@@ -45,65 +46,85 @@ Future<void> overlayMain() async {
 void main() async {
   // Ensures plugins are ready before async startup work.
   WidgetsFlutterBinding.ensureInitialized();
-  await PackageInfo.fromPlatform();
 
-  // Initialize timezone support.
-  await TimeZoneService().setupTimezone();
+  // Networking is a plain synchronous object build. It must exist before any
+  // request because `DioHelper.dio` is `late` (a request before init would throw
+  // a LateInitializationError), so we set it up immediately — it costs nothing.
+  DioHelper.init();
 
-  await DownloadService().initialize();
+  // These initializers are mutually independent and none of them is needed to
+  // paint the first frame by itself, so we run them concurrently. Cold start is
+  // then bounded by the slowest one instead of their sum. Each is self-guarded so
+  // a single failure can't reject the whole batch.
+  //
+  // They still complete BEFORE runApp on purpose: the widget tree resolves
+  // `sl<...>()` synchronously during the first build and the eager (lazy:false)
+  // blocs immediately fire data/DB/network events, so their prerequisites must be
+  // ready. In particular:
+  //  - Firebase must be up before setupServiceLocator (it reads
+  //    Firestore/Messaging `.instance`), which is why DI stays after this batch.
+  //  - The database is pre-warmed here (not left to lazy first-access) to avoid a
+  //    concurrent `openDatabase` race, since `DatabaseService.database` has no
+  //    in-flight guard.
+  await Future.wait([
+    _guardedInit('Firebase', () async {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }),
+    _guardedInit('Timezone', () => TimeZoneService().setupTimezone()),
+    _guardedInit('Cache', () => CacheConfig.loadConfig()),
+    _guardedInit('QuranLibrary', () => QuranLibrary.init()),
+    _guardedInit('Database', () => DatabaseService().database),
+  ]);
 
-  // Initialize Firebase early because some app-level services depend on it.
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    debugPrint('Firebase initialized successfully');
-  } catch (e) {
-    debugPrint('Firebase initialization failed: $e');
-  }
-
-  // Register app dependencies.
+  // Register app dependencies. Depends on Firebase (above) being initialized;
+  // may touch the DB, which is already warmed so there is no open race.
   await setupServiceLocator();
 
   // Observe bloc transitions globally.
   Bloc.observer = MyBlocObserver();
 
-  // Initialize networking.
-  await DioHelper.init();
+  runApp(
+    const MyApp(),
+  );
 
-  // Initialize local database.
-  await DatabaseService().database;
+  // Everything below is non-visual and not needed by the first frame or by the
+  // eager startup blocs, so we kick it off after runApp to shorten cold start.
+  unawaited(_initAfterFirstFrame());
+}
 
-  // Initialize local cache.
-  await CacheConfig.loadConfig();
-
+/// Runs [task] and swallows/logs any error so one failing initializer can never
+/// reject the whole [Future.wait] batch (or crash launch).
+Future<void> _guardedInit<T>(String label, Future<T> Function() task) async {
   try {
-    await QuranLibrary.init();
+    await task();
   } catch (e) {
-    debugPrint('QuranLibrary initialization failed: $e');
+    debugPrint('$label initialization failed: $e');
   }
+}
+
+/// Heavy / non-critical startup work moved off the launch critical path. None of
+/// it is required to render the first frame or by the eager startup blocs:
+///  - Download service is only needed once the user actually downloads something.
+///  - Home-screen widgets are a background convenience (Android only).
+///  - The iOS background-message handler only matters once the app is backgrounded.
+Future<void> _initAfterFirstFrame() async {
+  await _guardedInit('DownloadService', () => DownloadService().initialize());
 
   // Home-screen widgets are disabled on iOS only (widget extension signing is
   // unresolved). Android keeps working normally.
   if (!kIsWeb && defaultTargetPlatform != TargetPlatform.iOS) {
-    try {
+    await _guardedInit('HomeWidgets', () async {
       final homeWidgetsService = HomeWidgetsService();
       await homeWidgetsService.refreshAll();
       await homeWidgetsService.startBackgroundUpdates();
-    } catch (e) {
-      debugPrint('Home widgets refresh failed: $e');
-    }
+    });
   }
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
-
-  runApp(
-    const MyApp(),
-  );
-  // runApp(const MyApp());
 }
 
 // https://vercel-pdf-proxy.vercel.app/proxy?url=https://www.archive.org/download/waq79565/79565.pdf
