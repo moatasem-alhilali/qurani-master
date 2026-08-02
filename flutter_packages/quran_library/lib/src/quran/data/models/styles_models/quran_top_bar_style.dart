@@ -21,6 +21,7 @@ class QuranTopBarStyle {
   // Icons
   final String? menuIconPath;
   final String? backIconPath;
+  final String? closeIconPath;
   final String? audioIconPath;
   final String? optionsIconPath;
   final String? tajweedIconPath;
@@ -45,8 +46,16 @@ class QuranTopBarStyle {
   final bool? showAudioButton;
   final bool? showFontsButton;
   final bool? showBackButton;
+  final bool? showCloseButton;
   final bool? showTajweedButton;
   final bool? showAutoScrollButton;
+
+  /// دالة تُستدعى عند الضغط على زر الإغلاق.
+  /// إذا لم تُمرَّر، يتم تنفيذ [Navigator.maybePop] افتراضياً للخروج من الشاشة.
+  ///
+  /// [onClose] Called when the close button is pressed.
+  /// If not provided, [Navigator.maybePop] is used by default to exit the screen.
+  final VoidCallback? onClose;
 
   // Custom widgets to add to the top bar
   final List<Widget>? customTopBarWidgets;
@@ -60,6 +69,9 @@ class QuranTopBarStyle {
   const QuranTopBarStyle({
     this.showBackButton,
     this.backIconPath,
+    this.showCloseButton,
+    this.closeIconPath,
+    this.onClose,
     this.backgroundColor,
     this.textColor,
     this.accentColor,
@@ -98,6 +110,9 @@ class QuranTopBarStyle {
 
   QuranTopBarStyle copyWith({
     String? backIconPath,
+    String? closeIconPath,
+    bool? showCloseButton,
+    VoidCallback? onClose,
     Color? backgroundColor,
     Color? textColor,
     Color? accentColor,
@@ -136,6 +151,9 @@ class QuranTopBarStyle {
   }) =>
       QuranTopBarStyle(
         backIconPath: backIconPath ?? this.backIconPath,
+        closeIconPath: closeIconPath ?? this.closeIconPath,
+        showCloseButton: showCloseButton ?? this.showCloseButton,
+        onClose: onClose ?? this.onClose,
         backgroundColor: backgroundColor ?? this.backgroundColor,
         textColor: textColor ?? this.textColor,
         accentColor: accentColor ?? this.accentColor,
@@ -182,6 +200,7 @@ class QuranTopBarStyle {
     final primary = scheme.primary;
     return QuranTopBarStyle(
       backIconPath: AssetsPath.assets.backArrow,
+      closeIconPath: AssetsPath.assets.close,
       backgroundColor: AppColors.getBackgroundColor(isDark),
       textColor: AppColors.getTextColor(isDark),
       accentColor: primary,
@@ -208,6 +227,7 @@ class QuranTopBarStyle {
       showAudioButton: true,
       showFontsButton: true,
       showBackButton: false,
+      showCloseButton: true,
       optionsIconPath: AssetsPath.assets.options,
       customTopBarWidgets: null,
       tajweedIconPath: AssetsPath.assets.exclamation,

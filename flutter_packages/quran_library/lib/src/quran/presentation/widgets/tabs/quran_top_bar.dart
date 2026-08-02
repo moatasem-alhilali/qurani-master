@@ -53,6 +53,25 @@ class _QuranTopBar extends StatelessWidget {
         ),
         child: Row(
           children: [
+            if (defaults.showCloseButton ?? true)
+              IconButton(
+                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                icon: SvgPicture.asset(
+                    defaults.closeIconPath ?? AssetsPath.assets.close,
+                    height: defaults.iconSize,
+                    colorFilter: ColorFilter.mode(
+                        defaults.iconColor ??
+                            Theme.of(context).colorScheme.primary,
+                        BlendMode.srcIn)),
+                onPressed: () {
+                  if (defaults.onClose != null) {
+                    defaults.onClose!();
+                  } else {
+                    QuranCtrl.instance.state.isShowMenu.value = false;
+                    Navigator.maybePop(context);
+                  }
+                },
+              ),
             if (defaults.showBackButton ?? false)
               IconButton(
                 icon: SvgPicture.asset(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/widgets/app_scaffold/small_header_delegate_widget.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
+import 'package:quran_app/core/widgets/app_scaffold/small_header_delegate_widget.dart';
 
 class AppScaffoldWidget extends StatefulWidget {
   const AppScaffoldWidget({
@@ -26,7 +26,7 @@ class AppScaffoldWidget extends StatefulWidget {
     this.showSmallHeader = true,
     this.trailing,
     this.initialOffset = 100,
-    this.sliverChildPosition= SliverChildPosition.start,
+    this.sliverChildPosition = SliverChildPosition.start,
   });
   final Widget? body;
   final Future<void> Function()? onRefresh;
@@ -166,7 +166,6 @@ class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
             child: AppSliverWidget(
               sliverChildPosition: widget.sliverChildPosition,
               slivers: widget.slivers,
-              
               onRefresh: widget.onRefresh,
               child: widget.body ?? const SizedBox(),
             ),
