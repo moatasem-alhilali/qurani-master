@@ -2,13 +2,6 @@ part of 'base_audio_bloc.dart';
 
 @immutable
 class BaseAudioState {
-  //famous Reader
-  List<dynamic> baseAudio;
-  List<dynamic> baseAudioDetail;
-  RequestState famousBaseAudioState;
-  RequestState audioState;
-  AudioPlayer? audioPlayer;
-
   BaseAudioState({
     //famous Reader
     this.famousBaseAudioState = RequestState.initial,
@@ -17,6 +10,12 @@ class BaseAudioState {
     this.baseAudio = const [],
     this.baseAudioDetail = const [],
   });
+  //famous Reader
+  List<dynamic> baseAudio;
+  List<dynamic> baseAudioDetail;
+  RequestState famousBaseAudioState;
+  RequestState audioState;
+  AudioPlayer? audioPlayer;
 
   BaseAudioState copyWith({
     //famous Reader

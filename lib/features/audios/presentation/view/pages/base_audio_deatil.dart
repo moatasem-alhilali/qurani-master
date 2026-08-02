@@ -15,9 +15,8 @@ import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart
 import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 
 class BaseAudioDetail extends StatelessWidget {
-  BaseAudioDetail({super.key, this.data});
+  const BaseAudioDetail({super.key, this.data});
   final dynamic data;
-  final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {

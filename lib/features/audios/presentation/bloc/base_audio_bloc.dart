@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -9,9 +10,6 @@ part 'base_audio_event.dart';
 part 'base_audio_state.dart';
 
 class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
-  BaseAudioRepositoryImpl repositoryImpl;
-  ScrollController scrollController = ScrollController();
-
   BaseAudioBloc({required this.repositoryImpl}) : super(BaseAudioState()) {
     on<GetBaseAudioEvent>(baseAudio);
     on<BaseAudioDetailEvent>(baseAudioDetail);
@@ -23,10 +21,12 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
       },
     );
   }
+  BaseAudioRepositoryImpl repositoryImpl;
+  ScrollController scrollController = ScrollController();
 
   FutureOr<void> baseAudio(event, emit) async {
     emit(state.copyWith(famousBaseAudioState: RequestState.loading));
-    var result = await repositoryImpl.famousReader(event.id as String);
+    final result = await repositoryImpl.famousReader(event.id as String);
     result.fold(
       (l) {
         emit(state.copyWith(famousBaseAudioState: RequestState.error));
@@ -44,7 +44,7 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
 
   FutureOr<void> baseAudioDetail(event, emit) async {
     emit(state.copyWith(famousBaseAudioState: RequestState.loading));
-    var result = await repositoryImpl.famousReaderDetail(event.url as String);
+    final result = await repositoryImpl.famousReaderDetail(event.url as String);
     result.fold(
       (l) {
         emit(
@@ -67,7 +67,7 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
 
   FutureOr<void> initAudio(event, emit) async {
     emit(state.copyWith(audioState: RequestState.loading));
-    var result = await repositoryImpl.initAudio(event.data as List<dynamic>);
+    final result = await repositoryImpl.initAudio(event.data as List<dynamic>);
     result.fold(
       (l) {
         emit(

@@ -6,16 +6,16 @@ abstract class BaseAudioEvent {}
 class SetStateEvent extends BaseAudioEvent {}
 
 class GetBaseAudioEvent extends BaseAudioEvent {
-  final String id;
   GetBaseAudioEvent(this.id);
+  final String id;
 }
 
 class InitBaseAudioPlayerEvent extends BaseAudioEvent {
-  final dynamic data;
   InitBaseAudioPlayerEvent(this.data);
+  final dynamic data;
 }
 
 class BaseAudioDetailEvent extends BaseAudioEvent {
-  final String url;
   BaseAudioDetailEvent(this.url);
+  final String url;
 }
