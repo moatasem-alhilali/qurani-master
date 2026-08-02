@@ -102,32 +102,27 @@ dev_dependencies:
   build_runner: ^2.6.0
   flutter_launcher_icons: ^0.14.3
 
-  # flutter_native_splash: ^2.4.6
+  flutter_native_splash: ^2.4.6
 
-# flutter_native_splash:
-#   color: "#ffffff" # خلفية شاشة البداية
-#   image: assets/logo/splash_icon.png # لوجو التطبيق (مقاس 512x512 أو 1024x1024 png)
-#   # branding: assets/branding.png     # شعار فرعي (اختياري - أسفل الشاشة)
-#   # branding_mode: bottom             # وضع الشعار الفرعي (bottom أو center)
-#   color_dark: "#000000" # خلفية للشاشة في المود الداكن
-#   image_dark: assets/logo/splash_icon_dark.png # لوجو الوضع الداكن (اختياري)
-#   # branding_dark: assets/branding_dark.png  # شعار فرعي داكن (اختياري)
-#   android: true # تفعيل للأندرويد
-#   ios: true # تفعيل للآيفون
-#   android_gravity: center # محاذاة صورة اللوجو
-#   ios_content_mode: scaleAspectFill # نمط ملء صورة اللوجو في iOS
-#   fullscreen: true # لجعل الشاشة بالكامل Splash بدون status bar
-#   web: false # عادة لا ينصح بتفعيل الويب مع المكتبة
-#   android_12:
-#     image: assets/logo/splash_icon.png
-#     icon_background_color: "#ffffff"
-#     image_dark: assets/logo/splash_icon_dark.png
-#     icon_background_color_dark: "#000000"
-#     # branding: assets/branding.png
-#     # branding_dark: assets/branding_dark.png
-#     color: "#ffffff"
-#     color_dark: "#000000"
-#     fullscreen: true
+flutter_native_splash:
+  color: "#F5EEDD" # خلفية شاشة البداية (كريمي متناسق مع إطار الشعار)
+  image: assets/logo/splash_icon.png # لوجو التطبيق (يظهر في المنتصف)
+  color_dark: "#1E1E1E" # خلفية الوضع الداكن (نفس ثيم التطبيق)
+  image_dark: assets/logo/splash_icon_dark.png # لوجو الوضع الداكن
+  android: true # تفعيل للأندرويد
+  ios: true # تفعيل للآيفون
+  android_gravity: center # محاذاة صورة اللوجو
+  ios_content_mode: center # نمط عرض اللوجو في iOS (توسيط بدون تمدد)
+  fullscreen: true # شاشة بداية بملء الشاشة بدون شريط الحالة
+  web: false # لا يُنصح بتفعيل الويب مع المكتبة
+  android_12:
+    image: assets/logo/splash_icon.png
+    icon_background_color: "#F5EEDD"
+    image_dark: assets/logo/splash_icon_dark.png
+    icon_background_color_dark: "#1E1E1E"
+    color: "#F5EEDD"
+    color_dark: "#1E1E1E"
+    fullscreen: true
 
 flutter_gen:
   output: lib/gen/
