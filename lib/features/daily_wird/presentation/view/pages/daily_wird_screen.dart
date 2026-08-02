@@ -313,7 +313,7 @@ class DailyWirdScreen extends StatelessWidget {
       hour: int.tryParse(parts.first) ?? 7,
       minute: parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0,
     );
-    final selected = await showTimePicker(
+    final selected = await AdaptiveTimePicker.show(
       context: context,
       initialTime: initial,
     );

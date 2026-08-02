@@ -328,7 +328,7 @@ class _SmartOutreachUpsertScheduleScreenState
   }
 
   Future<void> _pickTime() async {
-    final picked = await showTimePicker(
+    final picked = await AdaptiveTimePicker.show(
       context: context,
       initialTime: _selectedTime,
     );

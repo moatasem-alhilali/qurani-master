@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -135,36 +136,16 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog>
 
   Future<void> onAddCustomDate() async {
     final now = DateTime.now();
-    final pickedDate = await showDatePicker(
+    final pickedDate = await AdaptiveDatePicker.show(
       context: context,
       initialDate: now,
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: context.primaryColor,
-                ),
-          ),
-          child: child!,
-        );
-      },
     );
     if (pickedDate != null) {
-      final pickedTime = await showTimePicker(
+      final pickedTime = await AdaptiveTimePicker.show(
         context: context,
         initialTime: TimeOfDay.fromDateTime(now),
-        builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: context.primaryColor,
-                  ),
-            ),
-            child: child!,
-          );
-        },
       );
       if (pickedTime != null) {
         final full = DateTime(

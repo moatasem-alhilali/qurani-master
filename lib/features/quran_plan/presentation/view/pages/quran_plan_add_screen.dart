@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -181,7 +182,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                             color: context.primaryColor,
                           ),
                           onTap: () async {
-                            final t = await showTimePicker(
+                            final t = await AdaptiveTimePicker.show(
                               context: context,
                               initialTime: TimeOfDay.now(),
                             );
