@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -262,16 +263,14 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       listener: (context, state) {
         // Android: a flexible update finished downloading — offer to install.
         if (state is AppUpdateAndroidReady) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('تم تحميل التحديث، يمكنك تثبيته الآن.'),
-              action: SnackBarAction(
-                label: 'تثبيت الآن',
-                onPressed: () {
-                  context.read<AppUpdateCubit>().installAndroidUpdate();
-                },
-              ),
-            ),
+          AdaptiveSnackBar.show(
+            context,
+            message: 'تم تحميل التحديث، يمكنك تثبيته الآن.',
+            type: AdaptiveSnackBarType.success,
+            duration: const Duration(seconds: 8),
+            action: 'تثبيت الآن',
+            onActionPressed: () =>
+                context.read<AppUpdateCubit>().installAndroidUpdate(),
           );
           return;
         }

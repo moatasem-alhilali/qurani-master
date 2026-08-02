@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -269,7 +270,7 @@ class _SliderTile extends StatelessWidget {
               thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.r),
               overlayShape: RoundSliderOverlayShape(overlayRadius: 13.r),
             ),
-            child: Slider(
+            child: AdaptiveSlider(
               value: value,
               min: min,
               max: max,

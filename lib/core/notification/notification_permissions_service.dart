@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -88,56 +89,46 @@ class NotificationPermissionsService {
         'يحتاج التطبيق إلى إذن الإشعارات لتذكيرك بأوقات الصلاة والأذكار.\n'
             'هذا يساعدك على البقاء على اتصال مع تعاليم الإسلام طوال اليوم.';
 
-    return await showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('إذن الإشعارات'),
-              content: Text(message),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('ليس الآن'),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('السماح'),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false;
+    var granted = false;
+    await AdaptiveAlertDialog.show(
+      context: context,
+      title: 'إذن الإشعارات',
+      message: message,
+      actions: [
+        AlertAction(
+          title: 'ليس الآن',
+          style: AlertActionStyle.cancel,
+          onPressed: () => granted = false,
+        ),
+        AlertAction(
+          title: 'السماح',
+          style: AlertActionStyle.primary,
+          onPressed: () => granted = true,
+        ),
+      ],
+    );
+    return granted;
   }
 
   /// Show settings dialog when permissions are permanently denied
   Future<void> showSettingsDialog(BuildContext context) async {
-    await showDialog<void>(
+    await AdaptiveAlertDialog.show(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('إعدادات الإشعارات'),
-          content: const Text(
-            'تم رفض إذن الإشعارات بشكل دائم.\n'
-            'يرجى الذهاب إلى الإعدادات وتفعيل الإشعارات يدوياً.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('إلغاء'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                openAppSettings();
-              },
-              child: const Text('فتح الإعدادات'),
-            ),
-          ],
-        );
-      },
+      title: 'إعدادات الإشعارات',
+      message: 'تم رفض إذن الإشعارات بشكل دائم.\n'
+          'يرجى الذهاب إلى الإعدادات وتفعيل الإشعارات يدوياً.',
+      actions: [
+        AlertAction(
+          title: 'إلغاء',
+          style: AlertActionStyle.cancel,
+          onPressed: () {},
+        ),
+        const AlertAction(
+          title: 'فتح الإعدادات',
+          style: AlertActionStyle.primary,
+          onPressed: openAppSettings,
+        ),
+      ],
     );
   }
 

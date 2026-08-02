@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,15 +38,8 @@ class _SettingScreenState extends State<SettingScreen> {
   /// feedback when the app is already up to date or the check fails.
   Future<void> _checkForUpdates(BuildContext context) async {
     final cubit = context.read<AppUpdateCubit>();
-    final messenger = ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(content: Text('جارٍ التحقق من التحديثات...')),
-      );
-
     final result = await cubit.checkNow();
     if (!context.mounted) return;
-    messenger.hideCurrentSnackBar();
 
     switch (result.outcome) {
       case ManualUpdateOutcome.updateAvailableIos:
@@ -56,18 +50,18 @@ class _SettingScreenState extends State<SettingScreen> {
           releaseNotes: result.releaseNotes,
         );
       case ManualUpdateOutcome.updateStartedAndroid:
-        messenger.showSnackBar(
-          const SnackBar(content: Text('جارٍ بدء تحديث التطبيق...')),
-        );
+        AdaptiveSnackBar.show(context, message: 'جارٍ بدء تحديث التطبيق...');
       case ManualUpdateOutcome.upToDate:
-        messenger.showSnackBar(
-          const SnackBar(content: Text('أنت تستخدم أحدث إصدار من التطبيق.')),
+        AdaptiveSnackBar.show(
+          context,
+          message: 'أنت تستخدم أحدث إصدار من التطبيق.',
+          type: AdaptiveSnackBarType.success,
         );
       case ManualUpdateOutcome.error:
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('تعذّر التحقق من التحديثات، حاول لاحقاً.'),
-          ),
+        AdaptiveSnackBar.show(
+          context,
+          message: 'تعذّر التحقق من التحديثات، حاول لاحقاً.',
+          type: AdaptiveSnackBarType.error,
         );
     }
   }

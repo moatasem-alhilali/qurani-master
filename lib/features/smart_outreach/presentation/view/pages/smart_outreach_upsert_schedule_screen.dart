@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -1093,7 +1094,7 @@ class _SliderField extends StatelessWidget {
               ),
             ],
           ),
-          Slider(
+          AdaptiveSlider(
             value: value,
             min: min,
             max: max,

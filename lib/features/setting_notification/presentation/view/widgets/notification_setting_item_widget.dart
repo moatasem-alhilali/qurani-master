@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -147,9 +148,9 @@ class _NotificationSettingItemWidgetState
                               ),
                               SizedBox(width: 8.w),
                             ],
-                            CupertinoSwitch(
+                            AdaptiveSwitch(
                               value: widget.setting!.enabled,
-                              activeTrackColor: context.primaryColor,
+                              activeColor: context.primaryColor,
                               onChanged: (val) {
                                 setState(() {
                                   isEnabled = val;

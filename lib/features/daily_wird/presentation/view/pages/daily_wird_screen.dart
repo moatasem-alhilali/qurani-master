@@ -1,3 +1,4 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/card_widget.dart';
@@ -1471,7 +1472,7 @@ class _ReminderTile extends StatelessWidget {
       color: context.surfaceColor,
       child: Row(
         children: [
-          Switch(
+          AdaptiveSwitch(
             value: value,
             onChanged: onChanged,
           ),

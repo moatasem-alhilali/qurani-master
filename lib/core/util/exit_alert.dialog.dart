@@ -1,43 +1,31 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:flutter/widgets.dart';
 
+/// Exit confirmation. Uses [AdaptiveAlertDialog] so it shows a native Cupertino
+/// alert on iPhone and a Material dialog on Android (previously it forced a
+/// Cupertino alert on both platforms). [AdaptiveAlertDialog] dismisses itself
+/// before invoking each action, so the callbacks must not pop the route.
 void showMyAlert({
   required BuildContext context,
 }) {
-  showCupertinoModalPopup<void>(
+  AdaptiveAlertDialog.show(
     context: context,
-    builder: (BuildContext context) => CupertinoAlertDialog(
-      title: Text(
-        'تنبيه',
-        style: titleMedium(context).copyWith(fontSize: 20, color: Colors.red),
+    title: 'تنبيه',
+    message: 'هل أنت متأكد من الخروج من التطبيق',
+    actions: [
+      AlertAction(
+        title: 'لا',
+        style: AlertActionStyle.cancel,
+        onPressed: () {},
       ),
-      content: Text(
-        'هل أنت متأكد من الخروج من التطبيق',
-        style: titleMedium(context).copyWith(fontSize: 14),
+      AlertAction(
+        title: 'نعم',
+        style: AlertActionStyle.destructive,
+        onPressed: () async {
+          await SystemNavigator.pop();
+        },
       ),
-      actions: <CupertinoDialogAction>[
-        CupertinoDialogAction(
-          onPressed: () async {
-            Navigator.pop(context);
-            await SystemNavigator.pop();
-          },
-          child: Text(
-            'نعم',
-            style: titleMedium(context),
-          ),
-        ),
-        CupertinoDialogAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            'لا',
-            style: titleMedium(context),
-          ),
-        ),
-      ],
-    ),
+    ],
   );
 }
