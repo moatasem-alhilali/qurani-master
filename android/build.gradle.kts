@@ -17,9 +17,16 @@ subprojects {
     // bytecode from AndroidX artifacts built for JVM 11 (e.g. home_widget -> glance).
     val forceJava11 = {
         extensions.findByName("android")?.let { ext ->
-            (ext as com.android.build.gradle.BaseExtension).compileOptions.apply {
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
+            // AGP 8+ finalizes compileOptions after a module is evaluated. If a
+            // plugin module was already evaluated (state.executed) by the time we
+            // reach it, its DSL is locked and assigning sourceCompatibility throws
+            // "sourceCompatibility has been finalized". Such modules already pin
+            // their own Java version (>= 11), so guarding and skipping is safe.
+            runCatching {
+                (ext as com.android.build.gradle.BaseExtension).compileOptions.apply {
+                    sourceCompatibility = JavaVersion.VERSION_11
+                    targetCompatibility = JavaVersion.VERSION_11
+                }
             }
         }
         Unit
