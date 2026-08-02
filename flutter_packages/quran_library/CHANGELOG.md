@@ -1,3 +1,13 @@
+## 4.2.1
+
+* **ADD:**
+  * Word meanings (معاني الكلمات) as a new `WordInfoKind.meaning` data source — available as the "المعنى" tab alongside recitations (القراءات), morphology (التصريف), and grammar (الإعراب) in the word-info bottom sheet. No UI or model changes required; reuses the existing shared word-info pipeline.
+
+* **FIX:**
+  * `ZipDownloadService` now defensively clears any stale directory squatting on the target ZIP file path, fixing `FileSystemException: Cannot open file ... (OS Error: Is a directory, errno = 21)` on retrying a failed download.
+  * Word-info downloads of bundled-file layouts (e.g. `meaning-word-oldv.json.zip`) now split the single large JSON into 114 per-surah `sura_NNN.json` files after extraction, so the lazy per-surah loader works unchanged.
+  * Web fallback for `meaning`: corrected the base folder (`meaning_word/`) and switched to fetching the single bundled JSON once and caching all surahs in memory, instead of requesting non-existent per-surah files (previously returned 404).
+
 ## 4.2.0
 
 * **BREAKING CHANGES:**

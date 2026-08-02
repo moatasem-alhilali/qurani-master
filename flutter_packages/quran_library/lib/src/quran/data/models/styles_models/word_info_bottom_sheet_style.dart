@@ -35,6 +35,7 @@ class WordInfoBottomSheetStyle {
   final String? tabRecitationsText;
   final String? tabTasreefText;
   final String? tabEerabText;
+  final String? tabMeaningText;
   final String? unavailableDataTemplate;
   final String? downloadText;
   final String? downloadingText;
@@ -140,6 +141,7 @@ class WordInfoBottomSheetStyle {
     this.tabBarHeight,
     this.innerContainerBoxShadow,
     this.downloadButtonWidget,
+    this.tabMeaningText,
   });
 
   WordInfoBottomSheetStyle copyWith({
@@ -199,73 +201,74 @@ class WordInfoBottomSheetStyle {
     double? tabBarHeight,
     List<BoxShadow>? innerContainerBoxShadow,
     WordInfoBottomSheetStyleCustomChildBuilder? downloadButtonWidget,
+    String? tabMeaningText,
   }) {
     return WordInfoBottomSheetStyle(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      borderRadius: borderRadius ?? this.borderRadius,
-      padding: padding ?? this.padding,
-      maxHeightFactor: maxHeightFactor ?? this.maxHeightFactor,
-      maxWidthFactor: maxWidthFactor ?? this.maxWidthFactor,
-      handleWidth: handleWidth ?? this.handleWidth,
-      handleHeight: handleHeight ?? this.handleHeight,
-      handleMargin: handleMargin ?? this.handleMargin,
-      handleBorderRadius: handleBorderRadius ?? this.handleBorderRadius,
-      handleColor: handleColor ?? this.handleColor,
-      titleText: titleText ?? this.titleText,
-      titleTextStyle: titleTextStyle ?? this.titleTextStyle,
-      titlePadding: titlePadding ?? this.titlePadding,
-      tabRecitationsText: tabRecitationsText ?? this.tabRecitationsText,
-      tabTasreefText: tabTasreefText ?? this.tabTasreefText,
-      tabEerabText: tabEerabText ?? this.tabEerabText,
-      unavailableDataTemplate:
-          unavailableDataTemplate ?? this.unavailableDataTemplate,
-      downloadText: downloadText ?? this.downloadText,
-      downloadingText: downloadingText ?? this.downloadingText,
-      loadErrorText: loadErrorText ?? this.loadErrorText,
-      noDataText: noDataText ?? this.noDataText,
-      tabLabelStyle: tabLabelStyle ?? this.tabLabelStyle,
-      tabIndicatorPadding: tabIndicatorPadding ?? this.tabIndicatorPadding,
-      tabIndicatorRadius: tabIndicatorRadius ?? this.tabIndicatorRadius,
-      tabIndicatorColor: tabIndicatorColor ?? this.tabIndicatorColor,
-      dividerHeight: dividerHeight ?? this.dividerHeight,
-      contentPadding: contentPadding ?? this.contentPadding,
-      bodyTextStyle: bodyTextStyle ?? this.bodyTextStyle,
-      buttonTextStyle: buttonTextStyle ?? this.buttonTextStyle,
-      progressTextStyle: progressTextStyle ?? this.progressTextStyle,
-      verticalMargin: verticalMargin ?? this.verticalMargin,
-      horizontalMargin: horizontalMargin ?? this.horizontalMargin,
-      innerContainerPadding:
-          innerContainerPadding ?? this.innerContainerPadding,
-      tafsirBackgroundColor:
-          tafsirBackgroundColor ?? this.tafsirBackgroundColor,
-      innerContainerBorderRadius:
-          innerContainerBorderRadius ?? this.innerContainerBorderRadius,
-      innerShadowColor: innerShadowColor ?? this.innerShadowColor,
-      innerShadowBlurRadius:
-          innerShadowBlurRadius ?? this.innerShadowBlurRadius,
-      innerShadowOffset: innerShadowOffset ?? this.innerShadowOffset,
-      innerBorderColor: innerBorderColor ?? this.innerBorderColor,
-      innerBorderWidth: innerBorderWidth ?? this.innerBorderWidth,
-      textBackgroundColor: textBackgroundColor ?? this.textBackgroundColor,
-      handleWidget: handleWidget ?? this.handleWidget,
-      audioButtonColor: audioButtonColor ?? this.audioButtonColor,
-      audioButtonActiveColor:
-          audioButtonActiveColor ?? this.audioButtonActiveColor,
-      audioButtonSize: audioButtonSize ?? this.audioButtonSize,
-      playWordTooltip: playWordTooltip ?? this.playWordTooltip,
-      playAyahWordsTooltip: playAyahWordsTooltip ?? this.playAyahWordsTooltip,
-      withTitle: withTitle ?? this.withTitle,
-      withWordText: withWordText ?? this.withWordText,
-      withWordAudioButton: withWordAudioButton ?? this.withWordAudioButton,
-      tabLabelColor: tabLabelColor ?? this.tabLabelColor,
-      tabUnselectedLabelColor:
-          tabUnselectedLabelColor ?? this.tabUnselectedLabelColor,
-      tabBackgroundColor: tabBackgroundColor ?? this.tabBackgroundColor,
-      tabBarHeight: tabBarHeight ?? this.tabBarHeight,
-      innerContainerBoxShadow:
-          innerContainerBoxShadow ?? this.innerContainerBoxShadow,
-      downloadButtonWidget: downloadButtonWidget ?? this.downloadButtonWidget,
-    );
+        backgroundColor: backgroundColor ?? this.backgroundColor,
+        borderRadius: borderRadius ?? this.borderRadius,
+        padding: padding ?? this.padding,
+        maxHeightFactor: maxHeightFactor ?? this.maxHeightFactor,
+        maxWidthFactor: maxWidthFactor ?? this.maxWidthFactor,
+        handleWidth: handleWidth ?? this.handleWidth,
+        handleHeight: handleHeight ?? this.handleHeight,
+        handleMargin: handleMargin ?? this.handleMargin,
+        handleBorderRadius: handleBorderRadius ?? this.handleBorderRadius,
+        handleColor: handleColor ?? this.handleColor,
+        titleText: titleText ?? this.titleText,
+        titleTextStyle: titleTextStyle ?? this.titleTextStyle,
+        titlePadding: titlePadding ?? this.titlePadding,
+        tabRecitationsText: tabRecitationsText ?? this.tabRecitationsText,
+        tabTasreefText: tabTasreefText ?? this.tabTasreefText,
+        tabEerabText: tabEerabText ?? this.tabEerabText,
+        unavailableDataTemplate:
+            unavailableDataTemplate ?? this.unavailableDataTemplate,
+        downloadText: downloadText ?? this.downloadText,
+        downloadingText: downloadingText ?? this.downloadingText,
+        loadErrorText: loadErrorText ?? this.loadErrorText,
+        noDataText: noDataText ?? this.noDataText,
+        tabLabelStyle: tabLabelStyle ?? this.tabLabelStyle,
+        tabIndicatorPadding: tabIndicatorPadding ?? this.tabIndicatorPadding,
+        tabIndicatorRadius: tabIndicatorRadius ?? this.tabIndicatorRadius,
+        tabIndicatorColor: tabIndicatorColor ?? this.tabIndicatorColor,
+        dividerHeight: dividerHeight ?? this.dividerHeight,
+        contentPadding: contentPadding ?? this.contentPadding,
+        bodyTextStyle: bodyTextStyle ?? this.bodyTextStyle,
+        buttonTextStyle: buttonTextStyle ?? this.buttonTextStyle,
+        progressTextStyle: progressTextStyle ?? this.progressTextStyle,
+        verticalMargin: verticalMargin ?? this.verticalMargin,
+        horizontalMargin: horizontalMargin ?? this.horizontalMargin,
+        innerContainerPadding:
+            innerContainerPadding ?? this.innerContainerPadding,
+        tafsirBackgroundColor:
+            tafsirBackgroundColor ?? this.tafsirBackgroundColor,
+        innerContainerBorderRadius:
+            innerContainerBorderRadius ?? this.innerContainerBorderRadius,
+        innerShadowColor: innerShadowColor ?? this.innerShadowColor,
+        innerShadowBlurRadius:
+            innerShadowBlurRadius ?? this.innerShadowBlurRadius,
+        innerShadowOffset: innerShadowOffset ?? this.innerShadowOffset,
+        innerBorderColor: innerBorderColor ?? this.innerBorderColor,
+        innerBorderWidth: innerBorderWidth ?? this.innerBorderWidth,
+        textBackgroundColor: textBackgroundColor ?? this.textBackgroundColor,
+        handleWidget: handleWidget ?? this.handleWidget,
+        audioButtonColor: audioButtonColor ?? this.audioButtonColor,
+        audioButtonActiveColor:
+            audioButtonActiveColor ?? this.audioButtonActiveColor,
+        audioButtonSize: audioButtonSize ?? this.audioButtonSize,
+        playWordTooltip: playWordTooltip ?? this.playWordTooltip,
+        playAyahWordsTooltip: playAyahWordsTooltip ?? this.playAyahWordsTooltip,
+        withTitle: withTitle ?? this.withTitle,
+        withWordText: withWordText ?? this.withWordText,
+        withWordAudioButton: withWordAudioButton ?? this.withWordAudioButton,
+        tabLabelColor: tabLabelColor ?? this.tabLabelColor,
+        tabUnselectedLabelColor:
+            tabUnselectedLabelColor ?? this.tabUnselectedLabelColor,
+        tabBackgroundColor: tabBackgroundColor ?? this.tabBackgroundColor,
+        tabBarHeight: tabBarHeight ?? this.tabBarHeight,
+        innerContainerBoxShadow:
+            innerContainerBoxShadow ?? this.innerContainerBoxShadow,
+        downloadButtonWidget: downloadButtonWidget ?? this.downloadButtonWidget,
+        tabMeaningText: tabMeaningText ?? this.tabMeaningText);
   }
 
   factory WordInfoBottomSheetStyle.defaults({
@@ -292,6 +295,7 @@ class WordInfoBottomSheetStyle {
       tabRecitationsText: 'القراءات',
       tabTasreefText: 'التصريف',
       tabEerabText: 'الإعراب',
+      tabMeaningText: 'معنى الكلمة',
       unavailableDataTemplate: 'بيانات {kind} غير محمّلة على الجهاز.',
       downloadText: 'تحميل',
       downloadingText: 'جاري التحميل...',

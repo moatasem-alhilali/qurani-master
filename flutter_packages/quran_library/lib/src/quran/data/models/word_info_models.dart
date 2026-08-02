@@ -4,6 +4,7 @@ enum WordInfoKind {
   recitations,
   tasreef,
   eerab,
+  meaning,
 }
 
 class WordRef {

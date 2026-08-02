@@ -64,6 +64,7 @@ class WordInfoWidget extends StatelessWidget {
       Tab(text: defaults.tabRecitationsText ?? 'القراءات'),
       Tab(text: defaults.tabTasreefText ?? 'التصريف'),
       Tab(text: defaults.tabEerabText ?? 'الإعراب'),
+      Tab(text: defaults.tabMeaningText ?? 'معنى الكلمة'),
     ];
 
     return Container(
@@ -136,6 +137,7 @@ class WordInfoWidget extends StatelessWidget {
                           onTap: (index) {
                             ctrl.setSelectedKind(WordInfoKind.values[index]);
                           },
+                          isScrollable: true,
                           indicatorSize: TabBarIndicatorSize.tab,
                           labelStyle: defaults.tabLabelStyle ??
                               TextStyle(
@@ -194,6 +196,14 @@ class WordInfoWidget extends StatelessWidget {
                             WordInfoKindTab(
                               kind: WordInfoKind.eerab,
                               kindLabelAr: defaults.tabEerabText ?? 'الإعراب',
+                              ref: ref,
+                              ctrl: ctrl,
+                              isDark: isDark,
+                              style: defaults,
+                            ),
+                            WordInfoKindTab(
+                              kind: WordInfoKind.meaning,
+                              kindLabelAr: defaults.tabMeaningText ?? 'المعنى',
                               ref: ref,
                               ctrl: ctrl,
                               isDark: isDark,

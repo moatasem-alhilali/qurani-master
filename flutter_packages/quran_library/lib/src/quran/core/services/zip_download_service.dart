@@ -24,6 +24,16 @@ class ZipDownloadService {
       await destinationDir.create(recursive: true);
     }
 
+    // Defensive: قد تُخلّف محاولة سابقة *مجلدًا* على مسار الملف الهدف
+    // فيفشل openWrite() بـ errno 21 ("Is a directory"). نزيل أي كيان
+    // قائم على المسار كي يكون قابلًا للكتابة كملف.
+    final existingDir = Directory(zipFile.path);
+    if (await existingDir.exists()) {
+      await existingDir.delete(recursive: true);
+    } else if (await zipFile.exists()) {
+      await zipFile.delete();
+    }
+
     final dio = Dio()
       ..options.connectTimeout = connectTimeout
       ..options.receiveTimeout = receiveTimeout;
