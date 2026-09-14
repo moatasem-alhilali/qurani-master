@@ -31,6 +31,11 @@ class PrayerTimeRefreshFromDeviceLocationInBackgroundRequested
   const PrayerTimeRefreshFromDeviceLocationInBackgroundRequested();
 }
 
+/// يُرسل بعد حفظ إعدادات الحساب لإعادة احتساب المواقيت بالإعداد الجديد.
+class PrayerTimeCalculationSettingsChanged extends PrayerTimeEvent {
+  const PrayerTimeCalculationSettingsChanged();
+}
+
 class _PrayerTimeProgressTicked extends PrayerTimeEvent {
   const _PrayerTimeProgressTicked();
 }

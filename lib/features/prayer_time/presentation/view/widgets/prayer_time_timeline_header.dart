@@ -39,7 +39,7 @@ class _PrayerTimesHeader extends StatelessWidget {
               DateTime.now().timeZoneOffset.inMinutes;
           final locationNow =
               DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
-          final hijri = _HijriDate.fromDate(locationNow);
+          final hijri = HijriDate.fromDate(locationNow);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

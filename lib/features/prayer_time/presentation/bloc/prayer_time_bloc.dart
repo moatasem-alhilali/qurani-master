@@ -37,6 +37,9 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     on<PrayerTimeRefreshFromDeviceLocationInBackgroundRequested>(
       _onRefreshFromDeviceLocationInBackgroundRequested,
     );
+    on<PrayerTimeCalculationSettingsChanged>(
+      _onCalculationSettingsChanged,
+    );
     on<_PrayerTimeProgressTicked>(_onPrayerTimeProgressTicked);
   }
 
@@ -206,6 +209,35 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
       logger.w('Silent device location refresh failed: $e');
     } finally {
       _isBackgroundRefreshInProgress = false;
+    }
+  }
+
+  Future<void> _onCalculationSettingsChanged(
+    PrayerTimeCalculationSettingsChanged event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    final selectedLocation = state.selectedLocation;
+    if (selectedLocation == null) {
+      add(const PrayerTimeInitRequested());
+      return;
+    }
+
+    try {
+      await _loadPrayerTimesForSelection(
+        selectedLocation,
+        emit: emit,
+        status: state.locationStatus,
+        statusMessage: state.locationStatusMessage,
+      );
+    } catch (e) {
+      logger.e(e);
+      emit(
+        state.copyWith(
+          prayerState: RequestState.error,
+          locationStatus: PrayerLocationStatus.error,
+          locationStatusMessage: 'تعذر تحديث المواقيت بالإعدادات الجديدة',
+        ),
+      );
     }
   }
 

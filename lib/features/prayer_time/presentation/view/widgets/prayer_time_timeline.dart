@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 
 part 'prayer_time_timeline_header.dart';
 part 'prayer_time_timeline_notice.dart';
 part 'prayer_time_timeline_row.dart';
-part 'prayer_time_timeline_hijri_date.dart';
 
 Color _alpha(Color color, double value) => color.withValues(alpha: value);
 

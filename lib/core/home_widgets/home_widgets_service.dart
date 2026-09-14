@@ -404,7 +404,7 @@ class HomeWidgetsService {
   List<_PrayerWidgetScheduleItem> _buildPrayerSchedule(
     PrayerLocationSelection selection,
   ) {
-    final params = PrayerCalculationParams.build();
+    final calculationSettings = PrayerCalculationParams.load();
     final coordinates = Coordinates(selection.latitude, selection.longitude);
     final offset = Duration(minutes: selection.utcOffsetMinutes);
     final nowAtLocation = _locationNow(selection.utcOffsetMinutes);
@@ -420,7 +420,10 @@ class HomeWidgetsService {
       final prayerTimes = PrayerTimes.utcOffset(
         coordinates,
         DateComponents.from(date),
-        params,
+        PrayerCalculationParams.build(
+          date: date,
+          settings: calculationSettings,
+        ),
         offset,
       );
       items.addAll(<_PrayerWidgetScheduleItem>[

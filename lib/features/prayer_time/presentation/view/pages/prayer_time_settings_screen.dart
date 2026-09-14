@@ -6,10 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/prayer_time/data/model/prayer_calculation_settings.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_silent_mode_settings.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_settings_store.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_native_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_settings_store.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
+import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_calculation_settings_card.dart';
 
 class PrayerTimeSettingsScreen extends StatefulWidget {
   const PrayerTimeSettingsScreen({super.key});
@@ -22,10 +25,14 @@ class PrayerTimeSettingsScreen extends StatefulWidget {
 class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
   final PrayerSilentModeSettingsStore _settingsStore =
       PrayerSilentModeSettingsStore();
+  final PrayerCalculationSettingsStore _calculationSettingsStore =
+      PrayerCalculationSettingsStore();
   final PrayerSilentModeNativeService _nativeService =
       PrayerSilentModeNativeService();
 
   late PrayerSilentModeSettings _settings;
+  late PrayerCalculationSettings _calculationSettings;
+  late PrayerCalculationSettings _savedCalculationSettings;
   bool _hasNotificationPolicyAccess = false;
   bool _isSaving = false;
 
@@ -33,6 +40,8 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
   void initState() {
     super.initState();
     _settings = _settingsStore.load();
+    _savedCalculationSettings = _calculationSettingsStore.load();
+    _calculationSettings = _savedCalculationSettings;
     _refreshNativeState();
   }
 
@@ -60,6 +69,16 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            PrayerCalculationSettingsCard(
+              settings: _calculationSettings,
+              isSaving: _isSaving,
+              onChanged: (settings) {
+                setState(() {
+                  _calculationSettings = settings;
+                });
+              },
+            ),
+            SizedBox(height: 14.h),
             _SilentModeCard(
               settings: _settings,
               isAndroid: isAndroid,
@@ -118,23 +137,44 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
     await _nativeService.openNotificationPolicySettings();
   }
 
+  void _reloadPrayerTimesIfNeeded(bool calculationChanged) {
+    if (!calculationChanged) {
+      return;
+    }
+    context
+        .read<PrayerTimeBloc>()
+        .add(const PrayerTimeCalculationSettingsChanged());
+  }
+
   Future<void> _save() async {
     setState(() {
       _isSaving = true;
     });
 
     try {
+      // إعدادات الحساب مستقلة عن صلاحية عدم الإزعاج، فتُحفظ أولًا حتى لا
+      // تضيع لو تعذّر تفعيل وضع الصامت.
+      final calculationChanged =
+          _calculationSettings != _savedCalculationSettings;
+      if (calculationChanged) {
+        await _calculationSettingsStore.save(_calculationSettings);
+        _savedCalculationSettings = _calculationSettings;
+      }
+
       await _refreshNativeState();
       final canEnable = !_settings.enabled ||
           !Platform.isAndroid ||
           _hasNotificationPolicyAccess;
 
-      if (!canEnable && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('امنح صلاحية عدم الإزعاج أولًا حتى تعمل الميزة.'),
-          ),
-        );
+      if (!canEnable) {
+        if (mounted) {
+          _reloadPrayerTimesIfNeeded(calculationChanged);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('امنح صلاحية عدم الإزعاج أولًا حتى تعمل الميزة.'),
+            ),
+          );
+        }
         return;
       }
 
@@ -142,12 +182,19 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
       if (!mounted) {
         return;
       }
-      final state = context.read<PrayerTimeBloc>().state;
-      await _nativeService.applySchedule(
-        settings: _settings,
-        prayers: state.prayerList,
-        selectedLocation: state.selectedLocation,
-      );
+
+      if (calculationChanged) {
+        // إعادة احتساب المواقيت تتكفّل أيضًا بإعادة جدولة وضع الصامت،
+        // لذلك لا نستخدم قائمة المواقيت القديمة هنا.
+        _reloadPrayerTimesIfNeeded(true);
+      } else {
+        final state = context.read<PrayerTimeBloc>().state;
+        await _nativeService.applySchedule(
+          settings: _settings,
+          prayers: state.prayerList,
+          selectedLocation: state.selectedLocation,
+        );
+      }
 
       if (!mounted) {
         return;

@@ -1,9 +1,12 @@
 import 'package:adhan/adhan.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
+import 'package:quran_app/features/prayer_time/data/model/prayer_calculation_settings.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_settings_store.dart';
 
 /// المصدر الموحّد لإعدادات حساب مواقيت الصلاة في التطبيق.
 ///
-/// يعتمد التطبيق تقويم **أم القرى** (جامعة أم القرى - مكة المكرمة):
-/// زاوية الفجر 18.5 درجة، والعشاء بعد المغرب بـ 90 دقيقة.
+/// الافتراضي هو تقويم **أم القرى**، ويستطيع المستخدم تغيير طريقة الحساب
+/// والمذهب وبقية الخيارات من شاشة إعدادات أوقات الصلاة.
 ///
 /// يجب استخدام [PrayerCalculationParams.build] في كل مكان يتم فيه إنشاء
 /// [PrayerTimes] حتى تبقى المواقيت متطابقة بين الشاشة والإشعارات
@@ -11,16 +14,76 @@ import 'package:adhan/adhan.dart';
 class PrayerCalculationParams {
   const PrayerCalculationParams._();
 
-  /// طريقة الحساب المعتمدة في التطبيق.
-  static const CalculationMethod method = CalculationMethod.umm_al_qura;
+  static final PrayerCalculationSettingsStore _store =
+      PrayerCalculationSettingsStore();
 
-  /// المذهب المعتمد لحساب وقت العصر.
-  static const Madhab madhab = Madhab.shafi;
+  /// الإعدادات المحفوظة حاليًا.
+  static PrayerCalculationSettings load() => _store.load();
 
-  /// تُنشئ نسخة جديدة من معاملات الحساب.
+  /// تُنشئ معاملات الحساب من إعدادات المستخدم.
   ///
-  /// ملاحظة: [CalculationParameters] كائن قابل للتعديل، لذلك نُرجع نسخة
-  /// جديدة في كل استدعاء بدلاً من مشاركة نسخة واحدة.
-  static CalculationParameters build() =>
-      method.getParameters()..madhab = madhab;
+  /// [date] هو اليوم المراد حسابه، ويُستخدم لمعرفة ما إذا كان في رمضان
+  /// لتطبيق تعديل العشاء. [settings] اختياري لتفادي إعادة القراءة من
+  /// التخزين عند الحساب لعدة أيام أو مواقع في نفس العملية.
+  static CalculationParameters build({
+    DateTime? date,
+    PrayerCalculationSettings? settings,
+  }) {
+    final resolved = settings ?? load();
+    final params = resolved.method.getParameters()..madhab = resolved.madhab;
+
+    if (resolved.isCustomMethod) {
+      _applyCustomAngles(params, resolved);
+    }
+
+    // نستخدم القاعدة الفعلية لا المختارة: "زاوية الشفق" تُسقط الحساب مع
+    // طريقة تحسب العشاء بفاصل زمني بلا زاوية مثل أم القرى.
+    final highLatitudeRule = resolved.effectiveHighLatitudeOption.rule;
+    if (highLatitudeRule != null) {
+      params.highLatitudeRule = highLatitudeRule;
+    }
+
+    final manual = resolved.adjustments.clamped();
+    params.adjustments = PrayerAdjustments(
+      fajr: manual.fajr,
+      sunrise: manual.sunrise,
+      dhuhr: manual.dhuhr,
+      asr: manual.asr,
+      maghrib: manual.maghrib,
+      isha: manual.isha + _ramadanIshaExtraMinutes(resolved, date),
+    );
+
+    return params;
+  }
+
+  /// يطبّق زوايا المستخدم على الإعداد المخصص.
+  ///
+  /// تبقى [CalculationParameters.ishaAngle] معرّفة دائمًا حتى في وضع
+  /// الفاصل الزمني، لأن قاعدة "زاوية الشفق" تعتمد عليها.
+  static void _applyCustomAngles(
+    CalculationParameters params,
+    PrayerCalculationSettings settings,
+  ) {
+    final custom = settings.customAngles.clamped();
+    params
+      ..fajrAngle = custom.fajrAngle
+      ..ishaAngle = custom.ishaAngle
+      ..maghribAngle = custom.maghribAngle
+      ..ishaInterval =
+          custom.ishaMode == PrayerIshaMode.interval ? custom.ishaInterval : 0;
+  }
+
+  /// تقويم أم القرى يضيف ٣٠ دقيقة على العشاء طوال شهر رمضان،
+  /// فيصير الفاصل بعد المغرب ١٢٠ دقيقة بدل ٩٠.
+  static int _ramadanIshaExtraMinutes(
+    PrayerCalculationSettings settings,
+    DateTime? date,
+  ) {
+    if (!settings.ramadanIshaAdjustmentEnabled ||
+        !settings.supportsRamadanIshaAdjustment) {
+      return 0;
+    }
+    final isRamadan = HijriDate.fromDate(date ?? DateTime.now()).isRamadan;
+    return isRamadan ? PrayerCalculationSettings.ramadanIshaExtraMinutes : 0;
+  }
 }

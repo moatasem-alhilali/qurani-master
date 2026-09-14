@@ -77,7 +77,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
   @override
   Widget build(BuildContext context) {
     final locationNow = _resolveLocationNowFromOffset(widget.utcOffsetMinutes);
-    final hijri = _HijriDate.fromDate(locationNow).formatArabic();
+    final hijri = HijriDate.fromDate(locationNow).formatArabic();
     final locationLabel = widget.locationLabel ?? 'الموقع الحالي';
 
     final resolvedPrayers = _resolvePrayerStateFromList(
