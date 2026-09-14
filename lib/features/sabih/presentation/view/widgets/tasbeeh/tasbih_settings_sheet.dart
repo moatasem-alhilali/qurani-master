@@ -10,6 +10,7 @@ import 'package:quran_app/features/sabih/data/model/tasbih_bead_material.dart';
 import 'package:quran_app/features/sabih/data/service/tasbih_preferences.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_counter.dart';
+import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbih_bead_painter.dart';
 
 /// يفتح إعدادات المسبحة كورقة منبثقة فوق الشاشة.
 ///
@@ -273,6 +274,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                             _BeadSwatch(
                               material: material,
                               selected: material == selected,
+                              skin: skin,
                               onTap: () {
                                 HapticFeedback.selectionClick();
                                 _prefs.setMaterial(material);
@@ -336,54 +338,62 @@ class _SectionLabel extends StatelessWidget {
 }
 
 /// عيّنة خامة: خرزة واحدة بنفس تدرّج السبحة، فما تراه هنا هو ما ستحصل عليه.
+/// عيّنة خامة. ترسم بنفس [paintTasbihBead] التي ترسم خرزات السبحة، فما
+/// يختاره المستخدم هنا هو ما يراه على الخيط بالضبط — لا نسخة مبسّطة منه.
 class _BeadSwatch extends StatelessWidget {
   const _BeadSwatch({
     required this.material,
     required this.selected,
     required this.onTap,
+    required this.skin,
   });
 
   final TasbihBeadMaterial material;
   final bool selected;
   final VoidCallback onTap;
+  final AppSkin skin;
 
   @override
   Widget build(BuildContext context) {
-    final palette = material.palette;
-
     return Semantics(
       button: true,
       selected: selected,
       label: material.label,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(999.r),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: EdgeInsets.all(selected ? 3.w : 0),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: selected ? AppColors.gold : Colors.transparent,
-              width: 1.6,
-            ),
-          ),
-          child: Container(
-            width: 46.w,
-            height: 46.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                center: const Alignment(-0.42, -0.5),
-                radius: 1.05,
-                colors: [
-                  Color.lerp(palette.highlight, Colors.white, 0.28)!,
-                  palette.base,
-                  palette.shadow,
-                ],
-                stops: const [0, 0.55, 1],
+        borderRadius: BorderRadius.circular(12.r),
+        child: SizedBox(
+          width: 64.w,
+          child: Column(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: selected ? AppColors.gold : Colors.transparent,
+                    width: 1.6,
+                  ),
+                ),
+                child: TasbihBeadPreview(material: material, size: 46.w),
               ),
-            ),
+              SizedBox(height: 5.h),
+              Text(
+                material.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 8.5.sp,
+                  height: 1.1,
+                  color: selected
+                      ? AppColors.gold
+                      : skin.inkSoft.withValues(alpha: 0.75),
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ),

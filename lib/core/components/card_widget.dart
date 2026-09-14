@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 
 class CardWidget extends StatelessWidget {
   const CardWidget({
@@ -31,7 +31,10 @@ class CardWidget extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: borderRadius ?? BorderRadius.circular(12.r),
-        color: color ?? context.surfaceColor,
+        // كانت الخلفية الافتراضية `context.surfaceColor` من اللوحة القديمة
+        // (بنّي فاتح في الفاتح، ‎#222326‎ في الداكن)، فبقي كل ما يستعمل هذا
+        // الغلاف جزيرةً بالثيم القديم داخل شاشات أُعيد تصميمها.
+        color: color ?? AppSkin.of(context).raised,
         border: border,
       ),
       child: child,

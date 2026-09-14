@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/widgets/app_scaffold/header_background.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
@@ -26,7 +27,7 @@ class MainSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       toolbarHeight: toolbarHeight,
       expandedHeight: expandedHeight ?? 90.h,
-      backgroundColor: context.surfaceColor,
+      backgroundColor: AppSkin.of(context).ground,
       leading: leading,
       bottom: bottom,
       actions: const [],

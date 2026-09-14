@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/features/sabih/data/model/tasbih_bead_material.dart';
+import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbih_bead_painter.dart';
 
 /// سلسلة سبحة تتحرّك خرزةً واحدة مع كل تسبيحة.
 ///
@@ -204,110 +205,8 @@ class _BeadChainPainter extends CustomPainter {
 
       final radius = baseRadius * (0.74 + 0.26 * depth) * (0.58 + 0.42 * entry);
 
-      _paintBead(canvas, center, radius, entry);
+      paintTasbihBead(canvas, center, radius, palette, opacity: entry);
     }
-  }
-
-  void _paintBead(Canvas canvas, Offset center, double radius, double opacity) {
-    final rect = Rect.fromCircle(center: center, radius: radius);
-
-    // ظلّ خفيف تحت الخرزة يفصلها عن الخيط.
-    canvas.drawCircle(
-      center.translate(0, radius * 0.16),
-      radius * 0.92,
-      Paint()
-        ..color = palette.shadow.withValues(alpha: 0.34 * opacity)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
-    );
-
-    // جسم الخرزة: الضوء من أعلى اليسار كما في أي جسم كروي مضاء.
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..shader = RadialGradient(
-          center: const Alignment(-0.42, -0.5),
-          radius: 1.05,
-          colors: [
-            Color.lerp(palette.highlight, Colors.white, 0.28)!
-                .withValues(alpha: opacity),
-            palette.base.withValues(alpha: opacity),
-            palette.shadow.withValues(alpha: opacity),
-          ],
-          stops: const [0, 0.55, 1],
-        ).createShader(rect),
-    );
-
-    _paintGrain(canvas, center, radius, opacity);
-
-    // حافة داكنة ترسم حدّ الكرة، ثم بريق صغير.
-    canvas
-      ..drawCircle(
-        center,
-        radius,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = radius * 0.07
-          ..color = palette.shadow.withValues(alpha: 0.5 * opacity),
-      )
-      ..drawCircle(
-        center.translate(-radius * 0.34, -radius * 0.38),
-        radius * 0.2,
-        Paint()
-          ..color = Colors.white.withValues(alpha: 0.35 * opacity)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2),
-      );
-  }
-
-  /// عروق الخشب خطوط طولية، وعروق الحجر دوّامة ناعمة — الفرق بينهما هو ما
-  /// يجعل الخامات تُقرأ مختلفة لا ملوّنة فقط.
-  void _paintGrain(Canvas canvas, Offset center, double radius, double o) {
-    canvas
-      ..save()
-      ..clipPath(
-          Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
-
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    switch (palette.grain) {
-      case TasbihBeadGrain.wood:
-        paint
-          ..strokeWidth = radius * 0.08
-          ..color = palette.shadow.withValues(alpha: 0.26 * o);
-        for (var i = -1; i <= 1; i++) {
-          final dx = center.dx + radius * 0.34 * i;
-          canvas.drawArc(
-            Rect.fromCenter(
-              center: Offset(dx, center.dy),
-              width: radius * 0.5,
-              height: radius * 2.1,
-            ),
-            -math.pi / 2,
-            math.pi,
-            false,
-            paint,
-          );
-        }
-      case TasbihBeadGrain.stone:
-        paint
-          ..strokeWidth = radius * 0.1
-          ..color = palette.highlight.withValues(alpha: 0.2 * o);
-        canvas.drawArc(
-          Rect.fromCenter(
-            center: center.translate(radius * 0.18, radius * 0.1),
-            width: radius * 1.5,
-            height: radius * 0.9,
-          ),
-          math.pi * 0.15,
-          math.pi * 0.9,
-          false,
-          paint,
-        );
-    }
-
-    canvas.restore();
   }
 
   @override

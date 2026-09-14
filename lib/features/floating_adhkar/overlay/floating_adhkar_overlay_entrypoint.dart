@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/floating_adhkar/data/database/floating_adhkar_database_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
@@ -142,11 +143,12 @@ ThemeData _buildOverlayTheme(Brightness brightness) {
   ).copyWith(
     primary: AppColors.gold,
     secondary: AppColors.blue,
-    surface: isDark ? AppColors.darkSurface : AppColors.surface,
-    onSurface: isDark ? AppColors.darkOnSurface : AppColors.onSurface,
-    onSurfaceVariant:
-        isDark ? AppColors.darkSecondaryText : AppColors.secondaryText,
-    outline: isDark ? AppColors.darkOutline : AppColors.outline,
+    // النافذة العائمة تعمل في محرّك منفصل بلا `BuildContext` للتطبيق، لكنها
+    // تأخذ ألوانها من لوحة [AppSkin] الثابتة نفسها حتى لا تبدو غريبة عنه.
+    surface: isDark ? AppSkin.dark.raised : AppSkin.light.raised,
+    onSurface: isDark ? AppSkin.dark.ink : AppSkin.light.ink,
+    onSurfaceVariant: isDark ? AppSkin.dark.inkSoft : AppSkin.light.inkSoft,
+    outline: isDark ? AppSkin.dark.hairline : AppSkin.light.hairline,
     shadow: isDark ? AppColors.darkShadow : AppColors.shadow,
   );
   final base = ThemeData(

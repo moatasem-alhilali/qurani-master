@@ -199,15 +199,16 @@ class _SkyPalette {
   /// الغيوم تنساب في كل سماء إلا العميقة الليلية.
   bool get hasClouds => mood != _SkyMood.night;
 
-  /// الطيور تظهر في وضح النهار وأوّل الفجر فقط.
-  bool get hasBirds => mood == _SkyMood.day || mood == _SkyMood.dawn;
+  /// الطيور في وضح النهار وبعد الشروق. لا طيور في سماء مظلمة: لونها لون
+  /// الأفق نفسه فلا تُرى، فتصير ضجيجًا لا حياة.
+  bool get hasBirds =>
+      mood == _SkyMood.day || (mood == _SkyMood.dawn && !hasStars);
 
-  /// نوافذ المسجد تُضاء حين يغيب الضوء.
-  bool get windowsLit =>
-      mood == _SkyMood.dusk || mood == _SkyMood.night || mood == _SkyMood.dawn;
+  /// نوافذ المسجد تُضاء حين يغيب الضوء: الفجر والمغرب والعشاء.
+  bool get windowsLit => hasStars || mood == _SkyMood.dusk;
 
-  /// في الليل هلال لا قرص.
-  bool get isCrescent => mood == _SkyMood.night || mood == _SkyMood.dawn;
+  /// حيث تظهر النجوم يظهر الهلال — قرص الشمس لا يجتمع مع سماء مرصّعة.
+  bool get isCrescent => hasStars;
 
   /// أشعة خفيفة تنبعث من الشمس في وضح النهار.
   bool get hasRays => mood == _SkyMood.day;
@@ -482,14 +483,27 @@ class _HorizonPainter extends CustomPainter {
         Rect.fromLTWH(left - w * 0.022, neck, domeW + w * 0.044, ground - neck),
       )
       ..moveTo(left, neck)
-      ..cubicTo(left - domeW * 0.12, neck - h * 0.2, left + domeW * 0.1, apex,
-          mid, apex)
-      ..cubicTo(right - domeW * 0.1, apex, right + domeW * 0.12, neck - h * 0.2,
-          right, neck)
+      ..cubicTo(
+        left - domeW * 0.12,
+        neck - h * 0.2,
+        left + domeW * 0.1,
+        apex,
+        mid,
+        apex,
+      )
+      ..cubicTo(
+        right - domeW * 0.1,
+        apex,
+        right + domeW * 0.12,
+        neck - h * 0.2,
+        right,
+        neck,
+      )
       ..close()
       // صارٍ رفيع وهلال صغير فوق القبّة.
       ..addRect(
-          Rect.fromLTWH(mid - w * 0.004, apex - h * 0.13, w * 0.008, h * 0.13))
+        Rect.fromLTWH(mid - w * 0.004, apex - h * 0.13, w * 0.008, h * 0.13),
+      )
       ..addOval(
         Rect.fromCircle(
           center: Offset(mid, apex - h * 0.155),
@@ -677,7 +691,7 @@ class _SkyLifePainter extends CustomPainter {
     for (final cloud in _clouds) {
       // تخرج الغيمة من حافة وتدخل من الأخرى بلا قفزة: المدى أعرض من
       // الشاشة بمقدار عرض الغيمة نفسها.
-      final span = 1.34;
+      const span = 1.34;
       final x = (((progress * cloud.speed + cloud.phase) % 1) * span - 0.17) *
           size.width;
       final y = cloud.y * size.height;
@@ -745,7 +759,11 @@ class _SkyLifePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..color = palette.horizon.withValues(alpha: 0.32 * fade);
 
-    const offsets = [Offset(0, 0), Offset(-0.07, 0.05), Offset(-0.13, -0.03)];
+    const offsets = [
+      Offset.zero,
+      Offset(-0.07, 0.05),
+      Offset(-0.13, -0.03),
+    ];
 
     for (var i = 0; i < offsets.length; i++) {
       final x = (t * 1.2 - 0.1 + offsets[i].dx) * size.width;
@@ -802,17 +820,16 @@ class _SkyLifePainter extends CustomPainter {
     final breathe = 0.5 + 0.5 * math.sin(progress * math.pi * 2);
     final length = size.width * (0.46 + 0.06 * breathe);
 
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    // دوران بطيء جدًّا: دورة كاملة كل عشر دورات مؤقّت.
-    canvas.rotate(progress * math.pi * 0.2);
+    canvas
+      ..save()
+      ..translate(center.dx, center.dy)
+      // دوران بطيء جدًّا: دورة كاملة كل عشر دورات مؤقّت.
+      ..rotate(progress * math.pi * 0.2);
 
     for (var i = 0; i < 7; i++) {
       final angle = i * math.pi * 2 / 7;
       final paint = Paint()
         ..shader = LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
           colors: [
             palette.orbGlow.withValues(alpha: 0.12 * breathe),
             palette.orbGlow.withValues(alpha: 0),
@@ -897,4 +914,55 @@ class _SkyLifeLayerState extends State<_SkyLifeLayer>
       ),
     );
   }
+}
+
+/// هلال مرسوم لا قرص: دائرتان، والثانية تقتطع من الأولى.
+///
+/// جهة الاقتطاع تتبع موضع القرص في السماء، فيبقى الجزء المضيء ناحية الأفق
+/// كما يحدث فعلًا — الهلال المقلوب يُقرأ خطأً في لمحة.
+class _CrescentPainter extends CustomPainter {
+  const _CrescentPainter({required this.palette});
+
+  final _SkyPalette palette;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = size.width / 2;
+    final center = Offset(r, r);
+    final bite = palette.orbAlignment.x >= 0 ? -1.0 : 1.0;
+
+    final crescent = Path.combine(
+      PathOperation.difference,
+      Path()..addOval(Rect.fromCircle(center: center, radius: r * 0.84)),
+      Path()
+        ..addOval(
+          Rect.fromCircle(
+            center: center.translate(bite * r * 0.46, -r * 0.12),
+            radius: r * 0.8,
+          ),
+        ),
+    );
+
+    canvas
+      // هالة تحت الهلال تفصله عن السماء بلا حدّ حادّ.
+      ..drawPath(
+        crescent,
+        Paint()
+          ..color = palette.orbGlow.withValues(alpha: 0.55)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, r * 0.34),
+      )
+      ..drawPath(
+        crescent,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [palette.orbCore, palette.orbGlow],
+          ).createShader(Rect.fromCircle(center: center, radius: r)),
+      );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CrescentPainter oldDelegate) =>
+      oldDelegate.palette != palette;
 }

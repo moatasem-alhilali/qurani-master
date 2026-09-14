@@ -1,5 +1,3 @@
-import 'dart:ui' show FontFeature;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -261,7 +259,7 @@ class TasbeehDhikrStrip extends StatelessWidget {
 
 /// يحوّل السحب الأفقي فوق السبحة إلى تسبيحات.
 ///
-/// كل [_stepDistance] بكسل من الحركة تساوي خرزة، فالسحب البطيء يعدّ واحدة
+/// كل مسافة الخطوة بكسل من الحركة تساوي خرزة، فالسحب البطيء يعدّ واحدة
 /// والسحب السريع يعدّ عدّة — كما تنزلق الخرزات تحت الإبهام فعلًا.
 class _BeadDragCounter extends StatefulWidget {
   const _BeadDragCounter({required this.onStep, required this.child});

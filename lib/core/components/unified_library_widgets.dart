@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/components/card_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+
+/// لبنات المكتبات المشتركة (السور، حصن المسلم، الرقية، أسماء الله، أذكار
+/// بعد الصلاة) — أُعيد بناؤها على [AppSkin].
+///
+/// كانت كلها بطاقات بظلال وألوان من اللوحة القديمة (`context.primaryColor`
+/// و`context.onSurfaceColor`)، فبقيت جزرًا بالثيم القديم داخل شاشات أُعيد
+/// تصميمها. الآن: صفوف نحيلة بفواصل شعرة على أرضية التطبيق.
 
 class UnifiedLibraryMeta {
   const UnifiedLibraryMeta({
@@ -32,6 +39,7 @@ class UnifiedLibrarySection {
   bool get hasContent => content.trim().isNotEmpty;
 }
 
+/// صفّ عنصر في قائمة مكتبة.
 class UnifiedLibraryCard extends StatelessWidget {
   const UnifiedLibraryCard({
     required this.title,
@@ -40,9 +48,10 @@ class UnifiedLibraryCard extends StatelessWidget {
     this.leadingLabel,
     this.badges = const [],
     this.onTap,
-    this.trailingIcon = Icons.arrow_forward_ios_rounded,
+    this.trailingIcon,
     this.maxSubtitleLines = 2,
-    this.margin = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    this.margin = EdgeInsets.zero,
+    this.showDivider = true,
   });
 
   final String title;
@@ -53,83 +62,95 @@ class UnifiedLibraryCard extends StatelessWidget {
   final IconData? trailingIcon;
   final int maxSubtitleLines;
   final EdgeInsetsGeometry margin;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final visibleBadges = badges.where((badge) => badge.hasValue).toList();
     final hasSubtitle = subtitle != null && subtitle!.trim().isNotEmpty;
     final hasLeadingLabel =
         leadingLabel != null && leadingLabel!.trim().isNotEmpty;
 
-    final card = CardWidget(
+    final row = Container(
       margin: margin,
+      decoration: showDivider
+          ? BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            )
+          : null,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (hasLeadingLabel) ...[
             _LeadingNumber(label: leadingLabel!),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
           ],
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   title,
                   textDirection: TextDirection.rtl,
-                  style: context.titleMedium?.copyWith(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
                     fontWeight: FontWeight.w700,
+                    height: 1.25,
                   ),
                 ),
-                if (hasSubtitle) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    subtitle!,
-                    maxLines: maxSubtitleLines,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: TextDirection.rtl,
-                    style: context.bodyMedium?.copyWith(
-                      color: context.onSurfaceColor.withValues(alpha: 0.78),
-                      height: 1.45,
+                if (hasSubtitle)
+                  Padding(
+                    padding: EdgeInsets.only(top: 2.h),
+                    child: Text(
+                      subtitle!,
+                      maxLines: maxSubtitleLines,
+                      overflow: TextOverflow.ellipsis,
+                      textDirection: TextDirection.rtl,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.45,
+                      ),
                     ),
                   ),
-                ],
-                if (visibleBadges.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: visibleBadges
-                        .map((badge) => _LibraryBadge(meta: badge))
-                        .toList(),
+                if (visibleBadges.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: 7.h),
+                    child: Wrap(
+                      spacing: 6.w,
+                      runSpacing: 6.h,
+                      children: visibleBadges
+                          .map((badge) => _LibraryBadge(meta: badge))
+                          .toList(),
+                    ),
                   ),
-                ],
               ],
             ),
           ),
           if (trailingIcon != null) ...[
-            const SizedBox(width: 8),
-            Icon(
-              trailingIcon,
-              size: 16,
-              color: context.onSurfaceColor.withValues(alpha: 0.55),
-            ),
+            SizedBox(width: 8.w),
+            Icon(trailingIcon, size: 15.sp, color: skin.accent),
           ],
         ],
       ),
     );
 
     if (onTap == null) {
-      return card;
+      return row;
     }
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: card,
-    );
+    return InkWell(onTap: onTap, child: row);
   }
 }
 
+/// صفّ نتيجة بحث — أنحل من صفّ القائمة لأن القائمة المنسدلة أضيق.
 class UnifiedLibrarySearchSuggestion extends StatelessWidget {
   const UnifiedLibrarySearchSuggestion({
     required this.title,
@@ -144,32 +165,68 @@ class UnifiedLibrarySearchSuggestion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      dense: true,
-      title: Text(
-        title,
-        textDirection: TextDirection.rtl,
-        style: context.titleSmall,
+    final skin = AppSkin.of(context);
+    final hasSubtitle = subtitle != null && subtitle!.trim().isNotEmpty;
+    final hasTrailing = trailing != null && trailing!.trim().isNotEmpty;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: skin.hairline)),
       ),
-      subtitle: subtitle == null || subtitle!.trim().isEmpty
-          ? null
-          : Text(
-              subtitle!,
-              textDirection: TextDirection.rtl,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.bodySmall,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  textDirection: TextDirection.rtl,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.25,
+                  ),
+                ),
+                if (hasSubtitle)
+                  Text(
+                    subtitle!,
+                    textDirection: TextDirection.rtl,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.inkSoft.withValues(alpha: 0.78),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                    ),
+                  ),
+              ],
             ),
-      trailing: trailing == null || trailing!.trim().isEmpty
-          ? null
-          : Text(
+          ),
+          if (hasTrailing) ...[
+            SizedBox(width: 8.w),
+            Text(
               trailing!,
-              style: context.bodySmall,
+              style: TextStyle(
+                color: skin.accent,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
+          ],
+        ],
+      ),
     );
   }
 }
 
+/// ورقة التفاصيل: عنوان وأفعال، ثم أقسام يفصلها خطّ شعرة — بلا بطاقات.
 class UnifiedLibraryDetailSheet extends StatelessWidget {
   const UnifiedLibraryDetailSheet({
     required this.title,
@@ -194,89 +251,86 @@ class UnifiedLibraryDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final visibleBadges = badges.where((badge) => badge.hasValue).toList();
     final hasSubtitle = subtitle != null && subtitle!.trim().isNotEmpty;
-    final visibleSections = sections.where((section) => section.hasContent);
+    final visibleSections =
+        sections.where((section) => section.hasContent).toList();
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
+    return ColoredBox(
+      color: skin.ground,
       child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CardWidget(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              title,
-                              textDirection: TextDirection.rtl,
-                              style: context.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            if (hasSubtitle) ...[
-                              const SizedBox(height: 6),
-                              Text(
-                                subtitle!,
-                                textDirection: TextDirection.rtl,
-                                style: context.bodyMedium?.copyWith(
-                                  color: context.onSurfaceColor.withValues(
-                                    alpha: 0.74,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
+                      Text(
+                        title,
+                        textDirection: TextDirection.rtl,
+                        style: TextStyle(
+                          color: skin.ink,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w800,
+                          height: 1.25,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Row(
-                        children: [
-                          IconShareWidget(
-                            text: shareText,
-                            subject: shareSubject,
+                      if (hasSubtitle)
+                        Padding(
+                          padding: EdgeInsets.only(top: 2.h),
+                          child: Text(
+                            subtitle!,
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(
+                              color: skin.inkSoft.withValues(alpha: 0.78),
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              height: 1.4,
+                            ),
                           ),
-                          CopyIconWidget(text: copyText),
-                        ],
-                      ),
+                        ),
                     ],
                   ),
-                  if (visibleBadges.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: visibleBadges
-                          .map((badge) => _LibraryBadge(meta: badge))
-                          .toList(),
-                    ),
-                  ],
-                ],
-              ),
+                ),
+                SizedBox(width: 8.w),
+                IconShareWidget(text: shareText, subject: shareSubject),
+                CopyIconWidget(text: copyText),
+              ],
             ),
-            ...visibleSections.map(
-              (section) => _DetailSectionCard(
-                section: section,
-                emptyText: emptyText,
+            if (visibleBadges.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 9.h),
+                child: Wrap(
+                  spacing: 6.w,
+                  runSpacing: 6.h,
+                  children: visibleBadges
+                      .map((badge) => _LibraryBadge(meta: badge))
+                      .toList(),
+                ),
               ),
-            ),
-            if (sections.isEmpty || visibleSections.isEmpty)
-              _DetailSectionCard(
+            if (visibleSections.isEmpty)
+              _DetailSection(
                 section: UnifiedLibrarySection(
                   title: 'المحتوى',
                   content: emptyText,
                   selectable: false,
                 ),
                 emptyText: emptyText,
+              )
+            else
+              ...visibleSections.map(
+                (section) => _DetailSection(
+                  section: section,
+                  emptyText: emptyText,
+                ),
               ),
-            const SizedBox(height: 12),
           ],
         ),
       ),
@@ -284,6 +338,7 @@ class UnifiedLibraryDetailSheet extends StatelessWidget {
   }
 }
 
+/// رقم العنصر — مربّع صغير بلون الأيقونات، لا دائرة كبيرة.
 class _LeadingNumber extends StatelessWidget {
   const _LeadingNumber({required this.label});
 
@@ -291,13 +346,21 @@ class _LeadingNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 18,
-      backgroundColor: context.primaryColor.withValues(alpha: 0.14),
+    final skin = AppSkin.of(context);
+
+    return Container(
+      width: 28.w,
+      height: 28.w,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: skin.iconChip,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
       child: Text(
         label,
-        style: context.labelLarge?.copyWith(
-          color: context.primaryColor,
+        style: TextStyle(
+          color: skin.accent,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -312,23 +375,23 @@ class _LibraryBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        meta.isPrimary ? context.primaryColor : context.onSurfaceColor;
-    final background = meta.isPrimary
-        ? context.primaryColor.withValues(alpha: 0.12)
-        : context.onSurfaceColor.withValues(alpha: 0.08);
+    final skin = AppSkin.of(context);
+    final color = meta.isPrimary ? skin.accent : skin.inkSoft;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(12),
+        color: meta.isPrimary
+            ? skin.iconChip
+            : skin.inkSoft.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(999.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
         child: Text(
           '${meta.label}: ${meta.value}',
-          style: context.labelMedium?.copyWith(
+          style: TextStyle(
             color: color,
+            fontSize: 9.sp,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -337,44 +400,55 @@ class _LibraryBadge extends StatelessWidget {
   }
 }
 
-class _DetailSectionCard extends StatelessWidget {
-  const _DetailSectionCard({
-    required this.section,
-    required this.emptyText,
-  });
+class _DetailSection extends StatelessWidget {
+  const _DetailSection({required this.section, required this.emptyText});
 
   final UnifiedLibrarySection section;
   final String emptyText;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final content =
         section.content.trim().isEmpty ? emptyText : section.content;
+    final style = TextStyle(
+      color: skin.ink.withValues(alpha: 0.9),
+      fontSize: 12.sp,
+      fontWeight: FontWeight.w500,
+      height: 1.75,
+    );
 
-    return CardWidget(
-      margin: const EdgeInsets.only(top: 8),
+    return Padding(
+      padding: EdgeInsets.only(top: 14.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            section.title,
-            textDirection: TextDirection.rtl,
-            style: context.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          section.selectable
-              ? SelectableText(
-                  content,
-                  textDirection: TextDirection.rtl,
-                  style: context.bodyMedium?.copyWith(height: 1.65),
-                )
-              : Text(
-                  content,
-                  textDirection: TextDirection.rtl,
-                  style: context.bodyMedium?.copyWith(height: 1.65),
+          Row(
+            children: [
+              Text(
+                section.title,
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.8),
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
                 ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Divider(height: 1, thickness: 1, color: skin.hairline),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          if (section.selectable)
+            SelectableText(
+              content,
+              textDirection: TextDirection.rtl,
+              style: style,
+            )
+          else
+            Text(content, textDirection: TextDirection.rtl, style: style),
         ],
       ),
     );

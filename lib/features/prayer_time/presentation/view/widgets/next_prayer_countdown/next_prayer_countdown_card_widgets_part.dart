@@ -55,12 +55,9 @@ class _SkyHeroPanel extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              if (palette.hasStars)
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: _StarFieldPainter(color: palette.ink),
-                  ),
-                ),
+              // طبقة الحياة: نجوم تتلألأ، غيوم تنساب، طيور تعبر، شهاب يمرّ،
+              // وأشعة تتنفّس — كلّها بمؤقّت واحد معزول عن بقيّة الشاشة.
+              Positioned.fill(child: _SkyLifeLayer(palette: palette)),
               Positioned.fill(
                 child: Align(
                   alignment: palette.orbAlignment,
@@ -170,6 +167,9 @@ class _SkyHeroPanel extends StatelessWidget {
                               color: skin.isDark
                                   ? skin.ground
                                   : palette.horizon.withValues(alpha: 0.9),
+                              // نوافذ المسجد تُضاء حين تغيب الشمس فقط.
+                              windowGlow:
+                                  palette.windowsLit ? palette.orbGlow : null,
                             ),
                           ),
                         ),
@@ -198,19 +198,34 @@ class _SkyOrb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Container(
+      child: SizedBox(
         width: 190.w,
         height: 190.w,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [
-              palette.orbCore.withValues(alpha: 0.32),
-              palette.orbGlow.withValues(alpha: 0.13),
-              palette.orbGlow.withValues(alpha: 0),
-            ],
-            stops: const [0, 0.42, 1],
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    palette.orbCore.withValues(alpha: 0.32),
+                    palette.orbGlow.withValues(alpha: 0.13),
+                    palette.orbGlow.withValues(alpha: 0),
+                  ],
+                  stops: const [0, 0.42, 1],
+                ),
+              ),
+              child: const SizedBox.expand(),
+            ),
+            // في سماء النجوم هلال، لا وهج وحده.
+            if (palette.isCrescent)
+              SizedBox(
+                width: 46.w,
+                height: 46.w,
+                child: CustomPaint(painter: _CrescentPainter(palette: palette)),
+              ),
+          ],
         ),
       ),
     );
