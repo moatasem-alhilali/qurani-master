@@ -437,20 +437,60 @@ class _SunPathPainter extends CustomPainter {
 /// ظلّ الأفق: أرض وقبّة ومئذنتان ومبانٍ جانبية — يعطي المشهد أرضًا بدل
 /// تدرّج معلّق في الفراغ.
 class _HorizonPainter extends CustomPainter {
-  const _HorizonPainter({required this.color, this.windowGlow});
+  const _HorizonPainter({
+    required this.groundColor,
+    required this.silhouetteColor,
+    this.windowGlow,
+  });
 
-  final Color color;
+  /// لون الأرض — وهو لون الصفحة نفسها في الثيمين، فينتهي المشهد فيها دون
+  /// حدٍّ ظاهر بدل أن يبدو شريطًا ملصقًا فوقها.
+  final Color groundColor;
+
+  /// لون ظلّ المسجد والمباني.
+  final Color silhouetteColor;
 
   /// لون ضوء النوافذ. حين يكون null فالمسجد ظلّ صامت — نهارًا.
   final Color? windowGlow;
+
+  /// الأرض تصعد إلى السماء تلاشيًا لا بخطٍّ مستقيم.
+  ///
+  /// كان المستطيل المصمت يقطع المشهد بخطّ أفقيّ حادّ عبر العرض كلّه، وهو
+  /// أوّل ما تلحظه العين لأن الخطّ المستقيم لا وجود له في سماء حقيقية. المنحنى
+  /// هنا شبه ناعم عمدًا: يبقى شفّافًا حتى ما فوق أسطح المباني فلا تفقد حوافّها
+  /// وضوحها، ثم يشتدّ سريعًا ليبلغ التمام عند خطّ الأرض بالضبط.
+  void _paintHaze(Canvas canvas, double w, double h) {
+    final rect = Rect.fromLTWH(0, h * 0.32, w, h * 0.68);
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            groundColor.withValues(alpha: 0),
+            groundColor.withValues(alpha: 0.05),
+            groundColor.withValues(alpha: 0.18),
+            groundColor.withValues(alpha: 0.40),
+            groundColor.withValues(alpha: 0.72),
+            groundColor,
+            groundColor,
+          ],
+          stops: const [0, 0.30, 0.52, 0.68, 0.78, 0.824, 1],
+        ).createShader(rect),
+    );
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
     final ground = h * 0.88;
-    final paint = Paint()..color = color;
-    final path = Path()..addRect(Rect.fromLTWH(0, ground, w, h - ground));
+
+    _paintHaze(canvas, w, h);
+
+    final paint = Paint()..color = silhouetteColor;
+    final path = Path();
 
     /// مئذنة: قاعدة، بدن نحيل، قبّة صغيرة تعلوه، ثم صارٍ رفيع.
     ///
@@ -596,7 +636,9 @@ class _HorizonPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _HorizonPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.windowGlow != windowGlow;
+      oldDelegate.groundColor != groundColor ||
+      oldDelegate.silhouetteColor != silhouetteColor ||
+      oldDelegate.windowGlow != windowGlow;
 }
 
 /// نجوم خفيفة تظهر في الفجر والعشاء فقط. المواضع ثابتة حتى لا ترقص النجوم

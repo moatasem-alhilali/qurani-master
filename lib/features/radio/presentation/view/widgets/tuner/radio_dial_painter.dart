@@ -40,8 +40,7 @@ class RadioDialPainter extends CustomPainter {
     final direction = isRtl ? -1.0 : 1.0;
     final paint = Paint()..strokeCap = StrokeCap.round;
 
-    double xFor(double index) =>
-        centerX + direction * (index - position) * gap;
+    double xFor(double index) => centerX + direction * (index - position) * gap;
 
     // كم علامة تُرى على الجانبين؟ ما خرج عن العرض لا يُرسم أصلًا.
     final reach = (size.width / gap / 2).ceil() + 1;

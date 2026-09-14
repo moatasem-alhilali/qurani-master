@@ -55,25 +55,6 @@ String _buildCountdownLine(String prayerName, Duration remaining) {
   return '$prayerName بعد $hours س $minutes د';
 }
 
-HugeIconData _iconForPrayer(Prayer prayer) {
-  switch (prayer) {
-    case Prayer.none:
-      return AppIcons.clock;
-    case Prayer.fajr:
-      return AppIcons.moon;
-    case Prayer.sunrise:
-      return AppIcons.sunrise;
-    case Prayer.dhuhr:
-      return AppIcons.sun;
-    case Prayer.asr:
-      return AppIcons.sun;
-    case Prayer.maghrib:
-      return AppIcons.sunset;
-    case Prayer.isha:
-      return AppIcons.moon;
-  }
-}
-
 _ResolvedPrayerState _resolvePrayerStateFromList({
   required List<PrayerInfoModel> prayerTimes,
   required PrayerInfoModel? currentPrayerInfo,

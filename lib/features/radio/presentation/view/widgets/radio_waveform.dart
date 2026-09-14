@@ -32,7 +32,7 @@ class RadioWaveform extends StatefulWidget {
 }
 
 class _RadioWaveformState extends State<RadioWaveform>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _clock = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1400),

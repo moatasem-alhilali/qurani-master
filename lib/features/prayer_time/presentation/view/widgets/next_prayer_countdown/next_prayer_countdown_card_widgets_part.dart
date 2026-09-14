@@ -161,12 +161,13 @@ class _SkyHeroPanel extends StatelessWidget {
                           child: CustomPaint(
                             size: Size.infinite,
                             painter: _HorizonPainter(
-                              // في الوضع الداكن يأخذ الأفق لون الأرضية
-                              // نفسها، فيبدو المسجد محفورًا في الليل
-                              // ولا يبقى خطّ قطع بين المشهد والمحتوى.
-                              color: skin.isDark
+                              // الأرض تأخذ لون الصفحة في الثيمين معًا، فلا
+                              // يبقى حدّ بين المشهد والمحتوى تحته — لا في
+                              // الليل ولا في النهار.
+                              groundColor: skin.ground,
+                              silhouetteColor: skin.isDark
                                   ? skin.ground
-                                  : palette.horizon.withValues(alpha: 0.9),
+                                  : palette.horizon.withValues(alpha: 0.92),
                               // نوافذ المسجد تُضاء حين تغيب الشمس فقط.
                               windowGlow: palette.lamp,
                             ),
