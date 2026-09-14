@@ -208,7 +208,8 @@ class _BeadChainPainter extends CustomPainter {
   void _paintGrain(Canvas canvas, Offset center, double radius, double o) {
     canvas
       ..save()
-      ..clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
+      ..clipPath(
+          Path()..addOval(Rect.fromCircle(center: center, radius: radius)));
 
     final paint = Paint()
       ..style = PaintingStyle.stroke

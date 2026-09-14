@@ -64,8 +64,7 @@ class SabihNotice extends StatelessWidget {
               onTap: onAction,
               borderRadius: BorderRadius.circular(999.r),
               child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
                 child: Text(
                   actionLabel!,
                   style: TextStyle(

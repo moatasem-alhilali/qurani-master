@@ -151,9 +151,8 @@ class _TabSwitcher extends StatelessWidget {
                                   ? skin.ink
                                   : skin.inkSoft.withValues(alpha: 0.6),
                               fontSize: 11.sp,
-                              fontWeight: selected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
+                              fontWeight:
+                                  selected ? FontWeight.w700 : FontWeight.w500,
                             ),
                           ),
                         ),

@@ -348,7 +348,8 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             SizedBox(height: 14.h),
             Center(
               child: QiblahCompass(
-                qiblahDegrees: _qiblaDirection,
+                headingDegrees: _currentDirection,
+                qiblahOffsetDegrees: _qiblaDirection,
                 isAligned: _isAligned,
                 size: compassSize,
               ),

@@ -86,9 +86,8 @@ class DhikrStatsCard extends StatelessWidget {
           Text(
             '$count',
             style: TextStyle(
-              color: hasCount
-                  ? skin.accent
-                  : skin.inkSoft.withValues(alpha: 0.45),
+              color:
+                  hasCount ? skin.accent : skin.inkSoft.withValues(alpha: 0.45),
               fontSize: 12.5.sp,
               fontWeight: FontWeight.w600,
               fontFeatures: const [FontFeature.tabularFigures()],

@@ -217,7 +217,6 @@ class _FilterTabs extends StatelessWidget {
           labelColor: skin.ink,
           unselectedLabelColor: skin.inkSoft.withValues(alpha: 0.62),
           indicatorColor: AppColors.gold,
-          indicatorWeight: 2,
           indicatorSize: TabBarIndicatorSize.label,
           dividerColor: Colors.transparent,
           overlayColor: WidgetStateProperty.all(Colors.transparent),

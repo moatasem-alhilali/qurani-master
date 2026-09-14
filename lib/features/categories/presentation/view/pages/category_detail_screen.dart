@@ -1,313 +1,311 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
-import 'package:quran_app/core/components/base_progress_button.dart';
-import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/url_launcher_service.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/custom_video_player.dart';
 import 'package:quran_app/features/books/presentation/view/pages/read_book.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
+import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 
+/// تفاصيل مادة واحدة: وصفها ثم مرفقاتها صفوفًا نحيلة.
 class CategoryDetailScreen extends StatelessWidget {
-  CategoryDetailScreen({required this.category, super.key});
+  const CategoryDetailScreen({required this.category, super.key});
+
   final CategoryDetailModel category;
-  TextEditingController search = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocProvider(
       create: (context) => CategoryBloc(
         repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-      )..add(GetCategoryDetailEvent(category.apiUrl!)),
-      child: BlocBuilder<CategoryBloc, CategoryState>(
-        buildWhen: (previous, current) =>
-            previous.categoryDetail != current.categoryDetail,
-        builder: (context, state) {
-          return AppScaffoldWidget(
-            // isScroll: false,
-            // showBackground: false,
-            onRefresh: () async {
-              context
-                  .read<CategoryBloc>()
-                  .add(GetCategoryDetailEvent(category.apiUrl!));
-            },
-            slivers: [
-              SliverToBoxAdapter(
-                child: BlocBuilder<CategoryBloc, CategoryState>(
+      )..add(GetCategoryDetailEvent(category.apiUrl ?? '')),
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: BlocBuilder<CategoryBloc, CategoryState>(
+          buildWhen: (previous, current) =>
+              previous.categoryDetail != current.categoryDetail,
+          builder: (context, state) {
+            return AppScaffoldWidget(
+              title: state.categoryDetail?.title ?? category.title ?? '',
+              onRefresh: () async {
+                context
+                    .read<CategoryBloc>()
+                    .add(GetCategoryDetailEvent(category.apiUrl ?? ''));
+              },
+              slivers: [
+                SliverToBoxAdapter(
+                  child: ColoredBox(
+                    color: skin.ground,
+                    child: _DetailHeader(detail: state.categoryDetail),
+                  ),
+                ),
+                BlocBuilder<CategoryBloc, CategoryState>(
                   builder: (context, state) {
-                    return CardWidget(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child:
-                                state.categoryDetail?.title.toString().autoSize(
-                                      context,
-                                      fontSize: 20,
-                                      maxLines: 2,
-                                      minFontSize: 10,
-                                    ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: state.categoryDetail?.description
-                                .toString()
-                                .autoSize(
-                                  context,
-                                  color: Colors.grey,
-                                  maxLines: 20,
-                                  fontSize: 14,
-                                ),
-                          ),
-                        ],
-                      ),
+                    return state.quranBooksState.whenSliver<dynamic>(
+                      onLoading: const CategoryThinLoader(),
+                      onSuccess: () {
+                        final items =
+                            state.categoryDetail?.attachments ?? const [];
+
+                        if (items.isEmpty) {
+                          return const SliverToBoxAdapter(
+                            child: CategoryNotice(
+                              message: 'لا توجد مرفقات لهذه المادة.',
+                            ),
+                          );
+                        }
+
+                        return SliverList.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            return ColoredBox(
+                              color: skin.ground,
+                              child: _AttachmentRow(
+                                data: items[index],
+                                isLast: index == items.length - 1,
+                              ),
+                            );
+                          },
+                        );
+                      },
                     );
                   },
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Divider(
-                      color: context.primaryColor,
-                    ),
-                  ],
-                ),
-              ),
-              BlocBuilder<CategoryBloc, CategoryState>(
-                builder: (context, state) {
-                  return state.quranBooksState.whenSliver<dynamic>(
-                    onSuccess: () => SliverList.builder(
-                      itemCount: state.categoryDetail?.attachments?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final data = state.categoryDetail?.attachments?[index];
-                        return _ItemDownloaded(data: data!);
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-//
+class _DetailHeader extends StatelessWidget {
+  const _DetailHeader({required this.detail});
 
-class _ItemDownloaded extends StatelessWidget {
-  _ItemDownloaded({
-    required this.data,
-    super.key,
-  });
-
-  Attachment data;
+  final CategoryDetailModel? detail;
 
   @override
   Widget build(BuildContext context) {
-    return CardWidget(
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Column(
-        children: [
-          if (data.description != null)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: data.description
-                      .toString()
-                      .autoSize(context, maxLines: 5),
-                ),
-                const SizedBox(height: 10),
-                const Divider(),
-              ],
+    final skin = AppSkin.of(context);
+    final description = (detail?.description ?? '').trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (description.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 12.h),
+            child: Text(
+              description,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.85),
+                fontSize: 10.5.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.65,
+              ),
             ),
-          _BtnDownload(data: data),
-        ],
-      ),
+          ),
+        skin.divider(),
+        const HomeSectionHeader(title: 'المرفقات'),
+      ],
     );
   }
 }
 
-class _BtnDownload extends StatefulWidget {
-  const _BtnDownload({
-    required this.data,
-  });
+/// صفّ مرفق: نوعه في مربّع صغير، ثم وصفه وحجمه، ثم فعلاه.
+class _AttachmentRow extends StatefulWidget {
+  const _AttachmentRow({required this.data, required this.isLast});
 
   final Attachment data;
+  final bool isLast;
 
   @override
-  State<_BtnDownload> createState() => _BtnDownloadState();
+  State<_AttachmentRow> createState() => _AttachmentRowState();
 }
 
-class _BtnDownloadState extends State<_BtnDownload> {
-  DownloadService downloadService = DownloadService();
+class _AttachmentRowState extends State<_AttachmentRow> {
+  final DownloadService _downloadService = DownloadService();
+
   @override
   void initState() {
     super.initState();
-    downloadService.init();
+    _downloadService.init();
   }
 
   @override
   void dispose() {
-    downloadService.remove();
+    _downloadService.remove();
     super.dispose();
+  }
+
+  bool get _allowDownload {
+    final type = widget.data.extensionType;
+    return type != 'YOUTUBE' && type != 'LINK';
+  }
+
+  bool get _allowOpen {
+    final type = widget.data.extensionType;
+    return type == 'PDF' ||
+        type == 'MP4' ||
+        type == 'LINK' ||
+        type == 'YOUTUBE';
+  }
+
+  String get _openLabel {
+    switch (widget.data.extensionType) {
+      case 'MP4':
+      case 'YOUTUBE':
+        return 'مشاهدة';
+      case 'PDF':
+        return 'قراءة';
+      case 'LINK':
+        return 'فتح';
+      default:
+        return '';
+    }
+  }
+
+  HugeIconData get _typeIcon {
+    switch (widget.data.extensionType) {
+      case 'MP4':
+      case 'YOUTUBE':
+        return AppIcons.play;
+      case 'PDF':
+        return AppIcons.menuBook;
+      case 'LINK':
+        return AppIcons.link;
+      default:
+        return AppIcons.download;
+    }
+  }
+
+  Future<void> _open() async {
+    final url = widget.data.url;
+    if (url == null || url.isEmpty) return;
+
+    switch (widget.data.extensionType) {
+      case 'PDF':
+        context.push(ReadBook(url: url));
+      case 'MP4':
+        await context.showBottomSheet(child: CustomVideoPlayer(url: url));
+      case 'YOUTUBE':
+      case 'LINK':
+        await UrlLauncher.fLaunch(url);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Row(
+    final skin = AppSkin.of(context);
+    final description = (widget.data.description ?? '').trim();
+    final size = (widget.data.size ?? '').trim();
+    final type = widget.data.extensionType ?? '';
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      decoration: widget.isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
             children: [
-              if (allowDownload())
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      final url = widget.data.url!;
-                      final description = widget.data.description!;
-                      downloadService.download(
-                        url,
-                        description,
-                      );
-                    },
-                    child: Container(
-                      height: context.getHight(6),
-                      decoration: BoxDecoration(
-                        color: context.primaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: double.infinity,
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: context.primaryColor,
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(8),
-                                bottomRight: Radius.circular(8),
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.download,
-                              // color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: widget.data.size.toString().autoSize(
-                                  context,
-                                  minFontSize: 10,
-                                  color: Colors.white,
-                                ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              widget.data.extensionType ?? '',
-                              style: titleMedium(context).copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
+              Container(
+                width: 28.w,
+                height: 28.w,
+                decoration: BoxDecoration(
+                  color: skin.iconChip,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Center(
+                  child: AppIcon(_typeIcon, color: skin.accent, size: 15.sp),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      description.isEmpty ? type : description,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
                       ),
                     ),
-                  ),
+                    Text(
+                      [
+                        if (type.isNotEmpty) type,
+                        if (size.isNotEmpty) size,
+                        if (widget.data.order != null)
+                          'الترتيب ${widget.data.order}',
+                      ].join(' · '),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
                 ),
-              const SizedBox(width: 5),
-              if (allowOpen())
-                Expanded(
-                  child: MyProgressButton(
-                    borderRadius: 8,
-                    text: titleType(),
-                    height: 40.h,
-                    defaultColor: context.primaryColor,
-                    // isBorderColor: true,
-                    onPressed: () async {
-                      final res = widget.data.extensionType;
-
-                      //pdf
-                      if (res == 'PDF') {
-                        context.push(
-                          ReadBook(url: widget.data.url!),
-                        );
-                        return;
-                      }
-                      //video
-                      if (res == 'MP4') {
-                        final url = widget.data.url;
-                        context.showBottomSheet(
-                          child: CustomVideoPlayer(url: url!),
-                        );
-                        return;
-                      }
-
-                      //YOUTUBE
-                      if (res == 'YOUTUBE') {
-                        final url = widget.data.url;
-                        await UrlLauncher.fLaunch(url!);
-                        return;
-                      }
-
-                      //App
-                      if (res == 'LINK') {
-                        final url = widget.data.url;
-                        await UrlLauncher.fLaunch(url!);
-                        return;
-                      }
-                    },
-                    // border: Border.all(color: DarkColors.third),
-                  ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Row(
+            children: [
+              if (_allowOpen)
+                CategoryActionButton(
+                  label: _openLabel,
+                  icon: _typeIcon,
+                  onTap: _open,
+                ),
+              if (_allowOpen && _allowDownload) SizedBox(width: 6.w),
+              if (_allowDownload)
+                CategoryActionButton(
+                  label: 'تحميل',
+                  icon: AppIcons.download,
+                  isPrimary: false,
+                  onTap: () {
+                    final url = widget.data.url;
+                    if (url == null || url.isEmpty) return;
+                    HapticFeedback.selectionClick();
+                    _downloadService.download(
+                      url,
+                      description.isEmpty ? 'مرفق' : description,
+                    );
+                  },
                 ),
             ],
           ),
-        ),
-        if (widget.data.order != null) const SizedBox(width: 5),
-        if (widget.data.order != null)
-          CircleAvatar(
-            radius: 15,
-            child: FittedBox(child: Text(widget.data.order.toString())),
-          ),
-      ],
+        ],
+      ),
     );
-  }
-
-  bool allowDownload() {
-    final data = widget.data.extensionType;
-    if (data != 'YOUTUBE' && data != 'LINK') return true;
-    return false;
-  }
-
-  bool allowOpen() {
-    final data = widget.data.extensionType;
-    if (data == 'PDF' || data == 'MP4' || data == 'LINK' || data == 'YOUTUBE') {
-      return true;
-    }
-    return false;
-  }
-
-  String titleType() {
-    final data = widget.data.extensionType;
-    if (data == 'MP4') return 'مشاهده';
-    if (data == 'PDF') return 'قراءه';
-    if (data == 'LINK') return 'تحميل';
-    if (data == 'YOUTUBE') return 'مشاهده';
-    return '';
   }
 }

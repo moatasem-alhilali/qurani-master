@@ -235,7 +235,7 @@ class DownloadRepo {
     try {
       final success = await FlutterDownloader.open(taskId: taskId);
       logger.i('File opened: $taskId, success: $success');
-      return success ?? false;
+      return success;
     } catch (e) {
       logger.e('Error opening file: $e');
       return false;

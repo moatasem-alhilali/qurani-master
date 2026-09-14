@@ -7,19 +7,23 @@ import 'package:quran_app/core/util/theme_colors.dart';
 
 /// بوصلة القبلة: بطلة الشاشة.
 ///
-/// القرص يدور مع الجهاز، وسهم القبلة الذهبي يصعد حتى يلتقي بالعلامة الثابتة
-/// أعلى الإطار. عند المحاذاة يضيء الإطار ذهبًا وتنبض الكعبة في المركز، حتى
-/// يُحسّ الاتجاه الصحيح لا يُقرأ فقط.
+/// قرص الجهات يدور مع الجهاز فيبقى «شمال» على الشمال الحقيقي، وسهم القبلة
+/// الذهبي يتحرّك حتى يلتقي بالعلامة الثابتة أعلى الإطار. عند المحاذاة تضيء
+/// الحلقة ذهبًا وتنبض الكعبة في المركز — ليُحسّ الاتجاه الصحيح لا يُقرأ فقط.
 class QiblahCompass extends StatefulWidget {
   const QiblahCompass({
-    required this.qiblahDegrees,
+    required this.headingDegrees,
+    required this.qiblahOffsetDegrees,
     required this.isAligned,
     required this.size,
     super.key,
   });
 
-  /// زاوية القبلة كما يعطيها المستشعر: صفر يعني أن الجهاز متوجّه للقبلة.
-  final double qiblahDegrees;
+  /// اتجاه الجهاز بالدرجات من الشمال.
+  final double headingDegrees;
+
+  /// فرق القبلة عن اتجاه الجهاز: صفر يعني أنك متوجّه إليها.
+  final double qiblahOffsetDegrees;
 
   final bool isAligned;
   final double size;
@@ -45,13 +49,14 @@ class _QiblahCompassState extends State<QiblahCompass>
     duration: const Duration(milliseconds: 1400),
   );
 
-  double _from = 0;
-  double _to = 0;
+  late final _SmoothAngle _dial;
+  late final _SmoothAngle _needle;
 
   @override
   void initState() {
     super.initState();
-    _from = _to = _radians(widget.qiblahDegrees);
+    _dial = _SmoothAngle(_radians(-widget.headingDegrees));
+    _needle = _SmoothAngle(_radians(widget.qiblahOffsetDegrees));
     _spin.value = 1;
     if (widget.isAligned) {
       _pulse.repeat(reverse: true);
@@ -62,18 +67,16 @@ class _QiblahCompassState extends State<QiblahCompass>
   void didUpdateWidget(covariant QiblahCompass oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.qiblahDegrees != widget.qiblahDegrees) {
+    final headingChanged = oldWidget.headingDegrees != widget.headingDegrees;
+    final offsetChanged =
+        oldWidget.qiblahOffsetDegrees != widget.qiblahOffsetDegrees;
+
+    if (headingChanged || offsetChanged) {
       // ننطلق من الزاوية المعروضة الآن لا من هدف الحركة السابقة، وإلا قفز
       // القرص كلّما وصلت قراءة جديدة قبل انتهاء الحركة.
-      final start = _displayAngle;
-      final target = _radians(widget.qiblahDegrees);
-
-      // أقصر طريق بين الزاويتين، وإلا دار القرص دورة كاملة عند تجاوز الشمال.
-      var delta = (target - start) % (2 * math.pi);
-      if (delta > math.pi) delta -= 2 * math.pi;
-
-      _from = start;
-      _to = start + delta;
+      final t = _spinCurve.value;
+      _dial.retarget(_radians(-widget.headingDegrees), t);
+      _needle.retarget(_radians(widget.qiblahOffsetDegrees), t);
       _spin.forward(from: 0);
     }
 
@@ -96,10 +99,7 @@ class _QiblahCompassState extends State<QiblahCompass>
     super.dispose();
   }
 
-  /// القرص يدور عكس زاوية القبلة، فيصعد السهم إلى الأعلى عند المحاذاة.
-  double _radians(double degrees) => -degrees * math.pi / 180;
-
-  double get _displayAngle => _from + (_to - _from) * _spinCurve.value;
+  double _radians(double degrees) => degrees * math.pi / 180;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +111,7 @@ class _QiblahCompassState extends State<QiblahCompass>
       child: AnimatedBuilder(
         animation: Listenable.merge([_spinCurve, _pulse]),
         builder: (context, _) {
-          final angle = _displayAngle;
+          final t = _spinCurve.value;
           final pulse =
               widget.isAligned ? Curves.easeInOut.transform(_pulse.value) : 0.0;
 
@@ -128,18 +128,25 @@ class _QiblahCompassState extends State<QiblahCompass>
                   pulse: pulse,
                 ),
               ),
-              // القرص الدوّار: التدريج والجهات وسهم القبلة.
+              // قرص الجهات: يدور عكس اتجاه الجهاز فيبقى الشمال شمالًا.
               Transform.rotate(
-                angle: angle,
+                angle: _dial.value(t),
                 child: CustomPaint(
                   size: Size.square(widget.size),
                   painter: _CompassDialPainter(
                     tick: skin.hairline,
                     strongTick: skin.inkSoft.withValues(alpha: 0.55),
                     label: skin.inkSoft.withValues(alpha: 0.78),
-                    isAligned: widget.isAligned,
                     labelSize: 9.sp,
                   ),
+                ),
+              ),
+              // سهم القبلة: يعلو الأعلى تمامًا عند المحاذاة.
+              Transform.rotate(
+                angle: _needle.value(t),
+                child: CustomPaint(
+                  size: Size.square(widget.size),
+                  painter: _QiblahNeedlePainter(isAligned: widget.isAligned),
                 ),
               ),
               // الكعبة في المركز: تنبض عند المحاذاة.
@@ -152,6 +159,27 @@ class _QiblahCompassState extends State<QiblahCompass>
         },
       ),
     );
+  }
+}
+
+/// زاوية تتحرّك بنعومة وتأخذ دائمًا أقصر طريق بين قراءتين.
+class _SmoothAngle {
+  _SmoothAngle(double initial)
+      : _from = initial,
+        _to = initial;
+
+  double _from;
+  double _to;
+
+  double value(double t) => _from + (_to - _from) * t;
+
+  void retarget(double target, double t) {
+    final current = value(t);
+    var delta = (target - current) % (2 * math.pi);
+    if (delta > math.pi) delta -= 2 * math.pi;
+
+    _from = current;
+    _to = current + delta;
   }
 }
 
@@ -228,16 +256,16 @@ class _CompassFramePainter extends CustomPainter {
         ..color = isAligned ? AppColors.gold : ring,
     );
 
-    // علامة ثابتة أعلى الإطار: حين يلتقي بها السهم فأنت متوجّه للقبلة.
-    final markerColor = isAligned ? AppColors.gold : accent;
+    // علامة ثابتة أعلى الإطار: حين يصلها السهم فأنت متوجّه للقبلة.
     final top = center.dy - radius;
-    final path = Path()
-      ..moveTo(center.dx, top + 13)
-      ..lineTo(center.dx - 5.5, top + 2)
-      ..lineTo(center.dx + 5.5, top + 2)
-      ..close();
-
-    canvas.drawPath(path, Paint()..color = markerColor);
+    canvas.drawPath(
+      Path()
+        ..moveTo(center.dx, top + 13)
+        ..lineTo(center.dx - 5.5, top + 2)
+        ..lineTo(center.dx + 5.5, top + 2)
+        ..close(),
+      Paint()..color = isAligned ? AppColors.gold : accent,
+    );
   }
 
   @override
@@ -248,20 +276,18 @@ class _CompassFramePainter extends CustomPainter {
       oldDelegate.accent != accent;
 }
 
-/// القرص الدوّار: تدريج الدرجات، أسماء الجهات، وسهم القبلة.
+/// قرص الجهات: تدريج الدرجات وأسماء الجهات الأربع.
 class _CompassDialPainter extends CustomPainter {
   const _CompassDialPainter({
     required this.tick,
     required this.strongTick,
     required this.label,
-    required this.isAligned,
     required this.labelSize,
   });
 
   final Color tick;
   final Color strongTick;
   final Color label;
-  final bool isAligned;
   final double labelSize;
 
   static const _directions = <int, String>{
@@ -279,10 +305,10 @@ class _CompassDialPainter extends CustomPainter {
     for (var degree = 0; degree < 360; degree += 15) {
       final isCardinal = degree % 90 == 0;
       final isMid = degree % 45 == 0;
-      final length = isCardinal ? 11.0 : (isMid ? 7.0 : 4.0);
+      final length = isCardinal ? 10.0 : (isMid ? 7.0 : 4.0);
       // صفر الدرجات في أعلى الدائرة.
       final angle = (degree - 90) * math.pi / 180;
-      final outer = radius - 6;
+      final outer = radius - 5;
       final inner = outer - length;
 
       canvas.drawLine(
@@ -309,7 +335,7 @@ class _CompassDialPainter extends CustomPainter {
         textDirection: TextDirection.rtl,
       )..layout();
 
-      final labelRadius = inner - 12;
+      final labelRadius = radius - 27;
       final offset = center +
           Offset(math.cos(angle) * labelRadius, math.sin(angle) * labelRadius);
       painter.paint(
@@ -317,13 +343,29 @@ class _CompassDialPainter extends CustomPainter {
         offset - Offset(painter.width / 2, painter.height / 2),
       );
     }
-
-    _paintNeedle(canvas, center, radius);
   }
 
-  void _paintNeedle(Canvas canvas, Offset center, double radius) {
-    final tip = center.dy - radius + 18;
-    final tail = center.dy + radius * 0.24;
+  @override
+  bool shouldRepaint(covariant _CompassDialPainter oldDelegate) =>
+      oldDelegate.tick != tick ||
+      oldDelegate.strongTick != strongTick ||
+      oldDelegate.label != label ||
+      oldDelegate.labelSize != labelSize;
+}
+
+/// سهم القبلة: خطّ ذهبي ينتهي برأس مثلّث، ويتوهّج عند المحاذاة.
+class _QiblahNeedlePainter extends CustomPainter {
+  const _QiblahNeedlePainter({required this.isAligned});
+
+  final bool isAligned;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 1.5;
+    // يقف الرأس قبل شريط أسماء الجهات فلا يركبها.
+    final tip = center.dy - radius + 46;
+    final tail = center.dy + radius * 0.26;
 
     if (isAligned) {
       canvas.drawLine(
@@ -340,7 +382,7 @@ class _CompassDialPainter extends CustomPainter {
     canvas
       ..drawLine(
         Offset(center.dx, tail),
-        Offset(center.dx, tip + 12),
+        Offset(center.dx, tip + 13),
         Paint()
           ..strokeWidth = 3
           ..strokeCap = StrokeCap.round
@@ -357,9 +399,6 @@ class _CompassDialPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CompassDialPainter oldDelegate) =>
-      oldDelegate.isAligned != isAligned ||
-      oldDelegate.tick != tick ||
-      oldDelegate.label != label ||
-      oldDelegate.labelSize != labelSize;
+  bool shouldRepaint(covariant _QiblahNeedlePainter oldDelegate) =>
+      oldDelegate.isAligned != isAligned;
 }

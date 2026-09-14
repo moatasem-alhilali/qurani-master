@@ -1,124 +1,152 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/my_text_form_field.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/categories/data/model/category_section_model.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
+import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/sheet_audio.dart';
 
-class CategoryDetailOptionScreen extends StatelessWidget {
-  CategoryDetailOptionScreen({required this.category, super.key});
+/// عناصر تصنيف واحد: بحث ثم صفوف نحيلة، كل صفّ كتاب أو مادة صوتية.
+class CategoryDetailOptionScreen extends StatefulWidget {
+  const CategoryDetailOptionScreen({required this.category, super.key});
+
   final CategorySectionModel category;
-  TextEditingController search = TextEditingController();
+
+  @override
+  State<CategoryDetailOptionScreen> createState() =>
+      _CategoryDetailOptionScreenState();
+}
+
+class _CategoryDetailOptionScreenState
+    extends State<CategoryDetailOptionScreen> {
+  final TextEditingController _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  List<CategoryDetailModel> _filter(List<CategoryDetailModel> data) {
+    final query = _search.text.trim().toLowerCase();
+    if (query.isEmpty) return data;
+    return data
+        .where((item) => (item.title ?? '').toLowerCase().contains(query))
+        .toList();
+  }
+
+  String _typeLabel(String? type) {
+    switch (type) {
+      case 'audios':
+        return 'مادة صوتية';
+      case 'books':
+        return 'كتاب';
+      case 'articles':
+        return 'مقال';
+      case 'videos':
+        return 'مرئي';
+      default:
+        return type ?? '';
+    }
+  }
+
+  HugeIconData _typeIcon(String? type) {
+    switch (type) {
+      case 'audios':
+        return AppIcons.sound;
+      case 'videos':
+        return AppIcons.play;
+      case 'articles':
+        return AppIcons.noteEdit;
+      default:
+        return AppIcons.menuBook;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocProvider(
       create: (context) => CategoryBloc(
         repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-      )..add(GetCategoryOptionEvent(category.apiUrl)),
-      child: AppScaffoldWidget(
-        title: category.title,
-        slivers: [
-          BlocBuilder<CategoryBloc, CategoryState>(
-            builder: (context, state) {
-              return SliverToBoxAdapter(
-                child: MyTextFormFieldWidget(
-                  controller: search,
-                  hintText: 'بحث',
-                  suffixIcon: search.text.isNotEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            search.clear();
-                          },
-                          icon: const Icon(
-                            Icons.clear,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                        )
-                      : null,
-                  onChanged: (text) {
-                    _onSearchTextChanged(state.categoriesOptionsSearch);
-                    context.read<CategoryBloc>().add(SetStateEvent());
-                  },
+      )..add(GetCategoryOptionEvent(widget.category.apiUrl)),
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: AppScaffoldWidget(
+          title: widget.category.title ?? 'التصنيف',
+          slivers: [
+            SliverToBoxAdapter(
+              child: ColoredBox(
+                color: skin.ground,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CategorySearchField(
+                      controller: _search,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    skin.divider(),
+                  ],
                 ),
-              );
-            },
-          ),
-          BlocBuilder<CategoryBloc, CategoryState>(
-            builder: (context, state) {
-              return state.quranBooksState.whenSliver<dynamic>(
-                onSuccess: () {
-                  final allData = state.categoriesOptionsSearch;
+              ),
+            ),
+            BlocBuilder<CategoryBloc, CategoryState>(
+              builder: (context, state) {
+                return state.quranBooksState.whenSliver<dynamic>(
+                  onLoading: const CategoryThinLoader(),
+                  onSuccess: () {
+                    final items = _filter(state.categoriesOptionsSearch);
 
-                  final randomShapeType = CardShapeType
-                      .values[Random().nextInt(CardShapeType.values.length)];
-
-                  return SliverList.builder(
-                    itemCount: _onSearchTextChanged(allData).length,
-                    itemBuilder: (context, index) {
-                      final data = _onSearchTextChanged(allData)[index];
-                      return FeatureCardIconWidget(
-                        title: data.title.toString(),
-                        icon: Text(data.type.toString()),
-                        height: 100.h,
-                        width: double.infinity,
-                        shapeType: randomShapeType,
-                        onTap: () {
-                          if (data.type == 'audios') {
-                            context.showBottomSheetUIHeader(
-                              child: SheetAudios(
-                                baseData: data,
-                              ),
-                              title: data.title.toString(),
-                              subtitle: data.description.toString(),
-                            );
-                            return;
-                          } else {
-                            context.push(
-                              CategoryDetailScreen(
-                                category: data,
-                              ),
-                            );
-                          }
-                        },
+                    if (items.isEmpty) {
+                      return const SliverToBoxAdapter(
+                        child: CategoryNotice(
+                          message: 'لا توجد نتائج لهذا البحث.',
+                        ),
                       );
-                      //  _Item(allData);
-                    },
-                  );
-                },
-              );
-            },
-          ),
-        ],
+                    }
+
+                    return SliverList.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final data = items[index];
+                        return ColoredBox(
+                          color: skin.ground,
+                          child: CategoryRow(
+                            title: data.title ?? '',
+                            subtitle: _typeLabel(data.type),
+                            icon: _typeIcon(data.type),
+                            isLast: index == items.length - 1,
+                            onTap: () => _open(context, data),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  List<CategoryDetailModel> _onSearchTextChanged(
-    List<CategoryDetailModel> data,
-  ) {
-    final res = data
-        .where(
-          (data) => data.title
-              .toString()
-              .toLowerCase()
-              .contains(search.text.toLowerCase()),
-        )
-        .toList();
-    return res;
+  void _open(BuildContext context, CategoryDetailModel data) {
+    if (data.type == 'audios') {
+      showCategoryAudiosSheet(context, baseData: data);
+      return;
+    }
+
+    context.push(CategoryDetailScreen(category: data));
   }
 }
-
-//

@@ -357,7 +357,10 @@ class YoungMuslimVideoRail extends StatelessWidget {
     final posterWidth = compact ? 116.w : 132.w;
 
     return SizedBox(
-      height: compact ? 148.h : 168.h,
+      // الارتفاع مشتقّ من عرض الملصق لا من ارتفاع الشاشة: الصورة وأحجام
+      // الخطّ تتبع نسبة العرض، فيبقى الشريط متّسعًا لسطري العنوان وشريط
+      // التقدّم على الأجهزة العريضة والطويلة معًا.
+      height: posterWidth * (compact ? 1.46 : 1.36),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
