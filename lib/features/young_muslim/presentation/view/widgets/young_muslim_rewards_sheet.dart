@@ -27,7 +27,7 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
 
     context.showFullScreenSheet(
       backgroundColor: skin.ground,
-      appBar: _RewardsSheetHeader(skin: skin),
+      appBar: _RewardsSheetHeader(height: 50.h),
       child: ColoredBox(
         color: skin.ground,
         child: YoungMuslimRewardsSheet(
@@ -200,17 +200,19 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
 /// رأس الورقة: عنوان وزرّ إغلاق بلوحة «طمأنينة» بدل الرأس الرمادي الافتراضي.
 class _RewardsSheetHeader extends StatelessWidget
     implements PreferredSizeWidget {
-  const _RewardsSheetHeader({required this.skin});
+  const _RewardsSheetHeader({required this.height});
 
-  final AppSkin skin;
+  final double height;
 
   @override
-  Size get preferredSize => Size.fromHeight(50.h);
+  Size get preferredSize => Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return Container(
-      height: 50.h,
+      height: height,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         color: skin.ground,

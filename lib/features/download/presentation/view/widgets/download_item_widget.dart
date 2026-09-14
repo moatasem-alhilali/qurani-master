@@ -1,272 +1,335 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/download/data/models/download_task_model.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 
+/// صفّ تنزيل: اسم الملفّ وحالته، وخطّ تقدّم رفيع تحته.
+///
+/// كانت كل مهمّة بطاقة بحشو ١٦ وأزرار ملوّنة (برتقالي وأحمر وأخضر وأزرق)،
+/// فتقرأ الشاشة كلوحة ألوان. صار الصفّ نحيلاً بلون واحد، والحالة تُقرأ من
+/// الأيقونة والنصّ لا من لون الزرّ.
 class DownloadItemWidget extends StatelessWidget {
-  const DownloadItemWidget({required this.task, super.key});
+  const DownloadItemWidget({
+    required this.task,
+    this.isLast = false,
+    super.key,
+  });
+
   final DownloadTaskModel task;
+  final bool isLast;
+
+  bool get _isBusy =>
+      task.status == DownloadTaskStatus.running ||
+      task.status == DownloadTaskStatus.enqueued;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocBuilder<DownloadBloc, DownloadState>(
       builder: (context, state) {
         final progress = state.getProgressForTask(task.taskId);
 
-        return CardWidget(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            task.fileName,
-                            style: context.titleMedium?.copyWith(
-                              color: context.primaryColor,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          padding: EdgeInsets.symmetric(vertical: 10.h),
+          decoration: isLast
+              ? null
+              : BoxDecoration(
+                  border: Border(bottom: BorderSide(color: skin.hairline)),
+                ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  _StatusChip(status: task.status),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          task.fileName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.ink,
+                            fontSize: 12.5.sp,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            task.url,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          task.statusText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.inkSoft.withValues(alpha: 0.78),
+                            fontSize: 9.5.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 1.35,
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (_isBusy)
+                    // النسبة بالأرقام تُقرأ من اليسار، فنثبّت اتجاهها.
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Text(
+                        '$progress%',
+                        style: TextStyle(
+                          color: skin.accent,
+                          fontSize: 12.5.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFeatures: const [ui.FontFeature.tabularFigures()],
+                        ),
                       ),
                     ),
-                    _buildStatusIcon(),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildProgressSection(progress),
-                const SizedBox(height: 12),
-                _buildActionButtons(context),
+                  ..._actions(context, skin),
+                  _MoreMenu(taskId: task.taskId),
+                ],
+              ),
+              if (_isBusy) ...[
+                SizedBox(height: 7.h),
+                _ProgressLine(value: progress / 100),
               ],
-            ),
+            ],
           ),
         );
       },
     );
   }
 
-  Widget _buildStatusIcon() {
-    IconData iconData;
-    Color color;
+  List<Widget> _actions(BuildContext context, AppSkin skin) {
+    void send(DownloadEvent event) {
+      HapticFeedback.selectionClick();
+      context.read<DownloadBloc>().add(event);
+    }
 
     switch (task.status) {
       case DownloadTaskStatus.running:
-        iconData = Icons.download;
-        color = Colors.blue;
+      case DownloadTaskStatus.enqueued:
+        return [
+          _ActionIcon(
+            icon: AppIcons.pause,
+            label: 'إيقاف مؤقّت',
+            onTap: () => send(PauseDownloadEvent(taskId: task.taskId)),
+          ),
+          _ActionIcon(
+            icon: AppIcons.close,
+            label: 'إلغاء',
+            color: AppColors.error,
+            onTap: () => send(CancelDownloadEvent(taskId: task.taskId)),
+          ),
+        ];
       case DownloadTaskStatus.paused:
-        iconData = Icons.pause_circle;
-        color = Colors.orange;
-      case DownloadTaskStatus.complete:
-        iconData = Icons.check_circle;
-        color = Colors.green;
+        return [
+          _ActionIcon(
+            icon: AppIcons.play,
+            label: 'متابعة',
+            onTap: () => send(ResumeDownloadEvent(taskId: task.taskId)),
+          ),
+          _ActionIcon(
+            icon: AppIcons.close,
+            label: 'إلغاء',
+            color: AppColors.error,
+            onTap: () => send(CancelDownloadEvent(taskId: task.taskId)),
+          ),
+        ];
       case DownloadTaskStatus.failed:
-        iconData = Icons.error;
-        color = Colors.red;
+        return [
+          _ActionIcon(
+            icon: AppIcons.refresh,
+            label: 'إعادة المحاولة',
+            onTap: () => send(RetryDownloadEvent(taskId: task.taskId)),
+          ),
+        ];
+      case DownloadTaskStatus.complete:
+        return [
+          _ActionIcon(
+            icon: AppIcons.link,
+            label: 'فتح الملفّ',
+            onTap: () => send(OpenDownloadedFileEvent(taskId: task.taskId)),
+          ),
+        ];
       case DownloadTaskStatus.canceled:
-        iconData = Icons.cancel;
-        color = Colors.grey;
-      case DownloadTaskStatus.enqueued:
-        iconData = Icons.schedule;
-        color = Colors.amber;
-      default:
-        iconData = Icons.help;
-        color = Colors.grey;
+      case DownloadTaskStatus.undefined:
+        return const [];
     }
-
-    return Icon(iconData, color: color, size: 24);
   }
+}
 
-  Widget _buildProgressSection(int progress) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              task.statusText,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-            if (task.status == DownloadTaskStatus.running ||
-                task.status == DownloadTaskStatus.enqueued)
-              Text('$progress%'),
-          ],
+/// مربّع أيقونة يدلّ على حالة المهمّة.
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+
+  final DownloadTaskStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    final icon = switch (status) {
+      DownloadTaskStatus.running => AppIcons.download,
+      DownloadTaskStatus.enqueued => AppIcons.clock,
+      DownloadTaskStatus.paused => AppIcons.pause,
+      DownloadTaskStatus.complete => AppIcons.check,
+      DownloadTaskStatus.failed => AppIcons.error,
+      DownloadTaskStatus.canceled => AppIcons.cancel,
+      DownloadTaskStatus.undefined => AppIcons.download,
+    };
+
+    return Container(
+      width: 28.w,
+      height: 28.w,
+      decoration: BoxDecoration(
+        color: skin.iconChip,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Center(
+        child: AppIcon(
+          icon,
+          color: status == DownloadTaskStatus.failed
+              ? AppColors.error
+              : skin.accent,
+          size: 15.sp,
         ),
-        const SizedBox(height: 8),
-        if (task.status == DownloadTaskStatus.running ||
-            task.status == DownloadTaskStatus.enqueued)
-          LinearProgressIndicator(
-            value: progress / 100.0,
-            backgroundColor: Colors.grey[300],
-            valueColor: AlwaysStoppedAnimation<Color>(
-              task.status == DownloadTaskStatus.running
-                  ? Colors.blue
-                  : Colors.amber,
-            ),
-          ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        ..._getActionButtons(context),
-        const SizedBox(width: 8),
-        _buildDeleteButton(context),
-      ],
+/// زرّ فعل: أيقونة على الأرضية، بلا تعبئة ولا إطار.
+class _ActionIcon extends StatelessWidget {
+  const _ActionIcon({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color,
+  });
+
+  final HugeIconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Semantics(
+      button: true,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10.r),
+        child: Padding(
+          padding: EdgeInsets.all(5.w),
+          child: AppIcon(icon, color: color ?? skin.accent, size: 15.sp),
+        ),
+      ),
     );
   }
+}
 
-  List<Widget> _getActionButtons(BuildContext context) {
-    switch (task.status) {
-      case DownloadTaskStatus.running:
-      case DownloadTaskStatus.enqueued:
-        return [
-          _buildActionButton(
-            context,
-            icon: Icons.pause,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  PauseDownloadEvent(taskId: task.taskId),
-                ),
-            color: Colors.orange,
-          ),
-          const SizedBox(width: 8),
-          _buildActionButton(
-            context,
-            icon: Icons.cancel,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  CancelDownloadEvent(taskId: task.taskId),
-                ),
-            color: Colors.red,
-          ),
-        ];
+/// قائمة الحذف: من القائمة فقط، أو مع الملفّ.
+class _MoreMenu extends StatelessWidget {
+  const _MoreMenu({required this.taskId});
 
-      case DownloadTaskStatus.paused:
-        return [
-          _buildActionButton(
-            context,
-            icon: Icons.play_arrow,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  ResumeDownloadEvent(taskId: task.taskId),
-                ),
-            color: Colors.green,
-          ),
-          const SizedBox(width: 8),
-          _buildActionButton(
-            context,
-            icon: Icons.cancel,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  CancelDownloadEvent(taskId: task.taskId),
-                ),
-            color: Colors.red,
-          ),
-        ];
+  final String taskId;
 
-      case DownloadTaskStatus.failed:
-        return [
-          _buildActionButton(
-            context,
-            icon: Icons.refresh,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  RetryDownloadEvent(taskId: task.taskId),
-                ),
-            color: Colors.blue,
-          ),
-        ];
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
 
-      case DownloadTaskStatus.complete:
-        return [
-          _buildActionButton(
-            context,
-            icon: Icons.open_in_new,
-            onPressed: () => context.read<DownloadBloc>().add(
-                  OpenDownloadedFileEvent(taskId: task.taskId),
-                ),
-            color: Colors.green,
-          ),
-        ];
-
-      default:
-        return [];
-    }
-  }
-
-  Widget _buildActionButton(
-    BuildContext context, {
-    required IconData icon,
-    required VoidCallback onPressed,
-    required Color color,
-  }) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: Icon(icon, color: color),
-      iconSize: 20,
-      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-      padding: const EdgeInsets.all(4),
-    );
-  }
-
-  Widget _buildDeleteButton(BuildContext context) {
     return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      color: skin.raised,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        side: BorderSide(color: skin.hairline),
+      ),
       onSelected: (value) {
-        if (value == 'delete') {
-          context.read<DownloadBloc>().add(
-                RemoveDownloadTaskEvent(taskId: task.taskId),
-              );
-        } else if (value == 'delete_with_file') {
-          context.read<DownloadBloc>().add(
-                RemoveDownloadTaskEvent(taskId: task.taskId, deleteFile: true),
-              );
-        }
+        context.read<DownloadBloc>().add(
+              RemoveDownloadTaskEvent(
+                taskId: taskId,
+                deleteFile: value == 'delete_with_file',
+              ),
+            );
       },
+      icon: AppIcon(
+        AppIcons.more,
+        color: skin.inkSoft.withValues(alpha: 0.7),
+        size: 15.sp,
+      ),
       itemBuilder: (context) => [
-        PopupMenuItem(
+        PopupMenuItem<String>(
           value: 'delete',
-          child: Row(
-            children: [
-              const Icon(Icons.delete_outline, size: 20),
-              const SizedBox(width: 8),
-              Text('حذف من القائمة', style: context.bodyMedium),
-            ],
+          height: 36.h,
+          child: Text(
+            'حذف من القائمة',
+            style: TextStyle(
+              color: skin.ink,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        PopupMenuItem(
+        PopupMenuItem<String>(
           value: 'delete_with_file',
-          child: Row(
-            children: [
-              const Icon(Icons.delete_forever, size: 20),
-              const SizedBox(width: 8),
-              Text('حذف الملف', style: context.bodyMedium),
-            ],
+          height: 36.h,
+          child: Text(
+            'حذف الملفّ',
+            style: TextStyle(
+              color: AppColors.error,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],
-      child: Icon(
-        Icons.more_vert,
-        color: Colors.grey[600],
-        size: 20,
+    );
+  }
+}
+
+/// خطّ التقدّم: شعرة تمتلئ ذهبًا.
+class _ProgressLine extends StatelessWidget {
+  const _ProgressLine({required this.value});
+
+  final double value;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Container(
+      height: 3.h,
+      decoration: BoxDecoration(
+        color: skin.hairline,
+        borderRadius: BorderRadius.circular(999.r),
+      ),
+      child: AnimatedFractionallySizedBox(
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOut,
+        alignment: AlignmentDirectional.centerStart,
+        widthFactor: value.clamp(0.0, 1.0),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.gold,
+            borderRadius: BorderRadius.circular(999.r),
+          ),
+        ),
       ),
     );
   }

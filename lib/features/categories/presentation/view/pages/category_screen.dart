@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
-import 'package:quran_app/core/components/base_header_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_icon_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_screen.dart';
 import 'package:quran_app/features/categories/data/json/quran_json.dart';
 import 'package:quran_app/features/categories/data/json/serah_json.dart';
@@ -14,388 +11,137 @@ import 'package:quran_app/features/categories/data/model/category_section_model.
 import 'package:quran_app/features/categories/data/model/section_type_model.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_option_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_view_all_screen.dart';
+import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 
+/// المكتبة: ثلاث مجموعات، كل مجموعة عنوان نحيل وشبكة مربّعات أيقونات.
+///
+/// كانت الشاشة بطاقات كبيرة بأشكال زخرفية تتنافس على النظر؛ صارت أيقونات
+/// صغيرة تحت عناوينها، والأرضية واحدة تفصلها خطوط شعرة.
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
-      title: 'المكتبة',
-      body: SizedBox(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+    final skin = AppSkin.of(context);
+
+    return Theme(
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+      child: AppScaffoldWidget(
+        title: 'المكتبة',
+        body: ColoredBox(
+          color: skin.ground,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const BaseHederWidget(text: 'القرأن الكريم وعلومه'),
-              SizedBox(
-                height: context.getHight(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      FeatureCardIconWidget(
-                        title: 'تلاوات مشهوره',
-                        icon: const Icon(Icons.volume_up_rounded),
-                        onTap: () {
-                          context.push(
-                            BaseAudioScreen(
-                              id: '364764',
-                              title: 'تلاوات مشهوره',
-                            ),
-                          );
-                        },
-                        maxLines: 1,
-                        width: context.getWidth(30),
-                        height: context.getHight(18),
-                      ),
-                      FeatureCardIconWidget(
-                        title: 'تعليم اطفال',
-                        icon: const Icon(Icons.child_care_rounded),
-                        onTap: () {
-                          context.push(
-                            BaseAudioScreen(
-                              id: '364777',
-                              title: 'تعليم اطفال',
-                            ),
-                          );
-                        },
-                        maxLines: 1,
-                        shapeType: CardShapeType.stars,
-                        width: context.getWidth(35),
-                        height: context.getHight(18),
-                      ),
-                      FeatureCardIconWidget(
-                        title: 'تلاوات بروايات',
-                        icon: const Icon(Icons.library_books_rounded),
-                        onTap: () {
-                          context.push(
-                            BaseAudioScreen(
-                              id: '364774',
-                              title: 'تلاوات بروايات وقراءات',
-                            ),
-                          );
-                        },
-                        maxLines: 1,
-                        shapeType: CardShapeType.diamonds,
-                        width: context.getWidth(35),
-                        height: context.getHight(18),
-                      ),
-                      FeatureCardIconWidget(
-                        title: 'مصاحف الحرمين',
-                        icon: const Icon(Icons.mosque_rounded),
-                        onTap: () {
-                          context.push(
-                            BaseAudioScreen(
-                              id: '364771',
-                              title: 'مصاحف الحرمين',
-                            ),
-                          );
-                        },
-                        maxLines: 1,
-                        shapeType: CardShapeType.hexagons,
-                        width: context.getWidth(35),
-                        height: context.getHight(18),
-                      ),
-                      // FeatureCardIconWidget(
-                      //   title: 'مصاحف مترجمة معانيها',
-                      //   icon: const Icon(Icons.translate_rounded),
-                      //   onTap: () {
-                      //     context.push(
-                      //       BaseAudioScreen(
-                      //         id: '364768',
-                      //         title: 'مصاحف مترجمة معانيها',
-                      //       ),
-                      //     );
-                      //   },
-                      //   shapeType: CardShapeType.triangles,
-                      //   maxLines: 1,
-                      //   width: context.getWidth(35),
-                      //   height: context.getHight(18),
-                      // ),
-                      // FeatureCardIconWidget(
-                      //   title: 'مصاحف مترجمة',
-                      //   icon: const Icon(Icons.g_translate_rounded),
-                      //   maxLines: 1,
-                      //   onTap: () {
-                      //     context.push(
-                      //       BaseAudioScreen(
-                      //         id: '691',
-                      //         title: 'مصاحف مترجمة ',
-                      //       ),
-                      //     );
-                      //   },
-                      //   shapeType: CardShapeType.waves,
-                      //   width: context.getWidth(35),
-                      //   height: context.getHight(18),
-                      // ),
-                    ],
-                  ),
-                ),
-              ),
-              const BaseHederWidget(text: 'تصنيفات '),
-              GridView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 1 / 1.3,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 10,
-                ),
-                children: [
-                  // CategorySectionItem(
-                  //   title: 'فيديوهات',
-                  //   icon: const Icon(Icons.video_library_rounded),
-                  //   data: _getCategorySectionData()[0],
-                  // ),
-                  CategorySectionItem(
-                    title: 'كتب',
-                    icon: const Icon(Icons.menu_book_rounded),
-                    data: _getCategorySectionData()[1],
-                    shapeType: CardShapeType.stars,
-                  ),
-                  CategorySectionItem(
-                    title: 'قصص',
-                    icon: const Icon(Icons.auto_stories_rounded),
-                    data: _getCategorySectionData()[2],
-                    shapeType: CardShapeType.diamonds,
-                  ),
-                  CategorySectionItem(
-                    title: 'اصوات',
-                    icon: const Icon(Icons.audiotrack_rounded),
-                    data: _getCategorySectionData()[3],
-                    shapeType: CardShapeType.hexagons,
-                  ),
-                  // CategorySectionItem(
-                  //   title: 'فتاوي',
-                  //   icon: const Icon(Icons.balance_rounded),
-                  //   data: _getCategorySectionData()[4],
-                  //   shapeType: CardShapeType.triangles,
-                  // ),
-                  CategorySectionItem(
-                    title: 'قرأن',
-                    icon: const Icon(Icons.import_contacts_rounded),
-                    data: _getCategorySectionData()[5],
-                    shapeType: CardShapeType.waves,
-                  ),
-                  // CategorySectionItem(
-                  //   title: 'عروض تقديميه',
-                  //   icon: const Icon(Icons.slideshow_rounded),
-                  //   data: _getCategorySectionData()[6],
-                  // ),
-                  // CategorySectionItem(
-                  //   title: 'اخبار',
-                  //   icon: const Icon(Icons.newspaper_rounded),
-                  //   data: _getCategorySectionData()[7],
-                  //   shapeType: CardShapeType.stars,
-                  // ),
-                  // CategorySectionItem(
-                  //   title: 'مقالات',
-                  //   icon: const Icon(Icons.article_rounded),
-                  //   data: _getCategorySectionData()[8],
-                  //   shapeType: CardShapeType.diamonds,
-                  // ),
-                  // CategorySectionItem(
-                  //   title: 'تطبيقات',
-                  //   icon: const Icon(Icons.apps_rounded),
-                  //   data: _getCategorySectionData()[9],
-                  //   shapeType: CardShapeType.hexagons,
-                  // ),
-                  // CategorySectionItem(
-                  //   title: 'خطب',
-                  //   icon: const Icon(Icons.record_voice_over_rounded),
-                  //   data: _getCategorySectionData()[10],
-                  //   shapeType: CardShapeType.triangles,
-                  // ),
-                ],
-              ),
-              const BaseHederWidget(text: 'الاقسام '),
-              GridView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 1 / 1.3,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 10,
-                ),
-                children: [
-                  QuranCategory(
-                    data: quranJson,
-                    title: 'القرأن',
-                    icon: const Icon(Icons.menu_book_rounded),
-                  ),
-                  QuranCategory(
-                    data: sonaJson,
-                    title: 'السنه',
-                    icon: const Icon(Icons.star_rounded),
-                    shapeType: CardShapeType.stars,
-                  ),
-                  QuranCategory(
-                    data: serahNabawyJson,
-                    title: 'السيرة النبوية',
-                    icon: const Icon(Icons.person_rounded),
-                    shapeType: CardShapeType.diamonds,
-                  ),
-                  QuranCategory(
-                    data: aqidaJson,
-                    title: 'العقيدة',
-                    icon: const Icon(Icons.psychology_rounded),
-                    shapeType: CardShapeType.hexagons,
-                  ),
-                  QuranCategory(
-                    data: fikhJson,
-                    title: 'فقه',
-                    icon: const Icon(Icons.gavel_rounded),
-                    shapeType: CardShapeType.triangles,
-                  ),
-                  // QuranCategory(
-                  //   data: kotabManbrJson,
-                  //   title: 'الخطب المنبرية',
-                  //   icon: const Icon(Icons.campaign_rounded),
-                  //   shapeType: CardShapeType.waves,
-                  // ),
-                  // QuranCategory(
-                  //   data: fdaelJson,
-                  //   title: 'فضائل الأقوال',
-                  //   icon: const Icon(Icons.favorite_rounded),
-                  // ),
-                  // QuranCategory(
-                  //   data: dawaForAllhJson,
-                  //   title: 'الدعوة إلى الله',
-                  //   icon: const Icon(Icons.volunteer_activism_rounded),
-                  //   shapeType: CardShapeType.stars,
-                  // ),
-                  QuranCategory(
-                    data: historyJson,
-                    title: 'التاريخ',
-                    icon: const Icon(Icons.history_edu_rounded),
-                    shapeType: CardShapeType.diamonds,
-                  ),
-                  QuranCategory(
-                    data: arabicLangJson,
-                    title: 'اللغة العربية',
-                    icon: const Icon(Icons.language_rounded),
-                    shapeType: CardShapeType.hexagons,
-                  ),
-                  QuranCategory(
-                    data: studyIslamic,
-                    title: 'دراسات إسلامية',
-                    icon: const Icon(Icons.school_rounded),
-                    shapeType: CardShapeType.triangles,
-                  ),
-                  QuranCategory(
-                    data: lessonJson,
-                    title: 'الدروس العلمية',
-                    icon: const Icon(Icons.class_rounded),
-                    shapeType: CardShapeType.waves,
-                  ),
-                  QuranCategory(
-                    data: kabaerJson,
-                    title: 'الكبائر والمحرمات',
-                    icon: const Icon(Icons.warning_rounded),
-                  ),
-                ],
-              ),
+              const HomeSectionHeader(title: 'القرآن الكريم وعلومه'),
+              CategoryTileGrid(tiles: _recitationTiles(context)),
+              SizedBox(height: 6.h),
+              skin.divider(),
+              const HomeSectionHeader(title: 'تصنيفات'),
+              CategoryTileGrid(tiles: _sectionTiles(context)),
+              SizedBox(height: 6.h),
+              skin.divider(),
+              const HomeSectionHeader(title: 'الأقسام'),
+              CategoryTileGrid(tiles: _libraryTiles(context)),
+              SizedBox(height: 22.h),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class CategorySectionItem extends StatelessWidget {
-  const CategorySectionItem({
-    required this.title,
-    required this.icon,
-    required this.data,
-    super.key,
-    this.shapeType = CardShapeType.circles,
-  });
+  List<Widget> _recitationTiles(BuildContext context) {
+    const entries = <({String id, String title, String label})>[
+      (id: '364764', title: 'تلاوات مشهورة', label: 'تلاوات مشهورة'),
+      (id: '364777', title: 'تعليم أطفال', label: 'تعليم أطفال'),
+      (
+        id: '364774',
+        title: 'تلاوات بروايات وقراءات',
+        label: 'تلاوات بروايات',
+      ),
+      (id: '364771', title: 'مصاحف الحرمين', label: 'مصاحف الحرمين'),
+      // أقسام صوتية أخرى متاحة في الواجهة الخلفية ومعطّلة حاليًا:
+      // (id: '364768', title: 'مصاحف مترجمة معانيها', ...),
+      // (id: '691', title: 'مصاحف مترجمة', ...),
+    ];
 
-  final String title;
-  final Widget icon;
-  final CategorySectionModel data;
-  final CardShapeType shapeType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: FeatureCardIconWidget(
-            icon: icon,
-            onTap: () {
-              context.push(
-                CategoryDetailOptionScreen(
-                  category: data,
-                ),
-              );
-            },
-            shapeType: shapeType,
+    return [
+      for (final entry in entries)
+        CategoryTile(
+          label: entry.label,
+          icon: AppIcons.sound,
+          onTap: () => context.push(
+            BaseAudioScreen(id: entry.id, title: entry.title),
           ),
         ),
-        SizedBox(height: 5.h),
-        title.autoSize(
-          context,
-          maxLines: 3,
-          minFontSize: 10,
-          fontSize: 11.sp,
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
+    ];
   }
-}
 
-class QuranCategory extends StatelessWidget {
-  const QuranCategory({
-    required this.title,
-    required this.data,
-    super.key,
-    this.icon,
-    this.shapeType = CardShapeType.circles,
-  });
-  final List<Map<String, dynamic>> data;
-  final String title;
-  final Widget? icon;
-  final CardShapeType shapeType;
+  List<Widget> _sectionTiles(BuildContext context) {
+    final data = _getCategorySectionData();
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: FeatureCardIconWidget(
-            icon: icon ??
-                const Icon(
-                  Icons.category_rounded,
-                  color: Colors.red,
-                ),
-            onTap: () {
-              context.push(
-                CategoryViewAllScreen(
-                  data: data.map(SectionTypeModel.fromJson).toList(),
-                  title: title,
-                ),
-              );
-            },
-            shapeType: shapeType,
+    const picks = <({int index, String label, HugeIconData icon})>[
+      // (index: 0, label: 'فيديوهات', icon: AppIcons.news),
+      (index: 1, label: 'كتب', icon: AppIcons.menuBook),
+      (index: 2, label: 'قصص', icon: AppIcons.bookOpen),
+      (index: 3, label: 'أصوات', icon: AppIcons.sound),
+      // (index: 4, label: 'فتاوى', icon: AppIcons.list),
+      (index: 5, label: 'قرآن', icon: AppIcons.quran),
+      // (index: 6, label: 'عروض تقديمية', icon: AppIcons.layers),
+      // (index: 7, label: 'أخبار', icon: AppIcons.news),
+      // (index: 8, label: 'مقالات', icon: AppIcons.noteEdit),
+      // (index: 9, label: 'تطبيقات', icon: AppIcons.widgets),
+      // (index: 10, label: 'خطب', icon: AppIcons.sound),
+    ];
+
+    return [
+      for (final pick in picks)
+        CategoryTile(
+          label: pick.label,
+          icon: pick.icon,
+          onTap: () => context.push(
+            CategoryDetailOptionScreen(category: data[pick.index]),
           ),
         ),
-        SizedBox(height: 5.h),
-        title.autoSize(
-          context,
-          maxLines: 3,
-          minFontSize: 10,
-          fontSize: 11.sp,
-          textAlign: TextAlign.center,
+    ];
+  }
+
+  List<Widget> _libraryTiles(BuildContext context) {
+    final sections = <({
+      String title,
+      HugeIconData icon,
+      List<Map<String, dynamic>> data,
+    })>[
+      (title: 'القرآن', icon: AppIcons.quran, data: quranJson),
+      (title: 'السنة', icon: AppIcons.star, data: sonaJson),
+      (title: 'السيرة النبوية', icon: AppIcons.user, data: serahNabawyJson),
+      (title: 'العقيدة', icon: AppIcons.allah, data: aqidaJson),
+      (title: 'فقه', icon: AppIcons.book, data: fikhJson),
+      // (title: 'الخطب المنبرية', icon: AppIcons.sound, data: kotabManbrJson),
+      // (title: 'فضائل الأقوال', icon: AppIcons.heart, data: fdaelJson),
+      // (title: 'الدعوة إلى الله', icon: AppIcons.globe, data: dawaForAllhJson),
+      (title: 'التاريخ', icon: AppIcons.calendar, data: historyJson),
+      (title: 'اللغة العربية', icon: AppIcons.globe, data: arabicLangJson),
+      (title: 'دراسات إسلامية', icon: AppIcons.bookOpen, data: studyIslamic),
+      (title: 'الدروس العلمية', icon: AppIcons.menuBook, data: lessonJson),
+      (title: 'الكبائر والمحرمات', icon: AppIcons.warning, data: kabaerJson),
+    ];
+
+    return [
+      for (final section in sections)
+        CategoryTile(
+          label: section.title,
+          icon: section.icon,
+          onTap: () => context.push(
+            CategoryViewAllScreen(
+              data: section.data.map(SectionTypeModel.fromJson).toList(),
+              title: section.title,
+            ),
+          ),
         ),
-      ],
-    );
+    ];
   }
 }
 

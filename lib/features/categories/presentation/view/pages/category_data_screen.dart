@@ -1,137 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/my_text_form_field.dart';
-import 'package:quran_app/core/components/quran_widgets/feature_card_text_widget.dart';
-import 'package:quran_app/core/components/shimmer_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
 import 'package:quran_app/features/categories/data/model/category_section_model.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
+import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
 
-class CategoryDataScreen extends StatelessWidget {
-  CategoryDataScreen({
+/// أبواب تصنيف واحد: بحث نحيل فوق قائمة صفوف تفصلها خطوط شعرة.
+class CategoryDataScreen extends StatefulWidget {
+  const CategoryDataScreen({
     required this.id,
     required this.title,
     required this.url,
     super.key,
   });
+
   final int id;
   final String url;
   final String title;
-  TextEditingController search = TextEditingController();
+
+  @override
+  State<CategoryDataScreen> createState() => _CategoryDataScreenState();
+}
+
+class _CategoryDataScreenState extends State<CategoryDataScreen> {
+  final TextEditingController _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  List<CategorySectionModel> _filter(List<CategorySectionModel> data) {
+    final query = _search.text.trim().toLowerCase();
+    if (query.isEmpty) return data;
+    return data
+        .where(
+          (item) => (item.title ?? '').toLowerCase().contains(query),
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocProvider(
       create: (context) => CategoryBloc(
         repositoryImpl: sl.get<CategoryRepositoryImpl>(),
-      )..add(GetCategoriesEvent(id, url)),
-      child: BlocBuilder<CategoryBloc, CategoryState>(
-        builder: (context, state) {
-          return BaseHomeWidget(
-            isScroll: false,
-            title: title,
-            showBackground: false,
-            body: BlocConsumer<CategoryBloc, CategoryState>(
-              listener: (context, state) {},
+      )..add(GetCategoriesEvent(widget.id, widget.url)),
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: AppScaffoldWidget(
+          title: widget.title,
+          body: ColoredBox(
+            color: skin.ground,
+            child: BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
                 return state.categoryState.handle<dynamic>(
+                  onLoading: const CategoryThinLoader(),
                   onSuccess: () {
+                    final items = _filter(state.categories);
+
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        MyTextFormFieldWidget(
-                          controller: search,
-                          hintText: 'بحث',
-                          suffixIcon: search.text.isNotEmpty
-                              ? IconButton(
-                                  onPressed: () {
-                                    search.clear();
-                                    context
-                                        .read<CategoryBloc>()
-                                        .add(SetStateEvent());
-                                  },
-                                  icon: const Icon(
-                                    Icons.clear,
-                                    color: Colors.grey,
-                                    size: 30,
-                                  ),
-                                )
-                              : null,
-                          onChanged: (text) {
-                            _onSearchTextChanged(state.categories);
-                            context.read<CategoryBloc>().add(SetStateEvent());
-                          },
+                        CategorySearchField(
+                          controller: _search,
+                          onChanged: (_) => setState(() {}),
                         ),
-                        Expanded(
-                          child: GridView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount:
-                                _onSearchTextChanged(state.categories).length,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1 / 1.1,
+                        skin.divider(),
+                        if (items.isEmpty)
+                          const CategoryNotice(
+                            message: 'لا توجد نتائج لهذا البحث.',
+                          )
+                        else
+                          for (var i = 0; i < items.length; i++)
+                            CategoryRow(
+                              title: items[i].title ?? '',
+                              subtitle: items[i].itemsCount == null
+                                  ? null
+                                  : '${items[i].itemsCount} عنصرًا',
+                              icon: AppIcons.bookOpen,
+                              isLast: i == items.length - 1,
+                              onTap: () => _onTap(items[i], context),
                             ),
-                            itemBuilder: (context, index) {
-                              final allData =
-                                  _onSearchTextChanged(state.categories)[index];
-                              return BaseAnimate(
-                                index: 0,
-                                child: FeatureCardTextWidget(
-                                  title: allData.title ?? '',
-                                  onTap: () {
-                                    _onTap(allData, context);
-                                  },
-                                ),
-                              );
-                              //  _Item(allData);
-                            },
-                          ),
-                        ),
+                        SizedBox(height: 22.h),
                       ],
                     );
                   },
                 );
               },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
-  }
-
-  List<CategorySectionModel> _onSearchTextChanged(
-    List<CategorySectionModel> data,
-  ) {
-    final res = data
-        .where(
-          (data) => data.title
-              .toString()
-              .toLowerCase()
-              .contains(search.text.toLowerCase()),
-        )
-        .toList();
-    return res;
   }
 
   void _onTap(CategorySectionModel allData, BuildContext context) {
     if (allData.dataType == 'multicategories') {
       context.push(
         CategoryDataScreen(
-          id: allData.id!,
-          title: allData.title!,
+          id: allData.id ?? 0,
+          title: allData.title ?? widget.title,
           url: allData.apiUrl,
         ),
       );
       return;
     }
+
     if (allData.dataType != 'category') {
       if (allData.dataType == 'quran') {
         context.push(BaseAudioDetail(data: allData));
@@ -147,15 +135,13 @@ class CategoryDataScreen extends StatelessWidget {
       }
       return;
     }
-    if (allData.dataType == 'category') {
-      context.push(
-        CategoryDataScreen(
-          id: allData.id!,
-          title: title,
-          url: allData.apiUrl,
-        ),
-      );
-      return;
-    }
+
+    context.push(
+      CategoryDataScreen(
+        id: allData.id ?? 0,
+        title: widget.title,
+        url: allData.apiUrl,
+      ),
+    );
   }
 }
