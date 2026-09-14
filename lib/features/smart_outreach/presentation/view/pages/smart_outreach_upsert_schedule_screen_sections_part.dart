@@ -146,8 +146,7 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
         max: 30,
         divisions: 29,
         valueLabel: '$_delayBetweenCalls ث',
-        onChanged: (value) =>
-            rebuild(() => _delayBetweenCalls = value.round()),
+        onChanged: (value) => rebuild(() => _delayBetweenCalls = value.round()),
       ),
       OutreachSwitchRow(
         title: 'إيقاف بعد أول رد',
@@ -193,5 +192,4 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
       ),
     );
   }
-
 }
