@@ -4,13 +4,9 @@ part of 'download_quran_audio_bloc.dart';
 @immutable
 class DownloadQuranAudioState {
   final RequestState loadState;
- 
-
-  
 
   const DownloadQuranAudioState({
     this.loadState = RequestState.initial,
-
   });
 
   DownloadQuranAudioState copyWith({

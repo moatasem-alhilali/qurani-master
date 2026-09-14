@@ -4,7 +4,6 @@ import 'package:quran_app/features/read_quran/data/model/new_surah_model.dart';
 import 'package:quran_library/quran.dart';
 
 class AyahDataSource {
-
   List<AyahModel> get _allAyahs {
     // Prefer the explicitly populated List from loadQuranDataV1 as it has better metadata (surahNumber, etc.)
     if (QuranCtrl.instance.ayahs.isNotEmpty) return QuranCtrl.instance.ayahs;

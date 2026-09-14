@@ -12,5 +12,3 @@ class SurahInfoState {
     return SurahInfoState(state: state ?? this.state, data: data ?? this.data);
   }
 }
-
-

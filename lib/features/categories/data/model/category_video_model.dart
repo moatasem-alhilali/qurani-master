@@ -47,7 +47,9 @@ class CategoryDetailModel {
       localesTypes: json['locales-types'] != null
           ? (json['locales-types'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(
-                  key, LocaleType.fromJson(value as Map<String, dynamic>),),
+                key,
+                LocaleType.fromJson(value as Map<String, dynamic>),
+              ),
             )
           : null,
       case_: json['case'] as String?,

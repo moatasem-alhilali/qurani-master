@@ -17,6 +17,4 @@ class SettingNotificationState {
       loading: loading ?? this.loading,
     );
   }
-
- 
 }

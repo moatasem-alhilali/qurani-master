@@ -17,6 +17,4 @@ class SettingState {
       loading: loading ?? this.loading,
     );
   }
-
-
 }

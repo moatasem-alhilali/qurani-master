@@ -31,7 +31,7 @@
 //   final bool isShuffleEnabled;
 //   final LoopMode loopMode; // off | one | all
 
-//   final bool isMuted; 
+//   final bool isMuted;
 
 //   QuranAudioState copyWith({
 //     RequestState? loadState,

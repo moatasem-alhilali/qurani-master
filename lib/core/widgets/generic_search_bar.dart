@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:quran_app/core/extensions/colors_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
-import 'package:quran_app/core/widgets/icon_button_widget.dart';
 
 typedef AsyncSuggestionCallback<T> = Future<List<T>> Function(String query);
 typedef SuggestionWidgetBuilder<T> = Widget Function(
@@ -65,36 +65,56 @@ class _GenericSearchAnchorAsyncState<T>
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    // أيقونات الشريط: مقاس صريح ولون من [AppSkin]، بلا مربّع مملوء خلفها.
+    // كانت تُبنى بلا مقاس (فتأخذ الافتراضي الصغير) وبخلفية من اللوحة القديمة،
+    // فتظهر أيقونة ضائعة داخل صندوق رمادي لا يتبع الثيم.
+    Widget barIcon(HugeIconData icon, VoidCallback onPressed, String tooltip) {
+      return IconButton(
+        onPressed: onPressed,
+        tooltip: tooltip,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(minWidth: 38.w, minHeight: 38.w),
+        icon: AppIcon(icon, color: skin.accent, size: 20.sp),
+      );
+    }
+
     return SearchAnchor(
-      builder: (context, controller) => IconButtonWidget(
-        icon: widget.icon == null
-            ? const AppIcon(AppIcons.search)
-            : Icon(widget.icon),
-        onPressed: controller.openView,
-        tooltip: widget.hintText ?? 'بحث',
-        // backgroundColor: context.surfaceColor,
-      ),
+      builder: (context, controller) => widget.icon == null
+          ? barIcon(AppIcons.search, controller.openView, 'بحث')
+          : IconButton(
+              onPressed: controller.openView,
+              tooltip: widget.hintText ?? 'بحث',
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(minWidth: 38.w, minHeight: 38.w),
+              icon: Icon(widget.icon, color: skin.accent, size: 20.sp),
+            ),
       searchController: searchController,
-      viewLeading: IconButtonWidget(
-        // size: 50.sp,
-        icon: const FittedBox(
-          child: AppIcon(AppIcons.back),
-        ),
-        onPressed: () {
-          searchController.closeView('');
-        },
-        backgroundColor: context.surfaceColor,
+      viewLeading: barIcon(
+        AppIcons.back,
+        () => searchController.closeView(''),
+        'إغلاق البحث',
       ),
       viewTrailing: [
-        IconButtonWidget(
-          icon: const FittedBox(
-            child: AppIcon(AppIcons.close),
-          ),
-          onPressed: searchController.clear,
-          backgroundColor: context.surfaceColor,
-        ),
+        barIcon(AppIcons.close, searchController.clear, 'مسح'),
+        SizedBox(width: 4.w),
       ],
-      viewBackgroundColor: context.scaffoldBackgroundColor,
+      viewHintText: widget.hintText ?? 'بحث',
+      viewElevation: 0,
+      viewSurfaceTintColor: Colors.transparent,
+      dividerColor: skin.hairline,
+      headerTextStyle: TextStyle(
+        color: skin.ink,
+        fontSize: 13.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      headerHintStyle: TextStyle(
+        color: skin.inkSoft.withValues(alpha: 0.6),
+        fontSize: 12.5.sp,
+        fontWeight: FontWeight.w500,
+      ),
+      viewBackgroundColor: skin.ground,
       suggestionsBuilder: (context, controller) async {
         final options = (await _debouncedSearch(controller.text))?.toList();
         if (options == null) return _lastOptions;

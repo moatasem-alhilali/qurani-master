@@ -53,7 +53,8 @@ class RadioAudioService {
         album: 'Radio',
         title: station.name,
         artist: 'Quran Radio',
-        artUri: station.imageUrl.isNotEmpty ? Uri.parse(station.imageUrl) : null,
+        artUri:
+            station.imageUrl.isNotEmpty ? Uri.parse(station.imageUrl) : null,
       );
 
       AudioHandler.instance.mediaItem.add(mediaItem);

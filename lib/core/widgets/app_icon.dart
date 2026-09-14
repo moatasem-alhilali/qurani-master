@@ -4,6 +4,12 @@ import 'package:hugeicons/hugeicons.dart';
 
 typedef HugeIconData = List<List<dynamic>>;
 
+/// مقاس أيقونات أزرار شريط التطبيق — واحد في كل الشاشات.
+///
+/// زرّ الرجوع وأزرار الإجراءات تشترك فيه، فيتساوى طولها وعرضها ولا يبدو
+/// أحدها أكبر من جيرانه.
+double get kAppBarIconSize => 16.sp;
+
 class AppIcon extends StatelessWidget {
   const AppIcon(
     this.icon, {

@@ -79,7 +79,6 @@ class NotificationSettingModel {
         'updated_at': DateTime.now().toIso8601String(),
       };
 
-
   /// Converts back to NotificationScheduleModel (to use with scheduling service)
   NotificationScheduleModel get schedule {
     switch (scheduleType) {

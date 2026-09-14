@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'ecommerce-nefko-e5fb3.firebasestorage.app',
     measurementId: 'G-BSWT3FM07R',
   );
-
 }

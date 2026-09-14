@@ -120,8 +120,9 @@ class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
       elevation: 0,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      titleSpacing: 2.w,
-      leadingWidth: 40.w,
+      // عرض يكفي زرّ أيقونة قياسيًا بلا قصّ، فيحتفظ بمساحة لمسه كاملة.
+      titleSpacing: 0,
+      leadingWidth: 48.w,
       leading: widget.leading ?? (widget.back ? const _BackButton() : null),
       title: widget.titleWidget ??
           ((widget.title?.isEmpty ?? true)
@@ -142,7 +143,11 @@ class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
   }
 }
 
-/// زرّ الرجوع في الشريط — مقاس مضغوط يناسب خانة `leading`.
+/// زرّ الرجوع في الشريط.
+///
+/// بلا `padding` ولا `constraints` مخصّصة، وبأيقونة [kAppBarIconSize] نفسها
+/// التي تستعملها أزرار الشريط في كل الشاشات — فيخرج بالطول والعرض ذاتهما.
+/// كان قبلها بأيقونة ‎21.sp‎ وقيود ‎38.w‎ فيظهر أكبر من جيرانه ويبدو دخيلًا.
 class _BackButton extends StatelessWidget {
   const _BackButton();
 
@@ -153,11 +158,11 @@ class _BackButton extends StatelessWidget {
     return IconButton(
       onPressed: () => context.pop(),
       tooltip: 'رجوع',
-      padding: EdgeInsets.zero,
-      constraints: BoxConstraints(minWidth: 38.w, minHeight: 38.w),
-      // ذهبي كبقية أيقونات الشريط: الرجوع كان الوحيد بلون الحبر فيبدو غريبًا
-      // بجانبها.
-      icon: AppIcon(AppIcons.backRight, color: skin.accent, size: 21.sp),
+      icon: AppIcon(
+        AppIcons.backRight,
+        color: skin.accent,
+        size: kAppBarIconSize,
+      ),
     );
   }
 }

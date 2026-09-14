@@ -7,7 +7,6 @@ import 'package:quran_app/features/another_screen/data/models/surah_info_model.d
 part 'surah_info_event.dart';
 part 'surah_info_state.dart';
 
-
 class SurahInfoBloc extends Bloc<SurahInfoEvent, SurahInfoState> {
   SurahInfoBloc() : super(SurahInfoState()) {
     on<LoadSurahInfoEvent>(_onLoad);
