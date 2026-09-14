@@ -58,9 +58,38 @@ class _TasbihBeadChainState extends State<TasbihBeadChain>
     duration: const Duration(milliseconds: 1150),
   );
 
+  /// يتغيّر فقط عند تبديل الخامة أو كثافة الشاشة، لا في كل إطار.
+  late TasbihBeadStamp _stamp;
+
+  /// دمج المحرّكين في مستمع واحد يُمرَّر للرسّام عبر `repaint`.
+  ///
+  /// بهذا يُعاد **الرسم** وحده في كل إطار، ولا يُعاد بناء شجرة الودجت.
+  /// `AnimatedBuilder` كان يعيد بناء `CustomPaint` سبعين مرّة بعد كل
+  /// تسبيحة بلا فائدة — الرسّام هو الوحيد الذي يقرأ قيم الحركة.
+  late final Listenable _ticker = Listenable.merge([_curve, _swing]);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // تحضير النسيج هنا لا داخل الرسم: التكلفة تُدفع مرّة عند فتح الصفحة،
+    // فلا تصادف المستخدمَ قفزةٌ في أوّل تسبيحة.
+    _stamp = TasbihBeadStamp.of(
+      widget.material,
+      MediaQuery.devicePixelRatioOf(context),
+    );
+  }
+
   @override
   void didUpdateWidget(covariant TasbihBeadChain oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if (widget.material != oldWidget.material) {
+      _stamp = TasbihBeadStamp.of(
+        widget.material,
+        MediaQuery.devicePixelRatioOf(context),
+      );
+    }
+
     if (widget.count != oldWidget.count) {
       // نلتقط الموضع الحالي أولًا ثم ندفع الهدف خرزةً: هكذا تتسلسل النقرات
       // المتتابعة في حركة واحدة متّصلة بلا قفزة.
@@ -80,27 +109,25 @@ class _TasbihBeadChainState extends State<TasbihBeadChain>
 
   /// جيبٌ متناقص السعة: يمثّل تأرجحًا مخمّدًا بلا محرّك فيزياء.
   double get _swingValue {
-    if (!_swing.isAnimating && _swing.value == 0) return 0;
     final t = _swing.value;
+    if (t == 0 || t == 1) return 0;
     final decay = (1 - t) * (1 - t);
     return math.sin(t * math.pi * 3.2) * decay;
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([_curve, _swing]),
-      builder: (context, _) => CustomPaint(
-        size: Size.infinite,
-        painter: _BeadChainPainter(
-          // الخرزات متماثلة ومتساوية التباعد، فالجزء الكسري من الإزاحة
-          // يكفي لرسم المشهد ويمنع السلسلة من الهروب خارج القوس.
-          shift: _offset % 1,
-          swing: _swingValue,
-          palette: widget.material.palette,
-          stringColor: widget.stringColor,
-          beadCount: widget.beadCount,
-        ),
+    return CustomPaint(
+      size: Size.infinite,
+      painter: _BeadChainPainter(
+        repaint: _ticker,
+        // الخرزات متماثلة ومتساوية التباعد، فالجزء الكسري من الإزاحة يكفي
+        // لرسم المشهد ويمنع السلسلة من الهروب خارج القوس.
+        shiftOf: () => _offset % 1,
+        swingOf: () => _swingValue,
+        stamp: _stamp,
+        stringColor: widget.stringColor,
+        beadCount: widget.beadCount,
       ),
     );
   }
@@ -108,20 +135,21 @@ class _TasbihBeadChainState extends State<TasbihBeadChain>
 
 class _BeadChainPainter extends CustomPainter {
   const _BeadChainPainter({
-    required this.shift,
-    required this.swing,
-    required this.palette,
+    required Listenable repaint,
+    required this.shiftOf,
+    required this.swingOf,
+    required this.stamp,
     required this.stringColor,
     required this.beadCount,
-  });
+  }) : super(repaint: repaint);
 
-  /// من ٠ إلى ١ — كم انزلقت السلسلة نحو الخرزة التالية.
-  final double shift;
+  /// تُقرأ لحظة الرسم: من ٠ إلى ١، كم انزلقت السلسلة نحو الخرزة التالية.
+  final double Function() shiftOf;
 
   /// تأرجح مخمّد من ‎-١ إلى ١، يميل الخيط ويعمّق تدلّيه.
-  final double swing;
+  final double Function() swingOf;
 
-  final TasbihBeadPalette palette;
+  final TasbihBeadStamp stamp;
   final Color stringColor;
   final int beadCount;
 
@@ -129,7 +157,7 @@ class _BeadChainPainter extends CustomPainter {
   ///
   /// التأرجح يُزيح نقطتي التحكّم: الأولى والثانية بمقدارين متعاكسين، فيميل
   /// القوس كلّه كما يميل خيط حقيقي دُفع من طرف.
-  Offset _pointAt(Size size, double t) {
+  Offset _pointAt(Size size, double t, double swing) {
     final sway = swing * size.width * 0.035;
     final dip = swing.abs() * size.height * 0.05;
 
@@ -159,11 +187,14 @@ class _BeadChainPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final shift = shiftOf();
+    final swing = swingOf();
+
     // الخيط أولًا حتى تجلس الخرزات فوقه.
     final thread = Path();
     const steps = 44;
     for (var i = 0; i <= steps; i++) {
-      final point = _pointAt(size, i / steps);
+      final point = _pointAt(size, i / steps, swing);
       i == 0
           ? thread.moveTo(point.dx, point.dy)
           : thread.lineTo(point.dx, point.dy);
@@ -186,7 +217,7 @@ class _BeadChainPainter extends CustomPainter {
       if (t < -0.02 || t > 1.02) continue;
 
       final clamped = t.clamp(0.0, 1.0);
-      final center = _pointAt(size, clamped);
+      final center = _pointAt(size, clamped, swing);
 
       // الخرزات في وسط القوس أقرب إلى الناظر فتكبر قليلًا — إيحاء بالعمق
       // بلا تحويل ثلاثي الأبعاد.
@@ -205,15 +236,15 @@ class _BeadChainPainter extends CustomPainter {
 
       final radius = baseRadius * (0.74 + 0.26 * depth) * (0.58 + 0.42 * entry);
 
-      paintTasbihBead(canvas, center, radius, palette, opacity: entry);
+      stamp.paint(canvas, center, radius, opacity: entry);
     }
   }
 
+  /// قيم الحركة تصل عبر `repaint` لا عبر المقارنة، فلا يبقى هنا إلا ما
+  /// يتغيّر نادرًا: الخامة ولون الخيط وعدد الخرزات.
   @override
   bool shouldRepaint(covariant _BeadChainPainter oldDelegate) =>
-      oldDelegate.shift != shift ||
-      oldDelegate.swing != swing ||
-      oldDelegate.palette != palette ||
+      oldDelegate.stamp != stamp ||
       oldDelegate.stringColor != stringColor ||
       oldDelegate.beadCount != beadCount;
 }

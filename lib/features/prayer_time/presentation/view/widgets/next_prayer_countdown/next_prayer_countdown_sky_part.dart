@@ -595,13 +595,17 @@ class _HorizonPainter extends CustomPainter {
 
 /// نجوم خفيفة تظهر في الفجر والعشاء فقط. المواضع ثابتة حتى لا ترقص النجوم
 /// مع كل إعادة بناء للواجهة.
+/// حقل نجوم يتلألأ. المواضع والأحجام ثابتة، والمؤقّت وحده يحرّك السطوع.
 class _StarFieldPainter extends CustomPainter {
-  const _StarFieldPainter({required this.color, this.progress = 0});
+  _StarFieldPainter({required this.color, required this.clock})
+      : super(repaint: clock);
 
   final Color color;
 
-  /// من ٠ إلى ١، يلفّ — يقود التلألؤ.
-  final double progress;
+  /// المؤقّت يُمرَّر إلى [CustomPainter.repaint]، فيُعاد الرسم مباشرةً دون أن
+  /// تُبنى ودجت واحدة في كل إطار. النسخة السابقة كانت تعيد بناء الشجرة عبر
+  /// AnimatedBuilder ستّين مرّة في الثانية لتغيير رقم واحد.
+  final Animation<double> clock;
 
   static const _stars = <Offset>[
     Offset(0.08, 0.16),
@@ -637,8 +641,14 @@ class _StarFieldPainter extends CustomPainter {
     1.4,
   ];
 
+  /// فرشاة واحدة يُعاد استعمالها: تخصيص Paint لكل نجمة كان يولّد أربعة عشر
+  /// كائنًا في كل إطار بلا داعٍ.
+  final Paint _brush = Paint();
+
   @override
   void paint(Canvas canvas, Size size) {
+    final progress = clock.value;
+
     for (var i = 0; i < _stars.length; i++) {
       final star = _stars[i];
 
@@ -650,17 +660,18 @@ class _StarFieldPainter extends CustomPainter {
           0.5 + 0.5 * math.sin(progress * math.pi * 2 * rate + phase);
       final base = 0.24 + (i % 3) * 0.12;
 
+      _brush.color = color.withValues(alpha: base + 0.3 * twinkle);
       canvas.drawCircle(
         Offset(star.dx * size.width, star.dy * size.height),
         _sizes[i] * (0.82 + 0.18 * twinkle),
-        Paint()..color = color.withValues(alpha: base + 0.3 * twinkle),
+        _brush,
       );
     }
   }
 
   @override
   bool shouldRepaint(covariant _StarFieldPainter oldDelegate) =>
-      oldDelegate.color != color || oldDelegate.progress != progress;
+      oldDelegate.color != color || oldDelegate.clock != clock;
 }
 
 /// مواصفات غيمة واحدة: ارتفاعها، حجمها، سرعتها، وإزاحتها الابتدائية.
@@ -675,15 +686,14 @@ class _CloudSpec {
 }
 
 /// طبقة الحياة فوق السماء: غيوم تنساب، وطيور تعبر، وشهاب يمرّ ليلًا،
-/// وأشعة تنبعث من الشمس نهارًا.
+/// وأشعة تتنفّس نهارًا.
 ///
-/// كلها مرسومة برمجيًا ومقودة بمؤقّت واحد بطيء (دورة كاملة كل تسعين ثانية)،
-/// فلا صور ولا ملفات حركة، والحركة بطيئة بما يكفي لتُحسّ ولا تشتّت.
+/// كلّها مرسومة برمجيًا بلا صور ولا ملفات حركة، ومقودة بمؤقّت واحد بطيء.
 class _SkyLifePainter extends CustomPainter {
-  const _SkyLifePainter({required this.progress, required this.palette});
+  _SkyLifePainter({required this.clock, required this.palette})
+      : super(repaint: clock);
 
-  /// من ٠ إلى ١، يلفّ باستمرار.
-  final double progress;
+  final Animation<double> clock;
   final _SkyPalette palette;
 
   /// طبقتان بسرعتين مختلفتين: الفرق بينهما يصنع عمقًا بلا ثلاثيّ أبعاد.
@@ -694,72 +704,128 @@ class _SkyLifePainter extends CustomPainter {
     _CloudSpec(0.38, 0.86, 0.28, 0.20, 0.09),
   ];
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (palette.hasRays) _paintRays(canvas, size);
-    if (palette.hasClouds) _paintClouds(canvas, size);
-    if (palette.hasBirds) _paintBirds(canvas, size);
-    if (palette.hasStars) _paintShootingStar(canvas, size);
+  // ---------- هندسة تُبنى مرّة واحدة لكل مقاس ----------
+  //
+  // الغيمة والشعاع شكلان ثابتان لا يتغيّر منهما إلا الموضع والدوران. بناؤهما
+  // داخل paint كان يخلق أحد عشر مسارًا وأحد عشر متدرّجًا في كل إطار — أي نحو
+  // ألف وثلاثمئة كائن في الثانية تُرمى فور إنشائها. الآن يُبنيان عند أوّل
+  // رسم ويُعاد استعمالهما بتحريك اللوحة تحتهما، وهو أرخص ما في الرسم.
+  Size? _builtFor;
+  final List<Path> _cloudPaths = [];
+  final List<Paint> _cloudPaints = [];
+  Path? _rayBlade;
+  Paint? _rayPaint;
+
+  final Paint _birdPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.4
+    ..strokeCap = StrokeCap.round;
+
+  void _buildGeometry(Size size) {
+    if (_builtFor == size) return;
+    _builtFor = size;
+    _cloudPaths.clear();
+    _cloudPaints.clear();
+
+    if (palette.hasClouds) {
+      for (final cloud in _clouds) {
+        final w = size.width * 0.34 * cloud.scale;
+        final h = w * 0.34;
+
+        _cloudPaths.add(
+          Path()
+            ..addOval(Rect.fromCenter(center: Offset.zero, width: w, height: h))
+            ..addOval(
+              Rect.fromCenter(
+                center: Offset(-w * 0.26, h * 0.16),
+                width: w * 0.58,
+                height: h * 0.74,
+              ),
+            )
+            ..addOval(
+              Rect.fromCenter(
+                center: Offset(w * 0.24, h * 0.12),
+                width: w * 0.64,
+                height: h * 0.82,
+              ),
+            )
+            ..addOval(
+              Rect.fromCenter(
+                center: Offset(w * 0.04, -h * 0.26),
+                width: w * 0.5,
+                height: h * 0.78,
+              ),
+            ),
+        );
+
+        _cloudPaints.add(
+          Paint()
+            ..shader = LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                palette.orbCore.withValues(alpha: cloud.alpha * 1.5),
+                palette.orbCore.withValues(alpha: cloud.alpha * 0.35),
+              ],
+            ).createShader(
+              Rect.fromCenter(
+                center: Offset.zero,
+                width: w * 1.4,
+                height: h * 2.2,
+              ),
+            ),
+        );
+      }
+    }
+
+    if (palette.hasRays) {
+      final length = size.width * 0.5;
+      _rayBlade = Path()
+        ..moveTo(0, 0)
+        ..lineTo(length, -length * 0.05)
+        ..lineTo(length, length * 0.05)
+        ..close();
+      _rayPaint = Paint()
+        ..shader = LinearGradient(
+          colors: [
+            palette.orbGlow.withValues(alpha: 0.14),
+            palette.orbGlow.withValues(alpha: 0),
+          ],
+        ).createShader(Rect.fromLTWH(0, -length * 0.06, length, length * 0.12));
+    }
   }
 
-  void _paintClouds(Canvas canvas, Size size) {
-    for (final cloud in _clouds) {
-      // تخرج الغيمة من حافة وتدخل من الأخرى بلا قفزة: المدى أعرض من
-      // الشاشة بمقدار عرض الغيمة نفسها.
+  @override
+  void paint(Canvas canvas, Size size) {
+    _buildGeometry(size);
+    final progress = clock.value;
+
+    if (palette.hasRays) _paintRays(canvas, size, progress);
+    if (palette.hasClouds) _paintClouds(canvas, size, progress);
+    if (palette.hasBirds) _paintBirds(canvas, size, progress);
+    if (palette.hasStars) _paintShootingStar(canvas, size, progress);
+  }
+
+  void _paintClouds(Canvas canvas, Size size, double progress) {
+    for (var i = 0; i < _cloudPaths.length; i++) {
+      final cloud = _clouds[i];
+
+      // تخرج الغيمة من حافة وتدخل من الأخرى بلا قفزة: المدى أعرض من الشاشة
+      // بمقدار عرض الغيمة نفسها.
       const span = 1.34;
       final x = (((progress * cloud.speed + cloud.phase) % 1) * span - 0.17) *
           size.width;
-      final y = cloud.y * size.height;
-      final w = size.width * 0.34 * cloud.scale;
-      final h = w * 0.34;
 
-      final path = Path()
-        ..addOval(Rect.fromCenter(center: Offset(x, y), width: w, height: h))
-        ..addOval(
-          Rect.fromCenter(
-            center: Offset(x - w * 0.26, y + h * 0.16),
-            width: w * 0.58,
-            height: h * 0.74,
-          ),
-        )
-        ..addOval(
-          Rect.fromCenter(
-            center: Offset(x + w * 0.24, y + h * 0.12),
-            width: w * 0.64,
-            height: h * 0.82,
-          ),
-        )
-        ..addOval(
-          Rect.fromCenter(
-            center: Offset(x + w * 0.04, y - h * 0.26),
-            width: w * 0.5,
-            height: h * 0.78,
-          ),
-        );
-
-      canvas.drawPath(
-        path,
-        Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              palette.orbCore.withValues(alpha: cloud.alpha * 1.5),
-              palette.orbCore.withValues(alpha: cloud.alpha * 0.35),
-            ],
-          ).createShader(
-            Rect.fromCenter(
-              center: Offset(x, y),
-              width: w * 1.4,
-              height: h * 2.2,
-            ),
-          ),
-      );
+      canvas
+        ..save()
+        ..translate(x, cloud.y * size.height)
+        ..drawPath(_cloudPaths[i], _cloudPaints[i])
+        ..restore();
     }
   }
 
   /// ثلاثة طيور تعبر المشهد مرّة واحدة في كل دورة، ثم تغيب.
-  void _paintBirds(Canvas canvas, Size size) {
+  void _paintBirds(Canvas canvas, Size size, double progress) {
     // تظهر في الربع الأول من الدورة فقط: الطيور الدائمة تتحوّل إلى ضجيج.
     const window = 0.26;
     if (progress > window) return;
@@ -768,17 +834,9 @@ class _SkyLifePainter extends CustomPainter {
     final fade = math.sin(math.pi * t);
     if (fade <= 0.02) return;
 
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4
-      ..strokeCap = StrokeCap.round
-      ..color = palette.horizon.withValues(alpha: 0.32 * fade);
+    _birdPaint.color = palette.horizon.withValues(alpha: 0.32 * fade);
 
-    const offsets = [
-      Offset.zero,
-      Offset(-0.07, 0.05),
-      Offset(-0.13, -0.03),
-    ];
+    const offsets = [Offset.zero, Offset(-0.07, 0.05), Offset(-0.13, -0.03)];
 
     for (var i = 0; i < offsets.length; i++) {
       final x = (t * 1.2 - 0.1 + offsets[i].dx) * size.width;
@@ -793,13 +851,13 @@ class _SkyLifePainter extends CustomPainter {
           ..moveTo(x - wing, y)
           ..quadraticBezierTo(x - wing * 0.5, y - lift, x, y)
           ..quadraticBezierTo(x + wing * 0.5, y - lift, x + wing, y),
-        paint,
+        _birdPaint,
       );
     }
   }
 
   /// شهاب قصير يمرّ مرّة كل دورة — لحظة تُلاحَظ ولا تتكرّر بإلحاح.
-  void _paintShootingStar(Canvas canvas, Size size) {
+  void _paintShootingStar(Canvas canvas, Size size, double progress) {
     const start = 0.62;
     const span = 0.06;
     if (progress < start || progress > start + span) return;
@@ -807,8 +865,10 @@ class _SkyLifePainter extends CustomPainter {
     final t = (progress - start) / span;
     final fade = math.sin(math.pi * t);
 
-    final from =
-        Offset(size.width * (0.78 - 0.3 * t), size.height * (0.08 + 0.22 * t));
+    final from = Offset(
+      size.width * (0.78 - 0.3 * t),
+      size.height * (0.08 + 0.22 * t),
+    );
     final to = from.translate(size.width * 0.09, size.height * 0.07);
 
     canvas.drawLine(
@@ -827,41 +887,32 @@ class _SkyLifePainter extends CustomPainter {
   }
 
   /// أشعة ناعمة تنبعث من موضع الشمس وتتنفّس ببطء.
-  void _paintRays(Canvas canvas, Size size) {
+  void _paintRays(Canvas canvas, Size size, double progress) {
+    final blade = _rayBlade;
+    final paint = _rayPaint;
+    if (blade == null || paint == null) return;
+
     final center = Offset(
       (palette.orbAlignment.x + 1) / 2 * size.width,
       (palette.orbAlignment.y + 1) / 2 * size.height,
     );
-    final breathe = 0.5 + 0.5 * math.sin(progress * math.pi * 2);
-    final length = size.width * (0.46 + 0.06 * breathe);
+
+    // التنفّس بالتكبير لا بالشفافية: تغيير الشفافية يعني متدرّجًا جديدًا في
+    // كل إطار، أمّا التكبير فمصفوفة على اللوحة ولا يكلّف شيئًا.
+    final breathe = 0.96 + 0.08 * math.sin(progress * math.pi * 2);
 
     canvas
       ..save()
       ..translate(center.dx, center.dy)
+      ..scale(breathe)
       // دوران بطيء جدًّا: دورة كاملة كل عشر دورات مؤقّت.
       ..rotate(progress * math.pi * 0.2);
 
     for (var i = 0; i < 7; i++) {
-      final angle = i * math.pi * 2 / 7;
-      final paint = Paint()
-        ..shader = LinearGradient(
-          colors: [
-            palette.orbGlow.withValues(alpha: 0.12 * breathe),
-            palette.orbGlow.withValues(alpha: 0),
-          ],
-        ).createShader(Rect.fromLTWH(0, -length * 0.06, length, length * 0.12));
-
       canvas
         ..save()
-        ..rotate(angle)
-        ..drawPath(
-          Path()
-            ..moveTo(0, 0)
-            ..lineTo(length, -length * 0.05)
-            ..lineTo(length, length * 0.05)
-            ..close(),
-          paint,
-        )
+        ..rotate(i * math.pi * 2 / 7)
+        ..drawPath(blade, paint)
         ..restore();
     }
 
@@ -870,14 +921,15 @@ class _SkyLifePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SkyLifePainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.palette != palette;
+      oldDelegate.palette != palette || oldDelegate.clock != clock;
 }
 
 /// طبقة الحياة كاملة، بمؤقّت واحد يقودها.
 ///
-/// دورة واحدة كل تسعين ثانية: بطيئة عمدًا حتى تُحسّ السماء حيّة دون أن
-/// تسرق الانتباه من المواقيت. ومغلّفة بـ [RepaintBoundary] فلا يُعاد رسم
-/// بقية الشاشة معها، ويوقفها Flutter تلقائيًا حين تغادر الصفحة.
+/// دورة واحدة كل تسعين ثانية: بطيئة عمدًا حتى تُحسّ السماء حيّة دون أن تسرق
+/// الانتباه من المواقيت. ومغلّفة بـ [RepaintBoundary] فلا يُعاد رسم بقيّة
+/// الشاشة معها، ويوقف Flutter مؤقّتها تلقائيًا حين تغادر الصفحة أو يُخلَّف
+/// التطبيق إلى الخلفية.
 class _SkyLifeLayer extends StatefulWidget {
   const _SkyLifeLayer({required this.palette});
 
@@ -894,6 +946,33 @@ class _SkyLifeLayerState extends State<_SkyLifeLayer>
     duration: const Duration(seconds: 90),
   )..repeat();
 
+  // الرسّامان يُبنيان مرّة واحدة ويعيشان مع الحالة. الودجت الأمّ يُعاد بناؤها
+  // كل ثانية مع العدّاد التنازلي، فبناؤهما داخل build كان يرمي الهندسة
+  // المخزّنة ويعيد حسابها من الصفر مع كل دقّة.
+  _StarFieldPainter? _stars;
+  late _SkyLifePainter _life;
+
+  @override
+  void initState() {
+    super.initState();
+    _makePainters();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SkyLifeLayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // لوحات الألوان ثوابت const، فمقارنة الهويّة تكفي ولا تُعاد البنية إلا
+    // عند تبدّل الصلاة فعلًا.
+    if (oldWidget.palette != widget.palette) _makePainters();
+  }
+
+  void _makePainters() {
+    _stars = widget.palette.hasStars
+        ? _StarFieldPainter(color: widget.palette.ink, clock: _clock)
+        : null;
+    _life = _SkyLifePainter(clock: _clock, palette: widget.palette);
+  }
+
   @override
   void dispose() {
     _clock.dispose();
@@ -902,30 +981,14 @@ class _SkyLifeLayerState extends State<_SkyLifeLayer>
 
   @override
   Widget build(BuildContext context) {
+    final stars = _stars;
     return RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: _clock,
-        builder: (context, _) => Stack(
-          children: [
-            if (widget.palette.hasStars)
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _StarFieldPainter(
-                    color: widget.palette.ink,
-                    progress: _clock.value,
-                  ),
-                ),
-              ),
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _SkyLifePainter(
-                  progress: _clock.value,
-                  palette: widget.palette,
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: Stack(
+        children: [
+          if (stars != null)
+            Positioned.fill(child: CustomPaint(painter: stars)),
+          Positioned.fill(child: CustomPaint(painter: _life)),
+        ],
       ),
     );
   }

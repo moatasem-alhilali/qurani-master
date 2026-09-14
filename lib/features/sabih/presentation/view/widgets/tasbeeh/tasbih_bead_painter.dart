@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:quran_app/features/sabih/data/model/tasbih_bead_material.dart';
@@ -309,8 +310,104 @@ void _paintSpecular(
     );
 }
 
-/// خرزة مفردة للعرض — تستعمل نفس [paintTasbihBead] فلا تفترق العيّنة عن
-/// السبحة أبدًا.
+/// خرزة مرسومة مسبقًا على نسيج واحد (texture) يُعاد ختمه في كل إطار.
+///
+/// **لماذا؟** [paintTasbihBead] تُنفّذ ٦ عمليات تمويه (`MaskFilter.blur`) وقصّ
+/// مسار وأكثر من عشر عمليات رسم. الخرزات على الخيط تسع، والحركة تدوم أكثر
+/// من ثانية بعد كل تسبيحة — أي ما يقارب **٥٤ تمويهة في الإطار الواحد**،
+/// وكل تمويهة تفرض تمريرة رسم خارج الشاشة. هذا كافٍ لإسقاط إطارات على
+/// أجهزة متوسطة، وأشدّ ما يظهر عند التسبيح السريع وهو أكثر وقت تُستعمل فيه
+/// الصفحة.
+///
+/// والخرزة **لا تتغيّر**: كل ما يتغيّر موضعها وحجمها وشفافيّتها. فتُرسم مرّة
+/// واحدة لكل خامة، ثم يصير كل إطار تسع عمليات `drawImageRect` فقط — رسم
+/// مربّع منسوج، أرخص عملية في الرسم. النتيجة نفس الصورة بالضبط لأن
+/// النسيج نفسه مولَّد من [paintTasbihBead] بلا نسخة ثانية من الكود.
+class TasbihBeadStamp {
+  const TasbihBeadStamp._(this.image, this.side);
+
+  final ui.Image image;
+  final int side;
+
+  /// موضع مركز الكرة ونصف قطرها داخل النسيج، نسبةً إلى ضلعه. الكرة مرفوعة
+  /// قليلًا عن المنتصف ليتّسع أسفلها لظلّ التماسّ ممّوهًا بلا اقتطاع.
+  static const _centerY = 0.40;
+  static const _radius = 0.36;
+
+  static final Map<int, TasbihBeadStamp> _cache = {};
+
+  /// ١٢ نسيجًا كحدّ أقصى: ثماني خامات مضروبة في مقاسين على أسوأ تقدير،
+  /// وكلّها صغيرة (٢٥٦×٢٥٦ في أعلى كثافة = ربع ميغابايت).
+  static const _maxEntries = 12;
+
+  /// النسيج بحجم البكسل الحقيقي: الخرزة لا تتجاوز ٦٤ نقطة منطقية في أي
+  /// استعمال، فـ `64 × كثافة الشاشة` رسمٌ بدقّة الجهاز تمامًا بلا إسراف.
+  static int _sideFor(double devicePixelRatio) =>
+      (64 * devicePixelRatio).round().clamp(96, 256);
+
+  // ignore: prefer_constructors_over_static_methods -- مصنع بذاكرة مؤقّتة
+  static TasbihBeadStamp of(TasbihBeadMaterial material, double dpr) {
+    final side = _sideFor(dpr);
+    final key = Object.hash(material, side);
+
+    final cached = _cache[key];
+    if (cached != null) return cached;
+
+    if (_cache.length >= _maxEntries) {
+      final oldest = _cache.keys.first;
+      _cache.remove(oldest)?.image.dispose();
+    }
+
+    final stamp = _render(material, side);
+    _cache[key] = stamp;
+    return stamp;
+  }
+
+  static TasbihBeadStamp _render(TasbihBeadMaterial material, int side) {
+    final recorder = ui.PictureRecorder();
+    paintTasbihBead(
+      Canvas(recorder),
+      Offset(side / 2, side * _centerY),
+      side * _radius,
+      material.palette,
+    );
+    final picture = recorder.endRecording();
+    final image = picture.toImageSync(side, side);
+    picture.dispose();
+    return TasbihBeadStamp._(image, side);
+  }
+
+  /// ختم الخرزة بحيث يقع مركز الكرة على [center] ويصير نصف قطرها [radius].
+  void paint(
+    Canvas canvas,
+    Offset center,
+    double radius, {
+    double opacity = 1,
+  }) {
+    if (radius <= 0 || opacity <= 0) return;
+
+    // ضلع الوجهة يُشتقّ من نصف القطر المطلوب، فينكمش النسيج كلّه بنفس
+    // النسبة ويبقى الظلّ والبريق في مواضعهما من الكرة.
+    final extent = radius / _radius;
+
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(0, 0, side.toDouble(), side.toDouble()),
+      Rect.fromLTWH(
+        center.dx - extent / 2,
+        center.dy - extent * _centerY,
+        extent,
+        extent,
+      ),
+      Paint()
+        ..filterQuality = FilterQuality.medium
+        ..color = Color.fromRGBO(255, 255, 255, opacity),
+    );
+  }
+}
+
+/// عيّنة خامة مفردة. تستعمل نفس نسيج السبحة، فما يُختار هنا هو ما يظهر على
+/// الخيط بالضبط — ولا تُرسم الخرزة من جديد عند كل إعادة بناء للشيت.
 class TasbihBeadPreview extends StatelessWidget {
   const TasbihBeadPreview({
     required this.material,
@@ -326,29 +423,32 @@ class TasbihBeadPreview extends StatelessWidget {
     return SizedBox.square(
       dimension: size,
       child: CustomPaint(
-        painter: _BeadPreviewPainter(palette: material.palette),
+        painter: _BeadPreviewPainter(
+          stamp: TasbihBeadStamp.of(
+            material,
+            MediaQuery.devicePixelRatioOf(context),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _BeadPreviewPainter extends CustomPainter {
-  const _BeadPreviewPainter({required this.palette});
+  const _BeadPreviewPainter({required this.stamp});
 
-  final TasbihBeadPalette palette;
+  final TasbihBeadStamp stamp;
 
   @override
   void paint(Canvas canvas, Size size) {
-    paintTasbihBead(
+    stamp.paint(
       canvas,
       size.center(Offset.zero),
-      size.shortestSide / 2 * 0.94,
-      palette,
-      withContactShadow: false,
+      size.shortestSide / 2 * 0.9,
     );
   }
 
   @override
   bool shouldRepaint(covariant _BeadPreviewPainter oldDelegate) =>
-      oldDelegate.palette != palette;
+      oldDelegate.stamp != stamp;
 }

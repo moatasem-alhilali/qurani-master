@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
@@ -20,9 +21,18 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
   bool _processingCompletion = false;
 
   Future<void> initialize(String videoId) async {
+    // نُفرِغ الجلسة عمدًا بدل `copyWith`.
+    //
+    // `_configureController` يتخلّص من المتحكّم القديم، و`copyWith` كان يُبقي
+    // الجلسة السابقة فيظلّ `YoutubePlayer` مركّبًا على متحكّم مُتخلَّص منه
+    // حتى تصل حالة النجاح: أيّ قراءة لقيمته بينهما ترمي
+    // «used after being disposed» فتتوقّف الحلقة عن العمل. إفراغ الجلسة
+    // يفكّ المشغّل أولًا، ثم يصير التخلّص آمنًا.
     emit(
-      state.copyWith(
+      YoungMuslimPlayerState(
         loadState: RequestState.loading,
+        autoPlayEnabled: state.autoPlayEnabled,
+        completionTrigger: state.completionTrigger,
       ),
     );
     try {
@@ -100,10 +110,15 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
   Future<void> _configureController(
     YoungMuslimPlayerSessionEntity session,
   ) async {
-    if (controller != null && _controllerListener != null) {
-      controller!.removeListener(_controllerListener!);
+    final previous = controller;
+    if (previous != null && _controllerListener != null) {
+      previous.removeListener(_controllerListener!);
     }
-    controller?.dispose();
+    // التخلّص يُؤجَّل إلى ما بعد الإطار: عندها يكون `YoutubePlayer` القديم قد
+    // فُكّ من الشجرة فعلًا، فلا يقرأ أحد قيمة متحكّم مُتخلَّص منه.
+    if (previous != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
+    }
 
     controller = YoutubePlayerController(
       initialVideoId: session.video.youtubeVideoId,
