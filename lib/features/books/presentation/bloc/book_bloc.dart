@@ -22,9 +22,9 @@ class BookBloc extends Bloc<BookEvent, BookState> {
     );
   }
 
-  FutureOr<void> index(event, emit) async {
+  FutureOr<void> index(GetBookEvent event, Emitter<BookState> emit) async {
     emit(state.copyWith(getState: RequestState.loading));
-    var result = await repositoryImpl.index(1);
+    final result = await repositoryImpl.index(1);
     result.fold(
       (l) {
         emit(state.copyWith(getState: RequestState.error));

@@ -8,7 +8,8 @@ import 'package:quran_app/features/daily_wird/presentation/bloc/daily_wird_bloc.
 Future<void> registerDailyWirdDependencies(GetIt getIt) async {
   getIt
     ..registerLazySingleton<DailyWirdDatabaseService>(
-        DailyWirdDatabaseService.new)
+      DailyWirdDatabaseService.new,
+    )
     ..registerLazySingleton<DailyWirdReminderService>(
       () => DailyWirdReminderService(
         notificationService: getIt<NotificationService>(),

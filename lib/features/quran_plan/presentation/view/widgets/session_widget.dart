@@ -1,140 +1,103 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
-import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
-import 'package:quran_library/quran_library.dart';
+import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_navigation.dart';
 
+/// صفّ جلسة في قائمة الخطة: نحيل، تفصله شعرة، بلا بطاقة ولا ظلّ.
 class SessionWidget extends StatelessWidget {
   const SessionWidget({
     required this.plan,
     required this.session,
+    this.isLast = false,
     super.key,
   });
 
   final QuranPlan plan;
   final QuranPlanSession session;
+  final bool isLast;
+
   @override
   Widget build(BuildContext context) {
-    final dateStr = session.completedAt != null
-        ? DateFormat('yyyy-MM-dd – kk:mm').format(session.completedAt!)
-        : '—';
+    final skin = AppSkin.of(context);
     final isCompleted = session.completed;
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.sp),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (isCompleted)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.sp, vertical: 4.sp),
-              child: Text(
-                'تم الإنجاز: $dateStr',
-                style: context.bodyMedium?.copyWith(
-                  color: context.gray2,
-                  fontSize: 10.sp,
-                ),
+    final completedAt = session.completedAt;
+    final dateLabel = completedAt != null
+        ? DateFormat('yyyy/MM/dd · HH:mm').format(completedAt)
+        : null;
+
+    return InkWell(
+      onTap: () => openSessionInQuran(context, session),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        decoration: isLast
+            ? null
+            : BoxDecoration(
+                border: Border(bottom: BorderSide(color: skin.hairline)),
               ),
+        child: Row(
+          children: [
+            // رقم الجلسة يقوم مقام الأيقونة: أقصر وأصدق في الدلالة.
+            SizedBox(
+              width: 26.w,
+              child: isCompleted
+                  ? AppIcon(
+                      AppIcons.checkSmall,
+                      color: skin.accent,
+                      size: 15.sp,
+                    )
+                  : Text(
+                      '${session.sessionNumber}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.62),
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
             ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
-            padding: EdgeInsets.symmetric(vertical: 4.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              color: context.surfaceColor,
-              border: Border.all(
-                color: isCompleted ? context.primaryColor.withValues(alpha: 0.5) : context.outline.withValues(alpha: 0.85),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: context.shadow.withValues(alpha: 0.04),
-                  blurRadius: 8.r,
-                  offset: Offset(0, 3.h),
-                ),
-              ],
-            ),
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 10.r,
-                backgroundColor:
-                    isCompleted ? context.primaryColor : context.gray1,
-                child: Text(
-                  isCompleted ? '✓' : '?',
-                  style: context.bodyMedium?.copyWith(
-                    color: isCompleted ? context.onPrimaryColor : context.gray2,
-                    fontSize: 13.sp,
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    sessionRangeLabel(session),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: isCompleted
+                          ? skin.ink.withValues(alpha: 0.72)
+                          : skin.ink,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                    ),
                   ),
-                ),
-              ),
-              // title: Text(
-              //   'جلسة ${session.sessionNumber}',
-              //   style: context.bodyMedium,
-              // ),
-              subtitle: StyleButtonWrap(
-                onTap: () {
-                  final quranCtrl = QuranCtrl.instance;
-                  final uqIndex = quranCtrl.resolveAyahUq(
-                    surahNumber: session.fromSurahId,
-                    ayahNumber: session.fromAyahNumber,
-                  );
-                  final ayah = quranCtrl.getAyahByUq(uqIndex);
-
-                  int targetPage = 1;
-
-                  if (ayah.ayahUQNumber != 0) {
-                    targetPage = ayah.page;
-                    // Jump in controller so when user returns, controller is at the right page
-                    quranCtrl.jumpToPage(targetPage - 1);
-                    quranCtrl.toggleAyahSelection(ayah.ayahUQNumber);
-                  } else {
-                    final surah = quranCtrl.surahs.firstWhereOrNull(
-                        (s) => s.surahNumber == session.fromSurahId);
-                    if (surah != null && surah.ayahs.isNotEmpty) {
-                      targetPage = surah.ayahs.first.page;
-                      quranCtrl.jumpToPage(targetPage - 1);
-                    }
-                  }
-
-                  context.push(
-                    ReadQuranScreen(
-                      page: targetPage - 1,
+                  if (dateLabel != null)
+                    Text(
+                      'تم الإنجاز · $dateLabel',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
+                      ),
                     ),
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Builder(
-                      builder: (context) {
-                        final quranCtrl = QuranCtrl.instance;
-
-                        final fromSurah = quranCtrl.surahs.firstWhereOrNull(
-                            (s) => s.surahNumber == session.fromSurahId);
-                        final toSurah = quranCtrl.surahs.firstWhereOrNull(
-                            (s) => s.surahNumber == session.toSurahId);
-
-                        return Text(
-                          'من ${fromSurah?.arabicName ?? ''} الاية ${session.fromAyahNumber} \n'
-                          'إلى ${toSurah?.arabicName ?? ''} الاية ${session.toAyahNumber}',
-                          style: context.bodyMedium?.copyWith(
-                            color: isCompleted
-                                ? context.primaryColor
-                                : context.gray1,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
-          ),
-        ],
+            SizedBox(width: 8.w),
+            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+          ],
+        ),
       ),
     );
   }

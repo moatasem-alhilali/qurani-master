@@ -16,7 +16,8 @@ Future<void> showMyBottomSheetFunction({
 }) async {
   showModalBottomSheet<void>(
     context: context,
-    backgroundColor: context.scaffoldBackgroundColor,
+    // يحترم اللون الممرَّر، ويعود لأرضية التطبيق عند غيابه.
+    backgroundColor: backgroundColor ?? context.scaffoldBackgroundColor,
     isScrollControlled: true,
     elevation: 0,
     useSafeArea: true,

@@ -19,8 +19,8 @@ class DailyWirdState extends Equatable {
   final DailyWirdStats? stats;
   final String? errorMessage;
 
-  bool get requiresPresetSelection => (settings?.selectedPresetId == null ||
-      settings!.selectedPresetId!.isEmpty);
+  bool get requiresPresetSelection =>
+      settings?.selectedPresetId == null || settings!.selectedPresetId!.isEmpty;
 
   DailyWirdState copyWith({
     RequestState? requestState,

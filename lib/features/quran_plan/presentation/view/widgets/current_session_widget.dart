@@ -1,18 +1,21 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/snackbar_extension.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/animated_snackbar_widget.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
-import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
-import 'package:quran_library/quran_library.dart';
+import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_navigation.dart';
 
+/// جلسة اليوم — العنصر المرتفع الوحيد في شاشة الخطة.
+///
+/// ما يفتحه القارئ الآن يستحقّ أن يُرى قبل غيره، فبقي له الارتفاع وحده
+/// وبقيت بقيّة الجلسات صفوفًا نحيلة.
 class CurrentSessionWidget extends StatelessWidget {
   const CurrentSessionWidget({
     required this.plan,
@@ -22,121 +25,144 @@ class CurrentSessionWidget extends StatelessWidget {
 
   final QuranPlan plan;
   final QuranPlanSession session;
+
+  void _confirmComplete(BuildContext context) {
+    HapticFeedback.selectionClick();
+    context.showCustomSnackbar(
+      'سيتم إنهاء الجلسة ؟',
+      style: SnackBarType.warning,
+      actionLabel: 'تأكيد',
+      duration: const Duration(seconds: 3),
+      paddingBottom: 100,
+      onAction: () {
+        if (session.id == null || plan.id == null) {
+          return;
+        }
+        HapticFeedback.mediumImpact();
+        context
+            .read<QuranPlanBloc>()
+            .add(CompleteSessionEvent(session.id!, plan.id!));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final isCompleted = session.completed;
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
-          color: context.surfaceColor,
-          border: Border.all(
-            color: isCompleted ? context.primaryColor.withValues(alpha: 0.5) : context.outline.withValues(alpha: 0.85),
+      padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
+      child: InkWell(
+        onTap: () => openSessionInQuran(context, session),
+        borderRadius: BorderRadius.circular(14.r),
+        child: Ink(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
+          decoration: BoxDecoration(
+            color: skin.raised,
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(color: skin.raisedBorder),
+            boxShadow: skin.raisedShadow,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow.withValues(alpha: 0.04),
-              blurRadius: 8.r,
-              offset: Offset(0, 3.h),
-            ),
-          ],
-        ),
-        child: ListTile(
-          leading: CircleAvatar(
-            radius: 10.r,
-            backgroundColor: isCompleted ? context.primaryColor : context.gray1,
-            child: Text(
-              session.sessionNumber.toString(),
-              style: context.bodyMedium?.copyWith(
-                color: isCompleted ? context.onPrimaryColor : context.gray2,
-                fontSize: 13.sp,
-                // Add outline for the timer emoji when not completed
-                shadows: !isCompleted
-                    ? [
-                        Shadow(
-                          blurRadius: 2,
-                          color: Colors.black.withOpacity(0.3),
-                        ),
-                      ]
-                    : [],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'جلسة ${session.sessionNumber}',
+                    style: TextStyle(
+                      color: skin.ink,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      isCompleted ? 'مُنجزة' : 'جلستك الحالية',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  _CompleteButton(
+                    isCompleted: isCompleted,
+                    onTap: () => _confirmComplete(context),
+                  ),
+                ],
               ),
-            ),
-          ),
-          subtitle: StyleButtonWrap(
-            onTap: () {
-              final quranCtrl = QuranCtrl.instance;
-              final uqIndex = quranCtrl.resolveAyahUq(
-                surahNumber: session.fromSurahId,
-                ayahNumber: session.fromAyahNumber,
-              );
-              final ayah = quranCtrl.getAyahByUq(uqIndex);
-
-              int targetPage = 1;
-
-              if (ayah.ayahUQNumber != 0) {
-                targetPage = ayah.page;
-                // Jump in controller so when user returns, controller is at the right page
-                quranCtrl.jumpToPage(targetPage - 1);
-                quranCtrl.toggleAyahSelection(ayah.ayahUQNumber);
-              } else {
-                final surah = quranCtrl.surahs.firstWhereOrNull(
-                    (s) => s.surahNumber == session.fromSurahId);
-                if (surah != null && surah.ayahs.isNotEmpty) {
-                  targetPage = surah.ayahs.first.page;
-                  quranCtrl.jumpToPage(targetPage - 1);
-                }
-              }
-
-              context.push(
-                ReadQuranScreen(
-                  page: targetPage - 1,
+              SizedBox(height: 6.h),
+              Text(
+                sessionRangeLabel(session),
+                style: TextStyle(
+                  color: skin.inkSoft,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                  height: 1.5,
                 ),
-              );
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Builder(
-                  builder: (context) {
-                    final quranCtrl = QuranCtrl.instance;
-
-                    final fromSurah = quranCtrl.surahs.firstWhereOrNull(
-                        (s) => s.surahNumber == session.fromSurahId);
-                    final toSurah = quranCtrl.surahs.firstWhereOrNull(
-                        (s) => s.surahNumber == session.toSurahId);
-
-                    return Text(
-                      'من ${fromSurah?.arabicName ?? ''} الاية ${session.fromAyahNumber} \n'
-                      'إلى ${toSurah?.arabicName ?? ''} الاية ${session.toAyahNumber}',
-                      style: context.bodyMedium,
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 8.h),
+              Row(
+                children: [
+                  AppIcon(AppIcons.quran, color: skin.accent, size: 13.sp),
+                  SizedBox(width: 6.w),
+                  Text(
+                    'افتح المصحف عند بداية الجلسة',
+                    style: TextStyle(
+                      color: skin.accent,
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.circle_outlined,
-              color: isCompleted ? context.primaryColor : context.gray1,
+        ),
+      ),
+    );
+  }
+}
+
+/// زرّ إنهاء الجلسة: مربّع صغير يمتلئ ذهبًا حين تُنجز.
+class _CompleteButton extends StatelessWidget {
+  const _CompleteButton({required this.isCompleted, required this.onTap});
+
+  final bool isCompleted;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Semantics(
+      button: true,
+      label: isCompleted ? 'جلسة مُنجزة' : 'إنهاء الجلسة',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10.r),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          width: 30.w,
+          height: 30.w,
+          decoration: BoxDecoration(
+            color: isCompleted ? AppColors.gold : skin.iconChip,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Center(
+            child: AppIcon(
+              AppIcons.check,
+              color: isCompleted
+                  ? (skin.isDark ? AppColors.brandNight : AppColors.brandIvory)
+                  : skin.accent,
+              size: 16.sp,
             ),
-            onPressed: () {
-              context.showCustomSnackbar(
-                'سيتم إنهاء الجلسة ؟',
-                style: SnackBarType.warning,
-                actionLabel: 'تأكيد',
-                duration: const Duration(seconds: 3),
-                paddingBottom: 100,
-                onAction: () {
-                  context
-                      .read<QuranPlanBloc>()
-                      .add(CompleteSessionEvent(session.id!, plan.id!));
-                },
-              );
-            },
           ),
         ),
       ),

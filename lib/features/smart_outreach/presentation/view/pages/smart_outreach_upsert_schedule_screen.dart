@@ -1,16 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
@@ -20,6 +24,7 @@ import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_co
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_settings_store.dart';
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_phone_picker_sheet.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
 
 class SmartOutreachUpsertScheduleScreen extends StatefulWidget {
   const SmartOutreachUpsertScheduleScreen({
@@ -149,104 +154,206 @@ class _SmartOutreachUpsertScheduleScreenState
         }
       },
       child: AppScaffoldWidget(
-        title: _isEditing ? 'تعديل القائمة' : 'إضافة قائمة',
+        title: _isEditing ? 'تعديل القائمة' : 'قائمة جديدة',
         showLargeHeader: false,
         initialOffset: null,
         body: _loadingDefaults
-            ? Center(
-                child: CircularProgressIndicator(color: context.primaryColor),
-              )
+            ? const OutreachLoading()
             : Form(
                 key: _formKey,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      _DraftHero(
-                        isEditing: _isEditing,
-                        time: _selectedTime.format(context),
-                        contactsCount: _rows.length,
-                      ),
-                      SizedBox(height: 12.h),
-                      _TitleField(controller: _titleController),
-                      SizedBox(height: 12.h),
-                      _ContactsPanel(
-                        rows: _rows,
-                        onAdd: _addFromContacts,
-                        onRemove: _remove,
-                      ),
-                      SizedBox(height: 12.h),
-                      _TimePanel(
-                        selectedTime: _selectedTime.format(context),
-                        fajrTime: fajrPrayer == null
-                            ? null
-                            : _formatPrayerTime(context, fajrPrayer),
-                        onChange: _showTimeOptionsSheet,
-                      ),
-                      SizedBox(height: 12.h),
-                      _AdvancedHeader(
-                        expanded: _showAdvancedSettings,
-                        onTap: () {
-                          setState(() {
-                            _showAdvancedSettings = !_showAdvancedSettings;
-                          });
-                        },
-                      ),
-                      if (_showAdvancedSettings) ...[
-                        SizedBox(height: 10.h),
-                        _AdvancedPanel(
-                          isEnabled: _isEnabled,
-                          isDaily: _isDaily,
-                          selectedDays: _selectedDays,
-                          ringTimeout: _ringTimeout,
-                          hangupDelay: _hangupDelay,
-                          delayBetweenCalls: _delayBetweenCalls,
-                          stopOnFirstAnswered: _stopOnFirstAnswered,
-                          retryEnabled: _retryEnabled,
-                          repeatCycle: _repeatCycle,
-                          onEnabledChanged: (value) {
-                            setState(() => _isEnabled = value);
-                          },
-                          onDailyChanged: (value) {
-                            setState(() => _isDaily = value);
-                          },
-                          onDayChanged: _toggleDay,
-                          onRingChanged: (value) {
-                            setState(() => _ringTimeout = value.round());
-                          },
-                          onHangupChanged: (value) {
-                            setState(() => _hangupDelay = value.round());
-                          },
-                          onDelayChanged: (value) {
-                            setState(() => _delayBetweenCalls = value.round());
-                          },
-                          onStopChanged: (value) {
-                            setState(() => _stopOnFirstAnswered = value);
-                          },
-                          onRetryChanged: (value) {
-                            setState(() => _retryEnabled = value);
-                          },
-                          onRepeatChanged: (value) {
-                            setState(() => _repeatCycle = value);
-                          },
-                        ),
-                      ],
-                      SizedBox(height: 14.h),
-                      BlocBuilder<SmartOutreachSchedulesBloc,
-                          SmartOutreachSchedulesState>(
-                        builder: (context, state) {
-                          return _SaveButton(
-                            loading: state.saveState == RequestState.loading,
-                            onTap: _onSavePressed,
-                          );
-                        },
-                      ),
-                      SizedBox(height: 36.h),
-                    ],
-                  ),
+                child: OutreachGround(
+                  children: _buildSections(context, fajrPrayer),
                 ),
               ),
+      ),
+    );
+  }
+
+  List<Widget> _buildSections(
+    BuildContext context,
+    PrayerInfoModel? fajrPrayer,
+  ) {
+    final skin = AppSkin.of(context);
+    final fajrTime =
+        fajrPrayer == null ? null : _formatPrayerTime(context, fajrPrayer);
+
+    return <Widget>[
+      const HomeSectionHeader(title: 'اسم القائمة'),
+      // خطّ الحقل نفسه هو الفاصل هنا، فلا داعي لشعرة ثانية تحته.
+      _TitleField(controller: _titleController),
+      const HomeSectionHeader(title: 'وقت الاتصال'),
+      OutreachRow(
+        title: 'موعد البدء',
+        icon: AppIcons.clock,
+        subtitle: fajrTime == null
+            ? 'اختر وقتًا يدويًا أو استعمل وقت الفجر'
+            : 'وقت الفجر اليوم $fajrTime',
+        trailing: OutreachValue(text: _selectedTime.format(context)),
+        showChevron: true,
+        isLast: true,
+        onTap: _showTimeOptionsSheet,
+      ),
+      skin.divider(),
+      HomeSectionHeader(
+        title: 'جهات الاتصال · ${_rows.length}',
+      ),
+      ..._buildContactRows(),
+      OutreachRow(
+        title: 'اختيار من جهات الاتصال',
+        icon: AppIcons.add,
+        subtitle: 'أضف رقمًا جديدًا إلى هذه القائمة',
+        isLast: true,
+        onTap: _addFromContacts,
+      ),
+      skin.divider(),
+      OutreachRow(
+        title: 'إعدادات متقدمة',
+        icon: AppIcons.sliders,
+        subtitle: 'الأيام، مدد الانتظار، وسلوك التكرار',
+        isLast: !_showAdvancedSettings,
+        trailing: AppIcon(
+          _showAdvancedSettings ? AppIcons.up : AppIcons.down,
+          color: skin.accent,
+          size: 15.sp,
+        ),
+        onTap: () {
+          unawaited(HapticFeedback.selectionClick());
+          setState(() {
+            _showAdvancedSettings = !_showAdvancedSettings;
+          });
+        },
+      ),
+      if (_showAdvancedSettings) ..._buildAdvancedRows(),
+      BlocBuilder<SmartOutreachSchedulesBloc, SmartOutreachSchedulesState>(
+        builder: (context, state) {
+          return OutreachPrimaryButton(
+            label: state.saveState == RequestState.loading
+                ? 'جارِ الحفظ...'
+                : 'حفظ القائمة',
+            icon: AppIcons.save,
+            loading: state.saveState == RequestState.loading,
+            onTap: _onSavePressed,
+          );
+        },
+      ),
+      SizedBox(height: 32.h),
+    ];
+  }
+
+  List<Widget> _buildContactRows() {
+    if (_rows.isEmpty) {
+      return <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 10.h),
+          child: Text(
+            'لم تُضف أرقام بعد.',
+            style: TextStyle(
+              color: AppSkin.of(context).inkSoft.withValues(alpha: 0.78),
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return <Widget>[
+      for (final entry in _rows.asMap().entries)
+        _ContactRow(
+          name: entry.value.labelController.text.trim().isEmpty
+              ? 'بدون اسم'
+              : entry.value.labelController.text.trim(),
+          phone: entry.value.phoneController.text,
+          onRemove: () => _remove(entry.key),
+        ),
+    ];
+  }
+
+  List<Widget> _buildAdvancedRows() {
+    return <Widget>[
+      OutreachSwitchRow(
+        title: 'تشغيل هذه القائمة',
+        icon: AppIcons.power,
+        value: _isEnabled,
+        onChanged: (value) => setState(() => _isEnabled = value),
+      ),
+      OutreachSwitchRow(
+        title: 'تكرار يومي',
+        icon: AppIcons.calendar,
+        subtitle: _isDaily ? 'كل يوم' : 'أيام مختارة من الأسبوع',
+        value: _isDaily,
+        onChanged: (value) => setState(() => _isDaily = value),
+      ),
+      if (!_isDaily) _buildDaysPicker(),
+      OutreachSliderRow(
+        label: 'مدة انتظار الرد',
+        value: _ringTimeout.toDouble(),
+        min: 5,
+        max: 60,
+        divisions: 55,
+        valueLabel: '$_ringTimeout ث',
+        onChanged: (value) => setState(() => _ringTimeout = value.round()),
+      ),
+      OutreachSliderRow(
+        label: 'الانتظار بعد الرد',
+        value: _hangupDelay.toDouble(),
+        min: 5,
+        max: 120,
+        divisions: 23,
+        valueLabel: '$_hangupDelay ث',
+        onChanged: (value) => setState(() => _hangupDelay = value.round()),
+      ),
+      OutreachSliderRow(
+        label: 'الفاصل بين الأرقام',
+        value: _delayBetweenCalls.toDouble(),
+        min: 1,
+        max: 30,
+        divisions: 29,
+        valueLabel: '$_delayBetweenCalls ث',
+        onChanged: (value) =>
+            setState(() => _delayBetweenCalls = value.round()),
+      ),
+      OutreachSwitchRow(
+        title: 'إيقاف بعد أول رد',
+        icon: AppIcons.stop,
+        value: _stopOnFirstAnswered,
+        onChanged: (value) => setState(() => _stopOnFirstAnswered = value),
+      ),
+      OutreachSwitchRow(
+        title: 'إعادة عند عدم الرد',
+        icon: AppIcons.replay,
+        value: _retryEnabled,
+        onChanged: (value) => setState(() => _retryEnabled = value),
+      ),
+      OutreachSwitchRow(
+        title: 'تكرار الحلقة بالكامل',
+        icon: AppIcons.refresh,
+        value: _repeatCycle,
+        isLast: true,
+        onChanged: (value) => setState(() => _repeatCycle = value),
+      ),
+    ];
+  }
+
+  Widget _buildDaysPicker() {
+    final skin = AppSkin.of(context);
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 10.h),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: skin.hairline)),
+      ),
+      child: Wrap(
+        spacing: 6.w,
+        runSpacing: 6.h,
+        children: <Widget>[
+          for (var day = 1; day <= 7; day++)
+            OutreachChoiceChip(
+              label: outreachWeekdayLabel(day),
+              selected: _selectedDays.contains(day),
+              onTap: () => _toggleDay(day, !_selectedDays.contains(day)),
+            ),
+        ],
       ),
     );
   }
@@ -275,43 +382,66 @@ class _SmartOutreachUpsertScheduleScreenState
   }
 
   Future<void> _showTimeOptionsSheet() async {
+    final skin = AppSkin.of(context);
     final fajrPrayer = _getFajrPrayer(context);
+    final fajrTime =
+        fajrPrayer == null ? null : _formatPrayerTime(context, fajrPrayer);
+
     final selectedOption = await showModalBottomSheet<_ScheduleTimeOption>(
       context: context,
-      backgroundColor: context.scaffoldBackgroundColor,
-      showDragHandle: true,
-      builder: (context) {
+      backgroundColor: skin.ground,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(14.r)),
+      ),
+      builder: (sheetContext) {
         return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _SheetOption(
-                  icon: AppIcons.clock,
-                  title: 'اختيار وقت يدوي',
-                  subtitle: 'حدد الساعة والدقيقة بنفسك',
-                  onTap: () {
-                    Navigator.of(context).pop(_ScheduleTimeOption.manual);
-                  },
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 8.h, bottom: 6.h),
+                child: Container(
+                  width: 34.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: skin.hairline,
+                    borderRadius: BorderRadius.circular(999.r),
+                  ),
                 ),
-                SizedBox(height: 8.h),
-                _SheetOption(
-                  icon: AppIcons.moon,
-                  title: fajrPrayer == null
-                      ? 'استخدام وقت الفجر'
-                      : 'استخدام وقت الفجر ('
-                          '${_formatPrayerTime(context, fajrPrayer)})',
-                  subtitle: fajrPrayer == null
-                      ? 'مواقيت الصلاة غير جاهزة الآن'
-                      : 'سيتم تعبئة الوقت تلقائيًا',
-                  enabled: fajrPrayer != null,
-                  onTap: () {
-                    Navigator.of(context).pop(_ScheduleTimeOption.fajr);
-                  },
-                ),
-              ],
-            ),
+              ),
+              const HomeSectionHeader(title: 'وقت الاتصال'),
+              OutreachRow(
+                title: 'اختيار وقت يدوي',
+                icon: AppIcons.clock,
+                subtitle: 'حدّد الساعة والدقيقة بنفسك',
+                showChevron: true,
+                onTap: () {
+                  Navigator.of(sheetContext).pop(_ScheduleTimeOption.manual);
+                },
+              ),
+              OutreachRow(
+                title: fajrTime == null
+                    ? 'استخدام وقت الفجر'
+                    : 'استخدام وقت الفجر · $fajrTime',
+                icon: AppIcons.moon,
+                subtitle: fajrTime == null
+                    ? 'مواقيت الصلاة غير جاهزة الآن'
+                    : 'يُعبَّأ الوقت تلقائيًا من مواقيت اليوم',
+                dimmed: fajrTime == null,
+                showChevron: fajrTime != null,
+                isLast: true,
+                onTap: fajrTime == null
+                    ? null
+                    : () {
+                        Navigator.of(sheetContext).pop(
+                          _ScheduleTimeOption.fajr,
+                        );
+                      },
+              ),
+              SizedBox(height: 10.h),
+            ],
           ),
         );
       },
@@ -333,6 +463,7 @@ class _SmartOutreachUpsertScheduleScreenState
       initialTime: _selectedTime,
     );
     if (picked != null) {
+      unawaited(HapticFeedback.selectionClick());
       setState(() => _selectedTime = picked);
     }
   }
@@ -356,6 +487,7 @@ class _SmartOutreachUpsertScheduleScreenState
     });
 
     if (!silent) {
+      unawaited(HapticFeedback.selectionClick());
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -390,6 +522,7 @@ class _SmartOutreachUpsertScheduleScreenState
 
     if (!mounted || selectedPhone == null) return;
 
+    unawaited(HapticFeedback.selectionClick());
     setState(() {
       _rows.add(
         _EditablePhoneRow(
@@ -401,6 +534,7 @@ class _SmartOutreachUpsertScheduleScreenState
   }
 
   void _remove(int index) {
+    unawaited(HapticFeedback.selectionClick());
     setState(() {
       _rows.removeAt(index).dispose();
     });
@@ -420,6 +554,8 @@ class _SmartOutreachUpsertScheduleScreenState
 
   Future<void> _onSavePressed() async {
     if (!_formKey.currentState!.validate()) return;
+
+    unawaited(HapticFeedback.mediumImpact());
 
     if (_isEnabled && Platform.isAndroid) {
       final exactAlarmGranted = await sl<NotificationPermissionsService>()
@@ -473,78 +609,9 @@ class _SmartOutreachUpsertScheduleScreenState
           ),
         );
   }
-
-  static String _weekdayLabel(int day) {
-    switch (day) {
-      case 1:
-        return 'الإثنين';
-      case 2:
-        return 'الثلاثاء';
-      case 3:
-        return 'الأربعاء';
-      case 4:
-        return 'الخميس';
-      case 5:
-        return 'الجمعة';
-      case 6:
-        return 'السبت';
-      case 7:
-        return 'الأحد';
-      default:
-        return '$day';
-    }
-  }
 }
 
-class _DraftHero extends StatelessWidget {
-  const _DraftHero({
-    required this.isEditing,
-    required this.time,
-    required this.contactsCount,
-  });
-
-  final bool isEditing;
-  final String time;
-  final int contactsCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(14.w),
-      child: Row(
-        children: [
-          _IconBubble(icon: isEditing ? AppIcons.edit : AppIcons.add),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isEditing ? 'تعديل قائمة اتصال' : 'قائمة اتصال جديدة',
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                Text(
-                  '$time • $contactsCount رقم',
-                  style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: 10.5.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+/// حقل الاسم: سطر واحد فوق خطّ شعرة، لا صندوق ممتلئ حوله.
 class _TitleField extends StatelessWidget {
   const _TitleField({required this.controller});
 
@@ -552,109 +619,72 @@ class _TitleField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      style: TextStyle(
-        color: context.onSurfaceColor,
-        fontSize: 12.5.sp,
-        fontWeight: FontWeight.w800,
-      ),
-      decoration: InputDecoration(
-        labelText: 'اسم المجموعة',
-        hintText: 'مثال: تذكير الفجر',
-        prefixIcon: Padding(
-          padding: EdgeInsets.all(12.w),
-          child: AppIcon(
-            AppIcons.noteEdit,
-            color: context.primaryColor,
-            size: 15.sp,
-            strokeWidth: 1.55,
-          ),
-        ),
-        filled: true,
-        fillColor: context.surfaceColor,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
-          borderSide:
-              BorderSide(color: context.outlineVariant.withValues(alpha: 0.24)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
-          borderSide:
-              BorderSide(color: context.outlineVariant.withValues(alpha: 0.24)),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return 'اكتب اسمًا للمجموعة';
-        }
-        return null;
-      },
-    );
-  }
-}
+    final skin = AppSkin.of(context);
 
-class _ContactsPanel extends StatelessWidget {
-  const _ContactsPanel({
-    required this.rows,
-    required this.onAdd,
-    required this.onRemove,
-  });
-
-  final List<_EditablePhoneRow> rows;
-  final VoidCallback onAdd;
-  final ValueChanged<int> onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(12.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 4.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PanelHeader(
-            icon: AppIcons.contacts,
-            title: 'جهات الاتصال',
-            trailing: '${rows.length}',
+          Padding(
+            padding: EdgeInsets.only(top: 6.h),
+            child: const OutreachIconChip(icon: AppIcons.noteEdit),
           ),
-          SizedBox(height: 10.h),
-          _SmallAction(
-            label: 'اختيار من جهات الاتصال',
-            icon: AppIcons.add,
-            onTap: onAdd,
-          ),
-          if (rows.isEmpty) ...[
-            SizedBox(height: 10.h),
-            Text(
-              'لم تضف أرقامًا بعد.',
-              textAlign: TextAlign.center,
+          SizedBox(width: 10.w),
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              cursorColor: skin.accent,
               style: TextStyle(
-                color: context.onSurfaceVariant,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w600,
+                color: skin.ink,
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w700,
               ),
+              decoration: InputDecoration(
+                filled: false,
+                isDense: true,
+                hintText: 'مثال: تذكير الفجر',
+                hintStyle: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.5),
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.h),
+                errorStyle: TextStyle(
+                  color: AppColors.error,
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: skin.hairline),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: skin.accent),
+                ),
+                errorBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.error),
+                ),
+                focusedErrorBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.error),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'اكتب اسمًا للقائمة';
+                }
+                return null;
+              },
             ),
-          ] else ...[
-            SizedBox(height: 10.h),
-            ...List<Widget>.generate(rows.length, (index) {
-              final row = rows[index];
-              return _ContactTile(
-                name: row.labelController.text.isNotEmpty
-                    ? row.labelController.text
-                    : 'بدون اسم',
-                phone: row.phoneController.text,
-                onRemove: () => onRemove(index),
-              );
-            }),
-          ],
+          ),
         ],
       ),
     );
   }
 }
 
-class _ContactTile extends StatelessWidget {
-  const _ContactTile({
+/// رقم واحد في القائمة: الاسم فوق والرقم تحته بترتيب لاتيني.
+class _ContactRow extends StatelessWidget {
+  const _ContactRow({
     required this.name,
     required this.phone,
     required this.onRemove,
@@ -666,656 +696,59 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 7.h),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: context.surfaceVariant.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(13.r),
-        ),
-        child: Row(
-          children: [
-            AppIcon(
-              AppIcons.user,
-              size: 14.sp,
-              color: context.primaryColor,
-              strokeWidth: 1.55,
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: context.onSurfaceColor,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  Text(
-                    phone,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: TextDirection.ltr,
-                    style: TextStyle(
-                      color: context.onSurfaceVariant,
-                      fontSize: 9.5.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            InkWell(
-              borderRadius: BorderRadius.circular(10.r),
-              onTap: onRemove,
-              child: Padding(
-                padding: EdgeInsets.all(7.w),
-                child: AppIcon(
-                  AppIcons.delete,
-                  color: context.errorColor,
-                  size: 13.sp,
-                  strokeWidth: 1.55,
-                ),
-              ),
-            ),
-          ],
-        ),
+    final skin = AppSkin.of(context);
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 9.h, 16.w, 9.h),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: skin.hairline)),
       ),
-    );
-  }
-}
-
-class _TimePanel extends StatelessWidget {
-  const _TimePanel({
-    required this.selectedTime,
-    required this.fajrTime,
-    required this.onChange,
-  });
-
-  final String selectedTime;
-  final String? fajrTime;
-  final VoidCallback onChange;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(12.w),
       child: Row(
         children: [
-          const _IconBubble(icon: AppIcons.clock),
+          const OutreachIconChip(icon: AppIcons.user),
           SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'وقت الاتصال',
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                Text(
-                  fajrTime == null
-                      ? selectedTime
-                      : '$selectedTime • الفجر $fajrTime',
+                  name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: 10.sp,
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
                     fontWeight: FontWeight.w600,
+                    height: 1.2,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  phone,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textDirection: TextDirection.ltr,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.78),
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.35,
                   ),
                 ),
               ],
             ),
           ),
-          _SmallAction(label: 'تغيير', icon: AppIcons.edit, onTap: onChange),
-        ],
-      ),
-    );
-  }
-}
-
-class _AdvancedHeader extends StatelessWidget {
-  const _AdvancedHeader({
-    required this.expanded,
-    required this.onTap,
-  });
-
-  final bool expanded;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(15.r),
-      onTap: onTap,
-      child: _SoftPanel(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
-        child: Row(
-          children: [
-            AppIcon(
-              AppIcons.settings,
-              color: context.primaryColor,
-              size: 15.sp,
-              strokeWidth: 1.55,
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Text(
-                'إعدادات متقدمة',
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-            AppIcon(
-              expanded ? AppIcons.up : AppIcons.down,
-              color: context.onSurfaceVariant,
-              size: 13.sp,
-              strokeWidth: 1.55,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AdvancedPanel extends StatelessWidget {
-  const _AdvancedPanel({
-    required this.isEnabled,
-    required this.isDaily,
-    required this.selectedDays,
-    required this.ringTimeout,
-    required this.hangupDelay,
-    required this.delayBetweenCalls,
-    required this.stopOnFirstAnswered,
-    required this.retryEnabled,
-    required this.repeatCycle,
-    required this.onEnabledChanged,
-    required this.onDailyChanged,
-    required this.onDayChanged,
-    required this.onRingChanged,
-    required this.onHangupChanged,
-    required this.onDelayChanged,
-    required this.onStopChanged,
-    required this.onRetryChanged,
-    required this.onRepeatChanged,
-  });
-
-  final bool isEnabled;
-  final bool isDaily;
-  final List<int> selectedDays;
-  final int ringTimeout;
-  final int hangupDelay;
-  final int delayBetweenCalls;
-  final bool stopOnFirstAnswered;
-  final bool retryEnabled;
-  final bool repeatCycle;
-  final ValueChanged<bool> onEnabledChanged;
-  final ValueChanged<bool> onDailyChanged;
-  final void Function(int day, bool value) onDayChanged;
-  final ValueChanged<double> onRingChanged;
-  final ValueChanged<double> onHangupChanged;
-  final ValueChanged<double> onDelayChanged;
-  final ValueChanged<bool> onStopChanged;
-  final ValueChanged<bool> onRetryChanged;
-  final ValueChanged<bool> onRepeatChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(12.w),
-      child: Column(
-        children: [
-          _SwitchRow(
-            icon: AppIcons.power,
-            title: 'تشغيل هذه القائمة',
-            value: isEnabled,
-            onChanged: onEnabledChanged,
-          ),
-          _SwitchRow(
-            icon: AppIcons.calendar,
-            title: 'تكرار يومي',
-            value: isDaily,
-            onChanged: onDailyChanged,
-          ),
-          if (!isDaily) ...[
-            SizedBox(height: 8.h),
-            Wrap(
-              spacing: 6.w,
-              runSpacing: 6.h,
-              children: List<Widget>.generate(7, (index) {
-                final day = index + 1;
-                final selected = selectedDays.contains(day);
-                return ChoiceChip(
-                  selected: selected,
-                  label: Text(
-                    _SmartOutreachUpsertScheduleScreenState._weekdayLabel(day),
-                    style: TextStyle(fontSize: 9.5.sp),
-                  ),
-                  onSelected: (value) => onDayChanged(day, value),
-                );
-              }),
-            ),
-          ],
-          SizedBox(height: 8.h),
-          _SliderField(
-            label: 'مدة انتظار الرد',
-            value: ringTimeout.toDouble(),
-            min: 5,
-            max: 60,
-            divisions: 55,
-            suffix: '$ringTimeout ث',
-            onChanged: onRingChanged,
-          ),
-          _SliderField(
-            label: 'الانتظار بعد الرد',
-            value: hangupDelay.toDouble(),
-            min: 5,
-            max: 120,
-            divisions: 23,
-            suffix: '$hangupDelay ث',
-            onChanged: onHangupChanged,
-          ),
-          _SliderField(
-            label: 'الفاصل بين الأرقام',
-            value: delayBetweenCalls.toDouble(),
-            min: 1,
-            max: 30,
-            divisions: 29,
-            suffix: '$delayBetweenCalls ث',
-            onChanged: onDelayChanged,
-          ),
-          _SwitchRow(
-            icon: AppIcons.stop,
-            title: 'إيقاف بعد أول رد',
-            value: stopOnFirstAnswered,
-            onChanged: onStopChanged,
-          ),
-          _SwitchRow(
-            icon: AppIcons.replay,
-            title: 'إعادة عند عدم الرد',
-            value: retryEnabled,
-            onChanged: onRetryChanged,
-          ),
-          _SwitchRow(
-            icon: AppIcons.refresh,
-            title: 'تكرار الحلقة بالكامل',
-            value: repeatCycle,
-            onChanged: onRepeatChanged,
+          SizedBox(width: 8.w),
+          OutreachTextAction(
+            label: 'حذف',
+            icon: AppIcons.delete,
+            danger: true,
+            onTap: onRemove,
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PanelHeader extends StatelessWidget {
-  const _PanelHeader({
-    required this.icon,
-    required this.title,
-    this.trailing,
-  });
-
-  final HugeIconData icon;
-  final String title;
-  final String? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        AppIcon(
-          icon,
-          color: context.primaryColor,
-          size: 15.sp,
-          strokeWidth: 1.55,
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: Text(
-            title,
-            style: TextStyle(
-              color: context.onSurfaceColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
-        if (trailing != null)
-          Text(
-            trailing!,
-            style: TextStyle(
-              color: context.primaryColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _SwitchRow extends StatelessWidget {
-  const _SwitchRow({
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final HugeIconData icon;
-  final String title;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SwitchListTile(
-      dense: true,
-      contentPadding: EdgeInsets.zero,
-      secondary: AppIcon(
-        icon,
-        size: 14.sp,
-        color: value ? context.primaryColor : context.onSurfaceVariant,
-        strokeWidth: 1.55,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: context.onSurfaceColor,
-          fontSize: 11.sp,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      value: value,
-      onChanged: onChanged,
-    );
-  }
-}
-
-class _SliderField extends StatelessWidget {
-  const _SliderField({
-    required this.label,
-    required this.value,
-    required this.min,
-    required this.max,
-    required this.divisions,
-    required this.suffix,
-    required this.onChanged,
-  });
-
-  final String label;
-  final double value;
-  final double min;
-  final double max;
-  final int divisions;
-  final String suffix;
-  final ValueChanged<double> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8.h),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 10.5.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              Text(
-                suffix,
-                style: TextStyle(
-                  color: context.primaryColor,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-          AdaptiveSlider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: divisions,
-            onChanged: onChanged,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({
-    required this.loading,
-    required this.onTap,
-  });
-
-  final bool loading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(14.r),
-      onTap: loading ? null : onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        decoration: BoxDecoration(
-          color: context.primaryColor,
-          borderRadius: BorderRadius.circular(14.r),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (loading)
-              SizedBox(
-                width: 15.w,
-                height: 15.w,
-                child: CircularProgressIndicator(
-                  color: context.onPrimaryColor,
-                  strokeWidth: 2.w,
-                ),
-              )
-            else
-              AppIcon(
-                AppIcons.save,
-                color: context.onPrimaryColor,
-                size: 14.sp,
-                strokeWidth: 1.55,
-              ),
-            SizedBox(width: 7.w),
-            Text(
-              loading ? 'جارِ الحفظ...' : 'حفظ القائمة',
-              style: TextStyle(
-                color: context.onPrimaryColor,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SheetOption extends StatelessWidget {
-  const _SheetOption({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    this.enabled = true,
-  });
-
-  final HugeIconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(15.r),
-      onTap: enabled ? onTap : null,
-      child: _SoftPanel(
-        padding: EdgeInsets.all(12.w),
-        child: Row(
-          children: [
-            AppIcon(
-              icon,
-              color: enabled ? context.primaryColor : context.onSurfaceVariant,
-              size: 16.sp,
-              strokeWidth: 1.55,
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: context.onSurfaceColor,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: context.onSurfaceVariant,
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SmallAction extends StatelessWidget {
-  const _SmallAction({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String label;
-  final HugeIconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12.r),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: context.primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AppIcon(
-              icon,
-              color: context.primaryColor,
-              size: 13.sp,
-              strokeWidth: 1.55,
-            ),
-            SizedBox(width: 6.w),
-            Text(
-              label,
-              style: TextStyle(
-                color: context.primaryColor,
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _IconBubble extends StatelessWidget {
-  const _IconBubble({required this.icon});
-
-  final HugeIconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 38.w,
-      height: 38.w,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: context.primaryColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(13.r),
-      ),
-      child: AppIcon(
-        icon,
-        color: context.primaryColor,
-        size: 16.sp,
-        strokeWidth: 1.55,
-      ),
-    );
-  }
-}
-
-class _SoftPanel extends StatelessWidget {
-  const _SoftPanel({
-    required this.child,
-    required this.padding,
-  });
-
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(17.r),
-        border:
-            Border.all(color: context.outlineVariant.withValues(alpha: 0.24)),
-      ),
-      child: child,
     );
   }
 }

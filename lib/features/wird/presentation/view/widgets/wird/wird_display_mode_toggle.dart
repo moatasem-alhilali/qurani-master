@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
 
+/// تبديل طريقة العرض بين القائمة والبطاقة الواحدة.
 class WirdDisplayModeToggle extends StatelessWidget {
   const WirdDisplayModeToggle({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocBuilder<WirdBloc, WirdState>(
       buildWhen: (p, c) => p.displayMode != c.displayMode,
       builder: (context, state) {
         final isListMode = state.displayMode == WirdDisplayMode.listView;
 
         return Tooltip(
-          message: isListMode ? 'التحويل إلى PageView' : 'التحويل إلى ListView',
-          child: IconButton(
-            visualDensity: VisualDensity.compact,
-            style: IconButton.styleFrom(
-              backgroundColor: context.surfaceColor,
-              side: BorderSide(
-                color: context.outlineVariant.withValues(alpha: 0.32),
+          message: isListMode ? 'عرض ذكرًا واحدًا' : 'عرض الأذكار قائمةً',
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.selectionClick();
+              context.read<WirdBloc>().add(ChangeDisplayModeEvent());
+            },
+            borderRadius: BorderRadius.circular(10.r),
+            child: Container(
+              width: 30.w,
+              height: 30.h,
+              decoration: BoxDecoration(
+                color: skin.iconChip,
+                borderRadius: BorderRadius.circular(10.r),
               ),
-            ),
-            onPressed: () => context.read<WirdBloc>().add(ChangeDisplayModeEvent()),
-            icon: Icon(
-              isListMode ? Icons.view_carousel_rounded : Icons.view_agenda_rounded,
-              color: context.primaryColor,
-              size: 20,
+              child: Center(
+                child: AppIcon(
+                  isListMode ? AppIcons.layers : AppIcons.list,
+                  color: skin.accent,
+                  size: 15.sp,
+                ),
+              ),
             ),
           ),
         );

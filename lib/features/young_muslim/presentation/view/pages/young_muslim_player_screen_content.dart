@@ -9,29 +9,35 @@ class _PlayerErrorBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 420,
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppIcon(
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 40.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 38.w,
+            height: 38.w,
+            decoration: BoxDecoration(
+              color: AppColors.error.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Center(
+              child: AppIcon(
                 AppIcons.warning,
-                size: 44.sp,
-                color: context.errorColor,
-                strokeWidth: 1.55,
+                color: AppColors.error,
+                size: 18.sp,
               ),
-              SizedBox(height: 12.h),
-              Text(
-                message ?? 'تعذر تحميل المشغل الآن.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
+            ),
           ),
-        ),
+          SizedBox(height: 10.h),
+          Text(
+            message ?? 'تعذّر تحميل المشغّل الآن.',
+            textAlign: TextAlign.center,
+            style: youngMuslimRowTitle(skin, size: 13.sp),
+          ),
+        ],
       ),
     );
   }
@@ -60,10 +66,11 @@ class _PlayerContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final nextVideo = session.nextVideo;
-    final nextVideoLabel = session.nextVideo == null
+    final nextVideoLabel = nextVideo == null
         ? null
-        : '${nextVideo!.episodeNumber ?? nextVideo.orderIndex}';
+        : '${nextVideo.episodeNumber ?? nextVideo.orderIndex}';
     final player = YoutubePlayer(
       controller: controller,
       bottomActions: const [
@@ -86,96 +93,137 @@ class _PlayerContent extends StatelessWidget {
       player: player,
       builder: (context, player) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            RepaintBoundary(
-              child: player,
-            ),
+            RepaintBoundary(child: player),
+            SizedBox(height: 14.h),
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 28.h),
+              padding: AppSkin.gutter,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(height: 16.h),
-                  // _PlayerStatsRow(
-                  //   controller: controller,
-                  //   session: session,
-                  // ),
-                  SizedBox(height: 18.h),
-                  Container(
-                    padding: EdgeInsets.all(14.w),
-                    decoration: youngMuslimPanelDecoration(
-                      context,
-                      radius: 16,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const YoungMuslimSectionHeader(
-                          title: 'خيارات المشاهدة',
-                          subtitle: 'تجربة مبسطة بدون تشتيت أو خروج خارجي',
-                        ),
-                        SizedBox(height: 14.h),
-                        SwitchListTile.adaptive(
-                          value: autoPlayEnabled,
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            'تشغيل الفيديو التالي تلقائيًا',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          subtitle: Text(
-                            'ضمن نفس السلسلة فقط بعد نهاية الحلقة',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: context.onSurfaceVariant.withOpacity(0.7),
-                            ),
-                          ),
-                          onChanged: (_) => onToggleAutoPlay(),
-                        ),
-                        if (session.nextVideo != null)
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              onPressed: onPlayNext,
-                              icon: const AppIcon(AppIcons.forward),
-                              label: Text(
-                                'تشغيل التالي: $nextVideoLabel',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
+                  Text(
+                    session.video.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.ink,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w800,
+                      height: 1.3,
                     ),
                   ),
-                  SizedBox(height: 22.h),
-                  const YoungMuslimSectionHeader(
-                    title: 'قائمة السلسلة',
-                    subtitle: 'انتقل بين الحلقات بدون مغادرة المشغل',
-                  ),
-                  SizedBox(height: 14.h),
-                  RepaintBoundary(
-                    child: YoungMuslimVideoCarousel(
-                      videos: session.queue,
-                      compact: true,
-                      seriesTitleBuilder: (_) => session.series.titleAr,
-                      onTap: onPlaySelected,
-                    ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    session.series.titleAr,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: youngMuslimRowSubtitle(skin),
                   ),
                 ],
               ),
             ),
+            skin.divider(),
+            const HomeSectionHeader(title: 'خيارات المشاهدة'),
+            _AutoPlayRow(
+              enabled: autoPlayEnabled,
+              onToggle: onToggleAutoPlay,
+              isLast: nextVideo == null,
+            ),
+            if (nextVideo != null)
+              YoungMuslimActionRow(
+                icon: AppIcons.forward,
+                title: 'تشغيل الحلقة التالية',
+                subtitle: 'الحلقة $nextVideoLabel من نفس السلسلة',
+                isLast: true,
+                onTap: () => unawaited(onPlayNext()),
+              ),
+            skin.divider(),
+            const HomeSectionHeader(title: 'قائمة السلسلة'),
+            RepaintBoundary(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < session.queue.length; i++)
+                    YoungMuslimVideoRow(
+                      video: session.queue[i],
+                      seriesTitle: session.series.titleAr,
+                      isCurrent: session.queue[i].id == session.video.id,
+                      isLast: i == session.queue.length - 1,
+                      onTap: () => unawaited(
+                        onPlaySelected(session.queue[i].id),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(height: 28.h),
           ],
         );
       },
+    );
+  }
+}
+
+/// صفّ التشغيل التلقائي: مفتاح واحد بخلفية مربّع الأيقونة، بلا بطاقة حوله.
+class _AutoPlayRow extends StatelessWidget {
+  const _AutoPlayRow({
+    required this.enabled,
+    required this.onToggle,
+    required this.isLast,
+  });
+
+  final bool enabled;
+  final Future<void> Function() onToggle;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      child: Row(
+        children: [
+          YoungMuslimIconChip(icon: AppIcons.play, active: enabled),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'تشغيل الحلقة التالية تلقائيًا',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimRowTitle(skin),
+                ),
+                Text(
+                  'ضمن السلسلة نفسها فقط بعد نهاية الحلقة',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimRowSubtitle(skin),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Switch.adaptive(
+            value: enabled,
+            activeTrackColor: AppColors.gold,
+            onChanged: (value) {
+              HapticFeedback.selectionClick();
+              unawaited(onToggle());
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -23,7 +23,6 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
     emit(
       state.copyWith(
         loadState: RequestState.loading,
-        errorMessage: null,
       ),
     );
     try {
@@ -109,11 +108,8 @@ class YoungMuslimPlayerCubit extends Cubit<YoungMuslimPlayerState> {
     controller = YoutubePlayerController(
       initialVideoId: session.video.youtubeVideoId,
       flags: YoutubePlayerFlags(
-        autoPlay: true,
-        enableCaption: true,
         controlsVisibleAtStart: true,
         startAt: session.resumeFromSeconds > 5 ? session.resumeFromSeconds : 0,
-        useHybridComposition: true,
       ),
     );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/sheet/full_screen_sheet.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
@@ -23,204 +23,228 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
     required YoungMuslimRewardsSummaryEntity rewardsSummary,
     required List<YoungMuslimAchievementEntity> achievements,
   }) async {
+    final skin = AppSkin.of(context);
+
     context.showFullScreenSheet(
-      child: YoungMuslimRewardsSheet(
-        rewardsSummary: rewardsSummary,
-        achievements: achievements,
+      backgroundColor: skin.ground,
+      appBar: _RewardsSheetHeader(skin: skin),
+      child: ColoredBox(
+        color: skin.ground,
+        child: YoungMuslimRewardsSheet(
+          rewardsSummary: rewardsSummary,
+          achievements: achievements,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final unlocked = achievements.where((item) => item.isUnlocked).toList();
     final locked = achievements.where((item) => !item.isUnlocked).toList();
     final levelProgress =
         (rewardsSummary.xpIntoCurrentLevel / 100).clamp(0.0, 1.0);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 28.h),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            YoungMuslimSectionHeader(
-              title: 'نقاطك وإنجازاتك',
-              subtitle: 'كل التقدّم محفوظ هنا بشكل واضح وبسيط.',
-              trailing: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close_rounded),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 12.h),
+          // العنصر الوحيد المرتفع في الورقة: رصيد النقاط والمستوى.
+          Padding(
+            padding: AppSkin.gutter,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: skin.raised,
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(color: skin.raisedBorder),
+                boxShadow: skin.raisedShadow,
               ),
-            ),
-            SizedBox(height: 16.h),
-            Container(
-              padding: EdgeInsets.all(18.w),
-              decoration: youngMuslimPanelDecoration(context),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 56.w,
-                        height: 56.w,
-                        decoration: BoxDecoration(
-                          color:
-                              youngMuslimRewardColor(context).withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Icon(
-                          Icons.bolt_rounded,
-                          color: youngMuslimRewardColor(context),
-                          size: 28.sp,
-                        ),
+                      YoungMuslimIconChip(
+                        icon: AppIcons.star,
+                        size: 40.w,
+                        active: true,
                       ),
-                      SizedBox(width: 12.w),
+                      SizedBox(width: 10.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '${rewardsSummary.xp} XP',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                  ),
+                              '${rewardsSummary.xp} نقطة',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: youngMuslimNumber(
+                                skin,
+                                size: 15.sp,
+                                color: skin.ink,
+                                weight: FontWeight.w800,
+                              ),
                             ),
-                            SizedBox(height: 4.h),
+                            SizedBox(height: 2.h),
                             Text(
                               'المستوى ${rewardsSummary.level}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                    color: context.gray1,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: youngMuslimRowSubtitle(skin, size: 10.sp),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 18.h),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           'التقدّم للمستوى التالي',
-                          style:
-                              Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                  ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: youngMuslimRowSubtitle(skin),
                         ),
                       ),
                       Text(
-                        '${rewardsSummary.xpIntoCurrentLevel}/100',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: context.gray1,
-                              fontWeight: FontWeight.w700,
-                            ),
+                        '${rewardsSummary.xpIntoCurrentLevel} من 100',
+                        style: youngMuslimNumber(skin, size: 10.sp),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10.h),
-                  LinearProgressIndicator(
-                    value: levelProgress,
-                    minHeight: 8.h,
-                    borderRadius: BorderRadius.circular(16.r),
-                    backgroundColor: context.outline.withOpacity(0.15),
-                    color: youngMuslimRewardColor(context),
-                  ),
-                  SizedBox(height: 18.h),
-                  Wrap(
-                    spacing: 10.w,
-                    runSpacing: 10.h,
-                    children: [
-                      YoungMuslimMetricChip(
-                        label: '${rewardsSummary.completedVideos} فيديو مكتمل',
-                        icon: Icons.play_lesson_rounded,
-                        color: context.primaryColor,
-                      ),
-                      YoungMuslimMetricChip(
-                        label: '${rewardsSummary.correctAnswers} إجابة صحيحة',
-                        icon: Icons.quiz_rounded,
-                        color: context.secondaryColor,
-                      ),
-                      YoungMuslimMetricChip(
-                        label: '${rewardsSummary.completedSeries} سلسلة',
-                        icon: Icons.auto_stories_rounded,
-                        color: youngMuslimCompletionColor(context),
-                      ),
-                      YoungMuslimMetricChip(
-                        label: '${rewardsSummary.perfectQuizzes} نتيجة كاملة',
-                        icon: Icons.workspace_premium_rounded,
-                        color: youngMuslimRewardColor(context),
-                      ),
-                    ],
-                  ),
+                  SizedBox(height: 6.h),
+                  YoungMuslimProgressBar(value: levelProgress),
                 ],
               ),
             ),
-            SizedBox(height: 22.h),
-            YoungMuslimSectionHeader(
-              title: 'الإنجازات المفتوحة',
-              subtitle: unlocked.isEmpty
-                  ? 'ابدأ بالمشاهدة وحل الأسئلة لتظهر هنا.'
-                  : '${unlocked.length} إنجازات تم فتحها حتى الآن.',
-            ),
-            SizedBox(height: 14.h),
-            if (unlocked.isEmpty)
-              const YoungMuslimEmptyState(
-                title: 'لا توجد إنجازات بعد',
-                subtitle: 'أكمل أول فيديو أو أجب على أول سؤال لتبدأ الرحلة.',
-                icon: Icons.emoji_events_outlined,
-              )
-            else
-              Column(
-                children: unlocked
-                    .map(
-                      (achievement) => Padding(
-                        padding: EdgeInsets.only(bottom: 12.h),
-                        child: _AchievementCard(
-                          achievement: achievement,
-                          currentValue: _achievementCurrentValue(
-                            achievement,
-                            rewardsSummary,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(growable: false),
+          ),
+          SizedBox(height: 16.h),
+          YoungMuslimStatStrip(
+            cells: [
+              YoungMuslimStatCell(
+                value: '${rewardsSummary.completedVideos}',
+                label: 'حلقات',
+                icon: AppIcons.play,
               ),
-            SizedBox(height: 22.h),
-            if (locked.isNotEmpty) ...[
-              const YoungMuslimSectionHeader(
-                title: 'إنجازات قادمة',
-                subtitle: 'هذه الإنجازات قريبة منك ويمكن فتحها تدريجيًا.',
+              YoungMuslimStatCell(
+                value: '${rewardsSummary.correctAnswers}',
+                label: 'إجابات',
+                icon: AppIcons.checkSmall,
               ),
-              SizedBox(height: 14.h),
-              Column(
-                children: locked
-                    .map(
-                      (achievement) => Padding(
-                        padding: EdgeInsets.only(bottom: 12.h),
-                        child: _AchievementCard(
-                          achievement: achievement,
-                          currentValue: _achievementCurrentValue(
-                            achievement,
-                            rewardsSummary,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(growable: false),
+              YoungMuslimStatCell(
+                value: '${rewardsSummary.completedSeries}',
+                label: 'سلاسل',
+                icon: AppIcons.layers,
+              ),
+              YoungMuslimStatCell(
+                value: '${rewardsSummary.perfectQuizzes}',
+                label: 'نتائج كاملة',
+                icon: AppIcons.target,
               ),
             ],
+          ),
+          skin.divider(),
+          YoungMuslimSectionHeader(
+            title: 'الإنجازات المفتوحة',
+            trailing: YoungMuslimMetricChip(
+              label: '${unlocked.length} إنجاز',
+            ),
+          ),
+          if (unlocked.isEmpty)
+            const YoungMuslimEmptyState(
+              title: 'لا توجد إنجازات بعد',
+              subtitle: 'أكمل أول حلقة أو أجب عن أول سؤال لتبدأ الرحلة.',
+              icon: AppIcons.star,
+            )
+          else
+            for (var i = 0; i < unlocked.length; i++)
+              _AchievementRow(
+                achievement: unlocked[i],
+                isLast: i == unlocked.length - 1,
+                currentValue: _achievementCurrentValue(
+                  unlocked[i],
+                  rewardsSummary,
+                ),
+              ),
+          if (locked.isNotEmpty) ...[
+            skin.divider(),
+            YoungMuslimSectionHeader(
+              title: 'إنجازات قادمة',
+              trailing: YoungMuslimMetricChip(
+                label: '${locked.length} إنجاز',
+              ),
+            ),
+            for (var i = 0; i < locked.length; i++)
+              _AchievementRow(
+                achievement: locked[i],
+                isLast: i == locked.length - 1,
+                currentValue: _achievementCurrentValue(
+                  locked[i],
+                  rewardsSummary,
+                ),
+              ),
           ],
-        ),
+          SizedBox(height: 28.h),
+        ],
+      ),
+    );
+  }
+}
+
+/// رأس الورقة: عنوان وزرّ إغلاق بلوحة «طمأنينة» بدل الرأس الرمادي الافتراضي.
+class _RewardsSheetHeader extends StatelessWidget
+    implements PreferredSizeWidget {
+  const _RewardsSheetHeader({required this.skin});
+
+  final AppSkin skin;
+
+  @override
+  Size get preferredSize => Size.fromHeight(50.h);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: skin.ground,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+        border: Border(bottom: BorderSide(color: skin.hairline)),
+      ),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            borderRadius: BorderRadius.circular(999.r),
+            child: Padding(
+              padding: EdgeInsets.all(4.w),
+              child: AppIcon(
+                AppIcons.close,
+                color: skin.accent,
+                size: 16.sp,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              'نقاطي وإنجازاتي',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

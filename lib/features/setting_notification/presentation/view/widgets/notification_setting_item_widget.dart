@@ -1,335 +1,190 @@
-import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/pages/notification_schedules_screen.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/show_edit_schedule_dialog.dart';
 
-class NotificationSettingItemWidget extends StatefulWidget {
+/// صفّ إشعار واحد: أيقونة + اسم + وصف جدولته + مفتاح التشغيل.
+///
+/// وصف الجدولة صار سطرًا ثانويًا داخل الصفّ بدل صندوق تحته، فبقي الصفّ نحيلًا.
+class NotificationSettingItemWidget extends StatelessWidget {
   const NotificationSettingItemWidget({
     required this.setting,
     required this.title,
-    required this.iconData,
+    required this.icon,
     required this.isLast,
     super.key,
   });
+
   final NotificationSettingModel? setting;
   final String title;
-  final IconData iconData;
+  final HugeIconData icon;
   final bool isLast;
 
   @override
-  State<NotificationSettingItemWidget> createState() =>
-      _NotificationSettingItemWidgetState();
-}
-
-class _NotificationSettingItemWidgetState
-    extends State<NotificationSettingItemWidget> {
-  bool isEnabled = false;
-
-  @override
-  void initState() {
-    super.initState();
-    isEnabled = widget.setting?.enabled ?? false;
-  }
-
-  @override
-  void didUpdateWidget(covariant NotificationSettingItemWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.setting?.enabled != widget.setting?.enabled) {
-      isEnabled = widget.setting?.enabled ?? false;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
-      builder: (context, state) {
-        if (widget.setting == null) return const SizedBox();
-        return Container(
-          decoration: BoxDecoration(
-            color: context.surfaceColor,
-            borderRadius: widget.isLast
-                ? BorderRadius.only(
-                    bottomLeft: Radius.circular(12.r),
-                    bottomRight: Radius.circular(12.r),
-                  )
-                : null,
+    final model = setting;
+    if (model == null) {
+      return const SizedBox.shrink();
+    }
+
+    final canSchedule = model.enabled && !model.onlySetting;
+
+    return SettingsRow(
+      icon: icon,
+      title: title,
+      subtitle: _describe(model),
+      active: model.enabled,
+      isLast: isLast,
+      onTap: () => _toggle(context, model, value: !model.enabled),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (canSchedule)
+            SettingsIconButton(
+              icon: AppIcons.clock,
+              tooltip: 'مواعيد التنبيه',
+              onTap: () => _openActions(context, model),
+            ),
+          SettingsSwitch(
+            value: model.enabled,
+            onChanged: (value) => _toggle(context, model, value: value),
           ),
-          child: Column(
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    context.read<SettingNotificationBloc>().add(
-                          ToggleNotification(
-                            widget.setting!.key,
-                            !widget.setting!.enabled,
-                          ),
-                        );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 28.w,
-                              height: 28.w,
-                              decoration: BoxDecoration(
-                                color: widget.setting!.enabled
-                                    ? context.primaryColor
-                                    : CupertinoColors.systemGrey4,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Icon(
-                                widget.iconData,
-                                color: widget.setting!.enabled
-                                    ? CupertinoColors.white
-                                    : CupertinoColors.systemGrey,
-                                size: 16.sp,
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Text(
-                                widget.title,
-                                style: titleMedium(context).copyWith(
-                                  // color: setting.enabled
-                                  //     ? context.primaryColor
-                                  //     : CupertinoColors.secondaryLabel,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ),
-                            if (widget.setting!.enabled &&
-                                !widget.setting!.onlySetting) ...[
-                              GestureDetector(
-                                onTap: () {
-                                  context.showBottomSheetUIHeader(
-                                    child: BlocProvider.value(
-                                      value: context
-                                          .read<SettingNotificationBloc>(),
-                                      child: ShowEditScheduleDialog(
-                                        model: widget.setting!,
-                                        onSave: (updated) {
-                                          context
-                                              .read<SettingNotificationBloc>()
-                                              .add(
-                                                EditNotificationSchedule(
-                                                  widget.setting!.key,
-                                                  updated,
-                                                ),
-                                              );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                  // _showActionMenu(context, widget.setting!);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(8.w),
-                                  child: Icon(
-                                    CupertinoIcons.ellipsis_circle,
-                                    color: context.primaryColor,
-                                    size: 20.sp,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                            ],
-                            AdaptiveSwitch(
-                              value: widget.setting!.enabled,
-                              activeColor: context.primaryColor,
-                              onChanged: (val) {
-                                setState(() {
-                                  isEnabled = val;
-                                });
-                                context.read<SettingNotificationBloc>().add(
-                                      ToggleNotification(
-                                        widget.setting!.key,
-                                        val,
-                                      ),
-                                    );
-                              },
-                            ),
-                          ],
-                        ),
-                        if (widget.setting!.enabled) ...[
-                          SizedBox(height: 8.h),
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(12.w),
-                            decoration: BoxDecoration(
-                              color: context.primaryColor.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Text(
-                              _subtitleFromSchedule(widget.setting!),
-                              style: titleMedium(context).copyWith(
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              if (!widget.isLast)
-                Container(
-                  margin: EdgeInsets.only(left: 60.w),
-                  height: 0.5.h,
-                  color: CupertinoColors.separator,
-                ),
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  void _showActionMenu(BuildContext context, NotificationSettingModel setting) {
-    showCupertinoModalPopup<bool>(
+  void _toggle(
+    BuildContext context,
+    NotificationSettingModel model, {
+    required bool value,
+  }) {
+    context
+        .read<SettingNotificationBloc>()
+        .add(ToggleNotification(model.key, value));
+  }
+
+  /// خيارات الجدولة: تعديل الموعد الأساسي أو إدارة مواعيد إضافية.
+  Future<void> _openActions(
+    BuildContext context,
+    NotificationSettingModel model,
+  ) async {
+    final bloc = context.read<SettingNotificationBloc>();
+
+    await showSettingsSheet<void>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text(
-          'إدارة الإشعار',
-          style: titleMedium(context).copyWith(
-            fontSize: 20.sp,
+      builder: (sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SettingsSheetHeader(title: title, subtitle: _describe(model)),
+          SettingsRow(
+            icon: AppIcons.edit,
+            title: 'تعديل الجدولة',
+            subtitle: 'غيّر نوع التكرار ووقت التنبيه',
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              _openEditSchedule(context, bloc, model);
+            },
           ),
-        ),
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
+          SettingsRow(
+            icon: AppIcons.calendar,
+            title: 'إدارة مواعيد إضافية',
+            subtitle: 'أضف أكثر من موعد لهذا الإشعار',
+            isLast: true,
+            onTap: () {
+              Navigator.of(sheetContext).pop();
               context.push(
-                NotificationSchedulesScreen(
-                  notifKey: setting.key,
-                ),
+                NotificationSchedulesScreen(notifKey: model.key),
               );
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  CupertinoIcons.time,
-                  color: context.primaryColor,
-                  size: 20.sp,
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'إدارة أوقات التنبيه',
-                  style: titleMedium(context).copyWith(
-                    color: context.primaryColor,
-                  ),
-                ),
-              ],
-            ),
           ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context);
-              context.showBottomSheetUIHeader(
-                child: BlocProvider.value(
-                  value: context.read<SettingNotificationBloc>(),
-                  child: ShowEditScheduleDialog(
-                    model: setting,
-                    onSave: (updated) {
-                      if (context.mounted) {
-                        context.read<SettingNotificationBloc>().add(
-                              LoadNotificationSettings(),
-                            );
-                      }
-                    },
-                  ),
-                ),
-              );
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  CupertinoIcons.calendar_badge_plus,
-                  color: context.primaryColor,
-                  size: 20.sp,
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'تعديل جدولة الإشعار',
-                  style: titleMedium(context).copyWith(
-                    color: context.primaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          SizedBox(height: 10.h),
         ],
-        cancelButton: CupertinoActionSheetAction(
-          isDefaultAction: true,
-          onPressed: () {
-            Navigator.pop(context);
+      ),
+    );
+  }
+
+  void _openEditSchedule(
+    BuildContext context,
+    SettingNotificationBloc bloc,
+    NotificationSettingModel model,
+  ) {
+    showSettingsSheet<void>(
+      context: context,
+      builder: (sheetContext) => BlocProvider.value(
+        value: bloc,
+        child: ShowEditScheduleDialog(
+          model: model,
+          onSave: (updated) {
+            bloc.add(EditNotificationSchedule(model.key, updated));
           },
-          child: Text(
-            'إلغاء',
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
         ),
       ),
     );
   }
 
-  String _subtitleFromSchedule(NotificationSettingModel s) {
-    switch (s.scheduleType) {
-      case ScheduleType.daily:
-        return 'يومياً الساعة ${_formatTime(s.hour, s.minute)}';
-      case ScheduleType.hourly:
-        return 'كل ساعة عند الدقيقة ${s.minute ?? 0}';
-      case ScheduleType.everyNMinutes:
-        return 'كل ${s.intervalMinutes ?? 1} دقيقة';
-      case ScheduleType.weekly:
-        final days = (s.weekdays ?? []).map(_arabicDayOfWeek).join('، ');
-        return 'أسبوعياً (${days.isEmpty ? "بدون أيام محددة" : days}) الساعة ${_formatTime(s.hour, s.minute)}';
-      case ScheduleType.customDates:
-        return 'جدولة مخصصة (${s.customDates?.length ?? 0} توقيت)';
+  String _describe(NotificationSettingModel model) {
+    if (!model.enabled) {
+      return 'موقوف';
     }
+    if (model.onlySetting) {
+      return 'مفعّل';
+    }
+    return scheduleSummary(model);
   }
+}
 
-  String _formatTime(int? h, int? m) =>
-      '${h?.toString().padLeft(2, '0') ?? '--'}:${m?.toString().padLeft(2, '0') ?? '--'}';
+/// وصف مختصر لجدولة إشعار — يُستخدم في الصفّ وفي نافذة التعديل.
+String scheduleSummary(NotificationSettingModel model) {
+  switch (model.scheduleType) {
+    case ScheduleType.daily:
+      return 'يومياً · ${formatClock(model.hour, model.minute)}';
+    case ScheduleType.hourly:
+      return 'كل ساعة عند الدقيقة ${model.minute ?? 0}';
+    case ScheduleType.everyNMinutes:
+      return 'كل ${model.intervalMinutes ?? 1} دقيقة';
+    case ScheduleType.weekly:
+      final days = (model.weekdays ?? []).map(arabicDayOfWeek).join('، ');
+      final label = days.isEmpty ? 'بدون أيام محددة' : days;
+      return 'أسبوعياً ($label) · ${formatClock(model.hour, model.minute)}';
+    case ScheduleType.customDates:
+      return 'جدولة مخصصة · ${model.customDates?.length ?? 0} توقيت';
+  }
+}
 
-  String _arabicDayOfWeek(int d) {
-    switch (d) {
-      case 1:
-        return 'الاثنين';
-      case 2:
-        return 'الثلاثاء';
-      case 3:
-        return 'الأربعاء';
-      case 4:
-        return 'الخميس';
-      case 5:
-        return 'الجمعة';
-      case 6:
-        return 'السبت';
-      case 7:
-        return 'الأحد';
-      default:
-        return '؟';
-    }
+/// وقت بصيغة ثابتة `HH:mm`.
+String formatClock(int? hour, int? minute) {
+  final h = hour?.toString().padLeft(2, '0') ?? '--';
+  final m = minute?.toString().padLeft(2, '0') ?? '--';
+  return '$h:$m';
+}
+
+/// اسم يوم الأسبوع بالعربية (1 = الاثنين ... 7 = الأحد).
+String arabicDayOfWeek(int day) {
+  switch (day) {
+    case 1:
+      return 'الاثنين';
+    case 2:
+      return 'الثلاثاء';
+    case 3:
+      return 'الأربعاء';
+    case 4:
+      return 'الخميس';
+    case 5:
+      return 'الجمعة';
+    case 6:
+      return 'السبت';
+    case 7:
+      return 'الأحد';
+    default:
+      return '؟';
   }
 }

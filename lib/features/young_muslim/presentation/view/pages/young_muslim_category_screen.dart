@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/presentation/bloc/young_muslim_bloc.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/pages/young_muslim_video_details_screen.dart';
@@ -36,54 +38,70 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
-      showLargeHeader: false,
-      initialOffset: null,
-      titleWidget: BlocSelector<YoungMuslimBloc, YoungMuslimState, String>(
-        selector: (state) {
-          final details = state.categoryDetails;
-          if (details != null && details.category.id == widget.categoryId) {
-            return details.category.titleAr;
-          }
-          return 'المسلم الصغير';
-        },
-        builder: (context, title) => Text(title),
-      ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 20.h),
-        child: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
-          buildWhen: (previous, current) {
-            return previous.categoryState != current.categoryState ||
-                previous.categoryDetails != current.categoryDetails ||
-                previous.errorMessage != current.errorMessage;
-          },
-          builder: (context, state) {
+    final skin = AppSkin.of(context);
+
+    return Theme(
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+      child: AppScaffoldWidget(
+        showLargeHeader: false,
+        initialOffset: null,
+        titleWidget: BlocSelector<YoungMuslimBloc, YoungMuslimState, String>(
+          selector: (state) {
             final details = state.categoryDetails;
-            final hasCurrentDetails =
-                details != null && details.category.id == widget.categoryId;
-
-            Widget child;
-            if (!hasCurrentDetails &&
-                state.categoryState == RequestState.error) {
-              child = _buildErrorBody(context, state.errorMessage);
-            } else if (!hasCurrentDetails) {
-              child = _buildLoadingBody();
-            } else {
-              child = _buildCategoryContent(context, details);
+            if (details != null && details.category.id == widget.categoryId) {
+              return details.category.titleAr;
             }
-
-            return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 220),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              child: KeyedSubtree(
-                key: ValueKey(
-                  '${state.categoryState.name}_${details?.category.id ?? widget.categoryId}_${_selectedSeriesId ?? ''}',
-                ),
-                child: child,
-              ),
-            );
+            return 'المسلم الصغير';
           },
+          builder: (context, title) => Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: skin.ink,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        body: ColoredBox(
+          color: skin.ground,
+          child: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
+            buildWhen: (previous, current) {
+              return previous.categoryState != current.categoryState ||
+                  previous.categoryDetails != current.categoryDetails ||
+                  previous.errorMessage != current.errorMessage;
+            },
+            builder: (context, state) {
+              final details = state.categoryDetails;
+              final hasCurrentDetails =
+                  details != null && details.category.id == widget.categoryId;
+
+              Widget child;
+              if (!hasCurrentDetails &&
+                  state.categoryState == RequestState.error) {
+                child = _buildErrorBody(context, state.errorMessage);
+              } else if (!hasCurrentDetails) {
+                child = const YoungMuslimLoadingPanel();
+              } else {
+                child = _buildCategoryContent(context, details);
+              }
+
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                child: KeyedSubtree(
+                  key: ValueKey(
+                    '${state.categoryState.name}_'
+                    '${details?.category.id ?? widget.categoryId}_'
+                    '${_selectedSeriesId ?? ''}',
+                  ),
+                  child: child,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -93,6 +111,7 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
     BuildContext context,
     YoungMuslimCategoryDetailsEntity details,
   ) {
+    final skin = AppSkin.of(context);
     final selectedSeriesId = _resolveSelectedSeriesId(details);
     final filteredVideos = details.videos
         .where(
@@ -102,142 +121,103 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         .toList();
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         RepaintBoundary(
-          child: YoungMuslimMediaBanner(
-            title: details.category.titleAr,
-            subtitle: details.category.description,
+          child: YoungMuslimCover(
             imageUrl: details.category.bannerImage,
-            accentStart: details.category.accentStart,
-            accentEnd: details.category.accentEnd,
-            height: 228,
-            badges: [
+            title: details.category.titleAr,
+            description: details.category.description,
+            chips: [
               YoungMuslimMetricChip(
                 label: details.category.audience == 'kids'
                     ? 'واجهة آمنة للأطفال'
                     : 'مشاهدة عامة',
-                icon: Icons.child_care_rounded,
-                color: Colors.white,
+                icon: AppIcons.shield,
               ),
             ],
           ),
         ),
-        SizedBox(height: 16.h),
-        RepaintBoundary(
-          child: Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: youngMuslimPanelDecoration(context),
-            child: Wrap(
-              spacing: 12.w,
-              runSpacing: 10.h,
-              children: [
-                YoungMuslimMetricChip(
-                  label: '${details.series.length} سلسلة',
-                  icon: Icons.video_library_rounded,
-                  color: context.primaryColor,
-                ),
-                YoungMuslimMetricChip(
-                  label: '${details.videos.length} حلقة',
-                  icon: Icons.ondemand_video_rounded,
-                  color: context.secondaryColor,
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: 22.h),
-        const YoungMuslimSectionHeader(
-          title: 'اختر السلسلة',
-          subtitle: 'تنقّل بين السلاسل أو اللغات داخل هذا القسم',
-        ),
         SizedBox(height: 14.h),
-        Wrap(
-          spacing: 12.w,
-          runSpacing: 10.h,
-          children: [
-            for (final series in details.series)
-              ChoiceChip(
-                label: Text(series.titleAr),
-                selected: selectedSeriesId == series.id,
-                onSelected: (_) {
-                  setState(() => _selectedSeriesId = series.id);
-                },
-                selectedColor: youngMuslimAccentColor(
-                  context,
-                  series.accentStart,
-                ).withOpacity(0.15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                  side: BorderSide(
-                    color: selectedSeriesId == series.id
-                        ? youngMuslimAccentColor(context, series.accentStart)
-                        : context.outline.withOpacity(0.2),
-                  ),
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 12.sp,
-                  color: selectedSeriesId == series.id
-                      ? youngMuslimAccentColor(
-                          context,
-                          series.accentStart,
-                        )
-                      : context.onSurfaceVariant.withOpacity(0.8),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+        YoungMuslimStatStrip(
+          cells: [
+            YoungMuslimStatCell(
+              value: '${details.series.length}',
+              label: 'سلسلة',
+              icon: AppIcons.layers,
+            ),
+            YoungMuslimStatCell(
+              value: '${details.videos.length}',
+              label: 'حلقة',
+              icon: AppIcons.play,
+            ),
           ],
         ),
-        SizedBox(height: 22.h),
+        skin.divider(),
+        const HomeSectionHeader(title: 'اختر السلسلة'),
+        Padding(
+          padding: AppSkin.gutter,
+          child: Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
+            children: [
+              for (final series in details.series)
+                YoungMuslimPillButton(
+                  label: series.titleAr,
+                  selected: selectedSeriesId == series.id,
+                  onTap: () => setState(() => _selectedSeriesId = series.id),
+                ),
+            ],
+          ),
+        ),
+        skin.divider(),
         YoungMuslimSectionHeader(
           title: 'الحلقات',
-          subtitle: '${filteredVideos.length} عنصر داخل السلسلة المختارة',
+          trailing: YoungMuslimMetricChip(
+            label: '${filteredVideos.length} حلقة',
+          ),
         ),
-        SizedBox(height: 14.h),
         if (filteredVideos.isEmpty)
           const YoungMuslimEmptyState(
             title: 'لا توجد حلقات الآن',
             subtitle: 'غيّر السلسلة المختارة أو عد لاحقًا بعد تحديث الفلاتر.',
-            icon: Icons.video_collection_outlined,
+            icon: AppIcons.play,
           )
         else
           RepaintBoundary(
-            child: ListView.separated(
-              itemCount: filteredVideos.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              primary: false,
-              separatorBuilder: (_, __) => SizedBox(height: 14.h),
-              itemBuilder: (context, index) {
-                final video = filteredVideos[index];
-                return YoungMuslimVideoCard(
-                  video: video,
-                  seriesTitle: _seriesTitle(details, video.seriesId),
-                  fillWidth: true,
-                  onTap: () => _openVideo(context, video.id),
-                  onFavoriteToggle: () => context
-                      .read<YoungMuslimBloc>()
-                      .add(YoungMuslimFavoriteToggled(video.id)),
-                  onWatchLaterToggle: () => context
-                      .read<YoungMuslimBloc>()
-                      .add(YoungMuslimWatchLaterToggled(video.id)),
-                );
-              },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < filteredVideos.length; i++)
+                  YoungMuslimVideoRow(
+                    video: filteredVideos[i],
+                    seriesTitle:
+                        _seriesTitle(details, filteredVideos[i].seriesId),
+                    isLast: i == filteredVideos.length - 1,
+                    onTap: () => _openVideo(context, filteredVideos[i].id),
+                    onFavoriteToggle: () => context
+                        .read<YoungMuslimBloc>()
+                        .add(YoungMuslimFavoriteToggled(filteredVideos[i].id)),
+                    onWatchLaterToggle: () =>
+                        context.read<YoungMuslimBloc>().add(
+                              YoungMuslimWatchLaterToggled(
+                                filteredVideos[i].id,
+                              ),
+                            ),
+                  ),
+              ],
             ),
           ),
+        SizedBox(height: 24.h),
       ],
     );
   }
 
-  Widget _buildLoadingBody() {
-    return const YoungMuslimLoadingPanel();
-  }
-
   Widget _buildErrorBody(BuildContext context, String? message) {
     return YoungMuslimEmptyState(
-      title: 'تعذر تحميل القسم',
+      title: 'تعذّر تحميل القسم',
       subtitle: message ?? 'حاول مرة أخرى بعد قليل.',
-      icon: Icons.cloud_off_rounded,
+      icon: AppIcons.warning,
     );
   }
 

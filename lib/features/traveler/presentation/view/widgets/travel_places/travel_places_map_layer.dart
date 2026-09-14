@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 
 class TravelPlacesMapLayer extends StatelessWidget {
@@ -20,6 +23,7 @@ class TravelPlacesMapLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final location = state.locationContext;
     final center = location == null
         ? const LatLng(15.3694, 44.1910)
@@ -28,36 +32,50 @@ class TravelPlacesMapLayer extends StatelessWidget {
     final markers = <Marker>[
       Marker(
         point: center,
-        width: 30.w,
-        height: 30.w,
+        width: 16.w,
+        height: 16.w,
         child: Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: context.primaryColor,
-            border: Border.all(color: Colors.white, width: 2),
+            color: AppColors.gold,
+            border: Border.all(color: skin.ground, width: 2),
           ),
         ),
       ),
-      ...state.places.map(
-        (place) {
-          final selected = state.selectedPlace?.id == place.id;
-          return Marker(
-            point: LatLng(place.latitude, place.longitude),
-            width: selected ? 50.w : 42.w,
-            height: selected ? 50.w : 42.w,
-            child: GestureDetector(
-              onTap: () => context
-                  .read<TravelPlacesBloc>()
-                  .add(SelectPlaceEvent(place)),
-              child: Icon(
-                Icons.location_on_rounded,
-                color: selected ? context.primaryColor : Colors.red,
-                size: selected ? 46.sp : 38.sp,
+      ...state.places.map((place) {
+        final selected = state.selectedPlace?.id == place.id;
+        return Marker(
+          point: LatLng(place.latitude, place.longitude),
+          width: selected ? 34.w : 28.w,
+          height: selected ? 34.w : 28.w,
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.selectionClick();
+              context.read<TravelPlacesBloc>().add(SelectPlaceEvent(place));
+            },
+            // المختار قرص ذهبي مصمت، وغيره قرص من أرضية الصفحة بحلقة:
+            // الفرق في الشكل لا في درجة اللون وحدها.
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected ? skin.accent : skin.ground,
+                border: Border.all(color: skin.raisedBorder, width: 1.6),
+              ),
+              child: Center(
+                child: AppIcon(
+                  AppIcons.mapPin,
+                  color: selected
+                      ? (skin.isDark
+                          ? AppColors.brandNight
+                          : AppColors.brandIvory)
+                      : skin.accent,
+                  size: selected ? 16.sp : 14.sp,
+                ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     ];
 
     return Stack(
@@ -78,23 +96,23 @@ class TravelPlacesMapLayer extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          top: 132.h,
-          left: 12.w,
-          child: DecoratedBox(
+        PositionedDirectional(
+          top: 108.h,
+          start: 12.w,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
             decoration: BoxDecoration(
-              color: context.scaffoldBackgroundColor.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(12.r),
+              color: skin.ground.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(999.r),
+              border: Border.all(color: skin.hairline),
             ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-              child: Text(
-                'اضغط على العلامة لعرض التفاصيل',
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 11.5.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+            child: Text(
+              'اضغط على العلامة لعرض التفاصيل',
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.78),
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.2,
               ),
             ),
           ),

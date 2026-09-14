@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 
+/// ثلاثة أعمدة صغيرة تدلّ على أن البثّ يعمل.
 class MiniEqualizer extends StatelessWidget {
   const MiniEqualizer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bars = [10.h, 16.h, 12.h];
+    final skin = AppSkin.of(context);
+    final bars = [7.h, 12.h, 9.h];
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: bars
           .map(
             (height) => Container(
-              width: 3.w,
+              width: 2.w,
               height: height,
-              margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+              margin: EdgeInsets.symmetric(horizontal: 1.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999.r),
-                color: context.primaryColor.withValues(alpha: 0.82),
+                color: skin.accent,
               ),
             ),
           )

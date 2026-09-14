@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/theme/theme_data.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics_period_selector.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/dhikr_stats_card.dart';
+import 'package:quran_app/features/sabih/presentation/view/widgets/sabih_state_views.dart';
 
 class AnalyticsDetailedTab extends StatelessWidget {
   const AnalyticsDetailedTab({
-    super.key,
     required this.state,
+    super.key,
   });
 
   final SabihState state;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AnalyticsPeriodSelector(
-          // selectedPeriod: state.periodType,
           onPeriodChanged: (periodType) {
             final now = DateTime.now();
             DateTime from;
@@ -35,7 +39,7 @@ class AnalyticsDetailedTab extends StatelessWidget {
               case PeriodType.allTime:
                 from = DateTime(2000);
               case PeriodType.custom:
-                // Custom period selection handled separately
+                // اختيار مدّة مخصصة يُعالَج على حدة.
                 return;
             }
 
@@ -48,22 +52,19 @@ class AnalyticsDetailedTab extends StatelessWidget {
                 );
           },
         ),
-        Divider(
-          color: FxColors.gray1,
-        ),
+        skin.divider(),
         Expanded(
           child: state.subihList.isEmpty
-              ? const Center(child: Text('لا يوجد ذكر مخصص'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+              ? const SabihNotice(message: 'لا يوجد ذكر مخصص')
+              : ListView.separated(
+                  padding: EdgeInsets.only(bottom: 24.h),
                   itemCount: state.subihList.length,
+                  separatorBuilder: (_, __) => skin.divider(),
                   itemBuilder: (context, index) {
                     final subih = state.subihList[index];
-                    final count = state.getCountForSubih(subih.id ?? -1);
-
                     return DhikrStatsCard(
                       subih: subih,
-                      count: count,
+                      count: state.getCountForSubih(subih.id ?? -1),
                     );
                   },
                 ),

@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/button_progress_state.dart';
-import 'package:quran_app/core/components/my_text_form_field.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
+
+/// يفتح ورقة إضافة ذكر أو تعديله بلغة الشاشة نفسها: أرضية واحدة،
+/// عنوان نحيل، وفواصل بسُمك شعرة — لا ترويسة ملوّنة تكسر الهوية.
+Future<void> showDhikrSheet(
+  BuildContext context, {
+  SubihModel? subihToEdit,
+}) async {
+  final bloc = context.read<SabihBloc>();
+  final skin = AppSkin.of(context);
+
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: skin.ground,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+    ),
+    builder: (sheetContext) {
+      return BlocProvider.value(
+        value: bloc,
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
+          child: AddDhikrDialog(subihToEdit: subihToEdit),
+        ),
+      );
+    },
+  );
+}
 
 class AddDhikrDialog extends StatefulWidget {
   const AddDhikrDialog({
@@ -79,7 +112,8 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final actionLabel = _isEditing ? 'حفظ التعديلات' : 'إضافة الدعاء';
+    final skin = AppSkin.of(context);
+    final actionLabel = _isEditing ? 'حفظ التعديلات' : 'إضافة الذكر';
 
     return BlocListener<SabihBloc, SabihState>(
       listenWhen: (previous, current) =>
@@ -105,7 +139,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? 'تعذر حفظ الدعاء.'),
+                content: Text(state.errorMessage ?? 'تعذر حفظ الذكر.'),
               ),
             );
           }
@@ -119,9 +153,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                _isEditing
-                    ? 'تم تحديث الدعاء بنجاح.'
-                    : 'تمت إضافة الدعاء بنجاح.',
+                _isEditing ? 'تم تحديث الذكر بنجاح.' : 'تمت إضافة الذكر بنجاح.',
               ),
             ),
           );
@@ -129,55 +161,218 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
       },
       child: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
+        child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              MyTextFormFieldWidget(
-                controller: _titleController,
-                labelText: 'نص الدعاء',
-                hintText: 'مثال: اللهم اغفر لي ولوالدي',
-                validator: (value) {
-                  final text = value?.trim() ?? '';
-                  if (text.isEmpty) {
-                    return 'يرجى إدخال نص الدعاء';
-                  }
-                  if (text.length < 2) {
-                    return 'نص الدعاء قصير جدًا';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 14),
-              MyTextFormFieldWidget(
-                controller: _contentController,
-                labelText: 'وصف مختصر (اختياري)',
-                hintText: 'مثال: دعاء بعد الصلاة',
-                maxLines: 3,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: ProgressButtonState(
-                      onPressed: _isSubmitting
-                          ? null
-                          : () => Navigator.of(context).pop(),
-                      text: 'إلغاء',
-                    ),
+              SizedBox(height: 10.h),
+              Center(
+                child: Container(
+                  width: 34.w,
+                  height: 3.h,
+                  decoration: BoxDecoration(
+                    color: skin.hairline,
+                    borderRadius: BorderRadius.circular(999.r),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ProgressButtonState(
-                      onPressed: _isSubmitting ? null : _submitForm,
-                      text: actionLabel,
-                      defaultColor: context.primaryColor,
-                    ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 8.h),
+                child: Text(
+                  _isEditing ? 'تعديل الذكر' : 'إضافة ذكر مخصص',
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
                   ),
-                ],
+                ),
+              ),
+              skin.divider(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SkinField(
+                      controller: _titleController,
+                      label: 'نص الذكر',
+                      hint: 'مثال: سبحان الله وبحمده',
+                      validator: (value) {
+                        final text = value?.trim() ?? '';
+                        if (text.isEmpty) {
+                          return 'يرجى إدخال نص الذكر';
+                        }
+                        if (text.length < 2) {
+                          return 'نص الذكر قصير جدًا';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _SkinField(
+                      controller: _contentController,
+                      label: 'الفضل أو وصف مختصر (اختياري)',
+                      hint: 'مثال: تُحطّ بها الخطايا',
+                      maxLines: 3,
+                    ),
+                    SizedBox(height: 16.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _SheetButton(
+                            label: 'إلغاء',
+                            onTap: _isSubmitting
+                                ? null
+                                : () => Navigator.of(context).pop(),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: _SheetButton(
+                            label: actionLabel,
+                            isPrimary: true,
+                            onTap: _isSubmitting ? null : _submitForm,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// حقل نصّ بلغة الشاشة: عنوان صغير فوقه وحدّ بسُمك شعرة حوله.
+class _SkinField extends StatelessWidget {
+  const _SkinField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    this.maxLines = 1,
+    this.validator,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final int maxLines;
+  final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: skin.inkSoft.withValues(alpha: 0.8),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: 6.h),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          validator: validator,
+          cursorColor: skin.accent,
+          style: TextStyle(
+            color: skin.ink,
+            fontSize: 12.5.sp,
+            fontWeight: FontWeight.w600,
+            height: 1.5,
+          ),
+          decoration: InputDecoration(
+            isDense: true,
+            filled: true,
+            fillColor: skin.raised,
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: skin.inkSoft.withValues(alpha: 0.5),
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 11.w, vertical: 10.h),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: skin.hairline),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: skin.raisedBorder),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: const BorderSide(color: AppColors.error),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: const BorderSide(color: AppColors.error),
+            ),
+            errorStyle: TextStyle(
+              color: AppColors.error,
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// زرّ الورقة: الأساسي بتعبئة ذهبية، والثانوي بحدّ شعرة فقط.
+class _SheetButton extends StatelessWidget {
+  const _SheetButton({
+    required this.label,
+    required this.onTap,
+    this.isPrimary = false,
+  });
+
+  final String label;
+  final VoidCallback? onTap;
+  final bool isPrimary;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final enabled = onTap != null;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        height: 38.h,
+        decoration: BoxDecoration(
+          color: isPrimary
+              ? AppColors.gold.withValues(alpha: enabled ? 1 : 0.4)
+              : skin.raised,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: isPrimary ? AppColors.gold : skin.hairline,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: isPrimary ? AppColors.brandIvory : skin.ink,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ),

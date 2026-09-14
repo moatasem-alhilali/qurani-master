@@ -7,7 +7,8 @@ final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   useMaterial3: true,
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: AppColors.background,
+  // أرضية محايدة: أبيض نقيّ. الدفء في اللمسات لا في الخلفية.
+  scaffoldBackgroundColor: AppColors.surface,
   canvasColor: AppColors.surface,
   cardColor: AppColors.surface,
   dividerColor: AppColors.divider,

@@ -1,9 +1,16 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 
+/// شاشة نداء الأذان: لحظة واحدة، فلا شيء فيها يزاحم اسم الصلاة.
+///
+/// اسم الصلاة هو العنصر المرتفع الوحيد، وما حوله سطور نحيلة على أرضية
+/// الصفحة، وفعلٌ واحد ذهبي في الأسفل.
 class PrayerAthanAlertScreen extends StatelessWidget {
   const PrayerAthanAlertScreen({
     required this.prayerName,
@@ -16,118 +23,179 @@ class PrayerAthanAlertScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final timeLabel = (prayerTimeLabel ?? '').trim();
+
     return Scaffold(
-      backgroundColor: context.scaffoldBackgroundColor,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              context.primaryColor.withValues(alpha: 0.10),
-              context.scaffoldBackgroundColor,
-              context.scaffoldBackgroundColor,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-            child: Column(
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.topEnd,
-                  child: IconButton(
-                    onPressed: () => Navigator.of(context).maybePop(),
-                    icon: Icon(
-                      Icons.close,
-                      color: context.onSurfaceColor,
+      backgroundColor: skin.ground,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                alignment: AlignmentDirectional.topEnd,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).maybePop(),
+                  borderRadius: BorderRadius.circular(999.r),
+                  child: Padding(
+                    padding: EdgeInsets.all(6.w),
+                    child: AppIcon(
+                      AppIcons.close,
+                      color: skin.inkSoft,
+                      size: 18.sp,
                     ),
                   ),
                 ),
-                const Spacer(),
-                CardWidget(
-                  border: Border.all(
-                    color: context.outlineVariant.withValues(alpha: 0.4),
+              ),
+              const Spacer(),
+              // العنصر المرتفع الوحيد في الشاشة.
+              Container(
+                decoration: BoxDecoration(
+                  color: skin.raised,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(color: skin.raisedBorder, width: 1.2),
+                  boxShadow: skin.raisedShadow,
+                ),
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 44.w,
+                      height: 44.w,
+                      decoration: BoxDecoration(
+                        color: skin.iconChip,
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Center(
+                        child: AppIcon(
+                          AppIcons.mosque,
+                          color: skin.accent,
+                          size: 22.sp,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Text(
+                      'حان الآن وقت الصلاة',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
+                      ),
+                    ),
+                    Text(
+                      prayerName,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 25.sp,
+                        fontWeight: FontWeight.w800,
+                        height: 1.3,
+                      ),
+                    ),
+                    if (timeLabel.isNotEmpty)
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Text(
+                          timeLabel,
+                          style: TextStyle(
+                            color: skin.accent,
+                            fontSize: 12.5.sp,
+                            fontWeight: FontWeight.w600,
+                            fontFeatures: const [
+                              ui.FontFeature.tabularFigures(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 10.h),
+                    Divider(height: 1, thickness: 1, color: skin.hairline),
+                    SizedBox(height: 10.h),
+                    Text(
+                      'أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.86),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              InkWell(
+                onTap: () => Navigator.of(context).maybePop(),
+                borderRadius: BorderRadius.circular(12.r),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    color: AppColors.gold,
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 72.w,
-                        height: 72.w,
-                        decoration: BoxDecoration(
-                          color: context.primaryColor.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
+                  child: SizedBox(
+                    height: 40.h,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const AppIcon(
+                          AppIcons.check,
+                          color: AppColors.brandIvory,
+                          size: 15,
                         ),
-                        child: Icon(
-                          Icons.mosque_rounded,
-                          size: 38.sp,
-                          color: context.primaryColor,
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        'حان الآن وقت الصلاة',
-                        style: context.titleMedium?.copyWith(
-                          color: context.onSurfaceColor.withValues(alpha: 0.82),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 6.h),
-                      Text(
-                        prayerName,
-                        style: context.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: context.primaryColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      if ((prayerTimeLabel ?? '').trim().isNotEmpty) ...[
-                        SizedBox(height: 4.h),
+                        SizedBox(width: 8.w),
                         Text(
-                          prayerTimeLabel!,
-                          style: context.bodyMedium?.copyWith(
-                            color:
-                                context.onSurfaceColor.withValues(alpha: 0.7),
+                          'تم الاستعداد للصلاة',
+                          style: TextStyle(
+                            color: AppColors.brandIvory,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
-                      SizedBox(height: 12.h),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 6.h),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const PrayerTimeScreen(),
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(999.r),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Text(
-                        'أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.',
-                        style: context.bodyMedium,
-                        textAlign: TextAlign.center,
+                        'فتح صفحة أوقات الصلاة',
+                        style: TextStyle(
+                          color: skin.accent,
+                          fontSize: 10.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      AppIcon(
+                        AppIcons.chevronLeft,
+                        color: skin.accent,
+                        size: 13.sp,
                       ),
                     ],
                   ),
                 ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: () => Navigator.of(context).maybePop(),
-                    icon: const Icon(Icons.check_circle_outline_rounded),
-                    label: const Text('تم الاستعداد للصلاة'),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => const PrayerTimeScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.schedule_rounded),
-                    label: const Text('فتح صفحة أوقات الصلاة'),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

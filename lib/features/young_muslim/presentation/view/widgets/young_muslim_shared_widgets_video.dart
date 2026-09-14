@@ -1,14 +1,77 @@
 part of 'young_muslim_shared_widgets.dart';
 
-class YoungMuslimVideoCard extends StatelessWidget {
-  const YoungMuslimVideoCard({
+/// زرّ تعليم صغير (مفضّلة أو «لاحقًا»).
+///
+/// المفعّل يمتلئ ذهبًا ويهتزّ الجهاز اهتزازة خفيفة، فيُحسّ الفعل لا يُرى فقط.
+class YoungMuslimToggleButton extends StatelessWidget {
+  const YoungMuslimToggleButton({
+    required this.icon,
+    required this.active,
+    required this.onTap,
+    required this.semanticLabel,
+    this.size,
+    super.key,
+  });
+
+  final HugeIconData icon;
+  final bool active;
+  final VoidCallback onTap;
+  final String semanticLabel;
+  final double? size;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final dimension = size ?? 28.w;
+
+    return Semantics(
+      button: true,
+      selected: active,
+      label: semanticLabel,
+      child: InkWell(
+        onTap: () {
+          if (active) {
+            HapticFeedback.selectionClick();
+          } else {
+            HapticFeedback.mediumImpact();
+          }
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(10.r),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          width: dimension,
+          height: dimension,
+          decoration: BoxDecoration(
+            color: active ? AppColors.gold : skin.iconChip,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Center(
+            child: AppIcon(
+              icon,
+              color: active
+                  ? (skin.isDark ? AppColors.brandNight : AppColors.brandIvory)
+                  : skin.accent,
+              size: dimension * 0.5,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// صفّ حلقة بعرض الصفحة: صورة، عنوان، حالة، ثم أزرار التعليم.
+class YoungMuslimVideoRow extends StatelessWidget {
+  const YoungMuslimVideoRow({
     required this.video,
     required this.seriesTitle,
     required this.onTap,
     this.onFavoriteToggle,
     this.onWatchLaterToggle,
-    this.compact = false,
-    this.fillWidth = false,
+    this.isLast = false,
+    this.isCurrent = false,
     super.key,
   });
 
@@ -17,211 +80,258 @@ class YoungMuslimVideoCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onFavoriteToggle;
   final VoidCallback? onWatchLaterToggle;
-  final bool compact;
-  final bool fillWidth;
+  final bool isLast;
+
+  /// الحلقة الجارية داخل المشغّل: هي وحدها من يرتفع في تلك الشاشة.
+  final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
-    final width = compact ? 158.w : 210.w;
-    final cardWidth = fillWidth ? double.infinity : width;
-    final imageHeight = compact ? 98.h : 126.h;
-    final progress = video.progressPercent.clamp(0, 1);
-    final borderRadius = BorderRadius.circular(18.r);
+    final skin = AppSkin.of(context);
+    final episode = video.episodeNumber;
+    final meta = episode == null
+        ? '$seriesTitle · ${youngMuslimDuration(video.durationSeconds)}'
+        : 'حلقة $episode · ${youngMuslimDuration(video.durationSeconds)}';
 
-    return Container(
-      width: cardWidth,
-      decoration: youngMuslimPanelDecoration(context, radius: 18),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: InkWell(
-          onTap: onTap,
+    final row = Row(
+      children: [
+        YoungMuslimThumb(
+          imageUrl: video.thumbnailUrl,
+          width: isCurrent ? 74.w : 68.w,
+          height: isCurrent ? 46.w : 42.w,
+          radius: 12.r,
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Stack(
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: video.thumbnailUrl,
-                    width: cardWidth,
-                    height: imageHeight,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            context.scrim.withValues(alpha: 0.02),
-                            context.scrim.withValues(alpha: 0.45),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 10.w,
-                    top: 10.h,
-                    child: Row(
-                      children: [
-                        if (onFavoriteToggle != null)
-                          _IconCircleButton(
-                            onTap: onFavoriteToggle!,
-                            icon: video.isFavorite
-                                ? AppIcons.heartFilled
-                                : AppIcons.heart,
-                            active: video.isFavorite,
-                          ),
-                        if (onWatchLaterToggle != null) ...[
-                          SizedBox(width: 8.w),
-                          _IconCircleButton(
-                            onTap: onWatchLaterToggle!,
-                            icon: video.isWatchLater
-                                ? AppIcons.bookmark
-                                : AppIcons.bookmarkAdd,
-                            active: video.isWatchLater,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    left: 10.w,
-                    top: 10.h,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 9.w,
-                        vertical: 5.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.scrim.withValues(alpha: 0.25),
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      child: Text(
-                        youngMuslimDuration(video.durationSeconds),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 9.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 12.w,
-                    bottom: 12.h,
-                    child: Container(
-                      width: 34.w,
-                      height: 34.w,
-                      decoration: BoxDecoration(
-                        color: context.surfaceColor.withValues(alpha: 0.95),
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.shadow.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: AppIcon(
-                        AppIcons.play,
-                        size: 16.sp,
-                        color: context.primaryColor,
-                        strokeWidth: 1.6,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 13.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      video.title,
-                      style: TextStyle(
-                        fontSize: 12.5.sp,
-                        fontWeight: FontWeight.w900,
-                        color: context.onSurfaceColor,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      seriesTitle,
-                      style: TextStyle(
-                        fontSize: 9.5.sp,
-                        color: context.onSurfaceVariant.withValues(alpha: 0.7),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 10.h),
-                    Stack(
-                      children: [
-                        LinearProgressIndicator(
-                          value: progress.toDouble(),
-                          minHeight: 5.h,
-                          backgroundColor:
-                              context.outline.withValues(alpha: 0.15),
-                          color: video.isCompleted
-                              ? youngMuslimCompletionColor(context)
-                              : context.primaryColor,
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            video.isCompleted
-                                ? 'مكتمل'
-                                : video.hasProgress
-                                    ? 'تقدّم ${(progress * 100).round()}%'
-                                    : 'جاهز للمشاهدة',
-                            style: TextStyle(
-                              fontSize: 9.5.sp,
-                              fontWeight: FontWeight.w800,
-                              color: video.isCompleted
-                                  ? youngMuslimCompletionColor(context)
-                                  : context.primaryColor,
-                            ),
-                          ),
-                        ),
-                        if (video.episodeNumber != null)
-                          Text(
-                            'حلقة ${video.episodeNumber}',
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              color: context.onSurfaceVariant
-                                  .withValues(alpha: 0.6),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
+              Text(
+                video.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: youngMuslimRowTitle(
+                  skin,
+                  size: isCurrent ? 13.5.sp : 12.5.sp,
                 ),
               ),
+              SizedBox(height: 3.h),
+              Text(
+                meta,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: youngMuslimRowSubtitle(skin),
+              ),
+              if (video.hasProgress || video.isCompleted) ...[
+                SizedBox(height: 6.h),
+                YoungMuslimProgressBar(
+                  value: video.isCompleted ? 1 : video.progressPercent,
+                  height: 3.h,
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  youngMuslimVideoStatus(video),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimNumber(skin, size: 9.5.sp),
+                ),
+              ],
             ],
           ),
+        ),
+        if (onFavoriteToggle != null) ...[
+          SizedBox(width: 8.w),
+          YoungMuslimToggleButton(
+            icon: video.isFavorite ? AppIcons.heartFilled : AppIcons.heart,
+            active: video.isFavorite,
+            semanticLabel: 'المفضلة',
+            onTap: onFavoriteToggle!,
+          ),
+        ],
+        if (onWatchLaterToggle != null) ...[
+          SizedBox(width: 6.w),
+          YoungMuslimToggleButton(
+            icon: video.isWatchLater ? AppIcons.bookmark : AppIcons.bookmarkAdd,
+            active: video.isWatchLater,
+            semanticLabel: 'سأشاهد لاحقًا',
+            onTap: onWatchLaterToggle!,
+          ),
+        ],
+        if (onFavoriteToggle == null && onWatchLaterToggle == null) ...[
+          SizedBox(width: 8.w),
+          AppIcon(AppIcons.play, color: skin.accent, size: 15.sp),
+        ],
+      ],
+    );
+
+    if (isCurrent) {
+      return Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14.r),
+          child: Ink(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: skin.raised,
+              borderRadius: BorderRadius.circular(14.r),
+              border: Border.all(color: skin.raisedBorder),
+              boxShadow: skin.raisedShadow,
+            ),
+            child: row,
+          ),
+        ),
+      );
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(vertical: 10.h),
+        decoration: isLast
+            ? null
+            : BoxDecoration(
+                border: Border(bottom: BorderSide(color: skin.hairline)),
+              ),
+        child: row,
+      ),
+    );
+  }
+}
+
+/// ملصق حلقة داخل شريط أفقي: صورة أكبر قليلًا يليها سطرا العنوان.
+class YoungMuslimVideoPoster extends StatelessWidget {
+  const YoungMuslimVideoPoster({
+    required this.video,
+    required this.seriesTitle,
+    required this.onTap,
+    this.onFavoriteToggle,
+    this.onWatchLaterToggle,
+    this.width,
+    super.key,
+  });
+
+  final YoungMuslimVideoEntity video;
+  final String seriesTitle;
+  final VoidCallback onTap;
+  final VoidCallback? onFavoriteToggle;
+  final VoidCallback? onWatchLaterToggle;
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final posterWidth = width ?? 132.w;
+    final showProgress = video.hasProgress || video.isCompleted;
+
+    return SizedBox(
+      width: posterWidth,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14.r),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                YoungMuslimThumb(
+                  imageUrl: video.thumbnailUrl,
+                  width: posterWidth,
+                  height: posterWidth * 0.58,
+                  radius: 14.r,
+                ),
+                PositionedDirectional(
+                  top: 5.h,
+                  start: 5.w,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (onFavoriteToggle != null)
+                        YoungMuslimToggleButton(
+                          icon: video.isFavorite
+                              ? AppIcons.heartFilled
+                              : AppIcons.heart,
+                          active: video.isFavorite,
+                          semanticLabel: 'المفضلة',
+                          size: 24.w,
+                          onTap: onFavoriteToggle!,
+                        ),
+                      if (onWatchLaterToggle != null) ...[
+                        SizedBox(width: 5.w),
+                        YoungMuslimToggleButton(
+                          icon: video.isWatchLater
+                              ? AppIcons.bookmark
+                              : AppIcons.bookmarkAdd,
+                          active: video.isWatchLater,
+                          semanticLabel: 'سأشاهد لاحقًا',
+                          size: 24.w,
+                          onTap: onWatchLaterToggle!,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                PositionedDirectional(
+                  bottom: 5.h,
+                  end: 5.w,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.w,
+                      vertical: 2.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: skin.ground,
+                      borderRadius: BorderRadius.circular(999.r),
+                    ),
+                    child: Text(
+                      youngMuslimDuration(video.durationSeconds),
+                      style: youngMuslimNumber(
+                        skin,
+                        size: 9.sp,
+                        weight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 7.h),
+            Text(
+              video.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: youngMuslimRowTitle(skin, size: 11.sp),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              seriesTitle.isEmpty ? youngMuslimVideoStatus(video) : seriesTitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: youngMuslimRowSubtitle(skin, size: 9.sp),
+            ),
+            if (showProgress) ...[
+              SizedBox(height: 6.h),
+              YoungMuslimProgressBar(
+                value: video.isCompleted ? 1 : video.progressPercent,
+                height: 3.h,
+              ),
+            ],
+          ],
         ),
       ),
     );
   }
 }
 
-class YoungMuslimVideoCarousel extends StatelessWidget {
-  const YoungMuslimVideoCarousel({
+/// شريط أفقي من ملصقات الحلقات.
+///
+/// حلّ محلّ الكاروسيل اللانهائي: التمرير هنا طبيعي ولا يتحرّك وحده، ولا
+/// يغيب أي عنصر كان ظاهرًا قبلُ.
+class YoungMuslimVideoRail extends StatelessWidget {
+  const YoungMuslimVideoRail({
     required this.videos,
     required this.seriesTitleBuilder,
     required this.onTap,
@@ -244,29 +354,22 @@ class YoungMuslimVideoCarousel extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final cardWidth = compact ? 158.w : 210.w;
-    final itemPadding = 6.w;
+    final posterWidth = compact ? 116.w : 132.w;
 
-    return CarouselSlider.builder(
-      itemCount: videos.length,
-      options: CarouselOptions(
-        height: compact ? 226.h : 278.h,
-        viewportFraction: youngMuslimCarouselViewportFraction(
-          context,
-          itemWidth: cardWidth + (itemPadding * 2),
-          horizontalPadding: 36.w,
-          minFraction: compact ? 0.2 : 0.24,
-        ),
-        enableInfiniteScroll: videos.length > 1,
-      ),
-      itemBuilder: (context, index, realIndex) {
-        final video = videos[index];
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: itemPadding),
-          child: YoungMuslimVideoCard(
+    return SizedBox(
+      height: compact ? 148.h : 168.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemCount: videos.length,
+        physics: const BouncingScrollPhysics(),
+        separatorBuilder: (_, __) => SizedBox(width: 10.w),
+        itemBuilder: (context, index) {
+          final video = videos[index];
+          return YoungMuslimVideoPoster(
             video: video,
             seriesTitle: seriesTitleBuilder(video),
-            compact: compact,
+            width: posterWidth,
             onTap: () => onTap(video.id),
             onFavoriteToggle: onFavoriteToggle == null
                 ? null
@@ -274,57 +377,125 @@ class YoungMuslimVideoCarousel extends StatelessWidget {
             onWatchLaterToggle: onWatchLaterToggle == null
                 ? null
                 : () => onWatchLaterToggle!(video.id),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
 
-class _IconCircleButton extends StatelessWidget {
-  const _IconCircleButton({
+/// العنصر الوحيد المرتفع في شاشة الأطفال: الحلقة التي توقّف عندها الطفل.
+class YoungMuslimResumeTile extends StatelessWidget {
+  const YoungMuslimResumeTile({
+    required this.video,
+    required this.seriesTitle,
     required this.onTap,
-    required this.icon,
-    required this.active,
+    super.key,
   });
 
+  final YoungMuslimVideoEntity video;
+  final String seriesTitle;
   final VoidCallback onTap;
-  final HugeIconData icon;
-  final bool active;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Container(
-        width: 32.w,
-        height: 32.w,
-        decoration: BoxDecoration(
-          color: active
-              ? context.primaryColor
-              : context.surfaceColor.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: active
-                ? Colors.white.withValues(alpha: 0.2)
-                : context.outline.withValues(alpha: 0.2),
+    final skin = AppSkin.of(context);
+    final percent = (video.progressPercent * 100).round();
+    final remaining = video.durationSeconds - video.positionSeconds;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 6.h),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14.r),
+        child: Ink(
+          padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 11.h),
+          decoration: BoxDecoration(
+            color: skin.raised,
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(color: skin.raisedBorder),
+            boxShadow: skin.raisedShadow,
           ),
-          boxShadow: active
-              ? [
-                  BoxShadow(
-                    color: context.primaryColor.withValues(alpha: 0.22),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  YoungMuslimThumb(
+                    imageUrl: video.thumbnailUrl,
+                    width: 78.w,
+                    height: 48.w,
+                    radius: 12.r,
                   ),
-                ]
-              : null,
-        ),
-        child: AppIcon(
-          icon,
-          size: 13.sp,
-          color: active ? context.onPrimaryColor : context.onSurfaceVariant,
-          strokeWidth: 1.55,
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'تابع من حيث توقفت',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.accent,
+                            fontSize: 9.5.sp,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                        ),
+                        SizedBox(height: 3.h),
+                        Text(
+                          video.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.ink,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w800,
+                            height: 1.25,
+                          ),
+                        ),
+                        if (seriesTitle.isNotEmpty) ...[
+                          SizedBox(height: 2.h),
+                          Text(
+                            seriesTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: youngMuslimRowSubtitle(skin),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  const YoungMuslimIconChip(icon: AppIcons.play, active: true),
+                ],
+              ),
+              SizedBox(height: 10.h),
+              YoungMuslimProgressBar(value: video.progressPercent),
+              SizedBox(height: 6.h),
+              Row(
+                children: [
+                  Text(
+                    '$percent٪',
+                    style: youngMuslimNumber(
+                      skin,
+                      size: 15.sp,
+                      weight: FontWeight.w800,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    remaining > 0
+                        ? 'يتبقّى ${youngMuslimDuration(remaining)}'
+                        : 'اقتربت النهاية',
+                    style: youngMuslimRowSubtitle(skin),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

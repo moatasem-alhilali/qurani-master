@@ -11,11 +11,11 @@ class BaseAudioState {
     this.baseAudioDetail = const [],
   });
   //famous Reader
-  List<dynamic> baseAudio;
-  List<dynamic> baseAudioDetail;
-  RequestState famousBaseAudioState;
-  RequestState audioState;
-  AudioPlayer? audioPlayer;
+  final List<dynamic> baseAudio;
+  final List<dynamic> baseAudioDetail;
+  final RequestState famousBaseAudioState;
+  final RequestState audioState;
+  final AudioPlayer? audioPlayer;
 
   BaseAudioState copyWith({
     //famous Reader

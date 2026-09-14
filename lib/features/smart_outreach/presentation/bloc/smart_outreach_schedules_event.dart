@@ -12,9 +12,7 @@ class LoadSmartOutreachSchedulesEvent extends SmartOutreachSchedulesEvent {
 
 class SaveSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
   const SaveSmartOutreachScheduleEvent({
-    this.scheduleId,
     required this.title,
-    this.note,
     required this.hour,
     required this.minute,
     required this.isEnabled,
@@ -26,8 +24,10 @@ class SaveSmartOutreachScheduleEvent extends SmartOutreachSchedulesEvent {
     required this.stopOnFirstAnswered,
     required this.retryEnabled,
     required this.repeatCycle,
-    this.smsTemplate,
     required this.contacts,
+    this.scheduleId,
+    this.note,
+    this.smsTemplate,
   });
 
   final int? scheduleId;

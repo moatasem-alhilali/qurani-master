@@ -11,162 +11,107 @@ class _QuizResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final passedColor = result.passed
-        ? youngMuslimCompletionColor(context)
-        : context.errorColor;
+    final skin = AppSkin.of(context);
+    final scorePercent = (result.scorePercent * 100).round();
 
     return SingleChildScrollView(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           YoungMuslimSectionHeader(
             title: title,
-            subtitle: result.passed
-                ? 'أحسنت، هذه مراجعة واضحة لإجاباتك.'
-                : 'راجع الإجابات الهادئة بالأسفل ثم أكمل المشاهدة.',
-            trailing: IconButton(
-              onPressed: () => Navigator.of(context).pop(result),
-              icon: const Icon(Icons.close_rounded),
+            padded: false,
+            trailing: _SheetCloseButton(
+              onTap: () => Navigator.of(context).pop(result),
             ),
           ),
-          SizedBox(height: 16.h),
-          Container(
-            padding: EdgeInsets.all(18.w),
-            decoration: youngMuslimPanelDecoration(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          Row(
+            children: [
+              YoungMuslimIconChip(
+                icon: result.passed ? AppIcons.check : AppIcons.target,
+                size: 40.w,
+                active: result.passed,
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 56.w,
-                      height: 56.w,
-                      decoration: BoxDecoration(
-                        color: passedColor.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Icon(
-                        result.passed
-                            ? Icons.verified_rounded
-                            : Icons.auto_awesome_motion_rounded,
-                        color: passedColor,
-                        size: 28.sp,
+                    Text(
+                      result.passed
+                          ? 'أحسنت يا بطل'
+                          : 'أنت قريب من الإجابة الكاملة',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            result.passed
-                                ? 'أحسنت يا بطل'
-                                : 'أنت قريب من الإجابة الكاملة',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'أجبت ${result.correctAnswers} من '
-                            '${result.totalQuestions} بشكل صحيح.',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: context.gray1,
-                                ),
-                          ),
-                        ],
-                      ),
+                    SizedBox(height: 3.h),
+                    // الكسر «٣ / ٥» ينقلب في الاتجاه العربي، فيُكتب بالعربية.
+                    Text(
+                      'أجبت ${result.correctAnswers} من '
+                      '${result.totalQuestions} إجابة صحيحة',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: youngMuslimRowSubtitle(skin, size: 10.sp),
                     ),
                   ],
-                ),
-                SizedBox(height: 16.h),
-                Wrap(
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: [
-                    YoungMuslimMetricChip(
-                      label: '${(result.scorePercent * 100).round()}%',
-                      icon: Icons.analytics_rounded,
-                      color: passedColor,
-                    ),
-                    YoungMuslimMetricChip(
-                      label: '+${result.awardedXp} XP',
-                      icon: Icons.bolt_rounded,
-                      color: youngMuslimRewardColor(context),
-                    ),
-                    YoungMuslimMetricChip(
-                      label: 'المستوى ${result.rewardsSummary.level}',
-                      icon: Icons.emoji_events_rounded,
-                      color: context.primaryColor,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 14.h),
-                LinearProgressIndicator(
-                  value: result.scorePercent,
-                  minHeight: 8.h,
-                  borderRadius: BorderRadius.circular(16.r),
-                  backgroundColor: context.outline.withOpacity(0.15),
-                  color: passedColor,
-                ),
-              ],
-            ),
-          ),
-          if (result.newlyUnlockedAchievements.isNotEmpty) ...[
-            SizedBox(height: 18.h),
-            const YoungMuslimSectionHeader(
-              title: 'إنجازات جديدة',
-              subtitle: 'هذه الإنجازات فُتحت بعد هذا الاختبار مباشرة.',
-            ),
-            SizedBox(height: 12.h),
-            Column(
-              children: result.newlyUnlockedAchievements
-                  .map(
-                    (achievement) => Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: _UnlockedAchievementCard(achievement: achievement),
-                    ),
-                  )
-                  .toList(growable: false),
-            ),
-          ],
-          SizedBox(height: 18.h),
-          const YoungMuslimSectionHeader(
-            title: 'مراجعة الإجابات',
-            subtitle: 'ستجد إجابتك، الصحيح، وشرحًا بسيطًا لكل سؤال.',
-          ),
-          SizedBox(height: 12.h),
-          Column(
-            children: result.answerReviews
-                .map(
-                  (review) => Padding(
-                    padding: EdgeInsets.only(bottom: 12.h),
-                    child: _AnswerReviewCard(review: review),
-                  ),
-                )
-                .toList(growable: false),
-          ),
-          SizedBox(height: 10.h),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).pop(result),
-              icon: const Icon(Icons.done_all_rounded),
-              label: const Text('إنهاء'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          YoungMuslimProgressBar(value: result.scorePercent),
+          SizedBox(height: 10.h),
+          Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
+            children: [
+              YoungMuslimMetricChip(
+                label: '$scorePercent٪',
+                icon: AppIcons.target,
+              ),
+              YoungMuslimMetricChip(
+                label: '+${result.awardedXp} نقطة',
+                icon: AppIcons.star,
+              ),
+              YoungMuslimMetricChip(
+                label: 'المستوى ${result.rewardsSummary.level}',
+                icon: AppIcons.checkSmall,
+              ),
+            ],
+          ),
+          if (result.newlyUnlockedAchievements.isNotEmpty) ...[
+            const YoungMuslimSectionHeader(
+              title: 'إنجازات جديدة',
+              padded: false,
             ),
+            for (var i = 0; i < result.newlyUnlockedAchievements.length; i++)
+              _UnlockedAchievementRow(
+                achievement: result.newlyUnlockedAchievements[i],
+                isLast: i == result.newlyUnlockedAchievements.length - 1,
+              ),
+          ],
+          const YoungMuslimSectionHeader(
+            title: 'مراجعة الإجابات',
+            padded: false,
+          ),
+          for (var i = 0; i < result.answerReviews.length; i++)
+            _AnswerReviewBlock(
+              review: result.answerReviews[i],
+              isLast: i == result.answerReviews.length - 1,
+            ),
+          SizedBox(height: 14.h),
+          YoungMuslimPrimaryButton(
+            label: 'إنهاء',
+            icon: AppIcons.check,
+            onTap: () => Navigator.of(context).pop(result),
           ),
         ],
       ),
@@ -174,97 +119,94 @@ class _QuizResultView extends StatelessWidget {
   }
 }
 
-class _AnswerReviewCard extends StatelessWidget {
-  const _AnswerReviewCard({
+/// مراجعة سؤال واحد: إجابتك، الصحيحة، ثم الشرح.
+class _AnswerReviewBlock extends StatelessWidget {
+  const _AnswerReviewBlock({
     required this.review,
+    required this.isLast,
   });
 
   final YoungMuslimQuizAnswerReviewEntity review;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = review.isCorrect
-        ? youngMuslimCompletionColor(context)
-        : context.errorColor;
+    final skin = AppSkin.of(context);
+    final accentColor = review.isCorrect ? skin.accent : AppColors.error;
 
     return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration: youngMuslimPanelDecoration(context),
+      padding: EdgeInsets.symmetric(vertical: 13.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 32.w,
-                height: 32.w,
+                width: 24.w,
+                height: 24.w,
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.1),
-                  shape: BoxShape.circle,
+                  color: accentColor.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(9.r),
                 ),
-                child: Icon(
-                  review.isCorrect ? Icons.check_rounded : Icons.close_rounded,
-                  color: accentColor,
-                  size: 18.sp,
+                child: Center(
+                  child: AppIcon(
+                    review.isCorrect ? AppIcons.checkSmall : AppIcons.close,
+                    color: accentColor,
+                    size: 12.sp,
+                  ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 10.w),
               Expanded(
                 child: Text(
                   review.question.prompt,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        height: 1.5,
-                      ),
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 10.h),
           _AnswerLine(
             title: 'إجابتك',
             value: review.submittedAnswer,
-            color: review.isCorrect ? accentColor : context.errorColor,
-            isCorrect: review.isCorrect,
+            color: accentColor,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 8.h),
           _AnswerLine(
             title: 'الإجابة الصحيحة',
             value: review.correctAnswer,
-            color: youngMuslimCompletionColor(context),
-            isCorrect: true,
-            isReference: true,
+            color: skin.accent,
           ),
           if (review.question.explanation.trim().isNotEmpty) ...[
-            SizedBox(height: 16.h),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                color: context.primaryColor.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(12.r),
-                border:
-                    Border.all(color: context.primaryColor.withOpacity(0.1)),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.info_outline_rounded,
-                      size: 16.r, color: context.primaryColor),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: Text(
-                      review.question.explanation,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: context.onSurfaceColor.withOpacity(0.8),
-                            height: 1.6,
-                            fontSize: 11.5.sp,
-                          ),
+            SizedBox(height: 10.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppIcon(AppIcons.error, color: skin.accent, size: 13.sp),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    review.question.explanation,
+                    style: TextStyle(
+                      color: skin.inkSoft.withValues(alpha: 0.78),
+                      fontSize: 10.5.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.6,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ],
@@ -278,56 +220,42 @@ class _AnswerLine extends StatelessWidget {
     required this.title,
     required this.value,
     required this.color,
-    this.isCorrect = false,
-    this.isReference = false,
   });
 
   final String title;
   final String value;
   final Color color;
-  final bool isCorrect;
-  final bool isReference;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 9.h),
       decoration: BoxDecoration(
-        color: isReference ? color.withOpacity(0.05) : color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(12.r),
-        border: isReference ? Border.all(color: color.withOpacity(0.2)) : null,
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(11.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: color.withOpacity(0.8),
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const Spacer(),
-              if (!isReference)
-                Icon(
-                  isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                  size: 14.r,
-                  color: color,
-                ),
-            ],
+          Text(
+            title,
+            style: TextStyle(
+              color: color,
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w800,
+            ),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 3.h),
           Text(
             value,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.onSurfaceColor,
-                ),
+            style: TextStyle(
+              color: skin.ink,
+              fontSize: 11.5.sp,
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+            ),
           ),
         ],
       ),
@@ -335,61 +263,58 @@ class _AnswerLine extends StatelessWidget {
   }
 }
 
-class _UnlockedAchievementCard extends StatelessWidget {
-  const _UnlockedAchievementCard({
+/// إنجاز فُتح للتوّ بعد هذا الاختبار.
+class _UnlockedAchievementRow extends StatelessWidget {
+  const _UnlockedAchievementRow({
     required this.achievement,
+    required this.isLast,
   });
 
   final YoungMuslimAchievementEntity achievement;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    final rewardColor = youngMuslimRewardColor(context);
+    final skin = AppSkin.of(context);
 
     return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: youngMuslimPanelDecoration(context),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
       child: Row(
         children: [
-          Container(
-            width: 46.w,
-            height: 46.w,
-            decoration: BoxDecoration(
-              color: rewardColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: AppIcon(
-              youngMuslimAchievementIcon(achievement.icon),
-              color: rewardColor,
-              size: 18.sp,
-              strokeWidth: 1.55,
-            ),
+          YoungMuslimIconChip(
+            icon: youngMuslimAchievementIcon(achievement.icon),
+            active: true,
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   achievement.titleAr,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimRowTitle(skin),
                 ),
-                SizedBox(height: 4.h),
                 Text(
                   achievement.description,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: context.gray1,
-                      ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimRowSubtitle(skin),
                 ),
               ],
             ),
           ),
+          SizedBox(width: 8.w),
           YoungMuslimMetricChip(
-            label: '+${achievement.xpReward} XP',
-            icon: Icons.bolt_rounded,
-            color: rewardColor,
+            label: '+${achievement.xpReward} نقطة',
+            icon: AppIcons.star,
           ),
         ],
       ),

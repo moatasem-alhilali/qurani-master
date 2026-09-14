@@ -9,7 +9,7 @@ import 'package:quran_app/main.dart';
 abstract class BaseAudioRepository {
   Future<Either<Failure, List<dynamic>>> famousReader(String id);
   Future<Either<Failure, List<dynamic>>> famousReaderDetail(String id);
-  Future<Either<Failure, AudioPlayer>> initAudio(List url);
+  Future<Either<Failure, AudioPlayer>> initAudio(List<dynamic> url);
 
   //
 }
@@ -32,7 +32,7 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
   }
 
   @override
-  Future<Either<Failure, List>> famousReaderDetail(String url) async {
+  Future<Either<Failure, List<dynamic>>> famousReaderDetail(String url) async {
     try {
       final result = await DioHelper.get(
         url: url,
@@ -62,7 +62,6 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
     }
   }
 
-  @override
   Future<Either<Failure, List<dynamic>>> quranLearnChild() async {
     try {
       const url = ApiServes.quranLearnForChild;

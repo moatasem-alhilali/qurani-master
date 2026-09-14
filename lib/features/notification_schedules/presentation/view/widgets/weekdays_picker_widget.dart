@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 
+/// اختيار أيام الأسبوع: أزرار صغيرة بلا بطاقة، التعبئة الذهبية للمحدّد فقط.
 class WeekdaysPickerWidget extends StatefulWidget {
   const WeekdaysPickerWidget({
     required this.initialSelection,
@@ -16,14 +20,10 @@ class WeekdaysPickerWidget extends StatefulWidget {
   State<WeekdaysPickerWidget> createState() => _WeekdaysPickerWidgetState();
 }
 
-class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
-    with TickerProviderStateMixin {
-  late List<int> selected;
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-
-  final weekDays = [7, 1, 2, 3, 4, 5, 6]; // الأحد...السبت
-  final weekLabels = [
+class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget> {
+  /// الأحد أولًا كما يبدأ الأسبوع عربيًا (7 = الأحد ... 6 = السبت).
+  static const List<int> _weekDays = [7, 1, 2, 3, 4, 5, 6];
+  static const List<String> _labels = [
     'أحد',
     'اثنين',
     'ثلاثاء',
@@ -33,194 +33,68 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
     'سبت',
   ];
 
+  late List<int> _selected;
+
   @override
   void initState() {
     super.initState();
-    selected = List<int>.from(widget.initialSelection);
-
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(
-      begin: 1,
-      end: 0.95,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _selected = List<int>.of(widget.initialSelection);
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+  void _apply(List<int> next) {
+    HapticFeedback.selectionClick();
+    setState(() => _selected = next);
+    widget.onChanged(_selected);
+  }
+
+  void _toggleDay(int day) {
+    final next = List<int>.of(_selected);
+    if (next.contains(day)) {
+      next.remove(day);
+    } else {
+      next.add(day);
+    }
+    _apply(next);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.green.withOpacity(0.2)),
-      ),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
             children: [
-              Icon(
-                Icons.date_range,
-                size: 20.sp,
-                color: Colors.green[700],
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                'اختر أيام الأسبوع',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.green[700],
+              for (var i = 0; i < _weekDays.length; i++)
+                _DayChip(
+                  label: _labels[i],
+                  selected: _selected.contains(_weekDays[i]),
+                  onTap: () => _toggleDay(_weekDays[i]),
                 ),
-              ),
             ],
           ),
-          SizedBox(height: 16.h),
-
-          // Weekdays Grid
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 8.h,
-              crossAxisSpacing: 8.w,
-              childAspectRatio: 2.5,
-            ),
-            itemCount: 7,
-            itemBuilder: (context, index) {
-              final day = weekDays[index];
-              final isSelected = selected.contains(day);
-              final isFriday = day == 5; // الجمعة
-
-              return AnimatedBuilder(
-                animation: _scaleAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: isSelected ? _scaleAnimation.value : 1.0,
-                    child: child,
-                  );
-                },
-                child: GestureDetector(
-                  onTap: () => _toggleDay(day),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? (isFriday ? Colors.green : context.primaryColor)
-                          : Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: isSelected
-                            ? (isFriday ? Colors.green : context.primaryColor)
-                            : Colors.grey.withOpacity(0.3),
-                        width: 2,
-                      ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: (isFriday
-                                        ? Colors.green
-                                        : context.primaryColor)
-                                    .withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            weekLabels[index],
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  isSelected ? Colors.white : Colors.grey[700],
-                            ),
-                          ),
-                          if (isFriday && isSelected) ...[
-                            SizedBox(height: 2.h),
-                            Icon(
-                              Icons.mosque,
-                              size: 12.sp,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-
-          if (selected.isNotEmpty) ...[
-            SizedBox(height: 16.h),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.green.withOpacity(0.3)),
-              ),
-              child: Text(
-                'المحدد: ${selected.map(_getArabicDayName).join('، ')}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.green[700],
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-
-          // Quick Selection Buttons
-          SizedBox(height: 16.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          SizedBox(height: 4.h),
+          Wrap(
+            spacing: 2.w,
             children: [
-              _buildQuickButton(
-                'كل يوم',
-                Icons.select_all,
-                _selectAll,
+              SettingsGhostButton(
+                label: 'كل الأيام',
+                onPressed: () => _apply(List<int>.of(_weekDays)),
               ),
-              _buildQuickButton(
-                'أيام العمل',
-                Icons.work,
-                _selectWorkdays,
+              SettingsGhostButton(
+                label: 'أيام العمل',
+                onPressed: () => _apply([7, 1, 2, 3, 4]),
               ),
-              _buildQuickButton(
-                'عطلة',
-                Icons.weekend,
-                _selectWeekend,
+              SettingsGhostButton(
+                label: 'العطلة',
+                onPressed: () => _apply([5, 6]),
               ),
-              _buildQuickButton(
-                'مسح',
-                Icons.clear,
-                _clearAll,
+              SettingsGhostButton(
+                label: 'مسح',
+                onPressed: () => _apply([]),
               ),
             ],
           ),
@@ -228,100 +102,43 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget>
       ),
     );
   }
+}
 
-  Widget _buildQuickButton(String label, IconData icon, VoidCallback onTap) {
+/// زرّ يوم واحد: تعبئة ذهبية حين يُختار، وخلفية خافتة حين لا.
+class _DayChip extends StatelessWidget {
+  const _DayChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8.r),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+      borderRadius: BorderRadius.circular(10.r),
+      child: Ink(
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8.r),
+          color: selected ? AppColors.gold : skin.iconChip,
+          borderRadius: BorderRadius.circular(10.r),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 16.sp,
-              color: Colors.grey[600],
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10.sp,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.h),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? settingsOnGold : skin.ink.withValues(alpha: 0.85),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w700,
+            height: 1.1,
+          ),
         ),
       ),
     );
-  }
-
-  void _toggleDay(int day) {
-    setState(() {
-      if (selected.contains(day)) {
-        selected.remove(day);
-      } else {
-        selected.add(day);
-      }
-      widget.onChanged(selected);
-    });
-
-    _animationController.forward().then((_) {
-      _animationController.reverse();
-    });
-  }
-
-  void _selectAll() {
-    setState(() {
-      selected = List<int>.from(weekDays);
-      widget.onChanged(selected);
-    });
-  }
-
-  void _selectWorkdays() {
-    setState(() {
-      selected = [1, 2, 3, 4, 7]; // اثنين إلى خميس + أحد
-      widget.onChanged(selected);
-    });
-  }
-
-  void _selectWeekend() {
-    setState(() {
-      selected = [5, 6]; // الجمعة والسبت
-      widget.onChanged(selected);
-    });
-  }
-
-  void _clearAll() {
-    setState(() {
-      selected.clear();
-      widget.onChanged(selected);
-    });
-  }
-
-  String _getArabicDayName(int day) {
-    switch (day) {
-      case 1:
-        return 'الاثنين';
-      case 2:
-        return 'الثلاثاء';
-      case 3:
-        return 'الأربعاء';
-      case 4:
-        return 'الخميس';
-      case 5:
-        return 'الجمعة';
-      case 6:
-        return 'السبت';
-      case 7:
-        return 'الأحد';
-      default:
-        return '؟';
-    }
   }
 }

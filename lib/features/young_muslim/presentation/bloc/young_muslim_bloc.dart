@@ -46,7 +46,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         state.copyWith(
           loadState: RequestState.success,
           dashboard: dashboard,
-          errorMessage: null,
         ),
       );
     } catch (error) {
@@ -75,14 +74,14 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         filters: state.filters,
       );
       final categoryFuture = state.categoryDetails == null
-          ? Future<YoungMuslimCategoryDetailsEntity?>.value(null)
+          ? Future<YoungMuslimCategoryDetailsEntity?>.value()
           : _repository.getCategoryDetails(
               state.categoryDetails!.category.id,
               query: state.query,
               filters: state.filters,
             );
       final videoFuture = state.videoDetails == null
-          ? Future<YoungMuslimVideoDetailsEntity?>.value(null)
+          ? Future<YoungMuslimVideoDetailsEntity?>.value()
           : _repository.getVideoDetails(state.videoDetails!.video.id);
 
       final dashboard = await dashboardFuture;
@@ -100,7 +99,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
           categoryDetails: categoryDetails,
           videoDetails: videoDetails,
           actionState: RequestState.success,
-          errorMessage: null,
         ),
       );
     } catch (error) {
@@ -152,7 +150,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         state.copyWith(
           categoryState: RequestState.success,
           categoryDetails: categoryDetails,
-          errorMessage: null,
         ),
       );
     } catch (error) {
@@ -176,7 +173,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         state.copyWith(
           videoState: RequestState.success,
           videoDetails: videoDetails,
-          errorMessage: null,
         ),
       );
     } catch (error) {
@@ -199,7 +195,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         favorite: _resolveFavoriteValue(event.videoId),
       ).copyWith(
         actionState: RequestState.success,
-        errorMessage: null,
       ),
     );
     try {
@@ -226,7 +221,6 @@ class YoungMuslimBloc extends Bloc<YoungMuslimEvent, YoungMuslimState> {
         watchLater: _resolveWatchLaterValue(event.videoId),
       ).copyWith(
         actionState: RequestState.success,
-        errorMessage: null,
       ),
     );
     try {

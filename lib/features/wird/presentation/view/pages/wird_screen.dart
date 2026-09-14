@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
 import 'package:quran_app/core/services/copy_service.dart';
 import 'package:quran_app/core/services/json_loader_service.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/wird/data/models/wird_model.dart';
@@ -40,6 +41,8 @@ class WirdScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocProvider(
       create: (context) => WirdBloc()
         ..add(
@@ -49,42 +52,47 @@ class WirdScreen extends StatelessWidget {
             filterByPeriod: filterByPeriod,
           ),
         ),
-      child: AppScaffoldWidget(
-        title: titleOverride ?? (isMorning ? 'الورد الصباحي' : 'الورد المسائي'),
-        trailing: BlocBuilder<WirdBloc, WirdState>(
-          builder: (context, state) {
-            return GenericSearchAnchorAsync<WirdModel>(
-              asyncSuggestions: (query) async {
-                if (query.trim().isEmpty) return state.data ?? [];
-                return state.data
-                        ?.where((item) => _matchesQuery(item, query))
-                        .toList() ??
-                    [];
-              },
-              onSelected: (item) async {
-                await CopyService.copyToClipboard(item.text);
-              },
-              hintText: 'بحث عن ذكر',
-              suggestionBuilder: (context, item) =>
-                  WirdSearchSuggestion(item: item),
-            );
-          },
-        ),
-        slivers: [
-          BlocBuilder<WirdBloc, WirdState>(
+      // أرضية واحدة تمتدّ من الترويسة إلى آخر ذكر.
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: AppScaffoldWidget(
+          title:
+              titleOverride ?? (isMorning ? 'الورد الصباحي' : 'الورد المسائي'),
+          trailing: BlocBuilder<WirdBloc, WirdState>(
             builder: (context, state) {
-              return state.state.whenSliver<WirdModel>(
-                onSuccess: () {
-                  return const SliverToBoxAdapter(
-                    child: WirdCollectionView(),
-                  );
+              return GenericSearchAnchorAsync<WirdModel>(
+                asyncSuggestions: (query) async {
+                  if (query.trim().isEmpty) return state.data ?? [];
+                  return state.data
+                          ?.where((item) => _matchesQuery(item, query))
+                          .toList() ??
+                      [];
                 },
-                context: context,
-                sliverList: state.data,
+                onSelected: (item) async {
+                  await CopyService.copyToClipboard(item.text);
+                },
+                hintText: 'بحث عن ذكر',
+                suggestionBuilder: (context, item) =>
+                    WirdSearchSuggestion(item: item),
               );
             },
           ),
-        ],
+          slivers: [
+            BlocBuilder<WirdBloc, WirdState>(
+              builder: (context, state) {
+                return state.state.whenSliver<WirdModel>(
+                  onSuccess: () {
+                    return const SliverToBoxAdapter(
+                      child: WirdCollectionView(),
+                    );
+                  },
+                  context: context,
+                  sliverList: state.data,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

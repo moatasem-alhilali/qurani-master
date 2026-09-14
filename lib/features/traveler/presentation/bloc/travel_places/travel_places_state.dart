@@ -41,11 +41,14 @@ class TravelPlacesState {
       radiusMeters: radiusMeters ?? this.radiusMeters,
       locationContext: locationContext ?? this.locationContext,
       places: places ?? this.places,
-      selectedPlace: clearSelectedPlace ? null : (selectedPlace ?? this.selectedPlace),
+      selectedPlace:
+          clearSelectedPlace ? null : (selectedPlace ?? this.selectedPlace),
       isLoadingLocation: isLoadingLocation ?? this.isLoadingLocation,
       isLoadingPlaces: isLoadingPlaces ?? this.isLoadingPlaces,
-      isRestrictedForCountry: isRestrictedForCountry ?? this.isRestrictedForCountry,
-      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      isRestrictedForCountry:
+          isRestrictedForCountry ?? this.isRestrictedForCountry,
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }

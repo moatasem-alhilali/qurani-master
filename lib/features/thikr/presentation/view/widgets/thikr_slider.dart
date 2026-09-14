@@ -1,169 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
+import 'package:quran_app/gen/fonts.gen.dart';
 
+/// وردُ هذا الوقت — العنصر الوحيد المسموح له بالارتفاع في شاشة الأذكار.
+///
+/// لم يعد سطرًا عامًّا يقول «الورد اليومي»: يسمّي الورد الذي دخل وقته
+/// الآن، فيعرف المستخدم ما الذي سيفتحه قبل أن يضغط.
 class ThikrSlider extends StatelessWidget {
-  const ThikrSlider({
-    super.key,
-  });
+  const ThikrSlider({super.key});
+
+  static const String _ayah =
+      'وَالذَّاكِرِينَ اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ '
+      'أَعَدَّ اللَّهُ لَهُم مَّغْفِرَةً وَأَجْرًا عَظِيمًا';
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          child: Text(
-            'الورد اليومي',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w800,
-              color: context.primaryColor,
-            ),
-          ),
-        ),
-        const _Item(
-          data: 'يقول تعالى: "وَالذَّاكِرِينَ اللَّهَ كَثِيرًا وَالذَّاكِرَاتِ أَعَدَّ اللَّهُ لَهُم مَّغْفِرَةً وَأَجْرًا عَظِيمًا"',
-        ),
-      ],
-    );
-  }
-}
-
-class _Item extends StatelessWidget {
-  const _Item({
-    required this.data,
-    super.key,
-  });
-
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(20.r);
-    final accent = context.primaryColor;
-    final cardBackground = context.surfaceColor;
-    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
-    final cardBorder = context.outline.withValues(alpha: 0.85);
-    final shadow = context.shadow.withValues(alpha: 0.10);
-    final titleColor = context.onSurfaceColor;
+    final skin = AppSkin.of(context);
+    final isEvening = DateTime.now().hour >= 17;
+    final title = isEvening ? 'أذكار المساء' : 'أذكار الصباح';
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 2.h),
       child: InkWell(
-        onTap: () {
-          if (DateTime.now().hour >= 17) {
-            context.push(const WirdScreen(isMorning: false));
-          } else {
-            context.push(const WirdScreen(isMorning: true));
-          }
-        },
-        borderRadius: borderRadius,
+        onTap: () => context.push(WirdScreen(isMorning: !isEvening)),
+        borderRadius: BorderRadius.circular(14.r),
         child: Ink(
-          width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                cardBackground,
-                cardBackgroundSoft,
-              ],
-            ),
+            color: skin.raised,
+            borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
-              color: cardBorder,
+              color: skin.raisedBorder.withValues(alpha: 0.55),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: shadow,
-                blurRadius: 14.r,
-                offset: Offset(0, 7.h),
-              ),
-            ],
+            boxShadow: skin.raisedShadow,
           ),
-          child: ClipRRect(
-            borderRadius: borderRadius,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 4.w,
+          padding: EdgeInsets.fromLTRB(12.w, 11.h, 12.w, 12.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 30.w,
+                    height: 30.w,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          accent,
-                          accent.withValues(alpha: 0.2),
-                        ],
+                      color: skin.iconChip,
+                      borderRadius: BorderRadius.circular(11.r),
+                    ),
+                    child: Center(
+                      child: AppIcon(
+                        isEvening ? AppIcons.sunset : AppIcons.sunrise,
+                        color: skin.accent,
+                        size: 16.sp,
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: -30.h,
-                  left: -30.w,
-                  child: Container(
-                    width: 100.w,
-                    height: 100.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: accent.withValues(alpha: 0.05),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: -20.h,
-                  right: 40.w,
-                  child: Container(
-                    width: 60.w,
-                    height: 60.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: accent.withValues(alpha: 0.04),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 20.h, 24.w, 20.h),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12.w),
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Icon(
-                          Icons.auto_stories_rounded,
-                          color: accent,
-                          size: 28.sp,
-                        ),
-                      ),
-                      SizedBox(width: 16.w),
-                      Expanded(
-                        child: Text(
-                          data,
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: titleColor,
+                            color: skin.ink,
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            height: 1.6,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2,
                           ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          'وردُ هذا الوقت، افتحه الآن',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.inkSoft.withValues(alpha: 0.78),
+                            fontSize: 9.5.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppIcon(
+                    AppIcons.chevronLeft,
+                    color: skin.accent,
+                    size: 15.sp,
+                  ),
+                ],
+              ),
+              SizedBox(height: 9.h),
+              Divider(height: 1, thickness: 1, color: skin.hairline),
+              SizedBox(height: 9.h),
+              Text(
+                _ayah,
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                  fontFamily: FontFamily.scheherazade,
+                  color: skin.ink,
+                  fontSize: 16.sp,
+                  height: 1.9,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Align(
+                child: Text(
+                  'الأحزاب · ٣٥',
+                  style: TextStyle(
+                    color: skin.accent,
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

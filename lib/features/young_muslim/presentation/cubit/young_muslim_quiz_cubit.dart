@@ -42,7 +42,6 @@ class YoungMuslimQuizCubit extends Cubit<YoungMuslimQuizState> {
         state.copyWith(
           submitState: RequestState.success,
           result: result,
-          errorMessage: null,
         ),
       );
     } catch (error) {

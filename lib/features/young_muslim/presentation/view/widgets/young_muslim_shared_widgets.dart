@@ -1,62 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 
 part 'young_muslim_shared_widgets_basics.dart';
 part 'young_muslim_shared_widgets_media.dart';
 part 'young_muslim_shared_widgets_video.dart';
 
-Color youngMuslimHex(String hex) {
-  final sanitized = hex.replaceFirst('#', '');
-  final buffer = StringBuffer();
-  if (sanitized.length == 6) {
-    buffer.write('ff');
-  }
-  buffer.write(sanitized);
-  return Color(int.parse(buffer.toString(), radix: 16));
-}
-
-Color youngMuslimAccentColor(
-  BuildContext context,
-  String hex, {
-  bool useSecondary = false,
-  double blend = 0.32,
-}) {
-  final themeBase =
-      useSecondary ? context.secondaryColor : context.primaryColor;
-  return Color.lerp(themeBase, youngMuslimHex(hex), blend) ?? themeBase;
-}
-
-List<Color> youngMuslimGradientColors(
-  BuildContext context, {
-  required String startHex,
-  required String endHex,
-}) {
-  return [
-    youngMuslimAccentColor(context, startHex),
-    youngMuslimAccentColor(
-      context,
-      endHex,
-      useSecondary: true,
-      blend: 0.38,
-    ),
-  ];
-}
-
-Color youngMuslimCompletionColor(BuildContext context) {
-  return Color.lerp(context.secondaryColor, Colors.green, 0.42) ??
-      context.secondaryColor;
-}
-
-Color youngMuslimRewardColor(BuildContext context) {
-  return Color.lerp(context.secondaryColor, Colors.amber, 0.48) ??
-      context.secondaryColor;
-}
-
+/// أيقونة الإنجاز حسب اسمها القادم من البيانات.
 HugeIconData youngMuslimAchievementIcon(String iconName) {
   switch (iconName) {
     case 'play_circle':
@@ -74,39 +30,7 @@ HugeIconData youngMuslimAchievementIcon(String iconName) {
   }
 }
 
-BoxDecoration youngMuslimPanelDecoration(
-  BuildContext context, {
-  double radius = 16,
-  Color? color,
-  bool useGradient = false,
-}) {
-  final accent = Theme.of(context).primaryColor;
-  return BoxDecoration(
-    color: useGradient ? null : (color ?? context.cardColor),
-    borderRadius: BorderRadius.circular(radius.r),
-    gradient: useGradient
-        ? LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              context.surfaceColor,
-              context.surfaceVariant.withValues(alpha: 0.24),
-            ],
-          )
-        : null,
-    border: Border.all(
-      color: accent.withValues(alpha: 0.12),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: context.shadow.withValues(alpha: 0.035),
-        blurRadius: 14.r,
-        offset: Offset(0, 7.h),
-      ),
-    ],
-  );
-}
-
+/// مدّة الحلقة بصيغة عربية قصيرة.
 String youngMuslimDuration(int seconds) {
   final duration = Duration(seconds: seconds);
   if (duration.inHours > 0) {
@@ -115,6 +39,7 @@ String youngMuslimDuration(int seconds) {
   return '${duration.inMinutes}د';
 }
 
+/// متى شوهدت الحلقة آخر مرّة، بصيغة يقرأها الطفل.
 String youngMuslimRelative(DateTime? dateTime) {
   if (dateTime == null) {
     return 'لم يُشاهد بعد';
@@ -136,17 +61,54 @@ String youngMuslimRelative(DateTime? dateTime) {
   return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
 }
 
-double youngMuslimCarouselViewportFraction(
-  BuildContext context, {
-  required double itemWidth,
-  double horizontalPadding = 0,
-  double minFraction = 0.24,
-}) {
-  final viewportWidth = MediaQuery.sizeOf(context).width - horizontalPadding;
-  if (viewportWidth <= 0) {
-    return 1;
+/// سطر حالة الحلقة: مكتملة، أو نسبة التقدّم، أو أنّها لم تبدأ.
+String youngMuslimVideoStatus(YoungMuslimVideoEntity video) {
+  if (video.isCompleted) {
+    return 'تمت المشاهدة';
   }
-  return (itemWidth / viewportWidth).clamp(minFraction, 1.0);
+  if (video.hasProgress) {
+    return 'تقدّم ${(video.progressPercent * 100).round()}٪';
+  }
+  return 'جاهزة للمشاهدة';
+}
+
+/// عنوان صفّ: المقاس الأساسي في كل قوائم القسم.
+///
+/// قسم الأطفال يسمح بزيادة طفيفة على `12.5.sp` حين يكون العنوان هو بطل
+/// الصفّ، لكن من عائلة المقاسات نفسها لا من لوحة ثانية.
+TextStyle youngMuslimRowTitle(AppSkin skin, {double? size}) {
+  return TextStyle(
+    color: skin.ink,
+    fontSize: size ?? 12.5.sp,
+    fontWeight: FontWeight.w700,
+    height: 1.25,
+  );
+}
+
+/// وصف ثانوي تحت عنوان الصفّ.
+TextStyle youngMuslimRowSubtitle(AppSkin skin, {double? size}) {
+  return TextStyle(
+    color: skin.inkSoft.withValues(alpha: 0.78),
+    fontSize: size ?? 9.5.sp,
+    fontWeight: FontWeight.w500,
+    height: 1.35,
+  );
+}
+
+/// أرقام بعرض ثابت حتى لا ترقص الأرقام عند تغيّرها.
+TextStyle youngMuslimNumber(
+  AppSkin skin, {
+  double? size,
+  Color? color,
+  FontWeight weight = FontWeight.w600,
+}) {
+  return TextStyle(
+    color: color ?? skin.accent,
+    fontSize: size ?? 12.5.sp,
+    fontWeight: weight,
+    height: 1.2,
+    fontFeatures: const [FontFeature.tabularFigures()],
+  );
 }
 
 PageRouteBuilder<T> youngMuslimPageRoute<T>({

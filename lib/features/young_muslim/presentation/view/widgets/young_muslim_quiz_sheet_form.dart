@@ -11,99 +11,77 @@ class _QuizFormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final questions = state.quizSet.questions;
+    final busy = state.submitState == RequestState.loading;
+
     return SingleChildScrollView(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           YoungMuslimSectionHeader(
             title: title,
-            subtitle: 'أسئلة بسيطة تساعد الطفل على تثبيت ما شاهده',
-            trailing: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.close_rounded),
-            ),
+            padded: false,
+            trailing: const _SheetCloseButton(),
           ),
-          SizedBox(height: 16.h),
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: youngMuslimPanelDecoration(context),
-            child: Wrap(
-              spacing: 10.w,
-              runSpacing: 10.h,
-              children: [
-                YoungMuslimMetricChip(
-                  label: '${state.quizSet.questions.length} أسئلة',
-                  icon: Icons.quiz_rounded,
-                  color: context.primaryColor,
-                ),
-                YoungMuslimMetricChip(
-                  label: '+${state.quizSet.xpReward} XP عند النجاح',
-                  icon: Icons.bolt_rounded,
-                  color: youngMuslimRewardColor(context),
-                ),
-                YoungMuslimMetricChip(
-                  label: 'النجاح من ${state.quizSet.passingScore}',
-                  icon: Icons.check_circle_rounded,
-                  color: youngMuslimCompletionColor(context),
-                ),
-              ],
-            ),
+          Text(
+            'أسئلة بسيطة تساعد الطفل على تثبيت ما شاهده.',
+            style: youngMuslimRowSubtitle(skin, size: 10.sp),
           ),
-          SizedBox(height: 16.h),
-          for (int i = 0; i < state.quizSet.questions.length; i++) ...[
-            _QuestionCard(
+          SizedBox(height: 12.h),
+          Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
+            children: [
+              YoungMuslimMetricChip(
+                label: '${questions.length} أسئلة',
+                icon: AppIcons.list,
+              ),
+              YoungMuslimMetricChip(
+                label: '+${state.quizSet.xpReward} نقطة عند النجاح',
+                icon: AppIcons.star,
+              ),
+              YoungMuslimMetricChip(
+                label: 'النجاح من ${state.quizSet.passingScore}',
+                icon: AppIcons.checkSmall,
+              ),
+            ],
+          ),
+          SizedBox(height: 4.h),
+          for (var i = 0; i < questions.length; i++)
+            _QuestionBlock(
               index: i + 1,
-              question: state.quizSet.questions[i],
-              selectedValue: state.answers[state.quizSet.questions[i].id],
+              question: questions[i],
+              selectedValue: state.answers[questions[i].id],
+              isLast: i == questions.length - 1,
               onSelected: (answer) {
                 context
                     .read<YoungMuslimQuizCubit>()
-                    .answerQuestion(state.quizSet.questions[i].id, answer);
+                    .answerQuestion(questions[i].id, answer);
               },
             ),
-            SizedBox(height: 16.h),
-          ],
           if (state.submitState == RequestState.error &&
               state.errorMessage != null)
             Padding(
-              padding: EdgeInsets.only(bottom: 12.h),
+              padding: EdgeInsets.only(bottom: 10.h),
               child: Text(
                 state.errorMessage!,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.errorColor,
-                    ),
-              ),
-            ),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed:
-                  state.submitState == RequestState.loading || !state.canSubmit
-                      ? null
-                      : () => context.read<YoungMuslimQuizCubit>().submit(),
-              icon: state.submitState == RequestState.loading
-                  ? SizedBox(
-                      width: 18.w,
-                      height: 18.w,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.2,
-                        color: context.onPrimaryColor,
-                      ),
-                    )
-                  : const Icon(Icons.check_circle_outline_rounded),
-              label: Text(
-                state.submitState == RequestState.loading
-                    ? 'جارٍ تصحيح الإجابات'
-                    : 'إرسال الإجابات',
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
+                style: TextStyle(
+                  color: AppColors.error,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
+          SizedBox(height: 6.h),
+          YoungMuslimPrimaryButton(
+            label: busy ? 'جارٍ تصحيح الإجابات' : 'إرسال الإجابات',
+            icon: AppIcons.check,
+            busy: busy,
+            onTap: state.canSubmit
+                ? () => context.read<YoungMuslimQuizCubit>().submit()
+                : null,
           ),
         ],
       ),
@@ -111,101 +89,116 @@ class _QuizFormView extends StatelessWidget {
   }
 }
 
-class _QuestionCard extends StatelessWidget {
-  const _QuestionCard({
+/// سؤال واحد: رقمه ونصّه، ثم خياراته. تفصله شعرة عن السؤال التالي.
+class _QuestionBlock extends StatelessWidget {
+  const _QuestionBlock({
     required this.index,
     required this.question,
     required this.selectedValue,
     required this.onSelected,
+    required this.isLast,
   });
 
   final int index;
   final YoungMuslimQuizQuestionEntity question;
   final String? selectedValue;
   final ValueChanged<String> onSelected;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final isDirectQuestion =
         question.type == 'direct' || question.options.isEmpty;
 
     return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration: youngMuslimPanelDecoration(
-        context,
-        radius: 16,
-        color: context.cardColor,
-      ),
+      padding: EdgeInsets.symmetric(vertical: 14.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                width: 24.w,
+                height: 24.w,
                 decoration: BoxDecoration(
-                  color: context.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: skin.iconChip,
+                  borderRadius: BorderRadius.circular(9.r),
                 ),
-                child: Text(
-                  '$index',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w900,
-                    color: context.primaryColor,
+                child: Center(
+                  child: Text(
+                    '$index',
+                    style: youngMuslimNumber(
+                      skin,
+                      size: 10.sp,
+                      weight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 10.w),
               Expanded(
                 child: Text(
                   question.prompt,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        height: 1.5,
-                      ),
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 12.h),
           if (isDirectQuestion)
             TextFormField(
               initialValue: selectedValue,
               onChanged: onSelected,
               textInputAction: TextInputAction.done,
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+              cursorColor: skin.accent,
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w600,
+              ),
               decoration: InputDecoration(
                 hintText: 'اكتب إجابتك هنا بوضوح...',
-                hintStyle: TextStyle(
-                    fontSize: 13.sp, color: context.gray1.withOpacity(0.5)),
+                hintStyle: youngMuslimRowSubtitle(skin, size: 11.sp),
                 filled: true,
-                fillColor: context.scaffoldBackgroundColor,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                fillColor: skin.iconChip,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 12.h,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(color: skin.hairline),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(
-                    color: context.outlineVariant.withOpacity(0.2),
-                  ),
+                  borderSide: BorderSide(color: skin.hairline),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.r),
-                  borderSide:
-                      BorderSide(color: context.primaryColor, width: 1.5),
+                  borderSide: const BorderSide(
+                    color: AppColors.gold,
+                    width: 1.4,
+                  ),
                 ),
               ),
             )
           else
             for (final option in question.options)
               Padding(
-                padding: EdgeInsets.only(bottom: 12.h),
-                child: _OptionCard(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: _OptionRow(
                   text: option.text,
                   isSelected: selectedValue == option.id,
                   onTap: () => onSelected(option.id),
@@ -217,8 +210,9 @@ class _QuestionCard extends StatelessWidget {
   }
 }
 
-class _OptionCard extends StatelessWidget {
-  const _OptionCard({
+/// خيار واحد: دائرة تمتلئ ذهبًا عند الاختيار، مع اهتزازة خفيفة.
+class _OptionRow extends StatelessWidget {
+  const _OptionRow({
     required this.text,
     required this.isSelected,
     required this.onTap,
@@ -230,57 +224,69 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = context.primaryColor;
+    final skin = AppSkin.of(context);
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? activeColor.withOpacity(0.08)
-              : context.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: isSelected
-                ? activeColor
-                : context.outlineVariant.withOpacity(0.2),
-            width: isSelected ? 1.8 : 1,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: text,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(12.r),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
+          decoration: BoxDecoration(
+            color: isSelected ? skin.iconChip : skin.ground,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: isSelected ? AppColors.gold : skin.hairline,
+              width: isSelected ? 1.4 : 1,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 20.w,
-              height: 20.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected ? activeColor : Colors.transparent,
-                border: Border.all(
-                  color:
-                      isSelected ? activeColor : context.gray1.withOpacity(0.3),
-                  width: 2,
+          child: Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 18.w,
+                height: 18.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isSelected ? AppColors.gold : skin.ground,
+                  border: Border.all(
+                    color: isSelected ? AppColors.gold : skin.hairline,
+                    width: 1.6,
+                  ),
+                ),
+                child: isSelected
+                    ? Center(
+                        child: AppIcon(
+                          AppIcons.checkSmall,
+                          color: skin.isDark
+                              ? AppColors.brandNight
+                              : AppColors.brandIvory,
+                          size: 11.sp,
+                        ),
+                      )
+                    : null,
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.sp,
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    height: 1.4,
+                  ),
                 ),
               ),
-              child: isSelected
-                  ? Icon(Icons.check, size: 14.r, color: Colors.white)
-                  : null,
-            ),
-            SizedBox(width: 14.w),
-            Expanded(
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight:
-                          isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isSelected ? activeColor : context.onSurfaceColor,
-                    ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
 
+/// خدمات المسافر: أربعة أبواب على أرضية واحدة تفصلها خطوط شعرة.
+///
+/// كانت أربع بطاقات بحدّ ونصف قطر ١٨، فبدت الورقة مكدّسة بالصناديق.
+/// الآن صفوف نحيلة: مربّع الأيقونة وحده يميّز كل باب.
 class TravelerOptionsSheet extends StatelessWidget {
   const TravelerOptionsSheet({
     required this.onOpenNearbyMosques,
@@ -19,165 +24,91 @@ class TravelerOptionsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return SafeArea(
       top: false,
       child: Container(
-        padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 20.h),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
         decoration: BoxDecoration(
-          color: context.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(28.r),
-          ),
+          color: skin.ground,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 42.w,
-              height: 4.h,
+              width: 34.w,
+              height: 3.h,
               decoration: BoxDecoration(
-                color: context.outlineVariant.withValues(alpha: 0.5),
+                color: skin.hairline,
                 borderRadius: BorderRadius.circular(999.r),
               ),
             ),
-            SizedBox(height: 14.h),
+            SizedBox(height: 12.h),
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    'خدمات المسافر',
-                    style: TextStyle(
-                      color: context.onSurfaceColor,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'خدمات المسافر',
+                        style: TextStyle(
+                          color: skin.ink,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
+                        ),
+                      ),
+                      Text(
+                        'اختر ما تحتاجه الآن في طريقك',
+                        style: TextStyle(
+                          color: skin.inkSoft.withValues(alpha: 0.78),
+                          fontSize: 9.5.sp,
+                          fontWeight: FontWeight.w500,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const AppIcon(AppIcons.close, size: 18),
+                TravelerIconAction(
+                  icon: AppIcons.close,
+                  tooltip: 'إغلاق',
+                  onTap: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
             SizedBox(height: 6.h),
-            Text(
-              'اختر الخدمة التي تحتاجها الآن أثناء السفر',
-              style: TextStyle(
-                color: context.onSurfaceColor.withValues(alpha: 0.62),
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 14.h),
-            _TravelerOptionTile(
+            Divider(height: 1, thickness: 1, color: skin.hairline),
+            TravelerListRow(
               icon: AppIcons.mosque,
               title: 'المساجد القريبة',
               subtitle: 'خريطة مباشرة مع أقرب المساجد والاتجاهات',
               onTap: onOpenNearbyMosques,
             ),
-            _TravelerOptionTile(
+            TravelerListRow(
               icon: AppIcons.bookOpen,
               title: 'أذكار السفر',
-              subtitle: 'أذكار موثقة مع عداد ونسخ ومشاركة ومفضلة',
+              subtitle: 'أذكار موثقة مع عداد ونسخ ومشاركة',
               onTap: onOpenTravelAzkar,
             ),
-            _TravelerOptionTile(
+            TravelerListRow(
               icon: AppIcons.restaurant,
               title: 'مطاعم حلال',
               subtitle: 'تظهر في الدول غير الإسلامية مع خريطة واضحة',
               onTap: onOpenHalalRestaurants,
             ),
-            _TravelerOptionTile(
+            TravelerListRow(
               icon: AppIcons.flight,
               title: 'الصلاة أثناء الطيران',
-              subtitle: 'إدخال رقم الرحلة لعرض مواقيت الصلاة على المسار',
+              subtitle: 'رقم الرحلة يرسم مواقيت الصلاة على المسار',
               onTap: onOpenFlightPrayerTimes,
+              isLast: true,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TravelerOptionTile extends StatelessWidget {
-  const _TravelerOptionTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final HugeIconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18.r),
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            color: context.surfaceColor,
-            borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(
-              color: context.outlineVariant.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 38.w,
-                height: 38.w,
-                decoration: BoxDecoration(
-                  color: context.primaryColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: AppIcon(
-                  icon,
-                  color: context.primaryColor,
-                  size: 17.sp,
-                  strokeWidth: 1.6,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: context.onSurfaceColor.withValues(alpha: 0.6),
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 6.w),
-              AppIcon(
-                AppIcons.chevronLeft,
-                color: context.onSurfaceColor.withValues(alpha: 0.45),
-                size: 15.sp,
-              ),
-            ],
-          ),
         ),
       ),
     );

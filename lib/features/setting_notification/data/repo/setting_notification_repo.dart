@@ -3,6 +3,7 @@ import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
@@ -53,6 +54,11 @@ class SettingNotificationRepo {
       final updated = setting.copyWith(enabled: val);
       await DatabaseNotificationSettingService().upsert(updated);
       BaseNotificationService.clearNotificationSettingsCache();
+
+      // أي كتابة تمرّ من هنا — من شاشة الإعدادات أو من جرس قائمة المواقيت —
+      // تُحدِّث المرآة في الذاكرة، فتبقى الشاشتان متطابقتين دائمًا.
+      AthanMuteStore.instance.syncExternal(key, val);
+
       await _applyNotificationChange(updated);
 
       logger.d('Toggled notification setting $key to $val');

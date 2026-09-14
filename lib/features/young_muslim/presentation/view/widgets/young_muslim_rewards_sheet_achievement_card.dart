@@ -1,111 +1,104 @@
 part of 'young_muslim_rewards_sheet.dart';
 
-class _AchievementCard extends StatelessWidget {
-  const _AchievementCard({
+/// صفّ إنجاز: مربّع أيقونة، اسمه ووصفه، ثم نقاطه.
+///
+/// المفتوح يذكر متى فُتح، والمغلق يعرض شريط تقدّمه مكتوبًا بالعربية
+/// («٣ من ٥») حتى لا ينقلب الكسر في الاتجاه العربي.
+class _AchievementRow extends StatelessWidget {
+  const _AchievementRow({
     required this.achievement,
     required this.currentValue,
+    required this.isLast,
   });
 
   final YoungMuslimAchievementEntity achievement;
   final int currentValue;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final isUnlocked = achievement.isUnlocked;
-    final progress = (currentValue / achievement.threshold).clamp(0.0, 1.0);
-    final accentColor = isUnlocked
-        ? youngMuslimRewardColor(context)
-        : context.primaryColor.withValues(alpha: 0.75);
+    final threshold = achievement.threshold == 0 ? 1 : achievement.threshold;
+    final progress = (currentValue / threshold).clamp(0.0, 1.0);
 
     return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: youngMuslimPanelDecoration(context),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Container(
-                width: 46.w,
-                height: 46.w,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: AppIcon(
-                  youngMuslimAchievementIcon(achievement.icon),
-                  color: accentColor,
-                  size: 18.sp,
-                  strokeWidth: 1.55,
-                ),
+              YoungMuslimIconChip(
+                icon: youngMuslimAchievementIcon(achievement.icon),
+                active: isUnlocked,
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 10.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       achievement.titleAr,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: youngMuslimRowTitle(skin),
                     ),
-                    SizedBox(height: 4.h),
                     Text(
                       achievement.description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: context.gray1,
-                          ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: youngMuslimRowSubtitle(skin),
                     ),
                   ],
                 ),
               ),
+              SizedBox(width: 8.w),
               YoungMuslimMetricChip(
-                label: '+${achievement.xpReward} XP',
-                icon: Icons.bolt_rounded,
-                color: accentColor,
+                label: '+${achievement.xpReward} نقطة',
+                icon: AppIcons.star,
               ),
             ],
           ),
-          SizedBox(height: 14.h),
           if (isUnlocked)
-            Text(
-              achievement.unlockedAt == null
-                  ? 'تم فتح هذا الإنجاز.'
-                  : 'تم فتحه ${youngMuslimRelative(achievement.unlockedAt)}',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: accentColor,
-                    fontWeight: FontWeight.w700,
-                  ),
+            Padding(
+              padding: EdgeInsets.only(top: 8.h),
+              child: Text(
+                achievement.unlockedAt == null
+                    ? 'تم فتح هذا الإنجاز.'
+                    : 'فُتح ${youngMuslimRelative(achievement.unlockedAt)}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: youngMuslimNumber(skin, size: 9.5.sp),
+              ),
             )
           else ...[
+            SizedBox(height: 9.h),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     'التقدّم الحالي',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: youngMuslimRowSubtitle(skin),
                   ),
                 ),
                 Text(
-                  '$currentValue/${achievement.threshold}',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: context.gray1,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  '$currentValue من ${achievement.threshold}',
+                  style: youngMuslimNumber(skin, size: 10.sp),
                 ),
               ],
             ),
-            SizedBox(height: 8.h),
-            LinearProgressIndicator(
-              value: progress,
-              minHeight: 8.h,
-              borderRadius: BorderRadius.circular(18.r),
-              backgroundColor: context.outline.withValues(alpha: 0.18),
-              color: accentColor,
-            ),
+            SizedBox(height: 6.h),
+            YoungMuslimProgressBar(value: progress),
           ],
         ],
       ),

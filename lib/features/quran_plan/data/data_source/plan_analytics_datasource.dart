@@ -59,9 +59,6 @@ class PlanAnalyticsService {
         sessionsPerWeekday.entries.reduce((a, b) => a.value <= b.value ? a : b);
 
     // 5. نصيحة ذكية واحتمال الإنجاز
-    final today = DateTime.now();
-    final planDaysLeft =
-        plan.totalDays - today.difference(completed.first.completedAt!).inDays;
     final probability = (avgInterval <= 1.2)
         ? 0.9
         : (avgInterval <= 1.7)

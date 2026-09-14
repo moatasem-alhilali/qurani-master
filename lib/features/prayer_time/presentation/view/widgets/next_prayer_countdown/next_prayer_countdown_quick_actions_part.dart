@@ -1,5 +1,9 @@
 part of 'next_prayer_countdown_widget.dart';
 
+/// أربعة مداخل سريعة: أيقونة واسم، بلا بطاقة حولها.
+///
+/// كانت أربع بطاقات بحدود وظلال، فقرأتها العين ككتلة ثقيلة تنافس قائمة
+/// المواقيت. الآن هي شريط خفيف يفصله خط شعرة عمّا فوقه.
 class _QuickActionsPanel extends StatelessWidget {
   const _QuickActionsPanel();
 
@@ -25,122 +29,32 @@ class _QuickActionsPanel extends StatelessWidget {
         icon: AppIcons.tasbih,
         onTap: () => context.push(const MainThikrScreen()),
       ),
-      // _QuickActionItem(
-      //   label: 'المسبحة',
-      //   icon: Icons.repeat_rounded,
-      //   onTap: () => context.push(const TasbeehProvider()),
-      // ),
-      // _QuickActionItem(
-      //   label: 'خطط الختمة',
-      //   icon: Icons.inventory_2_outlined,
-      //   onTap: () => context.push(const QuranPlanListScreen()),
-      // ),
-      // _QuickActionItem(
-      //   label: 'حصن المسلم',
-      //   icon: Icons.security_outlined,
-      //   onTap: () => context.push(const HisnMuslimScreen()),
-      // ),
-      // _QuickActionItem(
-      //   label: 'كل المميزات',
-      //   icon: Icons.grid_view_rounded,
-      //   onTap: () => _openAppsSheet(context),
-      // ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final actions = _actions(context);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.r),
-          gradient: const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              _kPanelSurface,
-              AppColors.brandCream,
-            ],
-          ),
-          border: Border.all(
-            color: _kPanelBorder.withValues(alpha: 0.95),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: _kHeroDeep.withValues(alpha: 0.18),
-              blurRadius: 18.r,
-              offset: Offset(0, 8.h),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: 10.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Divider(height: 1, thickness: 1, color: skin.hairline),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20.r),
-          child: Stack(
+        Padding(
+          padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 0),
+          child: Row(
             children: [
-              Positioned(
-                top: -24.h,
-                left: -10.w,
-                child: Container(
-                  width: 92.w,
-                  height: 92.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.brandIvory.withValues(alpha: 0.65),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 18.w,
-                left: 18.w,
-                child: Container(
-                  height: 2.h,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        _kAccentGold.withValues(alpha: 0),
-                        _kAccentGold.withValues(alpha: 0.85),
-                        _kAccentGold.withValues(alpha: 0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 6.w,
-                  vertical: 8.h,
-                ),
-                child: IntrinsicHeight(
-                  child: Row(
-                    children: List.generate(actions.length, (index) {
-                      final item = actions[index];
-                      return Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: _QuickActionButton(item: item),
-                            ),
-                            if (index != actions.length - 1)
-                              Container(
-                                width: 1,
-                                margin: EdgeInsets.symmetric(vertical: 10.h),
-                                color: _kHeroDeep.withValues(alpha: 0.14),
-                              ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
+              for (final item in actions)
+                Expanded(child: _QuickActionButton(item: item)),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -152,57 +66,37 @@ class _QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     return InkWell(
       onTap: item.onTap,
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(12.r),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+        padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 2.w),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 35.w,
-              height: 35.w,
-              padding: EdgeInsets.all(4.sp),
+              width: 30.w,
+              height: 30.w,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.brandIvory,
-                    AppColors.brandGoldLight.withValues(alpha: 0.82),
-                  ],
-                ),
-                border: Border.all(
-                  color: AppColors.brandGoldLight.withValues(alpha: 0.95),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: _kHeroDeep.withValues(alpha: 0.10),
-                    blurRadius: 8.r,
-                    offset: Offset(0, 3.h),
-                  ),
-                ],
+                color: skin.iconChip,
+                borderRadius: BorderRadius.circular(11.r),
               ),
-              child: AppIcon(
-                item.icon,
-                color: _kHeroDeep,
-                size: 12.5.sp,
-                strokeWidth: 1.55,
+              child: Center(
+                child: AppIcon(item.icon, color: skin.accent, size: 16.sp),
               ),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 5.h),
             Text(
               item.label,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: _kPanelText,
-                fontSize: 9.7.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.22,
+                color: skin.ink.withValues(alpha: 0.86),
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
               ),
             ),
           ],

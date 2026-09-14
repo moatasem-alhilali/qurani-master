@@ -1,11 +1,13 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 
+/// التطبيقات المصغرة: شرح مرتفع واحد، ثم صفوف الويدجتات بأزرار التثبيت.
 class HomeWidgetsScreen extends StatefulWidget {
   const HomeWidgetsScreen({super.key});
 
@@ -37,7 +39,7 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
       await _service.startBackgroundUpdates();
       _showMessage('تم تحديث التطبيقات المصغرة وتفعيل التحديث بالخلفية');
     } catch (_) {
-      _showMessage('تعذر تحديث التطبيقات المصغرة الآن');
+      _showMessage('تعذر تحديث التطبيقات المصغرة الآن', isError: true);
     } finally {
       if (mounted) {
         setState(() => _isRefreshing = false);
@@ -51,169 +53,125 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
       didRequest
           ? 'تم إرسال طلب إضافة التطبيق المصغر'
           : 'التثبيت المباشر غير مدعوم على هذا الجهاز',
+      isError: !didRequest,
     );
   }
 
-  void _showMessage(String message) {
+  void _showMessage(String message, {bool isError = false}) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+    AdaptiveSnackBar.show(
+      context,
+      message: message,
+      type: isError ? AdaptiveSnackBarType.error : AdaptiveSnackBarType.success,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
+    final isIos = defaultTargetPlatform == TargetPlatform.iOS;
+
+    return SettingsScaffold(
       title: 'التطبيقات المصغرة',
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 28.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _WidgetsIntro(isIos: isIos),
+        SettingsGroup(
+          title: 'الصيانة',
           children: [
-            _InfoPanel(
-              title: defaultTargetPlatform == TargetPlatform.iOS
-                  ? 'ويدجتات iPhone جاهزة'
-                  : 'ويدجتات Android جاهزة',
-              subtitle: defaultTargetPlatform == TargetPlatform.iOS
-                  ? 'أضفها من شاشة التطبيقات المصغرة، وتشمل ويدجتات شاشة '
-                      'القفل للصلاة والذكر.'
-                  : 'يمكنك إضافتها يدويا، أو تثبيتها مباشرة من الأزرار إذا '
-                      'كان المشغل يدعم ذلك.',
-              icon: AppIcons.widgets,
+            SettingsRow(
+              icon: AppIcons.refresh,
+              title: 'تحديث التطبيقات المصغرة',
+              subtitle: 'تحديث المحتوى وتفعيل التحديث بالخلفية',
+              isLast: true,
+              onTap: _isRefreshing ? null : _refreshWidgets,
+              trailing: _isRefreshing ? const _RowSpinner() : null,
             ),
-            SizedBox(height: 14.h),
-            FilledButton.icon(
-              onPressed: _isRefreshing ? null : _refreshWidgets,
-              icon: _isRefreshing
-                  ? SizedBox(
-                      width: 18.w,
-                      height: 18.w,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const AppIcon(AppIcons.refresh),
-              label: const Text('تحديث وتفعيل التحديث بالخلفية'),
-            ),
-            SizedBox(height: 14.h),
-            _WidgetOptionTile(
+          ],
+        ),
+        SettingsGroup(
+          title: 'ويدجتات الشاشة الرئيسية',
+          children: [
+            _WidgetRow(
               title: 'الصلاة القادمة',
               subtitle: 'وقت الصلاة القادمة والوقت المتبقي',
               icon: AppIcons.clock,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.prayer),
             ),
-            _WidgetOptionTile(
+            _WidgetRow(
               title: 'مواقيت الصلاة',
               subtitle: 'الفجر، الشروق، الظهر، العصر، المغرب والعشاء',
               icon: AppIcons.calendar,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.prayerTimes),
             ),
-            _WidgetOptionTile(
+            _WidgetRow(
               title: 'ذكر عشوائي',
               subtitle: 'ذكر متجدد من مصادر الأذكار',
               icon: AppIcons.tasbih,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.dhikr),
             ),
-            _WidgetOptionTile(
+            _WidgetRow(
               title: 'آية عشوائية',
               subtitle: 'آية متجددة من مكتبة القرآن داخل التطبيق',
               icon: AppIcons.quran,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.ayah),
             ),
-            _WidgetOptionTile(
+            _WidgetRow(
               title: 'ورد اليوم',
               subtitle: 'متابعة مختصرة للتقدم اليومي',
               icon: AppIcons.check,
               canPin: _isPinSupported,
               onPin: () => _pin(HomeWidgetType.wird),
+              isLast: true,
             ),
-            if (defaultTargetPlatform == TargetPlatform.iOS) ...[
-              const SizedBox(height: 10),
-              const _InfoPanel(
-                title: 'شاشة القفل',
-                subtitle:
-                    'أضفت ويدجت صلاة القفل وذكر القفل بصيغ iOS Lock Screen: '
-                    'Inline وRectangular وCircular.',
-                icon: AppIcons.shield,
-                compact: true,
-              ),
-            ],
           ],
         ),
-      ),
+        if (isIos)
+          const SettingsGroup(
+            title: 'شاشة القفل',
+            children: [
+              SettingsParagraph(
+                'أضفت ويدجت صلاة القفل وذكر القفل بصيغ iOS Lock Screen: '
+                'Inline وRectangular وCircular.',
+              ),
+            ],
+          ),
+      ],
     );
   }
 }
 
-class _InfoPanel extends StatelessWidget {
-  const _InfoPanel({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    this.compact = false,
-  });
+/// العنصر المرتفع الوحيد: يشرح كيف تُضاف الويدجتات على هذه المنصة.
+class _WidgetsIntro extends StatelessWidget {
+  const _WidgetsIntro({required this.isIos});
 
-  final String title;
-  final String subtitle;
-  final HugeIconData icon;
-  final bool compact;
+  final bool isIos;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(compact ? 13.w : 16.w),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(color: context.outline.withValues(alpha: 0.45)),
-      ),
-      child: Row(
-        children: [
-          AppIcon(
-            icon,
-            color: context.primaryColor,
-            size: compact ? 20.sp : 26.sp,
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: compact ? 12.sp : 15.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: compact ? 10.sp : 11.sp,
-                    height: 1.35,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return SettingsRaisedRow(
+      icon: AppIcons.widgets,
+      title: isIos ? 'ويدجتات iPhone جاهزة' : 'ويدجتات Android جاهزة',
+      subtitle: isIos
+          ? 'أضفها من شاشة التطبيقات المصغرة، وتشمل ويدجتات شاشة القفل '
+              'للصلاة والذكر.'
+          : 'يمكنك إضافتها يدوياً، أو تثبيتها مباشرة من زر التثبيت إذا كان '
+              'المشغل يدعم ذلك.',
     );
   }
 }
 
-class _WidgetOptionTile extends StatelessWidget {
-  const _WidgetOptionTile({
+/// صفّ ويدجت واحد مع زر تثبيته.
+class _WidgetRow extends StatelessWidget {
+  const _WidgetRow({
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.canPin,
     required this.onPin,
+    this.isLast = false,
   });
 
   final String title;
@@ -221,53 +179,36 @@ class _WidgetOptionTile extends StatelessWidget {
   final HugeIconData icon;
   final bool canPin;
   final VoidCallback onPin;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: context.outline.withValues(alpha: 0.35)),
+    return SettingsRow(
+      icon: icon,
+      title: title,
+      subtitle: subtitle,
+      isLast: isLast,
+      trailing: SettingsIconButton(
+        icon: AppIcons.bookmarkAdd,
+        tooltip: 'تثبيت',
+        onTap: canPin ? onPin : null,
       ),
-      child: Row(
-        children: [
-          AppIcon(icon, color: context.primaryColor, size: 24.sp),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(height: 3.h),
-                Text(
-                  subtitle,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: 10.sp,
-                    height: 1.25,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            tooltip: 'تثبيت',
-            onPressed: canPin ? onPin : null,
-            icon: const AppIcon(AppIcons.bookmarkAdd),
-          ),
-        ],
+    );
+  }
+}
+
+class _RowSpinner extends StatelessWidget {
+  const _RowSpinner();
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return SizedBox.square(
+      dimension: 15.w,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        valueColor: AlwaysStoppedAnimation<Color>(skin.accent),
       ),
     );
   }

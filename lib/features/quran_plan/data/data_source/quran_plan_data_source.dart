@@ -259,7 +259,6 @@ CREATE TABLE IF NOT EXISTS quran_plan_sessions (
 
   // optional - cancel the day notification if all sessions of the day are completed (Advanced)
   Future<void> _cancelTodayNotificationIfNoSessions(int planId) async {
-    final today = DateTime.now();
     final sessions = await getSessions(planId);
     final sessionsToday = sessions.where((s) {
       // according to your logic: you can link the session to a specific date, or a specific session/schedule

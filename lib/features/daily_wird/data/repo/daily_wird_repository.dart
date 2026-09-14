@@ -141,7 +141,9 @@ class DailyWirdRepository {
   }
 
   Future<DailyWirdOverview> updateItemCount(
-      String itemId, int countRequired) async {
+    String itemId,
+    int countRequired,
+  ) async {
     final normalized = countRequired <= 0 ? 1 : countRequired;
     final customization = await _upsertCustomization(
       itemId,
@@ -192,7 +194,8 @@ class DailyWirdRepository {
   }
 
   Future<DailyWirdOverview> updateReminderSettings(
-      DailyWirdSettings settings) async {
+    DailyWirdSettings settings,
+  ) async {
     final updated = settings.copyWith(updatedAt: DateTime.now());
     await databaseService.upsertSettings(updated);
     await reminderService.reschedule(updated);
@@ -244,7 +247,7 @@ class DailyWirdRepository {
       }
 
       final customization = customizationMap[itemId];
-      if (customization?.isHidden == true) {
+      if (customization?.isHidden ?? false) {
         continue;
       }
 
@@ -477,7 +480,7 @@ class DailyWirdRepository {
         .toList();
 
     final contentLibraryRaw =
-        (raw['content_library'] as Map<String, dynamic>? ?? const {});
+        raw['content_library'] as Map<String, dynamic>? ?? const {};
     final contentLibrary = <String, DailyWirdContentEntry>{};
     for (final entry in contentLibraryRaw.entries) {
       final value = entry.value;

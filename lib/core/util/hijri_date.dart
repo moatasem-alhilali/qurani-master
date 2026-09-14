@@ -1,9 +1,11 @@
-part of 'prayer_time_timeline.dart';
+/// تاريخ هجري محسوب من التاريخ الميلادي بالمعادلة الفلكية الجدولية.
+///
+/// يُستخدم في عرض التاريخ الهجري داخل شاشات المواقيت، وفي تحديد شهر رمضان
+/// لتطبيق تعديل العشاء الخاص بتقويم أم القرى.
+class HijriDate {
+  const HijriDate(this.day, this.month, this.year);
 
-class _HijriDate {
-  _HijriDate(this.day, this.month, this.year);
-
-  factory _HijriDate.fromDate(DateTime date) {
+  factory HijriDate.fromDate(DateTime date) {
     final a = (14 - date.month) ~/ 12;
     final y = date.year + 4800 - a;
     final m = date.month + 12 * a - 3;
@@ -28,14 +30,17 @@ class _HijriDate {
     final day = l - (709 * month) ~/ 24;
     final year = 30 * n + j - 30;
 
-    return _HijriDate(day, month, year);
+    return HijriDate(day, month, year);
   }
 
   final int day;
   final int month;
   final int year;
 
-  static const _months = [
+  /// ترتيب شهر رمضان في السنة الهجرية.
+  static const int ramadanMonth = 9;
+
+  static const List<String> months = [
     'محرم',
     'صفر',
     'ربيع الأول',
@@ -50,8 +55,9 @@ class _HijriDate {
     'ذو الحجة',
   ];
 
-  String formatArabic() {
-    final monthName = _months[(month - 1).clamp(0, _months.length - 1)];
-    return '$day $monthName $year هـ';
-  }
+  bool get isRamadan => month == ramadanMonth;
+
+  String get monthName => months[(month - 1).clamp(0, months.length - 1)];
+
+  String formatArabic() => '$day $monthName $year هـ';
 }

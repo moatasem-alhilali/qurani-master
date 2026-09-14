@@ -24,9 +24,12 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
   BaseAudioRepositoryImpl repositoryImpl;
   ScrollController scrollController = ScrollController();
 
-  FutureOr<void> baseAudio(event, emit) async {
+  FutureOr<void> baseAudio(
+    GetBaseAudioEvent event,
+    Emitter<BaseAudioState> emit,
+  ) async {
     emit(state.copyWith(famousBaseAudioState: RequestState.loading));
-    final result = await repositoryImpl.famousReader(event.id as String);
+    final result = await repositoryImpl.famousReader(event.id);
     result.fold(
       (l) {
         emit(state.copyWith(famousBaseAudioState: RequestState.error));
@@ -42,9 +45,12 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
     );
   }
 
-  FutureOr<void> baseAudioDetail(event, emit) async {
+  FutureOr<void> baseAudioDetail(
+    BaseAudioDetailEvent event,
+    Emitter<BaseAudioState> emit,
+  ) async {
     emit(state.copyWith(famousBaseAudioState: RequestState.loading));
-    final result = await repositoryImpl.famousReaderDetail(event.url as String);
+    final result = await repositoryImpl.famousReaderDetail(event.url);
     result.fold(
       (l) {
         emit(
@@ -65,7 +71,10 @@ class BaseAudioBloc extends Bloc<BaseAudioEvent, BaseAudioState> {
     );
   }
 
-  FutureOr<void> initAudio(event, emit) async {
+  FutureOr<void> initAudio(
+    InitBaseAudioPlayerEvent event,
+    Emitter<BaseAudioState> emit,
+  ) async {
     emit(state.copyWith(audioState: RequestState.loading));
     final result = await repositoryImpl.initAudio(event.data as List<dynamic>);
     result.fold(

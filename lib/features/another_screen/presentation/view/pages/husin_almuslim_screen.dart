@@ -1,14 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/components/unified_library_widgets.dart';
 import 'package:quran_app/core/extensions/request_state/request_state_sliver_extension.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
+import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
 
+/// حصن المسلم: قائمة أبواب طويلة.
+///
+/// كل باب كان يجلس في بطاقة بحدّ وظلّ وشارتين، فصارت الصفحة صناديق
+/// متراصّة. الآن الأبواب صفوف نحيلة على أرضية واحدة يفصلها خطّ شعرة،
+/// والنصّ يُقرأ في ورقة التفاصيل بخطّ المصحف.
 class HisnMuslimScreen extends StatefulWidget {
   const HisnMuslimScreen({super.key});
 
@@ -66,36 +73,24 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
       ],
     ].join('\n');
 
-    context.showBottomSheet(
-      child: UnifiedLibraryDetailSheet(
+    unawaited(
+      showLibraryDetailSheet(
+        context,
         title: item.title,
         subtitle: 'حصن المسلم',
         shareText: shareContent,
-        copyText: shareContent,
         shareSubject: 'حصن المسلم',
-        badges: [
-          UnifiedLibraryMeta(
-            label: 'الترتيب',
-            value: '${index + 1}',
-            isPrimary: true,
-          ),
-          UnifiedLibraryMeta(
-            label: 'عدد النصوص',
-            value: '${item.text.length}',
-          ),
-          UnifiedLibraryMeta(
-            label: 'الحواشي',
-            value: '${item.footnote.length}',
-          ),
+        facts: [
+          'الباب ${index + 1}',
+          if (item.text.length > 1) '${item.text.length} نصوص',
+          if (item.footnote.isNotEmpty) '${item.footnote.length} حاشية',
         ],
         sections: [
-          UnifiedLibrarySection(
-            title: 'نص الذكر',
-            content: textContent,
-          ),
-          UnifiedLibrarySection(
+          LibraryDetailSection(title: 'نص الذكر', content: textContent),
+          LibraryDetailSection(
             title: 'الحواشي',
             content: footnoteContent,
+            scripture: false,
           ),
         ],
       ),
@@ -106,96 +101,90 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HisnMuslimBloc()..add(LoadHisnMuslimEvent()),
-      child: AppScaffoldWidget(
-        title: 'حصن المسلم',
-        trailing: BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
-          builder: (context, state) {
-            return GenericSearchAnchorAsync<HisnMuslimModel>(
-              asyncSuggestions: (query) async {
-                return state.hisnMuslim.where((item) {
-                  final textContent = item.text.join(' ');
-                  final footnoteContent = item.footnote.join(' ');
-                  return item.title.contains(query) ||
-                      textContent.contains(query) ||
-                      footnoteContent.contains(query);
-                }).toList();
-              },
-              onSelected: (item) {
-                setState(() {
-                  _query = item.title;
-                });
-                final index = state.hisnMuslim.indexOf(item);
-                _showDetailBottomSheet(context, item, index < 0 ? 0 : index);
-              },
-              hintText: 'بحث عن حصن المسلم',
-              suggestionBuilder: (context, item) =>
-                  UnifiedLibrarySearchSuggestion(
-                title: item.title,
-                subtitle: _preview(item, maxChars: 90),
-              ),
-            );
-          },
-        ),
-        slivers: [
-          BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
+      child: GroundScaffoldTheme(
+        child: AppScaffoldWidget(
+          title: 'حصن المسلم',
+          trailing: BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
             builder: (context, state) {
-              return state.state.whenSliver<HisnMuslimModel>(
-                onSuccess: () {
-                  final data = _filterData(state.hisnMuslim);
-
-                  if (data.isEmpty) {
-                    return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _query = '';
-                            });
-                          },
-                          child: const Text('لا توجد نتائج، عرض جميع الأذكار'),
-                        ),
-                      ),
-                    );
-                  }
-
-                  return SliverList.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      final item = data[index];
-                      return BaseAnimate(
-                        index: index,
-                        child: UnifiedLibraryCard(
-                          title: item.title,
-                          subtitle: _preview(item),
-                          leadingLabel: '${index + 1}',
-                          badges: [
-                            UnifiedLibraryMeta(
-                              label: 'النصوص',
-                              value: '${item.text.length}',
-                              isPrimary: true,
-                            ),
-                            UnifiedLibraryMeta(
-                              label: 'الحواشي',
-                              value: '${item.footnote.length}',
-                            ),
-                          ],
-                          onTap: () => _showDetailBottomSheet(
-                            context,
-                            item,
-                            index,
-                          ),
-                        ),
-                      );
-                    },
-                  );
+              return GenericSearchAnchorAsync<HisnMuslimModel>(
+                asyncSuggestions: (query) async {
+                  return state.hisnMuslim.where((item) {
+                    final textContent = item.text.join(' ');
+                    final footnoteContent = item.footnote.join(' ');
+                    return item.title.contains(query) ||
+                        textContent.contains(query) ||
+                        footnoteContent.contains(query);
+                  }).toList();
                 },
-                context: context,
-                sliverList: state.hisnMuslim,
+                onSelected: (item) {
+                  setState(() {
+                    _query = item.title;
+                  });
+                  final index = state.hisnMuslim.indexOf(item);
+                  _showDetailBottomSheet(context, item, index < 0 ? 0 : index);
+                },
+                hintText: 'بحث عن حصن المسلم',
+                suggestionBuilder: (context, item) =>
+                    UnifiedLibrarySearchSuggestion(
+                  title: item.title,
+                  subtitle: _preview(item, maxChars: 90),
+                ),
               );
             },
           ),
-        ],
+          slivers: [
+            BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
+              builder: (context, state) {
+                return state.state.whenSliver<HisnMuslimModel>(
+                  onSuccess: () {
+                    final data = _filterData(state.hisnMuslim);
+
+                    if (data.isEmpty) {
+                      return SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: LibraryEmptyState(
+                          title: 'لا توجد نتائج',
+                          message: 'لم نجد بابًا يطابق بحثك في حصن المسلم.',
+                          actionLabel: 'عرض جميع الأذكار',
+                          onAction: () => setState(() => _query = ''),
+                        ),
+                      );
+                    }
+
+                    return librarySliverGround(
+                      context,
+                      sliver: SliverList.builder(
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final item = data[index];
+                          return BaseAnimate(
+                            index: index,
+                            child: LibraryRow(
+                              order: index + 1,
+                              title: item.title,
+                              subtitle: _preview(item),
+                              trailingLabel: item.text.length > 1
+                                  ? '${item.text.length} نصوص'
+                                  : null,
+                              isLast: index == data.length - 1,
+                              onTap: () => _showDetailBottomSheet(
+                                context,
+                                item,
+                                index,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  context: context,
+                  sliverList: state.hisnMuslim,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

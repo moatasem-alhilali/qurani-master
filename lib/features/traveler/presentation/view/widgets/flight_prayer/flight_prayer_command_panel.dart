@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/flight_prayer/flight_prayer_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/attempts_badge.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_detail_row.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_journey_rail.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/hint_tile.dart';
-import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/stat_pill.dart';
-import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/timeline_prayer_card.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
 
+/// جسم شاشة الطيران تحت الخريطة: البحث، ثم تفاصيل الرحلة، ثم خطّ زمنها.
+///
+/// كان لوحة عائمة بنصف قطر ٢٢ وظلّ ثقيل تغطّي ثلث الخريطة. صار محتوى
+/// الصفحة نفسه: أقسام مفصولة بعناوين وخطوط شعرة.
 class FlightPrayerCommandPanel extends StatelessWidget {
   const FlightPrayerCommandPanel({
     required this.controller,
@@ -23,202 +30,175 @@ class FlightPrayerCommandPanel extends StatelessWidget {
   final VoidCallback onSearch;
   final void Function(LatLng center, double zoom) onMoveMapTo;
 
-  String _formatLocal(DateTime dateTime) {
-    return DateFormat('HH:mm').format(dateTime);
-  }
-
-  String _formatUtc(DateTime dateTime) {
-    return DateFormat('HH:mm').format(dateTime.toUtc());
+  void _submit() {
+    HapticFeedback.selectionClick();
+    onSearch();
   }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocBuilder<FlightPrayerBloc, FlightPrayerState>(
       builder: (context, state) {
         final isSearching = state is FlightPrayerLoading;
-        String? errorMessage;
-        if (state is FlightPrayerFailure) {
-          errorMessage = state.errorMessage;
-        }
+        final errorMessage =
+            state is FlightPrayerFailure ? state.errorMessage : null;
 
         final timeline = state is FlightPrayerSuccess
             ? state.result
             : context.read<FlightPrayerBloc>().lastResult;
-        final hasResult = timeline != null;
 
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 12.h),
-          decoration: BoxDecoration(
-            color: context.scaffoldBackgroundColor.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(22.r),
-            border: Border.all(
-              color: context.outlineVariant.withValues(alpha: 0.34),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const HomeSectionHeader(title: 'ابحث برقم الرحلة'),
+            Padding(
+              padding: AppSkin.gutter,
+              child: Row(
+                children: [
+                  Expanded(child: _FlightNumberField(controller: controller)),
+                  SizedBox(width: 8.w),
+                  TravelerPillButton(
+                    label: 'تشغيل',
+                    icon: AppIcons.search,
+                    filled: true,
+                    busy: isSearching,
+                    onTap: _submit,
+                  ),
+                ],
+              ),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.14),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
+            SizedBox(height: 10.h),
+            Padding(
+              padding: AppSkin.gutter,
+              child: HintTile(
+                icon: errorMessage == null ? AppIcons.compass : AppIcons.error,
+                text: errorMessage ??
+                    'اكتب رقم الرحلة لنحسب مواقيت الصلاة على طول المسار.',
+                isError: errorMessage != null,
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.flight_rounded,
-                    color: context.primaryColor,
-                    size: 20.sp,
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: Text(
-                      'محرك الرحلات والمواقيت',
-                      style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  AttemptsBadge(
-                    value: state.remainingAttempts,
-                  ),
-                ],
+            ),
+            SizedBox(height: 9.h),
+            Padding(
+              padding: AppSkin.gutter,
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: AttemptsBadge(value: state.remainingAttempts),
               ),
-              SizedBox(height: 10.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (_) => onSearch(),
-                      decoration: InputDecoration(
-                        hintText: 'رقم الرحلة (مثال: EK202)',
-                        filled: true,
-                        fillColor: context.surfaceColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  SizedBox(
-                    height: 52.h,
-                    child: FilledButton.tonalIcon(
-                      onPressed: isSearching ? null : onSearch,
-                      icon: isSearching
-                          ? SizedBox(
-                              width: 15.w,
-                              height: 15.w,
-                              child: const CircularProgressIndicator(
-                                  strokeWidth: 2),
-                            )
-                          : const Icon(Icons.search_rounded),
-                      label: const Text('تشغيل'),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              if (errorMessage != null)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    errorMessage,
-                    style: TextStyle(
-                      color: context.errorColor,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                )
-              else
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'أدخل رقم الرحلة لتحليل المواقيت على طول المسار.',
-                    style: TextStyle(
-                      color: context.onSurfaceColor.withValues(alpha: 0.65),
-                      fontSize: 11.8.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              if (hasResult) ...[
-                SizedBox(height: 10.h),
-                Wrap(
-                  spacing: 8.w,
-                  runSpacing: 8.h,
+            ),
+            if (timeline != null) ...[
+              skin.divider(),
+              const HomeSectionHeader(title: 'تفاصيل الرحلة'),
+              Padding(
+                padding: AppSkin.gutter,
+                child: Column(
                   children: [
-                    StatPill(
-                      label: 'الرحلة',
+                    FlightDetailRow(
+                      label: 'رقم الرحلة',
                       value: timeline.track.flightNumber,
-                      color: context.primaryColor,
+                      emphasised: true,
                     ),
-                    StatPill(
+                    FlightDetailRow(
                       label: 'من',
                       value: timeline.track.originLabel,
-                      color: context.onSurfaceColor,
                     ),
-                    StatPill(
+                    FlightDetailRow(
                       label: 'إلى',
                       value: timeline.track.destinationLabel,
-                      color: context.onSurfaceColor,
                     ),
-                    StatPill(
-                      label: 'المصدر',
+                    FlightDetailRow(
+                      label: 'مصدر البيانات',
                       value: timeline.track.sourceLabel,
-                      color: context.primaryColor,
+                      isLast: true,
                     ),
                   ],
                 ),
-                SizedBox(height: 8.h),
-                _buildPrayerTimeline(context, timeline),
-              ],
+              ),
+              skin.divider(),
+              const HomeSectionHeader(title: 'خطّ زمن الرحلة'),
+              Padding(
+                padding: AppSkin.gutter,
+                child: _Timeline(
+                  timeline: timeline,
+                  onMoveMapTo: onMoveMapTo,
+                ),
+              ),
             ],
-          ),
+            SizedBox(height: 18.h),
+          ],
         );
       },
     );
   }
+}
 
-  Widget _buildPrayerTimeline(
-      BuildContext context, FlightPrayerTimelineResult timeline) {
-    final events = timeline.prayerEvents;
+class _Timeline extends StatelessWidget {
+  const _Timeline({required this.timeline, required this.onMoveMapTo});
 
-    if (events.isEmpty) {
+  final FlightPrayerTimelineResult timeline;
+  final void Function(LatLng center, double zoom) onMoveMapTo;
+
+  @override
+  Widget build(BuildContext context) {
+    if (timeline.prayerEvents.isEmpty && timeline.track.trackPoints.isEmpty) {
       return const HintTile(
-        icon: Icons.info_outline_rounded,
+        icon: AppIcons.clock,
         text: 'لم تظهر مواقيت ضمن مدة هذه الرحلة.',
       );
     }
 
-    return SizedBox(
-      height: 106.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: events.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
-        itemBuilder: (context, index) {
-          final event = events[index];
-          return TimelinePrayerCard(
-            event: event,
-            localTime: _formatLocal(event.eventLocal),
-            utcTime: _formatUtc(event.eventUtc),
-            onTap: () => onMoveMapTo(
-              LatLng(event.latitude, event.longitude),
-              7.3,
-            ),
-          );
-        },
+    return FlightJourneyRail(
+      timeline: timeline,
+      onFocusPoint: onMoveMapTo,
+    );
+  }
+}
+
+/// حقل رقم الرحلة: حدّ شعرة يتحوّل إلى حدّ مميّز عند التركيز.
+class _FlightNumberField extends StatelessWidget {
+  const _FlightNumberField({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(999.r),
+          borderSide: BorderSide(color: color, width: width),
+        );
+
+    return TextField(
+      controller: controller,
+      textInputAction: TextInputAction.search,
+      textCapitalization: TextCapitalization.characters,
+      cursorColor: skin.accent,
+      onSubmitted: (_) {
+        HapticFeedback.selectionClick();
+        context
+            .read<FlightPrayerBloc>()
+            .add(SearchFlightEvent(controller.text));
+      },
+      style: TextStyle(
+        color: skin.ink,
+        fontSize: 12.5.sp,
+        fontWeight: FontWeight.w700,
+      ),
+      decoration: InputDecoration(
+        isDense: true,
+        filled: false,
+        hintText: 'مثال: EK202',
+        hintStyle: TextStyle(
+          color: skin.inkSoft.withValues(alpha: 0.6),
+          fontSize: 10.5.sp,
+          fontWeight: FontWeight.w500,
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
+        border: border(skin.hairline, 1),
+        enabledBorder: border(skin.hairline, 1),
+        focusedBorder: border(skin.raisedBorder, 1.2),
       ),
     );
   }

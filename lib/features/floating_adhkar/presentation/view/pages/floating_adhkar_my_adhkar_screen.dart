@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_item.dart';
@@ -15,7 +19,13 @@ import 'package:quran_app/features/sabih/data/remote/sabih_repository_imp.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/add_dhikr_dialog.dart';
+import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
+import 'package:quran_app/gen/fonts.gen.dart';
 
+/// إدارة الأذكار العائمة: ما يظهر من الافتراضي، وما أضافه المستخدم.
+///
+/// كانت كل قائمة بطاقات بحدود وشارات؛ صارت صفوفًا نحيلة بمفتاح واحد في
+/// طرف كل صفّ، والتبويب شريطًا بخطّ ذهبي تحت الاسم بدل صندوق مظلّل.
 class FloatingAdhkarMyAdhkarScreen extends StatelessWidget {
   const FloatingAdhkarMyAdhkarScreen({super.key});
 
@@ -68,9 +78,17 @@ class _FloatingAdhkarMyAdhkarViewState
     }
   }
 
+  void _selectTab(int index) {
+    if (_tabController.index == index) return;
+    unawaited(HapticFeedback.selectionClick());
+    _tabController.animateTo(index);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final floatingBloc = context.read<FloatingAdhkarBloc>();
+    final skin = AppSkin.of(context);
 
     return MultiBlocListener(
       listeners: [
@@ -100,85 +118,107 @@ class _FloatingAdhkarMyAdhkarViewState
           },
         ),
       ],
-      child: AppScaffoldWidget(
-        title: 'إدارة الأذكار',
-        showLargeHeader: false,
-        initialOffset: null,
-        onRefresh: () async {
-          context.read<SabihBloc>().add(RefreshAllSubihEvent());
-          floatingBloc.add(const FloatingAdhkarLoadEvent());
-        },
-        floatingActionButton: _showBuiltInTab
-            ? null
-            : FloatingActionButton(
-                onPressed: () => _showAddDialog(context),
-                tooltip: 'إضافة ذكر خاص',
-                child: const AppIcon(AppIcons.add, size: 15),
-              ),
-        body: BlocBuilder<SabihBloc, SabihState>(
-          builder: (context, sabihState) {
-            return BlocBuilder<FloatingAdhkarBloc, FloatingAdhkarState>(
-              builder: (context, floatingState) {
-                final customItems = sabihState.subihList
-                    .where((item) => item.isCustom)
-                    .toList();
-                final builtInItems =
-                    List<FloatingAdhkarItem>.of(floatingState.builtInItems)
-                      ..sort((first, second) {
-                        if (first.isDeleted == second.isDeleted) {
-                          return first.title.compareTo(second.title);
-                        }
-                        return first.isDeleted ? 1 : -1;
-                      });
-                final activeBuiltInCount =
-                    builtInItems.where((item) => !item.isDeleted).length;
-
-                final isLoadingBuiltIn =
-                    floatingState.loadState == RequestState.loading &&
-                        builtInItems.isEmpty;
-                final isLoadingCustom =
-                    sabihState.loadState == RequestState.loading &&
-                        customItems.isEmpty;
-
-                if (isLoadingBuiltIn || isLoadingCustom) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 24.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _AdhkarTabs(
-                        controller: _tabController,
-                      ),
-                      SizedBox(height: 10.h),
-                      if (_showBuiltInTab)
-                        _BuiltInTabContent(
-                          items: builtInItems,
-                          activeCount: activeBuiltInCount,
-                          onToggleItem: (itemId, enabled) {
-                            _setBuiltInItemEnabled(context, itemId, enabled);
-                          },
-                        )
-                      else
-                        _CustomTabContent(
-                          items: customItems,
-                          selectionMap: floatingState.customSelectionMap,
-                          onAddItem: () => _showAddDialog(context),
-                          onToggleItem: (itemId, enabled) {
-                            _setCustomItemEnabled(context, itemId, enabled);
-                          },
-                          onEditItem: (item) => _showEditDialog(context, item),
-                          onDeleteItem: (item) =>
-                              _showDeleteDialog(context, item),
-                        ),
-                    ],
+      child: GroundScaffoldTheme(
+        child: AppScaffoldWidget(
+          title: 'إدارة الأذكار',
+          showLargeHeader: false,
+          initialOffset: null,
+          onRefresh: () async {
+            context.read<SabihBloc>().add(RefreshAllSubihEvent());
+            floatingBloc.add(const FloatingAdhkarLoadEvent());
+          },
+          floatingActionButton: _showBuiltInTab
+              ? null
+              : FloatingActionButton(
+                  onPressed: () => _showAddDialog(context),
+                  tooltip: 'إضافة ذكر خاص',
+                  backgroundColor: AppColors.gold,
+                  child: AppIcon(
+                    AppIcons.add,
+                    color: skin.isDark
+                        ? AppColors.brandNight
+                        : AppColors.brandIvory,
+                    size: 18.sp,
                   ),
+                ),
+          body: ColoredBox(
+            color: skin.ground,
+            child: BlocBuilder<SabihBloc, SabihState>(
+              builder: (context, sabihState) {
+                return BlocBuilder<FloatingAdhkarBloc, FloatingAdhkarState>(
+                  builder: (context, floatingState) {
+                    final customItems = sabihState.subihList
+                        .where((item) => item.isCustom)
+                        .toList();
+                    final builtInItems =
+                        List<FloatingAdhkarItem>.of(floatingState.builtInItems)
+                          ..sort((first, second) {
+                            if (first.isDeleted == second.isDeleted) {
+                              return first.title.compareTo(second.title);
+                            }
+                            return first.isDeleted ? 1 : -1;
+                          });
+                    final activeBuiltInCount =
+                        builtInItems.where((item) => !item.isDeleted).length;
+
+                    final isLoadingBuiltIn =
+                        floatingState.loadState == RequestState.loading &&
+                            builtInItems.isEmpty;
+                    final isLoadingCustom =
+                        sabihState.loadState == RequestState.loading &&
+                            customItems.isEmpty;
+
+                    if (isLoadingBuiltIn || isLoadingCustom) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 60.h),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(AppColors.gold),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _TabStrip(
+                          activeIndex: _tabController.index,
+                          builtInLabel:
+                              '$activeBuiltInCount من ${builtInItems.length}',
+                          customLabel: '${customItems.length}',
+                          onSelect: _selectTab,
+                        ),
+                        if (_showBuiltInTab)
+                          _BuiltInList(
+                            items: builtInItems,
+                            onToggleItem: (itemId, enabled) {
+                              _setBuiltInItemEnabled(context, itemId, enabled);
+                            },
+                          )
+                        else
+                          _CustomList(
+                            items: customItems,
+                            selectionMap: floatingState.customSelectionMap,
+                            onAddItem: () => _showAddDialog(context),
+                            onToggleItem: (itemId, enabled) {
+                              _setCustomItemEnabled(context, itemId, enabled);
+                            },
+                            onEditItem: (item) =>
+                                _showEditDialog(context, item),
+                            onDeleteItem: (item) =>
+                                _showDeleteDialog(context, item),
+                          ),
+                        SizedBox(height: 26.h),
+                      ],
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
@@ -224,6 +264,7 @@ class _FloatingAdhkarMyAdhkarViewState
     String itemId,
     bool enabled,
   ) {
+    unawaited(HapticFeedback.selectionClick());
     context.read<FloatingAdhkarBloc>().add(
           FloatingAdhkarSetBuiltInItemEnabledEvent(
             itemId: itemId,
@@ -237,6 +278,7 @@ class _FloatingAdhkarMyAdhkarViewState
     int itemId,
     bool enabled,
   ) {
+    unawaited(HapticFeedback.selectionClick());
     context.read<FloatingAdhkarBloc>().add(
           FloatingAdhkarSetCustomItemEnabledEvent(
             subihId: itemId,
@@ -246,46 +288,103 @@ class _FloatingAdhkarMyAdhkarViewState
   }
 }
 
-class _AdhkarTabs extends StatelessWidget {
-  const _AdhkarTabs({
-    required this.controller,
+/// تبويب بخطّ ذهبي تحت الاسم — لا صندوق مظلّل حول التبويبين.
+class _TabStrip extends StatelessWidget {
+  const _TabStrip({
+    required this.activeIndex,
+    required this.builtInLabel,
+    required this.customLabel,
+    required this.onSelect,
   });
 
-  final TabController controller;
+  final int activeIndex;
+  final String builtInLabel;
+  final String customLabel;
+  final ValueChanged<int> onSelect;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    final skin = AppSkin.of(context);
+
+    return Container(
       decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.22),
-        ),
+        border: Border(bottom: BorderSide(color: skin.hairline)),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: TabBar(
-          controller: controller,
-          dividerColor: Colors.transparent,
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicator: BoxDecoration(
-            color: context.primaryColor,
-            borderRadius: BorderRadius.circular(11.r),
+      child: Row(
+        children: [
+          Expanded(
+            child: _TabItem(
+              title: 'الأذكار الافتراضية',
+              badge: builtInLabel,
+              active: activeIndex == 0,
+              onTap: () => onSelect(0),
+            ),
           ),
-          labelColor: context.onPrimaryColor,
-          unselectedLabelColor: context.onSurfaceVariant,
-          labelStyle: TextStyle(
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w800,
+          Expanded(
+            child: _TabItem(
+              title: 'الأذكار الخاصة',
+              badge: customLabel,
+              active: activeIndex == 1,
+              onTap: () => onSelect(1),
+            ),
           ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w700,
+        ],
+      ),
+    );
+  }
+}
+
+class _TabItem extends StatelessWidget {
+  const _TabItem({
+    required this.title,
+    required this.badge,
+    required this.active,
+    required this.onTap,
+  });
+
+  final String title;
+  final String badge;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return InkWell(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        padding: EdgeInsets.symmetric(vertical: 9.h, horizontal: 6.w),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.gold.withValues(alpha: active ? 1 : 0),
+              width: 2,
+            ),
           ),
-          tabs: const [
-            Tab(text: 'الأذكار الافتراضية'),
-            Tab(text: 'الأذكار الخاصة'),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: active ? skin.ink : skin.inkSoft.withValues(alpha: 0.7),
+                fontSize: 11.5.sp,
+                fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
+            Text(
+              badge,
+              style: TextStyle(
+                color: skin.accent,
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
       ),
@@ -293,53 +392,43 @@ class _AdhkarTabs extends StatelessWidget {
   }
 }
 
-class _BuiltInTabContent extends StatelessWidget {
-  const _BuiltInTabContent({
-    required this.items,
-    required this.activeCount,
-    required this.onToggleItem,
-  });
+class _BuiltInList extends StatelessWidget {
+  const _BuiltInList({required this.items, required this.onToggleItem});
 
   final List<FloatingAdhkarItem> items;
-  final int activeCount;
   final void Function(String itemId, bool enabled) onToggleItem;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _SectionHeader(
-          title: 'الأذكار الافتراضية',
-          subtitle: 'هذه أذكار التطبيق الجاهزة. يمكنك فقط تشغيل الذكر أو '
-              'إيقاف ظهوره ضمن الأذكار العائمة.',
-          countLabel: '$activeCount/${items.length}',
+    if (items.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 24.h),
+        child: const LibraryEmptyState(
+          title: 'لا توجد أذكار افتراضية متاحة',
+          message: 'لم يتم العثور على مكتبة الأذكار الافتراضية داخل التطبيق.',
+          icon: AppIcons.tasbih,
         ),
-        SizedBox(height: 8.h),
-        if (items.isEmpty)
-          const _SectionEmptyCard(
-            title: 'لا توجد أذكار افتراضية متاحة',
-            subtitle:
-                'لم يتم العثور على مكتبة الأذكار الافتراضية داخل التطبيق.',
-          )
-        else
-          ...items.map(
-            (item) => Padding(
-              padding: EdgeInsets.only(bottom: 8.h),
-              child: _BuiltInAdhkarCard(
-                item: item,
-                enabled: !item.isDeleted,
-                onChanged: (value) => onToggleItem(item.id, value),
-              ),
-            ),
+      );
+    }
+
+    return Column(
+      children: [
+        for (var i = 0; i < items.length; i++)
+          _AdhkarManageRow(
+            title: items[i].title,
+            body: items[i].text,
+            note: items[i].sourceLabel,
+            enabled: !items[i].isDeleted,
+            isLast: i == items.length - 1,
+            onChanged: (value) => onToggleItem(items[i].id, value),
           ),
       ],
     );
   }
 }
 
-class _CustomTabContent extends StatelessWidget {
-  const _CustomTabContent({
+class _CustomList extends StatelessWidget {
+  const _CustomList({
     required this.items,
     required this.selectionMap,
     required this.onAddItem,
@@ -357,41 +446,38 @@ class _CustomTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _SectionHeader(
-          title: 'الأذكار الخاصة',
-          subtitle: 'هذه الأذكار التي يضيفها المستخدم ويمكنه تعديلها أو حذفها '
-              'أو إيقافها من الظهور.',
-          countLabel: '${items.length}',
+    if (items.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 24.h),
+        child: LibraryEmptyState(
+          title: 'لا توجد أذكار خاصة بعد',
+          message: 'أضف ذكرك أو دعاءك ليدخل ضمن الدوران العشوائي العائم.',
+          icon: AppIcons.noteEdit,
+          actionLabel: 'إضافة ذكر جديد',
+          onAction: onAddItem,
         ),
-        SizedBox(height: 8.h),
-        if (items.isEmpty)
-          _SectionEmptyCard(
-            title: 'لا توجد أذكار خاصة بعد',
-            subtitle: 'أضف ذكرك أو دعاءك الخاص ليصبح ضمن الدوران العشوائي '
-                'العائم.',
-            actionLabel: 'إضافة ذكر جديد',
-            onAction: onAddItem,
-          )
-        else
-          ...items.map(
-            (item) {
+      );
+    }
+
+    return Column(
+      children: [
+        for (var i = 0; i < items.length; i++)
+          Builder(
+            builder: (context) {
+              final item = items[i];
               final itemId = item.id;
               final enabled = itemId != null && (selectionMap[itemId] ?? true);
 
-              return Padding(
-                padding: EdgeInsets.only(bottom: 8.h),
-                child: _CustomAdhkarCard(
-                  item: item,
-                  enabled: enabled,
-                  onChanged: itemId == null
-                      ? null
-                      : (value) => onToggleItem(itemId, value),
-                  onEdit: () => onEditItem(item),
-                  onDelete: itemId == null ? null : () => onDeleteItem(item),
-                ),
+              return _AdhkarManageRow(
+                title: item.title,
+                body: item.content,
+                enabled: enabled,
+                isLast: i == items.length - 1,
+                onChanged: itemId == null
+                    ? null
+                    : (value) => onToggleItem(itemId, value),
+                onEdit: () => onEditItem(item),
+                onDelete: itemId == null ? null : () => onDeleteItem(item),
               );
             },
           ),
@@ -400,340 +486,172 @@ class _CustomTabContent extends StatelessWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
+enum _ManageAction { edit, delete }
+
+/// صفّ ذكر في الإدارة: نصّه بخطّ المصحف، ومفتاحه في الطرف.
+class _AdhkarManageRow extends StatelessWidget {
+  const _AdhkarManageRow({
     required this.title,
-    required this.subtitle,
-    required this.countLabel,
-  });
-
-  final String title;
-  final String subtitle;
-  final String countLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              SizedBox(height: 3.h),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: context.onSurfaceVariant,
-                  fontSize: 10.sp,
-                  height: 1.4,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-          decoration: BoxDecoration(
-            color: context.primaryColor.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(999.r),
-          ),
-          child: Text(
-            countLabel,
-            style: TextStyle(
-              color: context.primaryColor,
-              fontSize: 10.5.sp,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionEmptyCard extends StatelessWidget {
-  const _SectionEmptyCard({
-    required this.title,
-    required this.subtitle,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final String title;
-  final String subtitle;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.22),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 12.5.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: context.onSurfaceVariant,
-                fontSize: 10.5.sp,
-                height: 1.45,
-              ),
-            ),
-            if (actionLabel != null && onAction != null) ...[
-              SizedBox(height: 9.h),
-              FilledButton.icon(
-                onPressed: onAction,
-                style: FilledButton.styleFrom(
-                  minimumSize: Size.fromHeight(34.h),
-                ),
-                icon: const AppIcon(AppIcons.add, size: 12.5),
-                label: Text(actionLabel!),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BuiltInAdhkarCard extends StatelessWidget {
-  const _BuiltInAdhkarCard({
-    required this.item,
+    required this.body,
     required this.enabled,
+    required this.isLast,
+    this.note,
     this.onChanged,
-  });
-
-  final FloatingAdhkarItem item;
-  final bool enabled;
-  final ValueChanged<bool>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final titleColor = enabled
-        ? context.onSurfaceColor
-        : context.onSurfaceVariant.withValues(alpha: 0.78);
-    final bodyColor = enabled
-        ? context.onSurfaceVariant
-        : context.onSurfaceVariant.withValues(alpha: 0.70);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: enabled
-              ? context.outline.withValues(alpha: 0.22)
-              : context.outline.withValues(alpha: 0.32),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(11.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item.title,
-                    style: TextStyle(
-                      color: titleColor,
-                      fontSize: 12.5.sp,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                Switch.adaptive(
-                  value: enabled,
-                  onChanged: onChanged,
-                ),
-              ],
-            ),
-            SizedBox(height: 6.h),
-            Wrap(
-              spacing: 6.w,
-              runSpacing: 6.h,
-              children: [
-                _InfoChip(
-                  label: item.sourceLabel,
-                  backgroundColor: context.primaryColor.withValues(alpha: 0.08),
-                  foregroundColor: context.primaryColor,
-                ),
-                _InfoChip(
-                  label: enabled ? 'مفعّل' : 'موقوف',
-                  backgroundColor: enabled
-                      ? context.secondaryColor.withValues(alpha: 0.10)
-                      : context.outline.withValues(alpha: 0.16),
-                  foregroundColor: enabled
-                      ? context.secondaryColor
-                      : context.onSurfaceVariant,
-                ),
-              ],
-            ),
-            SizedBox(height: 7.h),
-            Text(
-              item.text,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: bodyColor,
-                fontSize: 10.5.sp,
-                height: 1.45,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.label,
-    required this.backgroundColor,
-    required this.foregroundColor,
-  });
-
-  final String label;
-  final Color backgroundColor;
-  final Color foregroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(999.r),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: foregroundColor,
-          fontSize: 9.8.sp,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}
-
-class _CustomAdhkarCard extends StatelessWidget {
-  const _CustomAdhkarCard({
-    required this.item,
-    required this.enabled,
-    required this.onEdit,
-    this.onChanged,
+    this.onEdit,
     this.onDelete,
   });
 
-  final SubihModel item;
+  final String title;
+  final String body;
+  final String? note;
   final bool enabled;
+  final bool isLast;
   final ValueChanged<bool>? onChanged;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.22),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(11.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    final skin = AppSkin.of(context);
+    final hasMenu = onEdit != null || onDelete != null;
+    final titleColor =
+        enabled ? skin.ink : skin.inkSoft.withValues(alpha: 0.55);
+    final bodyText = body.trim();
+    final sourceNote = note?.trim() ?? '';
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 10.w, 8.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Text(
-                    item.title,
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: titleColor,
+                          fontSize: 12.5.sp,
+                          fontWeight: FontWeight.w700,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    if (sourceNote.isNotEmpty) ...[
+                      SizedBox(width: 6.w),
+                      Text(
+                        sourceNote,
+                        style: TextStyle(
+                          color: skin.accent.withValues(alpha: 0.85),
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                if (bodyText.isNotEmpty)
+                  Text(
+                    bodyText,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: TextDirection.rtl,
                     style: TextStyle(
-                      color: context.onSurfaceColor,
-                      fontSize: 12.5.sp,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: FontFamily.scheherazade,
+                      color: enabled
+                          ? skin.inkSoft
+                          : skin.inkSoft.withValues(alpha: 0.5),
+                      fontSize: 13.sp,
+                      height: 1.85,
                     ),
                   ),
-                ),
-                Switch.adaptive(
-                  value: enabled,
-                  onChanged: onChanged,
-                ),
               ],
             ),
-            SizedBox(height: 6.h),
-            Text(
-              item.content,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: context.onSurfaceVariant,
-                fontSize: 10.5.sp,
-                height: 1.45,
+          ),
+          Switch.adaptive(
+            value: enabled,
+            activeTrackColor: AppColors.gold,
+            onChanged: onChanged,
+          ),
+          if (hasMenu)
+            PopupMenuButton<_ManageAction>(
+              tooltip: 'خيارات الذكر',
+              color: skin.raised,
+              onSelected: (action) {
+                switch (action) {
+                  case _ManageAction.edit:
+                    onEdit?.call();
+                  case _ManageAction.delete:
+                    onDelete?.call();
+                }
+              },
+              itemBuilder: (context) => [
+                if (onEdit != null)
+                  const PopupMenuItem<_ManageAction>(
+                    value: _ManageAction.edit,
+                    child: _ManageMenuLabel(
+                      icon: AppIcons.edit,
+                      label: 'تعديل',
+                    ),
+                  ),
+                if (onDelete != null)
+                  const PopupMenuItem<_ManageAction>(
+                    value: _ManageAction.delete,
+                    child: _ManageMenuLabel(
+                      icon: AppIcons.delete,
+                      label: 'حذف',
+                    ),
+                  ),
+              ],
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
+                child: AppIcon(
+                  AppIcons.more,
+                  color: skin.inkSoft.withValues(alpha: 0.7),
+                  size: 15.sp,
+                ),
               ),
             ),
-            SizedBox(height: 8.h),
-            Wrap(
-              spacing: 6.w,
-              runSpacing: 6.h,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: onEdit,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(0, 32.h),
-                    padding: EdgeInsets.symmetric(horizontal: 11.w),
-                  ),
-                  icon: const AppIcon(AppIcons.edit, size: 12),
-                  label: const Text('تعديل'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: onDelete,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(0, 32.h),
-                    padding: EdgeInsets.symmetric(horizontal: 11.w),
-                  ),
-                  icon: const AppIcon(AppIcons.delete, size: 12),
-                  label: const Text('حذف'),
-                ),
-              ],
-            ),
-          ],
-        ),
+        ],
       ),
+    );
+  }
+}
+
+class _ManageMenuLabel extends StatelessWidget {
+  const _ManageMenuLabel({required this.icon, required this.label});
+
+  final HugeIconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Row(
+      children: [
+        AppIcon(icon, color: skin.accent, size: 14.sp),
+        SizedBox(width: 8.w),
+        Text(
+          label,
+          style: TextStyle(
+            color: skin.ink,
+            fontSize: 11.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }

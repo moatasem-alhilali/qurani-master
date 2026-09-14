@@ -63,18 +63,19 @@ class AdhanPrayerTimeService implements PrayerTimeService {
     Coordinates coordinates,
     Duration? utcOffset,
   ) {
-    final params = PrayerCalculationParams.build();
-
     if (utcOffset != null) {
       final locationDate = DateTime.now().toUtc().add(utcOffset);
       _prayerTimes = PrayerTimes.utcOffset(
         coordinates,
         DateComponents.from(locationDate),
-        params,
+        PrayerCalculationParams.build(date: locationDate),
         utcOffset,
       );
     } else {
-      _prayerTimes = PrayerTimes.today(coordinates, params);
+      _prayerTimes = PrayerTimes.today(
+        coordinates,
+        PrayerCalculationParams.build(),
+      );
     }
     return _prayerInfoList =
         NotificationDataConstSeed().prayerInfoListSeed(_prayerTimes);

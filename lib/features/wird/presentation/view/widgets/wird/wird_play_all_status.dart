@@ -1,39 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/components/card_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
 
+/// حالة التشغيل المتتابع: سطر واحد يقول ما يُتلى الآن وكم بقي من تكراره.
 class WirdPlayAllStatus extends StatelessWidget {
   const WirdPlayAllStatus({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return BlocBuilder<WirdBloc, WirdState>(
-      buildWhen: (p, c) => 
-        p.isQueueRepeated != c.isQueueRepeated ||
-        p.activeItemIndex != c.activeItemIndex ||
-        p.processingState != c.processingState ||
-        p.currentRepeatIndex != c.currentRepeatIndex ||
-        p.currentRepeatTotal != c.currentRepeatTotal ||
-        p.data != c.data,
+      buildWhen: (p, c) =>
+          p.isQueueRepeated != c.isQueueRepeated ||
+          p.activeItemIndex != c.activeItemIndex ||
+          p.processingState != c.processingState ||
+          p.currentRepeatIndex != c.currentRepeatIndex ||
+          p.currentRepeatTotal != c.currentRepeatTotal ||
+          p.data != c.data,
       builder: (context, state) {
         final items = state.data ?? [];
+        final index = state.activeItemIndex;
+
         if (!state.isQueueRepeated ||
-            state.activeItemIndex == null ||
-            state.activeItemIndex! < 0 ||
-            state.activeItemIndex! >= items.length) {
+            index == null ||
+            index < 0 ||
+            index >= items.length) {
           if (state.isQueueRepeated &&
               state.processingState == ProcessingState.completed &&
               items.isNotEmpty) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CardWidget(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                child: Text(
-                  'تم الانتهاء من تشغيل جميع الأذكار.',
-                  style: context.titleSmall,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Text(
+                'تم الانتهاء من تشغيل جميع الأذكار.',
+                style: TextStyle(
+                  color: skin.accent,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             );
@@ -41,37 +47,54 @@ class WirdPlayAllStatus extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        final item = items[state.activeItemIndex!];
-        final repeatTotal =
-            state.currentRepeatTotal == 0 ? item.counter : state.currentRepeatTotal;
-        final repeatIndex = state.currentRepeatIndex == 0 ? 1 : state.currentRepeatIndex;
+        final item = items[index];
+        final repeatTotal = state.currentRepeatTotal == 0
+            ? item.counter
+            : state.currentRepeatTotal;
+        final repeatIndex =
+            state.currentRepeatIndex == 0 ? 1 : state.currentRepeatIndex;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: CardWidget(
-            margin: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'الذكر الحالي',
-                  style: context.labelMedium?.copyWith(
-                    color: context.primaryColor,
-                    fontWeight: FontWeight.w700,
-                  ),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'يُتلى الآن',
+                      style: TextStyle(
+                        color: skin.accent,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  item.title,
-                  style: context.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                'التكرار $repeatIndex من $repeatTotal',
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.78),
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  'التكرار: $repeatIndex / $repeatTotal',
-                  style: context.bodySmall,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

@@ -12,7 +12,9 @@ class DailyWirdContentEntry extends Equatable {
   });
 
   factory DailyWirdContentEntry.fromJson(
-      String key, Map<String, dynamic> json) {
+    String key,
+    Map<String, dynamic> json,
+  ) {
     return DailyWirdContentEntry(
       key: key,
       title: json['title'] as String? ?? '',

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,10 +7,13 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
-import 'package:quran_app/core/components/quran_widgets/qibla_compass_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/features/qiblah/qiblah_compass.dart';
 
+/// شاشة القبلة: البوصلة هي البطل، وما حولها سطور نحيلة لا تزاحمها.
 class QiblahMainScreen extends StatefulWidget {
   const QiblahMainScreen({super.key});
 
@@ -21,54 +25,49 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     with TickerProviderStateMixin {
   final _deviceSupport = FlutterQiblah.androidDeviceSensorSupport();
 
-  // State variables
   StreamSubscription<QiblahDirection>? _qiblahStream;
   Position? _currentPosition;
   String? _cityName;
   double? _distanceToMecca;
   bool _isLoading = true;
   String? _errorMessage;
-  bool _hasLocationPermission = false;
 
-  // Direction tracking
   double _currentDirection = 0;
   double _qiblaDirection = 0;
   double _qiblaDirection2 = 0;
-  bool _wasAligned = false; // Track alignment state for haptic feedback
 
-  // Performance optimization - reduce rebuilds
-  late ValueNotifier<bool> _alignmentNotifier;
-
-  // Performance optimization - cache alignment calculation
+  /// نتذكّر حالة المحاذاة حتى تهتزّ مرّة واحدة عند الوصول لا مع كل قراءة.
+  bool _wasAligned = false;
   bool _cachedIsAligned = false;
   double _lastQiblaDirection = -1;
 
-  // Animation controllers
-  late AnimationController _fadeController;
-  late AnimationController _slideController;
+  late final AnimationController _fadeController = AnimationController(
+    duration: const Duration(milliseconds: 700),
+    vsync: this,
+  );
+  late final AnimationController _slideController = AnimationController(
+    duration: const Duration(milliseconds: 600),
+    vsync: this,
+  );
 
-  // Constants
   static const double meccaLatitude = 21.4225;
   static const double meccaLongitude = 39.8262;
+
+  /// هامش المحاذاة بالدرجات.
+  static const double _alignmentThreshold = 10;
 
   @override
   void initState() {
     super.initState();
-    _alignmentNotifier = ValueNotifier<bool>(false);
-    _initializeAnimations();
     _initializeQiblah();
   }
 
-  void _initializeAnimations() {
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
+  @override
+  void dispose() {
+    _qiblahStream?.cancel();
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
   }
 
   Future<void> _initializeQiblah() async {
@@ -78,9 +77,9 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         _errorMessage = null;
       });
 
-      // Check device support
       final deviceSupported = await _deviceSupport;
       if (deviceSupported != true) {
+        if (!mounted) return;
         setState(() {
           _errorMessage = 'جهازك لا يدعم استشعار الاتجاه';
           _isLoading = false;
@@ -88,50 +87,42 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         return;
       }
 
-      // Check and request location permissions
       final hasPermission = await _checkAndRequestLocationPermission();
       if (!hasPermission) {
+        if (!mounted) return;
         setState(() {
-          _errorMessage = 'يجب السماح بالوصول للموقع لتحديد اتجاه القبلة';
+          _errorMessage ??= 'يجب السماح بالوصول للموقع لتحديد اتجاه القبلة';
           _isLoading = false;
         });
         return;
       }
 
-      // Get current location
       await _getCurrentLocation();
-
-      // Start listening to qiblah direction
       await _startQiblahStream();
 
-      // Start animations
       _fadeController.forward();
       _slideController.forward();
     } catch (e) {
-      if(mounted){
-
-      setState(() {
-        _errorMessage = 'حدث خطأ في تحديد اتجاه القبلة: $e';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'حدث خطأ في تحديد اتجاه القبلة: $e';
+          _isLoading = false;
+        });
       }
     }
   }
 
   Future<bool> _checkAndRequestLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if (!mounted) return false;
       setState(() {
         _errorMessage = 'خدمات الموقع غير مفعلة. يرجى تفعيلها من الإعدادات';
       });
       return false;
     }
 
-    permission = await Geolocator.checkPermission();
+    var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -140,6 +131,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     }
 
     if (permission == LocationPermission.deniedForever) {
+      if (!mounted) return false;
       setState(() {
         _errorMessage =
             'تم رفض أذونات الموقع نهائياً. يرجى تفعيلها من إعدادات التطبيق';
@@ -147,28 +139,26 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       return false;
     }
 
-    setState(() {
-      _hasLocationPermission = true;
-    });
     return true;
   }
 
   Future<void> _getCurrentLocation() async {
     try {
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
 
+      if (!mounted) return;
       setState(() {
         _currentPosition = position;
       });
 
-      // Calculate distance to Mecca
       _calculateDistanceToMecca(position);
-
-      // Get city name
       await _getCityName(position);
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'فشل في الحصول على الموقع الحالي';
       });
@@ -184,7 +174,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     );
 
     setState(() {
-      _distanceToMecca = distance / 1000; // Convert to kilometers
+      _distanceToMecca = distance / 1000;
     });
   }
 
@@ -195,6 +185,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         position.longitude,
       );
 
+      if (!mounted) return;
       if (placemarks.isNotEmpty) {
         final placemark = placemarks.first;
         setState(() {
@@ -205,6 +196,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _cityName = 'موقع غير معروف';
       });
@@ -215,29 +207,24 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     try {
       _qiblahStream = FlutterQiblah.qiblahStream.listen(
         (QiblahDirection direction) {
-          if (mounted) {
-            // logger.d(
-            //   'direction: ${direction.direction}, qiblah: ${direction.qiblah}',
-            // );
+          if (!mounted) return;
 
-            // Performance optimization - only update if significant change
-            final currentDiff = (_currentDirection - direction.direction).abs();
-            final qiblaDiff = (_qiblaDirection - direction.qiblah).abs();
+          // لا نعيد البناء إلا عند تغيّر محسوس، حفاظًا على سلاسة القرص.
+          final currentDiff = (_currentDirection - direction.direction).abs();
+          final qiblaDiff = (_qiblaDirection - direction.qiblah).abs();
 
-            if (currentDiff > 1.0 || qiblaDiff > 1.0 || _isLoading) {
-              setState(() {
-                _currentDirection = direction.direction;
-                _qiblaDirection = direction.qiblah;
-                _qiblaDirection2 = normalizeDegree(direction.qiblah);
-                _isLoading = false;
-              });
+          if (currentDiff > 1.0 || qiblaDiff > 1.0 || _isLoading) {
+            setState(() {
+              _currentDirection = direction.direction;
+              _qiblaDirection = direction.qiblah;
+              _qiblaDirection2 = _normalizeDegree(direction.qiblah);
+              _isLoading = false;
+            });
 
-              // Call the direction change handler
-              _onDirectionChange(direction.direction);
-            }
+            _onDirectionChange();
           }
         },
-        onError: (error) {
+        onError: (Object error) {
           if (mounted) {
             setState(() {
               _errorMessage = 'خطأ في تحديد الاتجاه: $error';
@@ -245,7 +232,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
             });
           }
         },
-        cancelOnError: false, // Keep listening even if there are errors
+        cancelOnError: false,
       );
     } catch (e) {
       if (mounted) {
@@ -262,445 +249,349 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     await _initializeQiblah();
   }
 
-  // Performance-optimized alignment calculation with caching
+  double _normalizeDegree(double degree) => ((degree % 360) + 360) % 360;
+
   bool _calculateAlignment() {
-    // Only recalculate if values have changed
     if (_qiblaDirection2 == _lastQiblaDirection) {
       return _cachedIsAligned;
     }
-
-    // Update cache
     _lastQiblaDirection = _qiblaDirection2;
 
-    // Calculate alignment based on _qiblaDirection2 being close to 0
-    // When facing Qibla correctly, _qiblaDirection2 becomes 0
     var difference = _qiblaDirection2;
     if (difference > 180) {
       difference = 360 - difference;
     }
 
-    _cachedIsAligned =
-        difference <= _alignmentThreshold; // Use the same threshold
-
-    // Debug logging
-    print(
-      'QiblaDirection2: $_qiblaDirection2°, Difference from 0: ${difference.toInt()}°, Aligned: $_cachedIsAligned',
-    );
-
-    // Update alignment notifier for performance
-    if (_alignmentNotifier.value != _cachedIsAligned) {
-      _alignmentNotifier.value = _cachedIsAligned;
-    }
-
-    return _cachedIsAligned;
+    return _cachedIsAligned = difference <= _alignmentThreshold;
   }
 
-  void _onDirectionChange(double direction) {
-    // Handle direction change with improved logic
-    final isAligned = _calculateAlignment();
+  void _onDirectionChange() {
+    final aligned = _calculateAlignment();
 
-    if (isAligned && !_wasAligned) {
-      // User just became aligned - provide haptic feedback
-      HapticFeedback.heavyImpact();
+    if (aligned && !_wasAligned) {
+      // الاتجاه الصحيح يُحسّ: اهتزازة واحدة عند لحظة المحاذاة.
+      unawaited(HapticFeedback.mediumImpact());
       _wasAligned = true;
-    } else if (!isAligned && _wasAligned) {
-      // User moved away from alignment
+    } else if (!aligned && _wasAligned) {
       _wasAligned = false;
     }
-
-    // Force UI update to reflect alignment changes
-    setState(() {});
-
-    // You can add additional logic here for when direction changes
-    // For example, logging or other UI updates
-
-    // Optional: Add sound feedback or other notifications here
-    // if (isAligned) {
-    //   // Play alignment sound
-    // }
   }
 
-  Widget _buildErrorWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            size: 80.w,
-            color: Colors.red.withOpacity(0.7),
-          ),
-          SizedBox(height: 20.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Text(
-              _errorMessage ?? 'حدث خطأ غير متوقع',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: context.onSurfaceColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          SizedBox(height: 30.h),
-          ElevatedButton.icon(
-            onPressed: _refreshQiblah,
-            icon: const Icon(Icons.refresh),
-            label: const Text('إعادة المحاولة'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primaryColor,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.r),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
-            strokeWidth: 3,
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            'جاري تحديد اتجاه القبلة...',
-            style: context.titleMedium?.copyWith(
-              color: context.primaryColor,
-            ),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            'تأكد من تفعيل GPS والسماح بأذونات الموقع',
-            style: context.titleSmall?.copyWith(
-              color: context.primaryColor,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  static const double _alignmentThreshold = 10; // عدل حسب ما تحب
-
-  bool get isAligned {
+  bool get _isAligned {
     if (_currentPosition == null) return false;
     return _calculateAlignment();
   }
 
-  String get directionInstruction {
+  String get _directionInstruction {
     if (_currentPosition == null) return 'جاري تحديد الموقع...';
-
-    if (isAligned) return 'متوجه للقبلة ✓';
-
-    // Base instruction on _qiblaDirection2 value
-    // When _qiblaDirection2 is 0, you're facing Qibla
-    // When _qiblaDirection2 is > 0 and < 180, turn left
-    // When _qiblaDirection2 is > 180, turn right
+    if (_isAligned) return 'أنت متوجّه إلى القبلة';
 
     if (_qiblaDirection2 <= 180) {
-      // Turn left to reach 0
-      return 'استدر يساراً ${_qiblaDirection2.toInt()}°';
-    } else {
-      // Turn right to reach 0
-      return 'استدر يميناً ${(360 - _qiblaDirection2).toInt()}°';
+      return 'استدر يسارًا ${_qiblaDirection2.toInt()}°';
     }
+    return 'استدر يمينًا ${(360 - _qiblaDirection2).toInt()}°';
   }
 
-  Widget _buildAnimatedCompass() {
-    // Use the new stream-based compass that works like the old code
-    return QiblaCompassWidgetWithStream(
-      size: 280.w,
-      distance: _distanceToMecca,
-      cityName: _cityName,
-      showDistance: true,
-      primaryColor: context.primaryColor,
-      kaabaColor: Colors.green,
-      showAnimation: true,
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
 
-  double normalizeDegree(double degree) {
-    return ((degree % 360) + 360) % 360;
-  }
-
-  Widget _buildDirectionIndicator() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-      padding: EdgeInsets.all(15.w),
-      decoration: BoxDecoration(
-        color: isAligned
-            ? Colors.green.withOpacity(0.15)
-            : Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(15.r),
-        border: Border.all(
-          color: isAligned ? Colors.green : Colors.orange,
-          width: 2,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: AppScaffoldWidget(
+          title: 'القبلة',
+          trailing: IconButton(
+            tooltip: 'تحديث الاتجاه',
+            onPressed: _refreshQiblah,
+            icon: AppIcon(AppIcons.refresh, size: 16.sp, color: skin.accent),
+          ),
+          body: ColoredBox(
+            color: skin.ground,
+            child: _errorMessage != null
+                ? _QiblahMessage(
+                    icon: AppIcons.warning,
+                    title: _errorMessage!,
+                    actionLabel: 'إعادة المحاولة',
+                    onAction: _refreshQiblah,
+                  )
+                : _isLoading
+                    ? const _QiblahMessage(
+                        icon: AppIcons.compass,
+                        title: 'جارِ تحديد اتجاه القبلة',
+                        subtitle: 'تأكد من تفعيل الموقع والسماح بالأذونات',
+                      )
+                    : _buildCompassView(context, skin),
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: (isAligned ? Colors.green : Colors.orange).withOpacity(0.2),
-            blurRadius: 8,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'الاتجاه الحالي',
-                style: context.titleSmall?.copyWith(
-                  color: context.primaryColor,
-                ),
-              ),
-              Text(
-                '${_currentDirection.toInt()}°',
-                style: context.titleMedium?.copyWith(
-                  color: isAligned ? Colors.green : Colors.orange,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Icon(
-                  isAligned ? Icons.check_circle : Icons.navigation,
-                  color: isAligned ? Colors.green : Colors.orange,
-                  size: 30.w,
-                ),
-                SizedBox(height: 5.h),
-                Text(
-                  directionInstruction,
-                  style: context.titleSmall?.copyWith(
-                    color: isAligned ? Colors.green : Colors.orange,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'اتجاه القبلة',
-                style: context.titleSmall?.copyWith(
-                  color: context.primaryColor,
-                ),
-              ),
-              Text(
-                '${_qiblaDirection2.toInt()}°',
-                style: context.titleMedium?.copyWith(
-                  color: isAligned ? Colors.green : Colors.orange,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildCompassWidget() {
+  Widget _buildCompassView(BuildContext context, AppSkin skin) {
+    final width = MediaQuery.sizeOf(context).width;
+    final compassSize = (width - 88.w).clamp(190.0, 320.w);
+
     return FadeTransition(
       opacity: _fadeController,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: const Offset(0, 0.3),
+          begin: const Offset(0, 0.06),
           end: Offset.zero,
         ).animate(
-          CurvedAnimation(
-            parent: _slideController,
-            curve: Curves.easeOutCubic,
-          ),
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Location info card
-            if (_currentPosition != null)
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                padding: EdgeInsets.all(15.w),
-                decoration: BoxDecoration(
-                  color: context.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(15.r),
-                  border: Border.all(
-                    color: context.primaryColor.withOpacity(0.3),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: context.primaryColor,
-                      size: 20.w,
-                    ),
-                    SizedBox(width: 10.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'موقعك الحالي',
-                            style: context.titleSmall?.copyWith(
-                              color: context.primaryColor,
-                            ),
-                          ),
-                          Text(
-                            _cityName ?? 'يتم تحديد الموقع...',
-                            style: context.titleMedium?.copyWith(
-                              color: context.primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_distanceToMecca != null)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'المسافة',
-                            style: context.titleSmall?.copyWith(
-                              color: context.primaryColor,
-                            ),
-                          ),
-                          Text(
-                            '${_distanceToMecca!.toInt()} كم',
-                            style: context.titleMedium,
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
+            SizedBox(height: 14.h),
+            Center(
+              child: QiblahCompass(
+                qiblahDegrees: _qiblaDirection,
+                isAligned: _isAligned,
+                size: compassSize,
               ),
-
-            SizedBox(height: 20.h),
-
-            // Compass widget
-            _buildAnimatedCompass(),
-
-            SizedBox(height: 20.h),
-
-            // Direction indicator
-            _buildDirectionIndicator(),
-
-            SizedBox(height: 10.h),
-
-            // Refresh button
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.w),
-              child: ElevatedButton.icon(
-                onPressed: _refreshQiblah,
-                icon: const Icon(Icons.refresh),
-                label: const Text('تحديث الاتجاه'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColor.withOpacity(0.1),
-                  foregroundColor: context.primaryColor,
-                  elevation: 0,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.r),
-                    side: BorderSide(
-                      color: context.primaryColor.withOpacity(0.3),
-                    ),
-                  ),
+            ),
+            SizedBox(height: 16.h),
+            // سطر التوجيه: أكبر ما في الشاشة بعد البوصلة.
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 260),
+              child: Text(
+                _directionInstruction,
+                key: ValueKey(_directionInstruction),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _isAligned ? skin.accent : skin.ink,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                  height: 1.3,
                 ),
               ),
             ),
-
-            SizedBox(height: 20.h),
-
-            // Instructions card
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-              padding: EdgeInsets.all(15.w),
-              decoration: BoxDecoration(
-                color: context.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(15.r),
-                border: Border.all(
-                  color: context.primaryColor.withOpacity(0.3),
-                ),
+            Text(
+              _isAligned
+                  ? 'ثبّت الجهاز، السهم على علامة القبلة'
+                  : 'حرّك الجهاز ببطء حتى يصل السهم إلى العلامة',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.78),
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.45,
               ),
+            ),
+            SizedBox(height: 14.h),
+            skin.divider(),
+            const HomeSectionHeader(title: 'قراءة البوصلة'),
+            Padding(
+              padding: AppSkin.gutter,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: context.primaryColor,
-                        size: 20.w,
-                      ),
-                      SizedBox(width: 10.w),
-                      Text(
-                        'تعليمات الاستخدام',
-                        style: context.titleMedium,
-                      ),
-                    ],
+                  _ReadingRow(
+                    icon: AppIcons.direction,
+                    label: 'اتجاهك الحالي',
+                    value: '${_currentDirection.toInt()}°',
                   ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    '• امسك الهاتف في وضع مستقيم أمامك\n'
-                    '• تحرك ببطء حتى يصبح السهم الأخضر متجهاً للأعلى\n'
-                    '• عند اتجاه القبلة ستظهر علامة ✓ وستشعر بالاهتزاز\n'
-                    '• تأكد من عدم وجود أجسام معدنية قريبة من الهاتف\n'
-                    '• إذا لم يعمل الكومباس، حرك الهاتف على شكل رقم 8',
-                    style: context.titleSmall,
+                  _ReadingRow(
+                    icon: AppIcons.compass,
+                    label: 'زاوية القبلة',
+                    value: '${_qiblaDirection2.toInt()}°',
+                  ),
+                  _ReadingRow(
+                    icon: AppIcons.mapPin,
+                    label: 'موقعك الحالي',
+                    value: _cityName ?? 'يتم تحديد الموقع...',
+                    isNumeric: false,
+                  ),
+                  _ReadingRow(
+                    icon: AppIcons.mosque,
+                    label: 'المسافة إلى مكة',
+                    value: _distanceToMecca == null
+                        ? '—'
+                        : '${_distanceToMecca!.toInt()} كم',
+                    isNumeric: false,
+                    isLast: true,
                   ),
                 ],
               ),
             ),
+            skin.divider(),
+            const HomeSectionHeader(title: 'تعليمات الاستخدام'),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+              child: Text(
+                '• امسك الهاتف مستويًا أمامك.\n'
+                '• تحرّك ببطء حتى يلتقي السهم الذهبي بالعلامة العلوية.\n'
+                '• عند المحاذاة تضيء الحلقة وتشعر باهتزازة خفيفة.\n'
+                '• أبعد الأجسام المعدنية عن الهاتف.\n'
+                '• إذا اضطرب المؤشر، حرّك الهاتف على شكل رقم ٨.',
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.78),
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w500,
+                  height: 1.9,
+                ),
+              ),
+            ),
+            SizedBox(height: 22.h),
           ],
         ),
       ),
     );
   }
+}
+
+/// صفّ قراءة واحد: أيقونة وعنوان وقيمة عند الحافة.
+class _ReadingRow extends StatelessWidget {
+  const _ReadingRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.isNumeric = true,
+    this.isLast = false,
+  });
+
+  final HugeIconData icon;
+  final String label;
+  final String value;
+  final bool isNumeric;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: AppScaffoldWidget(
-        title: 'القبلة',
-        body: _errorMessage != null
-            ? _buildErrorWidget()
-            : _isLoading
-                ? _buildLoadingWidget()
-                : _buildCompassWidget(),
+    final skin = AppSkin.of(context);
+
+    final valueText = Text(
+      value,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        color: skin.ink.withValues(alpha: 0.88),
+        fontSize: 12.5.sp,
+        fontWeight: FontWeight.w600,
+        fontFeatures: const [ui.FontFeature.tabularFigures()],
+      ),
+    );
+
+    return Container(
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      child: Row(
+        children: [
+          Container(
+            width: 28.w,
+            height: 28.w,
+            decoration: BoxDecoration(
+              color: skin.iconChip,
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Center(
+              child: AppIcon(icon, color: skin.accent, size: 15.sp),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: isNumeric
+                ? Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: valueText,
+                  )
+                : valueText,
+          ),
+        ],
       ),
     );
   }
+}
+
+/// حالة رسالة واحدة: تحميل أو خطأ — بلا بطاقة ولا زرّ ضخم.
+class _QiblahMessage extends StatelessWidget {
+  const _QiblahMessage({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final HugeIconData icon;
+  final String title;
+  final String? subtitle;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
-  void dispose() {
-    _qiblahStream?.cancel();
-    _fadeController.dispose();
-    _slideController.dispose();
-    _alignmentNotifier.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(32.w, 60.h, 32.w, 40.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppIcon(icon, color: skin.accent, size: 26.sp),
+          SizedBox(height: 10.h),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: skin.ink,
+              fontSize: 12.5.sp,
+              fontWeight: FontWeight.w700,
+              height: 1.5,
+            ),
+          ),
+          if (subtitle != null)
+            Text(
+              subtitle!,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.78),
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.45,
+              ),
+            ),
+          if (actionLabel != null && onAction != null) ...[
+            SizedBox(height: 8.h),
+            InkWell(
+              onTap: onAction,
+              borderRadius: BorderRadius.circular(999.r),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
+                child: Text(
+                  actionLabel!,
+                  style: TextStyle(
+                    color: skin.accent,
+                    fontSize: 10.5.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

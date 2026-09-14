@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_list_items.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
 
+/// قائمة الأماكن المنزلقة أسفل الخريطة.
 class TravelPlacesListSheet extends StatelessWidget {
   const TravelPlacesListSheet({
     required this.state,
@@ -17,56 +20,62 @@ class TravelPlacesListSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return Column(
       children: [
-        SizedBox(height: 8.h),
         Container(
-          width: 44.w,
-          height: 4.h,
           decoration: BoxDecoration(
-            color: context.outlineVariant.withValues(alpha: 0.55),
-            borderRadius: BorderRadius.circular(99.r),
+            border: Border(bottom: BorderSide(color: skin.hairline)),
           ),
-        ),
-        SizedBox(height: 8.h),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 10.h),
           child: Row(
             children: [
-              Icon(
-                Icons.list_alt_rounded,
-                color: context.primaryColor,
-                size: 20.sp,
-              ),
-              SizedBox(width: 8.w),
+              const TravelerIconChip(icon: AppIcons.list),
+              SizedBox(width: 10.w),
               Expanded(
-                child: Text(
-                  'عرض القائمة (${state.places.length})',
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 13.5.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'أقرب الأماكن',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    ),
+                    Text(
+                      'وجدنا ${state.places.length} نتيجة قربك',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               if (state.isLoadingPlaces)
                 SizedBox(
-                  width: 18.w,
-                  height: 18.w,
-                  child: const CircularProgressIndicator(strokeWidth: 2),
+                  width: 15.sp,
+                  height: 15.sp,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.8,
+                    valueColor: AlwaysStoppedAnimation<Color>(skin.accent),
+                  ),
                 ),
             ],
           ),
         ),
-        SizedBox(height: 8.h),
-        Divider(
-          height: 1,
-          color: context.outlineVariant.withValues(alpha: 0.3),
-        ),
-        TravelPlacesListItems(
-          state: state,
-          placeType: placeType,
-        ),
+        TravelPlacesListItems(state: state, placeType: placeType),
       ],
     );
   }

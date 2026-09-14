@@ -3,9 +3,9 @@ part of 'book_bloc.dart';
 @immutable
 class BookState {
   //
-  List<dynamic> books;
-  RequestState getState;
-  RequestState loadMoreState;
+  final List<dynamic> books;
+  final RequestState getState;
+  final RequestState loadMoreState;
 
   BookState({
     //

@@ -1,12 +1,65 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/my_text_form_field.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 
-// Schedule Type Dropdown
-class ScheduleTypeDropdown extends StatelessWidget {
-  const ScheduleTypeDropdown({
+/// حقول جدولة الإشعار بلغة الصفوف النحيلة نفسها: بلا بطاقات ولا ألوان حرفية.
+
+/// اسم نوع الجدولة بالعربية.
+String scheduleTypeLabel(ScheduleType type) {
+  switch (type) {
+    case ScheduleType.daily:
+      return 'يومي';
+    case ScheduleType.hourly:
+      return 'كل ساعة';
+    case ScheduleType.everyNMinutes:
+      return 'كل عدة دقائق';
+    case ScheduleType.weekly:
+      return 'أسبوعي';
+    case ScheduleType.customDates:
+      return 'تواريخ مخصصة';
+  }
+}
+
+/// شرح سطر واحد لكل نوع جدولة.
+String scheduleTypeDescription(ScheduleType type) {
+  switch (type) {
+    case ScheduleType.daily:
+      return 'يتكرر كل يوم في الوقت نفسه';
+    case ScheduleType.hourly:
+      return 'يتكرر كل ساعة عند دقيقة محددة';
+    case ScheduleType.everyNMinutes:
+      return 'يتكرر كل فترة زمنية تحددها';
+    case ScheduleType.weekly:
+      return 'يتكرر في أيام محددة من الأسبوع';
+    case ScheduleType.customDates:
+      return 'يظهر في تواريخ وأوقات تختارها';
+  }
+}
+
+/// أيقونة نوع الجدولة.
+HugeIconData scheduleTypeIcon(ScheduleType type) {
+  switch (type) {
+    case ScheduleType.daily:
+      return AppIcons.sun;
+    case ScheduleType.hourly:
+      return AppIcons.clock;
+    case ScheduleType.everyNMinutes:
+      return AppIcons.refresh;
+    case ScheduleType.weekly:
+      return AppIcons.calendar;
+    case ScheduleType.customDates:
+      return AppIcons.bookmarkAdd;
+  }
+}
+
+/// اختيار نوع الجدولة: صفّ لكل نوع، وعلامة صحّ على المختار.
+class ScheduleTypeSelector extends StatelessWidget {
+  const ScheduleTypeSelector({
     required this.value,
     required this.onChanged,
     super.key,
@@ -17,252 +70,159 @@ class ScheduleTypeDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: DropdownButtonFormField<ScheduleType>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: 'نوع الجدولة',
-          border: InputBorder.none,
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          labelStyle: titleSmall(context),
-        ),
-        items: ScheduleType.values
-            .map(
-              (e) => DropdownMenuItem(
-                value: e,
-                child: Row(
-                  children: [
-                    Icon(
-                      _getScheduleTypeIcon(e),
-                      size: 20.sp,
-                      color: Colors.grey[600],
-                    ),
-                    SizedBox(width: 12.w),
-                    Text(
-                      _scheduleTypeStr(e),
-                      style: titleSmall(context),
-                    ),
-                  ],
-                ),
-              ),
-            )
-            .toList(),
-        onChanged: (val) => onChanged(val!),
-        borderRadius: BorderRadius.circular(12.r),
-        dropdownColor: Colors.white,
-      ),
+    final skin = AppSkin.of(context);
+    const types = ScheduleType.values;
+
+    return SettingsGroup(
+      title: 'نوع الجدولة',
+      children: [
+        for (var i = 0; i < types.length; i++)
+          SettingsRow(
+            icon: scheduleTypeIcon(types[i]),
+            title: scheduleTypeLabel(types[i]),
+            subtitle: scheduleTypeDescription(types[i]),
+            active: types[i] == value,
+            isLast: i == types.length - 1,
+            onTap: () => onChanged(types[i]),
+            trailing: types[i] == value
+                ? AppIcon(AppIcons.check, color: skin.accent, size: 16.sp)
+                : SizedBox(width: 16.sp),
+          ),
+      ],
     );
-  }
-
-  IconData _getScheduleTypeIcon(ScheduleType type) {
-    switch (type) {
-      case ScheduleType.daily:
-        return Icons.today;
-      case ScheduleType.hourly:
-        return Icons.access_time;
-      case ScheduleType.weekly:
-        return Icons.date_range;
-      case ScheduleType.everyNMinutes:
-        return Icons.schedule;
-      case ScheduleType.customDates:
-        return Icons.event_note;
-      default:
-        return Icons.schedule;
-    }
-  }
-
-  String _scheduleTypeStr(ScheduleType t) {
-    switch (t) {
-      case ScheduleType.daily:
-        return 'يومي';
-      case ScheduleType.hourly:
-        return 'ساعه واحده';
-      case ScheduleType.weekly:
-        return 'أسبوعي (اختر أيام)';
-      case ScheduleType.everyNMinutes:
-        return 'كل X دقيقة';
-      case ScheduleType.customDates:
-        return 'تواريخ مخصصة';
-      default:
-        return '';
-    }
   }
 }
 
-// Time Picker Fields
-class TimePickerFields extends StatelessWidget {
-  const TimePickerFields({
+/// صفّ اختيار الوقت — يفتح منتقي الوقت المناسب للمنصة.
+class ScheduleTimeRow extends StatelessWidget {
+  const ScheduleTimeRow({
     required this.hour,
     required this.minute,
-    required this.onHourChanged,
-    required this.onMinuteChanged,
+    required this.onChanged,
+    this.isLast = false,
     super.key,
   });
 
   final int? hour;
   final int? minute;
-  final ValueChanged<int?> onHourChanged;
-  final ValueChanged<int?> onMinuteChanged;
+  final void Function(int hour, int minute) onChanged;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.blue.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'الوقت',
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.blue[700],
-            ),
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTimeField(
-                  label: 'ساعة',
-                  value: hour,
-                  onChanged: onHourChanged,
-                  min: 0,
-                  max: 23,
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Text(
-                ':',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[700],
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: _buildTimeField(
-                  label: 'دقيقة',
-                  value: minute,
-                  onChanged: onMinuteChanged,
-                  min: 0,
-                  max: 59,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+    final h = hour?.toString().padLeft(2, '0') ?? '--';
+    final m = minute?.toString().padLeft(2, '0') ?? '--';
 
-  Widget _buildTimeField({
-    required String label,
-    required int? value,
-    required ValueChanged<int?> onChanged,
-    required int min,
-    required int max,
-  }) {
-    return TextFormField(
-      initialValue: value?.toString(),
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      ),
-      keyboardType: TextInputType.number,
-      textAlign: TextAlign.center,
-      validator: (v) {
-        if (v == null || v.isEmpty) return 'مطلوب';
-        final val = int.tryParse(v);
-        if (val == null) return 'رقم غير صحيح';
-        if (val < min || val > max) return '$min-$max';
-        return null;
+    return SettingsRow(
+      icon: AppIcons.clock,
+      title: 'وقت التنبيه',
+      subtitle: 'اضغط لاختيار الساعة والدقيقة',
+      isLast: isLast,
+      trailing: SettingsValueText('$h:$m'),
+      onTap: () async {
+        final picked = await AdaptiveTimePicker.show(
+          context: context,
+          initialTime: TimeOfDay(hour: hour ?? 6, minute: minute ?? 0),
+        );
+        if (picked != null) {
+          onChanged(picked.hour, picked.minute);
+        }
       },
-      onSaved: (v) => onChanged(int.tryParse(v ?? '')),
     );
   }
 }
 
-// Interval Minutes Field
-class IntervalMinutesField extends StatelessWidget {
-  const IntervalMinutesField({
+/// صفّ رقم: حقل صغير في طرف الصفّ بدل نموذج كامل.
+class ScheduleNumberRow extends StatelessWidget {
+  const ScheduleNumberRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
     required this.value,
     required this.onChanged,
+    this.suffix,
+    this.isLast = false,
     super.key,
   });
 
+  final HugeIconData icon;
+  final String title;
+  final String subtitle;
   final int? value;
   final ValueChanged<int?> onChanged;
+  final String? suffix;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.orange.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final skin = AppSkin.of(context);
+    final unit = suffix;
+
+    return SettingsRow(
+      icon: icon,
+      title: title,
+      subtitle: subtitle,
+      isLast: isLast,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.schedule,
-                size: 20.sp,
-                color: Colors.orange[700],
+          SizedBox(
+            width: 52.w,
+            child: TextFormField(
+              initialValue: value?.toString() ?? '',
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              textDirection: TextDirection.ltr,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
               ),
-              SizedBox(width: 8.w),
-              Text(
-                'التكرار بالدقائق',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.orange[700],
+              decoration: InputDecoration(
+                isDense: true,
+                filled: true,
+                fillColor: skin.iconChip,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 6.w,
+                  vertical: 7.h,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(9.r),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(9.r),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(9.r),
+                  borderSide: BorderSide(color: skin.accent),
                 ),
               ),
-            ],
+              onChanged: (text) => onChanged(int.tryParse(text)),
+            ),
           ),
-          SizedBox(height: 12.h),
-          MyTextFormFieldWidget(
-            labelText: 'كل كم دقيقة؟',
-            hintText: 'مثال: 30',
-            suffixText: 'دقيقة',
-            initialValue: value?.toString(),
-            keyboardType: TextInputType.number,
-            validator: (v) {
-              if (v == null || v.isEmpty) return 'مطلوب';
-              final val = int.tryParse(v);
-              if (val == null) return 'رقم غير صحيح';
-              if (val < 1) return 'يجب أن يكون أكبر من 0';
-              return null;
-            },
-            onFieldSubmitted: (v) => onChanged(int.tryParse(v ?? '')),
-          ),
+          if (unit != null) ...[
+            SizedBox(width: 6.w),
+            Text(
+              unit,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.78),
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-// Label Field
-class LabelField extends StatelessWidget {
-  const LabelField({
+/// وصف اختياري للموعد — حقل نصّي بعرض القسم.
+class ScheduleLabelField extends StatelessWidget {
+  const ScheduleLabelField({
     required this.value,
     required this.onChanged,
     super.key,
@@ -273,13 +233,48 @@ class LabelField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyTextFormFieldWidget(
-      initialValue: value,
-      labelText: 'وصف اختياري',
-      hintText: 'أضف وصفاً لهذا الموعد',
-      // prefixIcon: Icon(Icons.label_outline, size: 20.sp),
-      maxLines: 2,
-      onFieldSubmitted: (v) => onChanged(v.isEmpty == true ? null : v),
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 8.h),
+      child: TextFormField(
+        initialValue: value,
+        maxLines: 2,
+        style: TextStyle(
+          color: skin.ink,
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w500,
+          height: 1.5,
+        ),
+        decoration: InputDecoration(
+          isDense: true,
+          filled: true,
+          fillColor: skin.iconChip,
+          hintText: 'أضف وصفاً قصيراً لهذا الموعد',
+          hintStyle: TextStyle(
+            color: skin.inkSoft.withValues(alpha: 0.6),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 10.w,
+            vertical: 9.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11.r),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11.r),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11.r),
+            borderSide: BorderSide(color: skin.accent),
+          ),
+        ),
+        onChanged: (text) => onChanged(text.trim().isEmpty ? null : text),
+      ),
     );
   }
 }

@@ -1,249 +1,197 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quran_app/core/components/base_fade_image.dart';
-import 'package:quran_app/core/components/base_home_widget.dart';
-import 'package:quran_app/core/components/base_progress_button.dart';
-import 'package:quran_app/core/components/base_smooth_page_indicator.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
-import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/books/presentation/bloc/book_bloc.dart';
 import 'package:quran_app/features/books/presentation/view/pages/read_book.dart';
+import 'package:quran_app/features/books/presentation/view/widgets/book_row.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 
-class BookDetail extends StatelessWidget {
-  BookDetail({super.key, this.data});
+/// تفاصيل كتاب: ملفّاته ثم وصفه ومرجعه.
+///
+/// كانت الملفّات داخل `PageView` ببطاقات ملوّنة وصورة غلاف وهمية وزرّين
+/// متجاورين. صارت صفوفًا: كلّ ملفّ سطر فيه حجمه وزرّا القراءة والتنزيل.
+class BookDetail extends StatefulWidget {
+  const BookDetail({super.key, this.data});
+
   final dynamic data;
-  final PageController _controller = PageController();
+
+  @override
+  State<BookDetail> createState() => _BookDetailState();
+}
+
+class _BookDetailState extends State<BookDetail> {
+  final DownloadService _downloadService = DownloadService();
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadService.init();
+  }
+
+  @override
+  void dispose() {
+    _downloadService.remove();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final title = bookFieldOf(widget.data, 'title');
+    final description = bookFieldOf(widget.data, 'description');
+    final attachments = bookListOf(widget.data, 'attachments');
+    final preparedBy = bookListOf(widget.data, 'prepared_by');
+    final reference =
+        preparedBy.isEmpty ? '' : bookFieldOf(preparedBy.first, 'title');
+
     return BlocProvider(
       create: (context) => BookBloc(
         repositoryImpl: sl.get<BookRepositoryImpl>(),
       ),
-      child: BlocBuilder<BookBloc, BookState>(
-        builder: (context, state) {
-          return BaseHomeWidget(
-            isScroll: false,
-            title: data['title'].toString(),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: context.getHight(34),
-                    child: PageView.builder(
-                      controller: _controller,
-                      itemCount: data['attachments'].length as int,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.all(8),
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: context.onPrimaryContainer,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: _Item(
-                                  data['attachments'][index],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+      child: Theme(
+        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+        child: AppScaffoldWidget(
+          title: title,
+          body: ColoredBox(
+            color: skin.ground,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const HomeSectionHeader(title: 'ملفّات الكتاب'),
+                if (attachments.isEmpty)
+                  const _InfoBlock(
+                    title: 'لا توجد ملفّات',
+                    body: 'لم تُرفق بهذا الكتاب ملفّات للتنزيل.',
+                  )
+                else
+                  for (var i = 0; i < attachments.length; i++)
+                    _AttachmentRow(
+                      attachment: attachments[i],
+                      index: i,
+                      isLast: i == attachments.length - 1,
+                      downloadService: _downloadService,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  BaseSmoothPageIndicator(
-                    controller: _controller,
-                    count: data['attachments'].length as int,
-                  ),
-                  const SizedBox(height: 10),
-                  Info(
-                    data: {
-                      'title': 'الوصف',
-                      'subtitle': data['description'],
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  Info(
-                    data: {
-                      'title': 'المرجع',
-                      'subtitle': data['prepared_by'][0]['title'],
-                    },
-                  ),
+                if (description.trim().isNotEmpty) ...[
+                  skin.divider(),
+                  const HomeSectionHeader(title: 'الوصف'),
+                  _InfoBlock(body: description),
                 ],
-              ),
+                if (reference.trim().isNotEmpty) ...[
+                  skin.divider(),
+                  const HomeSectionHeader(title: 'المرجع'),
+                  _InfoBlock(body: reference),
+                ],
+                SizedBox(height: 22.h),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
 
-class Info extends StatelessWidget {
-  const Info({super.key, this.data});
-  final dynamic data;
+/// صفّ ملفّ: وصفه وحجمه، وزرّا القراءة والتنزيل.
+class _AttachmentRow extends StatelessWidget {
+  const _AttachmentRow({
+    required this.attachment,
+    required this.index,
+    required this.isLast,
+    required this.downloadService,
+  });
+
+  final dynamic attachment;
+  final int index;
+  final bool isLast;
+  final DownloadService downloadService;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.onPrimaryContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final skin = AppSkin.of(context);
+    final url = bookFieldOf(attachment, 'url');
+    final size = bookFieldOf(attachment, 'size');
+    final description = bookFieldOf(attachment, 'description').trim();
+    final label = description.isEmpty ? 'الملفّ ${index + 1}' : description;
+
+    return BookRow(
+      title: label,
+      subtitle: size,
+      icon: AppIcons.book,
+      isLast: isLast,
+      onTap: url.isEmpty ? () {} : () => context.push(ReadBook(url: url)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          data['title'].toString().autoSize(
-                context,
+          if (url.isNotEmpty)
+            InkWell(
+              onTap: () {
+                HapticFeedback.selectionClick();
+                downloadService.download(url, label);
+              },
+              borderRadius: BorderRadius.circular(10.r),
+              child: Padding(
+                padding: EdgeInsets.all(5.w),
+                child: AppIcon(
+                  AppIcons.download,
+                  color: skin.accent,
+                  size: 15.sp,
+                ),
               ),
-          const SizedBox(height: 10),
-          data['subtitle'].toString().autoSize(
-                context,
-                color: context.primaryColor,
-                maxLines: 20,
-              ),
+            ),
+          SizedBox(width: 2.w),
+          AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
         ],
       ),
     );
   }
 }
 
-class _Item extends StatefulWidget {
-  const _Item(this.data);
-  final dynamic data;
-  @override
-  State<_Item> createState() => _ItemState();
-}
+/// كتلة نصّ: عنوان اختياري ونصّ تحته، بلا بطاقة.
+class _InfoBlock extends StatelessWidget {
+  const _InfoBlock({required this.body, this.title});
 
-class _ItemState extends State<_Item> {
-  DownloadService downloadService = DownloadService();
-  @override
-  void initState() {
-    super.initState();
-    downloadService.init();
-  }
-
-  @override
-  void dispose() {
-    downloadService.remove();
-    super.dispose();
-  }
+  final String? title;
+  final String body;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          margin: const EdgeInsets.all(4),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.red,
-          ),
-          child: const BaseFadeImage(
-            image:
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKNDgmghQNk_-gH-n4L_YzFBo6EeE5QOYpmWM_pUGgqWSNVLYNulaoD9JEoJ9xw0FoxjU&usqp=CAU',
-            fit: BoxFit.contain,
-          ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  child: widget.data['description'].toString().autoSize(
-                        context,
-                        maxLines: 8,
-                      ),
-                ),
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 10.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title != null) ...[
+            Text(
+              title!,
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w700,
               ),
-              InkWell(
-                onTap: () {
-                  final url = widget.data['url'] as String;
-                  final description = widget.data['description'] as String;
-                  downloadService.download(url, description);
-                },
-                child: Container(
-                  height: context.getHight(6),
-                  decoration: BoxDecoration(
-                    color: context.secondaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: double.infinity,
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: context.primaryColor,
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(8),
-                            bottomRight: Radius.circular(8),
-                          ),
-                        ),
-                        child: const Icon(Icons.download),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          widget.data['size'] as String,
-                          style: titleMedium(context),
-                        ),
-                      ),
-                      Container(
-                        height: double.infinity,
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          // color: DarkColors.customPrimary,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            bottomLeft: Radius.circular(8),
-                          ),
-                        ),
-                        child: const Icon(Icons.picture_as_pdf),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: MyProgressButton(
-                      borderRadius: 12,
-                      text: 'قراءة',
-                      defaultColor: context.secondaryColor,
-                      isBorderColor: true,
-                      onPressed: () {
-                        context.push(
-                          ReadBook(
-                            url: widget.data['url'] as String,
-                          ),
-                        );
-                      },
-                      // border: Border.all(color: DarkColors.third),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
+            SizedBox(height: 4.h),
+          ],
+          Text(
+            body,
+            style: TextStyle(
+              color: skin.inkSoft.withValues(alpha: 0.88),
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w500,
+              height: 1.7,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

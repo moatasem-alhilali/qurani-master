@@ -1,10 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
-import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/features/allh_name/presentation/view/pages/allh_name_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/pages/husin_almuslim_screen.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/surah_and_detail_screen.dart';
@@ -23,92 +23,112 @@ import 'package:quran_app/features/traveler/presentation/view/pages/travel_athka
 import 'package:quran_app/features/traveler/presentation/view/pages/travel_places_map_screen.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_options_sheet.dart';
 
+/// مميزات التطبيق، مقسّمة إلى مجموعات صغيرة بعناوين.
+///
+/// اثنتا عشرة أيقونة متجاورة بلا تصنيف تُقرأ ككتلة واحدة، فيضيع ما فيها.
+/// التقسيم إلى ثلاث مجموعات بأربع أيقونات يجعل الباب واضحًا قبل الأيقونة.
 class AnotherFeatures extends StatelessWidget {
   const AnotherFeatures({super.key});
 
-  List<_FeatureShortcut> _items(BuildContext context) {
-    return [
-      _FeatureShortcut(
+  /// الميزة التي تُفتح كل يوم — تأخذ صفًّا كاملاً فوق المجموعات.
+  _FeatureShortcut _lead(BuildContext context) => _FeatureShortcut(
         label: 'زاد اليوم والليلة',
         subtitle: 'ورد تعبدي منظم لأذكارك وتلاوتك اليومية',
         icon: AppIcons.dailyWird,
         onTap: () => context.push(const DailyWirdScreen()),
-        isHighlighted: true,
+      );
+
+  List<_FeatureGroup> _groups(BuildContext context) {
+    return [
+      _FeatureGroup(
+        title: 'وردك اليومي',
+        items: [
+          _FeatureShortcut(
+            label: 'خطط الختمة',
+            subtitle: 'خطط مرتبة لإتمام الختمة بما يناسبك',
+            icon: AppIcons.quran,
+            onTap: () => context.push(const QuranPlanListScreen()),
+          ),
+          _FeatureShortcut(
+            label: 'المسبحة',
+            subtitle: 'تسبيح سهل بعداد مريح وواضح',
+            icon: AppIcons.tasbih,
+            onTap: () => context.push(const TasbeehProvider()),
+          ),
+          _FeatureShortcut(
+            label: 'الأذكار العائمة',
+            subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
+            icon: AppIcons.focus,
+            onTap: () => context.push(const FloatingAdhkarProvider()),
+          ),
+          _FeatureShortcut(
+            label: 'صحبة الفجر',
+            subtitle: 'تذكيرات دعوية واتصالات مجدولة',
+            icon: AppIcons.phone,
+            onTap: () => context.push(const SmartOutreachSchedulesScreen()),
+          ),
+        ],
       ),
-      _FeatureShortcut(
-        label: 'المسافر',
-        subtitle: 'أذكار السفر ومواقيت الرحلات وأماكن نافعة',
-        icon: AppIcons.traveler,
-        onTap: () => _openTravelerSheet(context),
+      _FeatureGroup(
+        title: 'علم وتلاوة',
+        items: [
+          _FeatureShortcut(
+            label: 'موسوعة السور',
+            subtitle: 'استعراض السور وفضائلها وموضوعاتها',
+            icon: AppIcons.quran,
+            onTap: () => context.push(const SurahWithAllDetailScreen()),
+          ),
+          _FeatureShortcut(
+            label: 'الأربعون النووية',
+            subtitle: 'أحاديث جامعة في أبواب الدين',
+            icon: AppIcons.book,
+            onTap: () => context.push(const Hadith40Screen()),
+          ),
+          _FeatureShortcut(
+            label: 'أسماء الله الحسنى',
+            subtitle: 'تأمل الأسماء ومعانيها المباركة',
+            icon: AppIcons.allah,
+            onTap: () => context.push(const AllhNameScreen()),
+          ),
+          _FeatureShortcut(
+            label: 'الإذاعة',
+            subtitle: 'إذاعات قرآنية وإسلامية ببث مباشر متواصل',
+            icon: AppIcons.radio,
+            onTap: () => context.push(const RadioScreen()),
+          ),
+        ],
       ),
-      _FeatureShortcut(
-        label: 'الإذاعة',
-        subtitle: 'إذاعات قرآنية وإسلامية ببث مباشر متواصل',
-        icon: AppIcons.radio,
-        onTap: () => context.push(const RadioScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'خطط الختمة',
-        subtitle: 'خطط مرتبة لإتمام الختمة بما يناسبك',
-        icon: AppIcons.quran,
-        onTap: () => context.push(const QuranPlanListScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'صحبة الفجر',
-        subtitle: 'تذكيرات دعوية واتصالات مجدولة',
-        icon: AppIcons.phone,
-        onTap: () => context.push(const SmartOutreachSchedulesScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'المسبحة',
-        subtitle: 'تسبيح سهل بعداد مريح وواضح',
-        icon: AppIcons.tasbih,
-        onTap: () => context.push(const TasbeehProvider()),
-      ),
-      _FeatureShortcut(
-        label: 'الأذكار العائمة',
-        subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
-        icon: AppIcons.focus,
-        onTap: () => context.push(const FloatingAdhkarProvider()),
-      ),
-      // Widgets disabled on iOS only (extension signing unresolved);
-      // Android keeps the entry.
-      if (defaultTargetPlatform != TargetPlatform.iOS)
-        _FeatureShortcut(
-          label: 'التطبيقات المصغرة',
-          subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
-          icon: AppIcons.widgets,
-          onTap: () => context.push(const HomeWidgetsScreen()),
-        ),
-      _FeatureShortcut(
-        label: 'أسماء الله الحسنى',
-        subtitle: 'تأمل الأسماء ومعانيها المباركة',
-        icon: AppIcons.allah,
-        onTap: () => context.push(const AllhNameScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'حصن المسلم',
-        subtitle: 'أذكار جامعة مرتبة للأحوال والمناسبات',
-        icon: AppIcons.bookOpen,
-        onTap: () => context.push(const HisnMuslimScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'الأربعون النووية',
-        subtitle: 'أحاديث جامعة في أبواب الدين',
-        icon: AppIcons.book,
-        onTap: () => context.push(const Hadith40Screen()),
-      ),
-      _FeatureShortcut(
-        label: 'موسوعة السور',
-        subtitle: 'استعراض السور وفضائلها وموضوعاتها',
-        icon: AppIcons.quran,
-        onTap: () => context.push(const SurahWithAllDetailScreen()),
-      ),
-      _FeatureShortcut(
-        label: 'أدعيتي الخاصة',
-        subtitle: 'احتفظ بأدعيتك الشخصية في مكان واحد',
-        icon: AppIcons.user,
-        onTap: () => context.push(const MuDoaProvider()),
+      _FeatureGroup(
+        title: 'أذكار وأدوات',
+        items: [
+          _FeatureShortcut(
+            label: 'حصن المسلم',
+            subtitle: 'أذكار جامعة مرتبة للأحوال والمناسبات',
+            icon: AppIcons.bookOpen,
+            onTap: () => context.push(const HisnMuslimScreen()),
+          ),
+          _FeatureShortcut(
+            label: 'أدعيتي الخاصة',
+            subtitle: 'احتفظ بأدعيتك الشخصية في مكان واحد',
+            icon: AppIcons.user,
+            onTap: () => context.push(const MuDoaProvider()),
+          ),
+          _FeatureShortcut(
+            label: 'المسافر',
+            subtitle: 'أذكار السفر ومواقيت الرحلات وأماكن نافعة',
+            icon: AppIcons.traveler,
+            onTap: () => _openTravelerSheet(context),
+          ),
+          // Widgets disabled on iOS only (extension signing unresolved);
+          // Android keeps the entry.
+          if (defaultTargetPlatform != TargetPlatform.iOS)
+            _FeatureShortcut(
+              label: 'التطبيقات المصغرة',
+              subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
+              icon: AppIcons.widgets,
+              onTap: () => context.push(const HomeWidgetsScreen()),
+            ),
+        ],
       ),
     ];
   }
@@ -151,62 +171,23 @@ class AnotherFeatures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final features = _items(context);
-    final featuredItem = features.first;
-    final gridItems = features.skip(1).toList();
+    final groups = _groups(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _FeaturedShortcutCard(item: featuredItem),
-        SizedBox(height: 14.h),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.w),
-          child: Row(
-            children: [
-              Container(
-                width: 6.w,
-                height: 6.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: context.primaryColor,
-                ),
-              ),
-              SizedBox(width: 7.w),
-              Text(
-                'مزايا نافعة',
-                style: TextStyle(
-                  color: context.onSurfaceColor,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.h),
-        GridView.builder(
-          itemCount: gridItems.length,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            childAspectRatio: 0.84,
-            crossAxisSpacing: 7.w,
-            mainAxisSpacing: 7.h,
-          ),
-          itemBuilder: (context, index) {
-            return _FeatureTile(
-              item: gridItems[index],
-              accentColor: index.isEven
-                  ? context.primaryContainer
-                  : context.secondaryContainer,
-            );
-          },
-        ),
+        _FeaturedShortcutRow(item: _lead(context)),
+        for (final group in groups) _FeatureGroupBlock(group: group),
       ],
     );
   }
+}
+
+class _FeatureGroup {
+  const _FeatureGroup({required this.title, required this.items});
+
+  final String title;
+  final List<_FeatureShortcut> items;
 }
 
 class _FeatureShortcut {
@@ -215,285 +196,170 @@ class _FeatureShortcut {
     required this.subtitle,
     required this.icon,
     required this.onTap,
-    this.isHighlighted = false,
   });
 
   final String label;
   final String subtitle;
   final HugeIconData icon;
   final VoidCallback onTap;
-  final bool isHighlighted;
 }
 
-class _FeaturedShortcutCard extends StatelessWidget {
-  const _FeaturedShortcutCard({required this.item});
+/// مجموعة واحدة: عنوان صغير ثم صفّ أيقوناتها.
+class _FeatureGroupBlock extends StatelessWidget {
+  const _FeatureGroupBlock({required this.group});
+
+  final _FeatureGroup group;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(2.w, 12.h, 2.w, 7.h),
+          child: Row(
+            children: [
+              Text(
+                group.title,
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.8),
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Divider(height: 1, thickness: 1, color: skin.hairline),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < 4; i++) ...[
+              if (i != 0) SizedBox(width: 6.w),
+              Expanded(
+                child: i < group.items.length
+                    ? _FeatureTile(item: group.items[i])
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// الميزة الأولى تأخذ صفًّا كاملاً ووصفًا: هي ما يفتحه المستخدم كل يوم.
+class _FeaturedShortcutRow extends StatelessWidget {
+  const _FeaturedShortcutRow({required this.item});
 
   final _FeatureShortcut item;
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(24.r);
-    final accent = context.primaryColor;
-    final chipBackground = accent.withValues(alpha: 0.10);
-    final chipBorder = accent.withValues(alpha: 0.16);
-    final cardBackground = context.surfaceColor;
-    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
-    final titleColor = context.onSurfaceColor;
-    final subtitleColor = context.onSurfaceVariant.withValues(alpha: 0.88);
+    final skin = AppSkin.of(context);
 
     return InkWell(
       onTap: item.onTap,
-      borderRadius: borderRadius,
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomLeft,
-            colors: [
-              cardBackground,
-              cardBackgroundSoft,
-            ],
-          ),
-          border: Border.all(
-            color: context.outline.withValues(alpha: 0.85),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow.withValues(alpha: 0.10),
-              blurRadius: 14.r,
-              offset: Offset(0, 7.h),
+      borderRadius: BorderRadius.circular(12.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.h),
+        child: Row(
+          children: [
+            AppIcon(item.icon, color: skin.accent, size: 17.sp),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AutoSizeText(
+                    item.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.ink,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
+                  AutoSizeText(
+                    item.subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.inkSoft.withValues(alpha: 0.78),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
             ),
+            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                child: Container(
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        accent,
-                        accent.withValues(alpha: 0.18),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: -16.h,
-                left: -18.w,
-                child: Container(
-                  width: 82.w,
-                  height: 82.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: accent.withValues(alpha: 0.06),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 16.h),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 52.w,
-                      height: 52.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.r),
-                        color: chipBackground,
-                        border: Border.all(
-                          color: chipBorder,
-                        ),
-                      ),
-                      child: AppIcon(
-                        item.icon,
-                        color: accent,
-                        size: 19.sp,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: chipBackground,
-                              borderRadius: BorderRadius.circular(999.r),
-                            ),
-                            child: Text(
-                              'مزية مقترحة',
-                              style: TextStyle(
-                                color: accent,
-                                fontSize: 9.6.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          item.label.autoSize(
-                            context,
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w800,
-                              color: titleColor,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          item.subtitle.autoSize(
-                            context,
-                            maxLines: 2,
-                            fontSize: 11.sp,
-                            minFontSize: 10,
-                            color: subtitleColor,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 }
 
+/// مربّع ميزة: أيقونة صغيرة واسم تحتها، بلا حدّ ولا ظل.
 class _FeatureTile extends StatelessWidget {
-  const _FeatureTile({
-    required this.item,
-    required this.accentColor,
-  });
+  const _FeatureTile({required this.item});
 
   final _FeatureShortcut item;
-  final Color accentColor;
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(20.r);
-    final surface = context.surfaceColor;
-    final outline = context.outline.withValues(alpha: 0.95);
-    final shadow = context.shadow.withValues(alpha: 0.08);
-    final titleColor = context.onSurfaceColor;
-    final accentSoft = accentColor.withValues(alpha: 0.16);
-    final accentStrong = accentColor.withValues(alpha: 0.90);
+    final skin = AppSkin.of(context);
 
     return InkWell(
       onTap: item.onTap,
-      borderRadius: borderRadius,
-      child: Ink(
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: borderRadius,
-          border: Border.all(
-            color: outline,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: shadow,
-              blurRadius: 8.r,
-              offset: Offset(0, 4.h),
+      borderRadius: BorderRadius.circular(12.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 6.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 30.w,
+              height: 30.w,
+              decoration: BoxDecoration(
+                color: skin.iconChip,
+                borderRadius: BorderRadius.circular(11.r),
+              ),
+              child: Center(
+                child: AppIcon(item.icon, color: skin.accent, size: 16.sp),
+              ),
+            ),
+            SizedBox(height: 6.h),
+            // ارتفاع ثابت لسطرين: يمنع اختلاف ارتفاع المربّعات في الصف
+            // الواحد بين اسم من سطر واسم من سطرين.
+            SizedBox(
+              height: 26.h,
+              child: AutoSizeText(
+                item.label,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                minFontSize: 7,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: skin.ink.withValues(alpha: 0.9),
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w600,
+                  height: 1.25,
+                ),
+              ),
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                child: Container(
-                  height: 3.h,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        accentStrong,
-                        accentSoft,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 32.w,
-                        height: 32.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: accentColor.withValues(alpha: 0.10),
-                          border: Border.all(
-                            color: accentColor.withValues(alpha: 0.14),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 30.w,
-                            height: 30.w,
-                            padding: EdgeInsets.all(2.sp),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7.r),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  accentColor.withValues(alpha: 0.56),
-                                  accentColor.withValues(alpha: 0.82),
-                                ],
-                              ),
-                            ),
-                            child: AppIcon(
-                              item.icon,
-                              color: context.onPrimaryColor,
-                              size: 9.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 6.h),
-                      item.label.autoSize(
-                        context,
-                        maxLines: 2,
-                        minFontSize: 7,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 9.3.sp,
-                          fontWeight: FontWeight.w800,
-                          color: titleColor,
-                          height: 1.15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

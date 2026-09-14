@@ -69,6 +69,7 @@ class FlightPrayerService {
     final events = <FlightPrayerEvent>[];
     final flightStart = track.departureUtc;
     final flightEnd = track.arrivalUtc;
+    final calculationSettings = PrayerCalculationParams.load();
 
     for (final point in track.trackPoints) {
       final offsetMinutes =
@@ -76,12 +77,13 @@ class FlightPrayerService {
       final offset = Duration(minutes: offsetMinutes);
       final localTime = point.timestampUtc.add(offset);
 
-      final params = PrayerCalculationParams.build();
-
       final prayerTimes = PrayerTimes.utcOffset(
         Coordinates(point.latitude, point.longitude),
         DateComponents.from(localTime),
-        params,
+        PrayerCalculationParams.build(
+          date: localTime,
+          settings: calculationSettings,
+        ),
         offset,
       );
 

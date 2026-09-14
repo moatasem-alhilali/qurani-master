@@ -1,14 +1,16 @@
 part of 'prayer_time_timeline.dart';
 
+/// صفّ صلاة واحد في الجدول.
+///
+/// الصفّ الجاري وحده يرتفع (تعبئة + حدّ + ظلّ)؛ بقيّة الصفوف تجلس على
+/// الأرضية مباشرة ويفصلها خطّ شعرة.
 class _PrayerScheduleRow extends StatelessWidget {
   const _PrayerScheduleRow({
     required this.entry,
-    required this.isFirst,
     required this.isLast,
   });
 
   final PrayerTimelineEntry entry;
-  final bool isFirst;
   final bool isLast;
 
   bool get _isCurrent => entry.status == PrayerTimelineStatus.current;
@@ -17,265 +19,186 @@ class _PrayerScheduleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.vertical(
-      top: isFirst ? Radius.circular(22.r) : Radius.zero,
-      bottom: isLast ? Radius.circular(22.r) : Radius.zero,
-    );
-    final rowColor = _rowBackgroundColor(context);
-    final rowBorderColor = _rowBorderColor(context);
+    final skin = AppSkin.of(context);
 
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: Stack(
-        clipBehavior: Clip.antiAlias,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: rowColor,
-              borderRadius: borderRadius,
-              boxShadow: _isCurrent
-                  ? [
-                      BoxShadow(
-                        color: _alpha(entry.accentColor, 0.22),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ]
-                  : null,
-              border: Border.all(
-                color: rowBorderColor,
-                width: _isCurrent ? 1.2 : 0.8,
+    if (_isCurrent) {
+      return Container(
+        margin: EdgeInsets.symmetric(vertical: 4.h),
+        decoration: BoxDecoration(
+          color: skin.raised,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: skin.raisedBorder, width: 1.2),
+          boxShadow: skin.raisedShadow,
+        ),
+        padding: EdgeInsets.fromLTRB(10.w, 9.h, 10.w, 9.h),
+        child: Row(
+          children: [
+            _TimelineIconChip(
+              icon: _iconForPrayer(entry.prayer.type),
+              skin: skin,
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                entry.prayer.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: skin.ink,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                ),
               ),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-            child: Row(
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: skin.accent,
+                borderRadius: BorderRadius.circular(999.r),
+              ),
+              child: Text(
+                'الآن',
+                style: TextStyle(
+                  color:
+                      skin.isDark ? AppColors.brandNight : AppColors.brandIvory,
+                  fontSize: 8.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            SizedBox(width: 7.w),
+            _PrayerTimeText(time: entry.prayer.time, raised: true),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      child: Row(
+        children: [
+          _TimelineIconChip(
+            icon: _iconForPrayer(entry.prayer.type),
+            skin: skin,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _PrayerIcon(entry: entry),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              entry.prayer.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: _titleColor(context),
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w800,
-                                height: 1.1,
-                              ),
-                            ),
-                          ),
-                          if (_isCurrent) ...[
-                            SizedBox(width: 8.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
-                                vertical: 4.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: _alpha(entry.accentColor, 0.18),
-                                borderRadius: BorderRadius.circular(999.r),
-                                border: Border.all(
-                                  color: _alpha(entry.accentColor, 0.38),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.bolt_rounded,
-                                    size: 13.sp,
-                                    color: entry.accentColor,
-                                  ),
-                                  SizedBox(width: 4.w),
-                                  Text(
-                                    'الآن',
-                                    style: TextStyle(
-                                      color: entry.accentColor,
-                                      fontSize: 11.5.sp,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      SizedBox(height: 6.h),
-                      Text(
-                        _subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: _alpha(context.onSurfaceColor, 0.5),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 1.1,
-                        ),
-                      ),
-                    ],
+                Text(
+                  entry.prayer.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color:
+                        skin.ink.withValues(alpha: _isCompleted ? 0.62 : 0.88),
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
                   ),
                 ),
-                SizedBox(width: 12.w),
-                _PrayerTimesColumn(entry: entry, isCurrent: _isCurrent),
+                Text(
+                  _subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.78),
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.35,
+                  ),
+                ),
               ],
             ),
           ),
-          if (_isCurrent || _isNext)
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                width: _isCurrent ? 3.w : 2.w,
-                decoration: BoxDecoration(
-                  color: _highlightColor(context),
-                  borderRadius: BorderRadius.only(
-                    topRight: isFirst ? Radius.circular(22.r) : Radius.zero,
-                    bottomRight: isLast ? Radius.circular(22.r) : Radius.zero,
-                  ),
-                ),
+          if (_isNext) ...[
+            Text(
+              'التالية',
+              style: TextStyle(
+                color: skin.accent,
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w700,
               ),
             ),
+            SizedBox(width: 7.w),
+          ],
+          _PrayerTimeText(time: entry.prayer.time, raised: false),
         ],
       ),
     );
   }
 
   String get _subtitle {
-    if (_isCurrent) return 'الصلاة الحالية الآن';
     if (_isNext) return 'الصلاة القادمة';
     if (_isCompleted) return 'انتهى وقتها';
     return 'الوقت المحلي';
   }
 
-  Color _titleColor(BuildContext context) {
-    if (_isCurrent) return entry.accentColor;
-    if (_isCompleted) return _alpha(context.onSurfaceColor, 0.72);
-    return context.onSurfaceColor;
-  }
-
-  Color _highlightColor(BuildContext context) {
-    if (_isCurrent) return entry.accentColor;
-    if (_isNext) return _alpha(entry.accentColor, 0.72);
-    return Colors.transparent;
-  }
-
-  Color _rowBackgroundColor(BuildContext context) {
-    if (_isCurrent) return _alpha(entry.accentColor, 0.08);
-    if (_isNext) return _alpha(entry.accentColor, 0.045);
-    return context.surfaceColor;
-  }
-
-  Color _rowBorderColor(BuildContext context) {
-    if (_isCurrent) return _alpha(entry.accentColor, 0.35);
-    if (_isNext) return _alpha(entry.accentColor, 0.2);
-    return _alpha(context.outlineVariant, 0.16);
-  }
-}
-
-class _PrayerIcon extends StatelessWidget {
-  const _PrayerIcon({required this.entry});
-
-  final PrayerTimelineEntry entry;
-  bool get _isCurrent => entry.status == PrayerTimelineStatus.current;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 36.w,
-      height: 36.w,
-      decoration: BoxDecoration(
-        color: _isCurrent
-            ? _alpha(entry.accentColor, 0.2)
-            : _alpha(entry.accentColor, 0.12),
-        borderRadius: BorderRadius.circular(12.r),
-        border: _isCurrent
-            ? Border.all(
-                color: _alpha(entry.accentColor, 0.35),
-              )
-            : null,
-      ),
-      child: Icon(
-        _iconForPrayer(entry.prayer.type),
-        color: entry.accentColor,
-        size: 18.sp,
-      ),
-    );
-  }
-
-  IconData _iconForPrayer(Prayer prayer) {
+  HugeIconData _iconForPrayer(Prayer prayer) {
     switch (prayer) {
       case Prayer.none:
-        return Icons.access_time_rounded;
+        return AppIcons.clock;
       case Prayer.fajr:
-        return Icons.wb_twilight_rounded;
+        return AppIcons.moon;
       case Prayer.sunrise:
-        return Icons.wb_sunny_outlined;
+        return AppIcons.sunrise;
       case Prayer.dhuhr:
-        return Icons.light_mode_rounded;
+        return AppIcons.sun;
       case Prayer.asr:
-        return Icons.wb_sunny_rounded;
+        return AppIcons.sun;
       case Prayer.maghrib:
-        return Icons.brightness_5_rounded;
+        return AppIcons.sunset;
       case Prayer.isha:
-        return Icons.nightlight_round;
+        return AppIcons.moon;
     }
   }
 }
 
-class _PrayerTimesColumn extends StatelessWidget {
-  const _PrayerTimesColumn({
-    required this.entry,
-    required this.isCurrent,
-  });
+class _PrayerTimeText extends StatelessWidget {
+  const _PrayerTimeText({required this.time, required this.raised});
 
-  final PrayerTimelineEntry entry;
-  final bool isCurrent;
+  final DateTime time;
+  final bool raised;
 
   @override
   Widget build(BuildContext context) {
-    final clock12 = DateFormat('hh:mm').format(entry.prayer.time);
-    final period = entry.prayer.time.hour < 12 ? 'ص' : 'م';
+    final skin = AppSkin.of(context);
+    final clock = DateFormat('hh:mm').format(time);
+    final period = time.hour < 12 ? 'ص' : 'م';
 
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            clock12,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Text(
+            clock,
             style: TextStyle(
-              color: isCurrent ? entry.accentColor : context.onSurfaceColor,
-              fontSize: 18.sp,
-              fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w800,
-              height: 1.05,
+              color: skin.ink.withValues(alpha: raised ? 1 : 0.88),
+              fontSize: raised ? 15.sp : 12.5.sp,
+              fontWeight: raised ? FontWeight.w800 : FontWeight.w600,
+              fontFeatures: const [ui.FontFeature.tabularFigures()],
             ),
           ),
-          SizedBox(height: 5.h),
-          Text(
-            period,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: _alpha(context.onSurfaceColor, 0.52),
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-              height: 1.05,
-            ),
+        ),
+        SizedBox(width: 3.w),
+        Text(
+          period,
+          style: TextStyle(
+            color: skin.inkSoft.withValues(alpha: 0.78),
+            fontSize: 9.5.sp,
+            fontWeight: FontWeight.w500,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

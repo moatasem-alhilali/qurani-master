@@ -44,7 +44,6 @@ class SmartOutreachSchedulesBloc
       state.copyWith(
         saveState: RequestState.loading,
         validationErrors: const <String>[],
-        lastSavedScheduleId: null,
       ),
     );
 

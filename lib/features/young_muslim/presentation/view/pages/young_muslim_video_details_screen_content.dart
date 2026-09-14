@@ -6,231 +6,157 @@ extension _YoungMuslimVideoDetailsScreenContent
     BuildContext context,
     YoungMuslimVideoDetailsEntity details,
   ) {
-    final progressLabel = details.video.isCompleted
-        ? 'تمت المشاهدة كاملة'
-        : details.video.hasProgress
-            ? 'تقدّم ${(details.video.progressPercent * 100).round()}%'
-            : 'لم تبدأ بعد';
+    final skin = AppSkin.of(context);
+    final video = details.video;
+    final percent =
+        video.isCompleted ? 100 : (video.progressPercent * 100).round();
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         RepaintBoundary(
-          child: YoungMuslimMediaBanner(
-            title: details.video.title,
-            subtitle: details.video.description,
-            imageUrl: details.video.thumbnailUrl,
-            accentStart: details.series.accentStart,
-            accentEnd: details.series.accentEnd,
-            height: 260,
-            badges: [
+          child: YoungMuslimCover(
+            imageUrl: video.thumbnailUrl,
+            title: video.title,
+            description: video.description,
+            height: 168.h,
+            chips: [
               YoungMuslimMetricChip(
                 label: details.series.titleAr,
-                icon: Icons.video_library_rounded,
-                color: Colors.white,
+                icon: AppIcons.layers,
               ),
               YoungMuslimMetricChip(
-                label: youngMuslimDuration(
-                  details.video.durationSeconds,
-                ),
-                icon: Icons.schedule_rounded,
-                color: Colors.white,
+                label: youngMuslimDuration(video.durationSeconds),
+                icon: AppIcons.clock,
               ),
             ],
           ),
         ),
-        SizedBox(height: 18.h),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _openPlayer(details.video.id),
-                icon: AppIcon(
-                  AppIcons.play,
-                  size: 15.sp,
-                  color: context.onPrimaryColor,
-                  strokeWidth: 1.55,
-                ),
-                label: Text(
-                  details.video.hasProgress ? 'متابعة المشاهدة' : 'تشغيل الآن',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primaryColor,
-                  foregroundColor: context.onPrimaryColor,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                  ),
+        SizedBox(height: 14.h),
+        Padding(
+          padding: AppSkin.gutter,
+          child: Row(
+            children: [
+              Expanded(
+                child: YoungMuslimPrimaryButton(
+                  label: video.hasProgress ? 'متابعة المشاهدة' : 'تشغيل الآن',
+                  icon: AppIcons.play,
+                  onTap: () => _openPlayer(video.id),
                 ),
               ),
+              SizedBox(width: 8.w),
+              YoungMuslimToggleButton(
+                icon: video.isFavorite ? AppIcons.heartFilled : AppIcons.heart,
+                active: video.isFavorite,
+                semanticLabel: 'المفضلة',
+                size: 38.w,
+                onTap: () => context.read<YoungMuslimBloc>().add(
+                      YoungMuslimFavoriteToggled(video.id),
+                    ),
+              ),
+              SizedBox(width: 6.w),
+              YoungMuslimToggleButton(
+                icon: video.isWatchLater
+                    ? AppIcons.bookmark
+                    : AppIcons.bookmarkAdd,
+                active: video.isWatchLater,
+                semanticLabel: 'سأشاهد لاحقًا',
+                size: 38.w,
+                onTap: () => context.read<YoungMuslimBloc>().add(
+                      YoungMuslimWatchLaterToggled(video.id),
+                    ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: AppSkin.gutter,
+          child: YoungMuslimProgressBar(
+            value: video.isCompleted ? 1 : video.progressPercent,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        YoungMuslimStatStrip(
+          cells: [
+            YoungMuslimStatCell(
+              value: '$percent٪',
+              label: 'التقدّم',
+              icon: AppIcons.target,
             ),
-            SizedBox(width: 10.w),
-            _ActionCircleButton(
-              icon: details.video.isFavorite
-                  ? AppIcons.heartFilled
-                  : AppIcons.heart,
-              color: details.video.isFavorite
-                  ? youngMuslimRewardColor(context)
-                  : context.primaryColor,
-              onTap: () => context.read<YoungMuslimBloc>().add(
-                    YoungMuslimFavoriteToggled(details.video.id),
-                  ),
+            YoungMuslimStatCell(
+              value: '${video.watchCount}',
+              label: 'مرات المشاهدة',
+              icon: AppIcons.replay,
             ),
-            SizedBox(width: 10.w),
-            _ActionCircleButton(
-              icon: details.video.isWatchLater
-                  ? AppIcons.bookmark
-                  : AppIcons.bookmarkAdd,
-              color: details.video.isWatchLater
-                  ? context.secondaryColor
-                  : context.primaryColor,
-              onTap: () => context.read<YoungMuslimBloc>().add(
-                    YoungMuslimWatchLaterToggled(details.video.id),
-                  ),
+            YoungMuslimStatCell(
+              value: youngMuslimDuration(video.durationSeconds),
+              label: 'مدّة الحلقة',
+              icon: AppIcons.clock,
             ),
           ],
         ),
-        SizedBox(height: 18.h),
-        RepaintBoundary(
-          child: Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: youngMuslimPanelDecoration(context),
-            child: Wrap(
-              spacing: 12.w,
-              runSpacing: 10.h,
-              children: [
-                YoungMuslimMetricChip(
-                  label: progressLabel,
-                  icon: Icons.insights_rounded,
-                  color: details.video.isCompleted
-                      ? youngMuslimCompletionColor(context)
-                      : context.primaryColor,
-                ),
-                YoungMuslimMetricChip(
-                  label: youngMuslimRelative(
-                    details.video.lastWatchedAt,
-                  ),
-                  icon: Icons.history_rounded,
-                  color: context.secondaryColor,
-                ),
-                YoungMuslimMetricChip(
-                  label: '${details.video.watchCount} مرة مشاهدة',
-                  icon: Icons.repeat_rounded,
-                  color: youngMuslimRewardColor(context),
-                ),
-              ],
-            ),
+        SizedBox(height: 8.h),
+        Padding(
+          padding: AppSkin.gutter,
+          child: Text(
+            'آخر مشاهدة: ${youngMuslimRelative(video.lastWatchedAt)}',
+            textAlign: TextAlign.center,
+            style: youngMuslimRowSubtitle(skin),
           ),
         ),
-        SizedBox(height: 22.h),
-        Container(
-          padding: EdgeInsets.all(16.r),
-          decoration: youngMuslimPanelDecoration(context),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const YoungMuslimSectionHeader(
-                title: 'معلومات الحلقة',
-                subtitle: 'تفاصيل بسيطة وواضحة للطفل وولي الأمر',
-              ),
-              SizedBox(height: 16.h),
-              _buildInfoRow(
-                context,
-                'القصة',
-                details.video.topicTitle,
-                isBold: true,
-              ),
-              _buildInfoRow(context, 'القسم', details.category.titleAr),
-              _buildInfoRow(context, 'السلسلة', details.series.titleAr),
-              if (details.video.episodeNumber != null)
-                _buildInfoRow(
-                  context,
-                  'رقم الحلقة',
-                  '${details.video.episodeNumber}',
-                ),
-              if (details.videoQuiz != null) ...[
-                SizedBox(height: 16.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      YoungMuslimQuizSheet.show(
-                        context: context,
-                        quizSet: details.videoQuiz!,
-                        title: 'سؤال بعد المشاهدة',
-                      );
-                    },
-                    icon: AppIcon(
-                      AppIcons.target,
-                      size: 14.sp,
-                      color: context.primaryColor,
-                      strokeWidth: 1.55,
-                    ),
-                    label: Text(
-                      'أسئلة الحلقة',
-                      style: TextStyle(fontSize: 12.sp),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      side: BorderSide(
-                        color: context.primaryColor.withValues(alpha: 0.3),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              SizedBox(height: 12.h),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    YoungMuslimRewardsSheet.show(
-                      context: context,
-                      rewardsSummary: details.rewardsSummary,
-                      achievements: details.achievements,
-                    );
-                  },
-                  icon: AppIcon(
-                    AppIcons.target,
-                    size: 14.sp,
-                    color: context.primaryColor,
-                    strokeWidth: 1.55,
-                  ),
-                  label: Text(
-                    'نقاطي وإنجازاتي',
-                    style: TextStyle(fontSize: 12.sp),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    side: BorderSide(
-                      color: context.primaryColor.withValues(alpha: 0.3),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        skin.divider(),
+        const HomeSectionHeader(title: 'معلومات الحلقة'),
+        YoungMuslimInfoRow(label: 'القصة', value: video.topicTitle),
+        YoungMuslimInfoRow(label: 'القسم', value: details.category.titleAr),
+        YoungMuslimInfoRow(
+          label: 'السلسلة',
+          value: details.series.titleAr,
+          isLast: video.episodeNumber == null,
+        ),
+        if (video.episodeNumber != null)
+          YoungMuslimInfoRow(
+            label: 'رقم الحلقة',
+            value: '${video.episodeNumber}',
+            isLast: true,
           ),
+        skin.divider(),
+        const HomeSectionHeader(title: 'أدوات الحلقة'),
+        if (details.videoQuiz != null)
+          YoungMuslimActionRow(
+            icon: AppIcons.target,
+            title: 'أسئلة الحلقة',
+            subtitle: 'أسئلة قصيرة تثبّت ما شاهده الطفل',
+            onTap: () {
+              YoungMuslimQuizSheet.show(
+                context: context,
+                quizSet: details.videoQuiz!,
+                title: 'سؤال بعد المشاهدة',
+              );
+            },
+          ),
+        YoungMuslimActionRow(
+          icon: AppIcons.star,
+          title: 'نقاطي وإنجازاتي',
+          subtitle: 'المستوى ${details.rewardsSummary.level}'
+              ' · ${details.rewardsSummary.xp} نقطة',
+          isLast: true,
+          onTap: () {
+            YoungMuslimRewardsSheet.show(
+              context: context,
+              rewardsSummary: details.rewardsSummary,
+              achievements: details.achievements,
+            );
+          },
         ),
         if (details.nextVideo != null) ...[
-          SizedBox(height: 22.h),
-          const YoungMuslimSectionHeader(
-            title: 'الفيديو التالي من نفس السلسلة',
-            subtitle: 'انتقال مريح بدون الخروج من التجربة',
-          ),
-          SizedBox(height: 14.h),
+          skin.divider(),
+          const HomeSectionHeader(title: 'الحلقة التالية'),
           RepaintBoundary(
-            child: YoungMuslimVideoCard(
+            child: YoungMuslimVideoRow(
               video: details.nextVideo!,
               seriesTitle: details.series.titleAr,
+              isLast: true,
               onTap: () => _openVideo(context, details.nextVideo!.id),
               onFavoriteToggle: () => context
                   .read<YoungMuslimBloc>()
@@ -242,14 +168,10 @@ extension _YoungMuslimVideoDetailsScreenContent
           ),
         ],
         if (details.similarVideos.isNotEmpty) ...[
-          SizedBox(height: 22.h),
-          const YoungMuslimSectionHeader(
-            title: 'فيديوهات مشابهة',
-            subtitle: 'اقتراحات من نفس النوع أو السياق القصصي',
-          ),
-          SizedBox(height: 14.h),
+          skin.divider(),
+          const HomeSectionHeader(title: 'حلقات مشابهة'),
           RepaintBoundary(
-            child: YoungMuslimVideoCarousel(
+            child: YoungMuslimVideoRail(
               videos: details.similarVideos,
               seriesTitleBuilder: (video) => video.seriesId == details.series.id
                   ? details.series.titleAr
@@ -264,53 +186,16 @@ extension _YoungMuslimVideoDetailsScreenContent
             ),
           ),
         ],
+        SizedBox(height: 24.h),
       ],
     );
   }
 
-  Widget _buildInfoRow(
-    BuildContext context,
-    String label,
-    String value, {
-    bool isBold = false,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$label: ',
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: context.onSurfaceVariant.withValues(alpha: 0.7),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: context.onSurfaceColor,
-                fontWeight: isBold ? FontWeight.w900 : FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingBody() {
-    return const YoungMuslimLoadingPanel();
-  }
-
   Widget _buildErrorBody(BuildContext context, String? message) {
     return YoungMuslimEmptyState(
-      title: 'تعذر تحميل تفاصيل الحلقة',
+      title: 'تعذّر تحميل تفاصيل الحلقة',
       subtitle: message ?? 'حاول مرة أخرى بعد قليل.',
-      icon: Icons.cloud_off_rounded,
+      icon: AppIcons.warning,
     );
   }
 
@@ -336,37 +221,6 @@ extension _YoungMuslimVideoDetailsScreenContent
         child: YoungMuslimRouteScope.inherit(
           context: context,
           child: YoungMuslimVideoDetailsScreen(videoId: videoId),
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionCircleButton extends StatelessWidget {
-  const _ActionCircleButton({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  final HugeIconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18.r),
-      child: Ink(
-        width: 42.w,
-        height: 42.w,
-        decoration: youngMuslimPanelDecoration(context, radius: 14),
-        child: AppIcon(
-          icon,
-          color: color,
-          size: 16.sp,
-          strokeWidth: 1.55,
         ),
       ),
     );

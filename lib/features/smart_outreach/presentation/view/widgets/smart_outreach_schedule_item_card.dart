@@ -1,10 +1,20 @@
+import 'dart:async';
+
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
+import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
 
+/// جدولة واحدة في القائمة.
+///
+/// كانت بطاقة بحدّ وظلّ وستّ شارات داخلها، فصارت القائمة صفًّا من الصناديق
+/// المتشابهة. هنا كل جدولة صفّ نحيل على الأرضية يفصله خطّ شعرة، ولا يرتفع
+/// إلا صفّ واحد: الجدولة الأقرب موعدًا.
 class SmartOutreachScheduleItemCard extends StatelessWidget {
   const SmartOutreachScheduleItemCard({
     required this.bundle,
@@ -12,6 +22,9 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
     required this.onStart,
     required this.onDelete,
     required this.onToggle,
+    this.isNext = false,
+    this.isLast = false,
+    this.countdownLabel,
     super.key,
   });
 
@@ -21,6 +34,13 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
   final VoidCallback onDelete;
   final ValueChanged<bool> onToggle;
 
+  /// الجدولة الأقرب موعدًا — هي وحدها التي يحقّ لها الارتفاع.
+  final bool isNext;
+  final bool isLast;
+
+  /// «بعد ٣ ساعات» — يظهر مع الصفّ المرتفع فقط.
+  final String? countdownLabel;
+
   @override
   Widget build(BuildContext context) {
     final schedule = bundle.schedule;
@@ -28,322 +48,225 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
       hour: schedule.hour,
       minute: schedule.minute,
     ).format(context);
+
     final daysLabel = schedule.isDaily
         ? 'كل يوم'
-        : schedule.scheduleDays.map(_weekdayLabel).join('، ');
-    final enabled = schedule.isEnabled;
+        : schedule.scheduleDays.isEmpty
+            ? 'بلا أيام محددة'
+            : schedule.scheduleDays.map(outreachWeekdayLabel).join('، ');
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(18.r),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(13.w),
-        decoration: BoxDecoration(
-          color: context.surfaceColor,
-          borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(
-            color: enabled
-                ? context.primaryColor.withValues(alpha: 0.25)
-                : context.outlineVariant.withValues(alpha: 0.22),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow.withValues(alpha: 0.035),
-              blurRadius: 14.r,
-              offset: Offset(0, 7.h),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                _IconBubble(
-                  icon: enabled ? AppIcons.phone : AppIcons.power,
-                  color:
-                      enabled ? context.primaryColor : context.onSurfaceVariant,
-                ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        schedule.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: context.onSurfaceColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      SizedBox(height: 3.h),
-                      Text(
-                        '$timeLabel • $daysLabel',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: context.onSurfaceVariant,
-                          fontSize: 10.5.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Transform.scale(
-                  scale: 0.78,
-                  child: AdaptiveSwitch(
-                    value: enabled,
-                    onChanged: onToggle,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 11.h),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _MetaPill(
-                    icon: AppIcons.contacts,
-                    label: '${bundle.contacts.length} رقم',
-                  ),
-                ),
-                SizedBox(width: 7.w),
-                Expanded(
-                  child: _MetaPill(
-                    icon: AppIcons.notifications,
-                    label: '${schedule.ringTimeout}ث انتظار',
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 7.h),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _MetaPill(
-                    icon: AppIcons.phone,
-                    label: '${schedule.hangupDelay}ث بعد الرد',
-                  ),
-                ),
-                SizedBox(width: 7.w),
-                Expanded(
-                  child: _MetaPill(
-                    icon: AppIcons.clock,
-                    label: '${schedule.delayBetweenCalls}ث بين الأرقام',
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12.h),
-            Row(
-              children: <Widget>[
-                _ActionButton(
-                  label: 'ابدأ',
-                  icon: AppIcons.play,
-                  filled: true,
-                  onTap: onStart,
-                ),
-                SizedBox(width: 7.w),
-                _ActionButton(
-                  label: 'تعديل',
-                  icon: AppIcons.edit,
-                  onTap: onTap,
-                ),
-                const Spacer(),
-                _IconAction(
-                  icon: AppIcons.delete,
-                  color: context.errorColor,
-                  onTap: onDelete,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    final meta = <String>[
+      daysLabel,
+      _contactsLabel(bundle.contacts.length),
+      'انتظار ${schedule.ringTimeout}ث',
+      'بعد الرد ${schedule.hangupDelay}ث',
+      'بين الأرقام ${schedule.delayBetweenCalls}ث',
+    ].join(' · ');
+
+    final body = _ScheduleBody(
+      title: schedule.title,
+      timeLabel: timeLabel,
+      meta: meta,
+      enabled: schedule.isEnabled,
+      raised: isNext,
+      isLast: isLast,
+      countdownLabel: countdownLabel,
+      onStart: onStart,
+      onEdit: onTap,
+      onDelete: () {
+        unawaited(HapticFeedback.mediumImpact());
+        onDelete();
+      },
+      onToggle: (value) {
+        unawaited(HapticFeedback.selectionClick());
+        onToggle(value);
+      },
     );
-  }
 
-  static String _weekdayLabel(int day) {
-    switch (day) {
-      case 1:
-        return 'الإثنين';
-      case 2:
-        return 'الثلاثاء';
-      case 3:
-        return 'الأربعاء';
-      case 4:
-        return 'الخميس';
-      case 5:
-        return 'الجمعة';
-      case 6:
-        return 'السبت';
-      case 7:
-        return 'الأحد';
-      default:
-        return '$day';
+    if (!isNext) {
+      return InkWell(onTap: onTap, child: body);
     }
-  }
-}
 
-class _IconBubble extends StatelessWidget {
-  const _IconBubble({
-    required this.icon,
-    required this.color,
-  });
-
-  final HugeIconData icon;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 38.w,
-      height: 38.w,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(13.r),
-      ),
-      child: AppIcon(
-        icon,
-        color: color,
-        size: 16.sp,
-        strokeWidth: 1.55,
-      ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: body,
     );
   }
+
+  static String _contactsLabel(int count) {
+    if (count == 0) {
+      return 'بلا أرقام';
+    }
+    if (count == 1) {
+      return 'رقم واحد';
+    }
+    if (count == 2) {
+      return 'رقمان';
+    }
+    if (count <= 10) {
+      return '$count أرقام';
+    }
+    return '$count رقمًا';
+  }
 }
 
-class _MetaPill extends StatelessWidget {
-  const _MetaPill({
-    required this.icon,
-    required this.label,
+/// جسم الجدولة: نحيل على الأرضية، أو مرتفع حين تكون هي الأقرب.
+class _ScheduleBody extends StatelessWidget {
+  const _ScheduleBody({
+    required this.title,
+    required this.timeLabel,
+    required this.meta,
+    required this.enabled,
+    required this.raised,
+    required this.isLast,
+    required this.countdownLabel,
+    required this.onStart,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onToggle,
   });
 
-  final HugeIconData icon;
-  final String label;
+  final String title;
+  final String timeLabel;
+  final String meta;
+  final bool enabled;
+  final bool raised;
+  final bool isLast;
+  final String? countdownLabel;
+  final VoidCallback onStart;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final ValueChanged<bool> onToggle;
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final countdown = countdownLabel?.trim() ?? '';
+
+    final content = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        OutreachIconChip(
+          icon: enabled ? AppIcons.phone : AppIcons.power,
+          muted: !enabled,
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        // الوزن نفسه يقول الحالة: النشط ثقيل والمتوقّف خفيف
+                        // باهت، فلا يعتمد التمييز على اللون وحده.
+                        color: enabled
+                            ? skin.ink
+                            : skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: raised ? 14.sp : 12.5.sp,
+                        fontWeight: enabled
+                            ? (raised ? FontWeight.w800 : FontWeight.w700)
+                            : FontWeight.w500,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  if (raised) ...[
+                    SizedBox(width: 7.w),
+                    const OutreachPill(label: 'الأقرب'),
+                  ],
+                  SizedBox(width: 7.w),
+                  OutreachValue(text: timeLabel, emphasised: raised),
+                ],
+              ),
+              SizedBox(height: 3.h),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  OutreachStatusBadge(active: enabled),
+                  SizedBox(width: 6.w),
+                  Expanded(
+                    child: Text(
+                      countdown.isEmpty ? meta : '$countdown · $meta',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.45,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 3.h),
+              Row(
+                children: [
+                  OutreachTextAction(
+                    label: 'ابدأ الآن',
+                    icon: AppIcons.play,
+                    onTap: onStart,
+                  ),
+                  SizedBox(width: 12.w),
+                  OutreachTextAction(
+                    label: 'تعديل',
+                    icon: AppIcons.edit,
+                    onTap: onEdit,
+                  ),
+                  const Spacer(),
+                  OutreachTextAction(
+                    label: 'حذف',
+                    icon: AppIcons.delete,
+                    danger: true,
+                    onTap: onDelete,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 6.w),
+        Transform.scale(
+          scale: 0.72,
+          child: AdaptiveSwitch(
+            value: enabled,
+            activeColor: AppColors.gold,
+            onChanged: onToggle,
+          ),
+        ),
+      ],
+    );
+
+    if (!raised) {
+      return Container(
+        padding: EdgeInsets.fromLTRB(16.w, 9.h, 16.w, 9.h),
+        decoration: isLast
+            ? null
+            : BoxDecoration(
+                border: Border(bottom: BorderSide(color: skin.hairline)),
+              ),
+        child: content,
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 7.h),
+      margin: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 8.h),
+      padding: EdgeInsets.fromLTRB(10.w, 9.h, 10.w, 9.h),
       decoration: BoxDecoration(
-        color: context.surfaceVariant.withValues(alpha: 0.25),
+        color: skin.raised,
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: skin.raisedBorder, width: 1.2),
+        boxShadow: skin.raisedShadow,
       ),
-      child: Row(
-        children: <Widget>[
-          AppIcon(
-            icon,
-            size: 12.sp,
-            color: context.primaryColor,
-            strokeWidth: 1.55,
-          ),
-          SizedBox(width: 5.w),
-          Expanded(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: context.onSurfaceVariant,
-                fontSize: 9.5.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-    this.filled = false,
-  });
-
-  final String label;
-  final HugeIconData icon;
-  final VoidCallback onTap;
-  final bool filled;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(11.r),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: filled
-              ? context.primaryColor
-              : context.primaryColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(11.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppIcon(
-              icon,
-              size: 12.sp,
-              color: filled ? context.onPrimaryColor : context.primaryColor,
-              strokeWidth: 1.55,
-            ),
-            SizedBox(width: 5.w),
-            Text(
-              label,
-              style: TextStyle(
-                color: filled ? context.onPrimaryColor : context.primaryColor,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _IconAction extends StatelessWidget {
-  const _IconAction({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  final HugeIconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(11.r),
-      onTap: onTap,
-      child: Container(
-        width: 34.w,
-        height: 34.w,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(11.r),
-        ),
-        child: AppIcon(
-          icon,
-          size: 14.sp,
-          color: color,
-          strokeWidth: 1.55,
-        ),
-      ),
+      child: content,
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/confirm_delete_dialog_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
-import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
@@ -10,7 +12,7 @@ import 'package:quran_app/features/sabih/presentation/view/widgets/add_dhikr_dia
 import 'package:quran_app/features/sabih/presentation/view/widgets/dhikr_card.dart';
 
 class TasbeehCarousel extends StatefulWidget {
-  const TasbeehCarousel({super.key, required this.state});
+  const TasbeehCarousel({required this.state, super.key});
 
   final SabihState state;
 
@@ -29,67 +31,61 @@ class _TasbeehCarouselState extends State<TasbeehCarousel> {
   }
 
   void _showEditDhikrDialog(SubihModel subih, BuildContext context) {
-    context.showBottomSheetUIHeader(
-      child: BlocProvider.value(
-        value: context.read<SabihBloc>(),
-        child: AddDhikrDialog(subihToEdit: subih),
-      ),
-      title: 'تعديل الذكر',
-      backgroundColor: context.scaffoldBackgroundColor,
-    );
+    showDhikrSheet(context, subihToEdit: subih);
   }
 
   Future<void> _showDeleteConfirmation(SubihModel subih) async {
-    final result = await showDeleteConfirmationDialog<bool>(context);
+    // نلتقط الـ bloc قبل الانتظار حتى لا نعبر فجوة غير متزامنة بالسياق.
+    final bloc = context.read<SabihBloc>();
+    final confirmed = await showDeleteConfirmationDialog<bool>(context);
 
-    if (result == true) {
-      if (subih.id != null) {
-        final request = SubihRequest.fromModel(subih);
-        if (context.mounted) {
-          context.read<SabihBloc>().add(DeleteSubihEvent(request: request));
-        }
-      }
+    if ((confirmed ?? false) && subih.id != null) {
+      bloc.add(DeleteSubihEvent(request: SubihRequest.fromModel(subih)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final items = widget.state.subihList;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              for (int i = 0; i < widget.state.subihList.length; i++)
+              for (var i = 0; i < items.length; i++)
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: 8,
-                  width: i == _currentPage ? 24 : 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutCubic,
+                  height: 3.h,
+                  width: i == _currentPage ? 18.w : 6.w,
+                  margin: EdgeInsets.symmetric(horizontal: 2.w),
                   decoration: BoxDecoration(
-                    color: i == _currentPage
-                        ? context.primaryColor
-                        : Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(4),
+                    color: i == _currentPage ? AppColors.gold : skin.hairline,
+                    borderRadius: BorderRadius.circular(999.r),
                   ),
                 ),
             ],
           ),
         ),
         SizedBox(
-          height: context.getHight(60),
+          height: 430.h,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: widget.state.subihList.length,
+            itemCount: items.length,
             onPageChanged: (index) {
+              // تنقّل بين الأذكار يُحسّ كما يُحسّ التسبيح نفسه.
+              HapticFeedback.selectionClick();
               setState(() {
                 _currentPage = index;
               });
-              // Removed redundant GetCountsForPeriodEvent logic which caused entire today counts to refetch every swipe
             },
             itemBuilder: (context, index) {
-              final subih = widget.state.subihList[index];
+              final subih = items[index];
               final count = widget.state.getCountForSubih(subih.id ?? -1);
 
               return DhikrCardWidget(
@@ -105,21 +101,15 @@ class _TasbeehCarouselState extends State<TasbeehCarousel> {
                 onReset: () {
                   if (subih.id != null) {
                     context.read<SabihBloc>().add(
-                          ResetTodayCounterEvent(
-                            subihId: subih.id!,
-                          ),
+                          ResetTodayCounterEvent(subihId: subih.id!),
                         );
                   }
                 },
                 onEdit: subih.isCustom
-                    ? () {
-                        _showEditDhikrDialog(subih, context);
-                      }
+                    ? () => _showEditDhikrDialog(subih, context)
                     : null,
                 onDelete: subih.isCustom
-                    ? () {
-                        _showDeleteConfirmation(subih);
-                      }
+                    ? () => _showDeleteConfirmation(subih)
                     : null,
               );
             },

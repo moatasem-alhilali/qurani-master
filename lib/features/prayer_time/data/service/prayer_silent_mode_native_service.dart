@@ -234,7 +234,6 @@ class PrayerSilentModeNativeService {
   List<PrayerInfoModel> _buildPrayersForTomorrow(
     PrayerLocationSelection selectedLocation,
   ) {
-    final params = PrayerCalculationParams.build();
     final locationNow = DateTime.now().toUtc().add(
           Duration(minutes: selectedLocation.utcOffsetMinutes),
         );
@@ -246,7 +245,7 @@ class PrayerSilentModeNativeService {
     final prayerTimes = PrayerTimes.utcOffset(
       Coordinates(selectedLocation.latitude, selectedLocation.longitude),
       DateComponents.from(tomorrowAtLocation),
-      params,
+      PrayerCalculationParams.build(date: tomorrowAtLocation),
       Duration(minutes: selectedLocation.utcOffsetMinutes),
     );
     return notification_seed.NotificationDataConstSeed()

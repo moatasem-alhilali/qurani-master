@@ -9,11 +9,6 @@ DateTime _resolveLocationNowFromOffset(int? offsetMinutes) {
 
 String _twoDigits(int value) => value.toString().padLeft(2, '0');
 
-String _formatClock12(DateTime date) {
-  final hour12 = date.hour % 12 == 0 ? 12 : date.hour % 12;
-  return '${_twoDigits(hour12)}:${_twoDigits(date.minute)}';
-}
-
 String _formatPrayerTime12(DateTime date) {
   final hour12 = date.hour % 12 == 0 ? 12 : date.hour % 12;
   final time = '${_twoDigits(hour12)}:${_twoDigits(date.minute)}';
@@ -189,4 +184,46 @@ List<_PrayerMiniEntry> _buildPrayerEntries({
       isNext: true,
     ),
   ];
+}
+
+const _weekdaysArabic = [
+  'الاثنين',
+  'الثلاثاء',
+  'الأربعاء',
+  'الخميس',
+  'الجمعة',
+  'السبت',
+  'الأحد',
+];
+
+const _monthsArabic = [
+  'يناير',
+  'فبراير',
+  'مارس',
+  'أبريل',
+  'مايو',
+  'يونيو',
+  'يوليو',
+  'أغسطس',
+  'سبتمبر',
+  'أكتوبر',
+  'نوفمبر',
+  'ديسمبر',
+];
+
+/// «الأحد ١٤ سبتمبر» — يُعرض بجانب التاريخ الهجري تحت المشهد.
+String _formatGregorianArabic(DateTime date) {
+  final weekday = _weekdaysArabic[(date.weekday - 1).clamp(0, 6)];
+  final month = _monthsArabic[(date.month - 1).clamp(0, 11)];
+  return '$weekday ${date.day} $month';
+}
+
+/// «بقي ٤٥ د» — صيغة قصيرة تصلح داخل صفّ ضيّق.
+String _formatShortRemaining(Duration remaining) {
+  if (remaining.inSeconds <= 0) return 'حان الوقت';
+  final minutes = remaining.inMinutes;
+  if (minutes < 60) return 'بقي $minutes د';
+  final hours = minutes ~/ 60;
+  final rest = minutes.remainder(60);
+  return rest == 0 ? 'بقي $hours س' : 'بقي $hours س $rest د';
 }

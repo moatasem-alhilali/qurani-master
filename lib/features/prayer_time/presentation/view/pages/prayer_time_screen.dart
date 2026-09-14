@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,17 +8,25 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_settings_screen.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_location_picker_sheet.dart';
 
+/// شاشة مواقيت اليوم كاملة.
+///
+/// الصفحة سطح واحد على `skin.ground`: ترويسة اليوم، ثم صفّ الموقع، ثم
+/// المواقيت صفوفًا نحيلة تفصلها خطوط شعرة. الارتفاع محجوز لصفّ واحد فقط:
+/// الصلاة الجارية (أو القادمة إن لم تدخل بعد).
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
 
@@ -27,62 +37,71 @@ class PrayerTimeScreen extends StatefulWidget {
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
-      title: 'أوقات الصلاة',
-      trailing: IconButton(
-        tooltip: 'إعدادات أوقات الصلاة',
-        onPressed: () {
-          context.push(
-            BlocProvider.value(
-              value: context.read<PrayerTimeBloc>(),
-              child: const PrayerTimeSettingsScreen(),
-            ),
-          );
-        },
-        icon: const AppIcon(AppIcons.settings, size: 15),
-      ),
-      body: BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
-        builder: (context, state) {
-          final list = state.prayerState == RequestState.loading
-              ? PrayerInfoModel.dummy()
-              : state.prayerList;
-          final locationNow = _resolveLocationNow(
-            state.selectedLocation?.utcOffsetMinutes,
-          );
-          final entries = _buildEntries(
-            list: list,
-            currentPrayer: state.currentPrayer,
-            nextPrayer: state.nextPrayer,
-            locationNow: locationNow,
-          );
-          final content = _PrayerTimesTodayView(
-            state: state,
-            entries: entries,
-            locationNow: locationNow,
-            onChangeLocation: () => _openLocationPicker(context, state),
-            onUseCurrentLocation: () {
-              context.read<PrayerTimeBloc>().add(
-                    const PrayerTimeUseCurrentDeviceLocationRequested(),
-                  );
-            },
-            onOpenSettings: () => _openSettingsForLocationStatus(
-              context,
-              state,
-            ),
-            onRetry: () {
-              context
-                  .read<PrayerTimeBloc>()
-                  .add(const PrayerTimeInitRequested());
-            },
-          );
+    final skin = AppSkin.of(context);
 
-          if (state.prayerState == RequestState.loading &&
-              state.locationStatus == PrayerLocationStatus.resolving) {
-            return ShimmerSkeletonizerWidget(child: content);
-          }
+    // الهيكل نفسه يأخذ لون الأرضية، فلا يبقى خطّ قطع بين الترويسة والمحتوى.
+    return Theme(
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+      child: AppScaffoldWidget(
+        title: 'أوقات الصلاة',
+        trailing: IconButton(
+          tooltip: 'إعدادات أوقات الصلاة',
+          onPressed: () {
+            context.push(
+              BlocProvider.value(
+                value: context.read<PrayerTimeBloc>(),
+                child: const PrayerTimeSettingsScreen(),
+              ),
+            );
+          },
+          icon: AppIcon(AppIcons.settings, size: 16.sp, color: skin.accent),
+        ),
+        body: ColoredBox(
+          color: skin.ground,
+          child: BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
+            builder: (context, state) {
+              final list = state.prayerState == RequestState.loading
+                  ? PrayerInfoModel.dummy()
+                  : state.prayerList;
+              final locationNow = _resolveLocationNow(
+                state.selectedLocation?.utcOffsetMinutes,
+              );
+              final entries = _buildEntries(
+                list: list,
+                currentPrayer: state.currentPrayer,
+                nextPrayer: state.nextPrayer,
+                locationNow: locationNow,
+              );
+              final content = _PrayerTimesTodayView(
+                state: state,
+                entries: entries,
+                locationNow: locationNow,
+                onChangeLocation: () => _openLocationPicker(context, state),
+                onUseCurrentLocation: () {
+                  context.read<PrayerTimeBloc>().add(
+                        const PrayerTimeUseCurrentDeviceLocationRequested(),
+                      );
+                },
+                onOpenSettings: () => _openSettingsForLocationStatus(
+                  context,
+                  state,
+                ),
+                onRetry: () {
+                  context
+                      .read<PrayerTimeBloc>()
+                      .add(const PrayerTimeInitRequested());
+                },
+              );
 
-          return content;
-        },
+              if (state.prayerState == RequestState.loading &&
+                  state.locationStatus == PrayerLocationStatus.resolving) {
+                return ShimmerSkeletonizerWidget(child: content);
+              }
+
+              return content;
+            },
+          ),
+        ),
       ),
     );
   }
@@ -112,7 +131,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 : isPassed
                     ? _PrayerDayStatus.passed
                     : _PrayerDayStatus.upcoming,
-        accentColor: _getPrayerColor(prayer),
       );
     }).toList();
   }
@@ -204,25 +222,6 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
 
     return prayer.time.isBefore(locationNow);
   }
-
-  Color _getPrayerColor(PrayerInfoModel data) {
-    switch (data.type) {
-      case Prayer.none:
-        return Colors.grey;
-      case Prayer.fajr:
-        return const Color(0xFF5E86C8);
-      case Prayer.sunrise:
-        return const Color(0xFFC99C43);
-      case Prayer.dhuhr:
-        return const Color(0xFFC6AD67);
-      case Prayer.asr:
-        return const Color(0xFFB9824C);
-      case Prayer.maghrib:
-        return const Color(0xFFC26B58);
-      case Prayer.isha:
-        return const Color(0xFF6F72B8);
-    }
-  }
 }
 
 class _PrayerTimesTodayView extends StatelessWidget {
@@ -246,70 +245,95 @@ class _PrayerTimesTodayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nextEntry = _findEntry(state.nextPrayer) ??
-        entries
-            .where((entry) => entry.status == _PrayerDayStatus.next)
-            .firstOrNull;
-    final currentEntry = _findEntry(state.currentPrayer) ??
-        entries
-            .where((entry) => entry.status == _PrayerDayStatus.current)
-            .firstOrNull;
+    final skin = AppSkin.of(context);
+    final highlight = _highlightIndex;
+    final passed = entries
+        .where((entry) => entry.status == _PrayerDayStatus.passed)
+        .length;
+    final upcoming = entries
+        .where((entry) => entry.status == _PrayerDayStatus.upcoming)
+        .length;
+    final next = entries
+        .where((entry) => entry.status == _PrayerDayStatus.next)
+        .firstOrNull;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _PrayerFocusCard(
-            nextEntry: nextEntry,
-            currentEntry: currentEntry,
-            locationNow: locationNow,
-            selectedLocation: state.selectedLocation,
-            onChangeLocation: onChangeLocation,
-            onUseCurrentLocation: onUseCurrentLocation,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _DayHeader(
+          locationNow: locationNow,
+          progress: _dayProgress(locationNow),
+        ),
+        _LocationRow(
+          selectedLocation: state.selectedLocation,
+          onChangeLocation: onChangeLocation,
+          onUseCurrentLocation: onUseCurrentLocation,
+        ),
+        if (_shouldShowNotice(state))
+          _LocationNoticeRow(
+            message: (state.locationStatusMessage ?? '').trim().isEmpty
+                ? 'تعذر تحديث الموقع الحالي.'
+                : state.locationStatusMessage!.trim(),
+            needsAction: _noticeNeedsAction(state),
+            onGrantPermission: onUseCurrentLocation,
+            onOpenSettings: onOpenSettings,
+            onRetry: onRetry,
           ),
-          if (_shouldShowNotice(state)) ...[
-            SizedBox(height: 10.h),
-            _LocationNoticeCard(
-              state: state,
-              onGrantPermission: onUseCurrentLocation,
-              onOpenSettings: onOpenSettings,
-              onRetry: onRetry,
-            ),
-          ],
-          SizedBox(height: 12.h),
-          _DayPulseStrip(
+        skin.divider(),
+        const HomeSectionHeader(title: 'مواقيت اليوم'),
+        _DaySummaryLine(
+          passed: passed,
+          upcoming: upcoming,
+          nextTime: next == null ? null : _formatPrayerTime(next.prayer.time),
+        ),
+        if (entries.isEmpty)
+          _EmptyPrayerState(onChangeLocation: onChangeLocation)
+        else
+          _PrayerScheduleList(
             entries: entries,
-            locationNow: locationNow,
+            highlightIndex: highlight,
+            windowProgress: _windowProgress,
+            remainingText: _remainingText(_remainingToNext),
           ),
-          // SizedBox(height: 14.h),
-          // const _SectionHeader(
-          //   title: 'جدول اليوم',
-          //   subtitle: 'كل وقت بحالته الحالية بدون ازدحام',
-          // ),
-          SizedBox(height: 10.h),
-          if (entries.isEmpty)
-            _EmptyPrayerState(onChangeLocation: onChangeLocation)
-          else
-            _PrayerScheduleBoard(entries: entries),
-          SizedBox(height: 40.h),
-        ],
-      ),
+        SizedBox(height: 26.h),
+      ],
     );
   }
 
-  _PrayerDayEntry? _findEntry(PrayerInfoModel? prayer) {
-    if (prayer == null) return null;
-    for (final entry in entries) {
-      final item = entry.prayer;
-      if (item.type == prayer.type &&
-          item.time.year == prayer.time.year &&
-          item.time.month == prayer.time.month &&
-          item.time.day == prayer.time.day) {
-        return entry;
-      }
-    }
-    return null;
+  /// الصفّ الوحيد المسموح له بالارتفاع: الجارية، فإن غابت فالقادمة.
+  int get _highlightIndex {
+    final current =
+        entries.indexWhere((e) => e.status == _PrayerDayStatus.current);
+    if (current != -1) return current;
+    return entries.indexWhere((e) => e.status == _PrayerDayStatus.next);
+  }
+
+  Duration get _remainingToNext {
+    final next = state.nextPrayer;
+    if (next == null) return Duration.zero;
+    return next.time.difference(locationNow);
+  }
+
+  /// ما مضى من وقت الصلاة الجارية إلى التي بعدها، من ٠ إلى ١.
+  double get _windowProgress {
+    final current = state.currentPrayer;
+    final next = state.nextPrayer;
+    if (current == null || next == null) return 0;
+
+    final total = next.time.difference(current.time).inSeconds;
+    if (total <= 0) return 0;
+
+    final passed = locationNow.difference(current.time).inSeconds;
+    return (passed / total).clamp(0.0, 1.0);
+  }
+
+  double _dayProgress(DateTime locationNow) {
+    final start =
+        DateTime(locationNow.year, locationNow.month, locationNow.day);
+    final end = start.add(const Duration(days: 1));
+    final total = end.difference(start).inSeconds;
+    final passed = locationNow.difference(start).inSeconds.clamp(0, total);
+    return passed / total;
   }
 
   bool _shouldShowNotice(PrayerTimeState state) {
@@ -318,168 +342,89 @@ class _PrayerTimesTodayView extends StatelessWidget {
         state.locationStatus == PrayerLocationStatus.permissionDeniedForever ||
         state.locationStatus == PrayerLocationStatus.error;
   }
+
+  bool _noticeNeedsAction(PrayerTimeState state) {
+    return state.locationStatus == PrayerLocationStatus.serviceDisabled ||
+        state.locationStatus == PrayerLocationStatus.permissionDenied ||
+        state.locationStatus == PrayerLocationStatus.permissionDeniedForever;
+  }
 }
 
-class _PrayerFocusCard extends StatelessWidget {
-  const _PrayerFocusCard({
-    required this.nextEntry,
-    required this.currentEntry,
-    required this.locationNow,
-    required this.selectedLocation,
-    required this.onChangeLocation,
-    required this.onUseCurrentLocation,
-  });
+/// ترويسة اليوم: التاريخ الميلادي والهجري، والساعة، وخيط تقدّم اليوم.
+class _DayHeader extends StatelessWidget {
+  const _DayHeader({required this.locationNow, required this.progress});
 
-  final _PrayerDayEntry? nextEntry;
-  final _PrayerDayEntry? currentEntry;
   final DateTime locationNow;
-  final PrayerLocationSelection? selectedLocation;
-  final VoidCallback onChangeLocation;
-  final VoidCallback onUseCurrentLocation;
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
-    final nextPrayer = nextEntry?.prayer;
-    final currentPrayer = currentEntry?.prayer;
-    final remaining = nextPrayer == null
-        ? Duration.zero
-        : nextPrayer.time.difference(locationNow);
-    final progress = _dayProgress(locationNow: locationNow);
+    final skin = AppSkin.of(context);
+    final hijri = HijriDate.fromDate(locationNow);
 
-    return _SoftPanel(
-      padding: EdgeInsets.all(14.w),
-      borderColor: context.primaryColor.withValues(alpha: 0.25),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _IconBubble(
-                icon: nextPrayer == null
-                    ? AppIcons.clock
-                    : _iconForPrayer(nextPrayer.type),
-                color: context.primaryColor,
-                size: 40.w,
-                iconSize: 18.sp,
-              ),
-              SizedBox(width: 10.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      nextPrayer == null ? 'مواقيت الصلاة' : 'الصلاة القادمة',
-                      style: TextStyle(
-                        color: context.onSurfaceVariant,
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      nextPrayer == null
-                          ? 'اختر موقعك لعرض الأوقات'
-                          : _prayerName(nextPrayer),
+                      DateFormat('EEEE، d MMMM yyyy', 'ar').format(locationNow),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 21.sp,
-                        fontWeight: FontWeight.w900,
+                        color: skin.ink,
+                        fontSize: 12.5.sp,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    ),
+                    Text(
+                      hijri.formatArabic(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.78),
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w500,
+                        height: 1.35,
                       ),
                     ),
                   ],
                 ),
               ),
-              _ProgressDial(
-                value: progress,
-                label: _formatClock(locationNow),
-              ),
-            ],
-          ),
-          SizedBox(height: 14.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: _FocusMetric(
-                  label: nextPrayer == null ? 'الحالة' : 'الوقت',
-                  value: nextPrayer == null
-                      ? 'غير جاهز'
-                      : _formatPrayerTime(nextPrayer.time),
-                ),
-              ),
               SizedBox(width: 8.w),
-              Expanded(
-                child: _FocusMetric(
-                  label: currentPrayer == null ? 'الآن' : 'الصلاة الحالية',
-                  value: currentPrayer == null
-                      ? 'انتظار'
-                      : _prayerName(currentPrayer),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: _FocusMetric(
-                  label: 'المتبقي',
-                  value: _remainingText(remaining),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text(
+                  _formatClock(locationNow),
+                  style: TextStyle(
+                    color: skin.accent,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    fontFeatures: const [ui.FontFeature.tabularFigures()],
+                  ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 12.h),
-          _LocationRow(
-            selectedLocation: selectedLocation,
-            onChangeLocation: onChangeLocation,
-            onUseCurrentLocation: onUseCurrentLocation,
-          ),
-        ],
-      ),
-    );
-  }
-
-  double _dayProgress({required DateTime locationNow}) {
-    final start =
-        DateTime(locationNow.year, locationNow.month, locationNow.day);
-    final end = start.add(const Duration(days: 1));
-    final total = end.difference(start).inSeconds;
-    final passed = locationNow.difference(start).inSeconds.clamp(0, total);
-    return passed / total;
-  }
-}
-
-class _ProgressDial extends StatelessWidget {
-  const _ProgressDial({
-    required this.value,
-    required this.label,
-  });
-
-  final double value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 52.w,
-      height: 52.w,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox.expand(
-            child: CircularProgressIndicator(
-              value: value.clamp(0, 1),
-              strokeWidth: 3.w,
-              backgroundColor: context.outlineVariant.withValues(alpha: 0.18),
-              color: context.primaryColor,
-            ),
-          ),
-          Text(
-            label,
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              color: context.onSurfaceColor,
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w900,
+          SizedBox(height: 8.h),
+          // خيط رفيع يقيس ما مضى من اليوم — بديل القرص الدوّار.
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999.r),
+            child: LinearProgressIndicator(
+              value: progress.clamp(0.0, 1.0),
+              minHeight: 2.h,
+              backgroundColor: skin.hairline,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
         ],
@@ -488,56 +433,7 @@ class _ProgressDial extends StatelessWidget {
   }
 }
 
-class _FocusMetric extends StatelessWidget {
-  const _FocusMetric({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: context.surfaceVariant.withValues(alpha: 0.28),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: context.outlineVariant.withValues(alpha: 0.22),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: context.onSurfaceVariant,
-              fontSize: 9.5.sp,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: 3.h),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: context.onSurfaceColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+/// صفّ الموقع: ضغطة على الصفّ تفتح المنتقي، والزرّ الصغير يأخذ موقع الجهاز.
 class _LocationRow extends StatelessWidget {
   const _LocationRow({
     required this.selectedLocation,
@@ -551,322 +447,133 @@ class _LocationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locationLabel = selectedLocation?.label.trim();
+    final skin = AppSkin.of(context);
+    final label = selectedLocation?.label.trim();
     final details = selectedLocation?.detailsLabel.trim();
+    final isManual = selectedLocation?.isManual ?? false;
+    final sourceLabel = isManual ? 'اختيار يدوي' : 'موقع الجهاز';
+    final subtitle = (details == null || details.isEmpty)
+        ? (label == null || label.isEmpty
+            ? 'اختر مدينة أو استخدم موقع الجهاز'
+            : sourceLabel)
+        : '$details · $sourceLabel';
 
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(13.r),
-            onTap: onChangeLocation,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
-              decoration: BoxDecoration(
-                color: context.primaryColor.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(13.r),
-                border: Border.all(
-                  color: context.primaryColor.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Row(
+    return InkWell(
+      onTap: onChangeLocation,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: skin.hairline)),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
+        child: Row(
+          children: [
+            _IconChip(icon: AppIcons.mapPin, skin: skin),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppIcon(
-                    AppIcons.mapPin,
-                    size: 13.sp,
-                    color: context.primaryColor,
-                    strokeWidth: 1.55,
-                  ),
-                  SizedBox(width: 7.w),
-                  Expanded(
-                    child: Text(
-                      (locationLabel == null || locationLabel.isEmpty)
-                          ? 'تحديد الموقع'
-                          : locationLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w800,
-                      ),
+                  Text(
+                    (label == null || label.isEmpty)
+                        ? 'لم يتم تحديد موقع بعد'
+                        : label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.ink,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
                     ),
                   ),
-                  if (details != null && details.isNotEmpty) ...[
-                    SizedBox(width: 6.w),
-                    Text(
-                      details,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: context.onSurfaceVariant,
-                        fontSize: 9.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.inkSoft.withValues(alpha: 0.78),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.35,
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
-          ),
-        ),
-        SizedBox(width: 8.w),
-        _TinyActionButton(
-          icon: AppIcons.location,
-          onTap: onUseCurrentLocation,
-        ),
-        SizedBox(width: 7.w),
-        _TinyActionButton(
-          icon: AppIcons.edit,
-          onTap: onChangeLocation,
-        ),
-      ],
-    );
-  }
-}
-
-class _TinyActionButton extends StatelessWidget {
-  const _TinyActionButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  final HugeIconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12.r),
-      onTap: onTap,
-      child: Container(
-        width: 36.w,
-        height: 36.w,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: context.surfaceVariant.withValues(alpha: 0.28),
-          borderRadius: BorderRadius.circular(12.r),
-          border:
-              Border.all(color: context.outlineVariant.withValues(alpha: 0.2)),
-        ),
-        child: AppIcon(
-          icon,
-          size: 15.sp,
-          color: context.primaryColor,
-          strokeWidth: 1.55,
+            SizedBox(width: 8.w),
+            _MiniIconButton(
+              icon: AppIcons.location,
+              tooltip: 'موقعي الحالي',
+              onTap: onUseCurrentLocation,
+            ),
+            SizedBox(width: 4.w),
+            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+          ],
         ),
       ),
     );
   }
 }
 
-class _LocationNoticeCard extends StatelessWidget {
-  const _LocationNoticeCard({
-    required this.state,
+/// تنبيه الموقع: سطر واحد ثم روابط الإجراءات — بلا صندوق ملوّن.
+class _LocationNoticeRow extends StatelessWidget {
+  const _LocationNoticeRow({
+    required this.message,
+    required this.needsAction,
     required this.onGrantPermission,
     required this.onOpenSettings,
     required this.onRetry,
   });
 
-  final PrayerTimeState state;
+  final String message;
+  final bool needsAction;
   final VoidCallback onGrantPermission;
   final Future<void> Function() onOpenSettings;
   final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
-    final needsAction = state.locationStatus ==
-            PrayerLocationStatus.serviceDisabled ||
-        state.locationStatus == PrayerLocationStatus.permissionDenied ||
-        state.locationStatus == PrayerLocationStatus.permissionDeniedForever;
+    final skin = AppSkin.of(context);
 
-    return _SoftPanel(
-      padding: EdgeInsets.all(12.w),
-      backgroundColor: context.errorContainer.withValues(alpha: 0.16),
-      borderColor: context.errorColor.withValues(alpha: 0.22),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: skin.hairline)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _IconBubble(
-            icon: needsAction ? AppIcons.warning : AppIcons.error,
-            color: context.errorColor,
-            size: 34.w,
-            iconSize: 15.sp,
-          ),
+          _IconChip(icon: AppIcons.warning, skin: skin),
           SizedBox(width: 10.w),
-          Expanded(
-            child: Text(
-              (state.locationStatusMessage ?? '').trim().isEmpty
-                  ? 'تعذر تحديث الموقع الحالي.'
-                  : state.locationStatusMessage!.trim(),
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 11.sp,
-                height: 1.45,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Wrap(
-            spacing: 6.w,
-            runSpacing: 6.h,
-            alignment: WrapAlignment.end,
-            children: [
-              if (needsAction)
-                _NoticeActionButton(
-                  label: 'منح',
-                  onTap: onGrantPermission,
-                ),
-              if (needsAction)
-                _NoticeActionButton(
-                  label: 'الإعدادات',
-                  onTap: onOpenSettings,
-                ),
-              _NoticeActionButton(
-                label: 'تحديث',
-                onTap: onRetry,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NoticeActionButton extends StatelessWidget {
-  const _NoticeActionButton({
-    required this.label,
-    required this.onTap,
-  });
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10.r),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 7.h),
-        decoration: BoxDecoration(
-          color: context.errorColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: context.errorColor,
-            fontSize: 9.5.sp,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DayPulseStrip extends StatelessWidget {
-  const _DayPulseStrip({
-    required this.entries,
-    required this.locationNow,
-  });
-
-  final List<_PrayerDayEntry> entries;
-  final DateTime locationNow;
-
-  @override
-  Widget build(BuildContext context) {
-    final passed = entries
-        .where((entry) => entry.status == _PrayerDayStatus.passed)
-        .length;
-    final upcoming = entries
-        .where((entry) => entry.status == _PrayerDayStatus.upcoming)
-        .length;
-    final next = entries
-        .where((entry) => entry.status == _PrayerDayStatus.next)
-        .firstOrNull;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _PulseChip(
-            icon: AppIcons.checkSmall,
-            label: 'انتهى',
-            value: '$passed',
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: _PulseChip(
-            icon: AppIcons.clock,
-            label: 'متبقي',
-            value: '$upcoming',
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: _PulseChip(
-            icon: AppIcons.calendar,
-            label: DateFormat('EEEE', 'ar').format(locationNow),
-            value: next == null ? '--:--' : _formatPrayerTime(next.prayer.time),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _PulseChip extends StatelessWidget {
-  const _PulseChip({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final HugeIconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 9.h),
-      child: Row(
-        children: [
-          AppIcon(
-            icon,
-            size: 13.sp,
-            color: context.primaryColor,
-            strokeWidth: 1.55,
-          ),
-          SizedBox(width: 7.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  message,
                   style: TextStyle(
-                    color: context.onSurfaceVariant,
-                    fontSize: 9.sp,
-                    fontWeight: FontWeight.w700,
+                    color: skin.ink,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 1.45,
                   ),
                 ),
-                SizedBox(height: 2.h),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textDirection: TextDirection.ltr,
-                  style: TextStyle(
-                    color: context.onSurfaceColor,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w900,
-                  ),
+                SizedBox(height: 4.h),
+                Wrap(
+                  spacing: 14.w,
+                  runSpacing: 2.h,
+                  children: [
+                    if (needsAction)
+                      _TextLink(
+                        label: 'منح الصلاحية',
+                        onTap: onGrantPermission,
+                      ),
+                    if (needsAction)
+                      _TextLink(label: 'الإعدادات', onTap: onOpenSettings),
+                    _TextLink(label: 'تحديث', onTap: onRetry),
+                  ],
                 ),
               ],
             ),
@@ -877,147 +584,274 @@ class _PulseChip extends StatelessWidget {
   }
 }
 
-class _PrayerScheduleBoard extends StatelessWidget {
-  const _PrayerScheduleBoard({required this.entries});
+/// سطر موجز تحت عنوان القسم: كم انتهى، وكم بقي، ومتى التالية.
+class _DaySummaryLine extends StatelessWidget {
+  const _DaySummaryLine({
+    required this.passed,
+    required this.upcoming,
+    required this.nextTime,
+  });
 
-  final List<_PrayerDayEntry> entries;
+  final int passed;
+  final int upcoming;
+  final String? nextTime;
 
   @override
   Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(8.w),
-      child: Column(
-        children: entries.asMap().entries.map((item) {
-          final index = item.key;
-          return _PrayerScheduleTile(
-            entry: item.value,
-            showDivider: index != entries.length - 1,
-          );
-        }).toList(),
+    final skin = AppSkin.of(context);
+    final parts = <String>[
+      'انتهى $passed',
+      'بقي $upcoming',
+      if (nextTime != null) 'التالية $nextTime',
+    ];
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 6.h),
+      child: Text(
+        parts.join('  ·  '),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: skin.inkSoft.withValues(alpha: 0.78),
+          fontSize: 9.5.sp,
+          fontWeight: FontWeight.w500,
+          height: 1.35,
+        ),
       ),
     );
   }
 }
 
-class _PrayerScheduleTile extends StatelessWidget {
-  const _PrayerScheduleTile({
-    required this.entry,
-    required this.showDivider,
+class _PrayerScheduleList extends StatelessWidget {
+  const _PrayerScheduleList({
+    required this.entries,
+    required this.highlightIndex,
+    required this.windowProgress,
+    required this.remainingText,
   });
 
-  final _PrayerDayEntry entry;
-  final bool showDivider;
+  final List<_PrayerDayEntry> entries;
+  final int highlightIndex;
+  final double windowProgress;
+  final String remainingText;
 
   @override
   Widget build(BuildContext context) {
-    final prayer = entry.prayer;
-    final isActive = entry.status == _PrayerDayStatus.current ||
-        entry.status == _PrayerDayStatus.next;
-    final statusText = switch (entry.status) {
-      _PrayerDayStatus.passed => 'تم',
-      _PrayerDayStatus.current => 'الآن',
-      _PrayerDayStatus.next => 'القادمة',
-      _PrayerDayStatus.upcoming => 'لاحقاً',
-    };
-
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: isActive
-                ? entry.accentColor.withValues(alpha: 0.11)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(13.r),
-          ),
-          child: Row(
-            children: [
-              _IconBubble(
-                icon: _iconForPrayer(prayer.type),
-                color: isActive ? entry.accentColor : context.onSurfaceVariant,
-                size: 34.w,
-                iconSize: 15.sp,
-                opacity: isActive ? 0.16 : 0.08,
+    return Padding(
+      padding: AppSkin.gutter,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < entries.length; i++)
+            if (i == highlightIndex)
+              _RaisedPrayerRow(
+                entry: entries[i],
+                progress: windowProgress,
+                remainingText: remainingText,
+              )
+            else
+              _PlainPrayerRow(
+                entry: entries[i],
+                isLast: i == entries.length - 1,
               ),
+        ],
+      ),
+    );
+  }
+}
+
+/// صفّ صلاة عادي: نحيل، بفاصل شعرة واحدة.
+class _PlainPrayerRow extends StatelessWidget {
+  const _PlainPrayerRow({required this.entry, required this.isLast});
+
+  final _PrayerDayEntry entry;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final prayer = entry.prayer;
+    final isPassed = entry.status == _PrayerDayStatus.passed;
+    final inkAlpha = isPassed ? 0.62 : 0.88;
+
+    return Container(
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      child: Row(
+        children: [
+          _IconChip(icon: _iconForPrayer(prayer.type), skin: skin),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _prayerName(prayer),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink.withValues(alpha: inkAlpha),
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
+                  ),
+                ),
+                Text(
+                  _prayerDescription(prayer),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.78),
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isPassed) ...[
+            Text(
+              'انتهى',
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.7),
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(width: 7.w),
+          ],
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Text(
+              _formatPrayerTime(prayer.time),
+              style: TextStyle(
+                color: skin.ink.withValues(alpha: inkAlpha),
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w600,
+                fontFeatures: const [ui.FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// الصفّ المرتفع الوحيد في الشاشة: الصلاة الجارية وما بقي من وقتها.
+class _RaisedPrayerRow extends StatelessWidget {
+  const _RaisedPrayerRow({
+    required this.entry,
+    required this.progress,
+    required this.remainingText,
+  });
+
+  final _PrayerDayEntry entry;
+  final double progress;
+  final String remainingText;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final prayer = entry.prayer;
+    final isCurrent = entry.status == _PrayerDayStatus.current;
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 4.h),
+      decoration: BoxDecoration(
+        color: skin.raised,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: skin.raisedBorder, width: 1.2),
+        boxShadow: skin.raisedShadow,
+      ),
+      padding: EdgeInsets.fromLTRB(10.w, 9.h, 10.w, 9.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              _IconChip(icon: _iconForPrayer(prayer.type), skin: skin),
               SizedBox(width: 10.w),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _prayerName(prayer),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      _prayerDescription(prayer),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: context.onSurfaceVariant,
-                        fontSize: 9.5.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  _prayerName(prayer),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w800,
+                    height: 1.2,
+                  ),
                 ),
               ),
-              SizedBox(width: 8.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    _formatPrayerTime(prayer.time),
-                    textDirection: TextDirection.ltr,
-                    style: TextStyle(
-                      color: context.onSurfaceColor,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w900,
-                    ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: skin.accent,
+                  borderRadius: BorderRadius.circular(999.r),
+                ),
+                child: Text(
+                  isCurrent ? 'الآن' : 'التالية',
+                  style: TextStyle(
+                    color: skin.isDark
+                        ? AppColors.brandNight
+                        : AppColors.brandIvory,
+                    fontSize: 8.5.sp,
+                    fontWeight: FontWeight.w700,
                   ),
-                  SizedBox(height: 4.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 3.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isActive
-                          ? entry.accentColor.withValues(alpha: 0.15)
-                          : context.surfaceVariant.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      statusText,
-                      style: TextStyle(
-                        color: isActive
-                            ? entry.accentColor
-                            : context.onSurfaceVariant,
-                        fontSize: 8.5.sp,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+                ),
+              ),
+              SizedBox(width: 7.w),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text(
+                  _formatPrayerTime(prayer.time),
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w800,
+                    fontFeatures: const [ui.FontFeature.tabularFigures()],
                   ),
-                ],
+                ),
               ),
             ],
           ),
-        ),
-        if (showDivider)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Divider(
-              height: 1.h,
-              color: context.outlineVariant.withValues(alpha: 0.18),
-            ),
+          SizedBox(height: 8.h),
+          Row(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(999.r),
+                  child: LinearProgressIndicator(
+                    value: progress.clamp(0.0, 1.0),
+                    minHeight: 3.h,
+                    backgroundColor: skin.hairline,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.gold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                remainingText,
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.86),
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -1029,119 +863,118 @@ class _EmptyPrayerState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _SoftPanel(
-      padding: EdgeInsets.all(16.w),
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 6.h),
       child: Column(
         children: [
-          _IconBubble(
-            icon: AppIcons.mapPin,
-            color: context.primaryColor,
-            size: 42.w,
-            iconSize: 18.sp,
-          ),
-          SizedBox(height: 10.h),
+          AppIcon(AppIcons.mapPin, color: skin.accent, size: 22.sp),
+          SizedBox(height: 8.h),
           Text(
-            'اختر موقعك لعرض مواقيت الصلاة.',
+            'اختر موقعك لعرض مواقيت الصلاة',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: context.onSurfaceColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w800,
+              color: skin.ink,
+              fontSize: 12.5.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 10.h),
-          InkWell(
-            borderRadius: BorderRadius.circular(12.r),
-            onTap: onChangeLocation,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
-              decoration: BoxDecoration(
-                color: context.primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                'تحديد الموقع',
-                style: TextStyle(
-                  color: context.primaryColor,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
+          SizedBox(height: 2.h),
+          Text(
+            'ابحث عن مدينتك أو استخدم موقع الجهاز',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: skin.inkSoft.withValues(alpha: 0.78),
+              fontSize: 9.5.sp,
+              fontWeight: FontWeight.w500,
+              height: 1.35,
             ),
           ),
+          SizedBox(height: 6.h),
+          _TextLink(label: 'تحديد الموقع', onTap: onChangeLocation),
         ],
       ),
     );
   }
 }
 
-class _IconBubble extends StatelessWidget {
-  const _IconBubble({
+/// مربّع الأيقونة الصغير — بديل البطاقة حول كل صفّ.
+class _IconChip extends StatelessWidget {
+  const _IconChip({required this.icon, required this.skin});
+
+  final HugeIconData icon;
+  final AppSkin skin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 28.w,
+      height: 28.w,
+      decoration: BoxDecoration(
+        color: skin.iconChip,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Center(
+        child: AppIcon(icon, color: skin.accent, size: 15.sp),
+      ),
+    );
+  }
+}
+
+class _MiniIconButton extends StatelessWidget {
+  const _MiniIconButton({
     required this.icon,
-    required this.color,
-    required this.size,
-    required this.iconSize,
-    this.opacity = 0.12,
+    required this.tooltip,
+    required this.onTap,
   });
 
   final HugeIconData icon;
-  final Color color;
-  final double size;
-  final double iconSize;
-  final double opacity;
+  final String tooltip;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: opacity),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: AppIcon(
-        icon,
-        size: iconSize,
-        color: color,
-        strokeWidth: 1.55,
+    final skin = AppSkin.of(context);
+
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999.r),
+        child: Padding(
+          padding: EdgeInsets.all(4.w),
+          child: AppIcon(icon, color: skin.accent, size: 16.sp),
+        ),
       ),
     );
   }
 }
 
-class _SoftPanel extends StatelessWidget {
-  const _SoftPanel({
-    required this.child,
-    required this.padding,
-    this.backgroundColor,
-    this.borderColor,
-  });
+class _TextLink extends StatelessWidget {
+  const _TextLink({required this.label, required this.onTap});
 
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final Color? backgroundColor;
-  final Color? borderColor;
+  final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: backgroundColor ?? context.surfaceColor,
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(
-          color: borderColor ?? context.outlineVariant.withValues(alpha: 0.28),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.shadow.withValues(alpha: 0.035),
-            blurRadius: 14.r,
-            offset: Offset(0, 7.h),
+    final skin = AppSkin.of(context);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: skin.accent,
+            fontSize: 10.5.sp,
+            fontWeight: FontWeight.w700,
           ),
-        ],
+        ),
       ),
-      child: child,
     );
   }
 }
@@ -1157,12 +990,10 @@ class _PrayerDayEntry {
   const _PrayerDayEntry({
     required this.prayer,
     required this.status,
-    required this.accentColor,
   });
 
   final PrayerInfoModel prayer;
   final _PrayerDayStatus status;
-  final Color accentColor;
 }
 
 extension _FirstOrNull<T> on Iterable<T> {
@@ -1244,10 +1075,10 @@ String _twoDigits(int value) => value.toString().padLeft(2, '0');
 String _remainingText(Duration remaining) {
   if (remaining.inSeconds <= 0) return 'الآن';
   if (remaining.inMinutes < 1) return 'أقل من دقيقة';
-  if (remaining.inMinutes < 60) return '${remaining.inMinutes} د';
+  if (remaining.inMinutes < 60) return 'بقي ${remaining.inMinutes} د';
 
   final hours = remaining.inHours;
   final minutes = remaining.inMinutes.remainder(60);
-  if (minutes == 0) return '$hours س';
-  return '$hours س $minutes د';
+  if (minutes == 0) return 'بقي $hours س';
+  return 'بقي $hours س $minutes د';
 }

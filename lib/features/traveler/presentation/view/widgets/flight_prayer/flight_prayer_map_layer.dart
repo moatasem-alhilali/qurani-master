@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/flight_prayer/flight_prayer_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_edge_marker.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/prayer_marker.dart';
@@ -48,22 +50,19 @@ class FlightPrayerMapLayer extends StatelessWidget {
             ..add(
               Marker(
                 point: LatLng(start.latitude, start.longitude),
-                width: 38.w,
-                height: 38.w,
-                child: FlightEdgeMarker(
-                  icon: Icons.flight_takeoff_rounded,
-                  color: context.primaryColor,
-                ),
+                width: 32.w,
+                height: 32.w,
+                child: const FlightEdgeMarker(icon: AppIcons.flight),
               ),
             )
             ..add(
               Marker(
                 point: LatLng(end.latitude, end.longitude),
-                width: 38.w,
-                height: 38.w,
+                width: 32.w,
+                height: 32.w,
                 child: const FlightEdgeMarker(
-                  icon: Icons.flight_land_rounded,
-                  color: Colors.red,
+                  icon: AppIcons.mapPin,
+                  isDestination: true,
                 ),
               ),
             );
@@ -72,8 +71,8 @@ class FlightPrayerMapLayer extends StatelessWidget {
             markers.add(
               Marker(
                 point: LatLng(prayer.latitude, prayer.longitude),
-                width: 64.w,
-                height: 34.h,
+                width: 58.w,
+                height: 30.h,
                 child: PrayerMarker(
                   text: prayer.shortName,
                   onTap: () => onMoveMapTo(
@@ -102,8 +101,8 @@ class FlightPrayerMapLayer extends StatelessWidget {
                 polylines: [
                   Polyline(
                     points: polylinePoints,
-                    color: context.primaryColor.withValues(alpha: 0.9),
-                    strokeWidth: 4.2,
+                    color: AppColors.gold,
+                    strokeWidth: 3.4,
                   ),
                 ],
               ),
@@ -115,6 +114,7 @@ class FlightPrayerMapLayer extends StatelessWidget {
   }
 }
 
+/// أزرار الخريطة: تركيز على المسار، وتكبير وتصغير.
 class FlightPrayerMapControls extends StatelessWidget {
   const FlightPrayerMapControls({
     required this.onZoomIn,
@@ -132,17 +132,21 @@ class FlightPrayerMapControls extends StatelessWidget {
     return Column(
       children: [
         RoundMapButton(
-          icon: Icons.route_rounded,
+          icon: AppIcons.traveler,
+          tooltip: 'عرض المسار كاملًا',
           onTap: onFocusRoute,
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 6.h),
         RoundMapButton(
-          icon: Icons.add_rounded,
+          icon: AppIcons.add,
+          tooltip: 'تكبير',
           onTap: onZoomIn,
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 6.h),
         RoundMapButton(
-          icon: Icons.remove_rounded,
+          // لا مقابل لـ«ناقص» في `AppIcons`، وهو خارج نطاق هذا التعديل.
+          icon: HugeIcons.strokeRoundedRemoveCircle,
+          tooltip: 'تصغير',
           onTap: onZoomOut,
         ),
       ],

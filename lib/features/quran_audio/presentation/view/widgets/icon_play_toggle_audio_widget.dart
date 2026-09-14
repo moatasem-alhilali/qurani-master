@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:quran_app/core/widgets/icon_button_widget.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
 
-//
-
+/// زرّ التشغيل/الإيقاف الرئيسي في مشغّل الصوت.
+///
+/// هو العنصر المرتفع الوحيد في المشغّل: دائرة ذهبية بأيقونة متحرّكة، وما حوله
+/// من أزرار يبقى بلا تعبئة حتى يبقى هو البطل.
 class IconPlayToggleAudioWidget extends StatefulWidget {
   const IconPlayToggleAudioWidget({
     required this.audioPlayer,
@@ -63,7 +67,8 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
         final processingState = playerState?.processingState;
         final playing = playerState?.playing ?? false;
 
-        // keep animation in sync with player state (useful for external triggers)
+        // keep animation in sync with player state (useful for external
+        // triggers)
         if (playing &&
             _animationController.status != AnimationStatus.forward &&
             _animationController.value == 0) {
@@ -84,23 +89,46 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
     bool playing,
     ProcessingState? processingState,
   ) {
-    if (processingState == ProcessingState.completed) {
-      return const Icon(
-        Icons.play_arrow_rounded,
-        // size: 28,
-      );
-    }
+    final skin = AppSkin.of(context);
+    final diameter = widget.radius * 2;
+    final onGold = skin.isDark ? AppColors.brandNight : AppColors.brandIvory;
 
-    return IconButtonWidget(
-      tooltip: 'تشغيل/إيقاف',
-      onPressed: widget.onPressed ??
-          () {
-            _handlePlayPause(playing);
-          },
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.play_pause,
-        progress: _animationController,
-        // size: 28,
+    return Semantics(
+      label: 'تشغيل أو إيقاف',
+      button: true,
+      child: InkWell(
+        onTap: widget.onPressed ??
+            () {
+              if (processingState == ProcessingState.completed) {
+                widget.audioPlayer.play();
+                return;
+              }
+              _handlePlayPause(playing);
+            },
+        borderRadius: BorderRadius.circular(999.r),
+        child: Ink(
+          width: diameter,
+          height: diameter,
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? AppColors.gold,
+            shape: BoxShape.circle,
+            boxShadow: skin.raisedShadow,
+          ),
+          child: Center(
+            child: processingState == ProcessingState.completed
+                ? Icon(
+                    Icons.play_arrow_rounded,
+                    color: onGold,
+                    size: widget.radius,
+                  )
+                : AnimatedIcon(
+                    icon: AnimatedIcons.play_pause,
+                    progress: _animationController,
+                    color: onGold,
+                    size: widget.radius,
+                  ),
+          ),
+        ),
       ),
     );
   }

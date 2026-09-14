@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_overview_model.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_preset_model.dart';

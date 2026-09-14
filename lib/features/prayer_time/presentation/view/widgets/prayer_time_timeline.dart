@@ -1,17 +1,19 @@
+import 'dart:ui' as ui;
+
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 
 part 'prayer_time_timeline_header.dart';
 part 'prayer_time_timeline_notice.dart';
 part 'prayer_time_timeline_row.dart';
-part 'prayer_time_timeline_hijri_date.dart';
-
-Color _alpha(Color color, double value) => color.withValues(alpha: value);
 
 enum PrayerTimelineStatus {
   completed,
@@ -29,14 +31,16 @@ class PrayerTimelineEntry {
   const PrayerTimelineEntry({
     required this.prayer,
     required this.status,
-    required this.accentColor,
   });
 
   final PrayerInfoModel prayer;
   final PrayerTimelineStatus status;
-  final Color accentColor;
 }
 
+/// جدول مواقيت اليوم: ترويسة اليوم ثم صفوف نحيلة تفصلها خطوط شعرة.
+///
+/// لا بطاقة حول القائمة ولا حول كل صفّ؛ الارتفاع محجوز لصفّ الصلاة الجارية
+/// وحده، فيقع عليه النظر أولًا.
 class PrayerTimeTimeline extends StatelessWidget {
   const PrayerTimeTimeline({
     required this.entries,
@@ -63,53 +67,44 @@ class PrayerTimeTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        children: [
-          _PrayerTimesHeader(
-            selectedLocation: selectedLocation,
-            currentPrayer: currentPrayer,
-            nextPrayer: nextPrayer,
-            onChangeLocation: onChangeLocation,
-            onUseCurrentLocation: onUseCurrentLocation,
-          ),
-          if (noticeType != null &&
-              (noticeMessage ?? '').trim().isNotEmpty) ...[
-            SizedBox(height: 14.h),
-            _PrayerLocationNotice(
-              type: noticeType!,
-              message: noticeMessage!,
-              onResolve: onResolveNotice,
-            ),
-          ],
-          SizedBox(height: 16.h),
-          if (entries.isEmpty)
-            _PrayerEmptyState(onChangeLocation: onChangeLocation)
-          else
-            Container(
-              decoration: BoxDecoration(
-                color: context.surfaceColor,
-                borderRadius: BorderRadius.circular(22.r),
-                border: Border.all(
-                  color: _alpha(context.outlineVariant, 0.4),
-                ),
-              ),
-              child: Column(
-                children: entries.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final item = entry.value;
+    final skin = AppSkin.of(context);
+    final hasNotice =
+        noticeType != null && (noticeMessage ?? '').trim().isNotEmpty;
 
-                  return _PrayerScheduleRow(
-                    entry: item,
-                    isFirst: index == 0,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _PrayerTimesHeader(
+          selectedLocation: selectedLocation,
+          currentPrayer: currentPrayer,
+          nextPrayer: nextPrayer,
+          onChangeLocation: onChangeLocation,
+          onUseCurrentLocation: onUseCurrentLocation,
+        ),
+        if (hasNotice)
+          _PrayerLocationNotice(
+            type: noticeType!,
+            message: noticeMessage!,
+            onResolve: onResolveNotice,
+          ),
+        skin.divider(),
+        if (entries.isEmpty)
+          _PrayerEmptyState(onChangeLocation: onChangeLocation)
+        else
+          Padding(
+            padding: AppSkin.gutter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < entries.length; index++)
+                  _PrayerScheduleRow(
+                    entry: entries[index],
                     isLast: index == entries.length - 1,
-                  );
-                }).toList(),
-              ),
+                  ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }

@@ -83,62 +83,7 @@ class NotificationOrchestratorService {
         final id = NotificationIdManager.generateNotificationId(key);
 
         if (enabled) {
-          final prayerName = info.name.trim();
-          final prayerTimeLabel = info.time12.trim();
-          final success =
-              await notificationService.scheduleNotificationCompatType(
-            id: id,
-            title: athanPayloadService.buildAthanTitle(
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            body: athanPayloadService.buildAthanBody(
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            channel: NotificationChannel.athan,
-            schedule: NotificationScheduleModel.daily(
-              hour: info.time.hour,
-              minute: info.time.minute,
-            ),
-            settingKey: key,
-            payload: athanPayloadService.buildPayload(
-              key: key,
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            subText: athanPayloadService.buildAthanSubText(
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            ticker: 'حان الآن أذان $prayerName',
-            iosSubtitle: athanPayloadService.buildAthanSubText(
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            iosThreadIdentifier: 'athan_notifications',
-            iosCategoryIdentifier: 'islamic_notifications',
-            iosInterruptionLevel: InterruptionLevel.timeSensitive,
-            iosSound: 'athan.caf',
-            bigText: athanPayloadService.buildAthanExpandedBody(
-              prayerName: prayerName,
-              prayerTimeLabel: prayerTimeLabel,
-            ),
-            color: const Color(0xFF1F7A4D),
-            colorized: true,
-            category: AndroidNotificationCategory.alarm,
-            visibility: NotificationVisibility.public,
-            ongoing: false,
-            autoCancel: true,
-          );
-
-          if (success) {
-            // logger.w(
-            //   'Scheduled Athan notification: ${info.name} at ${info.time}',
-            // );
-          } else {
-            // logger.w('Failed to schedule Athan notification: ${info.name}');
-          }
+          await _scheduleAthan(key: key, id: id, info: info);
         } else {
           await notificationService.cancelNotificationById(id: id);
           // logger.d('Cancelled Athan notification: ${info.name} (disabled)');
@@ -149,6 +94,104 @@ class NotificationOrchestratorService {
     } catch (e) {
       logger.e('Error in _rescheduleAthanNotifications: $e');
     }
+  }
+
+  /// يعيد جدولة أذان صلاة واحدة فقط، بلا مساس ببقية الصلوات.
+  ///
+  /// لازمة لزرّ كتم الأذان في قائمة المواقيت: رفع الكتم يجب أن يعيد تسليح
+  /// الإشعار في اللحظة نفسها، لا عند إعادة تشغيل التطبيق. وقبلها كانت
+  /// الجدولة كلّها أو لا شيء، ومسار التبديل لا يعيد الجدولة إطلاقًا.
+  Future<void> rescheduleAthanForKey(String key) async {
+    try {
+      if (!NotificationKeys.athanKeys.contains(key)) {
+        return;
+      }
+
+      final id = NotificationIdManager.generateNotificationId(key);
+      final mainEnabled =
+          await settingRepo.getBool(NotificationKeys.isNotificationAllAthan);
+      final enabled = mainEnabled && await settingRepo.getBool(key);
+
+      if (!enabled) {
+        await notificationService.cancelNotificationById(id: id);
+        logger.d('Cancelled Athan notification for $key');
+        return;
+      }
+
+      final prayerTimes = await adhanPrayerTimeService.getTodayPrayerTimes();
+      if (prayerTimes.isEmpty) {
+        logger.w('No prayer times available while rescheduling $key');
+        return;
+      }
+
+      final info = _mapPrayerKeyToInfo(key, prayerTimes);
+      if (info == null) {
+        logger.w('No prayer info found for key: $key');
+        return;
+      }
+
+      await _scheduleAthan(key: key, id: id, info: info);
+      logger.d('Rescheduled Athan notification for $key');
+    } catch (e) {
+      logger.e('Error rescheduling Athan for $key: $e');
+    }
+  }
+
+  /// جدولة إشعار أذان واحد. مشتركة بين إعادة الجدولة الكاملة وإعادة جدولة
+  /// صلاة بعينها، فلا تتكرّر إعدادات الإشعار في موضعين.
+  Future<bool> _scheduleAthan({
+    required String key,
+    required int id,
+    required PrayerInfoModel info,
+  }) async {
+    final prayerName = info.name.trim();
+    final prayerTimeLabel = info.time12.trim();
+
+    return notificationService.scheduleNotificationCompatType(
+      id: id,
+      title: athanPayloadService.buildAthanTitle(
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      body: athanPayloadService.buildAthanBody(
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      channel: NotificationChannel.athan,
+      schedule: NotificationScheduleModel.daily(
+        hour: info.time.hour,
+        minute: info.time.minute,
+      ),
+      settingKey: key,
+      payload: athanPayloadService.buildPayload(
+        key: key,
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      subText: athanPayloadService.buildAthanSubText(
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      ticker: 'حان الآن أذان $prayerName',
+      iosSubtitle: athanPayloadService.buildAthanSubText(
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      iosThreadIdentifier: 'athan_notifications',
+      iosCategoryIdentifier: 'islamic_notifications',
+      iosInterruptionLevel: InterruptionLevel.timeSensitive,
+      iosSound: 'athan.caf',
+      bigText: athanPayloadService.buildAthanExpandedBody(
+        prayerName: prayerName,
+        prayerTimeLabel: prayerTimeLabel,
+      ),
+      color: const Color(0xFF1F7A4D),
+      colorized: true,
+      category: AndroidNotificationCategory.alarm,
+      visibility: NotificationVisibility.public,
+      ongoing: false,
+      autoCancel: true,
+    );
   }
 
   /// Map notification key to corresponding prayer info model

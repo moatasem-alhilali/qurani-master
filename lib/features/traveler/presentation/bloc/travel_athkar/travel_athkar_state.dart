@@ -1,6 +1,7 @@
 part of 'travel_athkar_bloc.dart';
 
 enum TravelAthkarStatus { initial, loading, success, failure }
+
 enum AthkarDisplayMode { pageView, listView }
 
 class TravelAthkarState {
@@ -40,7 +41,8 @@ class TravelAthkarState {
       allItems: allItems ?? this.allItems,
       filteredItems: filteredItems ?? this.filteredItems,
       repeatCounts: repeatCounts ?? this.repeatCounts,
-      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
+      errorMessage:
+          clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       searchQuery: searchQuery ?? this.searchQuery,
       displayMode: displayMode ?? this.displayMode,
       currentPageIndex: currentPageIndex ?? this.currentPageIndex,

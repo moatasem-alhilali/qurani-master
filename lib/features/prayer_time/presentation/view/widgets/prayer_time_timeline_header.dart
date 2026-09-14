@@ -1,5 +1,7 @@
 part of 'prayer_time_timeline.dart';
 
+/// ترويسة الجدول: تاريخ اليوم وساعته، ثم صفّ الموقع وصلتا الصلاة الحالية
+/// والقادمة — كلّها سطور نحيلة بلا صندوق.
 class _PrayerTimesHeader extends StatelessWidget {
   const _PrayerTimesHeader({
     required this.onChangeLocation,
@@ -17,224 +19,170 @@ class _PrayerTimesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final location = selectedLocation;
 
-    return Container(
-      padding: EdgeInsets.all(18.sp),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(
-          color: _alpha(context.outlineVariant, 0.42),
-        ),
+    return StreamBuilder<int>(
+      stream: Stream<int>.periodic(
+        const Duration(seconds: 1),
+        (count) => count,
       ),
-      child: StreamBuilder<int>(
-        stream: Stream<int>.periodic(
-          const Duration(seconds: 1),
-          (count) => count,
-        ),
-        initialData: 0,
-        builder: (context, _) {
-          final offsetMinutes = location?.utcOffsetMinutes ??
-              DateTime.now().timeZoneOffset.inMinutes;
-          final locationNow =
-              DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
-          final hijri = _HijriDate.fromDate(locationNow);
+      initialData: 0,
+      builder: (context, _) {
+        final offsetMinutes = location?.utcOffsetMinutes ??
+            DateTime.now().timeZoneOffset.inMinutes;
+        final locationNow =
+            DateTime.now().toUtc().add(Duration(minutes: offsetMinutes));
+        final hijri = HijriDate.fromDate(locationNow);
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          DateFormat(
-                            'EEEE، d MMMM yyyy',
-                            'ar',
-                          ).format(locationNow),
+                          DateFormat('EEEE، d MMMM yyyy', 'ar')
+                              .format(locationNow),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: _alpha(context.onSurfaceColor, 0.72),
-                            fontSize: 13.sp,
+                            color: skin.ink,
+                            fontSize: 12.5.sp,
                             fontWeight: FontWeight.w700,
+                            height: 1.2,
                           ),
                         ),
-                        SizedBox(height: 4.h),
                         Text(
-                          hijri.formatArabic(),
+                          '${hijri.formatArabic()} · '
+                          '${_formatUtcOffset(offsetMinutes)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: _alpha(context.onSurfaceColor, 0.52),
-                            fontSize: 12.5.sp,
-                            fontWeight: FontWeight.w600,
+                            color: skin.inkSoft.withValues(alpha: 0.78),
+                            fontSize: 9.5.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 1.35,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _alpha(context.primaryColor, 0.1),
-                      borderRadius: BorderRadius.circular(999.r),
-                    ),
+                  SizedBox(width: 8.w),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
                     child: Text(
-                      _formatUtcOffset(offsetMinutes),
+                      DateFormat('HH:mm:ss', 'en').format(locationNow),
                       style: TextStyle(
-                        color: context.primaryColor,
-                        fontSize: 11.5.sp,
+                        color: skin.accent,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w800,
+                        height: 1.1,
+                        fontFeatures: const [ui.FontFeature.tabularFigures()],
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 14.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      DateFormat('hh:mm:ss a', 'en').format(locationNow),
-                      style: TextStyle(
-                        color: context.onSurfaceColor,
-                        fontSize: 30.sp,
-                        fontWeight: FontWeight.w900,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'الوقت الحالي',
-                        style: TextStyle(
-                          color: _alpha(context.onSurfaceColor, 0.6),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
-                      Text(
-                        (location?.isManual ?? false)
-                            ? 'اختيار يدوي'
-                            : 'موقع الجهاز',
-                        style: TextStyle(
-                          color: context.primaryColor,
-                          fontSize: 11.5.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 14.w,
-                  vertical: 12.h,
-                ),
+            ),
+            InkWell(
+              onTap: onChangeLocation,
+              child: Container(
                 decoration: BoxDecoration(
-                  color: _alpha(context.scaffoldBackgroundColor, 0.45),
-                  borderRadius: BorderRadius.circular(18.r),
-                  border: Border.all(
-                    color: _alpha(context.outlineVariant, 0.28),
-                  ),
+                  border: Border(top: BorderSide(color: skin.hairline)),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      color: _alpha(context.onSurfaceColor, 0.72),
-                      size: 18.sp,
-                    ),
+                    _TimelineIconChip(icon: AppIcons.mapPin, skin: skin),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             location?.label ?? 'لم يتم تحديد موقع بعد',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: context.onSurfaceColor,
-                              fontSize: 14.5.sp,
-                              fontWeight: FontWeight.w800,
+                              color: skin.ink,
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w700,
+                              height: 1.2,
                             ),
                           ),
-                          SizedBox(height: 4.h),
                           Text(
                             location == null
                                 ? 'اختر مدينة أو استخدم موقع الجهاز'
-                                    ' لعرض المواقيت'
                                 : location.detailsLabel.isEmpty
-                                    ? 'المواقيت معروضة حسب المنطقة المحددة'
+                                    ? (location.isManual
+                                        ? 'اختيار يدوي'
+                                        : 'موقع الجهاز')
                                     : location.detailsLabel,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: _alpha(context.onSurfaceColor, 0.54),
-                              fontSize: 12.sp,
+                              color: skin.inkSoft.withValues(alpha: 0.78),
+                              fontSize: 9.5.sp,
                               fontWeight: FontWeight.w500,
+                              height: 1.35,
                             ),
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(width: 8.w),
+                    InkWell(
+                      onTap: onUseCurrentLocation,
+                      borderRadius: BorderRadius.circular(999.r),
+                      child: Padding(
+                        padding: EdgeInsets.all(4.w),
+                        child: AppIcon(
+                          AppIcons.location,
+                          color: skin.accent,
+                          size: 16.sp,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    AppIcon(
+                      AppIcons.chevronLeft,
+                      color: skin.accent,
+                      size: 15.sp,
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 14.h),
-              Wrap(
-                spacing: 10.w,
-                runSpacing: 10.h,
-                children: [
-                  FilledButton.icon(
-                    onPressed: onChangeLocation,
-                    icon: const Icon(Icons.travel_explore_rounded),
-                    label: const Text('تغيير المنطقة'),
+            ),
+            if (currentPrayer != null || nextPrayer != null)
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 2.h),
+                child: Text(
+                  [
+                    if (currentPrayer != null) 'الحالية ${currentPrayer!.name}',
+                    if (nextPrayer != null) 'القادمة ${nextPrayer!.name}',
+                  ].join('  ·  '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.78),
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.35,
                   ),
-                  OutlinedButton.icon(
-                    onPressed: onUseCurrentLocation,
-                    icon: const Icon(Icons.my_location_rounded),
-                    label: const Text('موقعي الحالي'),
-                  ),
-                ],
-              ),
-              if (currentPrayer != null || nextPrayer != null) ...[
-                SizedBox(height: 16.h),
-                Wrap(
-                  spacing: 10.w,
-                  runSpacing: 10.h,
-                  children: [
-                    if (currentPrayer != null)
-                      _PrayerInfoChip(
-                        label: 'الحالية',
-                        value: currentPrayer!.name,
-                        tone: currentPrayer!.type == Prayer.maghrib
-                            ? Colors.red
-                            : context.primaryColor,
-                      ),
-                    if (nextPrayer != null)
-                      _PrayerInfoChip(
-                        label: 'القادمة',
-                        value: nextPrayer!.name,
-                        tone: context.onSurfaceColor,
-                      ),
-                  ],
                 ),
-              ],
-            ],
-          );
-        },
-      ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -247,46 +195,24 @@ class _PrayerTimesHeader extends StatelessWidget {
   }
 }
 
-class _PrayerInfoChip extends StatelessWidget {
-  const _PrayerInfoChip({
-    required this.label,
-    required this.value,
-    required this.tone,
-  });
+/// مربّع الأيقونة الصغير — بديل البطاقة حول الصفّ.
+class _TimelineIconChip extends StatelessWidget {
+  const _TimelineIconChip({required this.icon, required this.skin});
 
-  final String label;
-  final String value;
-  final Color tone;
+  final HugeIconData icon;
+  final AppSkin skin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      width: 28.w,
+      height: 28.w,
       decoration: BoxDecoration(
-        color: _alpha(tone, 0.12),
-        borderRadius: BorderRadius.circular(999.r),
+        color: skin.iconChip,
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: TextStyle(
-                color: _alpha(context.onSurfaceColor, 0.62),
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            TextSpan(
-              text: value,
-              style: TextStyle(
-                color: tone,
-                fontSize: 12.5.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
+      child: Center(
+        child: AppIcon(icon, color: skin.accent, size: 15.sp),
       ),
     );
   }

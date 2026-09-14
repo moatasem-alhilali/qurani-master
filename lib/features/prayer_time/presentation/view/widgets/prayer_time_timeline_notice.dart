@@ -1,5 +1,6 @@
 part of 'prayer_time_timeline.dart';
 
+/// تنبيه الموقع: سطر واحد ورابط إجراء — بلا صندوق ملوّن.
 class _PrayerLocationNotice extends StatelessWidget {
   const _PrayerLocationNotice({
     required this.type,
@@ -13,56 +14,59 @@ class _PrayerLocationNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
     final actionLabel = type == PrayerLocationNoticeType.serviceDisabled
         ? 'تفعيل الموقع'
         : 'منح الصلاحية';
 
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(14.sp),
       decoration: BoxDecoration(
-        color: _alpha(context.primaryColor, 0.08),
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(
-          color: _alpha(context.primaryColor, 0.18),
-        ),
+        border: Border(top: BorderSide(color: skin.hairline)),
       ),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 38.w,
-            height: 38.w,
-            decoration: BoxDecoration(
-              color: _alpha(context.primaryColor, 0.14),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(
-              type == PrayerLocationNoticeType.serviceDisabled
-                  ? Icons.location_off_rounded
-                  : Icons.lock_open_rounded,
-              color: context.primaryColor,
-              size: 20.sp,
-            ),
+          _TimelineIconChip(
+            icon: type == PrayerLocationNoticeType.serviceDisabled
+                ? AppIcons.location
+                : AppIcons.shield,
+            skin: skin,
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 10.w),
           Expanded(
-            child: Text(
-              message,
-              style: TextStyle(
-                color: context.onSurfaceColor,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-                height: 1.35,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 1.45,
+                  ),
+                ),
+                if (onResolve != null)
+                  InkWell(
+                    onTap: onResolve,
+                    borderRadius: BorderRadius.circular(999.r),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                      child: Text(
+                        actionLabel,
+                        style: TextStyle(
+                          color: skin.accent,
+                          fontSize: 10.5.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          if (onResolve != null) ...[
-            SizedBox(width: 12.w),
-            TextButton(
-              onPressed: () => onResolve!.call(),
-              child: Text(actionLabel),
-            ),
-          ],
         ],
       ),
     );
@@ -76,48 +80,48 @@ class _PrayerEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(18.sp),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(22.r),
-        border: Border.all(
-          color: _alpha(context.outlineVariant, 0.38),
-        ),
-      ),
+    final skin = AppSkin.of(context);
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 10.h),
       child: Column(
         children: [
-          Icon(
-            Icons.schedule_rounded,
-            size: 34.sp,
-            color: _alpha(context.onSurfaceColor, 0.5),
-          ),
-          SizedBox(height: 10.h),
+          AppIcon(AppIcons.clock, color: skin.accent, size: 22.sp),
+          SizedBox(height: 8.h),
           Text(
             'لا يمكن عرض مواقيت الصلاة قبل تحديد المنطقة',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: context.onSurfaceColor,
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w800,
+              color: skin.ink,
+              fontSize: 12.5.sp,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 8.h),
           Text(
             'اختر مدينة يدويًا أو استخدم موقع الجهاز الحالي',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: _alpha(context.onSurfaceColor, 0.54),
-              fontSize: 12.5.sp,
+              color: skin.inkSoft.withValues(alpha: 0.78),
+              fontSize: 9.5.sp,
               fontWeight: FontWeight.w500,
+              height: 1.35,
             ),
           ),
-          SizedBox(height: 14.h),
-          FilledButton.icon(
-            onPressed: onChangeLocation,
-            icon: const Icon(Icons.travel_explore_rounded),
-            label: const Text('اختيار منطقة'),
+          SizedBox(height: 6.h),
+          InkWell(
+            onTap: onChangeLocation,
+            borderRadius: BorderRadius.circular(999.r),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+              child: Text(
+                'اختيار منطقة',
+                style: TextStyle(
+                  color: skin.accent,
+                  fontSize: 10.5.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
           ),
         ],
       ),

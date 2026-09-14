@@ -38,11 +38,10 @@ class _HeaderBackgroundPainter extends CustomPainter {
       oldDelegate.start != start || oldDelegate.end != end;
 }
 
-
-  // CustomPaint(
-  //           size: Size.fromHeight(height),
-  //           painter: _HeaderBackgroundPainter(
-  //             start: cs.primary,
-  //             end: const Color(0xFF0A6E63),
-  //           ),
-  //         ),
+// CustomPaint(
+//           size: Size.fromHeight(height),
+//           painter: _HeaderBackgroundPainter(
+//             start: cs.primary,
+//             end: const Color(0xFF0A6E63),
+//           ),
+//         ),

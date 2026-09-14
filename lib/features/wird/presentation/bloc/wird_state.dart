@@ -61,7 +61,9 @@ class WirdState extends Equatable {
       isAudioReady: isAudioReady ?? this.isAudioReady,
       isPlaying: isPlaying ?? this.isPlaying,
       processingState: processingState ?? this.processingState,
-      activeItemIndex: activeItemIndex != null ? (activeItemIndex == -1 ? null : activeItemIndex) : this.activeItemIndex,
+      activeItemIndex: activeItemIndex != null
+          ? (activeItemIndex == -1 ? null : activeItemIndex)
+          : this.activeItemIndex,
       currentRepeatIndex: currentRepeatIndex ?? this.currentRepeatIndex,
       currentRepeatTotal: currentRepeatTotal ?? this.currentRepeatTotal,
       isQueueRepeated: isQueueRepeated ?? this.isQueueRepeated,

@@ -3,18 +3,22 @@ import 'dart:ui' as ui;
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/time_prayer_model.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
 import 'package:quran_app/features/qiblah/qiblah_main_screen.dart';
@@ -27,14 +31,7 @@ part 'next_prayer_countdown_card_part.dart';
 part 'next_prayer_countdown_card_widgets_part.dart';
 part 'next_prayer_countdown_models_part.dart';
 part 'next_prayer_countdown_quick_actions_part.dart';
-
-const _kHeroTop = AppColors.brandGoldLight;
-const _kHeroBottom = AppColors.gold;
-const _kHeroDeep = AppColors.brandBrown;
-const _kAccentGold = AppColors.brandIvory;
-const _kPanelText = AppColors.brandBrownDeep;
-const _kPanelSurface = AppColors.brandIvory;
-const _kPanelBorder = AppColors.brandMist;
+part 'next_prayer_countdown_sky_part.dart';
 
 /// ─── إعداد قابل للتعديل يدوياً ───────────────────────────────────────────────
 /// عيّن [kShowSunrise] على [false] لإخفاء الشروق من صف أوقات الصلاة تماماً.

@@ -62,14 +62,15 @@ class _RadioMiniPlayerWidgetState extends State<RadioMiniPlayerWidget> {
             height: context.getScreenHeight() * 0.80,
             child: SlidingBox(
               controller: RadioPlayerUiManager.instance.boxController,
-              minHeight: 92.h,
+              // الشريط المصغّر صار نحيلاً: ارتفاعه ارتفاع صفّ لا ارتفاع بطاقة.
+              minHeight: 62.h,
               maxHeight: context.getScreenHeight() * 0.80,
               color: Colors.transparent,
               draggableIconVisible: false,
               collapsed: true,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(28.r),
-                topRight: Radius.circular(28.r),
+                topLeft: Radius.circular(14.r),
+                topRight: Radius.circular(14.r),
               ),
               collapsedBody: CollapsedRadioPlayer(
                 station: station,

@@ -8,10 +8,12 @@ part 'travel_places_event.dart';
 part 'travel_places_state.dart';
 
 class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
-  TravelPlacesBloc({required this.placeType}) 
-      : super(TravelPlacesState.initial(
-          radiusMeters: placeType == TravelerPlaceType.mosque ? 3000 : 5000,
-        )) {
+  TravelPlacesBloc({required this.placeType})
+      : super(
+          TravelPlacesState.initial(
+            radiusMeters: placeType == TravelerPlaceType.mosque ? 3000 : 5000,
+          ),
+        ) {
     on<BootstrapPlacesEvent>(_onBootstrap);
     on<LoadNearbyPlacesEvent>(_onLoadNearbyPlaces);
     on<SelectPlaceEvent>(_onSelectPlace);
@@ -22,12 +24,17 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
 
   final TravelerPlaceType placeType;
 
-  Future<void> _onBootstrap(BootstrapPlacesEvent event, Emitter<TravelPlacesState> emit) async {
-    emit(state.copyWith(
-      isLoadingLocation: true,
-      isRestrictedForCountry: false,
-      clearErrorMessage: true,
-    ));
+  Future<void> _onBootstrap(
+    BootstrapPlacesEvent event,
+    Emitter<TravelPlacesState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isLoadingLocation: true,
+        isRestrictedForCountry: false,
+        clearErrorMessage: true,
+      ),
+    );
 
     final hasAccess = await _ensureLocationAccess(emit);
     if (!hasAccess) {
@@ -40,27 +47,35 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
       final restricted = placeType == TravelerPlaceType.halalRestaurant &&
           TravelerCountryPolicy.isIslamicCountryCode(location.isoCountryCode);
 
-      emit(state.copyWith(
-        locationContext: location,
-        isRestrictedForCountry: restricted,
-        isLoadingLocation: false,
-      ));
+      emit(
+        state.copyWith(
+          locationContext: location,
+          isRestrictedForCountry: restricted,
+          isLoadingLocation: false,
+        ),
+      );
 
       if (restricted) return;
 
       add(LoadNearbyPlacesEvent());
     } catch (_) {
-      emit(state.copyWith(
-        isLoadingLocation: false,
-        errorMessage: 'تعذر تحديد موقعك الحالي. حاول مرة أخرى.',
-      ));
+      emit(
+        state.copyWith(
+          isLoadingLocation: false,
+          errorMessage: 'تعذر تحديد موقعك الحالي. حاول مرة أخرى.',
+        ),
+      );
     }
   }
 
   Future<bool> _ensureLocationAccess(Emitter<TravelPlacesState> emit) async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      emit(state.copyWith(errorMessage: 'خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.'));
+      emit(
+        state.copyWith(
+          errorMessage: 'خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.',
+        ),
+      );
       return false;
     }
 
@@ -70,19 +85,30 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
     }
 
     if (permission == LocationPermission.denied) {
-      emit(state.copyWith(errorMessage: 'يجب منح صلاحية الموقع حتى تعمل هذه الميزة.'));
+      emit(
+        state.copyWith(
+          errorMessage: 'يجب منح صلاحية الموقع حتى تعمل هذه الميزة.',
+        ),
+      );
       return false;
     }
 
     if (permission == LocationPermission.deniedForever) {
-      emit(state.copyWith(errorMessage: 'تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.'));
+      emit(
+        state.copyWith(
+          errorMessage: 'تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.',
+        ),
+      );
       return false;
     }
 
     return true;
   }
 
-  Future<void> _onLoadNearbyPlaces(LoadNearbyPlacesEvent event, Emitter<TravelPlacesState> emit) async {
+  Future<void> _onLoadNearbyPlaces(
+    LoadNearbyPlacesEvent event,
+    Emitter<TravelPlacesState> emit,
+  ) async {
     final location = state.locationContext;
     if (location == null) return;
 
@@ -97,26 +123,33 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
       );
 
       final selectedPlace = places.isEmpty ? null : places.first;
-      
-      emit(state.copyWith(
-        places: places,
-        selectedPlace: selectedPlace,
-        isLoadingPlaces: false,
-        clearSelectedPlace: places.isEmpty,
-      ));
+
+      emit(
+        state.copyWith(
+          places: places,
+          selectedPlace: selectedPlace,
+          isLoadingPlaces: false,
+          clearSelectedPlace: places.isEmpty,
+        ),
+      );
     } catch (_) {
-      emit(state.copyWith(
-        isLoadingPlaces: false,
-        errorMessage: 'تعذر جلب النتائج القريبة الآن. حاول مجددًا.',
-      ));
+      emit(
+        state.copyWith(
+          isLoadingPlaces: false,
+          errorMessage: 'تعذر جلب النتائج القريبة الآن. حاول مجددًا.',
+        ),
+      );
     }
   }
 
   void _onSelectPlace(SelectPlaceEvent event, Emitter<TravelPlacesState> emit) {
-    emit(state.copyWith(selectedPlace: event.place, clearSelectedPlace: false));
+    emit(state.copyWith(selectedPlace: event.place));
   }
 
-  void _onChangeRadius(ChangeRadiusEvent event, Emitter<TravelPlacesState> emit) {
+  void _onChangeRadius(
+    ChangeRadiusEvent event,
+    Emitter<TravelPlacesState> emit,
+  ) {
     if (state.radiusMeters == event.radius) return;
     emit(state.copyWith(radiusMeters: event.radius));
     add(LoadNearbyPlacesEvent());

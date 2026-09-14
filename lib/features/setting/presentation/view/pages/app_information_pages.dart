@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/setting/data/services/social_links_service.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -14,6 +14,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return const _InfoPage(
       title: 'سياسة الخصوصية',
       icon: AppIcons.shield,
+      intro: 'معلومات واضحة ومختصرة حول طريقة تعامل التطبيق مع بياناتك.',
       sections: [
         _InfoSectionData(
           title: 'خصوصيتك تهمنا',
@@ -33,7 +34,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
         _InfoSectionData(
           title: 'التحكم ببياناتك',
           body: 'يمكنك تعطيل الإشعارات أو تعديلها من إعدادات الإشعارات داخل '
-              'التطبيق، ويمكنك إدارة صلاحيات النظام من إعدادات جهازك في أي وقت.',
+              'التطبيق، ويمكنك إدارة صلاحيات النظام من إعدادات جهازك في أي '
+              'وقت.',
         ),
         _InfoSectionData(
           title: 'الخدمات الخارجية',
@@ -54,19 +56,20 @@ class DataSafetyScreen extends StatelessWidget {
     return const _InfoPage(
       title: 'أمان البيانات',
       icon: AppIcons.security,
+      intro: 'ملخص للبيانات التي يستخدمها التطبيق وكيف تُحفظ وتُشارك.',
       sections: [
         _InfoSectionData(
           title: 'البيانات الحساسة',
           body:
               'لا يطلب التطبيق بيانات حساسة إلا عند الحاجة لميزة واضحة يختارها '
-              'المستخدم. بعض البيانات مثل أوقات التنبيه، التفضيلات، وخطط القراءة '
-              'تُحفظ محليًا على الجهاز.',
+              'المستخدم. بعض البيانات مثل أوقات التنبيه، التفضيلات، وخطط '
+              'القراءة تُحفظ محليًا على الجهاز.',
         ),
         _InfoSectionData(
           title: 'الموقع',
           body: 'يُستخدم الموقع لحساب مواقيت الصلاة، اتجاه القبلة، والخدمات '
-              'المعتمدة على المكان. يمكن للمستخدم إيقاف صلاحية الموقع من إعدادات '
-              'النظام.',
+              'المعتمدة على المكان. يمكن للمستخدم إيقاف صلاحية الموقع من '
+              'إعدادات النظام.',
         ),
         _InfoSectionData(
           title: 'الإشعارات',
@@ -84,7 +87,8 @@ class DataSafetyScreen extends StatelessWidget {
           title: 'المشاركة',
           body:
               'لا تتم مشاركة بياناتك الشخصية مع أطراف خارجية للبيع أو التسويق. '
-              'أي مشاركة تتم تكون ضمن خدمات تشغيل ضرورية أو إجراء يبدأه المستخدم.',
+              'أي مشاركة تتم تكون ضمن خدمات تشغيل ضرورية أو إجراء يبدأه '
+              'المستخدم.',
         ),
       ],
     );
@@ -96,39 +100,37 @@ class AboutAppScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
+    return const SettingsScaffold(
       title: 'من نحن',
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 28.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _InfoHero(
+          icon: AppIcons.quran,
+          title: 'طمأنينة',
+          body: 'تطبيق قرآني وعبادي يساعدك على الصلاة، الذكر، تلاوة القرآن، '
+              'والاستمرار على ورد يومي بهدوء وبأسلوب قريب من المستخدم.',
+        ),
+        SettingsGroup(
+          title: 'رسالتنا',
           children: [
-            SizedBox(height: 8.h),
-            const _HeroInfoCard(
-              icon: AppIcons.quran,
-              title: 'طمأنينة',
-              subtitle:
-                  'تطبيق قرآني وعبادي يساعدك على الصلاة، الذكر، تلاوة القرآن، '
-                  'والاستمرار على ورد يومي بهدوء وبأسلوب قريب من المستخدم.',
+            SettingsParagraph(
+              'أن يكون التطبيق رفيقًا خفيفًا يعين المستخدم على الطاعة دون '
+              'إزعاج، ويجمع الأدوات اليومية المهمة مثل المصحف، الأذكار، '
+              'مواقيت الصلاة، التنبيهات، والميزات المساعدة للأسرة.',
             ),
-            const _InfoSection(
-              title: 'رسالتنا',
-              body:
-                  'أن يكون التطبيق رفيقًا خفيفًا يعين المستخدم على الطاعة دون '
-                  'إزعاج، ويجمع الأدوات اليومية المهمة مثل المصحف، الأذكار، '
-                  'مواقيت الصلاة، التنبيهات، والميزات المساعدة للأسرة.',
-            ),
-            const _InfoSection(
-              title: 'ما نقدمه',
-              body: 'مصحف، أذكار، مواقيت صلاة، قبلة، ورد يومي، تطبيقات مصغرة، '
-                  'صحبة الفجر، المسلم الصغير، خدمات للمسافر، وتنبيهات قابلة '
-                  'للتخصيص حسب حاجة المستخدم.',
-            ),
-            SizedBox(height: 18.h),
-            const _AppSocialLinksSection(),
           ],
         ),
-      ),
+        SettingsGroup(
+          title: 'ما نقدمه',
+          children: [
+            SettingsParagraph(
+              'مصحف، أذكار، مواقيت صلاة، قبلة، ورد يومي، تطبيقات مصغرة، '
+              'صحبة الفجر، المسلم الصغير، خدمات للمسافر، وتنبيهات قابلة '
+              'للتخصيص حسب حاجة المستخدم.',
+            ),
+          ],
+        ),
+        _AppSocialLinksSection(),
+      ],
     );
   }
 }
@@ -146,48 +148,47 @@ class DeveloperAboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
+    return const SettingsScaffold(
       title: 'حول المطور',
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 28.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _InfoHero(
+          icon: AppIcons.user,
+          title: 'معتصم الهلالي',
+          body: 'مهندس برمجيات Full Stack وMobile بخبرة تتجاوز 7 سنوات، '
+              'متخصص في Flutter وLaravel وNext.js وبناء تطبيقات إنتاجية '
+              'للويب والجوال.',
+        ),
+        SettingsGroup(
+          title: 'نبذة مختصرة',
           children: [
-            SizedBox(height: 8.h),
-            const _HeroInfoCard(
-              icon: AppIcons.user,
-              title: 'معتصم الهلالي',
-              subtitle:
-                  'مهندس برمجيات Full Stack وMobile بخبرة تتجاوز 7 سنوات، '
-                  'متخصص في Flutter وLaravel وNext.js وبناء تطبيقات إنتاجية '
-                  'للويب والجوال.',
-            ),
-            const _InfoSection(
-              title: 'نبذة مختصرة',
-              body: 'يعمل معتصم الهلالي على بناء تطبيقات ومنصات رقمية تخدم '
-                  'مستخدمين حقيقيين، مع اهتمام خاص بتطبيقات الجوال، الأنظمة '
-                  'الخلفية، واجهات الاستخدام، ومنصات Fintech وSaaS.',
-            ),
-            const _InfoSection(
-              title: 'مجالات العمل',
-              body:
-                  'Flutter، Laravel، Next.js، React، API Development، تطبيقات '
-                  'الجوال، تطبيقات الويب، حلول Fintech، ومنصات SaaS.',
-            ),
-            SizedBox(height: 18.h),
-            const _ContactActions(
-              actions: [
-                _ContactAction('الموقع', AppIcons.globe, _website),
-                _ContactAction('البريد', AppIcons.link, 'mailto:$_email'),
-                _ContactAction('واتس اب', AppIcons.whatsapp, 'wa:$_whatsapp'),
-                _ContactAction('GitHub', AppIcons.source, _github),
-                _ContactAction('LinkedIn', AppIcons.user, _linkedin),
-                _ContactAction('X', AppIcons.twitter, _twitter),
-              ],
+            SettingsParagraph(
+              'يعمل معتصم الهلالي على بناء تطبيقات ومنصات رقمية تخدم '
+              'مستخدمين حقيقيين، مع اهتمام خاص بتطبيقات الجوال، الأنظمة '
+              'الخلفية، واجهات الاستخدام، ومنصات Fintech وSaaS.',
             ),
           ],
         ),
-      ),
+        SettingsGroup(
+          title: 'مجالات العمل',
+          children: [
+            SettingsParagraph(
+              'Flutter، Laravel، Next.js، React، API Development، تطبيقات '
+              'الجوال، تطبيقات الويب، حلول Fintech، ومنصات SaaS.',
+            ),
+          ],
+        ),
+        _ContactActions(
+          title: 'طرق التواصل',
+          actions: [
+            _ContactAction('الموقع', AppIcons.globe, _website),
+            _ContactAction('البريد', AppIcons.link, 'mailto:$_email'),
+            _ContactAction('واتس اب', AppIcons.whatsapp, 'wa:$_whatsapp'),
+            _ContactAction('GitHub', AppIcons.source, _github),
+            _ContactAction('LinkedIn', AppIcons.user, _linkedin),
+            _ContactAction('X', AppIcons.twitter, _twitter),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -226,141 +227,89 @@ class _AppSocialLinksSectionState extends State<_AppSocialLinksSection> {
           return const SizedBox.shrink();
         }
 
-        return _ContactActions(
-          title: 'روابط التطبيق',
-          actions: items,
-        );
+        return _ContactActions(title: 'روابط التطبيق', actions: items);
       },
     );
   }
 }
 
+/// صفحة معلومات: مقدّمة مرتفعة واحدة ثم مجموعات نصّية بعناوين صغيرة.
 class _InfoPage extends StatelessWidget {
   const _InfoPage({
     required this.title,
     required this.icon,
+    required this.intro,
     required this.sections,
   });
 
   final String title;
   final HugeIconData icon;
+  final String intro;
   final List<_InfoSectionData> sections;
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffoldWidget(
+    return SettingsScaffold(
       title: title,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 28.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 8.h),
-            _HeroInfoCard(
-              icon: icon,
-              title: title,
-              subtitle: 'معلومات واضحة ومختصرة حول طريقة تعامل التطبيق معها.',
-            ),
-            for (final section in sections)
-              _InfoSection(title: section.title, body: section.body),
-          ],
-        ),
-      ),
+      children: [
+        _InfoHero(icon: icon, title: title, body: intro),
+        for (final section in sections)
+          SettingsGroup(
+            title: section.title,
+            children: [SettingsParagraph(section.body)],
+          ),
+      ],
     );
   }
 }
 
-class _HeroInfoCard extends StatelessWidget {
-  const _HeroInfoCard({
+/// العنصر المرتفع الوحيد في صفحات المعلومات: هوية الصفحة وملخّصها.
+class _InfoHero extends StatelessWidget {
+  const _InfoHero({
     required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  final HugeIconData icon;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return _InfoCard(
-      child: Row(
-        children: [
-          Container(
-            width: 44.w,
-            height: 44.w,
-            padding: EdgeInsets.all(9.w),
-            decoration: BoxDecoration(
-              color: context.primaryColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14.r),
-            ),
-            child: AppIcon(
-              icon,
-              color: context.primaryColor,
-              size: 26.sp,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w900,
-                    color: context.onSurfaceColor,
-                  ),
-                ),
-                SizedBox(height: 5.h),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 11.5.sp,
-                    height: 1.55,
-                    color: context.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoSection extends StatelessWidget {
-  const _InfoSection({
     required this.title,
     required this.body,
   });
 
+  final HugeIconData icon;
   final String title;
   final String body;
 
   @override
   Widget build(BuildContext context) {
-    return _InfoCard(
+    final skin = AppSkin.of(context);
+
+    return SettingsRaisedPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13.5.sp,
-              fontWeight: FontWeight.w800,
-              color: context.primaryColor,
-            ),
+          Row(
+            children: [
+              SettingsIconChip(icon: icon),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w800,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 7.h),
           Text(
             body,
             style: TextStyle(
-              fontSize: 11.5.sp,
+              color: skin.inkSoft.withValues(alpha: 0.86),
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
               height: 1.7,
-              color: context.onSurfaceVariant,
             ),
           ),
         ],
@@ -369,10 +318,11 @@ class _InfoSection extends StatelessWidget {
   }
 }
 
+/// روابط التواصل كمربّعات صغيرة بدل بطاقة شرائح.
 class _ContactActions extends StatelessWidget {
   const _ContactActions({
+    required this.title,
     required this.actions,
-    this.title = 'طرق التواصل',
   });
 
   final String title;
@@ -380,71 +330,21 @@ class _ContactActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _InfoCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13.5.sp,
-              fontWeight: FontWeight.w800,
-              color: context.primaryColor,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          Wrap(
-            spacing: 8.w,
-            runSpacing: 8.h,
-            children: [
-              for (final action in actions) _ContactChip(action: action),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ContactChip extends StatelessWidget {
-  const _ContactChip({required this.action});
-
-  final _ContactAction action;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _launch(action.url),
-      borderRadius: BorderRadius.circular(999.r),
-      child: Ink(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: context.primaryColor.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(999.r),
-          border: Border.all(
-            color: context.primaryColor.withValues(alpha: 0.16),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppIcon(
-              action.icon,
-              size: 15.sp,
-              color: context.primaryColor,
-            ),
-            SizedBox(width: 6.w),
-            Text(
-              action.title,
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w800,
-                color: context.primaryColor,
+    return SettingsGroup(
+      title: title,
+      children: [
+        SettingsTileRow(
+          columns: 4,
+          tiles: [
+            for (final action in actions)
+              SettingsTile(
+                icon: action.icon,
+                label: action.title,
+                onTap: () => _launch(action.url),
               ),
-            ),
           ],
         ),
-      ),
+      ],
     );
   }
 
@@ -454,39 +354,6 @@ class _ContactChip extends StatelessWidget {
       return;
     }
     await UrlLauncherUtils.launchWebUrl(url);
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.surfaceColor,
-          borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(
-            color: context.outline.withValues(alpha: 0.82),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow.withValues(alpha: 0.05),
-              blurRadius: 12.r,
-              offset: Offset(0, 6.h),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(14.w),
-          child: child,
-        ),
-      ),
-    );
   }
 }
 

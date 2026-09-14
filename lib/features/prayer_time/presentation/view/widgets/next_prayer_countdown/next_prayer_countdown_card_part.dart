@@ -30,9 +30,16 @@ class _NextPrayerCountdownCard extends StatefulWidget {
       _NextPrayerCountdownCardState();
 }
 
-class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
+class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
+    with SingleTickerProviderStateMixin {
   late Timer _timer;
   late Duration _currentRemainingTime;
+
+  /// لحظة الافتتاح: القوس يرتسم والشمس تنزلق إلى موضعها عند كل فتح للشاشة.
+  late final AnimationController _reveal = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 950),
+  )..forward();
 
   @override
   void initState() {
@@ -55,6 +62,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
   @override
   void dispose() {
     _timer.cancel();
+    _reveal.dispose();
     super.dispose();
   }
 
@@ -77,7 +85,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
   @override
   Widget build(BuildContext context) {
     final locationNow = _resolveLocationNowFromOffset(widget.utcOffsetMinutes);
-    final hijri = _HijriDate.fromDate(locationNow).formatArabic();
+    final hijri = HijriDate.fromDate(locationNow).formatArabic();
     final locationLabel = widget.locationLabel ?? 'الموقع الحالي';
 
     final resolvedPrayers = _resolvePrayerStateFromList(
@@ -87,14 +95,12 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
       locationNow: locationNow,
     );
 
-    final nextPrayerLabel =
-        resolvedPrayers.nextPrayer?.name ?? widget.nextPrayer.title;
-    final nextPrayerTimeText = resolvedPrayers.nextPrayer != null
-        ? _formatPrayerTime12(resolvedPrayers.nextPrayer!.time)
-        : _formatFallbackTime12(widget.nextPrayer.time);
+    final currentPrayer = resolvedPrayers.currentPrayer;
+    final nextPrayer = resolvedPrayers.nextPrayer;
 
-    final effectiveRemaining = resolvedPrayers.nextPrayer != null
-        ? resolvedPrayers.nextPrayer!.time.difference(locationNow)
+    final nextPrayerLabel = nextPrayer?.name ?? widget.nextPrayer.title;
+    final effectiveRemaining = nextPrayer != null
+        ? nextPrayer.time.difference(locationNow)
         : _currentRemainingTime;
     final safeRemaining =
         effectiveRemaining.isNegative ? Duration.zero : effectiveRemaining;
@@ -102,34 +108,57 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard> {
     final prayerEntries = widget.prayerEntriesOverride ??
         _buildPrayerEntries(
           prayerTimes: widget.prayerTimes,
-          currentPrayer: resolvedPrayers.currentPrayer,
-          nextPrayer: resolvedPrayers.nextPrayer,
+          currentPrayer: currentPrayer,
+          nextPrayer: nextPrayer,
           fallbackNextPrayer: widget.nextPrayer,
         );
+
+    final palette = _SkyPalette.of(
+      _skyWindowFor(currentPrayer?.type, nextPrayer?.type),
+    );
+    // ما مضى من نافذة الصلاة الحالية إلى التي بعدها — يغذّي سكّة اليوم
+    // وشريط التقدّم في الصفّ المرتفع.
+    var windowProgress = 0.0;
+    if (currentPrayer != null && nextPrayer != null) {
+      final total = nextPrayer.time.difference(currentPrayer.time).inSeconds;
+      if (total > 0) {
+        windowProgress =
+            (locationNow.difference(currentPrayer.time).inSeconds / total)
+                .clamp(0.0, 1.0);
+      }
+    }
+
+    final pathData = _SkyPathData.build(
+      prayerTimes: widget.prayerTimes,
+      now: locationNow,
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _NextPrayerHeroCard(
-          locationLabel: locationLabel,
+        AnimatedBuilder(
+          animation: _reveal,
+          builder: (context, _) => _SkyHeroPanel(
+            reveal: Curves.easeOutCubic.transform(_reveal.value),
+            palette: palette,
+            pathData: pathData,
+            locationLabel: locationLabel,
+            currentPrayerLabel:
+                currentPrayer?.name ?? widget.currentPrayerName ?? '—',
+            countdownText: _buildCountdownLine(nextPrayerLabel, safeRemaining),
+            onSettingsTap: () => context.push(const SettingScreen()),
+            notice: widget.notice,
+          ),
+        ),
+        _PrayerBoard(
+          entries: prayerEntries,
           hijriText: hijri,
-          clockText: _formatClock12(locationNow),
-          nextPrayerText:
-              'الصلاة القادمة: $nextPrayerLabel • $nextPrayerTimeText',
-          countdownText: _buildCountdownLine(nextPrayerLabel, safeRemaining),
-          prayerEntries: prayerEntries,
-          onSettingsTap: () {
-            context.push(const SettingScreen());
-          },
-          notice: widget.notice,
+          gregorianText: _formatGregorianArabic(locationNow),
+          windowProgress: windowProgress,
+          remainingText: _formatShortRemaining(safeRemaining),
+          onOpenAll: () => context.push(const PrayerTimeScreen()),
         ),
-        // const SizedBox(
-        //   height: 10,
-        // ),
-        Transform.translate(
-          offset: Offset(0, -40.h),
-          child: const _QuickActionsPanel(),
-        ),
+        const _QuickActionsPanel(),
       ],
     );
   }

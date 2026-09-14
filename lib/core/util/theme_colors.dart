@@ -14,6 +14,12 @@ class AppColors {
   static const Color brandBrown = Color(0xFF6F5636);
   static const Color brandBrownDeep = Color(0xFF5A452A);
 
+  // Night tones of the same brand browns. Used only by the adaptive prayer
+  // sky, so Fajr and Isha stay inside the brand family instead of reaching
+  // for a neutral black.
+  static const Color brandDusk = Color(0xFF3A2C1C);
+  static const Color brandNight = Color(0xFF1E1811);
+
   // Accent color - used for secondary actions, switches, accent elements
   static const Color blue = Color(0xFF4083FF);
 

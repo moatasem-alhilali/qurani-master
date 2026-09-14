@@ -1,509 +1,331 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/request_state_extension.dart';
-import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
+import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/system_notification_screen.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/notification_setting_item_widget.dart';
 
-class SettingNotificationScreen extends StatefulWidget {
+/// إعدادات الإشعارات: مفتاح رئيسي مرتفع، ثم مجموعات صغيرة من الصفوف.
+class SettingNotificationScreen extends StatelessWidget {
   const SettingNotificationScreen({super.key});
-
-  @override
-  State<SettingNotificationScreen> createState() =>
-      _SettingNotificationScreenState();
-}
-
-class _SettingNotificationScreenState extends State<SettingNotificationScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late List<AnimationController> _itemControllers;
-  late List<Animation<double>> _itemAnimations;
-
-  @override
-  void initState() {
-    super.initState();
-    _setupAnimations();
-    _startAnimations();
-  }
-
-  void _setupAnimations() {
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    // Create individual controllers for each section
-    _itemControllers = List.generate(
-      7, // Number of sections
-      (index) => AnimationController(
-        duration: Duration(milliseconds: 400 + (index * 100)),
-        vsync: this,
-      ),
-    );
-
-    _itemAnimations = _itemControllers
-        .map(
-          (controller) => Tween<double>(
-            begin: 0,
-            end: 1,
-          ).animate(
-            CurvedAnimation(
-              parent: controller,
-              curve: Curves.easeOutCubic,
-            ),
-          ),
-        )
-        .toList();
-  }
-
-  void _startAnimations() {
-    _fadeController.forward();
-
-    // Stagger the item animations
-    for (var i = 0; i < _itemControllers.length; i++) {
-      Future.delayed(Duration(milliseconds: 100 * i), () {
-        if (mounted) {
-          _itemControllers[i].forward();
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    for (final controller in _itemControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
+      create: (_) =>
           SettingNotificationBloc(sl())..add(LoadNotificationSettings()),
       lazy: false,
-      child: AppScaffoldWidget(
-        title: 'اعدادات الاشعارات',
-
-        // titleWidget: const NextTimePrayerRemainWidget(),
-        body: BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
-          builder: (context, state) {
-            return state.loading.handle<NotificationSettingModel>(
-              list: state.settings.values.toList(),
-              context: context,
-              onSuccess: () {
-                final s = state.settings;
-
-                return FadeTransition(
-                  opacity: _fadeController,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            context.push(const SystemNotificationScreen());
-                          },
-                          borderRadius: BorderRadius.circular(20.r),
-                          child: Ink(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 20.h,
-                              horizontal: 20.w,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.r),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  context.primaryColor,
-                                  context.primaryColor.withValues(alpha: 0.8),
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: context.primaryColor
-                                      .withValues(alpha: 0.2),
-                                  blurRadius: 12.r,
-                                  offset: Offset(0, 6.h),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.bell_solid,
-                                      size: 24.sp,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 12.w),
-                                    Text(
-                                      'رؤية اشعارات النظام',
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: EdgeInsets.all(6.w),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    color: Colors.white,
-                                    size: 16.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 24.h),
-                        _buildSection(
-                          0,
-                          'عام',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotify,
-                              'كل إشعارات التطبيق',
-                              CupertinoIcons.bell_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationFirebaseGeneral,
-                              'إشعارات التطبيق العامة',
-                              CupertinoIcons.sparkles,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          1,
-                          'الأذان',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationAllAthan,
-                              'كل الصلوات',
-                              CupertinoIcons.bell_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAthanFagr,
-                              'أذان الفجر',
-                              CupertinoIcons.sunrise_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAthanDuhr,
-                              'أذان الظهر',
-                              CupertinoIcons.sun_max_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAthanAsr,
-                              'أذان العصر',
-                              CupertinoIcons.sun_haze_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAthanMagrib,
-                              'أذان المغرب',
-                              CupertinoIcons.sunset_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAthanIsha,
-                              'أذان العشاء',
-                              CupertinoIcons.moon_stars_fill,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          2,
-                          'الورد اليومي',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationDailyWirdMorning,
-                              'ورد الصباح',
-                              CupertinoIcons.sunrise_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationDailyWirdEvening,
-                              'ورد المساء',
-                              CupertinoIcons.sunset_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationDailyWirdNight,
-                              'ورد ما قبل النوم',
-                              CupertinoIcons.bed_double_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationDailyWirdSummary,
-                              'ملخص الورد اليومي',
-                              CupertinoIcons.checkmark_circle_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationThikrMorning,
-                              'أذكار الصباح',
-                              CupertinoIcons.sunrise,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationThikrNight,
-                              'أذكار المساء',
-                              CupertinoIcons.moon,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          3,
-                          'العشوائي',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationMohammed,
-                              'الصلاة على محمد',
-                              CupertinoIcons.heart_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationRandomThikr,
-                              'الأذكار الصوتية العشوائية',
-                              CupertinoIcons.speaker_2_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationFloatingAdhkar,
-                              'الأذكار العائمة والتنبيهات البديلة',
-                              CupertinoIcons.bubble_left_bubble_right_fill,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          4,
-                          'القرآن',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationReadQuran,
-                              'الورد القرآني',
-                              CupertinoIcons.textformat,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationReadSurahMulk,
-                              'قراءة سورة الملك',
-                              CupertinoIcons.book_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationReadSurah,
-                              'قراءة سورة محددة',
-                              CupertinoIcons.book,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationReadSurahAlkahf,
-                              'قراءة سورة الكهف',
-                              CupertinoIcons.bookmark_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationQuranPlan,
-                              'تذكير خطط القرآن',
-                              CupertinoIcons.calendar_badge_plus,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          5,
-                          'أقسام التطبيق',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationYoungMuslimResume,
-                              'تذكير المسلم الصغير',
-                              CupertinoIcons.play_rectangle_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys
-                                  .isNotificationPrayerSilentModeReminder,
-                              'تذكير وضع الصلاة على iPhone',
-                              CupertinoIcons.moon_fill,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        _buildSection(
-                          6,
-                          'أخرى',
-                          s,
-                          [
-                            _NotifItem(
-                              NotificationKeys.isNotificationWridGetup,
-                              'أذكار الاستيقاظ',
-                              CupertinoIcons.moon_zzz_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationWridSleep,
-                              'أذكار النوم',
-                              CupertinoIcons.bed_double_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationMiddleNight,
-                              'قيام الليل',
-                              CupertinoIcons.moon_stars,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationFasting,
-                              'تذكير بالصيام',
-                              CupertinoIcons.calendar,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationFastingMonday,
-                              'صيام الاثنين',
-                              CupertinoIcons.calendar_today,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationFastingThursday,
-                              'صيام الخميس',
-                              CupertinoIcons.calendar_today,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationAstgferAllh,
-                              'استغفر الله',
-                              CupertinoIcons.repeat,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationHasbnaAllh,
-                              'حسبنا الله',
-                              CupertinoIcons.hand_raised_fill,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationLahawlaWlaquoah,
-                              'لا حول ولا قوة إلا بالله',
-                              CupertinoIcons.wind,
-                            ),
-                            _NotifItem(
-                              NotificationKeys.isNotificationSubhanAllh,
-                              'سبحان الله',
-                              CupertinoIcons.star_fill,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 40.h),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSection(
-    int index,
-    String title,
-    Map<String, NotificationSettingModel> settings,
-    List<_NotifItem> items,
-  ) {
-    final borderRadius = BorderRadius.circular(20.r);
-    final cardBackground = context.surfaceColor;
-    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
-    final cardBorder = context.outline.withValues(alpha: 0.85);
-    final shadow = context.shadow.withValues(alpha: 0.06);
-
-    return FadeTransition(
-      opacity: _itemAnimations[index],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 8.w,
-              vertical: 8.h,
-            ),
-            child: Text(
-              title.toUpperCase(),
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w800,
-                color: context.primaryColor,
-              ),
-            ),
-          ),
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  cardBackground,
-                  cardBackgroundSoft,
-                ],
-              ),
-              border: Border.all(
-                color: cardBorder,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: shadow,
-                  blurRadius: 12.r,
-                  offset: Offset(0, 6.h),
-                ),
-              ],
-            ),
-            child: Column(
-              children: items.asMap().entries.map((entry) {
-                final itemIndex = entry.key;
-                final item = entry.value;
-                final isLast = itemIndex == items.length - 1;
-
-                return TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: 1),
-                  duration: Duration(milliseconds: 200 + (itemIndex * 100)),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, child) {
-                    return Opacity(
-                      opacity: value,
-                      child: NotificationSettingItemWidget(
-                        setting: settings[item.key],
-                        title: item.title,
-                        iconData: item.iconData,
-                        isLast: isLast,
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
+      child: const _SettingNotificationView(),
     );
   }
 }
 
+class _SettingNotificationView extends StatelessWidget {
+  const _SettingNotificationView();
+
+  /// المجموعات بالترتيب الذي تُقرأ به: الأقرب للاستعمال اليومي أولًا.
+  static const List<_NotifGroup> _groups = [
+    _NotifGroup(
+      'عام',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationFirebaseGeneral,
+          'إشعارات التطبيق العامة',
+          AppIcons.news,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'الأذان',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationAllAthan,
+          'كل الصلوات',
+          AppIcons.mosque,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationAthanFagr,
+          'أذان الفجر',
+          AppIcons.sunrise,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationAthanDuhr,
+          'أذان الظهر',
+          AppIcons.sun,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationAthanAsr,
+          'أذان العصر',
+          AppIcons.clock,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationAthanMagrib,
+          'أذان المغرب',
+          AppIcons.sunset,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationAthanIsha,
+          'أذان العشاء',
+          AppIcons.moon,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'الورد اليومي',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationDailyWirdMorning,
+          'ورد الصباح',
+          AppIcons.sunrise,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationDailyWirdEvening,
+          'ورد المساء',
+          AppIcons.sunset,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationDailyWirdNight,
+          'ورد ما قبل النوم',
+          AppIcons.moon,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationDailyWirdSummary,
+          'ملخص الورد اليومي',
+          AppIcons.check,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'الأذكار',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationThikrMorning,
+          'أذكار الصباح',
+          AppIcons.dailyWird,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationThikrNight,
+          'أذكار المساء',
+          AppIcons.bookOpen,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationMohammed,
+          'الصلاة على محمد',
+          AppIcons.heart,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationRandomThikr,
+          'الأذكار الصوتية العشوائية',
+          AppIcons.sound,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationFloatingAdhkar,
+          'الأذكار العائمة والتنبيهات البديلة',
+          AppIcons.focus,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'القرآن',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationReadQuran,
+          'الورد القرآني',
+          AppIcons.quran,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationReadSurahMulk,
+          'قراءة سورة الملك',
+          AppIcons.book,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationReadSurah,
+          'قراءة سورة محددة',
+          AppIcons.bookOpen,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationReadSurahAlkahf,
+          'قراءة سورة الكهف',
+          AppIcons.bookmark,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationQuranPlan,
+          'تذكير خطط القرآن',
+          AppIcons.calendar,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'أقسام التطبيق',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationYoungMuslimResume,
+          'تذكير المسلم الصغير',
+          AppIcons.play,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationPrayerSilentModeReminder,
+          'تذكير وضع الصلاة على iPhone',
+          AppIcons.mute,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'الليل واليقظة',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationWridGetup,
+          'أذكار الاستيقاظ',
+          AppIcons.sunrise,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationWridSleep,
+          'أذكار النوم',
+          AppIcons.moon,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationMiddleNight,
+          'قيام الليل',
+          AppIcons.prayerRug,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'الصيام',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationFasting,
+          'تذكير بالصيام',
+          AppIcons.calendar,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationFastingMonday,
+          'صيام الاثنين',
+          AppIcons.calendar,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationFastingThursday,
+          'صيام الخميس',
+          AppIcons.calendar,
+        ),
+      ],
+    ),
+    _NotifGroup(
+      'أذكار متكررة',
+      [
+        _NotifItem(
+          NotificationKeys.isNotificationAstgferAllh,
+          'استغفر الله',
+          AppIcons.tasbih,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationHasbnaAllh,
+          'حسبنا الله',
+          AppIcons.allah,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationLahawlaWlaquoah,
+          'لا حول ولا قوة إلا بالله',
+          AppIcons.tasbih,
+        ),
+        _NotifItem(
+          NotificationKeys.isNotificationSubhanAllh,
+          'سبحان الله',
+          AppIcons.star,
+        ),
+      ],
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsScaffold(
+      title: 'إعدادات الإشعارات',
+      children: [
+        BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
+          builder: (context, state) {
+            return state.loading.handle<NotificationSettingModel>(
+              list: state.settings.values.toList(),
+              context: context,
+              onSuccess: () => _buildBody(context, state.settings),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    Map<String, NotificationSettingModel> settings,
+  ) {
+    final master = settings[NotificationKeys.isNotify];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // المفتاح الرئيسي هو العنصر المرتفع الوحيد: يحكم كل ما تحته.
+        if (master != null)
+          SettingsRaisedRow(
+            icon: AppIcons.notifications,
+            title: 'كل إشعارات التطبيق',
+            subtitle: master.enabled
+                ? 'الإشعارات مفعّلة، وتستطيع ضبط كل نوع أدناه'
+                : 'كل الإشعارات موقوفة حتى تفعّل هذا المفتاح',
+            trailing: SettingsSwitch(
+              value: master.enabled,
+              onChanged: (value) => context
+                  .read<SettingNotificationBloc>()
+                  .add(ToggleNotification(master.key, value)),
+            ),
+          ),
+        SettingsGroup(
+          title: 'النظام',
+          children: [
+            SettingsRow(
+              icon: AppIcons.layers,
+              title: 'إشعارات النظام',
+              subtitle: 'استعرض الإشعارات المجدولة والمفعّلة على جهازك',
+              isLast: true,
+              onTap: () => context.push(const SystemNotificationScreen()),
+            ),
+          ],
+        ),
+        for (final group in _groups)
+          SettingsGroup(
+            title: group.title,
+            children: [
+              for (var i = 0; i < group.items.length; i++)
+                NotificationSettingItemWidget(
+                  setting: settings[group.items[i].key],
+                  title: group.items[i].title,
+                  icon: group.items[i].icon,
+                  isLast: i == group.items.length - 1,
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _NotifGroup {
+  const _NotifGroup(this.title, this.items);
+
+  final String title;
+  final List<_NotifItem> items;
+}
+
 class _NotifItem {
-  _NotifItem(this.key, this.title, this.iconData);
+  const _NotifItem(this.key, this.title, this.icon);
+
   final String key;
   final String title;
-  final IconData iconData;
+  final HugeIconData icon;
 }

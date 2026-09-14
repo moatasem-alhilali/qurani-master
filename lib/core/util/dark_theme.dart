@@ -7,7 +7,8 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   useMaterial3: true,
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: AppColors.darkBackground,
+  // أرضية محايدة: أسود. الدفء في اللمسات لا في الخلفية.
+  scaffoldBackgroundColor: Colors.black,
   canvasColor: AppColors.darkSurface,
   cardColor: AppColors.darkSurface,
   dividerColor: AppColors.darkOutline,
@@ -163,7 +164,7 @@ final ThemeData darkTheme = ThemeData(
       fontSize: 11.sp,
       height: 1.45,
       letterSpacing: 0.5,
-          color: AppColors.darkOnBackground,
+      color: AppColors.darkOnBackground,
     ),
 
     // Body Styles

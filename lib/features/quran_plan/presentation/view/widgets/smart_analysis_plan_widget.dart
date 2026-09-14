@@ -1,155 +1,167 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/quran_plan/data/model/plan_progress_analysis_model.dart';
+import 'package:quran_app/features/quran_plan/presentation/view/widgets/plan_progress_line.dart';
 
+/// تحليل الخطة: أرقام قليلة في صفوف نحيلة، لا بطاقة زرقاء بتدرّج.
 class SmartAnalysisPlanWidget extends StatelessWidget {
   const SmartAnalysisPlanWidget({required this.analysis, super.key});
+
   final PlanProgressAnalysis analysis;
 
   @override
   Widget build(BuildContext context) {
-    final f = DateFormat('yyyy-MM-dd');
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            context.surfaceColor,
-            context.surfaceVariant.withValues(alpha: 0.42),
-          ],
+    final skin = AppSkin.of(context);
+    final formatter = DateFormat('yyyy/MM/dd');
+    final finishDate = analysis.expectedFinishDate;
+    final probability = (analysis.completionProbability.clamp(0.0, 1.0) * 100)
+        .round();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _StatRow(
+          label: 'توقّع يوم الختم',
+          value: finishDate != null ? formatter.format(finishDate) : '—',
         ),
-        border: Border.all(
-          color: context.outline.withValues(alpha: 0.85),
+        _StatRow(
+          label: 'متوسّط الفاصل بين الجلسات',
+          value: '${analysis.averageSessionIntervalDays.toStringAsFixed(1)}'
+              ' يوم',
         ),
-        boxShadow: [
-          BoxShadow(
-            color: context.shadow.withValues(alpha: 0.05),
-            blurRadius: 10.r,
-            offset: Offset(0, 4.h),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'تحليل متقدم للخطة',
-            style: context.titleMedium,
-          ),
+        _StatRow(
+          label: 'اليوم الأكثر نشاطًا',
+          value: analysis.activityDay,
+        ),
+        _StatRow(
+          label: 'اليوم الأقلّ نشاطًا',
+          value: analysis.lazyDay,
+        ),
+        _StatRow(
+          label: 'احتمال إتمام الخطة',
+          value: '$probability بالمئة',
+          isLast: true,
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
+          child: PlanProgressLine(value: analysis.completionProbability),
+        ),
+        if (analysis.predictionMessage.trim().isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Divider(
-              color: context.gray2,
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+            child: Text(
+              analysis.predictionMessage,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.88),
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                height: 1.6,
+              ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'توقع يوم الختم:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      analysis.expectedFinishDate != null
-                          ? f.format(analysis.expectedFinishDate!)
-                          : '—',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
+        if (analysis.stagnationDays.isNotEmpty) ...[
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 7.h),
+            child: Row(
+              children: [
+                Text(
+                  'أيام الركود',
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.8),
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'متوسط الفاصل بين الجلسات:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '${analysis.averageSessionIntervalDays.toStringAsFixed(2)} يوم',
-                    ),
-                  ],
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Divider(height: 1, thickness: 1, color: skin.hairline),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Divider(
-              color: context.gray2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Text('اليوم الأكثر نشاطًا: ${analysis.activityDay}'),
-              ),
-              Expanded(child: Text('الأقل نشاطًا: ${analysis.lazyDay}')),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Divider(
-              color: context.gray2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'نص التوقع والتحفيز:',
-            style: context.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            analysis.predictionMessage,
-            style: context.labelMedium,
-          ),
-          const SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: analysis.completionProbability,
-            backgroundColor: Colors.grey[300],
-            color: Colors.blue,
-            minHeight: 8,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Divider(
-              color: context.gray2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'أيام الركود:',
-            style: context.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Wrap(
-            children: analysis.stagnationDays
-                .map(
-                  (d) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Chip(
-                      label: Text(
-                        f.format(d),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Wrap(
+              spacing: 6.w,
+              runSpacing: 6.h,
+              children: analysis.stagnationDays
+                  .map(
+                    (day) => Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: skin.iconChip,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Text(
+                        formatter.format(day),
+                        style: TextStyle(
+                          color: skin.accent,
+                          fontSize: 9.5.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// صفّ إحصاء: عنوانه على اليمين وقيمته على اليسار، تفصلهما مسافة لا بطاقة.
+class _StatRow extends StatelessWidget {
+  const _StatRow({
+    required this.label,
+    required this.value,
+    this.isLast = false,
+  });
+
+  final String label;
+  final String value;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 9.h),
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.78),
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Text(
+            value,
+            style: TextStyle(
+              color: skin.ink,
+              fontSize: 12.5.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

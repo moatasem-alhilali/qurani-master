@@ -1,231 +1,224 @@
 part of 'young_muslim_shared_widgets.dart';
 
-class YoungMuslimMediaBanner extends StatelessWidget {
-  const YoungMuslimMediaBanner({
-    required this.title,
+/// صورة مصغّرة بزوايا لطيفة، وبديلها مربّع الأيقونة نفسه عند تعذّر التحميل.
+///
+/// قسم الأطفال يتحمّل صورًا أكبر قليلًا من بقية الشاشات — الصورة هنا هي ما
+/// يتعرّف به الطفل على الحلقة قبل أن يقرأ عنوانها.
+class YoungMuslimThumb extends StatelessWidget {
+  const YoungMuslimThumb({
     required this.imageUrl,
-    required this.accentStart,
-    required this.accentEnd,
-    this.subtitle,
-    this.badges = const [],
-    this.height = 220,
-    this.onTap,
+    required this.width,
+    required this.height,
+    this.radius,
+    this.icon,
     super.key,
   });
 
-  final String title;
   final String imageUrl;
-  final String accentStart;
-  final String accentEnd;
-  final String? subtitle;
-  final List<Widget> badges;
+  final double width;
   final double height;
-  final VoidCallback? onTap;
+  final double? radius;
+  final HugeIconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    final colors = youngMuslimGradientColors(
-      context,
-      startHex: accentStart,
-      endHex: accentEnd,
-    );
-    final borderRadius = BorderRadius.circular(20.r);
+    final corner = radius ?? 12.r;
 
-    final banner = Container(
-      decoration: youngMuslimPanelDecoration(context, radius: 20),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: SizedBox(
-          height: height.h,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      colors.first.withValues(alpha: 0.18),
-                      context.scrim.withValues(alpha: 0.18),
-                      context.scrim.withValues(alpha: 0.68),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 16.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (badges.isNotEmpty) ...[
-                      Wrap(
-                        spacing: 8.w,
-                        runSpacing: 8.h,
-                        children: badges,
-                      ),
-                      SizedBox(height: 10.h),
-                    ],
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (subtitle != null) ...[
-                      SizedBox(height: 5.h),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 10.5.sp,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(corner),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          width: width,
+          height: height,
+          errorWidget: (context, url, error) => _ThumbFallback(icon: icon),
+          placeholder: (context, url) => _ThumbFallback(icon: icon),
         ),
       ),
-    );
-
-    if (onTap == null) {
-      return banner;
-    }
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: borderRadius,
-      child: banner,
     );
   }
 }
 
-class YoungMuslimCategoryCard extends StatelessWidget {
-  const YoungMuslimCategoryCard({
+class _ThumbFallback extends StatelessWidget {
+  const _ThumbFallback({this.icon});
+
+  final HugeIconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return ColoredBox(
+      color: skin.iconChip,
+      child: Center(
+        child: AppIcon(
+          icon ?? AppIcons.play,
+          color: skin.accent,
+          size: 16.sp,
+        ),
+      ),
+    );
+  }
+}
+
+/// صورة تعريف الشاشة: لوح واحد بعرض المحتوى، بلا نصّ فوقه.
+///
+/// كان العنوان يُكتب أبيض فوق تدرّج داكن على الصورة، فيختلف عن لغة بقية
+/// الشاشات ويصعب قراءته أحيانًا. صار العنوان نصًّا عاديًا تحت الصورة.
+class YoungMuslimCover extends StatelessWidget {
+  const YoungMuslimCover({
+    required this.imageUrl,
+    required this.title,
+    this.description,
+    this.height,
+    this.chips = const [],
+    super.key,
+  });
+
+  final String imageUrl;
+  final String title;
+  final String? description;
+  final double? height;
+  final List<Widget> chips;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: AppSkin.gutter,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return YoungMuslimThumb(
+                imageUrl: imageUrl,
+                width: constraints.maxWidth,
+                height: height ?? 148.h,
+                radius: 16.r,
+                icon: AppIcons.bookOpen,
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 11.h),
+        Padding(
+          padding: AppSkin.gutter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: skin.ink,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w800,
+                  height: 1.3,
+                ),
+              ),
+              if (description != null && description!.trim().isNotEmpty) ...[
+                SizedBox(height: 4.h),
+                Text(
+                  description!,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: youngMuslimRowSubtitle(skin, size: 10.sp),
+                ),
+              ],
+              if (chips.isNotEmpty) ...[
+                SizedBox(height: 9.h),
+                Wrap(
+                  spacing: 6.w,
+                  runSpacing: 6.h,
+                  children: chips,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// صفّ قسم: صورة مصغّرة، اسم القسم ووصفه، وعدد سلاسله.
+class YoungMuslimCategoryRow extends StatelessWidget {
+  const YoungMuslimCategoryRow({
     required this.category,
     required this.onTap,
-    this.height = 190,
+    this.isLast = false,
     super.key,
   });
 
   final YoungMuslimCategoryEntity category;
   final VoidCallback onTap;
-  final double height;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    final colors = youngMuslimGradientColors(
-      context,
-      startHex: category.accentStart,
-      endHex: category.accentEnd,
-    );
-    final borderRadius = BorderRadius.circular(18.r);
+    final skin = AppSkin.of(context);
+    final audience = category.audience == 'kids' ? ' · للأطفال' : '';
+    final meta = '${category.seriesIds.length} سلسلة$audience';
 
     return InkWell(
       onTap: onTap,
-      borderRadius: borderRadius,
       child: Container(
-        decoration: youngMuslimPanelDecoration(context, radius: 18),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: SizedBox(
-            height: height.h,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CachedNetworkImage(
-                    imageUrl: category.bannerImage,
-                    fit: BoxFit.cover,
-                    color: context.scrim.withValues(alpha: 0.1),
-                    colorBlendMode: BlendMode.darken,
-                  ),
-                ),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          colors.first.withValues(alpha: 0.3),
-                          context.scrim.withValues(alpha: 0.18),
-                          context.scrim.withValues(alpha: 0.68),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 12.w,
-                  top: 12.h,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 9.w,
-                      vertical: 5.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Text(
-                      '${category.seriesIds.length} سلسلة',
-                      style: TextStyle(
-                        fontSize: 9.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(14.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        category.titleAr,
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 5.h),
-                      Text(
-                        category.description,
-                        style: TextStyle(
-                          fontSize: 10.5.sp,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        margin: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(vertical: 9.h),
+        decoration: isLast
+            ? null
+            : BoxDecoration(
+                border: Border(bottom: BorderSide(color: skin.hairline)),
+              ),
+        child: Row(
+          children: [
+            YoungMuslimThumb(
+              imageUrl: category.thumbnail.isEmpty
+                  ? category.bannerImage
+                  : category.thumbnail,
+              width: 52.w,
+              height: 40.w,
+              radius: 12.r,
+              icon: AppIcons.bookOpen,
             ),
-          ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    category.titleAr,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: youngMuslimRowTitle(skin, size: 13.sp),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    category.description,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: youngMuslimRowSubtitle(skin),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    meta,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: youngMuslimNumber(skin, size: 9.5.sp),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+          ],
         ),
       ),
     );

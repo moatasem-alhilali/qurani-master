@@ -3,13 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/components/base_header_widget.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/services/permission/location_permission_service.dart';
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_continue_reading.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_daily_ayah.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_prayer_tracker.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
@@ -32,6 +38,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_startPrayerTimeBootstrap());
+      unawaited(AthanMuteStore.instance.hydrate());
     });
   }
 
@@ -58,31 +65,43 @@ class _HomeScreenState extends State<HomeScreenNew> {
 
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    // الصفحة كلها سطح ورقي واحد يمتدّ من أسفل المشهد: لا بطاقات عائمة على
+    // أرضية داكنة، بل محتوى متّصل تفصله خطوط شعرة.
     return AppSliverWidget(
       hasAppBar: false,
       topSpacing: 0,
-      child: Padding(
-        padding: EdgeInsets.zero,
+      child: ColoredBox(
+        color: skin.ground,
         child: Column(
           children: [
+            // المشهد + مواقيت اليوم + المداخل السريعة.
             const NextPrayerCountdownWidget(),
             const _HomeUpdateTile(),
-            const BaseHederWidget(text: 'المميزات'),
+
+            skin.divider(),
+            const HomeSectionHeader(title: 'يومك'),
+            const HomePrayerTracker(),
+            SizedBox(height: 4.h),
+            const HomeContinueReading(),
+
+            skin.divider(),
+            const HomeSectionHeader(title: 'آية من القرآن'),
+            const HomeDailyAyah(),
+
+            skin.divider(),
+            const HomeSectionHeader(title: 'المميزات'),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.sp, horizontal: 8.sp),
+              padding: AppSkin.gutter,
               child: const AnotherFeatures(),
             ),
-            const BaseHederWidget(text: 'قسم الأطفال'),
-            SizedBox(
-              height: context.getHight(18),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: _YoungMuslimCard(
-                  height: context.getHight(18),
-                ),
-              ),
-            ),
-            SizedBox(height: 16.h),
+
+            skin.divider(),
+            const HomeSectionHeader(title: 'قسم الأطفال'),
+            const _YoungMuslimRow(),
+
+            SizedBox(height: 18.h),
           ],
         ),
       ),
@@ -90,159 +109,57 @@ class _HomeScreenState extends State<HomeScreenNew> {
   }
 }
 
-class _YoungMuslimCard extends StatelessWidget {
-  const _YoungMuslimCard({
-    required this.height,
-  });
-
-  final double height;
+/// «المسلم الصغير» — صفّ بنفس لغة بقية الأقسام.
+class _YoungMuslimRow extends StatelessWidget {
+  const _YoungMuslimRow();
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(24.r);
-    final accent = context.primaryColor;
-    final cardBackground = context.surfaceColor;
-    final cardBackgroundSoft = context.surfaceVariant.withValues(alpha: 0.42);
-    final cardBorder = context.outline.withValues(alpha: 0.85);
-    final shadow = context.shadow.withValues(alpha: 0.10);
-    final titleColor = context.onSurfaceColor;
-    final subtitleColor = context.onSurfaceVariant.withValues(alpha: 0.88);
-    final chipBackground = accent.withValues(alpha: 0.10);
-    final chipBorder = accent.withValues(alpha: 0.16);
-
+    final skin = AppSkin.of(context);
     return InkWell(
-      onTap: () {
-        context.push(const YoungMuslimProvider());
-      },
-      borderRadius: borderRadius,
-      child: Ink(
-        width: double.infinity,
-        height: height,
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomLeft,
-            colors: [
-              cardBackground,
-              cardBackgroundSoft,
-            ],
-          ),
-          border: Border.all(
-            color: cardBorder,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: shadow,
-              blurRadius: 14.r,
-              offset: Offset(0, 7.h),
+      onTap: () => context.push(const YoungMuslimProvider()),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
+        child: Row(
+          children: [
+            AppIcon(AppIcons.bookOpen, color: skin.accent, size: 17.sp),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'المسلم الصغير',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.ink,
+                      fontSize: 12.5.sp,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
+                  Text(
+                    'قصص وآداب وأذكار للطفل',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: skin.inkSoft.withValues(alpha: 0.78),
+                      fontSize: 9.5.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AppIcon(
+              AppIcons.chevronLeft,
+              color: skin.accent,
+              size: 15.sp,
             ),
           ],
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                child: Container(
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        accent,
-                        accent.withValues(alpha: 0.18),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: -16.h,
-                left: -18.w,
-                child: Container(
-                  width: 82.w,
-                  height: 82.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: accent.withValues(alpha: 0.06),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 50.w,
-                      height: 50.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18.r),
-                        color: chipBackground,
-                        border: Border.all(color: chipBorder),
-                      ),
-                      child: Icon(
-                        Icons.play_lesson_rounded,
-                        color: accent,
-                        size: 22.sp,
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: chipBackground,
-                              borderRadius: BorderRadius.circular(999.r),
-                            ),
-                            child: Text(
-                              'قسم الأطفال',
-                              style: TextStyle(
-                                color: accent,
-                                fontSize: 8.8.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 9.h),
-                          Text(
-                            'المسلم الصغير',
-                            style: TextStyle(
-                              color: titleColor,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'رحلة خفيفة للطفل بين القصص والآداب والأذكار',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: subtitleColor,
-                              fontSize: 8.8.sp,
-                              height: 1.22,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -262,88 +179,66 @@ class _HomeUpdateTile extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        final accentColor = context.primaryColor;
+        final skin = AppSkin.of(context);
 
         return Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: context.surfaceColor,
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.22),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 18,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
+          child: InkWell(
+            // Same dialog used on launch and in Settings — one consistent
+            // iOS update experience. No `onLater` here: the tile is a
+            // persistent reminder the user can reopen anytime.
+            onTap: () => showIosUpdateDialog(
+              context,
+              storeVersion: state.storeVersion,
+              storeUrl: state.storeUrl,
+              releaseNotes: state.releaseNotes,
             ),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(12.r),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: skin.iconChip,
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              onTap: () {
-                // Same dialog used on launch and in Settings — one consistent
-                // iOS update experience. No `onLater` here: the tile is a
-                // persistent reminder the user can reopen anytime.
-                showIosUpdateDialog(
-                  context,
-                  storeVersion: state.storeVersion,
-                  storeUrl: state.storeUrl,
-                  releaseNotes: state.releaseNotes,
-                );
-              },
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 14.w,
-                vertical: 4.h,
-              ),
-              leading: Container(
-                width: 46.w,
-                height: 46.w,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                child: Icon(
-                  Icons.system_update_alt_rounded,
-                  color: accentColor,
-                  size: 24.sp,
-                ),
-              ),
-              title: Text(
-                'يوجد تحديث جديد للتطبيق',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              subtitle: Padding(
-                padding: EdgeInsets.only(top: 4.h),
-                child: Text(
-                  'الإصدار ${state.storeVersion}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: context.onSurfaceColor.withValues(alpha: 0.72),
-                      ),
-                ),
-              ),
-              trailing: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 8.h,
-                ),
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                child: Text(
-                  'تحديث',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: accentColor,
+              padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 9.h),
+              child: Row(
+                children: [
+                  AppIcon(
+                    AppIcons.update,
+                    color: skin.accent,
+                    size: 16.sp,
+                  ),
+                  SizedBox(width: 9.w),
+                  Expanded(
+                    child: Text(
+                      'يوجد تحديث جديد · الإصدار ${state.storeVersion}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                       ),
-                ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 9.w,
+                      vertical: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.gold,
+                      borderRadius: BorderRadius.circular(999.r),
+                    ),
+                    child: Text(
+                      'تحديث',
+                      style: TextStyle(
+                        color: AppColors.brandIvory,
+                        fontSize: 9.5.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
