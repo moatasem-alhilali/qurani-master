@@ -9,12 +9,12 @@ class _SkyHeroPanel extends StatelessWidget {
     required this.currentPrayerLabel,
     required this.countdownText,
     required this.onSettingsTap,
-    this.reveal = 1,
+    this.reveal,
     this.notice,
   });
 
   /// نسبة ظهور القوس في لحظة الافتتاح.
-  final double reveal;
+  final Animation<double>? reveal;
 
   final _SkyPalette palette;
   final _SkyPathData pathData;
@@ -149,7 +149,7 @@ class _SkyHeroPanel extends StatelessWidget {
                               data: pathData,
                               ink: palette.ink,
                               orbCore: palette.orbCore,
-                              reveal: reveal,
+                              revealAnimation: reveal,
                             ),
                           ),
                         ),

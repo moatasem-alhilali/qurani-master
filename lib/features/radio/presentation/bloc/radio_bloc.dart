@@ -11,20 +11,22 @@ part 'radio_event.dart';
 part 'radio_state.dart';
 
 class RadioBloc extends Bloc<RadioEvent, RadioState> {
-  RadioBloc({
-    required RadioRepository repository,
-  })  : _repository = repository,
+  RadioBloc({required RadioRepository repository})
+      : _repository = repository,
         super(const RadioState()) {
     on<RadioInitialized>(_onInitialized);
     on<RadioStationPlayRequested>(_onPlayRequested);
-    on<RadioTogglePlayPauseRequested>(_onTogglePlayPauseRequested);
-    on<RadioStopRequested>(_onStopRequested);
+    on<RadioStationPreviewed>(_onPreviewed);
+    on<RadioTogglePlayPauseRequested>(_onTogglePlayPause);
+    on<RadioStopRequested>(_onStop);
     on<_RadioPlaybackChanged>(_onPlaybackChanged);
 
     _repository.audioService.playback.addListener(_onPlaybackValueChanged);
   }
 
   final RadioRepository _repository;
+
+  RadioRepository get repository => _repository;
 
   Future<void> _onInitialized(
     RadioInitialized event,
@@ -34,26 +36,24 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     try {
       final stations = await _repository.loadStations();
       final lastStationId = _repository.getLastStationId();
-      final lastStation =
-          stations.where((item) => item.id == lastStationId).firstOrNull;
-      _repository.audioService.seedLastStation(lastStation);
+      final lastStation = _findById(stations, lastStationId);
+
+      // بلا محطة محفوظة يبدأ المؤشّر على الأولى بدل فراغ: القرص لا يكون
+      // فارغًا في راديو حقيقي.
+      final seed = lastStation ?? (stations.isEmpty ? null : stations.first);
+      _repository.audioService.seedLastStation(seed);
 
       emit(
         state.copyWith(
           loadState: RequestState.success,
           stations: stations,
-          lastStationId: lastStationId,
-          currentStation: lastStation,
+          currentStation: seed,
           playbackStatus: _repository.audioService.playback.value.status,
         ),
       );
     } catch (_) {
-      emit(
-        state.copyWith(
-          loadState: RequestState.error,
-          errorMessage: 'تعذر تحميل الإذاعات حاليًا.',
-        ),
-      );
+      emit(_withError('تعذّر تحميل الإذاعات حاليًا.',
+          loadState: RequestState.error));
     }
   }
 
@@ -61,61 +61,45 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     RadioStationPlayRequested event,
     Emitter<RadioState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        actionState: RequestState.loading,
-        clearError: true,
-        currentStation: event.station,
-      ),
-    );
+    emit(state.copyWith(currentStation: event.station, clearError: true));
     try {
       await _repository.playStation(event.station);
-      emit(
-        state.copyWith(
-          actionState: RequestState.success,
-          currentStation: event.station,
-          lastStationId: event.station.id,
-        ),
-      );
     } catch (_) {
-      emit(
-        state.copyWith(
-          actionState: RequestState.error,
-          errorMessage: 'تعذر تشغيل الإذاعة الآن.',
-        ),
-      );
+      emit(_withError('تعذّر تشغيل الإذاعة الآن.'));
     }
   }
 
-  Future<void> _onTogglePlayPauseRequested(
+  void _onPreviewed(RadioStationPreviewed event, Emitter<RadioState> emit) {
+    emit(state.copyWith(currentStation: event.station, clearError: true));
+  }
+
+  Future<void> _onTogglePlayPause(
     RadioTogglePlayPauseRequested event,
     Emitter<RadioState> emit,
   ) async {
+    // الجهاز مطفأ والمستخدم يضغط «تشغيل»: المطلوب فتح المحطة المعروضة على
+    // المؤشّر، لا استئناف مشغّل لا مصدر له.
+    if (!state.isPowered) {
+      final station = state.currentStation;
+      if (station != null) {
+        add(RadioStationPlayRequested(station));
+        return;
+      }
+    }
+
     try {
       await _repository.togglePlayPause();
     } catch (_) {
-      emit(
-        state.copyWith(
-          actionState: RequestState.error,
-          errorMessage: 'تعذر تغيير حالة التشغيل.',
-        ),
-      );
+      emit(_withError('تعذّر تغيير حالة التشغيل.'));
     }
   }
 
-  Future<void> _onStopRequested(
-    RadioStopRequested event,
-    Emitter<RadioState> emit,
-  ) async {
+  Future<void> _onStop(
+      RadioStopRequested event, Emitter<RadioState> emit) async {
     try {
       await _repository.stop();
     } catch (_) {
-      emit(
-        state.copyWith(
-          actionState: RequestState.error,
-          errorMessage: 'تعذر إيقاف الإذاعة.',
-        ),
-      );
+      emit(_withError('تعذّر إيقاف الإذاعة.'));
     }
   }
 
@@ -127,13 +111,32 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
       state.copyWith(
         playbackStatus: event.snapshot.status,
         currentStation: event.snapshot.station ?? state.currentStation,
-        actionState: RequestState.initial,
       ),
     );
   }
 
   void _onPlaybackValueChanged() {
+    if (isClosed) return;
     add(_RadioPlaybackChanged(_repository.audioService.playback.value));
+  }
+
+  RadioState _withError(String message, {RequestState? loadState}) {
+    return state.copyWith(
+      loadState: loadState,
+      errorMessage: message,
+      errorTick: state.errorTick + 1,
+    );
+  }
+
+  static RadioStationModel? _findById(
+    List<RadioStationModel> stations,
+    int? id,
+  ) {
+    if (id == null) return null;
+    for (final station in stations) {
+      if (station.id == id) return station;
+    }
+    return null;
   }
 
   @override
@@ -141,8 +144,4 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     _repository.audioService.playback.removeListener(_onPlaybackValueChanged);
     return super.close();
   }
-}
-
-extension<T> on Iterable<T> {
-  T? get firstOrNull => isEmpty ? null : first;
 }

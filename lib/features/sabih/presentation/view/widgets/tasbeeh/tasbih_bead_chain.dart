@@ -117,17 +117,21 @@ class _TasbihBeadChainState extends State<TasbihBeadChain>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.infinite,
-      painter: _BeadChainPainter(
-        repaint: _ticker,
-        // الخرزات متماثلة ومتساوية التباعد، فالجزء الكسري من الإزاحة يكفي
-        // لرسم المشهد ويمنع السلسلة من الهروب خارج القوس.
-        shiftOf: () => _offset % 1,
-        swingOf: () => _swingValue,
-        stamp: _stamp,
-        stringColor: widget.stringColor,
-        beadCount: widget.beadCount,
+    // حاجز رسم: السلسلة تُعاد رسمها في كل إطار طوال ثانية بعد كل تسبيحة،
+    // وبدون الحاجز يمتدّ ذلك إلى نصّ الذكر والعدّاد وهما لم يتغيّرا.
+    return RepaintBoundary(
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: _BeadChainPainter(
+          repaint: _ticker,
+          // الخرزات متماثلة ومتساوية التباعد، فالجزء الكسري من الإزاحة يكفي
+          // لرسم المشهد ويمنع السلسلة من الهروب خارج القوس.
+          shiftOf: () => _offset % 1,
+          swingOf: () => _swingValue,
+          stamp: _stamp,
+          stringColor: widget.stringColor,
+          beadCount: widget.beadCount,
+        ),
       ),
     );
   }

@@ -41,6 +41,17 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
     duration: const Duration(milliseconds: 950),
   )..forward();
 
+  /// منحنى الافتتاح جاهزًا: يُبنى مرّة ويُمرَّر إلى الرسّام، فلا يُحسب في كل
+  /// إطار ولا يجرّ معه إعادة بناء.
+  late final CurvedAnimation _revealCurve = CurvedAnimation(
+    parent: _reveal,
+    curve: Curves.easeOutCubic,
+  );
+
+  /// موعد الصلاة القادمة كما حُسب في آخر بناء — يقرأه المؤقّت ليعرف متى
+  /// تستحقّ الشاشة إعادة بناء فعلًا.
+  DateTime? _nextPrayerAt;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +73,7 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
   @override
   void dispose() {
     _timer.cancel();
+    _revealCurve.dispose();
     _reveal.dispose();
     super.dispose();
   }
@@ -73,12 +85,24 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
         return;
       }
 
-      setState(() {
-        if (_currentRemainingTime.inSeconds > 0) {
-          _currentRemainingTime =
-              Duration(seconds: _currentRemainingTime.inSeconds - 1);
-        }
-      });
+      final at = _nextPrayerAt;
+      final remaining = at != null
+          ? at.difference(
+              _resolveLocationNowFromOffset(widget.utcOffsetMinutes),
+            )
+          : Duration(seconds: _currentRemainingTime.inSeconds - 1);
+      final safe = remaining.isNegative ? Duration.zero : remaining;
+
+      // لا شيء على الشاشة أدقّ من الدقيقة: العدّاد يقول «بعد ٦ دقيقة» وسكّة
+      // اليوم تقول «بقي ٦ د». فإعادة البناء في كل ثانية كانت تبني الشجرة
+      // نفسها — السماء والسكّة والإجراءات — تسعًا وخمسين مرّة دون أن يتغيّر
+      // بكسل واحد. الآن تُعاد مرّة في الدقيقة، وعند انقضاء الوقت.
+      final visiblyChanged =
+          safe.inMinutes != _currentRemainingTime.inMinutes ||
+              (safe.inSeconds <= 0) != (_currentRemainingTime.inSeconds <= 0);
+
+      _currentRemainingTime = safe;
+      if (visiblyChanged) setState(() {});
     });
   }
 
@@ -97,6 +121,9 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
 
     final currentPrayer = resolvedPrayers.currentPrayer;
     final nextPrayer = resolvedPrayers.nextPrayer;
+
+    // يلتقطه المؤقّت ليحسب المتبقّي دون إعادة بناء.
+    _nextPrayerAt = nextPrayer?.time;
 
     final nextPrayerLabel = nextPrayer?.name ?? widget.nextPrayer.title;
     final effectiveRemaining = nextPrayer != null
@@ -128,6 +155,8 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
       }
     }
 
+    // تتقدّم نقطة «الآن» على القوس أقلّ من واحد بالمئة في الدقيقة،
+    // فخطوة الدقيقة لا تُرى، وتوفّر تسعًا وخمسين إعادة حساب.
     final pathData = _SkyPathData.build(
       prayerTimes: widget.prayerTimes,
       now: locationNow,
@@ -136,19 +165,16 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedBuilder(
-          animation: _reveal,
-          builder: (context, _) => _SkyHeroPanel(
-            reveal: Curves.easeOutCubic.transform(_reveal.value),
-            palette: palette,
-            pathData: pathData,
-            locationLabel: locationLabel,
-            currentPrayerLabel:
-                currentPrayer?.name ?? widget.currentPrayerName ?? '—',
-            countdownText: _buildCountdownLine(nextPrayerLabel, safeRemaining),
-            onSettingsTap: () => context.push(const SettingScreen()),
-            notice: widget.notice,
-          ),
+        _SkyHeroPanel(
+          reveal: _revealCurve,
+          palette: palette,
+          pathData: pathData,
+          locationLabel: locationLabel,
+          currentPrayerLabel:
+              currentPrayer?.name ?? widget.currentPrayerName ?? '—',
+          countdownText: _buildCountdownLine(nextPrayerLabel, safeRemaining),
+          onSettingsTap: () => context.push(const SettingScreen()),
+          notice: widget.notice,
         ),
         _PrayerBoard(
           entries: prayerEntries,

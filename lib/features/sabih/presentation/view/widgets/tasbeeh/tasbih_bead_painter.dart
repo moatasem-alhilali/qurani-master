@@ -326,27 +326,8 @@ void _paintSpecular(
 class TasbihBeadStamp {
   const TasbihBeadStamp._(this.image, this.side);
 
-  final ui.Image image;
-  final int side;
-
-  /// موضع مركز الكرة ونصف قطرها داخل النسيج، نسبةً إلى ضلعه. الكرة مرفوعة
-  /// قليلًا عن المنتصف ليتّسع أسفلها لظلّ التماسّ ممّوهًا بلا اقتطاع.
-  static const _centerY = 0.40;
-  static const _radius = 0.36;
-
-  static final Map<int, TasbihBeadStamp> _cache = {};
-
-  /// ١٢ نسيجًا كحدّ أقصى: ثماني خامات مضروبة في مقاسين على أسوأ تقدير،
-  /// وكلّها صغيرة (٢٥٦×٢٥٦ في أعلى كثافة = ربع ميغابايت).
-  static const _maxEntries = 12;
-
-  /// النسيج بحجم البكسل الحقيقي: الخرزة لا تتجاوز ٦٤ نقطة منطقية في أي
-  /// استعمال، فـ `64 × كثافة الشاشة` رسمٌ بدقّة الجهاز تمامًا بلا إسراف.
-  static int _sideFor(double devicePixelRatio) =>
-      (64 * devicePixelRatio).round().clamp(96, 256);
-
-  // ignore: prefer_constructors_over_static_methods -- مصنع بذاكرة مؤقّتة
-  static TasbihBeadStamp of(TasbihBeadMaterial material, double dpr) {
+  /// النسيج الجاهز لهذه الخامة، أو رسمه أوّل مرّة ثم حفظه.
+  factory TasbihBeadStamp.of(TasbihBeadMaterial material, double dpr) {
     final side = _sideFor(dpr);
     final key = Object.hash(material, side);
 
@@ -354,16 +335,14 @@ class TasbihBeadStamp {
     if (cached != null) return cached;
 
     if (_cache.length >= _maxEntries) {
-      final oldest = _cache.keys.first;
-      _cache.remove(oldest)?.image.dispose();
+      _cache.remove(_cache.keys.first)?.image.dispose();
     }
 
-    final stamp = _render(material, side);
-    _cache[key] = stamp;
-    return stamp;
+    return _cache[key] = TasbihBeadStamp._render(material, side);
   }
 
-  static TasbihBeadStamp _render(TasbihBeadMaterial material, int side) {
+  /// تشغيل [paintTasbihBead] مرّة واحدة على لوحة خارج الشاشة وتحويلها نسيجًا.
+  factory TasbihBeadStamp._render(TasbihBeadMaterial material, int side) {
     final recorder = ui.PictureRecorder();
     paintTasbihBead(
       Canvas(recorder),
@@ -376,6 +355,25 @@ class TasbihBeadStamp {
     picture.dispose();
     return TasbihBeadStamp._(image, side);
   }
+
+  /// موضع مركز الكرة ونصف قطرها داخل النسيج، نسبةً إلى ضلعه. الكرة مرفوعة
+  /// قليلًا عن المنتصف ليتّسع أسفلها لظلّ التماسّ ممّوهًا بلا اقتطاع.
+  static const _centerY = 0.40;
+  static const _radius = 0.36;
+
+  /// ١٢ نسيجًا كحدّ أقصى: ثماني خامات مضروبة في مقاسين على أسوأ تقدير،
+  /// وكلّها صغيرة (٢٥٦×٢٥٦ في أعلى كثافة = ربع ميغابايت للواحد).
+  static const _maxEntries = 12;
+
+  static final Map<int, TasbihBeadStamp> _cache = {};
+
+  final ui.Image image;
+  final int side;
+
+  /// النسيج بحجم البكسل الحقيقي: الخرزة لا تتجاوز ٦٤ نقطة منطقية في أي
+  /// استعمال، فـ `64 × كثافة الشاشة` رسمٌ بدقّة الجهاز تمامًا بلا إسراف.
+  static int _sideFor(double devicePixelRatio) =>
+      (64 * devicePixelRatio).round().clamp(96, 256);
 
   /// ختم الخرزة بحيث يقع مركز الكرة على [center] ويصير نصف قطرها [radius].
   void paint(

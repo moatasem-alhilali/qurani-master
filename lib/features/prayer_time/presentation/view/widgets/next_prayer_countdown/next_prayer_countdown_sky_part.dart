@@ -304,8 +304,8 @@ class _SunPathPainter extends CustomPainter {
     required this.data,
     required this.ink,
     required this.orbCore,
-    this.reveal = 1,
-  });
+    this.revealAnimation,
+  }) : super(repaint: revealAnimation);
 
   final _SkyPathData data;
   final Color ink;
@@ -313,7 +313,13 @@ class _SunPathPainter extends CustomPainter {
 
   /// نسبة ظهور القوس عند فتح الشاشة: يرتسم المسار وتنزلق الشمس إلى موضعها
   /// بدل أن يظهر المشهد جاهزًا دفعة واحدة.
-  final double reveal;
+  ///
+  /// يُمرَّر المؤقّت إلى [CustomPainter.repaint] فيعيد الرسّام رسم نفسه وحده.
+  /// كانت النسخة السابقة تلفّ اللوحة كلّها بـ AnimatedBuilder، فتُعاد بناء
+  /// السماء والشارات وطبقة الحياة ستّين مرّة في الثانية طوال الافتتاح.
+  final Animation<double>? revealAnimation;
+
+  double get reveal => revealAnimation?.value ?? 1;
 
   /// نقطة على منحنى بيزييه تكعيبي. القوس يسير من اليمين إلى اليسار ليوافق
   /// اتجاه القراءة العربية.
@@ -420,7 +426,7 @@ class _SunPathPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SunPathPainter oldDelegate) =>
-      oldDelegate.reveal != reveal ||
+      oldDelegate.revealAnimation != revealAnimation ||
       oldDelegate.data.progress != data.progress ||
       oldDelegate.data.hasNow != data.hasNow ||
       oldDelegate.data.stops.length != data.stops.length ||

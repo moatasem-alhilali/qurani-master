@@ -17,7 +17,20 @@ class RadioStationPlayRequested extends RadioEvent {
   final RadioStationModel station;
 
   @override
-  List<Object?> get props => [station];
+  List<Object?> get props => [station.id];
+}
+
+/// تحديد المحطة المعروضة على المؤشّر بلا اتصال بالشبكة.
+///
+/// تدوير القرص والجهاز مطفأ يجب أن يبقى تصفّحًا صامتًا: تغيير المعروض دون
+/// فتح أربع وعشرين وصلة بثّ في الطريق.
+class RadioStationPreviewed extends RadioEvent {
+  const RadioStationPreviewed(this.station);
+
+  final RadioStationModel station;
+
+  @override
+  List<Object?> get props => [station.id];
 }
 
 class RadioTogglePlayPauseRequested extends RadioEvent {
