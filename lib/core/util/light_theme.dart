@@ -623,18 +623,17 @@ final ThemeData lightTheme = ThemeData(
   fontFamilyFallback: const [FontFamily.ios1, FontFamily.ios2],
 
   // ICON BUTTON THEME (Material3)
+  //
+  // بلا خلفية: كان كل زرّ أيقونة في التطبيق يُرسم داخل مربّع مملوء بلون
+  // السطح، فتبدو الأيقونة الصغيرة ضائعة في صندوق رمادي. الأيقونة الآن
+  // أيقونة فقط، ومن أراد مربّعًا ملوّنًا يبنيه صراحةً بـ AppSkin.iconChip.
   iconButtonTheme: IconButtonThemeData(
     style: ButtonStyle(
-      foregroundColor: WidgetStateProperty.all(AppColors.gold),
-      backgroundColor: WidgetStateProperty.all(AppColors.surface),
+      backgroundColor: WidgetStateProperty.all(Colors.transparent),
       overlayColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.12)),
-      shape: WidgetStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      shadowColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.12)),
-      surfaceTintColor:
-          WidgetStateProperty.all(AppColors.onSurface.withOpacity(0.12)),
-      iconColor: WidgetStateProperty.all(AppColors.onSurface),
+      shadowColor: WidgetStateProperty.all(Colors.transparent),
+      surfaceTintColor: WidgetStateProperty.all(Colors.transparent),
+      shape: WidgetStateProperty.all(const CircleBorder()),
     ),
   ),
 

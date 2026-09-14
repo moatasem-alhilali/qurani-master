@@ -101,14 +101,19 @@ class TasbeehStage extends StatelessWidget {
                 ),
               ],
               SizedBox(height: 14.h),
-              ValueListenableBuilder(
-                valueListenable: TasbihPreferences.instance.material,
-                builder: (context, material, _) => SizedBox(
-                  height: 92.h,
-                  child: TasbihBeadChain(
-                    count: count,
-                    material: material,
-                    stringColor: skin.inkSoft.withValues(alpha: 0.45),
+              // السحب الأفقي فوق السبحة يعدّ كاللمس — هكذا تُدار السبحة
+              // بالإبهام. أفقيٌّ عمدًا: العمودي يتنازع مع تمرير الصفحة.
+              _BeadDragCounter(
+                onStep: () => _handleTap(context),
+                child: ValueListenableBuilder(
+                  valueListenable: TasbihPreferences.instance.material,
+                  builder: (context, material, _) => SizedBox(
+                    height: 92.h,
+                    child: TasbihBeadChain(
+                      count: count,
+                      material: material,
+                      stringColor: skin.inkSoft.withValues(alpha: 0.45),
+                    ),
                   ),
                 ),
               ),
@@ -250,6 +255,43 @@ class TasbeehDhikrStrip extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// يحوّل السحب الأفقي فوق السبحة إلى تسبيحات.
+///
+/// كل [_stepDistance] بكسل من الحركة تساوي خرزة، فالسحب البطيء يعدّ واحدة
+/// والسحب السريع يعدّ عدّة — كما تنزلق الخرزات تحت الإبهام فعلًا.
+class _BeadDragCounter extends StatefulWidget {
+  const _BeadDragCounter({required this.onStep, required this.child});
+
+  final VoidCallback onStep;
+  final Widget child;
+
+  @override
+  State<_BeadDragCounter> createState() => _BeadDragCounterState();
+}
+
+class _BeadDragCounterState extends State<_BeadDragCounter> {
+  static const _stepDistance = 32.0;
+
+  double _travelled = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onHorizontalDragStart: (_) => _travelled = 0,
+      onHorizontalDragUpdate: (details) {
+        _travelled += details.delta.dx.abs();
+        while (_travelled >= _stepDistance) {
+          _travelled -= _stepDistance;
+          widget.onStep();
+        }
+      },
+      onHorizontalDragEnd: (_) => _travelled = 0,
+      child: widget.child,
     );
   }
 }

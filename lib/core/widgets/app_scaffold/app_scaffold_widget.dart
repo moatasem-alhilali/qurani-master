@@ -120,8 +120,8 @@ class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
       elevation: 0,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      titleSpacing: 4.w,
-      leadingWidth: 44.w,
+      titleSpacing: 2.w,
+      leadingWidth: 40.w,
       leading: widget.leading ?? (widget.back ? const _BackButton() : null),
       title: widget.titleWidget ??
           ((widget.title?.isEmpty ?? true)
@@ -154,8 +154,10 @@ class _BackButton extends StatelessWidget {
       onPressed: () => context.pop(),
       tooltip: 'رجوع',
       padding: EdgeInsets.zero,
-      constraints: BoxConstraints(minWidth: 40.w, minHeight: 40.w),
-      icon: AppIcon(AppIcons.backRight, color: skin.ink, size: 20.sp),
+      constraints: BoxConstraints(minWidth: 38.w, minHeight: 38.w),
+      // ذهبي كبقية أيقونات الشريط: الرجوع كان الوحيد بلون الحبر فيبدو غريبًا
+      // بجانبها.
+      icon: AppIcon(AppIcons.backRight, color: skin.accent, size: 21.sp),
     );
   }
 }

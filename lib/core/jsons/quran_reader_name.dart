@@ -63,7 +63,7 @@
 //     "format": "audio",
 //     "type": "surahbysurah"
 //   },
- 
+
 //   {
 //     "identifier": "ar.abdurrazaqbinabtanaldulaimi",
 //     "language": "ar",
@@ -753,7 +753,7 @@
 //     "format": "audio",
 //     "type": "surahbysurah"
 //   },
- 
+
 //   {
 //     "identifier": "ar.muhammadsalehalimshah",
 //     "language": "ar",
@@ -794,7 +794,7 @@
 //     "format": "audio",
 //     "type": "surahbysurah"
 //   },
- 
+
 //   {
 //     "identifier": "ar.mustafaraadalazzawi",
 //     "language": "ar",

@@ -30,8 +30,6 @@ class AssetsManager {
   static const subuh = 'assets/athores/subuh.png';
 }
 
-
-
 class FxFonts {
   static const ios1 = 'ios-1';
   static const ios2 = 'ios-2';

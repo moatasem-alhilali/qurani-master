@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BaseAlertDialog extends StatelessWidget {
-  const BaseAlertDialog({
-    Key? key,
-    required this.child
-  }) : super(key: key);
+  const BaseAlertDialog({Key? key, required this.child}) : super(key: key);
   final Widget child;
   @override
   Widget build(BuildContext context) {

@@ -309,7 +309,6 @@ class StyleButtonWrap extends StatelessWidget {
   }
 }
 
-
 /// A base widget that provides a tap effect with a ripple animation.
 ///
 /// This widget is used to wrap other widgets and add a ripple effect when tapped.
@@ -347,7 +346,7 @@ class BaseOnTap extends StatelessWidget {
   final VoidCallback? onTapCancel;
   final ValueChanged<bool>? onHover;
   final Widget? child;
-  
+
   final BorderRadius? borderRadius;
   final ShapeBorder? customBorder;
   final Color? splashColor;
@@ -395,7 +394,8 @@ class BaseOnTap extends StatelessWidget {
       radius: radius,
       splashFactory: splashFactory ?? InkRipple.splashFactory,
       splashColor: splashColor ?? context.primaryColor.withValues(alpha: 0.1),
-      highlightColor: highlightColor ?? context.primaryColor.withValues(alpha: 0.05),
+      highlightColor:
+          highlightColor ?? context.primaryColor.withValues(alpha: 0.05),
       hoverColor: hoverColor ?? context.primaryColor.withValues(alpha: 0.04),
       overlayColor: overlayColor ??
           WidgetStateProperty.resolveWith<Color?>((states) {

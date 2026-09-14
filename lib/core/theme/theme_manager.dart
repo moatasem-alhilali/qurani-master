@@ -47,7 +47,6 @@ class ThemeColorsManager {
   }
 }
 
-
 class ThemeModeManager {
 //
   static const String dark = 'dark';
@@ -56,7 +55,4 @@ class ThemeModeManager {
   // cache key
 
   static const String cacheKey = 'cache_theme_mode_key';
-
- 
-
 }

@@ -103,7 +103,6 @@ extension RequestStateWidget on RequestState {
                   Center(
                     child: Column(
                       children: [
-                      
                         TextButton.icon(
                           onPressed: () {
                             onRefresh?.call();
@@ -133,7 +132,6 @@ extension RequestStateWidget on RequestState {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                     
                       Positioned(
                         bottom: 60.h,
                         left: 0,

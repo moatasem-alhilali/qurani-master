@@ -12,7 +12,7 @@ extension BaseBottomSheet on BuildContext {
     BorderRadius? borderRadius,
     Duration? animationDuration,
   }) {
-   return  showModalBottomSheet<T>(
+    return showModalBottomSheet<T>(
       context: this,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

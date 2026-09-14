@@ -29,40 +29,73 @@ class TasbihBeadChain extends StatefulWidget {
 }
 
 class _TasbihBeadChainState extends State<TasbihBeadChain>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  /// انزلاق السلسلة.
+  ///
+  /// العدّاد تراكمي ولا يُصفَّر: كل تسبيحة تُحرّك الهدف خرزةً واحدة إلى
+  /// الأمام، والحركة تبدأ **من موضع السلسلة الحالي** لا من الصفر. بدون هذا
+  /// كانت النقرة السريعة تُعيد الحركة إلى بدايتها فتقفز السلسلة للخلف —
+  /// وهذا سبب الإحساس بأن الخرزة «تدخل بسرعة وليست سلسة».
   late final AnimationController _slide = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 280),
+    duration: const Duration(milliseconds: 430),
   );
 
-  late final Animation<double> _shift = CurvedAnimation(
+  late final Animation<double> _curve = CurvedAnimation(
     parent: _slide,
     curve: Curves.easeOutCubic,
+  );
+
+  double _from = 0;
+  double _to = 0;
+
+  double get _offset => _from + (_to - _from) * _curve.value;
+
+  /// تأرجح الخيط بعد الدفعة: ذبذبة تخمد تدريجيًا كأي جسم معلّق.
+  late final AnimationController _swing = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1150),
   );
 
   @override
   void didUpdateWidget(covariant TasbihBeadChain oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.count != oldWidget.count) {
-      // كل تسبيحة تُزحلق السلسلة خرزةً كاملة، فيُحسّ العدّ لا يُقرأ فقط.
+      // نلتقط الموضع الحالي أولًا ثم ندفع الهدف خرزةً: هكذا تتسلسل النقرات
+      // المتتابعة في حركة واحدة متّصلة بلا قفزة.
+      _from = _offset;
+      _to += 1;
       _slide.forward(from: 0);
+      _swing.forward(from: 0);
     }
   }
 
   @override
   void dispose() {
     _slide.dispose();
+    _swing.dispose();
     super.dispose();
+  }
+
+  /// جيبٌ متناقص السعة: يمثّل تأرجحًا مخمّدًا بلا محرّك فيزياء.
+  double get _swingValue {
+    if (!_swing.isAnimating && _swing.value == 0) return 0;
+    final t = _swing.value;
+    final decay = (1 - t) * (1 - t);
+    return math.sin(t * math.pi * 3.2) * decay;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _shift,
+      animation: Listenable.merge([_curve, _swing]),
       builder: (context, _) => CustomPaint(
         size: Size.infinite,
         painter: _BeadChainPainter(
-          shift: _shift.value,
+          // الخرزات متماثلة ومتساوية التباعد، فالجزء الكسري من الإزاحة
+          // يكفي لرسم المشهد ويمنع السلسلة من الهروب خارج القوس.
+          shift: _offset % 1,
+          swing: _swingValue,
           palette: widget.material.palette,
           stringColor: widget.stringColor,
           beadCount: widget.beadCount,
@@ -75,6 +108,7 @@ class _TasbihBeadChainState extends State<TasbihBeadChain>
 class _BeadChainPainter extends CustomPainter {
   const _BeadChainPainter({
     required this.shift,
+    required this.swing,
     required this.palette,
     required this.stringColor,
     required this.beadCount,
@@ -82,15 +116,31 @@ class _BeadChainPainter extends CustomPainter {
 
   /// من ٠ إلى ١ — كم انزلقت السلسلة نحو الخرزة التالية.
   final double shift;
+
+  /// تأرجح مخمّد من ‎-١ إلى ١، يميل الخيط ويعمّق تدلّيه.
+  final double swing;
+
   final TasbihBeadPalette palette;
   final Color stringColor;
   final int beadCount;
 
   /// نقطة على منحنى الخيط. الخيط يتدلّى لأسفل كسبحة معلّقة، لا يقوس لأعلى.
+  ///
+  /// التأرجح يُزيح نقطتي التحكّم: الأولى والثانية بمقدارين متعاكسين، فيميل
+  /// القوس كلّه كما يميل خيط حقيقي دُفع من طرف.
   Offset _pointAt(Size size, double t) {
+    final sway = swing * size.width * 0.035;
+    final dip = swing.abs() * size.height * 0.05;
+
     final p0 = Offset(0, size.height * 0.26);
-    final p1 = Offset(size.width * 0.26, size.height * 0.96);
-    final p2 = Offset(size.width * 0.74, size.height * 0.96);
+    final p1 = Offset(
+      size.width * 0.26 + sway,
+      size.height * 0.96 + dip,
+    );
+    final p2 = Offset(
+      size.width * 0.74 + sway * 0.6,
+      size.height * 0.96 + dip,
+    );
     final p3 = Offset(size.width, size.height * 0.26);
 
     final u = 1 - t;
@@ -134,21 +184,27 @@ class _BeadChainPainter extends CustomPainter {
       final t = (i + 1 - shift) / slotCount;
       if (t < -0.02 || t > 1.02) continue;
 
-      final center = _pointAt(size, t.clamp(0.0, 1.0));
+      final clamped = t.clamp(0.0, 1.0);
+      final center = _pointAt(size, clamped);
 
       // الخرزات في وسط القوس أقرب إلى الناظر فتكبر قليلًا — إيحاء بالعمق
       // بلا تحويل ثلاثي الأبعاد.
-      final depth = math.sin(math.pi * t.clamp(0.0, 1.0));
-      final radius = baseRadius * (0.74 + 0.26 * depth);
+      final depth = math.sin(math.pi * clamped);
 
-      // الخرزات الخارجة من طرفي القوس تتلاشى بدل أن تُقطع فجأة.
-      final edgeFade = t < 0.08
-          ? (t / 0.08).clamp(0.0, 1.0)
-          : t > 0.92
-              ? ((1 - t) / 0.08).clamp(0.0, 1.0)
+      // منطقة دخول وخروج عريضة: الخرزة تكبر وتتّضح تدريجيًا عند طرفي
+      // القوس بدل أن تظهر دفعةً واحدة. المنطقة الضيّقة كانت تجعل الدخول
+      // يبدو مفاجئًا مهما بطُؤت الحركة.
+      const fadeZone = 0.18;
+      final edge = clamped < fadeZone
+          ? clamped / fadeZone
+          : clamped > 1 - fadeZone
+              ? (1 - clamped) / fadeZone
               : 1.0;
+      final entry = Curves.easeOut.transform(edge.clamp(0.0, 1.0));
 
-      _paintBead(canvas, center, radius, edgeFade);
+      final radius = baseRadius * (0.74 + 0.26 * depth) * (0.58 + 0.42 * entry);
+
+      _paintBead(canvas, center, radius, entry);
     }
   }
 
@@ -257,6 +313,7 @@ class _BeadChainPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _BeadChainPainter oldDelegate) =>
       oldDelegate.shift != shift ||
+      oldDelegate.swing != swing ||
       oldDelegate.palette != palette ||
       oldDelegate.stringColor != stringColor ||
       oldDelegate.beadCount != beadCount;

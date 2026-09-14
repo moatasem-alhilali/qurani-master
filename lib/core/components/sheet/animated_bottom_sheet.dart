@@ -127,7 +127,6 @@ class _AnimatedBottomSheetContentState extends State<AnimatedBottomSheetContent>
   }
 
   @override
-
   void dispose() {
     _animationController.dispose();
     super.dispose();

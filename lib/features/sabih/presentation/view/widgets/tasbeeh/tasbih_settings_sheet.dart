@@ -11,12 +11,16 @@ import 'package:quran_app/features/sabih/data/service/tasbih_preferences.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_counter.dart';
 
-/// إعدادات الذكر: الهدف، حجم الخط، الاهتزاز، خامة السبحة، وإعادة الضبط.
+/// يفتح إعدادات المسبحة كورقة منبثقة فوق الشاشة.
+///
+/// ورقة لا صفحة: الإعدادات هنا تُضبط والعين على السبحة، فالانتقال إلى صفحة
+/// كاملة يقطع السياق ويُنسي المستخدم ما كان يسبّح عليه.
 Future<void> showTasbihSettingsSheet(
   BuildContext context, {
   required SubihModel subih,
   required int count,
 }) {
+  // نلتقط الـ bloc قبل فتح الورقة: سياقها مختلف ولا يصل إلى مزوّد الشاشة.
   final bloc = context.read<SabihBloc>();
   final skin = AppSkin.of(context);
 
@@ -26,9 +30,9 @@ Future<void> showTasbihSettingsSheet(
     useSafeArea: true,
     backgroundColor: skin.ground,
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(18.r)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
     ),
-    builder: (sheetContext) => BlocProvider.value(
+    builder: (_) => BlocProvider.value(
       value: bloc,
       child: _TasbihSettingsSheet(subih: subih, count: count),
     ),
@@ -75,6 +79,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
     }
     _prefs.setTargetFor(_subihId, parsed);
     HapticFeedback.selectionClick();
+    FocusScope.of(context).unfocus();
     setState(() {});
   }
 
@@ -82,168 +87,216 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 20.h),
+    return Padding(
+      // ترتفع الورقة فوق لوحة المفاتيح عند الكتابة في حقل الهدف.
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: ConstrainedBox(
+        // سقف للارتفاع حتى لا تبتلع الورقة الشاشة كلها، والمحتوى يمرّر
+        // داخلها بدل أن يُقصّ.
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.86,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-              child: Container(
-                width: 36.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: skin.hairline,
-                  borderRadius: BorderRadius.circular(999.r),
-                ),
+            SizedBox(height: 10.h),
+            Container(
+              width: 38.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: skin.hairline,
+                borderRadius: BorderRadius.circular(999.r),
               ),
             ),
-            SizedBox(height: 14.h),
-            Text(
-              'إعدادات الذكر',
-              style: TextStyle(
-                color: skin.ink,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            Text(
-              widget.subih.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: skin.inkSoft.withValues(alpha: 0.78),
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            _SectionLabel(label: 'هدف الذكر', skin: skin),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _targetController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    style: TextStyle(color: skin.ink, fontSize: 13.sp),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      hintText: 'مثال: 100',
-                      hintStyle: TextStyle(
-                        color: skin.inkSoft.withValues(alpha: 0.5),
-                        fontSize: 11.sp,
-                      ),
-                      filled: true,
-                      fillColor: skin.raised,
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12.w, vertical: 11.h),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: skin.hairline),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: skin.hairline),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: const BorderSide(color: AppColors.gold),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                _GoldButton(label: 'حفظ', onTap: _applyTarget),
-              ],
-            ),
-            SizedBox(height: 6.h),
-            Text(
-              'اتركه فارغًا وسيتدرّج تلقائيًا: ٣٣ ثم ٩٩ ثم كل مئة.',
-              style: TextStyle(
-                color: skin.inkSoft.withValues(alpha: 0.6),
-                fontSize: 9.5.sp,
-              ),
-            ),
-            _SectionLabel(label: 'حجم الخط', skin: skin),
-            ValueListenableBuilder<double>(
-              valueListenable: _prefs.fontScale,
-              builder: (context, scale, _) => Row(
+            SizedBox(height: 12.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Row(
                 children: [
-                  Text(
-                    'أ',
-                    style: TextStyle(color: skin.inkSoft, fontSize: 11.sp),
-                  ),
                   Expanded(
-                    child: Slider(
-                      value: scale,
-                      min: TasbihPreferences.minFontScale,
-                      max: TasbihPreferences.maxFontScale,
-                      divisions: 10,
-                      activeColor: AppColors.gold,
-                      inactiveColor: skin.hairline,
-                      label: '${(scale * 100).round()}٪',
-                      onChanged: _prefs.setFontScale,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'إعدادات المسبحة',
+                          style: TextStyle(
+                            color: skin.ink,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Text(
+                          widget.subih.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: skin.inkSoft.withValues(alpha: 0.78),
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    'أ',
-                    style: TextStyle(color: skin.ink, fontSize: 19.sp),
+                  IconButton(
+                    tooltip: 'إغلاق',
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: AppIcon(
+                      AppIcons.close,
+                      color: skin.inkSoft,
+                      size: 17.sp,
+                    ),
                   ),
                 ],
               ),
             ),
-            _SectionLabel(label: 'الاهتزاز', skin: skin),
-            ValueListenableBuilder<bool>(
-              valueListenable: _prefs.hapticsEnabled,
-              builder: (context, enabled, _) => SwitchListTile.adaptive(
-                contentPadding: EdgeInsets.zero,
-                activeColor: AppColors.gold,
-                value: enabled,
-                onChanged: (value) => _prefs.setHapticsEnabled(value: value),
-                title: Text(
-                  'اهتزاز خفيف مع كل تسبيحة',
-                  style: TextStyle(color: skin.ink, fontSize: 11.5.sp),
-                ),
-                subtitle: Text(
-                  'واهتزازة أوضح عند بلوغ الهدف',
-                  style: TextStyle(
-                    color: skin.inkSoft.withValues(alpha: 0.7),
-                    fontSize: 9.5.sp,
-                  ),
-                ),
-              ),
-            ),
-            _SectionLabel(label: 'تصميم السبحة', skin: skin),
-            ValueListenableBuilder<TasbihBeadMaterial>(
-              valueListenable: _prefs.material,
-              builder: (context, selected, _) => Wrap(
-                spacing: 10.w,
-                runSpacing: 10.h,
-                children: [
-                  for (final material in TasbihBeadMaterial.values)
-                    _BeadSwatch(
-                      material: material,
-                      selected: material == selected,
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 22.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SectionLabel(label: 'هدف الذكر', skin: skin),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _targetController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            style: TextStyle(color: skin.ink, fontSize: 13.sp),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              hintText: 'مثال: 100',
+                              hintStyle: TextStyle(
+                                color: skin.inkSoft.withValues(alpha: 0.5),
+                                fontSize: 11.sp,
+                              ),
+                              filled: true,
+                              fillColor: skin.raised,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 11.h,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide: BorderSide(color: skin.hairline),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide: BorderSide(color: skin.hairline),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide:
+                                    const BorderSide(color: AppColors.gold),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        _GoldButton(label: 'حفظ', onTap: _applyTarget),
+                      ],
+                    ),
+                    SizedBox(height: 6.h),
+                    Text(
+                      'اتركه كما هو وسيتدرّج تلقائيًا: ٣٣ ثم ٩٩ ثم كل مئة.',
+                      style: TextStyle(
+                        color: skin.inkSoft.withValues(alpha: 0.6),
+                        fontSize: 9.5.sp,
+                      ),
+                    ),
+                    _SectionLabel(label: 'حجم الخط', skin: skin),
+                    ValueListenableBuilder<double>(
+                      valueListenable: _prefs.fontScale,
+                      builder: (context, scale, _) => Row(
+                        children: [
+                          Text(
+                            'أ',
+                            style: TextStyle(
+                              color: skin.inkSoft,
+                              fontSize: 11.sp,
+                            ),
+                          ),
+                          Expanded(
+                            child: Slider(
+                              value: scale,
+                              min: TasbihPreferences.minFontScale,
+                              max: TasbihPreferences.maxFontScale,
+                              divisions: 10,
+                              activeColor: AppColors.gold,
+                              inactiveColor: skin.hairline,
+                              label: '${(scale * 100).round()}٪',
+                              onChanged: _prefs.setFontScale,
+                            ),
+                          ),
+                          Text(
+                            'أ',
+                            style: TextStyle(color: skin.ink, fontSize: 19.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _SectionLabel(label: 'الاهتزاز', skin: skin),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _prefs.hapticsEnabled,
+                      builder: (context, enabled, _) => SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        activeColor: AppColors.gold,
+                        value: enabled,
+                        onChanged: (value) =>
+                            _prefs.setHapticsEnabled(value: value),
+                        title: Text(
+                          'اهتزاز خفيف مع كل تسبيحة',
+                          style: TextStyle(color: skin.ink, fontSize: 11.5.sp),
+                        ),
+                        subtitle: Text(
+                          'واهتزازة أوضح عند بلوغ الهدف',
+                          style: TextStyle(
+                            color: skin.inkSoft.withValues(alpha: 0.7),
+                            fontSize: 9.5.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _SectionLabel(label: 'تصميم السبحة', skin: skin),
+                    ValueListenableBuilder<TasbihBeadMaterial>(
+                      valueListenable: _prefs.material,
+                      builder: (context, selected, _) => Wrap(
+                        spacing: 10.w,
+                        runSpacing: 10.h,
+                        children: [
+                          for (final material in TasbihBeadMaterial.values)
+                            _BeadSwatch(
+                              material: material,
+                              selected: material == selected,
+                              onTap: () {
+                                HapticFeedback.selectionClick();
+                                _prefs.setMaterial(material);
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 22.h),
+                    _DangerRow(
+                      label: 'إعادة ضبط عدّاد اليوم',
                       onTap: () {
-                        HapticFeedback.selectionClick();
-                        _prefs.setMaterial(material);
+                        final id = widget.subih.id;
+                        if (id == null) return;
+                        context
+                            .read<SabihBloc>()
+                            .add(ResetTodayCounterEvent(subihId: id));
+                        HapticFeedback.mediumImpact();
+                        Navigator.of(context).pop();
                       },
                     ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 22.h),
-            _DangerRow(
-              label: 'إعادة ضبط عدّاد اليوم',
-              onTap: () {
-                final id = widget.subih.id;
-                if (id == null) return;
-                context
-                    .read<SabihBloc>()
-                    .add(ResetTodayCounterEvent(subihId: id));
-                HapticFeedback.mediumImpact();
-                Navigator.of(context).pop();
-              },
             ),
           ],
         ),
@@ -261,7 +314,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 20.h, 0, 8.h),
+      padding: EdgeInsets.fromLTRB(0, 18.h, 0, 8.h),
       child: Row(
         children: [
           Text(
