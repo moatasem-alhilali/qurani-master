@@ -11,9 +11,6 @@ class TravelAthkarBloc extends Bloc<TravelAthkarEvent, TravelAthkarState> {
     on<LoadAthkarEvent>(_onLoadAthkar);
     on<IncrementCounterEvent>(_onIncrementCounter);
     on<ResetCounterEvent>(_onResetCounter);
-    on<SearchAthkarEvent>(_onSearchAthkar);
-    on<UpdateDisplayModeEvent>(_onUpdateDisplayMode);
-    on<UpdatePageIndexEvent>(_onUpdatePageIndex);
 
     add(LoadAthkarEvent());
   }
@@ -48,7 +45,6 @@ class TravelAthkarBloc extends Bloc<TravelAthkarEvent, TravelAthkarState> {
         state.copyWith(
           status: TravelAthkarStatus.success,
           allItems: items,
-          filteredItems: items,
         ),
       );
     } catch (_) {
@@ -90,57 +86,5 @@ class TravelAthkarBloc extends Bloc<TravelAthkarEvent, TravelAthkarState> {
     updatedCounts[event.key] = 0;
 
     emit(state.copyWith(repeatCounts: updatedCounts));
-  }
-
-  void _onSearchAthkar(
-    SearchAthkarEvent event,
-    Emitter<TravelAthkarState> emit,
-  ) {
-    if (state.status != TravelAthkarStatus.success) return;
-
-    final trimmedQuery = event.query.trim();
-    if (trimmedQuery.isEmpty) {
-      emit(
-        state.copyWith(
-          searchQuery: '',
-          filteredItems: state.allItems,
-          currentPageIndex: 0,
-        ),
-      );
-      return;
-    }
-
-    final filtered = state.allItems
-        .where((item) => _matchesSearch(item, trimmedQuery))
-        .toList();
-    emit(
-      state.copyWith(
-        searchQuery: trimmedQuery,
-        filteredItems: filtered,
-        currentPageIndex: 0,
-      ),
-    );
-  }
-
-  void _onUpdateDisplayMode(
-    UpdateDisplayModeEvent event,
-    Emitter<TravelAthkarState> emit,
-  ) {
-    emit(state.copyWith(displayMode: event.mode, currentPageIndex: 0));
-  }
-
-  void _onUpdatePageIndex(
-    UpdatePageIndexEvent event,
-    Emitter<TravelAthkarState> emit,
-  ) {
-    emit(state.copyWith(currentPageIndex: event.index));
-  }
-
-  bool _matchesSearch(TravelDhikrModel item, String query) {
-    final triggerLabel = travelTriggerLabels[item.trigger] ?? item.trigger;
-    return item.title.contains(query) ||
-        item.text.contains(query) ||
-        item.virtue.contains(query) ||
-        triggerLabel.contains(query);
   }
 }

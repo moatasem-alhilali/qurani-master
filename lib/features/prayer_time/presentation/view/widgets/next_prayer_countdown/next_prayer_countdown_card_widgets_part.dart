@@ -39,8 +39,11 @@ class _SkyHeroPanel extends StatelessWidget {
           : SystemUiOverlayStyle.dark.copyWith(
               statusBarColor: Colors.transparent,
             ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.r)),
+      // قصّ مستقيم لا مدوّر: التدوير كان يكشف خلفية الـ Scaffold عند الزوايا
+      // السفلية — وهي لون آخر غير أرضية الصفحة — فيبدو المشهد بطاقة عائمة
+      // لها هامش، لا سماءً تملأ الشاشة. والقصّ نفسه يبقى لأن الغيوم تعبر من
+      // حافة إلى حافة ولولاه لرسمت خارج اللوحة.
+      child: ClipRect(
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 650),
           curve: Curves.easeOutCubic,

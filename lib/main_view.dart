@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
@@ -249,7 +250,10 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       child: BlocBuilder<BaseBloc, BaseState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: context.scaffoldBackgroundColor,
+            // أرضية الصفحة نفسها، لا أرضية الثيم العامة: الفارق بينهما كان
+            // يظهر عند شدّ التمرير وفي زوايا المشهد، فيبدو المحتوى طبقة
+            // موضوعة فوق لون آخر بدل أن يكون هو الشاشة.
+            backgroundColor: AppSkin.of(context).ground,
             body: const HomeScreenNew(),
           );
         },
