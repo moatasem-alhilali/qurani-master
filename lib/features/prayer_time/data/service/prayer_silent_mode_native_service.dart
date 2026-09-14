@@ -11,6 +11,7 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_silent_mode_settings.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -233,8 +234,7 @@ class PrayerSilentModeNativeService {
   List<PrayerInfoModel> _buildPrayersForTomorrow(
     PrayerLocationSelection selectedLocation,
   ) {
-    final params = CalculationMethod.muslim_world_league.getParameters()
-      ..madhab = Madhab.shafi;
+    final params = PrayerCalculationParams.build();
     final locationNow = DateTime.now().toUtc().add(
           Duration(minutes: selectedLocation.utcOffsetMinutes),
         );

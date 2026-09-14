@@ -8,6 +8,7 @@ import 'package:quran_app/core/services/services_location.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_app/main.dart';
 
 abstract class PrayerTimeService {
@@ -62,8 +63,7 @@ class AdhanPrayerTimeService implements PrayerTimeService {
     Coordinates coordinates,
     Duration? utcOffset,
   ) {
-    final params = CalculationMethod.muslim_world_league.getParameters()
-      ..madhab = Madhab.shafi;
+    final params = PrayerCalculationParams.build();
 
     if (utcOffset != null) {
       final locationDate = DateTime.now().toUtc().add(utcOffset);

@@ -15,6 +15,7 @@ import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_selector.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -403,8 +404,7 @@ class HomeWidgetsService {
   List<_PrayerWidgetScheduleItem> _buildPrayerSchedule(
     PrayerLocationSelection selection,
   ) {
-    final params = CalculationMethod.muslim_world_league.getParameters()
-      ..madhab = Madhab.shafi;
+    final params = PrayerCalculationParams.build();
     final coordinates = Coordinates(selection.latitude, selection.longitude);
     final offset = Duration(minutes: selection.utcOffsetMinutes);
     final nowAtLocation = _locationNow(selection.utcOffsetMinutes);

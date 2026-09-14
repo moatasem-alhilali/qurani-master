@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:adhan/adhan.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
 
@@ -75,8 +76,7 @@ class FlightPrayerService {
       final offset = Duration(minutes: offsetMinutes);
       final localTime = point.timestampUtc.add(offset);
 
-      final params = CalculationMethod.muslim_world_league.getParameters()
-        ..madhab = Madhab.shafi;
+      final params = PrayerCalculationParams.build();
 
       final prayerTimes = PrayerTimes.utcOffset(
         Coordinates(point.latitude, point.longitude),
