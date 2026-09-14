@@ -168,8 +168,7 @@ class _SkyHeroPanel extends StatelessWidget {
                                   ? skin.ground
                                   : palette.horizon.withValues(alpha: 0.9),
                               // نوافذ المسجد تُضاء حين تغيب الشمس فقط.
-                              windowGlow:
-                                  palette.windowsLit ? palette.orbGlow : null,
+                              windowGlow: palette.lamp,
                             ),
                           ),
                         ),

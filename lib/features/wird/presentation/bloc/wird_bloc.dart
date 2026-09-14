@@ -72,16 +72,27 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
       );
 
       // After loading data, configure initial single-play queue
-      unawaited(_setupAudioQueue(items, emit));
+      unawaited(_setupAudioQueue(items));
     } catch (e) {
       emit(state.copyWith(state: RequestState.error));
     }
   }
 
-  Future<void> _setupAudioQueue(
-    List<WirdModel> items,
-    Emitter<WirdState>? emit,
-  ) async {
+  /// إصدار حالة من مهمّة صوتية طويلة تعيش خارج عمر معالِج الحدث.
+  ///
+  /// تهيئة قائمة الصوت تُطلَق بـ `unawaited` وتستمرّ بعد أن يكون المعالِج قد
+  /// انتهى، ومُصدِر الحدث (`Emitter`) يُغلَق لحظة انتهاء معالِجه: أي `emit`
+  /// بعدها يرمي
+  /// `'!_isCompleted': emit was called after an event handler completed`.
+  /// لذلك لا يُمرَّر المُصدِر إلى هذه المهامّ أبدًا؛ تصدر عبر مُصدِر البلوك
+  /// نفسه المحميّ بـ [isClosed].
+  void _emitDetached(WirdState newState) {
+    if (isClosed) return;
+    // ignore: invalid_use_of_visible_for_testing_member
+    emit(newState);
+  }
+
+  Future<void> _setupAudioQueue(List<WirdModel> items) async {
     final signature = _buildAudioSignature(items);
     if (_audioSignature == signature && _audioService != null) {
       return;
@@ -90,16 +101,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
     _audioSignature = signature;
     final setupId = ++_setupToken;
 
-    void updateState(WirdState newState) {
-      if (emit != null && !isClosed) {
-        emit(newState);
-      } else if (!isClosed) {
-        // ignore: invalid_use_of_visible_for_testing_member
-        this.emit(newState);
-      }
-    }
-
-    updateState(
+    _emitDetached(
       state.copyWith(
         isAudioInitializing: true,
         isAudioReady: false,
@@ -121,7 +123,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
         );
 
     if (indexedAudioItems.isEmpty) {
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: false,
@@ -178,7 +180,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
         }
       });
 
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: true,
@@ -187,7 +189,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
       );
     } catch (_) {
       await service.audioPlayer.dispose();
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: false,
@@ -227,21 +229,25 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
   ) async {
     if (state.isAudioInitializing || !state.isAudioReady) return;
 
-    final service = _audioService;
-    final queueIndex = _itemIndexToQueueIndex[event.itemIndex];
-
-    if (service == null || queueIndex == null) return;
-
-    final player = service.audioPlayer;
-    final currentState = player.playerState;
-    final isCurrentItem = state.activeItemIndex == event.itemIndex;
-    final isCompleted =
-        currentState.processingState == ProcessingState.completed;
-
     try {
       if (state.isQueueRepeated) {
-        await _setupAudioQueue(state.data ?? [], null);
+        // الخروج من وضع «تشغيل الكل» يهدم المشغّل ويبني قائمة مفردة جديدة،
+        // فكل ما التُقط قبل هذا السطر — المشغّل وخريطة الفهارس — يصير معلّقًا
+        // على كائن تخلّص منه. كانت البقية تكمل على المرجع القديم فيرمي
+        // ‎playSeek‎ ويبتلعه ‎catch‎، فلا يشتغل الذكر ولا تظهر رسالة.
+        await _setupAudioQueue(state.data ?? []);
+        if (isClosed) return;
       }
+
+      final service = _audioService;
+      final queueIndex = _itemIndexToQueueIndex[event.itemIndex];
+      if (service == null || queueIndex == null) return;
+
+      final player = service.audioPlayer;
+      final currentState = player.playerState;
+      final isCurrentItem = state.activeItemIndex == event.itemIndex;
+      final isCompleted =
+          currentState.processingState == ProcessingState.completed;
 
       if (isCurrentItem && currentState.playing) {
         await player.pause();
@@ -255,7 +261,9 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
 
       await service.playSeek(queueIndex);
       await player.play();
-    } catch (_) {}
+    } catch (error) {
+      debugPrint('WirdBloc: play ${event.itemIndex} failed: $error');
+    }
   }
 
   FutureOr<void> _onTogglePlayAll(
@@ -286,14 +294,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
     _audioSignature = signature;
     final setupId = ++_setupToken;
 
-    void updateState(WirdState newState) {
-      if (!isClosed) {
-        // ignore: invalid_use_of_visible_for_testing_member
-        emit(newState);
-      }
-    }
-
-    updateState(
+    _emitDetached(
       state.copyWith(
         isAudioInitializing: true,
         isAudioReady: false,
@@ -313,7 +314,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
         );
 
     if (indexedAudioItems.isEmpty) {
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: false,
@@ -374,7 +375,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
         }
       });
 
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: true,
@@ -384,7 +385,7 @@ class WirdBloc extends Bloc<WirdEvent, WirdState> {
       );
     } catch (_) {
       await service.audioPlayer.dispose();
-      updateState(
+      _emitDetached(
         state.copyWith(
           isAudioInitializing: false,
           isAudioReady: false,

@@ -46,6 +46,7 @@ class _SkyPalette {
     required this.hasStars,
     required this.lightStatusBarIcons,
     required this.mood,
+    this.lamp,
   });
 
   factory _SkyPalette.of(_SkyWindow window) {
@@ -53,17 +54,19 @@ class _SkyPalette {
       case _SkyWindow.fajr:
         return const _SkyPalette(
           sky: [
-            AppColors.brandDusk,
-            AppColors.brandBrown,
-            AppColors.brandSand,
+            AppColors.skyFajr1,
+            AppColors.skyFajr2,
+            AppColors.skyFajr3,
+            AppColors.skyFajr4,
           ],
-          stops: [0, 0.55, 1],
-          ink: AppColors.brandIvory,
-          inkSoft: AppColors.brandMist,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandCream,
-          orbGlow: AppColors.brandGoldLight,
-          horizon: AppColors.brandNight,
+          stops: [0, 0.38, 0.72, 1],
+          ink: AppColors.skyFajrInk,
+          inkSoft: AppColors.skyFajrInkSoft,
+          veil: AppColors.skyVeilLight,
+          orbCore: AppColors.skyFajrOrb,
+          orbGlow: AppColors.skyFajrGlow,
+          horizon: AppColors.skyFajrHorizon,
+          lamp: AppColors.skyLampDawn,
           orbAlignment: Alignment(0.82, -0.58),
           hasStars: true,
           lightStatusBarIcons: true,
@@ -72,17 +75,19 @@ class _SkyPalette {
       case _SkyWindow.sunrise:
         return const _SkyPalette(
           sky: [
-            AppColors.brandSand,
-            AppColors.brandMist,
-            AppColors.brandIvory,
+            AppColors.skySunrise1,
+            AppColors.skySunrise2,
+            AppColors.skySunrise3,
+            AppColors.skySunrise4,
           ],
-          stops: [0, 0.55, 1],
-          ink: AppColors.brandBrownDeep,
-          inkSoft: AppColors.brandBrown,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandIvory,
-          orbGlow: AppColors.gold,
-          horizon: AppColors.brandBrownDeep,
+          stops: [0, 0.34, 0.72, 1],
+          ink: AppColors.skySunriseInk,
+          inkSoft: AppColors.skySunriseInkSoft,
+          // فوق سماء فاتحة يصير الزجاج داكنًا، وإلا ذاب في خلفيّته.
+          veil: AppColors.skySunriseVeil,
+          orbCore: AppColors.skyOrbWhite,
+          orbGlow: AppColors.skySunriseGlow,
+          horizon: AppColors.skySunriseHorizon,
           orbAlignment: Alignment(0.86, -0.46),
           hasStars: false,
           lightStatusBarIcons: false,
@@ -91,17 +96,18 @@ class _SkyPalette {
       case _SkyWindow.dhuhr:
         return const _SkyPalette(
           sky: [
-            AppColors.brandGoldLight,
-            AppColors.brandCream,
-            AppColors.brandIvory,
+            AppColors.skyNoon1,
+            AppColors.skyNoon2,
+            AppColors.skyNoon3,
+            AppColors.skyNoon4,
           ],
-          stops: [0, 0.5, 1],
-          ink: AppColors.brandBrownDeep,
-          inkSoft: AppColors.brandBrown,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandIvory,
-          orbGlow: AppColors.brandGoldLight,
-          horizon: AppColors.brandBrownDeep,
+          stops: [0, 0.34, 0.7, 1],
+          ink: AppColors.skyNoonInk,
+          inkSoft: AppColors.skyNoonInkSoft,
+          veil: AppColors.skyNoonVeil,
+          orbCore: AppColors.skyOrbWhite,
+          orbGlow: AppColors.skyNoonGlow,
+          horizon: AppColors.skyNoonHorizon,
           orbAlignment: Alignment(0, -0.95),
           hasStars: false,
           lightStatusBarIcons: false,
@@ -110,17 +116,18 @@ class _SkyPalette {
       case _SkyWindow.asr:
         return const _SkyPalette(
           sky: [
-            AppColors.brandGoldDeep,
-            AppColors.brandGoldLight,
-            AppColors.brandCream,
+            AppColors.skyAsr1,
+            AppColors.skyAsr2,
+            AppColors.skyAsr3,
+            AppColors.skyAsr4,
           ],
-          stops: [0, 0.55, 1],
-          ink: AppColors.brandDusk,
-          inkSoft: AppColors.brandBrownDeep,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandIvory,
-          orbGlow: AppColors.brandCream,
-          horizon: AppColors.brandBrownDeep,
+          stops: [0, 0.3, 0.68, 1],
+          ink: AppColors.skyAsrInk,
+          inkSoft: AppColors.skyAsrInkSoft,
+          veil: AppColors.skyAsrVeil,
+          orbCore: AppColors.skyOrbWarmWhite,
+          orbGlow: AppColors.skyAsrGlow,
+          horizon: AppColors.skyAsrHorizon,
           orbAlignment: Alignment(-0.86, -0.5),
           hasStars: false,
           lightStatusBarIcons: false,
@@ -129,17 +136,19 @@ class _SkyPalette {
       case _SkyWindow.maghrib:
         return const _SkyPalette(
           sky: [
-            AppColors.brandBrownDeep,
-            AppColors.brandGoldDeep,
-            AppColors.brandGoldLight,
+            AppColors.skyMaghrib1,
+            AppColors.skyMaghrib2,
+            AppColors.skyMaghrib3,
+            AppColors.skyMaghrib4,
           ],
-          stops: [0, 0.58, 1],
-          ink: AppColors.brandIvory,
-          inkSoft: AppColors.brandCream,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandCream,
-          orbGlow: AppColors.brandGoldLight,
-          horizon: AppColors.brandNight,
+          stops: [0, 0.34, 0.68, 1],
+          ink: AppColors.skyMaghribInk,
+          inkSoft: AppColors.skyMaghribInkSoft,
+          veil: AppColors.skyVeilLight,
+          orbCore: AppColors.skyMaghribOrb,
+          orbGlow: AppColors.skyMaghribGlow,
+          horizon: AppColors.skyMaghribHorizon,
+          lamp: AppColors.skyLampDusk,
           orbAlignment: Alignment(-0.9, -0.24),
           hasStars: false,
           lightStatusBarIcons: true,
@@ -148,17 +157,19 @@ class _SkyPalette {
       case _SkyWindow.isha:
         return const _SkyPalette(
           sky: [
-            AppColors.brandNight,
-            AppColors.brandDusk,
-            AppColors.brandBrown,
+            AppColors.skyIsha1,
+            AppColors.skyIsha2,
+            AppColors.skyIsha3,
+            AppColors.skyIsha4,
           ],
-          stops: [0, 0.55, 1],
-          ink: AppColors.brandIvory,
-          inkSoft: AppColors.brandMist,
-          veil: AppColors.brandIvory,
-          orbCore: AppColors.brandIvory,
-          orbGlow: AppColors.brandSand,
-          horizon: AppColors.brandNight,
+          stops: [0, 0.36, 0.72, 1],
+          ink: AppColors.skyIshaInk,
+          inkSoft: AppColors.skyIshaInkSoft,
+          veil: AppColors.skyVeilLight,
+          orbCore: AppColors.skyIshaOrb,
+          orbGlow: AppColors.skyIshaGlow,
+          horizon: AppColors.skyIshaHorizon,
+          lamp: AppColors.skyLampNight,
           orbAlignment: Alignment(-0.82, -0.6),
           hasStars: true,
           lightStatusBarIcons: true,
@@ -196,6 +207,10 @@ class _SkyPalette {
 
   final _SkyMood mood;
 
+  /// لون مصابيح المسجد. وجودُه هو ما يُشعلها: السماوات المضيئة لا تمرّره،
+  /// فلا حاجة إلى شرط ثانٍ يمكن أن يخالفه.
+  final Color? lamp;
+
   /// الغيوم تنساب في كل سماء إلا العميقة الليلية.
   bool get hasClouds => mood != _SkyMood.night;
 
@@ -204,8 +219,8 @@ class _SkyPalette {
   bool get hasBirds =>
       mood == _SkyMood.day || (mood == _SkyMood.dawn && !hasStars);
 
-  /// نوافذ المسجد تُضاء حين يغيب الضوء: الفجر والمغرب والعشاء.
-  bool get windowsLit => hasStars || mood == _SkyMood.dusk;
+  /// نوافذ المسجد تُضاء متى أُعطي المشهد لون مصباح.
+  bool get windowsLit => lamp != null;
 
   /// حيث تظهر النجوم يظهر الهلال — قرص الشمس لا يجتمع مع سماء مرصّعة.
   bool get isCrescent => hasStars;

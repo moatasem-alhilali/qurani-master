@@ -20,6 +20,93 @@ class AppColors {
   static const Color brandDusk = Color(0xFF3A2C1C);
   static const Color brandNight = Color(0xFF1E1811);
 
+  // ----------------- PRAYER SKY TONES -----------------
+  // The adaptive prayer sky is the ONE surface in the app that has to change
+  // hue, so it is the one place that does NOT draw from the brand browns.
+  // Built from them, all six prayers came out the same amber and the sky
+  // stopped telling the time, which is its whole job.
+  //
+  // Each set is read off the real thing: the blue hour and the anti-twilight
+  // arch at Fajr, clean zenith blue at noon, the violet-to-ember collapse at
+  // Maghrib. Nothing else in the app uses these — the brand palette above
+  // still owns every button, tile and piece of type outside the sky.
+
+  // الفجر: الساعة الزرقاء، وقوس الشفق المضادّ الورديّ فوق الأفق.
+  static const Color skyFajr1 = Color(0xFF0E1631);
+  static const Color skyFajr2 = Color(0xFF2B2C57);
+  static const Color skyFajr3 = Color(0xFF6E4C6B);
+  static const Color skyFajr4 = Color(0xFFBE7F69);
+  static const Color skyFajrInk = Color(0xFFF7EDE4);
+  static const Color skyFajrInkSoft = Color(0xFFCFBCC3);
+  static const Color skyFajrOrb = Color(0xFFF6E9D4);
+  static const Color skyFajrGlow = Color(0xFFDDA28C);
+  static const Color skyFajrHorizon = Color(0xFF0A1020);
+
+  // الشروق: زرقة صافية أعلى، وشريط ورديّ ثم خوخيّ عند الأفق.
+  static const Color skySunrise1 = Color(0xFF8FC0DC);
+  static const Color skySunrise2 = Color(0xFFD9C3C3);
+  static const Color skySunrise3 = Color(0xFFF7C79B);
+  static const Color skySunrise4 = Color(0xFFFFEDD3);
+  static const Color skySunriseInk = Color(0xFF3A322A);
+  static const Color skySunriseInkSoft = Color(0xFF6E6153);
+  static const Color skySunriseVeil = Color(0xFF2E2820);
+  static const Color skySunriseGlow = Color(0xFFFFC978);
+  static const Color skySunriseHorizon = Color(0xFF2F2E36);
+
+  // الظهر: ذروة الزرقة، تشحب إلى ضباب فاتح عند خطّ الأفق.
+  static const Color skyNoon1 = Color(0xFF5B9FCE);
+  static const Color skyNoon2 = Color(0xFF8FC0DE);
+  static const Color skyNoon3 = Color(0xFFC6DCE9);
+  static const Color skyNoon4 = Color(0xFFF2F0E6);
+  static const Color skyNoonInk = Color(0xFF233240);
+  static const Color skyNoonInkSoft = Color(0xFF566B7A);
+  static const Color skyNoonVeil = Color(0xFF1E2A33);
+  static const Color skyNoonGlow = Color(0xFFFFD98F);
+  static const Color skyNoonHorizon = Color(0xFF2C3A44);
+
+  // العصر: زرقة تخفت ويعلوها ضباب قمحيّ ثم ذهب ما قبل الغروب.
+  static const Color skyAsr1 = Color(0xFF7CA3BC);
+  static const Color skyAsr2 = Color(0xFFB6B79E);
+  static const Color skyAsr3 = Color(0xFFE3C287);
+  static const Color skyAsr4 = Color(0xFFF6D99C);
+  static const Color skyAsrInk = Color(0xFF3B342A);
+  static const Color skyAsrInkSoft = Color(0xFF6E6355);
+  static const Color skyAsrVeil = Color(0xFF332C22);
+  static const Color skyAsrGlow = Color(0xFFF8C77E);
+  static const Color skyAsrHorizon = Color(0xFF3A342A);
+
+  // المغرب: بنفسجيّ عميق ينهار إلى قرمزيّ ثم جمر برتقاليّ.
+  static const Color skyMaghrib1 = Color(0xFF241D47);
+  static const Color skyMaghrib2 = Color(0xFF6B3560);
+  static const Color skyMaghrib3 = Color(0xFFC74B31);
+  static const Color skyMaghrib4 = Color(0xFFFBB25C);
+  static const Color skyMaghribInk = Color(0xFFFFF4E6);
+  static const Color skyMaghribInkSoft = Color(0xFFF1D7C3);
+  static const Color skyMaghribOrb = Color(0xFFFFE9C4);
+  static const Color skyMaghribGlow = Color(0xFFFF7A3D);
+  static const Color skyMaghribHorizon = Color(0xFF170F22);
+
+  // العشاء: ليل كحليّ عميق يفتح على بنفسجيّ خافت عند الأفق.
+  static const Color skyIsha1 = Color(0xFF060A1A);
+  static const Color skyIsha2 = Color(0xFF101836);
+  static const Color skyIsha3 = Color(0xFF22284E);
+  static const Color skyIsha4 = Color(0xFF3E3752);
+  static const Color skyIshaInk = Color(0xFFF2EFE8);
+  static const Color skyIshaInkSoft = Color(0xFFB5B2C4);
+  // ضوء القمر أبيض بارد، لا رمليّ — وهذا ما يميّز ليل العشاء عن فجر وردي.
+  static const Color skyIshaOrb = Color(0xFFFDFAF0);
+  static const Color skyIshaGlow = Color(0xFFB9C4E0);
+  static const Color skyIshaHorizon = Color(0xFF05070F);
+
+  // مصابيح المسجد: دافئة دائمًا، مهما برد لون السماء حولها.
+  static const Color skyLampDawn = Color(0xFFEFA95A);
+  static const Color skyLampDusk = Color(0xFFFFC46B);
+  static const Color skyLampNight = Color(0xFFE9A94F);
+
+  static const Color skyVeilLight = Color(0xFFFFFFFF);
+  static const Color skyOrbWhite = Color(0xFFFFFFFF);
+  static const Color skyOrbWarmWhite = Color(0xFFFFFDF5);
+
   // Accent color - used for secondary actions, switches, accent elements
   static const Color blue = Color(0xFF4083FF);
 

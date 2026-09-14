@@ -348,22 +348,33 @@ class HomeWidgetsService {
   }
 
   Future<void> _updateNativeWidgets() async {
-    for (final provider in androidWidgetProviders) {
-      try {
-        await HomeWidget.updateWidget(
-          androidName: provider,
-          qualifiedAndroidName: 'com.tamaneena.tamaneena_app.$provider',
-        );
-      } catch (error) {
-        debugPrint('HomeWidgetsService: update $provider failed: $error');
+    // كل منصّة تُحدَّث بمسارها وحدها.
+    //
+    // كانت حلقة iOS تُنفَّذ على أندرويد أيضًا، و‎updateWidget(iOSName: …)‎ لا
+    // يمرّر ‎androidName‎، فيصل الاسم إلى الإضافة الأصلية ‎null‎ وترمي
+    // ‎ClassNotFoundException: com.nanohive.tamaneena.null‎ لكل ودجت في كل
+    // تحديث — ثمانية استثناءات عند كل إقلاع وعند كل حدّ صلاة.
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      for (final provider in androidWidgetProviders) {
+        try {
+          await HomeWidget.updateWidget(
+            androidName: provider,
+            qualifiedAndroidName: 'com.tamaneena.tamaneena_app.$provider',
+          );
+        } catch (error) {
+          debugPrint('HomeWidgetsService: update $provider failed: $error');
+        }
       }
+      return;
     }
 
-    for (final kind in iosWidgetKinds) {
-      try {
-        await HomeWidget.updateWidget(iOSName: kind);
-      } catch (error) {
-        debugPrint('HomeWidgetsService: iOS update $kind skipped: $error');
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      for (final kind in iosWidgetKinds) {
+        try {
+          await HomeWidget.updateWidget(iOSName: kind);
+        } catch (error) {
+          debugPrint('HomeWidgetsService: iOS update $kind skipped: $error');
+        }
       }
     }
   }
