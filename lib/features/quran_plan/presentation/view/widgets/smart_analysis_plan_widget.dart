@@ -16,8 +16,8 @@ class SmartAnalysisPlanWidget extends StatelessWidget {
     final skin = AppSkin.of(context);
     final formatter = DateFormat('yyyy/MM/dd');
     final finishDate = analysis.expectedFinishDate;
-    final probability = (analysis.completionProbability.clamp(0.0, 1.0) * 100)
-        .round();
+    final probability =
+        (analysis.completionProbability.clamp(0.0, 1.0) * 100).round();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -83,23 +83,25 @@ class _DownloadScreenState extends State<DownloadScreen>
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        _DownloadList(state: state),
-                        const _DownloadList.filtered(
+                        const _DownloadList(
+                          emptyText: 'لا توجد تنزيلات بعد، أضف تنزيلاً للبدء.',
+                        ),
+                        const _DownloadList(
                           statuses: [
                             DownloadTaskStatus.running,
                             DownloadTaskStatus.enqueued,
                           ],
                           emptyText: 'لا توجد تنزيلات نشطة',
                         ),
-                        const _DownloadList.filtered(
+                        const _DownloadList(
                           statuses: [DownloadTaskStatus.complete],
                           emptyText: 'لا توجد تنزيلات مكتملة',
                         ),
-                        const _DownloadList.filtered(
+                        const _DownloadList(
                           statuses: [DownloadTaskStatus.paused],
                           emptyText: 'لا توجد تنزيلات متوقّفة',
                         ),
-                        const _DownloadList.filtered(
+                        const _DownloadList(
                           statuses: [DownloadTaskStatus.failed],
                           emptyText: 'لا توجد تنزيلات فاشلة',
                         ),
@@ -248,25 +250,15 @@ class _FilterTabs extends StatelessWidget {
 
 /// قائمة تنزيلات مصفّاة بحالة، أو كلّها.
 class _DownloadList extends StatelessWidget {
-  const _DownloadList({required DownloadState state})
-      : _state = state,
-        statuses = null,
-        emptyText = 'لا توجد تنزيلات بعد، أضف تنزيلاً للبدء.';
+  const _DownloadList({required this.emptyText, this.statuses});
 
-  const _DownloadList.filtered({
-    required this.statuses,
-    required this.emptyText,
-  }) : _state = null;
-
-  final DownloadState? _state;
   final List<DownloadTaskStatus>? statuses;
   final String emptyText;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DownloadBloc, DownloadState>(
-      builder: (context, blocState) {
-        final state = _state ?? blocState;
+      builder: (context, state) {
         final filter = statuses;
 
         if (state.loadState == RequestState.loading &&

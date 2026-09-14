@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:adhan/adhan.dart';
@@ -18,15 +19,16 @@ import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
+import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_settings_screen.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_location_picker_sheet.dart';
 
-/// شاشة مواقيت اليوم كاملة.
+/// شاشة مواقيت اليوم: تعرض **شكل اليوم** لا قائمة أوقات.
 ///
-/// الصفحة سطح واحد على `skin.ground`: ترويسة اليوم، ثم صفّ الموقع، ثم
-/// المواقيت صفوفًا نحيلة تفصلها خطوط شعرة. الارتفاع محجوز لصفّ واحد فقط:
-/// الصلاة الجارية (أو القادمة إن لم تدخل بعد).
+/// اليوم شريط رأسي متّصل من الفجر إلى فجر الغد، وكل نافذة صلاة شريحة
+/// ارتفاعها بقدر مدّتها الحقيقية — فيرى المستخدم بعينه أن العشاء طويل
+/// والمغرب قصير. خطّ «الآن» الذهبي يقطع الشريط عند اللحظة الحالية.
 class PrayerTimeScreen extends StatefulWidget {
   const PrayerTimeScreen({super.key});
 
@@ -35,6 +37,26 @@ class PrayerTimeScreen extends StatefulWidget {
 }
 
 class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
+  /// إزاحة اليوم المعروض: ‎-1 أمس، ‎0 اليوم، ‎1 غدًا.
+  int _dayOffset = 0;
+
+  /// نبضة نصف دقيقة تُحرّك خطّ «الآن» على الشريط.
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
@@ -60,22 +82,21 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
           color: skin.ground,
           child: BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
             builder: (context, state) {
-              final list = state.prayerState == RequestState.loading
-                  ? PrayerInfoModel.dummy()
-                  : state.prayerList;
-              final locationNow = _resolveLocationNow(
-                state.selectedLocation?.utcOffsetMinutes,
+              final now = _locationNow(state);
+              final date = DateUtils.dateOnly(now).add(
+                Duration(days: _dayOffset),
               );
-              final entries = _buildEntries(
-                list: list,
-                currentPrayer: state.currentPrayer,
-                nextPrayer: state.nextPrayer,
-                locationNow: locationNow,
-              );
-              final content = _PrayerTimesTodayView(
+              final plan = _buildPlan(state: state, date: date, now: now);
+
+              final content = _PrayerDayView(
                 state: state,
-                entries: entries,
-                locationNow: locationNow,
+                plan: plan,
+                date: date,
+                now: now,
+                dayOffset: _dayOffset,
+                onPreviousDay: () => setState(() => _dayOffset -= 1),
+                onNextDay: () => setState(() => _dayOffset += 1),
+                onBackToToday: () => setState(() => _dayOffset = 0),
                 onChangeLocation: () => _openLocationPicker(context, state),
                 onUseCurrentLocation: () {
                   context.read<PrayerTimeBloc>().add(
@@ -106,33 +127,147 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     );
   }
 
-  List<_PrayerDayEntry> _buildEntries({
-    required List<PrayerInfoModel> list,
-    required PrayerInfoModel? currentPrayer,
-    required PrayerInfoModel? nextPrayer,
-    required DateTime locationNow,
-  }) {
-    return list.map((prayer) {
-      final isCurrent = _isSamePrayerOccurrence(prayer, currentPrayer);
-      final isNext = _isSamePrayerOccurrence(prayer, nextPrayer);
-      final isPassed = _isPrayerPassed(
-        prayer: prayer,
-        currentPrayer: currentPrayer,
-        nextPrayer: nextPrayer,
-        locationNow: locationNow,
-      );
+  /// «الآن» بتوقيت الموقع المختار لا بتوقيت الجهاز.
+  DateTime _locationNow(PrayerTimeState state) {
+    final offset = state.selectedLocation?.utcOffsetMinutes;
+    if (offset == null) {
+      return DateTime.now();
+    }
+    return DateTime.now().toUtc().add(Duration(minutes: offset));
+  }
 
-      return _PrayerDayEntry(
-        prayer: prayer,
-        status: isCurrent
-            ? _PrayerDayStatus.current
-            : isNext
-                ? _PrayerDayStatus.next
-                : isPassed
-                    ? _PrayerDayStatus.passed
-                    : _PrayerDayStatus.upcoming,
-      );
-    }).toList();
+  /// يحسب نوافذ اليوم المطلوب محليًا، فلا ينتظر دعمًا من المستودع.
+  _DayPlan? _buildPlan({
+    required PrayerTimeState state,
+    required DateTime date,
+    required DateTime now,
+  }) {
+    final location = state.selectedLocation;
+
+    if (location != null) {
+      return _planFromCoordinates(location: location, date: date);
+    }
+
+    // بلا موقع محفوظ نعتمد قائمة اليوم القادمة من المستودع (إحداثيات
+    // الجهاز)، وهي تخصّ اليوم الحالي فقط.
+    if (_dayOffset != 0 || state.prayerList.isEmpty) {
+      return null;
+    }
+    return _planFromPrayerList(state.prayerList);
+  }
+
+  _DayPlan _planFromCoordinates({
+    required PrayerLocationSelection location,
+    required DateTime date,
+  }) {
+    final coordinates = Coordinates(location.latitude, location.longitude);
+    final utcOffset = Duration(minutes: location.utcOffsetMinutes);
+    final nextDate = date.add(const Duration(days: 1));
+
+    final today = PrayerTimes.utcOffset(
+      coordinates,
+      DateComponents.from(date),
+      PrayerCalculationParams.build(date: date),
+      utcOffset,
+    );
+    final tomorrow = PrayerTimes.utcOffset(
+      coordinates,
+      DateComponents.from(nextDate),
+      PrayerCalculationParams.build(date: nextDate),
+      utcOffset,
+    );
+    final sunnah = SunnahTimes(today);
+
+    return _DayPlan(
+      slices: _slicesFrom(
+        fajr: today.fajr,
+        sunrise: today.sunrise,
+        dhuhr: today.dhuhr,
+        asr: today.asr,
+        maghrib: today.maghrib,
+        isha: today.isha,
+        nextFajr: tomorrow.fajr,
+      ),
+      middleOfTheNight: sunnah.middleOfTheNight,
+      lastThirdOfTheNight: sunnah.lastThirdOfTheNight,
+    );
+  }
+
+  _DayPlan? _planFromPrayerList(List<PrayerInfoModel> list) {
+    DateTime? timeOf(Prayer type) {
+      for (final prayer in list) {
+        if (prayer.type == type) return prayer.time;
+      }
+      return null;
+    }
+
+    final fajr = timeOf(Prayer.fajr);
+    final sunrise = timeOf(Prayer.sunrise);
+    final dhuhr = timeOf(Prayer.dhuhr);
+    final asr = timeOf(Prayer.asr);
+    final maghrib = timeOf(Prayer.maghrib);
+    final isha = timeOf(Prayer.isha);
+
+    if (fajr == null ||
+        sunrise == null ||
+        dhuhr == null ||
+        asr == null ||
+        maghrib == null ||
+        isha == null) {
+      return null;
+    }
+
+    final nextFajr = fajr.add(const Duration(days: 1));
+    final nightSeconds = nextFajr.difference(maghrib).inSeconds;
+
+    return _DayPlan(
+      slices: _slicesFrom(
+        fajr: fajr,
+        sunrise: sunrise,
+        dhuhr: dhuhr,
+        asr: asr,
+        maghrib: maghrib,
+        isha: isha,
+        nextFajr: nextFajr,
+      ),
+      middleOfTheNight: maghrib.add(Duration(seconds: nightSeconds ~/ 2)),
+      lastThirdOfTheNight:
+          maghrib.add(Duration(seconds: (nightSeconds * 2) ~/ 3)),
+    );
+  }
+
+  List<_DaySlice> _slicesFrom({
+    required DateTime fajr,
+    required DateTime sunrise,
+    required DateTime dhuhr,
+    required DateTime asr,
+    required DateTime maghrib,
+    required DateTime isha,
+    required DateTime nextFajr,
+  }) {
+    return [
+      _DaySlice(name: 'الفجر', start: fajr, end: sunrise, tone: _SkyTone.fajr),
+      _DaySlice(
+        name: 'الشروق',
+        start: sunrise,
+        end: dhuhr,
+        tone: _SkyTone.duha,
+      ),
+      _DaySlice(name: 'الظهر', start: dhuhr, end: asr, tone: _SkyTone.dhuhr),
+      _DaySlice(name: 'العصر', start: asr, end: maghrib, tone: _SkyTone.asr),
+      _DaySlice(
+        name: 'المغرب',
+        start: maghrib,
+        end: isha,
+        tone: _SkyTone.maghrib,
+      ),
+      _DaySlice(
+        name: 'العشاء',
+        start: isha,
+        end: nextFajr,
+        tone: _SkyTone.isha,
+      ),
+    ];
   }
 
   Future<void> _openLocationPicker(
@@ -190,45 +325,18 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     if (!context.mounted) return;
     context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
   }
-
-  DateTime _resolveLocationNow(int? utcOffsetMinutes) {
-    if (utcOffsetMinutes == null) {
-      return DateTime.now();
-    }
-
-    return DateTime.now().toUtc().add(Duration(minutes: utcOffsetMinutes));
-  }
-
-  bool _isSamePrayerOccurrence(
-    PrayerInfoModel prayer,
-    PrayerInfoModel? target,
-  ) {
-    if (target == null) return false;
-
-    return prayer.type == target.type &&
-        prayer.time.year == target.time.year &&
-        prayer.time.month == target.time.month &&
-        prayer.time.day == target.time.day;
-  }
-
-  bool _isPrayerPassed({
-    required PrayerInfoModel prayer,
-    required PrayerInfoModel? currentPrayer,
-    required PrayerInfoModel? nextPrayer,
-    required DateTime locationNow,
-  }) {
-    if (_isSamePrayerOccurrence(prayer, currentPrayer)) return false;
-    if (_isSamePrayerOccurrence(prayer, nextPrayer)) return false;
-
-    return prayer.time.isBefore(locationNow);
-  }
 }
 
-class _PrayerTimesTodayView extends StatelessWidget {
-  const _PrayerTimesTodayView({
+class _PrayerDayView extends StatelessWidget {
+  const _PrayerDayView({
     required this.state,
-    required this.entries,
-    required this.locationNow,
+    required this.plan,
+    required this.date,
+    required this.now,
+    required this.dayOffset,
+    required this.onPreviousDay,
+    required this.onNextDay,
+    required this.onBackToToday,
     required this.onChangeLocation,
     required this.onUseCurrentLocation,
     required this.onOpenSettings,
@@ -236,34 +344,88 @@ class _PrayerTimesTodayView extends StatelessWidget {
   });
 
   final PrayerTimeState state;
-  final List<_PrayerDayEntry> entries;
-  final DateTime locationNow;
+  final _DayPlan? plan;
+  final DateTime date;
+  final DateTime now;
+  final int dayOffset;
+  final VoidCallback onPreviousDay;
+  final VoidCallback onNextDay;
+  final VoidCallback onBackToToday;
   final VoidCallback onChangeLocation;
   final VoidCallback onUseCurrentLocation;
   final Future<void> Function() onOpenSettings;
   final VoidCallback onRetry;
 
+  bool get _isToday => dayOffset == 0;
+
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final highlight = _highlightIndex;
-    final passed = entries
-        .where((entry) => entry.status == _PrayerDayStatus.passed)
-        .length;
-    final upcoming = entries
-        .where((entry) => entry.status == _PrayerDayStatus.upcoming)
-        .length;
-    final next = entries
-        .where((entry) => entry.status == _PrayerDayStatus.next)
-        .firstOrNull;
+    final dayPlan = plan;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _DayHeader(
-          locationNow: locationNow,
-          progress: _dayProgress(locationNow),
+        _DayNavRow(
+          date: date,
+          dayOffset: dayOffset,
+          onPreviousDay: onPreviousDay,
+          onNextDay: onNextDay,
+          onBackToToday: onBackToToday,
         ),
+        if (dayPlan == null)
+          _EmptyDayState(
+            canPickLocation: state.selectedLocation == null,
+            onChangeLocation: onChangeLocation,
+            onBackToToday: onBackToToday,
+            isToday: _isToday,
+          )
+        else ...[
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 4.h),
+            child: _DayRibbon(
+              slices: dayPlan.slices,
+              now: _isToday ? now : null,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+            child: Text(
+              'ارتفاع كل شريحة بقدر طول وقتها',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: skin.inkSoft.withValues(alpha: 0.7),
+                fontSize: 9.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          skin.divider(),
+          const HomeSectionHeader(title: 'قيام الليل'),
+          Padding(
+            padding: AppSkin.gutter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _InfoRow(
+                  icon: AppIcons.moon,
+                  label: 'منتصف الليل',
+                  hint: 'منتصف ما بين المغرب والفجر',
+                  time: dayPlan.middleOfTheNight,
+                ),
+                _InfoRow(
+                  icon: AppIcons.star,
+                  label: 'الثلث الأخير',
+                  hint: 'أفضل أوقات القيام والدعاء',
+                  time: dayPlan.lastThirdOfTheNight,
+                  isLast: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+        skin.divider(),
+        const HomeSectionHeader(title: 'الموقع'),
         _LocationRow(
           selectedLocation: state.selectedLocation,
           onChangeLocation: onChangeLocation,
@@ -279,61 +441,9 @@ class _PrayerTimesTodayView extends StatelessWidget {
             onOpenSettings: onOpenSettings,
             onRetry: onRetry,
           ),
-        skin.divider(),
-        const HomeSectionHeader(title: 'مواقيت اليوم'),
-        _DaySummaryLine(
-          passed: passed,
-          upcoming: upcoming,
-          nextTime: next == null ? null : _formatPrayerTime(next.prayer.time),
-        ),
-        if (entries.isEmpty)
-          _EmptyPrayerState(onChangeLocation: onChangeLocation)
-        else
-          _PrayerScheduleList(
-            entries: entries,
-            highlightIndex: highlight,
-            windowProgress: _windowProgress,
-            remainingText: _remainingText(_remainingToNext),
-          ),
         SizedBox(height: 26.h),
       ],
     );
-  }
-
-  /// الصفّ الوحيد المسموح له بالارتفاع: الجارية، فإن غابت فالقادمة.
-  int get _highlightIndex {
-    final current =
-        entries.indexWhere((e) => e.status == _PrayerDayStatus.current);
-    if (current != -1) return current;
-    return entries.indexWhere((e) => e.status == _PrayerDayStatus.next);
-  }
-
-  Duration get _remainingToNext {
-    final next = state.nextPrayer;
-    if (next == null) return Duration.zero;
-    return next.time.difference(locationNow);
-  }
-
-  /// ما مضى من وقت الصلاة الجارية إلى التي بعدها، من ٠ إلى ١.
-  double get _windowProgress {
-    final current = state.currentPrayer;
-    final next = state.nextPrayer;
-    if (current == null || next == null) return 0;
-
-    final total = next.time.difference(current.time).inSeconds;
-    if (total <= 0) return 0;
-
-    final passed = locationNow.difference(current.time).inSeconds;
-    return (passed / total).clamp(0.0, 1.0);
-  }
-
-  double _dayProgress(DateTime locationNow) {
-    final start =
-        DateTime(locationNow.year, locationNow.month, locationNow.day);
-    final end = start.add(const Duration(days: 1));
-    final total = end.difference(start).inSeconds;
-    final passed = locationNow.difference(start).inSeconds.clamp(0, total);
-    return passed / total;
   }
 
   bool _shouldShowNotice(PrayerTimeState state) {
@@ -350,44 +460,75 @@ class _PrayerTimesTodayView extends StatelessWidget {
   }
 }
 
-/// ترويسة اليوم: التاريخ الميلادي والهجري، والساعة، وخيط تقدّم اليوم.
-class _DayHeader extends StatelessWidget {
-  const _DayHeader({required this.locationNow, required this.progress});
+/// تنقّل الأيام: أمس · اليوم · غدًا، والتاريخ الميلادي والهجري تحته.
+class _DayNavRow extends StatelessWidget {
+  const _DayNavRow({
+    required this.date,
+    required this.dayOffset,
+    required this.onPreviousDay,
+    required this.onNextDay,
+    required this.onBackToToday,
+  });
 
-  final DateTime locationNow;
-  final double progress;
+  final DateTime date;
+  final int dayOffset;
+  final VoidCallback onPreviousDay;
+  final VoidCallback onNextDay;
+  final VoidCallback onBackToToday;
+
+  String get _dayLabel {
+    switch (dayOffset) {
+      case -1:
+        return 'أمس';
+      case 0:
+        return 'اليوم';
+      case 1:
+        return 'غدًا';
+      default:
+        return DateFormat('EEEE', 'ar').format(date);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final hijri = HijriDate.fromDate(locationNow);
+    final hijri = HijriDate.fromDate(date);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: skin.hairline)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Row(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
+          _NavArrow(
+            icon: AppIcons.chevronRight,
+            tooltip: 'اليوم السابق',
+            onTap: onPreviousDay,
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: dayOffset == 0 ? null : onBackToToday,
+              borderRadius: BorderRadius.circular(10.r),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 3.h),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      DateFormat('EEEE، d MMMM yyyy', 'ar').format(locationNow),
+                      dayOffset == 0 ? _dayLabel : '$_dayLabel · عودة لليوم',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: skin.ink,
+                        color: dayOffset == 0 ? skin.ink : skin.accent,
                         fontSize: 12.5.sp,
                         fontWeight: FontWeight.w700,
                         height: 1.2,
                       ),
                     ),
                     Text(
-                      hijri.formatArabic(),
+                      '${DateFormat('d MMMM yyyy', 'ar').format(date)}'
+                      ' · ${hijri.formatArabic()}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -400,35 +541,412 @@ class _DayHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 8.w),
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Text(
-                  _formatClock(locationNow),
-                  style: TextStyle(
-                    color: skin.accent,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
-                    fontFeatures: const [ui.FontFeature.tabularFigures()],
+            ),
+          ),
+          _NavArrow(
+            icon: AppIcons.chevronLeft,
+            tooltip: 'اليوم التالي',
+            onTap: onNextDay,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NavArrow extends StatelessWidget {
+  const _NavArrow({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final HugeIconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999.r),
+        child: Padding(
+          padding: EdgeInsets.all(6.w),
+          child: AppIcon(icon, color: skin.accent, size: 16.sp),
+        ),
+      ),
+    );
+  }
+}
+
+/// شريط اليوم: شرائح متّصلة ارتفاع كلٍّ منها بقدر مدّتها، يقطعها خطّ «الآن».
+class _DayRibbon extends StatelessWidget {
+  const _DayRibbon({required this.slices, this.now});
+
+  final List<_DaySlice> slices;
+
+  /// «الآن» بتوقيت الموقع، أو `null` حين يُعرض يوم غير اليوم.
+  final DateTime? now;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final total = 480.h;
+    final minHeight = 40.h;
+    final expand = now == null ? 0.0 : 16.h;
+
+    final seconds = [
+      for (final slice in slices)
+        slice.end.difference(slice.start).inSeconds.clamp(60, 86400),
+    ];
+    final totalSeconds = seconds.fold<int>(0, (sum, value) => sum + value);
+    final current = _currentIndex();
+    final free = total - minHeight * slices.length - expand;
+
+    final heights = <double>[
+      for (var i = 0; i < slices.length; i++)
+        minHeight +
+            (free > 0 ? free * seconds[i] / totalSeconds : 0) +
+            (i == current ? expand : 0),
+    ];
+
+    final nowTop = _nowTop(heights: heights, current: current, total: total);
+
+    // حدّ شعرة حول الشريط: يمسك حوافه في الوضع الفاتح حيث التعبئة خفيفة.
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: skin.hairline),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        height: total,
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                for (var i = 0; i < slices.length; i++)
+                  _RibbonSlice(
+                    slice: slices[i],
+                    height: heights[i],
+                    isFirst: i == 0,
+                    isCurrent: i == current,
+                    remainingText: i == current ? _remainingText(i) : null,
+                  ),
+              ],
+            ),
+            if (nowTop != null) ...[
+              Positioned(
+                top: nowTop - 0.75,
+                right: 0,
+                left: 0,
+                child: Container(height: 1.5, color: AppColors.gold),
+              ),
+              // شارة الوقت الحالي: العنصر المرتفع الوحيد في الشاشة.
+              PositionedDirectional(
+                top: nowTop - 10.h,
+                end: 8.w,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 7.w,
+                    vertical: 2.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: skin.raised,
+                    borderRadius: BorderRadius.circular(999.r),
+                    border: Border.all(color: skin.raisedBorder, width: 1.2),
+                    boxShadow: skin.raisedShadow,
+                  ),
+                  child: Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Text(
+                      _formatClock(now!),
+                      style: TextStyle(
+                        color: skin.ink,
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w800,
+                        height: 1.3,
+                        fontFeatures: const [ui.FontFeature.tabularFigures()],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// الشريحة التي تقع فيها اللحظة الحالية، أو ‎-1 حين يُعرض يوم آخر.
+  int _currentIndex() {
+    final moment = now;
+    if (moment == null) return -1;
+
+    for (var i = 0; i < slices.length; i++) {
+      if (!moment.isBefore(slices[i].start) && moment.isBefore(slices[i].end)) {
+        return i;
+      }
+    }
+    // قبل فجر اليوم أو بعد فجر الغد: نلتصق بطرف الشريط بدل أن يختفي الخطّ.
+    return moment.isBefore(slices.first.start) ? 0 : slices.length - 1;
+  }
+
+  double? _nowTop({
+    required List<double> heights,
+    required int current,
+    required double total,
+  }) {
+    final moment = now;
+    if (moment == null || current < 0) return null;
+
+    var top = 0.0;
+    for (var i = 0; i < current; i++) {
+      top += heights[i];
+    }
+
+    final slice = slices[current];
+    final span = slice.end.difference(slice.start).inSeconds;
+    final passed = moment.difference(slice.start).inSeconds;
+    final fraction = span <= 0 ? 0.0 : (passed / span).clamp(0.0, 1.0);
+
+    return (top + heights[current] * fraction).clamp(0.0, total);
+  }
+
+  /// «بقي ٤٧ د للمغرب» — تظهر داخل الشريحة الجارية.
+  String? _remainingText(int index) {
+    final moment = now;
+    if (moment == null) return null;
+
+    final slice = slices[index];
+
+    // ما قبل الفجر: اللحظة خارج الشريط، فالباقي هو ما بقي لبداية الشريحة.
+    if (moment.isBefore(slice.start)) {
+      final untilStart = slice.start.difference(moment);
+      return 'بقي ${_formatDuration(untilStart)} ${_lam(slice.name)}';
+    }
+
+    final remaining = slice.end.difference(moment);
+    if (remaining.isNegative) return null;
+
+    final nextName =
+        index + 1 < slices.length ? slices[index + 1].name : 'فجر غد';
+
+    return 'بقي ${_formatDuration(remaining)} ${_lam(nextName)}';
+  }
+
+  /// «المغرب» ← «للمغرب»، و«فجر غد» ← «لفجر غد».
+  String _lam(String name) =>
+      name.startsWith('ال') ? 'ل${name.substring(1)}' : 'لـ$name';
+}
+
+/// شريحة نافذة واحدة: تعبئة سمائها، واسمها ووقتها ومدّتها.
+class _RibbonSlice extends StatelessWidget {
+  const _RibbonSlice({
+    required this.slice,
+    required this.height,
+    required this.isFirst,
+    required this.isCurrent,
+    this.remainingText,
+  });
+
+  final _DaySlice slice;
+  final double height;
+  final bool isFirst;
+  final bool isCurrent;
+  final String? remainingText;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final colors = slice.tone.colors;
+    // في الفاتح تعبئة خفيفة، وفي الداكن أقوى — والحبر في الحالتين `skin.ink`.
+    final alpha = skin.isDark ? 0.5 : 0.22;
+
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colors.$1.withValues(alpha: alpha),
+            colors.$2.withValues(alpha: alpha),
+          ],
+        ),
+        border: isFirst ? null : Border(top: BorderSide(color: skin.hairline)),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                slice.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: skin.ink,
+                  fontSize: isCurrent ? 14.sp : 12.5.sp,
+                  fontWeight: isCurrent ? FontWeight.w800 : FontWeight.w700,
+                  height: 1.2,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              _ClockText(
+                time: slice.start,
+                size: isCurrent ? 15.sp : 12.5.sp,
+                weight: isCurrent ? FontWeight.w800 : FontWeight.w600,
+              ),
+              const Spacer(),
+              Text(
+                _formatDuration(slice.end.difference(slice.start)),
+                maxLines: 1,
+                style: TextStyle(
+                  color: skin.inkSoft.withValues(alpha: 0.86),
+                  fontSize: 9.5.sp,
+                  fontWeight: FontWeight.w600,
+                  height: 1.35,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8.h),
-          // خيط رفيع يقيس ما مضى من اليوم — بديل القرص الدوّار.
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999.r),
-            child: LinearProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              minHeight: 2.h,
-              backgroundColor: skin.hairline,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
+          if (remainingText != null)
+            Text(
+              remainingText!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: skin.accent,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+              ),
             ),
-          ),
         ],
       ),
+    );
+  }
+}
+
+/// صفّ معلومة: أيقونة وعنوان ووصف، والوقت عند الحافة.
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.hint,
+    required this.time,
+    this.isLast = false,
+  });
+
+  final HugeIconData icon;
+  final String label;
+  final String hint;
+  final DateTime time;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Container(
+      decoration: isLast
+          ? null
+          : BoxDecoration(
+              border: Border(bottom: BorderSide(color: skin.hairline)),
+            ),
+      padding: EdgeInsets.symmetric(vertical: 11.h),
+      child: Row(
+        children: [
+          _IconChip(icon: icon, skin: skin),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 12.5.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+                Text(
+                  hint,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.inkSoft.withValues(alpha: 0.78),
+                    fontSize: 9.5.sp,
+                    fontWeight: FontWeight.w500,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          _ClockText(time: time, size: 12.5.sp, weight: FontWeight.w600),
+        ],
+      ),
+    );
+  }
+}
+
+/// وقت بصيغة ١٢ ساعة مع ص/م — الأرقام بخانات ثابتة واتجاه لاتيني.
+class _ClockText extends StatelessWidget {
+  const _ClockText({
+    required this.time,
+    required this.size,
+    required this.weight,
+  });
+
+  final DateTime time;
+  final double size;
+  final FontWeight weight;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Text(
+            _formatClock(time),
+            style: TextStyle(
+              color: skin.ink.withValues(alpha: 0.88),
+              fontSize: size,
+              fontWeight: weight,
+              height: 1.2,
+              fontFeatures: const [ui.FontFeature.tabularFigures()],
+            ),
+          ),
+        ),
+        SizedBox(width: 3.w),
+        Text(
+          time.hour < 12 ? 'ص' : 'م',
+          style: TextStyle(
+            color: skin.inkSoft.withValues(alpha: 0.8),
+            fontSize: 9.sp,
+            fontWeight: FontWeight.w600,
+            height: 1.2,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -460,10 +978,7 @@ class _LocationRow extends StatelessWidget {
 
     return InkWell(
       onTap: onChangeLocation,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: skin.hairline)),
-        ),
+      child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
         child: Row(
           children: [
@@ -584,295 +1099,33 @@ class _LocationNoticeRow extends StatelessWidget {
   }
 }
 
-/// سطر موجز تحت عنوان القسم: كم انتهى، وكم بقي، ومتى التالية.
-class _DaySummaryLine extends StatelessWidget {
-  const _DaySummaryLine({
-    required this.passed,
-    required this.upcoming,
-    required this.nextTime,
+class _EmptyDayState extends StatelessWidget {
+  const _EmptyDayState({
+    required this.canPickLocation,
+    required this.onChangeLocation,
+    required this.onBackToToday,
+    required this.isToday,
   });
 
-  final int passed;
-  final int upcoming;
-  final String? nextTime;
-
-  @override
-  Widget build(BuildContext context) {
-    final skin = AppSkin.of(context);
-    final parts = <String>[
-      'انتهى $passed',
-      'بقي $upcoming',
-      if (nextTime != null) 'التالية $nextTime',
-    ];
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 6.h),
-      child: Text(
-        parts.join('  ·  '),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: skin.inkSoft.withValues(alpha: 0.78),
-          fontSize: 9.5.sp,
-          fontWeight: FontWeight.w500,
-          height: 1.35,
-        ),
-      ),
-    );
-  }
-}
-
-class _PrayerScheduleList extends StatelessWidget {
-  const _PrayerScheduleList({
-    required this.entries,
-    required this.highlightIndex,
-    required this.windowProgress,
-    required this.remainingText,
-  });
-
-  final List<_PrayerDayEntry> entries;
-  final int highlightIndex;
-  final double windowProgress;
-  final String remainingText;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: AppSkin.gutter,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < entries.length; i++)
-            if (i == highlightIndex)
-              _RaisedPrayerRow(
-                entry: entries[i],
-                progress: windowProgress,
-                remainingText: remainingText,
-              )
-            else
-              _PlainPrayerRow(
-                entry: entries[i],
-                isLast: i == entries.length - 1,
-              ),
-        ],
-      ),
-    );
-  }
-}
-
-/// صفّ صلاة عادي: نحيل، بفاصل شعرة واحدة.
-class _PlainPrayerRow extends StatelessWidget {
-  const _PlainPrayerRow({required this.entry, required this.isLast});
-
-  final _PrayerDayEntry entry;
-  final bool isLast;
-
-  @override
-  Widget build(BuildContext context) {
-    final skin = AppSkin.of(context);
-    final prayer = entry.prayer;
-    final isPassed = entry.status == _PrayerDayStatus.passed;
-    final inkAlpha = isPassed ? 0.62 : 0.88;
-
-    return Container(
-      decoration: isLast
-          ? null
-          : BoxDecoration(
-              border: Border(bottom: BorderSide(color: skin.hairline)),
-            ),
-      padding: EdgeInsets.symmetric(vertical: 11.h),
-      child: Row(
-        children: [
-          _IconChip(icon: _iconForPrayer(prayer.type), skin: skin),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _prayerName(prayer),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: skin.ink.withValues(alpha: inkAlpha),
-                    fontSize: 12.5.sp,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
-                  ),
-                ),
-                Text(
-                  _prayerDescription(prayer),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: skin.inkSoft.withValues(alpha: 0.78),
-                    fontSize: 9.5.sp,
-                    fontWeight: FontWeight.w500,
-                    height: 1.35,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (isPassed) ...[
-            Text(
-              'انتهى',
-              style: TextStyle(
-                color: skin.inkSoft.withValues(alpha: 0.7),
-                fontSize: 9.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(width: 7.w),
-          ],
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Text(
-              _formatPrayerTime(prayer.time),
-              style: TextStyle(
-                color: skin.ink.withValues(alpha: inkAlpha),
-                fontSize: 12.5.sp,
-                fontWeight: FontWeight.w600,
-                fontFeatures: const [ui.FontFeature.tabularFigures()],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// الصفّ المرتفع الوحيد في الشاشة: الصلاة الجارية وما بقي من وقتها.
-class _RaisedPrayerRow extends StatelessWidget {
-  const _RaisedPrayerRow({
-    required this.entry,
-    required this.progress,
-    required this.remainingText,
-  });
-
-  final _PrayerDayEntry entry;
-  final double progress;
-  final String remainingText;
-
-  @override
-  Widget build(BuildContext context) {
-    final skin = AppSkin.of(context);
-    final prayer = entry.prayer;
-    final isCurrent = entry.status == _PrayerDayStatus.current;
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4.h),
-      decoration: BoxDecoration(
-        color: skin.raised,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: skin.raisedBorder, width: 1.2),
-        boxShadow: skin.raisedShadow,
-      ),
-      padding: EdgeInsets.fromLTRB(10.w, 9.h, 10.w, 9.h),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              _IconChip(icon: _iconForPrayer(prayer.type), skin: skin),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Text(
-                  _prayerName(prayer),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: skin.ink,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w800,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: skin.accent,
-                  borderRadius: BorderRadius.circular(999.r),
-                ),
-                child: Text(
-                  isCurrent ? 'الآن' : 'التالية',
-                  style: TextStyle(
-                    color: skin.isDark
-                        ? AppColors.brandNight
-                        : AppColors.brandIvory,
-                    fontSize: 8.5.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              SizedBox(width: 7.w),
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Text(
-                  _formatPrayerTime(prayer.time),
-                  style: TextStyle(
-                    color: skin.ink,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w800,
-                    fontFeatures: const [ui.FontFeature.tabularFigures()],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(999.r),
-                  child: LinearProgressIndicator(
-                    value: progress.clamp(0.0, 1.0),
-                    minHeight: 3.h,
-                    backgroundColor: skin.hairline,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.gold,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                remainingText,
-                style: TextStyle(
-                  color: skin.inkSoft.withValues(alpha: 0.86),
-                  fontSize: 9.5.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyPrayerState extends StatelessWidget {
-  const _EmptyPrayerState({required this.onChangeLocation});
-
+  final bool canPickLocation;
   final VoidCallback onChangeLocation;
+  final VoidCallback onBackToToday;
+  final bool isToday;
 
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 6.h),
+      padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 10.h),
       child: Column(
         children: [
           AppIcon(AppIcons.mapPin, color: skin.accent, size: 22.sp),
           SizedBox(height: 8.h),
           Text(
-            'اختر موقعك لعرض مواقيت الصلاة',
+            canPickLocation
+                ? 'حدّد موقعك ليُرسم لك شكل اليوم'
+                : 'تعذّر حساب مواقيت هذا اليوم',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.ink,
@@ -880,9 +1133,10 @@ class _EmptyPrayerState extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 2.h),
           Text(
-            'ابحث عن مدينتك أو استخدم موقع الجهاز',
+            canPickLocation
+                ? 'ابحث عن مدينتك أو استخدم موقع الجهاز'
+                : 'اختر مدينتك لتتصفّح أي يوم تشاء',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
@@ -892,7 +1146,16 @@ class _EmptyPrayerState extends StatelessWidget {
             ),
           ),
           SizedBox(height: 6.h),
-          _TextLink(label: 'تحديد الموقع', onTap: onChangeLocation),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _TextLink(label: 'تحديد الموقع', onTap: onChangeLocation),
+              if (!isToday) ...[
+                SizedBox(width: 14.w),
+                _TextLink(label: 'عودة لليوم', onTap: onBackToToday),
+              ],
+            ],
+          ),
         ],
       ),
     );
@@ -979,106 +1242,72 @@ class _TextLink extends StatelessWidget {
   }
 }
 
-enum _PrayerDayStatus {
-  passed,
-  current,
-  next,
-  upcoming,
+/// ألوان سماء كل نافذة — نفس لوحة مشهد الشاشة الرئيسية.
+enum _SkyTone {
+  fajr,
+  duha,
+  dhuhr,
+  asr,
+  maghrib,
+  isha;
+
+  (Color, Color) get colors {
+    switch (this) {
+      case _SkyTone.fajr:
+        return (AppColors.brandDusk, AppColors.brandBrown);
+      case _SkyTone.duha:
+        return (AppColors.brandSand, AppColors.brandMist);
+      case _SkyTone.dhuhr:
+        return (AppColors.brandGoldLight, AppColors.brandCream);
+      case _SkyTone.asr:
+        return (AppColors.brandGoldDeep, AppColors.brandGoldLight);
+      case _SkyTone.maghrib:
+        return (AppColors.brandBrownDeep, AppColors.brandGoldDeep);
+      case _SkyTone.isha:
+        return (AppColors.brandNight, AppColors.brandDusk);
+    }
+  }
 }
 
-class _PrayerDayEntry {
-  const _PrayerDayEntry({
-    required this.prayer,
-    required this.status,
+class _DaySlice {
+  const _DaySlice({
+    required this.name,
+    required this.start,
+    required this.end,
+    required this.tone,
   });
 
-  final PrayerInfoModel prayer;
-  final _PrayerDayStatus status;
+  final String name;
+  final DateTime start;
+  final DateTime end;
+  final _SkyTone tone;
 }
 
-extension _FirstOrNull<T> on Iterable<T> {
-  T? get firstOrNull {
-    final iterator = this.iterator;
-    if (iterator.moveNext()) return iterator.current;
-    return null;
-  }
+class _DayPlan {
+  const _DayPlan({
+    required this.slices,
+    required this.middleOfTheNight,
+    required this.lastThirdOfTheNight,
+  });
+
+  final List<_DaySlice> slices;
+  final DateTime middleOfTheNight;
+  final DateTime lastThirdOfTheNight;
 }
 
-HugeIconData _iconForPrayer(Prayer prayer) {
-  switch (prayer) {
-    case Prayer.none:
-      return AppIcons.clock;
-    case Prayer.fajr:
-      return AppIcons.moon;
-    case Prayer.sunrise:
-      return AppIcons.sunrise;
-    case Prayer.dhuhr:
-      return AppIcons.sun;
-    case Prayer.asr:
-      return AppIcons.sun;
-    case Prayer.maghrib:
-      return AppIcons.sunset;
-    case Prayer.isha:
-      return AppIcons.moon;
-  }
-}
-
-String _prayerName(PrayerInfoModel prayer) {
-  switch (prayer.type) {
-    case Prayer.none:
-      return prayer.name;
-    case Prayer.fajr:
-      return 'الفجر';
-    case Prayer.sunrise:
-      return 'الشروق';
-    case Prayer.dhuhr:
-      return 'الظهر';
-    case Prayer.asr:
-      return 'العصر';
-    case Prayer.maghrib:
-      return 'المغرب';
-    case Prayer.isha:
-      return 'العشاء';
-  }
-}
-
-String _prayerDescription(PrayerInfoModel prayer) {
-  switch (prayer.type) {
-    case Prayer.none:
-      return prayer.description;
-    case Prayer.fajr:
-      return 'بداية اليوم وسكينة الفجر';
-    case Prayer.sunrise:
-      return 'وقت الشروق وبداية الضياء';
-    case Prayer.dhuhr:
-      return 'استراحة اليوم ووسطه';
-    case Prayer.asr:
-      return 'حافظ عليها فهي صلاة الوسطى';
-    case Prayer.maghrib:
-      return 'ختام النهار وبداية المساء';
-    case Prayer.isha:
-      return 'سكون الليل وخاتمة اليوم';
-  }
-}
-
-String _formatPrayerTime(DateTime date) {
+String _formatClock(DateTime date) {
   final hour12 = date.hour % 12 == 0 ? 12 : date.hour % 12;
   return '${_twoDigits(hour12)}:${_twoDigits(date.minute)}';
 }
 
-String _formatClock(DateTime date) {
-  return '${_twoDigits(date.hour)}:${_twoDigits(date.minute)}';
-}
-
 String _twoDigits(int value) => value.toString().padLeft(2, '0');
 
-String _remainingText(Duration remaining) {
-  if (remaining.inSeconds <= 0) return 'الآن';
-  if (remaining.inMinutes < 1) return 'أقل من دقيقة';
-  if (remaining.inMinutes < 60) return 'بقي ${remaining.inMinutes} د';
+String _formatDuration(Duration duration) {
+  if (duration.inMinutes < 1) return 'أقل من دقيقة';
+  if (duration.inMinutes < 60) return '${duration.inMinutes} د';
 
-  final hours = remaining.inHours;
-  final minutes = remaining.inMinutes.remainder(60);
-  if (minutes == 0) return 'بقي $hours س';
-  return 'بقي $hours س $minutes د';
+  final hours = duration.inHours;
+  final minutes = duration.inMinutes.remainder(60);
+  if (minutes == 0) return '$hours س';
+  return '$hours س $minutes د';
 }

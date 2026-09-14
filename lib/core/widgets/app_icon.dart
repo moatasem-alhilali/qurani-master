@@ -24,19 +24,25 @@ class AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final outerSize = size ?? 18.sp;
-    final inset = visualPadding ?? (outerSize * 0.18).clamp(1.8, 4.0);
-    final iconSize = (outerSize - inset * 2).clamp(8.0, outerSize);
+    // [size] تعني حجم الأيقونة المرسومة نفسها، لا حجم الصندوق حولها.
+    //
+    // كانت الحسبة السابقة تقتطع حشوًا داخليًا (~١٨٪ من كل جانب) من المقاس
+    // المطلوب، فتخرج الأيقونة بنحو ٦٤٪ من حجمها المتوقَّع: `size: 20` يرسم
+    // أيقونة بـ ١٢.٨ فقط. هذا سبب أن أيقونات التطبيق كلها بدت منكمشة داخل
+    // مربّعاتها. الصندوق بقي بالمقاس نفسه، فلا يتغيّر أي تخطيط — الأيقونة
+    // وحدها تملأ ما خُصّص لها.
+    final glyphSize = size ?? 18.sp;
+    final inset = visualPadding ?? 0;
 
     return SizedBox.square(
-      dimension: outerSize,
+      dimension: glyphSize + inset * 2,
       child: Padding(
         padding: EdgeInsets.all(inset),
         child: HugeIcon(
           icon: icon,
           color: color ?? IconTheme.of(context).color,
           secondaryColor: secondaryColor,
-          size: iconSize,
+          size: glyphSize,
           strokeWidth: strokeWidth,
         ),
       ),
@@ -85,7 +91,7 @@ abstract final class AppIcons {
   static const close = HugeIcons.strokeRoundedCancel01;
   static const back = HugeIcons.strokeRoundedArrowLeft01;
   // back right
-    static const backRight = HugeIcons.strokeRoundedArrowRight01;
+  static const backRight = HugeIcons.strokeRoundedArrowRight01;
 
   static const forward = HugeIcons.strokeRoundedArrowRight01;
   static const up = HugeIcons.strokeRoundedArrowUp01;

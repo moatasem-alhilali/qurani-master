@@ -129,8 +129,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                       label: 'من الجزء',
                       child: _JuzDropdown(
                         value: _startJuz,
-                        onChanged: (value) =>
-                            setState(() => _startJuz = value),
+                        onChanged: (value) => setState(() => _startJuz = value),
                         validator: (value) =>
                             value == null ? 'اختر البداية' : null,
                       ),

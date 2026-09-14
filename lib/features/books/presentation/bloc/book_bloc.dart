@@ -34,6 +34,4 @@ class BookBloc extends Bloc<BookEvent, BookState> {
       },
     );
   }
-
-  
 }

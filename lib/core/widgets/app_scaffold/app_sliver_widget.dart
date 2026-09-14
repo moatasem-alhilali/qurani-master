@@ -35,6 +35,7 @@ class AppSliverWidget extends StatefulWidget {
     this.hasAppBar = true,
     this.scrollController,
     this.topSpacing,
+    this.leadingSliver,
     super.key,
   });
 
@@ -66,6 +67,12 @@ class AppSliverWidget extends StatefulWidget {
   final Widget? refreshHeader;
   final bool isElasticTextRefreshHeader;
   final void Function()? onRefresh;
+
+  /// شريحة تُوضع قبل كل شيء ولا يتأثر موضعها بـ [sliverChildPosition].
+  ///
+  /// خُصّصت لشريط التطبيق المثبّت: وجوده هنا يعني قائمة تمرير واحدة للشاشة
+  /// كلها بدل [NestedScrollView] بقائمتين متداخلتين.
+  final Widget? leadingSliver;
 
   @override
   State<AppSliverWidget> createState() => _AppSliverWidgetState();
@@ -123,6 +130,7 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
       ),
     );
 
+    final leading = widget.leadingSliver;
     final slivers = List<Widget>.of(widget.slivers ?? []);
     if (widget.slivers != null) {
       // Insert child based on position
@@ -136,10 +144,10 @@ class _AppSliverWidgetState extends State<AppSliverWidget> {
           slivers.insert(idx, childSliver);
       }
 
-      return slivers;
+      return leading == null ? slivers : [leading, ...slivers];
     } else {
       // Only child
-      return [childSliver];
+      return leading == null ? [childSliver] : [leading, childSliver];
     }
   }
 }

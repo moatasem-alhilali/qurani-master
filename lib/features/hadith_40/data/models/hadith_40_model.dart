@@ -6,7 +6,7 @@ class Hadith40Model extends Equatable {
     required this.description,
   });
 
-    factory Hadith40Model.fromJson(Map<String, dynamic> json) {
+  factory Hadith40Model.fromJson(Map<String, dynamic> json) {
     return Hadith40Model(
       hadith: json['hadith'] as String,
       description: json['description'] as String,

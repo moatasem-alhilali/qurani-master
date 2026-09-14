@@ -39,11 +39,13 @@ class TasbeehStage extends StatelessWidget {
 
     // الاهتزاز قبل ذهاب الحدث إلى قاعدة البيانات: الإحساس فوري ولا ينتظر
     // ذهابًا وإيابًا.
-    final next = count + 1;
-    if (next >= _target || tasbeehIsMilestone(next)) {
-      HapticFeedback.heavyImpact();
-    } else {
-      HapticFeedback.selectionClick();
+    if (TasbihPreferences.instance.hapticsEnabled.value) {
+      final next = count + 1;
+      if (next >= _target || tasbeehIsMilestone(next)) {
+        HapticFeedback.heavyImpact();
+      } else {
+        HapticFeedback.selectionClick();
+      }
     }
 
     context.read<SabihBloc>().add(PerformSubihTapEvent(subihId: id));

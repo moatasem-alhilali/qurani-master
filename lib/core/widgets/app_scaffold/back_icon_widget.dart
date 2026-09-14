@@ -20,21 +20,19 @@ class BackIconWidget extends StatelessWidget {
         surfaceTintColor: context.surfaceColor.withOpacity(0.5),
         shape: const CircleBorder(),
       ),
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(8.w),
       constraints: BoxConstraints(
-        minWidth: 50.h,
-        minHeight: 50.h,
-        maxWidth: 50.h,
-        maxHeight: 50.h,
+        minWidth: 40.w,
+        minHeight: 40.w,
+        maxWidth: 40.w,
+        maxHeight: 40.w,
       ),
       onPressed: () {
         context.pop();
       },
-      icon: const AppIcon(
-        AppIcons.backRight,
-        size: 50,
-        // color: Colors.black,
-      ),
+      // كان `size: 50` يعتمد على الانكماش القديم داخل [AppIcon]؛ بعد أن صار
+      // المقاس يعني حجم الأيقونة نفسها يلزم رقم واقعي وإلا فاضت عن زرّها.
+      icon: AppIcon(AppIcons.backRight, size: 20.sp),
     );
   }
 }

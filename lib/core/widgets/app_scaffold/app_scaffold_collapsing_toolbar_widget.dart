@@ -25,7 +25,7 @@ class AppScaffoldCollapsingToolbarWidget extends StatefulWidget {
     this.showLargeHeader = true,
     this.showSmallHeader = true,
     this.trailing,
-    this.initialOffset=100,
+    this.initialOffset = 100,
   });
   final Widget? body;
   final Future<void> Function()? onRefresh;

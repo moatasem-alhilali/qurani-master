@@ -62,9 +62,8 @@ class QuranPlanListScreen extends StatelessWidget {
                 },
                 child: AppIcon(
                   AppIcons.add,
-                  color: skin.isDark
-                      ? AppColors.brandNight
-                      : AppColors.brandIvory,
+                  color:
+                      skin.isDark ? AppColors.brandNight : AppColors.brandIvory,
                   size: 20.sp,
                 ),
               ),

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/extensions/theme_extensions.dart';
+import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
-import 'package:quran_app/core/widgets/app_scaffold/small_header_delegate_widget.dart';
 
+/// هيكل الشاشات: شريط تطبيق واحد مثبّت فوق قائمة تمرير واحدة.
+///
+/// كان هنا شريطان فوق بعض — كبير يتلاشى وصغير يظهر — داخل [NestedScrollView]،
+/// مع `LayoutBuilder` يُعاد بناؤه مع كل بكسل تمرير، وطبقتَي [Opacity] تفرضان
+/// `saveLayer` في كل إطار، ومستمع تمرير يغذّي `ValueNotifier`. كان ذلك يقصم
+/// الأداء عند التمرير. الآن: `SliverAppBar(pinned: true)` القياسي لا غير،
+/// بلا ارتفاع متمدّد ولا شفافية ولا مستمعين.
 class AppScaffoldWidget extends StatefulWidget {
   const AppScaffoldWidget({
     this.body,
@@ -28,150 +36,126 @@ class AppScaffoldWidget extends StatefulWidget {
     this.initialOffset = 100,
     this.sliverChildPosition = SliverChildPosition.start,
   });
+
   final Widget? body;
   final Future<void> Function()? onRefresh;
-  final Widget? background;
   final Widget? leading;
   final Widget? trailing;
   final String? title;
   final Widget? titleWidget;
   final bool back;
   final Widget? bottomNavigationBar;
-  final double? expandedHeight;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
   final double toolbarHeight;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final List<Widget>? slivers;
   final Widget? floatingActionButton;
-  final bool showLargeHeader;
-  final bool showSmallHeader;
-  final double? initialOffset;
   final SliverChildPosition sliverChildPosition;
+
+  /// يُخفي شريط التطبيق كاملًا.
+  final bool showSmallHeader;
+
+  // ── معطيات باقية للتوافق مع ٤٥ شاشة تستدعي هذا الهيكل ──────────────────
+  // لم تعد تؤثّر بعد إزالة الشريط المتمدّد، وإبقاؤها يجنّب تعديل كل نداء.
+
+  /// كان يُظهر العنوان الكبير المتلاشي. الشاشات التي كانت تمرّر `false`
+  /// تحصل الآن على النتيجة نفسها: شريط صغير واحد.
+  final bool showLargeHeader;
+
+  /// كان ارتفاع الشريط المتمدّد.
+  final double? expandedHeight;
+
+  /// كان يقفز بالتمرير عند الفتح ليُخفي الشريط الكبير — وكان مصدر ارتجاف
+  /// عند بناء أول إطار.
+  final double? initialOffset;
+
+  /// لم يكن مستعملًا في البناء أصلًا.
+  final Widget? background;
 
   @override
   State<AppScaffoldWidget> createState() => _AppScaffoldWidgetState();
 }
 
 class _AppScaffoldWidgetState extends State<AppScaffoldWidget> {
-// toolbar logic
-  final ScrollController _scrollController = ScrollController();
-  final ValueNotifier<double> _scrollOffset = ValueNotifier(0);
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() {
-      _scrollOffset.value = _scrollController.offset;
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.initialOffset != null) {
-        _scrollController.jumpTo(widget.initialOffset!);
-        _scrollOffset.value = widget.initialOffset!;
-        _scrollController.animateTo(
-          widget.initialOffset!,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    _scrollOffset.dispose();
-    super.dispose();
-  }
-
-  double _titleOpacity(double offset) {
-    const start = 40.0;
-    const end = 90.0;
-    if (offset <= start) return 0;
-    if (offset >= end) return 1;
-    return (offset - start) / (end - start);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
     return Scaffold(
       extendBody: true,
-      extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
       floatingActionButton: widget.floatingActionButton,
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
-      backgroundColor: context.scaffoldBackgroundColor,
+      backgroundColor: skin.ground,
       bottomNavigationBar: widget.bottomNavigationBar ?? const SizedBox(),
       body: SafeArea(
-        child: NestedScrollView(
-          controller: _scrollController,
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            if (widget.showLargeHeader)
-              SliverAppBar(
-                expandedHeight: 110,
-                backgroundColor: context.scaffoldBackgroundColor,
-                elevation: 0,
-                leading: const SizedBox(),
-                flexibleSpace: LayoutBuilder(
-                  builder: (context, constraints) {
-                    const min = kToolbarHeight;
-                    const double max = 110;
-                    final t = ((constraints.maxHeight - min) / (max - min))
-                        .clamp(0.0, 1.0);
-                    return Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Positioned.fill(
-                          child: Opacity(
-                            opacity: t,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 22),
-                                child: widget.titleWidget != null
-                                    ? widget.titleWidget!
-                                    : Text(
-                                        widget.title ?? '',
-                                        style: context.titleLarge?.copyWith(
-                                          fontSize: 32.sp,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            if (widget.showSmallHeader)
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: SmallHeaderDelegateWidget(
-                  backgroundColor: context.scaffoldBackgroundColor,
-                  height: 54,
-                  scrollOffsetNotifier: _scrollOffset,
-                  titleOpacityFn: _titleOpacity,
-                  titleText: widget.title ?? '',
-                  leading: widget.leading,
-                  trailing: widget.trailing,
-                  title: widget.titleWidget,
-                ),
-              ),
-          ],
-          body: Material(
-            color: context.scaffoldBackgroundColor,
-            child: AppSliverWidget(
-              sliverChildPosition: widget.sliverChildPosition,
-              slivers: widget.slivers,
-              onRefresh: widget.onRefresh,
-              child: widget.body ?? const SizedBox(),
-            ),
-          ),
+        bottom: false,
+        child: AppSliverWidget(
+          leadingSliver: widget.showSmallHeader ? _appBar(skin) : null,
+          sliverChildPosition: widget.sliverChildPosition,
+          slivers: widget.slivers,
+          onRefresh: widget.onRefresh,
+          topSpacing: 8.h,
+          child: widget.body ?? const SizedBox(),
         ),
       ),
+    );
+  }
+
+  Widget _appBar(AppSkin skin) {
+    final actions = widget.actions ??
+        (widget.trailing == null
+            ? null
+            : [widget.trailing!, SizedBox(width: 6.w)]);
+
+    return SliverAppBar(
+      pinned: true,
+      // القائمة داخل SafeArea أصلًا، فلا نضيف حشو شريط الحالة مرّتين.
+      primary: false,
+      toolbarHeight: widget.toolbarHeight,
+      backgroundColor: skin.ground,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      automaticallyImplyLeading: false,
+      titleSpacing: 4.w,
+      leadingWidth: 44.w,
+      leading: widget.leading ?? (widget.back ? const _BackButton() : null),
+      title: widget.titleWidget ??
+          ((widget.title?.isEmpty ?? true)
+              ? null
+              : Text(
+                  widget.title!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: skin.ink,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )),
+      actions: actions,
+      bottom: widget.bottom,
+    );
+  }
+}
+
+/// زرّ الرجوع في الشريط — مقاس مضغوط يناسب خانة `leading`.
+class _BackButton extends StatelessWidget {
+  const _BackButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+
+    return IconButton(
+      onPressed: () => context.pop(),
+      tooltip: 'رجوع',
+      padding: EdgeInsets.zero,
+      constraints: BoxConstraints(minWidth: 40.w, minHeight: 40.w),
+      icon: AppIcon(AppIcons.backRight, color: skin.ink, size: 20.sp),
     );
   }
 }
