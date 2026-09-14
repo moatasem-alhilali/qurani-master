@@ -2,7 +2,7 @@ part of 'category_bloc.dart';
 
 @immutable
 class CategoryState {
-  CategoryState({
+  const CategoryState({
     this.categoryState = RequestState.initial,
     this.categories = const <CategorySectionModel>[],
     this.categoryDetail,
@@ -11,15 +11,15 @@ class CategoryState {
     this.quranBooksState = RequestState.initial,
     this.categoriesOptionsSearch = const [],
   });
-  List<CategorySectionModel> categories;
-  CategoryDetailModel? categoryDetail;
-  RequestState categoryState;
+  final List<CategorySectionModel> categories;
+  final CategoryDetailModel? categoryDetail;
+  final RequestState categoryState;
 
   //
 
-  List<CategoryDetailModel> categoriesOptions;
-  List<CategoryDetailModel> categoriesOptionsSearch;
-  RequestState quranBooksState;
+  final List<CategoryDetailModel> categoriesOptions;
+  final List<CategoryDetailModel> categoriesOptionsSearch;
+  final RequestState quranBooksState;
 
   CategoryState copyWith({
     RequestState? categoryState,

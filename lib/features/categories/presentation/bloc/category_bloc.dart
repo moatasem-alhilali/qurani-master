@@ -1,18 +1,17 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/categories/data/model/category_section_model.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
-import 'package:quran_app/features/categories/data/model/section_type_model.dart';
 import 'package:quran_app/features/categories/data/remote/category_repository_imp.dart';
 
 part 'category_event.dart';
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  CategoryBloc({required this.repositoryImpl}) : super(CategoryState()) {
+  CategoryBloc({required this.repositoryImpl}) : super(const CategoryState()) {
     on<GetCategoriesEvent>(index);
 
     on<GetCategoryDetailEvent>(categoryDetail);

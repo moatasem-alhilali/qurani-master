@@ -16,7 +16,7 @@ class TasbihPreferences {
 
   static const _materialKey = 'tasbih_bead_material';
   static const _fontScaleKey = 'tasbih_font_scale';
-  static const _soundKey = 'tasbih_sound_enabled';
+  static const _hapticsKey = 'tasbih_haptics_enabled';
   static const _targetPrefix = 'tasbih_target_';
 
   /// حدود حجم الخط — خارجها يخرج النصّ عن الشاشة أو يصير غير مقروء.
@@ -28,7 +28,7 @@ class TasbihPreferences {
 
   final ValueNotifier<double> fontScale = ValueNotifier(1);
 
-  final ValueNotifier<bool> soundEnabled = ValueNotifier(false);
+  final ValueNotifier<bool> hapticsEnabled = ValueNotifier(true);
 
   /// يتغيّر رقمه كلما تبدّل هدف أيّ ذكر، فتُعاد قراءة الأهداف.
   final ValueNotifier<int> targetsRevision = ValueNotifier(0);
@@ -54,7 +54,7 @@ class TasbihPreferences {
       fontScale.value = storedScale.clamp(minFontScale, maxFontScale);
     }
 
-    soundEnabled.value = cache.getBool(_soundKey) ?? false;
+    hapticsEnabled.value = cache.getBool(_hapticsKey) ?? true;
   }
 
   void setMaterial(TasbihBeadMaterial value) {
@@ -70,10 +70,10 @@ class TasbihPreferences {
     CacheService().setDouble(_fontScaleKey, clamped);
   }
 
-  void setSoundEnabled({required bool value}) {
-    if (soundEnabled.value == value) return;
-    soundEnabled.value = value;
-    CacheService().setBool(_soundKey, value);
+  void setHapticsEnabled({required bool value}) {
+    if (hapticsEnabled.value == value) return;
+    hapticsEnabled.value = value;
+    CacheService().setBool(_hapticsKey, value);
   }
 
   /// هدف ذكر بعينه. غير المضبوط يرجع `null` فيتولّاه الهدف التلقائي

@@ -67,9 +67,9 @@ class SheetAudios extends StatelessWidget {
         child: BlocBuilder<BaseAudioBloc, BaseAudioState>(
           builder: (context, state) {
             final body = switch (state.famousBaseAudioState) {
-              RequestState.initial ||
-              RequestState.loading =>
-                const [CategoryThinLoader()],
+              RequestState.initial || RequestState.loading => const [
+                  CategoryThinLoader(),
+                ],
               RequestState.error => const [
                   CategoryNotice(message: 'تعذر تحميل المواد الصوتية.'),
                 ],
@@ -174,12 +174,20 @@ class _AudioRowState extends State<_AudioRow> {
     super.dispose();
   }
 
-  String? get _url => widget.data['url'] as String?;
+  /// عناصر المشغّل تصل خرائطَ غير مُنمَّطة من الواجهة الخلفية.
+  Map<String, dynamic> get _map {
+    final value = widget.data;
+    if (value is Map) {
+      return value.cast<String, dynamic>();
+    }
+    return const {};
+  }
 
-  String get _description =>
-      (widget.data['description'] as String?)?.trim() ?? '';
+  String? get _url => _map['url'] as String?;
 
-  String get _size => (widget.data['size'] as String?)?.trim() ?? '';
+  String get _description => (_map['description'] as String?)?.trim() ?? '';
+
+  String get _size => (_map['size'] as String?)?.trim() ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +213,9 @@ class _AudioRowState extends State<_AudioRow> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  _description.isEmpty ? 'مقطع ${widget.index + 1}' : _description,
+                  _description.isEmpty
+                      ? 'مقطع ${widget.index + 1}'
+                      : _description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
