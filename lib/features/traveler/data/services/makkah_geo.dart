@@ -85,3 +85,28 @@ class MakkahGeo {
   static double _toRadians(double degrees) => degrees * math.pi / 180;
   static double _toDegrees(double radians) => radians * 180 / math.pi;
 }
+
+/// اتجاه نقطة عن نقطة، بالدرجات من الشمال.
+///
+/// يُستعمل لسهم الاتجاه بجانب كل مكان قريب: المسافة وحدها لا تكفي للمشي —
+/// «٣٢٠ م» في أي جهة؟ والسهم يجيب بلا فتح خريطة.
+class GeoBearing {
+  const GeoBearing._();
+
+  static double between({
+    required double fromLatitude,
+    required double fromLongitude,
+    required double toLatitude,
+    required double toLongitude,
+  }) {
+    final lat1 = fromLatitude * math.pi / 180;
+    final lat2 = toLatitude * math.pi / 180;
+    final dLon = (toLongitude - fromLongitude) * math.pi / 180;
+
+    final y = math.sin(dLon) * math.cos(lat2);
+    final x = math.cos(lat1) * math.sin(lat2) -
+        math.sin(lat1) * math.cos(lat2) * math.cos(dLon);
+
+    return (math.atan2(y, x) * 180 / math.pi + 360) % 360;
+  }
+}

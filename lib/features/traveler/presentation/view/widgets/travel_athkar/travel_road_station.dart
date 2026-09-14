@@ -45,102 +45,101 @@ class TravelRoadStation extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // عمود الطريق: الخطّ والعقدة. عرضه ثابت فتصطفّ العقد على خطّ واحد
-          // مهما اختلف ارتفاع المحتوى.
-          SizedBox(
-            width: 34.w,
-            child: CustomPaint(
-              painter: _RoadPainter(
-                isDone: _isDone,
-                isActive: isExpanded,
-                isFirst: isFirst,
-                isLast: isLast,
-                line: skin.hairline,
-                accent: skin.accent,
-                ground: skin.ground,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: isLast ? 6.h : 14.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: onTap,
-                    borderRadius: BorderRadius.circular(8.r),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.h),
-                      child: Row(
+    // الطريق يُرسم **خلف** المحتوى لا في عمود بجانبه.
+    //
+    // النسخة الأولى وضعت الرسّام في `Row` داخل `IntrinsicHeight` ليأخذ
+    // الخطُّ ارتفاع الصفّ. لكن `IntrinsicHeight` يسأل أطفاله عن أطول ارتفاع
+    // ممكن، و`AnimatedCrossFade` يجيب بارتفاع الجسم **المفتوح** حتى وهو
+    // مطويّ — فكانت كل محطّة مغلقة تحجز فراغ المفتوحة تحتها.
+    //
+    // `CustomPaint` بطفلٍ يأخذ قياسه من الطفل، فيتبع الخطُّ الارتفاعَ الفعلي
+    // بلا حساب مسبق.
+    return CustomPaint(
+      painter: _RoadPainter(
+        isDone: _isDone,
+        isActive: isExpanded,
+        isFirst: isFirst,
+        isLast: isLast,
+        isRtl: Directionality.of(context) == TextDirection.rtl,
+        line: skin.hairline,
+        accent: skin.accent,
+        ground: skin.ground,
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: 34.w,
+          bottom: isLast ? 6.h : 14.h,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(8.r),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _stageLabel,
-                                  style: TextStyle(
-                                    color: _isDone || isExpanded
-                                        ? skin.accent
-                                        : skin.ink,
-                                    fontSize: 12.5.sp,
-                                    fontWeight: FontWeight.w800,
-                                    height: 1.25,
-                                  ),
-                                ),
-                                Text(
-                                  item.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: skin.inkSoft.withValues(alpha: 0.7),
-                                    fontSize: 9.5.sp,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ],
+                          Text(
+                            _stageLabel,
+                            style: TextStyle(
+                              color: _isDone || isExpanded
+                                  ? skin.accent
+                                  : skin.ink,
+                              fontSize: 12.5.sp,
+                              fontWeight: FontWeight.w800,
+                              height: 1.25,
                             ),
                           ),
-                          AnimatedRotation(
-                            turns: isExpanded ? 0.5 : 0,
-                            duration: const Duration(milliseconds: 220),
-                            child: AppIcon(
-                              AppIcons.down,
-                              color: skin.inkSoft.withValues(alpha: 0.6),
-                              size: 14.sp,
+                          Text(
+                            item.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: skin.inkSoft.withValues(alpha: 0.7),
+                              fontSize: 9.5.sp,
+                              fontWeight: FontWeight.w500,
+                              height: 1.4,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 240),
-                    sizeCurve: Curves.easeOutCubic,
-                    crossFadeState: isExpanded
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    firstChild: _StationBody(
-                      item: item,
-                      count: count,
-                      target: _target,
-                      isDone: _isDone,
+                    AnimatedRotation(
+                      turns: isExpanded ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 220),
+                      child: AppIcon(
+                        AppIcons.down,
+                        color: skin.inkSoft.withValues(alpha: 0.6),
+                        size: 14.sp,
+                      ),
                     ),
-                    secondChild: const SizedBox(width: double.infinity),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 240),
+              sizeCurve: Curves.easeOutCubic,
+              crossFadeState: isExpanded
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              firstChild: _StationBody(
+                item: item,
+                count: count,
+                target: _target,
+                isDone: _isDone,
+              ),
+              secondChild: const SizedBox(width: double.infinity),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -358,6 +357,7 @@ class _RoadPainter extends CustomPainter {
     required this.isActive,
     required this.isFirst,
     required this.isLast,
+    required this.isRtl,
     required this.line,
     required this.accent,
     required this.ground,
@@ -367,14 +367,21 @@ class _RoadPainter extends CustomPainter {
   final bool isActive;
   final bool isFirst;
   final bool isLast;
+
+  /// الطريق يجري على جهة البداية: يمينًا في العربية ويسارًا في غيرها.
+  final bool isRtl;
+
   final Color line;
   final Color accent;
   final Color ground;
 
+  /// نصف عرض العمود المتروك للطريق في حشوة المحتوى.
+  static const double _rail = 17;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final x = size.width / 2;
-    final nodeY = 16.0;
+    final x = isRtl ? size.width - _rail : _rail;
+    const nodeY = 16.0;
     final radius = isActive || isDone ? 7.0 : 5.5;
 
     final stroke = Paint()
@@ -434,6 +441,7 @@ class _RoadPainter extends CustomPainter {
       oldDelegate.isActive != isActive ||
       oldDelegate.isFirst != isFirst ||
       oldDelegate.isLast != isLast ||
+      oldDelegate.isRtl != isRtl ||
       oldDelegate.line != line ||
       oldDelegate.accent != accent ||
       oldDelegate.ground != ground;

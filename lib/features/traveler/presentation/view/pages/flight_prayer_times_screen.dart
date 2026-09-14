@@ -8,8 +8,8 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/traveler/data/services/flight_prayer_service.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/flight_prayer/flight_prayer_bloc.dart';
+import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_boarding_header.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_command_panel.dart';
-import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_hud.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_map_layer.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
 
@@ -53,6 +53,9 @@ class _FlightPrayerTimesOrchestratorState
   final TextEditingController _flightController = TextEditingController();
 
   double _mapZoom = 5.7;
+
+  /// الخريطة وجهة عند الطلب، والخطّ الزمني هو الصفحة.
+  bool _showMap = false;
 
   @override
   void dispose() {
@@ -150,6 +153,12 @@ class _FlightPrayerTimesOrchestratorState
       child: TravelerScaffold(
         title: 'مواقيت الصلاة أثناء الطيران',
         actions: [
+          TravelerIconAction(
+            icon: _showMap ? AppIcons.sections : AppIcons.mapPin,
+            tooltip: _showMap ? 'عرض المواقيت' : 'عرض الخريطة',
+            active: _showMap,
+            onTap: () => setState(() => _showMap = !_showMap),
+          ),
           GenericSearchAnchorAsync<String>(
             hintText: 'بحث برقم الرحلة',
             asyncSuggestions: (query) => _flightSuggestions(context, query),
@@ -181,16 +190,12 @@ class _FlightPrayerTimesOrchestratorState
             },
           ),
         ],
-        // الخريطة ثابتة في أعلى الشاشة والمحتوى وحده هو الذي ينزلق: لو
-        // وُضعت الخريطة داخل قائمة متحرّكة لتنازع السحبُ الرأسيُّ معها.
-        child: Column(
-          children: [
-            Container(
-              height: 186.h,
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: skin.hairline)),
-              ),
-              child: Stack(
+        // الخريطة خلف مفتاح، لا شريطًا دائمًا في أعلى الشاشة.
+        //
+        // كانت تحجز ١٨٦ نقطة حتى قبل إدخال رقم رحلة — مساحةً فارغة تدفع
+        // الجواب تحت الطيّة. والمسار على شريط بهذا الارتفاع لا يُقرأ منه شيء.
+        child: _showMap
+            ? Stack(
                 children: [
                   Positioned.fill(
                     child: FlightPrayerMapLayer(
@@ -209,20 +214,35 @@ class _FlightPrayerTimesOrchestratorState
                     ),
                   ),
                 ],
-              ),
-            ),
-            const FlightPrayerHud(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: FlightPrayerCommandPanel(
-                  controller: _flightController,
-                  onSearch: () => _searchFlight(context),
-                  onMoveMapTo: _moveMapTo,
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BlocBuilder<FlightPrayerBloc, FlightPrayerState>(
+                      builder: (context, state) {
+                        final timeline = state is FlightPrayerSuccess
+                            ? state.result
+                            : context.read<FlightPrayerBloc>().lastResult;
+                        if (timeline == null) return const SizedBox.shrink();
+                        return FlightBoardingHeader(timeline: timeline);
+                      },
+                    ),
+                    FlightPrayerCommandPanel(
+                      controller: _flightController,
+                      onSearch: () => _searchFlight(context),
+                      onMoveMapTo: (center, zoom) {
+                        // اللمس على محطّة يفتح الخريطة عليها: الخريطة صارت
+                        // وجهةً عند الطلب لا خلفيةً دائمة.
+                        setState(() => _showMap = true);
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _moveMapTo(center, zoom);
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
