@@ -205,29 +205,19 @@ class NotificationOrchestratorService {
 
   /// اسم المكان الذي حُسبت عليه المواقيت، كما يُعرض في رأس الإشعار.
   ///
-  /// يُفضَّل [PrayerLocationSelection.label] لأنّه النصّ نفسه الذي يراه
-  /// المستخدم في شاشة المواقيت، فلا يقرأ اسمين لمكان واحد. وإن كان فارغًا
-  /// نرجع إلى المدينة ثم المنطقة.
+  /// يُستعمل [PrayerLocationSelection.qualifiedLabel] لا `label`: الثاني يأخذ
+  /// المدينة وحدها فيظهر «الرياض» مجرّدًا، ولا سياق في شريط الإشعارات يوضّح
+  /// أهي المدينة أم المنطقة. المؤهَّل يذكر المنطقة الإدارية: «منطقة الرياض».
   ///
   /// أيّ خطأ هنا لا يُفشل الجدولة: الإشعار يُرسَل بلا سطر المكان.
   Future<String?> _resolveLocationLabel() async {
     try {
       final location = await coordinatesService.getSavedLocation();
-      if (location == null) {
+      final resolved = location?.qualifiedLabel.trim();
+      if (resolved == null || resolved.isEmpty) {
         return null;
       }
-
-      for (final candidate in <String?>[
-        location.label,
-        location.locality,
-        location.administrativeArea,
-      ]) {
-        final trimmed = candidate?.trim();
-        if (trimmed != null && trimmed.isNotEmpty) {
-          return trimmed;
-        }
-      }
-      return null;
+      return resolved;
     } catch (e) {
       logger.w('Could not resolve location label for Athan notification: $e');
       return null;

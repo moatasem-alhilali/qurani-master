@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    ورد اليوم.
+
+    النسبة رقم كبير بالذهبي: هي الحالة كلّها في نظرة. الملخّص تحتها بالخافت،
+    ولا صندوق ثانٍ حولها — الودجت نفسه هو الصندوق.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_wird_background"
+    android:background="@drawable/widget_surface_background"
     android:gravity="center_vertical"
+    android:layoutDirection="rtl"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="@dimen/widget_padding"
     android:textDirection="rtl">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:alpha="0.92"
-            android:contentDescription="@string/app_name"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:id="@+id/widget_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="ورد اليوم"
-            android:textColor="#D4B873"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:ellipsize="end"
+        android:gravity="end"
+        android:letterSpacing="0.04"
+        android:maxLines="1"
+        android:text="ورد اليوم"
+        android:textColor="@color/widget_ink_soft"
+        android:textSize="11sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:gravity="center"
-        android:text="42%"
-        android:textColor="#FFF7E1"
-        android:textSize="24sp"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:maxLines="1"
+        android:text="60%"
+        android:textColor="@color/widget_accent"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:maxLines="1"
-        android:text="أكملت جزءًا من وردك، أكمل النور."
-        android:textColor="#D4B873"
-        android:textSize="9sp" />
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="end"
+        android:maxLines="2"
+        android:text="ابدأ وردك الآن"
+        android:textColor="@color/widget_ink"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/widget_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
         android:gravity="end"
-        android:text="تحديث الآن"
-        android:textColor="#D4B873"
-        android:textSize="8sp" />
+        android:maxLines="1"
+        android:text="طمأنينة"
+        android:textColor="@color/widget_ink_soft"
+        android:textSize="9sp" />
 </LinearLayout>

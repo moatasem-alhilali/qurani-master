@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- خرزة ممتلئة على مسبحة الويدجت. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-    <solid android:color="#C9A46A" />
-    <size android:width="8dp" android:height="8dp" />
+<!-- خرزة/نقطة مكتملة: القرص الذهبي هو إشارة الإنجاز الوحيدة. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/widget_accent" />
+    <size
+        android:width="9dp"
+        android:height="9dp" />
 </shape>

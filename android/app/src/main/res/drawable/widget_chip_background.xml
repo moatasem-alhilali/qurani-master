@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- مربّع أيقونة في ويدجت الاختصارات. -->
+<!-- مربّع الاختصار: سطح مرتفع بلا حدّ، فالأربعة تُقرأ صفًّا واحدًا لا أربعة صناديق. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="12dp" />
-    <solid android:color="#2E2415" />
+    <corners android:radius="14dp" />
+    <solid android:color="@color/widget_surface_raised" />
 </shape>

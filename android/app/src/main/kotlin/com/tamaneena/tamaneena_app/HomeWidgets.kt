@@ -5,17 +5,29 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetProvider
 import org.json.JSONArray
 
+/**
+ * ودجات الصلاة والذكر والآية والورد.
+ *
+ * **لا ألوان هنا.** كان كل ربط يقرأ `widget_on_surface_hex` و`widget_muted_hex`
+ * من تفضيلات الويدجت ويكتبهما فوق كل نصّ — وDart يحفظ فيهما قيمتين داكنتين
+ * ثابتتين مهما كان الثيم. النتيجة أن الودجات ظلّت بنّية داكنة أبدًا، وملفّات
+ * `values-night` لا تُسأل أصلًا.
+ *
+ * الآن اللون مسؤولية الموارد وحدها: `values/widget_tokens.xml` للفاتح
+ * و`values-night/` للداكن، ويحلّه أندرويد لكل ودجت بلا وسيط. ما يبقى للكوتلن
+ * هو الحالة لا المظهر: أيّ صلاة هي القادمة، وكم خرزة امتلأت.
+ */
 private object TamaneenaWidgetBinder {
+
     fun bindPrayer(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_prayer_large)
         val nextPrayer = resolveNextPrayer(widgetData)
-        applyPrayerPalette(views, widgetData)
+
         views.setTextViewText(R.id.widget_title, read(widgetData, "prayer_label", "الصلاة القادمة"))
         views.setTextViewText(R.id.widget_primary, nextPrayer?.name ?: read(widgetData, "prayer_name", "الفجر"))
         views.setTextViewText(R.id.widget_time, nextPrayer?.time ?: read(widgetData, "prayer_time", "04:18 ص"))
@@ -27,7 +39,7 @@ private object TamaneenaWidgetBinder {
 
     fun bindPrayerTimes(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_prayer_times_large)
-        applyPrayerTimesPalette(views, widgetData)
+
         views.setTextViewText(R.id.widget_title, "مواقيت الصلاة")
         views.setTextViewText(R.id.widget_city, read(widgetData, "prayer_city", "طمأنينة"))
         views.setTextViewText(R.id.widget_fajr_time, read(widgetData, "prayer_fajr_time", "--:--"))
@@ -37,13 +49,38 @@ private object TamaneenaWidgetBinder {
         views.setTextViewText(R.id.widget_maghrib_time, read(widgetData, "prayer_maghrib_time", "--:--"))
         views.setTextViewText(R.id.widget_isha_time, read(widgetData, "prayer_isha_time", "--:--"))
         views.setTextViewText(R.id.widget_footer, read(widgetData, "widget_updated_at", "طمأنينة"))
+
+        highlightNextCell(context, views, resolveNextPrayer(widgetData)?.name)
+
         views.setOnClickPendingIntent(R.id.widget_root, launchIntent(context, "tamaneena://widgets/prayer"))
         return views
     }
 
+    /**
+     * يُلبس خليّة الصلاة القادمة الذهبيَّ.
+     *
+     * ستّ خلايا متطابقة كانت تترك السؤال الوحيد الذي يُفتح الودجت لأجله بلا
+     * جواب: أيّها التالي؟ الإبراز حالة لا ثيم، فلذلك يُضبط هنا لا في الموارد.
+     */
+    private fun highlightNextCell(context: Context, views: RemoteViews, prayerName: String?) {
+        val cell = when (prayerName?.trim()) {
+            "الفجر" -> Triple(R.id.widget_cell_fajr, R.id.widget_fajr_label, R.id.widget_fajr_time)
+            "الشروق" -> Triple(R.id.widget_cell_sunrise, R.id.widget_sunrise_label, R.id.widget_sunrise_time)
+            "الظهر" -> Triple(R.id.widget_cell_dhuhr, R.id.widget_dhuhr_label, R.id.widget_dhuhr_time)
+            "العصر" -> Triple(R.id.widget_cell_asr, R.id.widget_asr_label, R.id.widget_asr_time)
+            "المغرب" -> Triple(R.id.widget_cell_maghrib, R.id.widget_maghrib_label, R.id.widget_maghrib_time)
+            "العشاء" -> Triple(R.id.widget_cell_isha, R.id.widget_isha_label, R.id.widget_isha_time)
+            else -> return
+        }
+
+        val onAccent = context.getColor(R.color.widget_on_accent)
+        views.setInt(cell.first, "setBackgroundResource", R.drawable.widget_cell_next)
+        views.setTextColor(cell.second, onAccent)
+        views.setTextColor(cell.third, onAccent)
+    }
+
     fun bindDhikr(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_text_large)
-        applyTextPalette(views, widgetData)
         views.setTextViewText(R.id.widget_title, read(widgetData, "dhikr_title", "ذكر اليوم"))
         views.setTextViewText(R.id.widget_body, compact(read(widgetData, "dhikr_text", "لا إله إلا الله وحده لا شريك له")))
         views.setTextViewText(R.id.widget_footer, read(widgetData, "dhikr_source", "أذكار طمأنينة"))
@@ -53,9 +90,8 @@ private object TamaneenaWidgetBinder {
 
     fun bindAyah(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_text_large)
-        applyTextPalette(views, widgetData)
         views.setTextViewText(R.id.widget_title, read(widgetData, "ayah_title", "آية عشوائية"))
-        views.setTextViewText(R.id.widget_body, compact(read(widgetData, "ayah_text", "﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾")))
+        views.setTextViewText(R.id.widget_body, compact(read(widgetData, "ayah_text", "﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾")))
         views.setTextViewText(R.id.widget_footer, read(widgetData, "ayah_source", "الرعد: 28"))
         views.setOnClickPendingIntent(R.id.widget_root, launchIntent(context, "tamaneena://widgets/ayah"))
         return views
@@ -63,7 +99,6 @@ private object TamaneenaWidgetBinder {
 
     fun bindWird(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_wird_large)
-        applyWirdPalette(views, widgetData)
         views.setTextViewText(R.id.widget_title, read(widgetData, "wird_title", "ورد اليوم"))
         views.setTextViewText(R.id.widget_primary, read(widgetData, "wird_progress", "0%"))
         views.setTextViewText(R.id.widget_caption, read(widgetData, "wird_summary", "ابدأ وردك الآن"))
@@ -77,7 +112,7 @@ private object TamaneenaWidgetBinder {
     }
 
     private fun compact(text: String): String {
-        return if (text.length <= 92) text else text.take(89).trimEnd() + "..."
+        return if (text.length <= 120) text else text.take(117).trimEnd() + "…"
     }
 
     private fun resolveNextPrayer(widgetData: SharedPreferences): PrayerScheduleItem? {
@@ -116,66 +151,6 @@ private object TamaneenaWidgetBinder {
         val hours = totalMinutes / 60L
         val minutes = totalMinutes % 60L
         return if (hours <= 0L) "بعد $minutes د" else "بعد $hours س $minutes د"
-    }
-
-    private fun applyPrayerPalette(views: RemoteViews, widgetData: SharedPreferences) {
-        val onSurface = parseColor(read(widgetData, "widget_on_surface_hex", "#FFF7E1"), Color.rgb(255, 247, 225))
-        val muted = parseColor(read(widgetData, "widget_muted_hex", "#D4B873"), Color.rgb(212, 184, 115))
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_footer, muted)
-        views.setTextColor(R.id.widget_primary, onSurface)
-        views.setTextColor(R.id.widget_caption, muted)
-        views.setTextColor(R.id.widget_time, onSurface)
-    }
-
-    private fun applyTextPalette(views: RemoteViews, widgetData: SharedPreferences) {
-        val onSurface = parseColor(read(widgetData, "widget_on_surface_hex", "#FFF7E1"), Color.rgb(255, 247, 225))
-        val muted = parseColor(read(widgetData, "widget_muted_hex", "#D4B873"), Color.rgb(212, 184, 115))
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_footer, muted)
-        views.setTextColor(R.id.widget_body, onSurface)
-    }
-
-    private fun applyWirdPalette(views: RemoteViews, widgetData: SharedPreferences) {
-        val onSurface = parseColor(read(widgetData, "widget_on_surface_hex", "#FFF7E1"), Color.rgb(255, 247, 225))
-        val muted = parseColor(read(widgetData, "widget_muted_hex", "#D4B873"), Color.rgb(212, 184, 115))
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_footer, muted)
-        views.setTextColor(R.id.widget_primary, onSurface)
-        views.setTextColor(R.id.widget_caption, muted)
-    }
-
-    private fun applyPrayerTimesPalette(views: RemoteViews, widgetData: SharedPreferences) {
-        val onSurface = parseColor(read(widgetData, "widget_on_surface_hex", "#FFF7E1"), Color.rgb(255, 247, 225))
-        val muted = parseColor(read(widgetData, "widget_muted_hex", "#D4B873"), Color.rgb(212, 184, 115))
-        val ids = intArrayOf(
-            R.id.widget_title,
-            R.id.widget_city,
-            R.id.widget_footer,
-            R.id.widget_fajr_label,
-            R.id.widget_sunrise_label,
-            R.id.widget_dhuhr_label,
-            R.id.widget_asr_label,
-            R.id.widget_maghrib_label,
-            R.id.widget_isha_label,
-        )
-        ids.forEach { views.setTextColor(it, muted) }
-        intArrayOf(
-            R.id.widget_fajr_time,
-            R.id.widget_sunrise_time,
-            R.id.widget_dhuhr_time,
-            R.id.widget_asr_time,
-            R.id.widget_maghrib_time,
-            R.id.widget_isha_time,
-        ).forEach { views.setTextColor(it, onSurface) }
-    }
-
-    private fun parseColor(value: String, fallback: Int): Int {
-        return try {
-            Color.parseColor(value)
-        } catch (_: IllegalArgumentException) {
-            fallback
-        }
     }
 
     private fun launchIntent(context: Context, uri: String): PendingIntent {

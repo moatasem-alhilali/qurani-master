@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetProvider
@@ -17,11 +16,12 @@ import es.antonborri.home_widget.HomeWidgetProvider
  *
  * فُصلت عن [HomeWidgets] لأن أكثرها لا يقرأ بيانات الصلاة، وخلطها في ملف
  * واحد كان يجعل كل تعديل يمسّ كل شيء.
+ *
+ * **لا ألوان هنا** — للسبب نفسه المشروح في [HomeWidgets]: الألوان أسماء في
+ * `values/widget_tokens.xml` و`values-night/`، يحلّها أندرويد حسب وضع الجهاز.
+ * ما يبقى للكوتلن هو الحالة: كم خرزة امتلأت، وأيّ صلاة صُلّيت.
  */
 private object ExtraWidgetBinder {
-
-    private const val PALETTE_ON_SURFACE = "widget_on_surface_hex"
-    private const val PALETTE_MUTED = "widget_muted_hex"
 
     // ----------------------------- المسبحة -----------------------------
 
@@ -36,15 +36,7 @@ private object ExtraWidgetBinder {
 
     fun bindTasbih(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_tasbih)
-        val onSurface = color(widgetData, PALETTE_ON_SURFACE, Color.rgb(255, 247, 225))
-        val muted = color(widgetData, PALETTE_MUTED, Color.rgb(212, 184, 115))
-
         val count = widgetData.getInt(KEY_TASBIH_COUNT, 0)
-
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_reset, muted)
-        views.setTextColor(R.id.widget_count, onSurface)
-        views.setTextColor(R.id.widget_body, onSurface)
 
         views.setTextViewText(R.id.widget_title, read(widgetData, "tasbih_title", "المسبحة"))
         views.setTextViewText(R.id.widget_body, read(widgetData, "tasbih_text", "سبحان الله وبحمده"))
@@ -124,14 +116,6 @@ private object ExtraWidgetBinder {
         deepLink: String,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_stat)
-        val onSurface = color(widgetData, PALETTE_ON_SURFACE, Color.rgb(255, 247, 225))
-        val muted = color(widgetData, PALETTE_MUTED, Color.rgb(212, 184, 115))
-
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_primary, onSurface)
-        views.setTextColor(R.id.widget_caption, muted)
-        views.setTextColor(R.id.widget_footer, muted)
-
         views.setTextViewText(R.id.widget_title, title)
         views.setTextViewText(R.id.widget_primary, primary)
         views.setTextViewText(R.id.widget_caption, caption)
@@ -144,12 +128,6 @@ private object ExtraWidgetBinder {
 
     fun bindTracker(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_tracker)
-        val onSurface = color(widgetData, PALETTE_ON_SURFACE, Color.rgb(255, 247, 225))
-        val muted = color(widgetData, PALETTE_MUTED, Color.rgb(212, 184, 115))
-
-        views.setTextColor(R.id.widget_title, muted)
-        views.setTextColor(R.id.widget_primary, onSurface)
-        views.setTextColor(R.id.widget_caption, muted)
 
         // خمسة أحرف: «1» صُلّيت و«0» لا. أبسط من JSON لخمس قيم ثنائية، ولا
         // يحتاج محلّلًا يمكن أن يفشل على شاشة البدء.
@@ -163,7 +141,6 @@ private object ExtraWidgetBinder {
                 if (isDone) R.drawable.widget_bead_active else R.drawable.widget_bead_idle,
             )
         }
-        labelIds.forEach { views.setTextColor(it, muted) }
 
         views.setTextViewText(R.id.widget_primary, "$done / 5")
         views.setTextViewText(
@@ -182,16 +159,10 @@ private object ExtraWidgetBinder {
         R.id.widget_dot_4, R.id.widget_dot_5,
     )
 
-    private val labelIds = intArrayOf(
-        R.id.widget_label_1, R.id.widget_label_2, R.id.widget_label_3,
-        R.id.widget_label_4, R.id.widget_label_5,
-    )
-
     // --------------------------- الاختصارات ---------------------------
 
     fun bindShortcuts(context: Context, widgetData: SharedPreferences): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_shortcuts)
-        val onSurface = color(widgetData, PALETTE_ON_SURFACE, Color.rgb(255, 247, 225))
 
         val targets = listOf(
             Triple(R.id.widget_action_1, R.id.widget_label_1, "tamaneena://widgets/quran" to "القرآن"),
@@ -202,7 +173,6 @@ private object ExtraWidgetBinder {
 
         targets.forEach { (containerId, labelId, target) ->
             val (uri, label) = target
-            views.setTextColor(labelId, onSurface)
             views.setTextViewText(labelId, label)
             views.setOnClickPendingIntent(containerId, launchIntent(context, uri))
         }
@@ -213,12 +183,6 @@ private object ExtraWidgetBinder {
 
     private fun read(widgetData: SharedPreferences, key: String, fallback: String): String =
         widgetData.getString(key, fallback)?.takeIf { it.isNotBlank() } ?: fallback
-
-    private fun color(widgetData: SharedPreferences, key: String, fallback: Int): Int = try {
-        Color.parseColor(read(widgetData, key, ""))
-    } catch (_: IllegalArgumentException) {
-        fallback
-    }
 
     private fun pendingFlags(): Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

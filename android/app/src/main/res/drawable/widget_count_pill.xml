@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- زرّ العدّ: القرص الوحيد المعبّأ في الويدجت، فهو وحده ما يُضغط. -->
+<!-- زرّ العدّ: العنصر المضغوط الوحيد في المسبحة، فهو وحده يحمل الذهبي كاملًا. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="999dp" />
-    <solid android:color="#2E2415" />
-    <stroke android:width="1dp" android:color="#C9A46A" />
+    <solid android:color="@color/widget_accent" />
 </shape>

@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:ui' show DartPluginRegistrant;
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
@@ -34,7 +36,33 @@ const String homeWidgetsPrayerTaskName = 'homeWidgetsPrayerBoundaryRefresh';
 void tamaneenaHomeWidgetsCallbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
     WidgetsFlutterBinding.ensureInitialized();
-    await CacheConfig.loadConfig();
+
+    // تسجيل إضافات العزلة صراحةً.
+    //
+    // المحرّك يشغّل المُسجِّل عند بدء العزلة، لكن النداء هنا عديم الكلفة
+    // ويزيل اعتمادًا ضمنيًّا على ترتيب الإقلاع: sqflite و SharedPreferences
+    // و path_provider كلّها اتحادية تُسجَّل من جهة Dart، وبدونها يفشل كل
+    // ما تحت هذا السطر.
+    DartPluginRegistrant.ensureInitialized();
+
+    // رموز التاريخ العربية — أهمّ سطر في هذه الدالّة.
+    //
+    // `DateFormat.jm('ar')` يحتاجها، وفي العزلة الرئيسية تُحمَّل ضمنًا عبر
+    // `GlobalMaterialLocalizations`. لا `MaterialApp` هنا ولا مندوب ترجمة،
+    // فكانت ترمي `LocaleDataException` وتُسقط `refreshAll` كاملة — ولهذا
+    // لم تكن الودجات تتحدّث في الخلفية إطلاقًا، بل عند فتح التطبيق فقط.
+    try {
+      await initializeDateFormatting('ar');
+    } catch (error) {
+      debugPrint('HomeWidgetsService: Arabic date symbols skipped: $error');
+    }
+
+    try {
+      await CacheConfig.loadConfig();
+    } catch (error) {
+      debugPrint('HomeWidgetsService: background cache init skipped: $error');
+    }
+
     try {
       await QuranLibrary.init();
     } catch (error) {
@@ -151,18 +179,37 @@ class HomeWidgetsService {
       debugPrint('HomeWidgetsService: App Group setup skipped: $error');
     }
 
-    await _savePrayerData();
-    await _saveDhikrData();
-    await _saveAyahData();
-    await _saveWirdData();
-    await _saveQiblaData();
-    await _saveHijriData();
-    await _saveReadingData();
-    await _saveTrackerData();
-    await _saveTasbihData();
-    await _saveThemeData();
-    await _saveSharedData();
+    // كل مصدر معزول عن جاره.
+    //
+    // كانت هذه إحدى عشرة `await` عارية تنتهي بـ [_updateNativeWidgets]: أيّ
+    // رمية في أيّ خطوة — رموز تاريخ غير محمّلة، قاعدة بيانات لم تُفتح بعد في
+    // عزلة الخلفية، موقع غير محفوظ — تقفز فوق بقيّة الخطوات **وفوق إعادة
+    // الرسم**، فلا تتحدّث ولا ودجت واحدة بسبب مصدر واحد عاطل.
+    //
+    // الآن يسقط المصدر العاطل وحده، وتُرسم الودجات ببيانات آخر تحديث ناجح.
+    await _guardedSave('prayer', _savePrayerData);
+    await _guardedSave('dhikr', _saveDhikrData);
+    await _guardedSave('ayah', _saveAyahData);
+    await _guardedSave('wird', _saveWirdData);
+    await _guardedSave('qibla', _saveQiblaData);
+    await _guardedSave('hijri', _saveHijriData);
+    await _guardedSave('reading', _saveReadingData);
+    await _guardedSave('tracker', _saveTrackerData);
+    await _guardedSave('tasbih', _saveTasbihData);
+    await _guardedSave('theme', _saveThemeData);
+    await _guardedSave('shared', _saveSharedData);
+
+    // تُنفَّذ دائمًا، مهما سقط فوقها.
     await _updateNativeWidgets();
+  }
+
+  /// يشغّل خطوة حفظ واحدة ولا يسمح لها بإسقاط بقيّة التحديث.
+  Future<void> _guardedSave(String label, Future<void> Function() step) async {
+    try {
+      await step();
+    } catch (error) {
+      debugPrint('HomeWidgetsService: $label data skipped: $error');
+    }
   }
 
   Future<void> _savePrayerData() async {

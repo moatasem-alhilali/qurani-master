@@ -27,6 +27,41 @@ class PrayerLocationSelection {
 
   bool get isManual => source != PrayerLocationSource.device;
 
+  /// اسم المكان مؤهَّلًا بمنطقته الإدارية — لعرضه خارج التطبيق.
+  ///
+  /// [label] يأخذ المدينة وحدها فأصبح «الرياض»، وهو ملتبس: يقرأه المستخدم
+  /// فلا يدري أهي المدينة أم المنطقة أم موضع آخر بالاسم نفسه. وهذا يهمّ حيث
+  /// لا سياق حول النصّ يوضّحه — كشريط الإشعارات. مستهلكه الآن هو إشعار
+  /// الأذان؛ وودجات الشاشة لا تزال على [label] لضيق مساحتها.
+  ///
+  /// القاعدة:
+  /// • «الرياض» + «منطقة الرياض» ← «منطقة الرياض»
+  ///   (المنطقة تحوي اسم المدينة، فذكرهما معًا تكرار)
+  /// • «الدرعية» + «منطقة الرياض» ← «الدرعية، منطقة الرياض»
+  ///   (اسمان مختلفان، وكلٌّ يضيف معنى)
+  ///
+  /// ويعود إلى ما توفّر — [label] ثم الدولة — إن لم يعطِ الترميز الجغرافي
+  /// منطقةً إدارية.
+  String get qualifiedLabel {
+    final city = (locality ?? '').trim();
+    final area = (administrativeArea ?? '').trim();
+
+    if (city.isNotEmpty && area.isNotEmpty) {
+      if (area.contains(city) || city.contains(area)) {
+        return area.length >= city.length ? area : city;
+      }
+      return '$city، $area';
+    }
+
+    if (area.isNotEmpty) return area;
+    if (city.isNotEmpty) return city;
+
+    final fallback = label.trim();
+    if (fallback.isNotEmpty) return fallback;
+
+    return (country ?? '').trim();
+  }
+
   String get detailsLabel {
     final parts = <String>[
       if ((locality ?? '').trim().isNotEmpty) locality!.trim(),

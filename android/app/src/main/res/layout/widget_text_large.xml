@@ -1,62 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    الذكر والآية.
+
+    النصّ هو البطل هنا، فيأخذ كل المساحة الباقية (‎layout_weight‎) بدل ارتفاع
+    ثابت يقصّ الأذكار الطويلة. العنوان والمصدر سطران رفيعان يحيطان به.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_text_background"
-    android:gravity="center_vertical"
+    android:background="@drawable/widget_surface_background"
+    android:layoutDirection="rtl"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="@dimen/widget_padding"
     android:textDirection="rtl">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:alpha="0.92"
-            android:contentDescription="@string/app_name"
-            android:src="@mipmap/ic_launcher" />
-
-        <TextView
-            android:id="@+id/widget_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:maxLines="1"
-            android:text="ذكر عشوائي"
-            android:textColor="#D4B873"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:ellipsize="end"
+        android:gravity="end"
+        android:letterSpacing="0.04"
+        android:maxLines="1"
+        android:text="ذكر اليوم"
+        android:textColor="@color/widget_ink_soft"
+        android:textSize="11sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/widget_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="7dp"
         android:layout_weight="1"
         android:ellipsize="end"
         android:gravity="center_vertical|end"
-        android:maxLines="3"
-        android:text="لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير"
-        android:textColor="#FFF7E1"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:lineSpacingMultiplier="1.35"
+        android:maxLines="5"
+        android:text="لا إله إلا الله وحده لا شريك له"
+        android:textColor="@color/widget_ink"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/widget_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:ellipsize="end"
         android:gravity="end"
         android:maxLines="1"
         android:text="أذكار طمأنينة"
-        android:textColor="#D4B873"
-        android:textSize="8sp" />
+        android:textColor="@color/widget_accent"
+        android:textSize="10sp"
+        android:textStyle="bold" />
 </LinearLayout>
