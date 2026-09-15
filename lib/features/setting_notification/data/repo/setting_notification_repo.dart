@@ -131,13 +131,11 @@ class SettingNotificationRepo {
                   prayerName: prayerName,
                 )
               : null,
-          subText: isAthan
-              ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
-              : null,
+          // لا يُمرَّر مكان هنا: هذا المسار يجدول من شاشة الإعدادات بلا مواقيت
+          // محسوبة، والمنسّق يعيد الجدولة بالمكان عند أوّل حساب.
+          subText: null,
           ticker: isAthan ? 'حان الآن أذان $prayerName' : null,
-          iosSubtitle: isAthan
-              ? _athanPayloadService.buildAthanSubText(prayerName: prayerName)
-              : null,
+          iosSubtitle: null,
           iosThreadIdentifier: isAthan ? 'athan_notifications' : null,
           iosCategoryIdentifier: isAthan ? 'islamic_notifications' : null,
           iosInterruptionLevel:

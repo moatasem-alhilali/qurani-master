@@ -92,6 +92,11 @@ class AthanAlarmPayloadService {
     }
   }
 
+  /// عنوان الإشعار: اسم الصلاة ووقتها.
+  ///
+  /// هذا هو الموضع **الوحيد** الذي يُذكر فيه الوقت. كان يتكرّر ثلاث مرّات —
+  /// هنا، وفي النصّ المصاحب، وداخل المتن — فيقرأ المستخدم «11:48» ثلاثًا
+  /// و«الظهر» ثلاثًا في إشعار من ثلاثة أسطر.
   String buildAthanTitle({
     required String prayerName,
     String? prayerTimeLabel,
@@ -104,49 +109,47 @@ class AthanAlarmPayloadService {
     return 'أذان $cleanPrayerName • $cleanTime';
   }
 
-  String buildAthanBody({
-    required String prayerName,
-    String? prayerTimeLabel,
-  }) {
-    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
-    final intro = cleanTime == null
-        ? 'حان الآن وقت صلاة ${prayerName.trim()}.'
-        : 'حان الآن وقت صلاة ${prayerName.trim()} عند $cleanTime.';
+  /// النصّ المصاحب في رأس الإشعار: **مكان** الحساب.
+  ///
+  /// يشغل الموضع الذي كان يكرّر الوقت، فيضيف معلومة جديدة بدل إعادة القديمة:
+  /// المستخدم يعرف على أيّ مدينة حُسبت المواقيت دون فتح التطبيق — وهذا يهمّ
+  /// المسافر ومن ثبّت موقعه يدويًا.
+  ///
+  /// يعود بـ `null` إذا لم يكن هناك موقع محفوظ، فلا يُعرض سطر فارغ.
+  String? buildAthanSubText({String? locationLabel}) {
+    final trimmed = locationLabel?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    return trimmed;
+  }
 
+  /// متن الإشعار: كلمة واحدة تخصّ الصلاة، بلا إعادة اسمها ولا وقتها.
+  ///
+  /// العنوان فوقه يقول «أذان الظهر • 11:48» بالفعل، فإعادتها هنا حشو.
+  String buildAthanBody({required String prayerName}) {
     switch (prayerName.trim()) {
       case 'الفجر':
-        return '$intro حي على الصلاة • ابدأ يومك بنور الفجر.';
+        return 'حيّ على الصلاة — ابدأ يومك بنور الفجر.';
       case 'الظهر':
-        return '$intro اجعلها استراحة قلب.';
+        return 'اجعلها استراحة قلب.';
       case 'العصر':
-        return '$intro جدد حضورك مع الله.';
+        return 'جدّد حضورك مع الله.';
       case 'المغرب':
-        return '$intro اختم يومك بطاعة وسكينة.';
+        return 'اختم يومك بطاعة وسكينة.';
       case 'العشاء':
-        return '$intro لا تفوت ختام الصلوات.';
+        return 'لا تفوّت ختام الصلوات.';
       default:
-        return '$intro تقبل الله طاعتك.';
+        return 'تقبّل الله طاعتك.';
     }
   }
 
-  String buildAthanExpandedBody({
-    required String prayerName,
-    String? prayerTimeLabel,
-  }) {
-    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
-    final timeLine = cleanTime == null ? '' : 'موعد الصلاة: $cleanTime.\n';
-    return '$timeLine${buildAthanBody(prayerName: prayerName, prayerTimeLabel: prayerTimeLabel)}\nاضغط لفتح تنبيه الصلاة والتفاصيل.';
-  }
-
-  String buildAthanSubText({
-    required String prayerName,
-    String? prayerTimeLabel,
-  }) {
-    final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
-    if (cleanTime != null) {
-      return 'وقت $prayerName: $cleanTime';
-    }
-    return 'حان وقت صلاة $prayerName';
+  /// المتن الموسّع عند سحب الإشعار.
+  ///
+  /// لا يعيد المكان: النصّ المصاحب يظلّ ظاهرًا في الرأس عند التوسيع.
+  String buildAthanExpandedBody({required String prayerName}) {
+    return '${buildAthanBody(prayerName: prayerName)}\n'
+        'اضغط لفتح تنبيه الصلاة والتفاصيل.';
   }
 
   String? _normalizeTimeLabel(String? prayerTimeLabel) {

@@ -6,6 +6,7 @@ import 'package:quran_app/core/notification/model/notification_schedule_model.da
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
+import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
@@ -22,13 +23,15 @@ class NotificationOrchestratorService {
     required this.notificationSchedulesRepo,
     required this.adhanPrayerTimeService,
     required this.athanPayloadService,
-  });
+    DatabaseCoordinatesService? coordinatesService,
+  }) : coordinatesService = coordinatesService ?? DatabaseCoordinatesService();
 
   final NotificationService notificationService;
   final SettingNotificationRepo settingRepo;
   final NotificationSchedulesRepo notificationSchedulesRepo;
   final AdhanPrayerTimeService adhanPrayerTimeService;
   final AthanAlarmPayloadService athanPayloadService;
+  final DatabaseCoordinatesService coordinatesService;
 
   /// Reschedule all notifications using the unified notification system
   Future<void> rescheduleAllNotifications() async {
@@ -68,6 +71,9 @@ class NotificationOrchestratorService {
         return;
       }
 
+      // يُقرأ مرّة واحدة لكل الصلوات الخمس بدل قراءة لكل واحدة.
+      final locationLabel = await _resolveLocationLabel();
+
       const athanKeys = NotificationKeys.athanKeys;
       for (var i = 0; i < athanKeys.length; i++) {
         final key = athanKeys[i];
@@ -83,7 +89,12 @@ class NotificationOrchestratorService {
         final id = NotificationIdManager.generateNotificationId(key);
 
         if (enabled) {
-          await _scheduleAthan(key: key, id: id, info: info);
+          await _scheduleAthan(
+            key: key,
+            id: id,
+            info: info,
+            locationLabel: locationLabel,
+          );
         } else {
           await notificationService.cancelNotificationById(id: id);
           // logger.d('Cancelled Athan notification: ${info.name} (disabled)');
@@ -130,7 +141,12 @@ class NotificationOrchestratorService {
         return;
       }
 
-      await _scheduleAthan(key: key, id: id, info: info);
+      await _scheduleAthan(
+        key: key,
+        id: id,
+        info: info,
+        locationLabel: await _resolveLocationLabel(),
+      );
       logger.d('Rescheduled Athan notification for $key');
     } catch (e) {
       logger.e('Error rescheduling Athan for $key: $e');
@@ -143,9 +159,12 @@ class NotificationOrchestratorService {
     required String key,
     required int id,
     required PrayerInfoModel info,
+    String? locationLabel,
   }) async {
     final prayerName = info.name.trim();
     final prayerTimeLabel = info.time12.trim();
+    final subText =
+        athanPayloadService.buildAthanSubText(locationLabel: locationLabel);
 
     return notificationService.scheduleNotificationCompatType(
       id: id,
@@ -153,10 +172,7 @@ class NotificationOrchestratorService {
         prayerName: prayerName,
         prayerTimeLabel: prayerTimeLabel,
       ),
-      body: athanPayloadService.buildAthanBody(
-        prayerName: prayerName,
-        prayerTimeLabel: prayerTimeLabel,
-      ),
+      body: athanPayloadService.buildAthanBody(prayerName: prayerName),
       channel: NotificationChannel.athan,
       schedule: NotificationScheduleModel.daily(
         hour: info.time.hour,
@@ -168,22 +184,15 @@ class NotificationOrchestratorService {
         prayerName: prayerName,
         prayerTimeLabel: prayerTimeLabel,
       ),
-      subText: athanPayloadService.buildAthanSubText(
-        prayerName: prayerName,
-        prayerTimeLabel: prayerTimeLabel,
-      ),
+      subText: subText,
       ticker: 'حان الآن أذان $prayerName',
-      iosSubtitle: athanPayloadService.buildAthanSubText(
-        prayerName: prayerName,
-        prayerTimeLabel: prayerTimeLabel,
-      ),
+      iosSubtitle: subText,
       iosThreadIdentifier: 'athan_notifications',
       iosCategoryIdentifier: 'islamic_notifications',
       iosInterruptionLevel: InterruptionLevel.timeSensitive,
       iosSound: 'athan.caf',
       bigText: athanPayloadService.buildAthanExpandedBody(
         prayerName: prayerName,
-        prayerTimeLabel: prayerTimeLabel,
       ),
       color: const Color(0xFF1F7A4D),
       colorized: true,
@@ -192,6 +201,37 @@ class NotificationOrchestratorService {
       ongoing: false,
       autoCancel: true,
     );
+  }
+
+  /// اسم المكان الذي حُسبت عليه المواقيت، كما يُعرض في رأس الإشعار.
+  ///
+  /// يُفضَّل [PrayerLocationSelection.label] لأنّه النصّ نفسه الذي يراه
+  /// المستخدم في شاشة المواقيت، فلا يقرأ اسمين لمكان واحد. وإن كان فارغًا
+  /// نرجع إلى المدينة ثم المنطقة.
+  ///
+  /// أيّ خطأ هنا لا يُفشل الجدولة: الإشعار يُرسَل بلا سطر المكان.
+  Future<String?> _resolveLocationLabel() async {
+    try {
+      final location = await coordinatesService.getSavedLocation();
+      if (location == null) {
+        return null;
+      }
+
+      for (final candidate in <String?>[
+        location.label,
+        location.locality,
+        location.administrativeArea,
+      ]) {
+        final trimmed = candidate?.trim();
+        if (trimmed != null && trimmed.isNotEmpty) {
+          return trimmed;
+        }
+      }
+      return null;
+    } catch (e) {
+      logger.w('Could not resolve location label for Athan notification: $e');
+      return null;
+    }
   }
 
   /// Map notification key to corresponding prayer info model
