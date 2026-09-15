@@ -9,6 +9,10 @@ import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/constant.dart' as constants;
 import 'package:quran_app/core/theme/theme_manager.dart';
+import 'package:quran_app/core/util/hijri_date.dart';
+import 'package:quran_app/features/home/data/prayer_tracker_store.dart';
+import 'package:quran_app/features/home/data/surah_label.dart';
+import 'package:quran_app/features/traveler/data/services/makkah_geo.dart';
 import 'package:quran_app/features/floating_adhkar/data/database/floating_adhkar_database_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_built_in_source.dart';
@@ -69,6 +73,11 @@ class HomeWidgetsService {
     'TamaneenaLockPrayerWidget',
     'TamaneenaLockDhikrWidget',
     'TamaneenaLockAyahWidget',
+    'TamaneenaTasbihWidget',
+    'TamaneenaQiblaWidget',
+    'TamaneenaHijriWidget',
+    'TamaneenaReadingWidget',
+    'TamaneenaTrackerWidget',
   ];
 
   static const List<String> androidWidgetProviders = <String>[
@@ -77,6 +86,12 @@ class HomeWidgetsService {
     'HomeAyahWidgetProvider',
     'HomeWirdWidgetProvider',
     'HomePrayerTimesWidgetProvider',
+    'HomeTasbihWidgetProvider',
+    'HomeQiblaWidgetProvider',
+    'HomeHijriWidgetProvider',
+    'HomeReadingWidgetProvider',
+    'HomeTrackerWidgetProvider',
+    'HomeShortcutsWidgetProvider',
   ];
 
   final FloatingAdhkarRepository _floatingAdhkarRepository;
@@ -140,6 +155,11 @@ class HomeWidgetsService {
     await _saveDhikrData();
     await _saveAyahData();
     await _saveWirdData();
+    await _saveQiblaData();
+    await _saveHijriData();
+    await _saveReadingData();
+    await _saveTrackerData();
+    await _saveTasbihData();
     await _saveThemeData();
     await _saveSharedData();
     await _updateNativeWidgets();
@@ -317,6 +337,144 @@ class HomeWidgetsService {
             : 'أكملت $completed% من وردك، أكمل النور.',
       ),
       HomeWidget.saveWidgetData<int>('wird_progress_value', completed),
+    ]);
+  }
+
+  /// القبلة: الجهة والمسافة إلى مكّة من الموقع المحفوظ.
+  ///
+  /// حسابٌ خالص لا يحتاج حسّاسًا ولا شبكة، فيظهر الويدجت صحيحًا حتى والجهاز
+  /// في وضع الطيران. وهو يكمّل بوصلة التطبيق ولا يكرّرها: تلك تدور مع
+  /// المغناطيس وأنت واقف، وهذه تقول كم بينك وبين مكّة.
+  Future<void> _saveQiblaData() async {
+    try {
+      final location = await _coordinatesService.getSavedLocation();
+      if (location == null) {
+        throw StateError('No saved location for qibla widget');
+      }
+
+      final geo = MakkahGeo.from(
+        latitude: location.latitude,
+        longitude: location.longitude,
+      );
+
+      await Future.wait(<Future<bool?>>[
+        HomeWidget.saveWidgetData<String>('qibla_title', 'القبلة'),
+        HomeWidget.saveWidgetData<String>(
+          'qibla_direction',
+          geo.isAtDestination
+              ? 'أنت في مكّة'
+              : '${geo.bearingDegrees.round()}° ${geo.directionLabel}',
+        ),
+        HomeWidget.saveWidgetData<String>(
+          'qibla_distance',
+          geo.isAtDestination
+              ? 'تقبّل الله'
+              : '${geo.distanceLabel} كم إلى المسجد الحرام',
+        ),
+      ]);
+    } catch (error) {
+      debugPrint('HomeWidgetsService: qibla data skipped: $error');
+      await Future.wait(<Future<bool?>>[
+        HomeWidget.saveWidgetData<String>('qibla_title', 'القبلة'),
+        HomeWidget.saveWidgetData<String>('qibla_direction', '—'),
+        HomeWidget.saveWidgetData<String>(
+          'qibla_distance',
+          'حدّد موقعك في المواقيت',
+        ),
+      ]);
+    }
+  }
+
+  /// التاريخ الهجري واليوم الميلادي المقابل.
+  Future<void> _saveHijriData() async {
+    final now = DateTime.now();
+    final hijri = HijriDate.fromDate(now);
+
+    await Future.wait(<Future<bool?>>[
+      HomeWidget.saveWidgetData<String>('hijri_title', 'التاريخ الهجري'),
+      HomeWidget.saveWidgetData<String>('hijri_date', hijri.formatArabic()),
+      HomeWidget.saveWidgetData<String>(
+        'hijri_gregorian',
+        DateFormat('d MMMM y', 'ar').format(now),
+      ),
+      HomeWidget.saveWidgetData<String>(
+        'hijri_weekday',
+        DateFormat('EEEE', 'ar').format(now),
+      ),
+    ]);
+  }
+
+  /// متابعة القراءة: آخر صفحة وسورتها.
+  Future<void> _saveReadingData() async {
+    try {
+      await QuranLibrary.quranCtrl.ensureCoreDataLoaded();
+      final page = QuranLibrary().currentPageNumber;
+      if (page < 1) {
+        throw StateError('No reading progress');
+      }
+
+      final surah =
+          QuranLibrary().getCurrentSurahDataByPageNumber(pageNumber: page);
+
+      await Future.wait(<Future<bool?>>[
+        HomeWidget.saveWidgetData<String>('reading_title', 'متابعة القراءة'),
+        HomeWidget.saveWidgetData<String>(
+          'reading_surah',
+          surahLabel(surah.arabicName),
+        ),
+        HomeWidget.saveWidgetData<String>('reading_position', 'صفحة $page'),
+      ]);
+    } catch (error) {
+      debugPrint('HomeWidgetsService: reading data skipped: $error');
+      await Future.wait(<Future<bool?>>[
+        HomeWidget.saveWidgetData<String>('reading_title', 'متابعة القراءة'),
+        HomeWidget.saveWidgetData<String>('reading_surah', 'لم تبدأ بعد'),
+        HomeWidget.saveWidgetData<String>(
+          'reading_position',
+          'افتح المصحف لتبدأ',
+        ),
+      ]);
+    }
+  }
+
+  /// تتبّع صلوات اليوم: خمسة أحرف `0`/`1` بترتيب الصلوات.
+  ///
+  /// الصيغة نفسها المستعملة في التخزين، فلا تحويل ولا محلّل JSON يمكن أن
+  /// يفشل على شاشة البدء.
+  Future<void> _saveTrackerData() async {
+    final today = DateTime.now();
+    final done = PrayerTrackerStore.read(today);
+    final flags = done.map((value) => value ? '1' : '0').join();
+    final count = done.where((value) => value).length;
+
+    final pending = <String>[
+      for (var i = 0; i < done.length && i < kTrackedPrayerNames.length; i++)
+        if (!done[i]) kTrackedPrayerNames[i],
+    ];
+
+    await Future.wait(<Future<bool?>>[
+      HomeWidget.saveWidgetData<String>('tracker_flags', flags),
+      HomeWidget.saveWidgetData<String>(
+        'tracker_caption',
+        count >= done.length
+            ? 'أتممت صلوات اليوم'
+            : 'بقي: ${pending.take(3).join('، ')}',
+      ),
+    ]);
+  }
+
+  /// نصّ المسبحة. أمّا العدّاد فيملكه الويدجت نفسه.
+  ///
+  /// الضغط يقع والتطبيق مغلق، فلو كان المصدر هنا لاحتاجت كل تسبيحة إيقاظ
+  /// محرّك Flutter كاملًا — ولا تُكتب من هنا أبدًا حتى لا تُمحى عدّة المستخدم
+  /// عند أول تحديث خلفية.
+  Future<void> _saveTasbihData() async {
+    await Future.wait(<Future<bool?>>[
+      HomeWidget.saveWidgetData<String>('tasbih_title', 'المسبحة'),
+      HomeWidget.saveWidgetData<String>(
+        'tasbih_text',
+        'سبحان الله وبحمده، سبحان الله العظيم',
+      ),
     ]);
   }
 
@@ -535,7 +693,13 @@ enum HomeWidgetType {
   dhikr('HomeDhikrWidgetProvider'),
   ayah('HomeAyahWidgetProvider'),
   wird('HomeWirdWidgetProvider'),
-  prayerTimes('HomePrayerTimesWidgetProvider');
+  prayerTimes('HomePrayerTimesWidgetProvider'),
+  tasbih('HomeTasbihWidgetProvider'),
+  qibla('HomeQiblaWidgetProvider'),
+  hijri('HomeHijriWidgetProvider'),
+  reading('HomeReadingWidgetProvider'),
+  tracker('HomeTrackerWidgetProvider'),
+  shortcuts('HomeShortcutsWidgetProvider');
 
   const HomeWidgetType(this.androidProvider);
 

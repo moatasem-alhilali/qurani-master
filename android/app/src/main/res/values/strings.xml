@@ -13,4 +13,11 @@
     <string name="widget_ayah_description">طمأنينة - آية عشوائية</string>
     <string name="widget_wird_description">طمأنينة - ورد اليوم</string>
     <string name="widget_prayer_times_description">طمأنينة - مواقيت الصلاة</string>
+    <string name="widget_tasbih_description">طمأنينة - المسبحة (عدّ من الشاشة الرئيسية)</string>
+    <string name="widget_qibla_description">طمأنينة - القبلة والمسافة إلى مكّة</string>
+    <string name="widget_hijri_description">طمأنينة - التاريخ الهجري</string>
+    <string name="widget_reading_description">طمأنينة - متابعة القراءة</string>
+    <string name="widget_tracker_description">طمأنينة - تتبّع صلوات اليوم</string>
+    <string name="widget_shortcuts_description">طمأنينة - اختصارات سريعة</string>
+
 </resources>

@@ -149,6 +149,82 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/home_wird_widget_info" />
         </receiver>
+        <!-- المسبحة تعترض بثّها الخاصّ إضافةً إلى تحديث النظام، فتُسجَّل
+             الفعلان معها. بقيّة الويدجتات تكتفي بـ APPWIDGET_UPDATE. -->
+        <receiver
+            android:name=".HomeTasbihWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - المسبحة">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.tamaneena.tamaneena_app.widget.TASBIH_COUNT" />
+                <action android:name="com.tamaneena.tamaneena_app.widget.TASBIH_RESET" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_tasbih_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeQiblaWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - القبلة">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_qibla_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeHijriWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - التاريخ الهجري">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_hijri_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeReadingWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - متابعة القراءة">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_reading_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeTrackerWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - صلوات اليوم">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_tracker_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".HomeShortcutsWidgetProvider"
+            android:exported="true"
+            android:label="طمأنينة - اختصارات سريعة">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_shortcuts_widget_info" />
+        </receiver>
+
 
         <receiver
             android:name=".HomePrayerTimesWidgetProvider"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- خرزة فارغة — حلقة لا قرص، فيُقرأ الفرق بين التامّ والباقي. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#00000000" />
+    <stroke android:width="1dp" android:color="#6B5836" />
+    <size android:width="8dp" android:height="8dp" />
+</shape>

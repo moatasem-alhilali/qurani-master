@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- شريط اختصارات: أربعة أبواب تُفتح من الشاشة الرئيسية مباشرة.
+     كل مربّع له وجهته الخاصّة — لا يفتح التطبيق على صفحته الأولى ثم يبحث
+     المستخدم عن الباب بنفسه. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_surface_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:textDirection="rtl">
+
+    <LinearLayout
+        android:id="@+id/widget_action_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/widget_chip_background"
+        android:gravity="center"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:orientation="vertical">
+        <TextView android:id="@+id/widget_label_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="القرآن" android:textColor="#FFF7E1" android:textSize="11sp" android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_action_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/widget_chip_background"
+        android:gravity="center"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:orientation="vertical">
+        <TextView android:id="@+id/widget_label_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="الأذكار" android:textColor="#FFF7E1" android:textSize="11sp" android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_action_3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/widget_chip_background"
+        android:gravity="center"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:orientation="vertical">
+        <TextView android:id="@+id/widget_label_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="المسبحة" android:textColor="#FFF7E1" android:textSize="11sp" android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_action_4"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/widget_chip_background"
+        android:gravity="center"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:orientation="vertical">
+        <TextView android:id="@+id/widget_label_4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="القبلة" android:textColor="#FFF7E1" android:textSize="11sp" android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>
