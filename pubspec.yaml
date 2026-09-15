@@ -146,7 +146,9 @@ flutter:
     - assets/lang/
     - assets/logo/
     - assets/svg/
-    - assets/lottie/
+    # - assets/lottie/   المجلّد فارغ ولا يتعقّبه git، فيختفي على CI ويرمي
+    #   «unable to find directory entry in pubspec.yaml». أعِد السطر عند
+    #   إضافة أوّل ملفّ رسوم متحرّكة.
     - assets/svg/surah_name/
     # - assets/images/
     - assets/svg/hijri/
