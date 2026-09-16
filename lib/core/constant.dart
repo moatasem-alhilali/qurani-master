@@ -44,7 +44,13 @@ bool ISCONNECTED = true;
 
 //
 void navigateTo(Widget? child, BuildContext context) {
-  Navigator.push(context, MaterialPageRoute(builder: (_) => child!));
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => child!,
+      settings: RouteSettings(name: child.runtimeType.toString()),
+    ),
+  );
 }
 
 // selected Index

@@ -58,6 +58,7 @@ class QuranPlanListScreen extends StatelessWidget {
                       value: ctx.read<QuranPlanBloc>(),
                       child: const QuranPlanAddScreen(),
                     ),
+                    screenName: 'QuranPlanAddScreen',
                   );
                 },
                 child: AppIcon(

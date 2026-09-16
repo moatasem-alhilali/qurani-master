@@ -95,6 +95,9 @@ class _SmartOutreachExecutionScreenState
                 : () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
+                        settings: const RouteSettings(
+                          name: 'SmartOutreachCallLogsScreen',
+                        ),
                         builder: (_) => SmartOutreachCallLogsScreen(
                           scheduleId: widget.scheduleId,
                         ),

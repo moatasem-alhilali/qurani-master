@@ -16,6 +16,7 @@ import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
+import 'package:quran_app/core/services/firebase_monitoring.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
@@ -159,6 +160,8 @@ class MyApp extends StatelessWidget {
                     reverseDuration: Duration(milliseconds: 300),
                   ),
                   navigatorKey: NavigationService.navigatorKey,
+                  // يسجّل كل شاشة يُنتقل إليها في Analytics باسم مسارها.
+                  navigatorObservers: FirebaseMonitoring.navigatorObservers,
                   debugShowCheckedModeBanner: false,
                   builder: (context, child) {
                     return DevicePreview.appBuilder(

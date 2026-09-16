@@ -86,6 +86,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 value: context.read<PrayerTimeBloc>(),
                 child: const PrayerTimeSettingsScreen(),
               ),
+              screenName: 'PrayerTimeSettingsScreen',
             );
           },
           icon: AppIcon(AppIcons.settings, size: 16.sp, color: skin.accent),

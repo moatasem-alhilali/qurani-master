@@ -11,7 +11,7 @@ class RouterGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutesManager.main:
-        return MaterialPageRoute(builder: (_) => MyApp());
+        return MaterialPageRoute(builder: (_) => MyApp(), settings: settings);
       // case RoutesManager.screenDetail:
       //   return MaterialPageRoute(builder: (_) => ScreenDetail());
 

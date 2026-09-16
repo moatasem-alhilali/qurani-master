@@ -111,10 +111,15 @@ TextStyle youngMuslimNumber(
   );
 }
 
+/// [screenName] إلزامي: كل الشاشات هنا تُمرَّر ملفوفة بـ
+/// `YoungMuslimRouteScope.inherit`، فاسم صنف [child] لا يدلّ على الشاشة، و
+/// `FirebaseAnalyticsObserver` لا يسجّل مسارًا بلا اسم.
 PageRouteBuilder<T> youngMuslimPageRoute<T>({
   required Widget child,
+  required String screenName,
 }) {
   return PageRouteBuilder<T>(
+    settings: RouteSettings(name: screenName),
     transitionDuration: const Duration(milliseconds: 260),
     reverseTransitionDuration: const Duration(milliseconds: 220),
     pageBuilder: (_, __, ___) => child,

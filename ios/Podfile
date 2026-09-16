@@ -1,5 +1,10 @@
 platform :ios, '15.0'
 
+# Firebase Analytics بدون المعرّف الإعلاني (IDFA): التطبيق فيه قسم للأطفال ولا
+# يعرض إعلانات. هذا المتغيّر تقرؤه firebase_analytics.podspec فتسحب
+# Firebase/AnalyticsWithoutAdIdSupport بدل النسخة التي تربط AdSupport.
+$FirebaseAnalyticsWithoutAdIdSupport = true
+
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {

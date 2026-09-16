@@ -60,6 +60,7 @@ class AthanAlarmNotificationRouterService {
 
       navigator.push(
         MaterialPageRoute<void>(
+          settings: const RouteSettings(name: 'PrayerAthanAlertScreen'),
           builder: (_) => PrayerAthanAlertScreen(
             prayerName: data.prayerName,
             prayerTimeLabel: data.prayerTimeLabel,

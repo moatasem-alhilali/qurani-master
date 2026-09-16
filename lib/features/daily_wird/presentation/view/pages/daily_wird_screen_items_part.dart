@@ -114,6 +114,7 @@ class _ItemRow extends StatelessWidget {
 
     await Navigator.of(context).push(
       PageRouteBuilder<void>(
+        settings: const RouteSettings(name: 'DailyWirdFocusScreen'),
         transitionDuration: const Duration(milliseconds: 360),
         reverseTransitionDuration: const Duration(milliseconds: 260),
         pageBuilder: (context, animation, secondaryAnimation) {

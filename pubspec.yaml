@@ -92,6 +92,8 @@ dependencies:
   in_app_update: ^4.2.3
   in_app_review: ^2.0.10
   adaptive_platform_ui: ^0.1.111
+  firebase_crashlytics: ^4.3.10
+  firebase_analytics: ^11.6.0
   # ---------------------------------------
 
 dev_dependencies:

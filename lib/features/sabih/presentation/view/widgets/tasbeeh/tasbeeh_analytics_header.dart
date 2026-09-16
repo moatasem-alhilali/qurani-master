@@ -29,6 +29,7 @@ class TasbeehAnalyticsHeader extends StatelessWidget {
                 value: context.read<SabihBloc>(),
                 child: const AnalyticsScreen(),
               ),
+              screenName: 'TasbeehAnalyticsScreen',
             );
           },
           child: Padding(

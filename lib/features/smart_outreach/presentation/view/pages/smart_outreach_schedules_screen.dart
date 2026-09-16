@@ -183,6 +183,9 @@ class _SmartOutreachSchedulesViewState
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
+                settings: const RouteSettings(
+                  name: 'SmartOutreachCallLogsScreen',
+                ),
                 builder: (_) => const SmartOutreachCallLogsScreen(),
               ),
             );
@@ -197,6 +200,9 @@ class _SmartOutreachSchedulesViewState
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
+                settings: const RouteSettings(
+                  name: 'SmartOutreachSettingsScreen',
+                ),
                 builder: (_) => const SmartOutreachSettingsScreen(),
               ),
             );

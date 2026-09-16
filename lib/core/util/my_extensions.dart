@@ -148,14 +148,19 @@ extension MyNavigator on BuildContext {
   }
 
 //--------------------------Navigation---------------------------------
-  void push(Widget page) {
-    fadeNavigation(page: page, context: this);
+  /// [screenName]: اسم الشاشة في Analytics حين تكون [page] غلافًا لها.
+  void push(Widget page, {String? screenName}) {
+    fadeNavigation(page: page, context: this, screenName: screenName);
   }
 
   void pop() => Navigator.pop(this);
   void hideDialog() => Navigator.of(this, rootNavigator: true).pop('dialog');
-  void pushAndRemoveUntil(Widget page) {
-    fadeNavigationWithRemove(page: page, context: this);
+  void pushAndRemoveUntil(Widget page, {String? screenName}) {
+    fadeNavigationWithRemove(
+      page: page,
+      context: this,
+      screenName: screenName,
+    );
   }
   //--------------------------Navigation---------------------------------
 }

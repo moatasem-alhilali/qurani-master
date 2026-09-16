@@ -13,6 +13,7 @@ import 'package:quran_app/core/helper/dio/dio_helper.dart';
 import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
+import 'package:quran_app/core/services/firebase_monitoring.dart';
 import 'package:quran_app/core/services/firebase_notification.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
@@ -77,6 +78,11 @@ void main() async {
     _guardedInit('Database', () => DatabaseService().database),
   ]);
 
+  // Crashlytics + Analytics, as early as Firebase allows: a crash while
+  // registering dependencies below is then reported too. Also flushes any
+  // initializer failure from the batch above, queued by `_guardedInit`.
+  await FirebaseMonitoring.initialize();
+
   // Register app dependencies. Depends on Firebase (above) being initialized;
   // may touch the DB, which is already warmed so there is no open race.
   await setupServiceLocator();
@@ -98,8 +104,17 @@ void main() async {
 Future<void> _guardedInit<T>(String label, Future<T> Function() task) async {
   try {
     await task();
-  } catch (e) {
+  } catch (e, stack) {
     debugPrint('$label initialization failed: $e');
+    // كان الفشل يُطبع ثم يختفي. الآن يصل Crashlytics — وإن وقع قبل جاهزيتها
+    // يُحفظ ويُرسل بعد التهيئة.
+    unawaited(
+      FirebaseMonitoring.recordNonFatal(
+        e,
+        stack,
+        reason: '$label initialization failed',
+      ),
+    );
   }
 }
 

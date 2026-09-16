@@ -241,6 +241,7 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
   void _openVideo(BuildContext context, String videoId) {
     Navigator.of(context).push(
       youngMuslimPageRoute<void>(
+        screenName: 'YoungMuslimVideoDetailsScreen',
         child: YoungMuslimRouteScope.inherit(
           context: context,
           child: YoungMuslimVideoDetailsScreen(videoId: videoId),

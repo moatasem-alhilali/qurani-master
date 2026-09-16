@@ -168,6 +168,9 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
+                      settings: const RouteSettings(
+                        name: 'PrayerTimeScreen',
+                      ),
                       builder: (_) => const PrayerTimeScreen(),
                     ),
                   );

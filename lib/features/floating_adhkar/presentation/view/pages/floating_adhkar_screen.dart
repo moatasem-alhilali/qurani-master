@@ -106,6 +106,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
         value: context.read<FloatingAdhkarBloc>(),
         child: const FloatingAdhkarMyAdhkarScreen(),
       ),
+      screenName: 'FloatingAdhkarMyAdhkarScreen',
     );
   }
 
@@ -115,6 +116,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
         value: context.read<FloatingAdhkarBloc>(),
         child: const FloatingAdhkarSettingsScreen(),
       ),
+      screenName: 'FloatingAdhkarSettingsScreen',
     );
   }
 }
