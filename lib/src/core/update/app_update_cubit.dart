@@ -28,6 +28,22 @@ class AppUpdateCubit extends Cubit<AppUpdateStatus> {
   /// with "later", so we don't nag on every launch (until a newer one ships).
   static const String _iosSkippedVersionKey = 'ios_skipped_store_version';
 
+  /// أقصر فاصل بين فحصين للمتجر عند الرجوع للتطبيق.
+  ///
+  /// الرجوع يحدث عشرات المرّات يوميًا، ولا داعي لسؤال Apple في كل مرّة:
+  /// الإصدارات لا تُنشر كل ساعة، وواجهة البحث نفسها تتأخّر ساعات عن المتجر.
+  static const Duration _resumeCheckInterval = Duration(hours: 12);
+
+  /// وقت آخر محاولة فحص للمتجر — عند الإقلاع أو الرجوع، نجحت أم فشلت.
+  ///
+  /// في الذاكرة فقط عمدًا: الإقلاع من الصفر يفحص دائمًا كما كان، والحدّ يخصّ
+  /// الرجوع داخل عمر العملية الواحدة.
+  DateTime? _lastIosCheckAt;
+
+  /// الفحص الجاري إن وُجد، حتى لا يتزامن فحص الإقلاع وفحص الرجوع فيُرسَل
+  /// طلبان ويُعرض تنبيهان — iOS يُطلق `resumed` عادةً حول الإطار الأوّل.
+  Future<void>? _iosCheckInFlight;
+
   // ───────────────────────────── Automatic (launch) ──────────────────────────
 
   /// Runs the passive, launch-time update check. Android surfaces Google's own
@@ -38,6 +54,26 @@ class AppUpdateCubit extends Cubit<AppUpdateStatus> {
     } else if (Platform.isIOS) {
       await _checkIosForLaunch();
     }
+  }
+
+  /// فحص المتجر عند رجوع المستخدم للتطبيق — على iOS فقط.
+  ///
+  /// كان الفحص عند الإقلاع وحده، والآيفون يُبقي التطبيقات معلّقة في الذاكرة
+  /// أيامًا: الضغط على الأيقونة *يُرجِع* التطبيق ولا يُقلعه، فلا يرى المستخدم
+  /// التنبيه حتى يُغلق النظام التطبيق. هنا يُفحص عند الرجوع أيضًا، مرّة كل
+  /// [_resumeCheckInterval] كحدّ أقصى.
+  ///
+  /// أندرويد لا يتغيّر: متجر Google يحدّث التطبيقات تلقائيًا، وتدفّق التحديث
+  /// الفوري فيه شاشة كاملة لا تليق بكل رجوع.
+  Future<void> checkForUpdateOnResume() async {
+    if (!Platform.isIOS) return;
+
+    final last = _lastIosCheckAt;
+    if (last != null &&
+        DateTime.now().difference(last) < _resumeCheckInterval) {
+      return;
+    }
+    await _checkIosForLaunch();
   }
 
   Future<void> _checkAndroid() async {
@@ -58,9 +94,18 @@ class AppUpdateCubit extends Cubit<AppUpdateStatus> {
     }
   }
 
-  Future<void> _checkIosForLaunch() async {
+  Future<void> _checkIosForLaunch() {
+    return _iosCheckInFlight ??=
+        _runIosStoreCheck().whenComplete(() => _iosCheckInFlight = null);
+  }
+
+  Future<void> _runIosStoreCheck() async {
+    // يُسجَّل قبل الطلب لا بعده: المحاولة الفاشلة (بلا إنترنت) تُحسب أيضًا،
+    // فلا يتحوّل كل رجوع أثناء انقطاع الشبكة إلى طلب جديد.
+    _lastIosCheckAt = DateTime.now();
     try {
       final result = await _service.checkIosStore();
+      if (isClosed) return;
       if (result == null || !result.isUpdateAvailable) return;
 
       final skipped = _cacheService.getString(_iosSkippedVersionKey);

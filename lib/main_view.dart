@@ -186,6 +186,12 @@ class _App extends StatefulWidget {
 }
 
 class _AppState extends State<_App> with WidgetsBindingObserver {
+  /// هل تنبيه تحديث iOS معروض الآن؟
+  ///
+  /// الفحص صار يجري عند الرجوع للتطبيق أيضًا، فلو ترك المستخدم التنبيه مفتوحًا
+  /// ورجع بعد ساعات لا يُفتح تنبيه ثانٍ فوقه.
+  bool _isIosUpdateDialogOpen = false;
+
   @override
   void initState() {
     super.initState();
@@ -222,6 +228,10 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
     if (state != AppLifecycleState.resumed || !mounted) {
       return;
     }
+
+    // الآيفون يُرجِع التطبيق من الذاكرة بدل إقلاعه، ففحص الإقلاع وحده قد لا
+    // يجري أيامًا. المكعّب يحدّه بمرّة كل 12 ساعة ويتجاهله على أندرويد.
+    unawaited(context.read<AppUpdateCubit>().checkForUpdateOnResume());
 
     final prayerBloc = context.read<PrayerTimeBloc>()
       ..add(const PrayerTimeRefreshOnAppResumeRequested());
@@ -280,15 +290,18 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
         }
 
         // iOS: a newer App Store version exists — prompt to update.
-        if (state is AppUpdateIosAvailable) {
-          showIosUpdateDialog(
-            context,
-            storeVersion: state.storeVersion,
-            storeUrl: state.storeUrl,
-            releaseNotes: state.releaseNotes,
-            onLater: () => context
-                .read<AppUpdateCubit>()
-                .skipIosVersion(state.storeVersion),
+        if (state is AppUpdateIosAvailable && !_isIosUpdateDialogOpen) {
+          _isIosUpdateDialogOpen = true;
+          unawaited(
+            showIosUpdateDialog(
+              context,
+              storeVersion: state.storeVersion,
+              storeUrl: state.storeUrl,
+              releaseNotes: state.releaseNotes,
+              onLater: () => context
+                  .read<AppUpdateCubit>()
+                  .skipIosVersion(state.storeVersion),
+            ).whenComplete(() => _isIosUpdateDialogOpen = false),
           );
         }
       },
