@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  updatePeriodMillis ساعة: شبكة أمان فقط. التحديث الفعلي عند كل حدّ صلاة يأتي من
+  منبّه WidgetScheduler، والعدّ التنازلي يعدّ بنفسه.
+  targetCell*/previewLayout/description من Android 12، وتُتجاهل بأمان قبله.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/tw_daily_ayah_description"
+    android:initialLayout="@layout/tw_daily_ayah"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="80dp"
+    android:previewLayout="@layout/tw_daily_ayah"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="3600000"
+    android:widgetCategory="home_screen" />
