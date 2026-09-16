@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- الليلي: يُطبَّق تلقائيًا مع الوضع الداكن للنظام، دون تحديث من التطبيق. -->
+<resources>
+    <color name="tw_surface">#FF1E1811</color>
+    <color name="tw_stroke">#FF3A2C1C</color>
+    <color name="tw_ink">#FFFFF7E7</color>
+    <color name="tw_ink_soft">#FFCBB08B</color>
+    <color name="tw_accent">#FFD9BE8F</color>
+    <color name="tw_accent_tint">#33D9BE8F</color>
+</resources>

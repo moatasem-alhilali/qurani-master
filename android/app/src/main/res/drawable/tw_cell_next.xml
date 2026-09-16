@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- تمييز الصلاة القادمة بخلفية فقط: ألوان النصوص تبقى من الثيم، فلا تحتاج
+     الودجت تحديثًا حين يبدّل المستخدم الوضع الداكن. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/tw_accent_tint" />
+    <corners android:radius="10dp" />
+</shape>

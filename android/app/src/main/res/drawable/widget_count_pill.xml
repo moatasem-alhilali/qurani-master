@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- زرّ العدّ: العنصر المضغوط الوحيد في المسبحة، فهو وحده يحمل الذهبي كاملًا. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="999dp" />
-    <solid android:color="@color/widget_accent" />
-</shape>

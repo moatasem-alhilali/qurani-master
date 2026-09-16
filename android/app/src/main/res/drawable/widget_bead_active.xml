@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- خرزة/نقطة مكتملة: القرص الذهبي هو إشارة الإنجاز الوحيدة. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="@color/widget_accent" />
-    <size
-        android:width="9dp"
-        android:height="9dp" />
-</shape>

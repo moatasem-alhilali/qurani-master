@@ -7,13 +7,12 @@
 	     Switch back to "development" only for local on-device push debugging. -->
 	<key>aps-environment</key>
 	<string>production</string>
-	<!-- WIDGET DISABLED (iOS): App Group removed so automatic signing can issue an
-	     explicit profile (with Push) instead of a wildcard. Re-enable together with
-	     the TamaneenaWidgets extension.
+	<!-- ودجات الشاشة الرئيسية: التطبيق والامتداد TamaneenaHomeWidgets يتشاركان
+	     البيانات عبر هذه المجموعة. يجب أن تكون مسجّلة في Apple Developer لكلا
+	     المعرّفين (com.tamaanina.app و com.tamaanina.app.HomeWidgets). -->
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.tamaneena.tamaneenaapp.widgets</string>
+		<string>group.com.tamaanina.app.widgets</string>
 	</array>
-	-->
 </dict>
 </plist>

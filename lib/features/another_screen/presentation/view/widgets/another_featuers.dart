@@ -119,15 +119,12 @@ class AnotherFeatures extends StatelessWidget {
             icon: AppIcons.traveler,
             onTap: () => _openTravelerSheet(context),
           ),
-          // Widgets disabled on iOS only (extension signing unresolved);
-          // Android keeps the entry.
-          if (defaultTargetPlatform != TargetPlatform.iOS)
-            _FeatureShortcut(
-              label: 'التطبيقات المصغرة',
-              subtitle: 'ويدجت الصلاة والذكر والآية للواجهة والقفل',
-              icon: AppIcons.widgets,
-              onTap: () => context.push(const HomeWidgetsScreen()),
-            ),
+          _FeatureShortcut(
+            label: 'ودجات الشاشة الرئيسية',
+            subtitle: 'الصلاة القادمة ومواقيت اليوم وآية اليوم',
+            icon: AppIcons.widgets,
+            onTap: () => context.push(const HomeWidgetsScreen()),
+          ),
         ],
       ),
     ];

@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:adhan/adhan.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/extensions/list_extension.dart';
 import 'package:quran_app/core/failure/request_state.dart';
-import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
+import 'package:quran_app/features/home_widgets/data/home_widget_sync.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/extension/extension.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
@@ -588,19 +587,12 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     return distance >= _locationChangeThresholdInMeters;
   }
 
+  /// المواقيت أو الموقع أو إعدادات الحساب تغيّرت — الودجات تُعاد حسابها.
+  ///
+  /// مجمَّعة داخل [HomeWidgetSync.requestSync]، فتكرار النداء في ثانية واحدة
+  /// (تحميل + رجوع + تغيير موقع) يُنتج مزامنة واحدة.
   Future<void> _refreshHomeWidgets() async {
-    // Home-screen widgets are disabled on iOS only (widget extension signing is
-    // unresolved). Android keeps working normally.
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return;
-    }
-    try {
-      final service = HomeWidgetsService();
-      await service.refreshAll();
-      await service.startBackgroundUpdates();
-    } catch (e) {
-      logger.w('Failed to refresh home widgets from prayer times: $e');
-    }
+    HomeWidgetSync.requestSync();
   }
 }
 

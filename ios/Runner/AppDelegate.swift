@@ -2,7 +2,6 @@ import Flutter
 import UIKit
 import flutter_downloader
 import flutter_local_notifications
-import home_widget
 import UserNotifications
 import workmanager_apple
 
@@ -25,15 +24,16 @@ import workmanager_apple
       GeneratedPluginRegistrant.register(with: registry)
     }
     if #available(iOS 13.0, *) {
+      // مزامنة ودجات الشاشة الرئيسية في الخلفية.
+      //
+      // المعرّف يجب أن يطابق حرفيًا `uniqueName` في home_widget_ids.dart وقائمة
+      // BGTaskSchedulerPermittedIdentifiers في Info.plist، وإلا لا يُشغّلها iOS
+      // ولا يُبلّغ بأي خطأ. كل 12 ساعة يكفي: الودجات تحمل مواقيت 30 يومًا وتحسب
+      // الصلاة الحالية بنفسها، فالمزامنة تمدّ النافذة فقط.
       WorkmanagerPlugin.registerPeriodicTask(
-        withIdentifier: "tamaneena.home_widgets.refresh",
-        frequency: NSNumber(value: 30 * 60)
+        withIdentifier: "tamaneena.widgets.sync",
+        frequency: NSNumber(value: 12 * 60 * 60)
       )
-    }
-    if #available(iOS 17.0, *) {
-      HomeWidgetBackgroundWorker.setPluginRegistrantCallback { registry in
-        GeneratedPluginRegistrant.register(with: registry)
-      }
     }
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60 * 30))
 

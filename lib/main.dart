@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:quran_app/core/bloc/bloc_observer.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/helper/dio/dio_helper.dart';
-import 'package:quran_app/core/home_widgets/home_widgets_service.dart';
+import 'package:quran_app/features/home_widgets/data/home_widget_sync.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/services/download_service.dart';
 import 'package:quran_app/core/services/firebase_monitoring.dart';
@@ -121,7 +121,7 @@ Future<void> _guardedInit<T>(String label, Future<T> Function() task) async {
 /// Non-critical startup work moved off the launch critical path. None of it is
 /// required to render the first frame or by the eager startup blocs:
 ///  - Download service is only needed once the user downloads something.
-///  - Home-screen widgets are a background convenience (Android only).
+///  - Home-screen widgets sync their 30-day data (both platforms).
 ///  - The iOS background-message handler only matters once app is backgrounded.
 Future<void> _initAfterFirstFrame() async {
   await _guardedInit('DownloadService', () => DownloadService().initialize());
@@ -130,14 +130,10 @@ Future<void> _initAfterFirstFrame() async {
   // install + number of opens). Purely local; never blocks or prompts here.
   await _guardedInit('AppReview', () => AppReviewService().registerAppOpen());
 
-  // Home-screen widgets are disabled on iOS only (widget extension signing is
-  // unresolved). Android keeps working normally.
-  if (!kIsWeb && defaultTargetPlatform != TargetPlatform.iOS) {
-    await _guardedInit('HomeWidgets', () async {
-      final homeWidgetsService = HomeWidgetsService();
-      await homeWidgetsService.refreshAll();
-      await homeWidgetsService.startBackgroundUpdates();
-    });
+  // Home-screen widgets (Android + iOS): compute 30 days of data, reload the
+  // native widgets, and register the 12-hour background sync.
+  if (!kIsWeb) {
+    await _guardedInit('HomeWidgets', HomeWidgetSync.initialize);
   }
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {

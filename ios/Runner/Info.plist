@@ -58,7 +58,7 @@
 		<true/>
 		<key>BGTaskSchedulerPermittedIdentifiers</key>
 		<array>
-			<string>tamaneena.home_widgets.refresh</string>
+			<string>tamaneena.widgets.sync</string>
 		</array>
 		<key>UIBackgroundModes</key>
 		<array>

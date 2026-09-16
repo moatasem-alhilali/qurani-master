@@ -26,6 +26,7 @@ import 'package:quran_app/core/util/light_theme.dart';
 import 'package:quran_app/features/daily_wird/data/repo/daily_wird_repository.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
+import 'package:quran_app/features/home_widgets/presentation/home_widget_click_router.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
@@ -207,6 +208,8 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
       }
       unawaited(context.read<AppUpdateCubit>().checkForUpdate());
       unawaited(_maybeAskForReview());
+      // ضغطة على ودجت (والتطبيق مغلق أو في الخلفية) تفتح الشاشة المقصودة.
+      HomeWidgetClickRouter.attach();
     });
   }
 

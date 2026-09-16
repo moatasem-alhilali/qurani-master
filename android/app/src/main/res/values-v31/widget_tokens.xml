@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-    أندرويد ١٢ فما فوق يفرض نصف قطر موحّدًا لكل ودجات الشاشة، ويقصّ ما يخالفه.
-    أخذُ قيمة النظام يجعل حوافّ «طمأنينة» تطابق جيرانها بدل أن تبدو أصغر
-    أو أكبر زاويةً منها.
--->
-<resources>
-    <dimen name="widget_radius">@android:dimen/system_app_widget_background_radius</dimen>
-</resources>

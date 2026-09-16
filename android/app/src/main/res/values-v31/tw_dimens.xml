@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+: نصف قطر الودجات الموحّد من الشاشة الرئيسية نفسها. -->
+<resources>
+    <dimen name="tw_radius">@android:dimen/system_app_widget_background_radius</dimen>
+</resources>

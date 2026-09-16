@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ألوان ودجات الشاشة الرئيسية (النهاري). مأخوذة من لوحة AppSkin في التطبيق. -->
+<resources>
+    <color name="tw_surface">#FFFFFFFF</color>
+    <color name="tw_stroke">#1F6F5636</color>
+    <color name="tw_ink">#FF1A1A1A</color>
+    <color name="tw_ink_soft">#FF6F5636</color>
+    <color name="tw_accent">#FFB18C55</color>
+    <color name="tw_accent_tint">#29C3A46B</color>
+</resources>

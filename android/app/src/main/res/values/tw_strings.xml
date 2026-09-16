@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">الصلاة القادمة</string>
+    <string name="tw_next_prayer_description">اسم الصلاة القادمة ووقتها مع عدّ تنازلي حيّ</string>
+    <string name="tw_prayer_times_label">مواقيت اليوم</string>
+    <string name="tw_prayer_times_description">مواقيت الصلوات مع التاريخ الهجري والمدينة</string>
+    <string name="tw_daily_ayah_label">آية اليوم</string>
+    <string name="tw_daily_ayah_description">آية قصيرة تتجدّد كل يوم</string>
+    <string name="tw_open_app">افتح طمأنينة</string>
+    <string name="tw_set_location">حدّد موقعك في التطبيق</string>
+    <string name="tw_refresh_needed">لتحديث المواقيت</string>
+    <string name="tw_ayah_fallback">﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾</string>
+    <string name="tw_ayah_fallback_source">سورة الرعد · ٢٨</string>
+</resources>
