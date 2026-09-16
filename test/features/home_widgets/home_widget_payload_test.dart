@@ -114,7 +114,9 @@ void main() {
     final flags = {for (final p in _prayers(today)) p['key']: p['isPrayer']};
     expect(flags['sunrise'], isFalse);
     expect(
-      flags.entries.where((e) => e.key != 'sunrise').every((e) => e.value == true),
+      flags.entries
+          .where((e) => e.key != 'sunrise')
+          .every((e) => e.value == true),
       isTrue,
     );
   });
@@ -141,8 +143,8 @@ void main() {
         {'date': '2026-09-15', 'text': 'today', 'source': 's'},
         {'date': '2026-09-16', 'text': 'tomorrow', 'source': 's'},
       ];
-      final verses =
-          (_build(noonRiyadh, previous: previous)['verses']! as List).cast<Map>();
+      final verses = (_build(noonRiyadh, previous: previous)['verses']! as List)
+          .cast<Map>();
 
       expect([for (final v in verses) v['text']], ['today', 'tomorrow']);
     });

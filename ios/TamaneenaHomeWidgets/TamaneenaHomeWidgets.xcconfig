@@ -1,0 +1,7 @@
+// إعدادات امتداد الودجات الأساسية.
+//
+// يستورد Generated.xcconfig وحده ليحصل على FLUTTER_BUILD_NAME و
+// FLUTTER_BUILD_NUMBER، فيطابق إصدار الامتداد إصدار التطبيق — App Store Connect
+// يرفض الرفع إن اختلفا. لا يستورد Flutter/Release.xcconfig عمدًا: قد تضيف أدوات
+// Flutter إليه تضمين Pods-Runner، فتنتقل أعلام ربط إضافات Flutter إلى الامتداد.
+#include "../Flutter/Generated.xcconfig"

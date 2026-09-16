@@ -15,6 +15,14 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		E7A10B000000000000000015 /* TamaneenaHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000001 /* TamaneenaHomeWidgetsBundle.swift */; };
+		E7A10B000000000000000016 /* WidgetPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000002 /* WidgetPayload.swift */; };
+		E7A10B000000000000000017 /* WidgetTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000003 /* WidgetTimeline.swift */; };
+		E7A10B000000000000000018 /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000004 /* WidgetTheme.swift */; };
+		E7A10B000000000000000019 /* NextPrayerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000005 /* NextPrayerWidget.swift */; };
+		E7A10B00000000000000001A /* PrayerTimesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000006 /* PrayerTimesWidget.swift */; };
+		E7A10B00000000000000001B /* DailyAyahWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000007 /* DailyAyahWidget.swift */; };
+		E7A10B00000000000000001C /* TamaneenaHomeWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,6 +32,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
+		};
+		E7A10B00000000000000001E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7A10B000000000000000022;
+			remoteInfo = TamaneenaHomeWidgets;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -36,6 +51,17 @@
 			files = (
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7A10B00000000000000001F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E7A10B00000000000000001C /* TamaneenaHomeWidgets.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -58,10 +84,28 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071800112233 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		E7A10B000000000000000001 /* TamaneenaHomeWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TamaneenaHomeWidgetsBundle.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000002 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000003 /* WidgetTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTimeline.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000004 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000005 /* NextPrayerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextPrayerWidget.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000006 /* PrayerTimesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesWidget.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000007 /* DailyAyahWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyAyahWidget.swift; sourceTree = "<group>"; };
+		E7A10B000000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7A10B000000000000000009 /* TamaneenaHomeWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TamaneenaHomeWidgets.entitlements; sourceTree = "<group>"; };
+		E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TamaneenaHomeWidgets.xcconfig; sourceTree = "<group>"; };
+		E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TamaneenaHomeWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7A10B000000000000000020 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -95,6 +139,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				E7A10B000000000000000021 /* TamaneenaHomeWidgets */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 			);
@@ -104,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 			);
 			name = Products;
@@ -124,6 +170,23 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		E7A10B000000000000000021 /* TamaneenaHomeWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				E7A10B000000000000000001 /* TamaneenaHomeWidgetsBundle.swift */,
+				E7A10B000000000000000002 /* WidgetPayload.swift */,
+				E7A10B000000000000000003 /* WidgetTimeline.swift */,
+				E7A10B000000000000000004 /* WidgetTheme.swift */,
+				E7A10B000000000000000005 /* NextPrayerWidget.swift */,
+				E7A10B000000000000000006 /* PrayerTimesWidget.swift */,
+				E7A10B000000000000000007 /* DailyAyahWidget.swift */,
+				E7A10B000000000000000008 /* Info.plist */,
+				E7A10B000000000000000009 /* TamaneenaHomeWidgets.entitlements */,
+				E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */,
+			);
+			path = TamaneenaHomeWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,16 +218,34 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				E7A10B00000000000000001F /* Embed App Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E7A10B000000000000000024 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E7A10B000000000000000022 /* TamaneenaHomeWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7A10B000000000000000028 /* Build configuration list for PBXNativeTarget "TamaneenaHomeWidgets" */;
+			buildPhases = (
+				E7A10B000000000000000023 /* Sources */,
+				E7A10B000000000000000020 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TamaneenaHomeWidgets;
+			productName = TamaneenaHomeWidgets;
+			productReference = E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -184,6 +265,9 @@
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
 					};
+					E7A10B000000000000000022 = {
+						CreatedOnToolsVersion = 15.0;
+					};
 				};
 			};
 			buildConfigurationList = 97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */;
@@ -200,6 +284,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				E7A10B000000000000000022 /* TamaneenaHomeWidgets */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 			);
 		};
@@ -279,6 +364,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E7A10B000000000000000023 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7A10B000000000000000015 /* TamaneenaHomeWidgetsBundle.swift in Sources */,
+				E7A10B000000000000000016 /* WidgetPayload.swift in Sources */,
+				E7A10B000000000000000017 /* WidgetTimeline.swift in Sources */,
+				E7A10B000000000000000018 /* WidgetTheme.swift in Sources */,
+				E7A10B000000000000000019 /* NextPrayerWidget.swift in Sources */,
+				E7A10B00000000000000001A /* PrayerTimesWidget.swift in Sources */,
+				E7A10B00000000000000001B /* DailyAyahWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -286,6 +385,11 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		E7A10B000000000000000024 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7A10B000000000000000022 /* TamaneenaHomeWidgets */;
+			targetProxy = E7A10B00000000000000001E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -604,6 +708,88 @@
 			};
 			name = Release;
 		};
+		E7A10B000000000000000025 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = TamaneenaHomeWidgets/TamaneenaHomeWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = W77Q2VMT4P;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TamaneenaHomeWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tamaanina.app.HomeWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E7A10B000000000000000026 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = TamaneenaHomeWidgets/TamaneenaHomeWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = W77Q2VMT4P;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TamaneenaHomeWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tamaanina.app.HomeWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E7A10B000000000000000027 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = TamaneenaHomeWidgets/TamaneenaHomeWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = W77Q2VMT4P;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TamaneenaHomeWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tamaanina.app.HomeWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -633,6 +819,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7A10B000000000000000028 /* Build configuration list for PBXNativeTarget "TamaneenaHomeWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7A10B000000000000000025 /* Debug */,
+				E7A10B000000000000000026 /* Release */,
+				E7A10B000000000000000027 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

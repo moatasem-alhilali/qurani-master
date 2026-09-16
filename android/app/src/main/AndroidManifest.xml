@@ -103,6 +103,62 @@
 
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
 
+        <!--
+          ودجات الشاشة الرئيسية (homewidgets/TamaneenaWidgets.kt).
+          أسماء المزوّدات تطابق HomeWidgetIds.android* في Dart حرفيًا.
+        -->
+        <receiver
+            android:name=".homewidgets.NextPrayerWidgetProvider"
+            android:exported="true"
+            android:label="@string/tw_next_prayer_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tw_next_prayer_info" />
+        </receiver>
+        <receiver
+            android:name=".homewidgets.PrayerTimesWidgetProvider"
+            android:exported="true"
+            android:label="@string/tw_prayer_times_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tw_prayer_times_info" />
+        </receiver>
+        <receiver
+            android:name=".homewidgets.DailyAyahWidgetProvider"
+            android:exported="true"
+            android:label="@string/tw_daily_ayah_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tw_daily_ayah_info" />
+        </receiver>
+
+        <!--
+          يوقظ الودجات عند كل حدّ صلاة (منبّه WidgetScheduler) وبعد الأحداث التي
+          تجعل المعروض قديمًا. كلّها بثّ نظام مسموح لمستقبِلات المانيفست؛
+          DATE_CHANGED ليس منها ولذلك غير مدرج.
+        -->
+        <receiver
+            android:name=".homewidgets.WidgetRefreshReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tamaneena.tamaneena_app.homewidgets.ACTION_TICK" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".PrayerSilentModeReceiver"
             android:exported="false">
