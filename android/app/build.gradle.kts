@@ -89,4 +89,9 @@ configurations.all {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // يحتاجها StaleAwareNotificationBootReceiver لقراءة الإشعارات المجدولة من
+    // تخزين flutter_local_notifications. الإضافة تعلنها `implementation` فلا
+    // تصل إلى التطبيق، ونثبّت الإصدار نفسه الذي تستعمله (19.3.0 ← 2.12.0).
+    implementation("com.google.code.gson:gson:2.12.0")
 }

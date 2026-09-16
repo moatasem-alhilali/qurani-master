@@ -278,7 +278,12 @@
                 android:value="floating_adhkar_overlay_service" />
         </service>
 
-        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+        <!--
+          بديل ScheduledNotificationBootReceiver: يتخطّى المواعيد التي فاتت أثناء
+          إطفاء الجهاز بدل إطلاقها دفعةً واحدة عند الإقلاع. التفاصيل في
+          kotlin/com/dexterous/flutterlocalnotifications/StaleAwareNotificationBootReceiver.kt
+        -->
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.StaleAwareNotificationBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>

@@ -61,6 +61,7 @@ class PrayerSilentModeNativeService {
           prayers: prayers,
           selectedLocation: selectedLocation,
         ),
+        selectedLocation: selectedLocation,
       );
       return;
     }
@@ -104,6 +105,7 @@ class PrayerSilentModeNativeService {
   Future<void> _applyIosPrayerModeReminders({
     required PrayerSilentModeSettings settings,
     required List<PrayerInfoModel> prayers,
+    PrayerLocationSelection? selectedLocation,
   }) async {
     final notificationService = sl<NotificationService>();
     await _cancelIosPrayerModeReminders();
@@ -131,24 +133,35 @@ class PrayerSilentModeNativeService {
       iosInterruptionLevel: InterruptionLevel.timeSensitive,
     );
 
+    // كل موعد يُحوَّل إلى لحظته الحقيقية على الجهاز *قبل* المقارنة والجدولة.
+    //
+    // كان يُستعمل `prayer.time` مباشرة، وهو من `PrayerTimes.utcOffset` بعلامة
+    // UTC لكن ساعته مُزاحة بفرق المدينة — فتقع لحظته بعد الصلاة بفرق التوقيت
+    // (+3 ساعات في الرياض). النتيجة: تذكير العشاء يصل 22:38 بدل 19:38، وفلتر
+    // `isAfter(now)` يُبقي صلوات مضت قبل ساعات فتُرسَل تذكيرات منتهية.
+    final offsetMinutes = selectedLocation?.utcOffsetMinutes;
     final now = DateTime.now();
-    final upcomingPrayers = prayers
+    final upcoming = prayers
         .where((prayer) => _isPrayerThatCanSilenceDevice(prayer.type))
-        .where((prayer) => prayer.time.isAfter(now))
+        .map(
+          (prayer) => (
+            prayer: prayer,
+            at: _resolveDeviceInstant(prayer.time, offsetMinutes),
+          ),
+        )
+        .where((entry) => entry.at.isAfter(now))
         .toList()
-      ..sort((first, second) => first.time.compareTo(second.time));
+      ..sort((first, second) => first.at.compareTo(second.at));
 
-    for (var i = 0;
-        i < upcomingPrayers.length && i < _iosNotificationRange;
-        i++) {
-      final prayer = upcomingPrayers[i];
+    for (var i = 0; i < upcoming.length && i < _iosNotificationRange; i++) {
+      final entry = upcoming[i];
       await notificationService.plugin.zonedSchedule(
         _iosNotificationBaseId + i,
-        'حان وقت ${prayer.name}',
+        'حان وقت ${entry.prayer.name}',
         'فعّل وضع الصامت أو التركيز للصلاة، ثم أعده بعد الانتهاء.',
-        tz.TZDateTime.from(prayer.time, tz.local),
+        tz.TZDateTime.from(entry.at, tz.local),
         details,
-        payload: 'prayer_mode_ios:${prayer.type.name}',
+        payload: 'prayer_mode_ios:${entry.prayer.type.name}',
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
     }
@@ -187,12 +200,10 @@ class PrayerSilentModeNativeService {
         continue;
       }
 
-      final triggerTime = selectedLocation == null
-          ? prayer.time
-          : _resolveDeviceInstant(
-              prayer.time,
-              selectedLocation.utcOffsetMinutes,
-            );
+      final triggerTime = _resolveDeviceInstant(
+        prayer.time,
+        selectedLocation?.utcOffsetMinutes,
+      );
       final endTime = triggerTime.add(duration);
       if (!endTime.isAfter(now)) {
         continue;
@@ -252,15 +263,43 @@ class PrayerSilentModeNativeService {
         .prayerInfoListSeed(prayerTimes);
   }
 
+  /// يحوّل موعد صلاة إلى لحظته الحقيقية على الجهاز.
+  ///
+  /// **الساعة المقروءة هي الحقيقة، لا علامة UTC.** مواقيت التطبيق كلّها تأتي
+  /// من `PrayerTimes.utcOffset`، الذي يفعل (adhan 2.0.0+1، prayer_times.dart:265):
+  ///
+  ///     _isha = isha.toUtc().add(utcOffset);
+  ///
+  /// فيخرج `DateTime` بعلامة `isUtc == true` لكن ساعته «19:38» هي توقيت المدينة
+  /// المحلي، ولحظته الفعلية 22:38 في الرياض. كان هنا فرع مبكر:
+  ///
+  ///     if (prayerTime.isUtc) return prayerTime.toLocal();
+  ///
+  /// يلتقط هذه القيم بالذات فيُزيحها بفرق التوقيت مرّة ثانية — فيدخل الجهاز
+  /// الصامت على أندرويد بعد الصلاة بثلاث ساعات، ويصل تذكير iOS متأخرًا.
+  ///
+  /// الصحيح دائمًا: اقرأ الساعة كتوقيت المدينة واطرح فرقها. وهذا يصحّ أيضًا
+  /// لمواعيد UTC حقيقية (فرقها صفر)، ولمواعيد `PrayerTimes.today` المحلّية.
+  ///
+  /// بلا موقع ([utcOffsetMinutes] فارغ) تُقرأ الساعة بتوقيت الجهاز نفسه.
   DateTime _resolveDeviceInstant(
     DateTime prayerTime,
-    int utcOffsetMinutes,
+    int? utcOffsetMinutes,
   ) {
-    if (prayerTime.isUtc) {
-      return prayerTime.toLocal();
+    if (utcOffsetMinutes == null) {
+      return DateTime(
+        prayerTime.year,
+        prayerTime.month,
+        prayerTime.day,
+        prayerTime.hour,
+        prayerTime.minute,
+        prayerTime.second,
+        prayerTime.millisecond,
+        prayerTime.microsecond,
+      );
     }
 
-    final locationLocalTimeAsUtc = DateTime.utc(
+    final locationWallClockAsUtc = DateTime.utc(
       prayerTime.year,
       prayerTime.month,
       prayerTime.day,
@@ -270,7 +309,7 @@ class PrayerSilentModeNativeService {
       prayerTime.millisecond,
       prayerTime.microsecond,
     );
-    return locationLocalTimeAsUtc
+    return locationWallClockAsUtc
         .subtract(Duration(minutes: utcOffsetMinutes))
         .toLocal();
   }

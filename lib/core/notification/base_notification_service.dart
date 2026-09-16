@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/main.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 /// Unified ID management for all notifications
@@ -337,16 +336,15 @@ abstract class BaseNotificationService {
   // ================== Shared Timezone Methods ==================
 
   /// Configure local timezone
+  ///
+  /// يمرّ على [TimeZoneService.resolveDeviceLocation] نفسه الذي يستعمله
+  /// `main`، فلا يختلف المساران. كان هنا سقوط صريح إلى UTC عند فشل التعرّف،
+  /// فيُزاح كل إشعار يومي بفرق التوقيت (+3 ساعات في السعودية).
   Future<void> configureLocalTimeZone() async {
     try {
-      tz.initializeTimeZones();
-      final localTimezone = await FlutterTimezone.getLocalTimezone();
-      final location = tz.getLocation(localTimezone);
-      tz.setLocalLocation(location);
+      await TimeZoneService().setupTimezone();
     } catch (e) {
       logger.e('Error configuring timezone: $e');
-      // Fallback to UTC if timezone detection fails
-      tz.setLocalLocation(tz.getLocation('UTC'));
     }
   }
 
