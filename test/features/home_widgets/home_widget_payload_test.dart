@@ -144,7 +144,7 @@ void main() {
         {'date': '2026-09-16', 'text': 'tomorrow', 'source': 's'},
       ];
       final verses = (_build(noonRiyadh, previous: previous)['verses']! as List)
-          .cast<Map>();
+          .cast<Map<String, Object?>>();
 
       expect([for (final v in verses) v['text']], ['today', 'tomorrow']);
     });
