@@ -297,8 +297,9 @@ class _SurahResultChip extends StatelessWidget {
             ),
             child: Text(
               number,
-              style: const TextStyle(
-                color: Colors.white,
+              // الدائرة بلون primary من ثيم التطبيق، فالرقم بـ onPrimary منه.
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
                 height: 1,
