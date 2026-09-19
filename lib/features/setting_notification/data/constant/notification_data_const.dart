@@ -50,7 +50,6 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationAthanAsr:
       case NotificationKeys.isNotificationAthanMagrib:
       case NotificationKeys.isNotificationAthanIsha:
-      case NotificationKeys.isNotificationPrayerSilentModeReminder:
       case NotificationKeys.isNotificationAllAthan:
         return NotificationChannel.athan;
       default:
@@ -95,7 +94,6 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationDailyWirdNight:
       case NotificationKeys.isNotificationDailyWirdSummary:
       case NotificationKeys.isNotificationYoungMuslimResume:
-      case NotificationKeys.isNotificationPrayerSilentModeReminder:
       case NotificationKeys.isNotificationQuranPlan:
       case NotificationKeys.isNotificationFirebaseGeneral:
       case NotificationKeys.isNotificationAthanFagr:
@@ -158,8 +156,6 @@ class NotificationDataConst {
         return 'ملخص الورد اليومي';
       case NotificationKeys.isNotificationYoungMuslimResume:
         return 'تذكير المسلم الصغير';
-      case NotificationKeys.isNotificationPrayerSilentModeReminder:
-        return 'تذكير وضع الصلاة';
       case NotificationKeys.isNotificationQuranPlan:
         return 'تذكير خطط القرآن';
       case NotificationKeys.isNotificationFirebaseGeneral:
@@ -229,8 +225,6 @@ class NotificationDataConst {
         return 'راجع زادك التعبدي اليوم.';
       case NotificationKeys.isNotificationYoungMuslimResume:
         return 'تذكير للعودة إلى محتوى المسلم الصغير.';
-      case NotificationKeys.isNotificationPrayerSilentModeReminder:
-        return 'تذكير بتفعيل الصامت أو التركيز وقت الصلاة.';
       case NotificationKeys.isNotificationQuranPlan:
         return 'لا تنس جلسة اليوم من خطتك القرآنية.';
       case NotificationKeys.isNotificationFirebaseGeneral:
@@ -440,8 +434,6 @@ class NotificationKeys {
       'isNotificationDailyWirdSummary';
   static const isNotificationYoungMuslimResume =
       'isNotificationYoungMuslimResume';
-  static const isNotificationPrayerSilentModeReminder =
-      'isNotificationPrayerSilentModeReminder';
   static const isNotificationQuranPlan = 'isNotificationQuranPlan';
   static const isNotificationFirebaseGeneral = 'isNotificationFirebaseGeneral';
 }

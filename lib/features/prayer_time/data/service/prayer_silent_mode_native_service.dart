@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/data/notification_data_const.dart'
     as notification_seed;
 import 'package:quran_app/core/notification/notification_service.dart';
@@ -12,20 +10,22 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_silent_mode_settings.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
-import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class PrayerSilentModeNativeService {
   static const MethodChannel _channel = MethodChannel(
     'com.tamaneena.tamaneena_app/prayer_silent_mode',
   );
-  static const int _iosNotificationBaseId = 76800;
-  static const int _iosNotificationRange = 8;
 
+  /// معرّفات تذكيرات iOS التي كانت النسخ السابقة تجدولها (76800–76807).
+  ///
+  /// أُلغيت الميزة على iOS: النظام لا يسمح لأيّ تطبيق بتحويل الجهاز إلى الصامت،
+  /// فكانت مجرّد إشعار يطلب من المستخدم فعل ذلك بيده. تبقى هذه القيم فقط لإلغاء
+  /// ما جدولته النسخ السابقة ولم يُطلق بعد، وإلا لاستمرّ وصوله يومين بعد التحديث.
+  static const int _legacyIosReminderBaseId = 76800;
+  static const int _legacyIosReminderCount = 8;
+
+  /// أندرويد فقط.
   Future<bool> isSupported() async {
-    if (Platform.isIOS) {
-      return true;
-    }
     if (!Platform.isAndroid) {
       return false;
     }
@@ -55,14 +55,7 @@ class PrayerSilentModeNativeService {
     PrayerLocationSelection? selectedLocation,
   }) async {
     if (Platform.isIOS) {
-      await _applyIosPrayerModeReminders(
-        settings: settings,
-        prayers: _buildSchedulePrayers(
-          prayers: prayers,
-          selectedLocation: selectedLocation,
-        ),
-        selectedLocation: selectedLocation,
-      );
+      await _cancelLegacyIosReminders();
       return;
     }
 
@@ -92,7 +85,7 @@ class PrayerSilentModeNativeService {
 
   Future<void> cancelSchedule() async {
     if (Platform.isIOS) {
-      await _cancelIosPrayerModeReminders();
+      await _cancelLegacyIosReminders();
       return;
     }
 
@@ -100,71 +93,6 @@ class PrayerSilentModeNativeService {
       return;
     }
     await _channel.invokeMethod<void>('cancel');
-  }
-
-  Future<void> _applyIosPrayerModeReminders({
-    required PrayerSilentModeSettings settings,
-    required List<PrayerInfoModel> prayers,
-    PrayerLocationSelection? selectedLocation,
-  }) async {
-    final notificationService = sl<NotificationService>();
-    await _cancelIosPrayerModeReminders();
-
-    if (!settings.enabled) {
-      return;
-    }
-
-    final hasPermission = await notificationService.areNotificationsEnabled() ||
-        await notificationService.requestNotificationPermissions();
-    if (!hasPermission) {
-      return;
-    }
-    if (!await notificationService.isNotificationAllowed(
-      settingKey: NotificationKeys.isNotificationPrayerSilentModeReminder,
-    )) {
-      return;
-    }
-
-    final details = await notificationService.buildNotificationDetails(
-      NotificationChannel.athan,
-      iosSubtitle: 'وضع الصلاة',
-      iosThreadIdentifier: 'prayer_mode_ios_reminders',
-      iosCategoryIdentifier: 'islamic_notifications',
-      iosInterruptionLevel: InterruptionLevel.timeSensitive,
-    );
-
-    // كل موعد يُحوَّل إلى لحظته الحقيقية على الجهاز *قبل* المقارنة والجدولة.
-    //
-    // كان يُستعمل `prayer.time` مباشرة، وهو من `PrayerTimes.utcOffset` بعلامة
-    // UTC لكن ساعته مُزاحة بفرق المدينة — فتقع لحظته بعد الصلاة بفرق التوقيت
-    // (+3 ساعات في الرياض). النتيجة: تذكير العشاء يصل 22:38 بدل 19:38، وفلتر
-    // `isAfter(now)` يُبقي صلوات مضت قبل ساعات فتُرسَل تذكيرات منتهية.
-    final offsetMinutes = selectedLocation?.utcOffsetMinutes;
-    final now = DateTime.now();
-    final upcoming = prayers
-        .where((prayer) => _isPrayerThatCanSilenceDevice(prayer.type))
-        .map(
-          (prayer) => (
-            prayer: prayer,
-            at: _resolveDeviceInstant(prayer.time, offsetMinutes),
-          ),
-        )
-        .where((entry) => entry.at.isAfter(now))
-        .toList()
-      ..sort((first, second) => first.at.compareTo(second.at));
-
-    for (var i = 0; i < upcoming.length && i < _iosNotificationRange; i++) {
-      final entry = upcoming[i];
-      await notificationService.plugin.zonedSchedule(
-        _iosNotificationBaseId + i,
-        'حان وقت ${entry.prayer.name}',
-        'فعّل وضع الصامت أو التركيز للصلاة، ثم أعده بعد الانتهاء.',
-        tz.TZDateTime.from(entry.at, tz.local),
-        details,
-        payload: 'prayer_mode_ios:${entry.prayer.type.name}',
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      );
-    }
   }
 
   List<PrayerInfoModel> _buildSchedulePrayers({
@@ -329,14 +257,11 @@ class PrayerSilentModeNativeService {
     return 630000 + dateCode * 10 + order;
   }
 
-  Future<void> _cancelIosPrayerModeReminders() async {
-    if (!Platform.isIOS) {
-      return;
-    }
+  Future<void> _cancelLegacyIosReminders() async {
     final notificationService = sl<NotificationService>();
-    for (var i = 0; i < _iosNotificationRange; i++) {
+    for (var i = 0; i < _legacyIosReminderCount; i++) {
       await notificationService.cancelNotificationById(
-        id: _iosNotificationBaseId + i,
+        id: _legacyIosReminderBaseId + i,
       );
     }
   }

@@ -304,15 +304,6 @@ class NotificationSettingsSeeder {
           onlySetting: true,
         ),
         NotificationSettingSeedData(
-          key: NotificationKeys.isNotificationPrayerSilentModeReminder,
-          label: 'تذكير وضع الصلاة على iPhone',
-          enabled: true,
-          scheduleType: ScheduleType.daily,
-          hour: 0,
-          minute: 0,
-          onlySetting: true,
-        ),
-        NotificationSettingSeedData(
           key: NotificationKeys.isNotificationQuranPlan,
           label: 'تذكير خطط القرآن',
           enabled: true,

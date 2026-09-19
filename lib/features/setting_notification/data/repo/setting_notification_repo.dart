@@ -232,12 +232,6 @@ class SettingNotificationRepo {
           range: 33,
         );
         return;
-      case NotificationKeys.isNotificationPrayerSilentModeReminder:
-        await notificationService.cancelNotificationById(
-          id: 76800,
-          range: 8,
-        );
-        return;
       case NotificationKeys.isNotificationQuranPlan:
         await _cancelQuranPlanNotifications();
         return;

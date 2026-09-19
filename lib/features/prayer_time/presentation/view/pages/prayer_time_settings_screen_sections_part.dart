@@ -1,11 +1,9 @@
 part of 'prayer_time_settings_screen.dart';
 
-/// قسم الصامت: مفتاح التفعيل، ثم مدّة الصامت أو تنبيه iOS، ثم رابط الصلاحية.
+/// قسم الصامت (أندرويد فقط): مفتاح التفعيل، ثم مدّة الصامت، ثم رابط الصلاحية.
 class _SilentModeSection extends StatelessWidget {
   const _SilentModeSection({
     required this.settings,
-    required this.isAndroid,
-    required this.isIos,
     required this.hasPolicyAccess,
     required this.isSaving,
     required this.onEnabledChanged,
@@ -14,8 +12,6 @@ class _SilentModeSection extends StatelessWidget {
   });
 
   final PrayerSilentModeSettings settings;
-  final bool isAndroid;
-  final bool isIos;
   final bool hasPolicyAccess;
   final bool isSaving;
   final ValueChanged<bool> onEnabledChanged;
@@ -25,21 +21,18 @@ class _SilentModeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final isSupported = isAndroid || isIos;
-    final enabled = settings.enabled && isSupported;
-    final hint = isAndroid
-        ? 'يحوّل الجهاز إلى صامت مع وقت الصلاة ثم يعيد الصوت تلقائيًا.'
-        : 'يرسل تنبيهًا وقت الصلاة لتفعيل الصامت أو التركيز يدويًا.';
+    final enabled = settings.enabled;
+    const hint = 'يحوّل الجهاز إلى صامت مع وقت الصلاة ثم يعيد الصوت تلقائيًا.';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PrayerSettingsSwitchRow(
           icon: AppIcons.mute,
-          label: isAndroid ? 'تفعيل الصامت تلقائيًا' : 'تنبيه وقت الصلاة',
+          label: 'تفعيل الصامت تلقائيًا',
           hint: hint,
           value: enabled,
-          enabled: isSupported && !isSaving,
+          enabled: !isSaving,
           onChanged: onEnabledChanged,
         ),
         AnimatedOpacity(
@@ -50,15 +43,12 @@ class _SilentModeSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (isAndroid)
-                  _DurationRow(
-                    value: settings.durationMinutes,
-                    enabled: !isSaving,
-                    onChanged: onDurationChanged,
-                  )
-                else
-                  const _IosAlternativeNote(),
-                if (isAndroid && !hasPolicyAccess)
+                _DurationRow(
+                  value: settings.durationMinutes,
+                  enabled: !isSaving,
+                  onChanged: onDurationChanged,
+                ),
+                if (!hasPolicyAccess)
                   Padding(
                     padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
                     child: Row(

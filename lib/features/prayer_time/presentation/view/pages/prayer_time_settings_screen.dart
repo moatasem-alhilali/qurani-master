@@ -68,8 +68,8 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    // iOS لا يسمح للتطبيقات بتحويل الجهاز إلى الصامت، فالقسم لأندرويد وحده.
     final isAndroid = Platform.isAndroid;
-    final isIos = Platform.isIOS;
 
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
@@ -92,20 +92,18 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
                   });
                 },
               ),
-              skin.divider(),
-              HomeSectionHeader(
-                title: isAndroid ? 'الصامت وقت الصلاة' : 'تنبيه وضع الصلاة',
-              ),
-              _SilentModeSection(
-                settings: _settings,
-                isAndroid: isAndroid,
-                isIos: isIos,
-                hasPolicyAccess: _hasNotificationPolicyAccess,
-                isSaving: _isSaving,
-                onEnabledChanged: _handleEnabledChanged,
-                onDurationChanged: _handleDurationChanged,
-                onOpenPermission: _openNotificationPolicySettings,
-              ),
+              if (isAndroid) ...[
+                skin.divider(),
+                const HomeSectionHeader(title: 'الصامت وقت الصلاة'),
+                _SilentModeSection(
+                  settings: _settings,
+                  hasPolicyAccess: _hasNotificationPolicyAccess,
+                  isSaving: _isSaving,
+                  onEnabledChanged: _handleEnabledChanged,
+                  onDurationChanged: _handleDurationChanged,
+                  onOpenPermission: _openNotificationPolicySettings,
+                ),
+              ],
               Padding(
                 padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 24.h),
                 child: _SaveButton(

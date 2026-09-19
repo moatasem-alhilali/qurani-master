@@ -169,11 +169,6 @@ class _SettingNotificationView extends StatelessWidget {
           'تذكير المسلم الصغير',
           AppIcons.play,
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationPrayerSilentModeReminder,
-          'تذكير وضع الصلاة على iPhone',
-          AppIcons.mute,
-        ),
       ],
     ),
     _NotifGroup(

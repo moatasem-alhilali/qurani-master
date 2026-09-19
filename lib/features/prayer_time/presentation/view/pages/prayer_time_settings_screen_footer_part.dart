@@ -1,37 +1,5 @@
 part of 'prayer_time_settings_screen.dart';
 
-class _IosAlternativeNote extends StatelessWidget {
-  const _IosAlternativeNote();
-
-  @override
-  Widget build(BuildContext context) {
-    final skin = AppSkin.of(context);
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const PrayerSettingsIconChip(icon: AppIcons.notifications),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Text(
-              'سيتم إرسال تنبيه عند كل صلاة قادمة لتذكيرك بتفعيل الصامت '
-              'أو وضع التركيز من النظام.',
-              style: TextStyle(
-                color: skin.inkSoft.withValues(alpha: 0.78),
-                fontSize: 9.5.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.45,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// زرّ الحفظ: التعبئة الذهبية المسموح بها للفعل الرئيسي في الشاشة.
 class _SaveButton extends StatelessWidget {
   const _SaveButton({required this.isSaving, required this.onTap});
