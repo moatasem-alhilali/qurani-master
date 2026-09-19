@@ -304,6 +304,7 @@ class _AyahTafsirInlinePageState extends State<_AyahTafsirInlinePage>
                         padding: EdgeInsets.zero,
                         itemCount: pageAyahs.length,
                         addAutomaticKeepAlives: true,
+                        // ignore: deprecated_member_use
                         cacheExtent: 600,
                         itemBuilder: (context, index) {
                           final ayah = pageAyahs[index];

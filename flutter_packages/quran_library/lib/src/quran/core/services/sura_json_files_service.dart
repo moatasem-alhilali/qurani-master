@@ -15,7 +15,11 @@ class SuraJsonFilesService {
     this.webBaseUrlGitLab,
     this.minZipSizeBytes = 50 * 1024,
     this.logName,
-  });
+  }) {
+    if (!kIsWeb) {
+      unawaited(_verifyFilesInBackground());
+    }
+  }
 
   final String storageKey;
   final String zipName;
@@ -26,12 +30,82 @@ class SuraJsonFilesService {
   final int minZipSizeBytes;
   final String? logName;
 
+  /// مسار Documents المخزَّن (مرة واحدة لكل جلسة) كي يمكن فحص وجود
+  /// ملفات الاستخراج من داخل [isEnabled] المتزامنة.
+  static String? _cachedDocsPath;
+
+  /// نتيجة فحص وجود ملفات لكل مجلد (dirName) في هذه الجلسة.
+  static final Map<String, bool> _filesVerifiedByDir = {};
+
   final Map<int, String> _filePathBySurah = <int, String>{};
   bool _indexReady = false;
 
-  bool isEnabled() => GetStorage().read(storageKey) == true;
+  static Future<void> _warmDocsPath() async {
+    if (_cachedDocsPath != null) {
+      return;
+    }
+    try {
+      _cachedDocsPath = (await getApplicationDocumentsDirectory()).path;
+    } catch (_) {
+      // المسار يُخزَّن لاحقًا عند أول عملية تنزيل/فهرسة.
+    }
+  }
 
-  void markEnabled() => GetStorage().write(storageKey, true);
+  /// فحص خلفي لمرة واحدة في الجلسة: لو كان العلم مفعلاً وملفات الاستخراج
+  /// محذوفة (تنظيف مساحة، ترحيل بيانات، ...) يُكتب false في العلم كي
+  /// يمكن إعادة التنزيل بدل تعطّل الميزة بصمت.
+  Future<void> _verifyFilesInBackground() async {
+    await _warmDocsPath();
+    final docsPath = _cachedDocsPath;
+    if (docsPath == null) return;
+    if (_filesVerifiedByDir.containsKey(dirName)) return;
+    if (GetStorage().read(storageKey) != true) return;
+
+    final present = await _dirHasFiles(docsPath);
+    if (!present) {
+      GetStorage().write(storageKey, false);
+      log(
+        'SuraJsonFilesService: files missing for "$dirName" — flag cleared',
+        name: 'SuraJsonFilesService',
+      );
+    }
+    _filesVerifiedByDir[dirName] = present;
+  }
+
+  /// لإعادة ضبط حالة الفحص بين الاختبارات.
+  @visibleForTesting
+  static void debugResetVerificationState() {
+    _filesVerifiedByDir.clear();
+  }
+
+  bool isEnabled() {
+    final enabled = GetStorage().read(storageKey) == true;
+    if (!enabled) return false;
+    if (kIsWeb) return true;
+
+    // نتيجة الفحص الخلفي إن جهزت؛ وإلا نثق بالعلم مؤقتًا.
+    return _filesVerifiedByDir[dirName] ?? true;
+  }
+
+  /// هل مجلد الاستخراج `<Documents>/<dirName>` يحوي ملفات فعلًا؟
+  Future<bool> _dirHasFiles(String docsPath) async {
+    try {
+      final dir = Directory('$docsPath/$dirName');
+      if (!await dir.exists()) return false;
+      await for (final _ in dir.list(recursive: true, followLinks: false)) {
+        return true; // يكفي وجود أول ملف.
+      }
+      return false;
+    } catch (_) {
+      return true; // فشل فحص — لا نُبطِل العلم على أساسه.
+    }
+  }
+
+  void markEnabled() {
+    GetStorage().write(storageKey, true);
+    // التنزيل نجح للتو — الملفات موجودة قطعًا في هذه الجلسة.
+    _filesVerifiedByDir[dirName] = true;
+  }
 
   Future<void> downloadAndEnable({
     required ZipDownloadProgressCallback onProgress,
@@ -45,6 +119,7 @@ class SuraJsonFilesService {
     }
 
     final baseDir = await getApplicationDocumentsDirectory();
+    _cachedDocsPath ??= baseDir.path;
     final destDir = Directory('${baseDir.path}/$dirName');
     final zipFile = File('${baseDir.path}/$zipName');
 

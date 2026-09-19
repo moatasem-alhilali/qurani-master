@@ -78,18 +78,14 @@ class SearchTabStyle {
           const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       searchSuffixIconData: Icons.search,
       searchSuffixIconAlpha: 0.6,
-      surahChipRowHeight: 64.0,
-      surahChipRadius: 8.0,
+      // بطاقة السورة: دائرة رقم (40) + اسم وعدد آيات، بهامش 6 من الأعلى والأسفل.
+      surahChipRowHeight: 68.0,
+      surahChipRadius: 12.0,
       surahChipPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       surahChipMargin:
-          const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10.0),
+          const EdgeInsets.symmetric(horizontal: 4.0, vertical: 6.0),
       surahChipBgColor: null, // null => accentColor
-      surahChipTextStyle: const TextStyle(
-        color: Colors.white,
-        fontFamily: 'surahName',
-        fontSize: 28,
-        package: 'quran_library',
-      ),
+      surahChipTextStyle: null, // null => اسم السورة بلون النص وخطّ الواجهة
       resultsDividerColor: Colors.grey,
       resultsDividerThickness: 1.0,
       subtitleTextAlpha: 0.8,

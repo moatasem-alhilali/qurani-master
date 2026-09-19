@@ -13,6 +13,19 @@ class QuranFontsService {
 
   static const int _totalPages = 604;
 
+  /// إصدار كاش الخطوط المفكوكة على القرص.
+  ///
+  /// يُرفع هذا الرقم عند أي تحديث لملفات الخطوط في assets كي تُبطَل
+  /// النسخ المفكوكة القديمة لدى المستخدمين القدامى وتُعاد من الـ assets
+  /// تلقائيًا (فحص الوجود وحده لا يكشف تغيّر محتوى الخط).
+  ///
+  /// بدأ من 2 لأن 4.2.0 حدّثت خطوط 80+ صفحة بينما كاش الإصدارات
+  /// السابقة بلا ملف إصدار أصلاً — فيُفرَّغ عند أول ترقية للنسخة هذه.
+  static const int _cacheVersion = 2;
+
+  /// اسم ملف العلم الذي يُخزَّن فيه رقم إصدار الكاش داخل مجلد الخطوط.
+  static const String _cacheVersionFileName = 'cache_version.txt';
+
   /// الصفحات المحمّلة في هذا التشغيل (1-based).
   static final Set<int> _loadedPages = {};
 
@@ -70,6 +83,7 @@ class QuranFontsService {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       final dir = Directory('${appDir.path}/quran_fonts_cache');
+      await _validateCacheVersion(dir);
       if (!dir.existsSync()) {
         await dir.create(recursive: true);
       }
@@ -80,6 +94,42 @@ class QuranFontsService {
       _cacheDir = null;
     }
     return _cacheDir;
+  }
+
+  /// مطابقة إصدار الكاش المخزّن مع [_cacheVersion] قبل أي استخدام:
+  /// - تطابق: لا شيء يُفعل.
+  /// - غياب الملف أو اختلاف الرقم (تحديث خطوط أو تثبيت قديم): يُفرَّغ
+  ///   المجلد كي تُعاد الخطوط من الـ assets المحدثة عند أول طلب.
+  /// ثم يُضمن وجود المجلد ويُكتب رقم الإصدار الحالي.
+  static Future<void> _validateCacheVersion(Directory cacheDir) async {
+    final versionFile = File('${cacheDir.path}/$_cacheVersionFileName');
+    if (await cacheDir.exists()) {
+      final stored = await _readStoredCacheVersion(versionFile);
+      if (stored == _cacheVersion) return;
+      log(
+        'QuranFontsService: font cache version mismatch '
+        '($stored != $_cacheVersion) — clearing cache',
+        name: 'QuranFontsService',
+      );
+      await cacheDir.delete(recursive: true);
+    }
+    await cacheDir.create(recursive: true);
+    try {
+      await versionFile.writeAsString('$_cacheVersion', flush: true);
+    } catch (e) {
+      log('QuranFontsService: failed to write cache version: $e',
+          name: 'QuranFontsService');
+    }
+  }
+
+  /// يقرأ رقم الإصدار المخزّن من ملف العلم؛ null عند الغياب أو الفساد.
+  static Future<int?> _readStoredCacheVersion(File versionFile) async {
+    try {
+      if (!await versionFile.exists()) return null;
+      return int.tryParse((await versionFile.readAsString()).trim());
+    } catch (_) {
+      return null;
+    }
   }
 
   // ---------------------------------------------------------------------------

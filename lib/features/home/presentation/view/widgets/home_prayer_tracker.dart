@@ -334,7 +334,10 @@ class _TrackerButtonState extends State<_TrackerButton>
           animation: _controller,
           builder: (context, _) {
             final t = _fill.value;
-            final textColor = Color.lerp(idleText, AppColors.brandIvory, t)!;
+            // على الذهب: البنّي الداكن نفسه في زرّ التطبيق الرئيسي. العاجي كان
+            // يكاد لا يُقرأ فوق الذهبي (تباين ≈2:1).
+            final textColor =
+                Color.lerp(idleText, AppColors.brandBrownDeep, t)!;
 
             return Transform.scale(
               scale: widget.done || _controller.isAnimating ? _pop.value : 1.0,
@@ -373,7 +376,7 @@ class _TrackerButtonState extends State<_TrackerButton>
                                   painter: _CheckPainter(
                                     progress:
                                         ((t - 0.35) / 0.65).clamp(0.0, 1.0),
-                                    color: AppColors.brandIvory,
+                                    color: AppColors.brandBrownDeep,
                                   ),
                                 ),
                               ),

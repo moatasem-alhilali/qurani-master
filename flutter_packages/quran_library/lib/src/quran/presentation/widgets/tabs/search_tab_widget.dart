@@ -133,7 +133,7 @@ class _SearchTabState extends State<_SearchTab> {
                 return const SizedBox.shrink();
               }
               return SizedBox(
-                height: s.surahChipRowHeight ?? 64,
+                height: s.surahChipRowHeight ?? 68,
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   itemCount: quranCtrl.searchResultSurahs.length,
@@ -157,29 +157,18 @@ class _SearchTabState extends State<_SearchTab> {
                             rl.requestFocus();
                           }
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: s.surahChipPadding ??
-                              const EdgeInsets.symmetric(horizontal: 8.0),
+                        // بطاقة سورة واضحة: رقمها في دائرة + اسمها + عدد آياتها.
+                        // كانت رقمًا وحده بخطّ «surahName» فلا يُفهم أنه سورة.
+                        child: _SurahResultChip(
+                          surah: search,
+                          accentColor: s.surahChipBgColor ?? accentColor,
+                          textColor: textColor,
+                          radius: (s.surahChipRadius ?? 12).toDouble(),
                           margin: s.surahChipMargin ??
                               const EdgeInsets.symmetric(
-                                  horizontal: 4.0, vertical: 10.0),
-                          decoration: BoxDecoration(
-                            color: (s.surahChipBgColor ?? accentColor),
-                            borderRadius: BorderRadius.all(Radius.circular(
-                                (s.surahChipRadius ?? 8).toDouble())),
-                          ),
-                          child: Text(
-                            search.surahNumber.toString(),
-                            style: s.surahChipTextStyle ??
-                                const TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'surahName',
-                                  fontSize: 28,
-                                  package: 'quran_library',
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
+                                  horizontal: 4.0, vertical: 6.0),
+                          nameStyle: s.surahChipTextStyle,
+                          languageCode: widget.languageCode,
                         ),
                       ),
                     );
@@ -256,6 +245,94 @@ class _SearchTabState extends State<_SearchTab> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SurahResultChip extends StatelessWidget {
+  const _SurahResultChip({
+    required this.surah,
+    required this.accentColor,
+    required this.textColor,
+    required this.radius,
+    required this.margin,
+    required this.languageCode,
+    this.nameStyle,
+  });
+
+  final SurahModel surah;
+  final Color accentColor;
+  final Color textColor;
+  final double radius;
+  final EdgeInsetsGeometry margin;
+  final String languageCode;
+  final TextStyle? nameStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final number = surah.surahNumber
+        .toString()
+        .convertNumbersAccordingToLang(languageCode: languageCode);
+    final ayahCount = surah.ayahs.length;
+
+    return Container(
+      margin: margin,
+      padding: const EdgeInsetsDirectional.fromSTEB(6, 6, 14, 6),
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(color: accentColor.withValues(alpha: 0.55)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: accentColor,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              number,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                height: 1,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                surah.arabicName,
+                maxLines: 1,
+                style: nameStyle ??
+                    TextStyle(
+                      color: textColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+              ),
+              if (ayahCount > 0)
+                Text(
+                  'آياتها ${ayahCount.toString().convertNumbersAccordingToLang(languageCode: languageCode)}',
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.65),
+                    fontSize: 11,
+                    height: 1.2,
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,12 @@
+# Changelog
+
+## 4.3.0
+
+* **FIX:**
+  * `ZipDownloadService` now deletes the downloaded ZIP archive after successful extraction — previously `word_qeraat.zip`, `word_tasreef.zip`, `word_eerab.zip`, `meaning-word-oldv.json.zip`, and `tajweed_aya.zip` lingered in Documents next to their extracted content (~9 MB wasted).
+  * Word-info and Tajweed download flags are now verified against the extracted files on disk (once per session). If the files are missing while the flag is set (partial cleanup, migration, …), the flag is cleared automatically so the feature can be re-downloaded instead of silently breaking.
+  * QCF4 font disk cache is now versioned via `cache_version.txt` (version 2). Users upgrading from 4.2.x get the updated Tajweed fonts — the old file-existence check never re-extracted updated font assets. Future font asset updates must bump `_cacheVersion` in `QuranFontsService`.
+
 ## 4.2.1
 
 * **ADD:**

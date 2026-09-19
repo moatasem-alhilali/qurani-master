@@ -166,6 +166,17 @@ class ZipDownloadService {
           'All mirrors failed to provide a valid ZIP or extraction failed');
     }
 
+    // الملفات المستخرجة أصبحت هي المصدر الدائم — نحذف الأرشيف المضغوط
+    // كي لا يبقى (~9MB إجمالًا عبر word_qeraat/word_tasreef/word_eerab/
+    // meaning-word-oldv/tajweed_aya) بجوار محتواه المفكوك في Documents.
+    try {
+      if (await zipFile.exists()) {
+        await zipFile.delete();
+      }
+    } catch (e) {
+      log('Failed to delete ZIP after extraction: $e', name: logName);
+    }
+
     onProgress(100.0);
   }
 }

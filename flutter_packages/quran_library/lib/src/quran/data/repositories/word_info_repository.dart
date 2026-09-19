@@ -1,9 +1,21 @@
 part of '/quran.dart';
 
 class WordInfoRepository {
-  WordInfoRepository();
+  WordInfoRepository() {
+    if (!kIsWeb) {
+      unawaited(_verifyDownloadedKindsInBackground());
+    }
+  }
 
   static const _downloadedKindsKey = 'word_info_downloaded_kinds';
+
+  /// مسار Documents المخزَّن (مرة واحدة لكل جلسة) كي يمكن فحص وجود
+  /// ملفات الاستخراج من داخل الدوال المتزامنة مثل [isKindDownloaded].
+  static String? _baseDirPath;
+
+  /// نتيجة فحص وجود ملفات كل نوع في هذه الجلسة (تفادي مسح القرص عند
+  /// كل استدعاء).
+  static final Map<WordInfoKind, bool> _filesVerifiedByKind = {};
 
   static const String _glPkg =
       'https://gitlab.com/api/v4/projects/haozo89%2Fislamic_database/packages/generic';
@@ -83,12 +95,64 @@ class WordInfoRepository {
   final Map<WordInfoKind, Future<void>> _webBundledLoadByKind = {};
 
   bool isKindDownloaded(WordInfoKind kind) {
-    if (kIsWeb) {
-      // في الويب: نعتبرها "مفعلة" بعد ضغط المستخدم على تحميل.
-      return _downloadedKinds().contains(kind.name);
-    }
+    final flagged = _downloadedKinds().contains(kind.name);
+    if (!flagged) return false;
+    // في الويب: نعتبرها "مفعلة" بعد ضغط المستخدم على تحميل.
+    if (kIsWeb) return true;
 
-    return _downloadedKinds().contains(kind.name);
+    // نتيجة الفحص الخلفي إن جهزت؛ وإلا نثق بالعلم مؤقتًا.
+    return _filesVerifiedByKind[kind] ?? true;
+  }
+
+  /// فحص خلفي لمرة واحدة في الجلسة: كل نوع عليه علم تنزيل تُتحقق ملفات
+  /// استخراجه من القرص. لو حُذفت الملفات دون العلم (تنظيف مساحة، ترحيل
+  /// بيانات، ...) يُمسح العلم كي يستطيع المستخدم إعادة التنزيل بدل
+  /// تعطّل الميزة بصمت.
+  Future<void> _verifyDownloadedKindsInBackground() async {
+    if (_baseDirPath == null) {
+      try {
+        await _baseDir();
+      } catch (_) {
+        return; // المسار غير متاح — يُعاد الفحص عند إنشاء مستودع لاحق.
+      }
+    }
+    for (final kind in WordInfoKind.values) {
+      if (_filesVerifiedByKind.containsKey(kind)) continue;
+      if (!_downloadedKinds().contains(kind.name)) continue;
+      final present = await _dirHasAnyFile(kind);
+      if (!present) _removeKindDownloaded(kind);
+      _filesVerifiedByKind[kind] = present;
+    }
+  }
+
+  /// هل يحوي مجلد استخراج النوع أي ملف؟
+  static Future<bool> _dirHasAnyFile(WordInfoKind kind) async {
+    final config = _configs[kind]!;
+    final dir = Directory('$_baseDirPath/${config.dirName}');
+    try {
+      if (!await dir.exists()) return false;
+      await for (final _ in dir.list(recursive: true, followLinks: false)) {
+        return true; // يكفي وجود أول ملف.
+      }
+      return false;
+    } catch (_) {
+      return true; // فشل فحص — لا نُبطِل العلم على أساسه.
+    }
+  }
+
+  /// يعيد مجلد Documents مع تخزين مساره للفحوص المتزامنة اللاحقة.
+  static Future<Directory> _baseDir() async {
+    final cached = _baseDirPath;
+    if (cached != null) return Directory(cached);
+    final dir = await getApplicationDocumentsDirectory();
+    _baseDirPath = dir.path;
+    return dir;
+  }
+
+  /// لإعادة ضبط حالة الفحص بين الاختبارات.
+  @visibleForTesting
+  static void debugResetVerificationState() {
+    _filesVerifiedByKind.clear();
   }
 
   Future<void> downloadKind({
@@ -297,7 +361,7 @@ class WordInfoRepository {
       return;
     }
 
-    final baseDir = await getApplicationDocumentsDirectory();
+    final baseDir = await _baseDir();
     final destDir = Directory('${baseDir.path}/${config.dirName}');
     final zipFile = File('${baseDir.path}/${config.zipName}');
 
@@ -402,7 +466,7 @@ class WordInfoRepository {
 
   Future<Directory> _getKindDir(WordInfoKind kind) async {
     final config = _configs[kind]!;
-    final baseDir = await getApplicationDocumentsDirectory();
+    final baseDir = await _baseDir();
     return Directory('${baseDir.path}/${config.dirName}');
   }
 
@@ -436,6 +500,14 @@ class WordInfoRepository {
   void _markKindDownloaded(WordInfoKind kind) {
     final set = _downloadedKinds();
     set.add(kind.name);
+    GetStorage().write(_downloadedKindsKey, set.toList());
+    // التنزيل نجح للتو — الملفات موجودة قطعًا في هذه الجلسة.
+    _filesVerifiedByKind[kind] = true;
+  }
+
+  void _removeKindDownloaded(WordInfoKind kind) {
+    final set = _downloadedKinds();
+    set.remove(kind.name);
     GetStorage().write(_downloadedKindsKey, set.toList());
   }
 }

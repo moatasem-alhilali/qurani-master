@@ -73,6 +73,7 @@ class AutoScrollPageView extends StatelessWidget {
       child: ListView.builder(
         controller: autoScrollCtrl.scrollController,
         physics: const ClampingScrollPhysics(),
+        // ignore: deprecated_member_use
         cacheExtent: screenHeight * 3,
         itemCount: pageCount,
         itemBuilder: (ctx, index) {
@@ -90,7 +91,7 @@ class AutoScrollPageView extends StatelessWidget {
                 showAyahBookmarkedIcon: showAyahBookmarkedIcon,
                 onAyahLongPress: onAyahLongPress,
                 bookmarksColor: bookmarksColor,
-                                  customBookmarksColor: customBookmarksColor,
+                customBookmarksColor: customBookmarksColor,
                 surahNameStyle: surahNameStyle,
                 bannerStyle: bannerStyle,
                 basmalaStyle: basmalaStyle,
