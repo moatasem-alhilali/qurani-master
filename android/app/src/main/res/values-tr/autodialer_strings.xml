@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_channel_name">Tamaneena - Sabah Arkadaşı</string>
+    <string name="ad_channel_description">Otomatik arama hizmeti bildirimleri</string>
+    <string name="ad_notification_title">Otomatik arama</string>
+    <string name="ad_session_starting">Arama oturumu başlatılıyor...</string>
+    <string name="ad_calling_number">%1$s aranıyor</string>
+    <string name="ad_answered_auto_hangup">Cevaplandı, arama %1$d saniye içinde otomatik sonlandırılacak</string>
+    <string name="ad_cycle_completed">Mevcut tur tamamlandı</string>
+    <string name="ad_call_answered">Arama cevaplandı</string>
+    <string name="ad_reason_invalid_number">Telefon numarası geçersiz</string>
+    <string name="ad_reason_call_permission_disabled">Arama izni etkin değil</string>
+    <string name="ad_reason_default_dialer_required">Uygulamanın varsayılan arama uygulaması yapılması gerekebilir</string>
+    <string name="ad_reason_background_blocked">Sistem, aramanın arka planda başlatılmasını engelledi</string>
+    <string name="ad_reason_dialer_screen_failed">Arama ekranı açılamadı</string>
+    <string name="ad_reason_call_failed_with_error">Arama başlatılamadı: %1$s</string>
+    <string name="ad_reason_call_failed">Arama cihazdan başlatılamadı</string>
+</resources>

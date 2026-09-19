@@ -3,7 +3,11 @@ import 'package:quran_app/core/util/toast_manager.dart';
 import 'package:quran_app/l10n/l10n.dart';
 
 class ServicesLocation {
-  static Future<Position> determinePosition() async {
+  /// [requestPermission]: `false` في مسارات الخلفية والإقلاع — لا نافذة إذن
+  /// لم يطلبها المستخدم.
+  static Future<Position> determinePosition({
+    bool requestPermission = true,
+  }) async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -16,7 +20,7 @@ class ServicesLocation {
     }
 
     permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
+    if (permission == LocationPermission.denied && requestPermission) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         ToastServes.showToast(

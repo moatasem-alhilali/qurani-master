@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_channel_name">طمأنينة - فجر کے ساتھی</string>
+    <string name="ad_channel_description">خودکار کال سروس کی اطلاعات</string>
+    <string name="ad_notification_title">خودکار کال</string>
+    <string name="ad_session_starting">کال سیشن شروع ہو رہا ہے...</string>
+    <string name="ad_calling_number">%1$s کو کال کی جا رہی ہے</string>
+    <string name="ad_answered_auto_hangup">جواب دیا گیا، کال %1$d سیکنڈ میں خودبخود ختم ہو جائے گی</string>
+    <string name="ad_cycle_completed">موجودہ دور مکمل ہو گیا</string>
+    <string name="ad_call_answered">کال کا جواب دے دیا گیا</string>
+    <string name="ad_reason_invalid_number">فون نمبر درست نہیں</string>
+    <string name="ad_reason_call_permission_disabled">کال کرنے کی اجازت فعال نہیں</string>
+    <string name="ad_reason_default_dialer_required">ایپ کو ڈیفالٹ کالنگ ایپ بنانا پڑ سکتا ہے</string>
+    <string name="ad_reason_background_blocked">سسٹم نے پس منظر سے کال شروع کرنے سے روک دیا</string>
+    <string name="ad_reason_dialer_screen_failed">کال اسکرین نہیں کھل سکی</string>
+    <string name="ad_reason_call_failed_with_error">کال شروع نہیں ہو سکی: %1$s</string>
+    <string name="ad_reason_call_failed">ڈیوائس سے کال شروع نہیں ہو سکی</string>
+</resources>

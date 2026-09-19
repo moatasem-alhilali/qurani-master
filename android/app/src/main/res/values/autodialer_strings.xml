@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fajr companion auto-dialer (native Kotlin). Default = Arabic (the app's source language).
+     Kotlin resolves these through Context.appLocalized() so they follow the in-app language. -->
+<resources>
+    <string name="ad_channel_name">طمأنينة - صحبة الفجر</string>
+    <string name="ad_channel_description">إشعارات خدمة الاتصال التلقائي</string>
+    <string name="ad_notification_title">الاتصال التلقائي</string>
+    <string name="ad_session_starting">جاري بدء جلسة الاتصال...</string>
+    <string name="ad_calling_number">جاري الاتصال بـ %1$s</string>
+    <string name="ad_answered_auto_hangup">تم الرد، سيتم الإنهاء تلقائياً خلال %1$dث</string>
+    <string name="ad_cycle_completed">اكتملت الدورة الحالية</string>
+    <string name="ad_call_answered">تم الرد على المكالمة</string>
+    <string name="ad_reason_invalid_number">رقم الهاتف غير صالح</string>
+    <string name="ad_reason_call_permission_disabled">صلاحية الاتصال غير مفعلة</string>
+    <string name="ad_reason_default_dialer_required">قد يحتاج التطبيق إلى تعيينه كتطبيق الاتصال الافتراضي</string>
+    <string name="ad_reason_background_blocked">النظام منع بدء المكالمة من الخلفية</string>
+    <string name="ad_reason_dialer_screen_failed">تعذر فتح شاشة الاتصال</string>
+    <string name="ad_reason_call_failed_with_error">تعذر بدء المكالمة: %1$s</string>
+    <string name="ad_reason_call_failed">تعذر بدء المكالمة من الجهاز</string>
+</resources>

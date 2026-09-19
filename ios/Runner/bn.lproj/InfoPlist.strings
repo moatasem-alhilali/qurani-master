@@ -1,0 +1,4 @@
+/* Permission prompts (Info.plist usage descriptions). */
+
+"NSLocationWhenInUseUsageDescription" = "কিবলার দিক নির্ধারণ ও নামাজের সময় সঠিকভাবে হিসাব করতে অ্যাপ ব্যবহারের সময় আপনার লোকেশন প্রয়োজন।";
+"NSContactsUsageDescription" = "ফজরের সাথীতে হাতে না লিখেই সহজে নম্বর বাছাই করতে আমরা আপনার কন্টাক্টস ব্যবহার করি।";

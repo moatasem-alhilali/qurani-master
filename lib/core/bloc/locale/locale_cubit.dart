@@ -10,6 +10,7 @@ import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/features/daily_wird/data/repo/daily_wird_repository.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_sync.dart';
 import 'package:quran_app/l10n/l10n.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class LocaleState extends Equatable {
   const LocaleState({required this.language, required this.confirmed});
@@ -63,7 +64,11 @@ class LocaleCubit extends Cubit<LocaleState> {
       return LocaleState(language: saved, confirmed: true);
     }
     return LocaleState(
-      language: AppLanguage.suggestFor(PlatformDispatcher.instance.locales),
+      language: AppLanguage.suggestFor(
+        PlatformDispatcher.instance.locales,
+        // TimeZoneService يضبطه قبل runApp من اسم منطقة الجهاز.
+        timeZoneName: tz.local.name,
+      ),
       confirmed: false,
     );
   }

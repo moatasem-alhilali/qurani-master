@@ -178,7 +178,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count ثانیه',
-      one: '$count ثانیه',
+      one: 'یک ثانیه',
     );
     return '$_temp0';
   }
@@ -284,7 +284,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'هر $count دقیقه',
-      one: 'هر $count دقیقه',
+      one: 'هر دقیقه',
     );
     return '$_temp0';
   }
@@ -459,7 +459,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'امروز $count بار ذکر گفتید',
-      one: 'امروز $count بار ذکر گفتید',
+      one: 'امروز یک بار ذکر گفتید',
     );
     return '$_temp0';
   }
@@ -634,7 +634,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count متن',
-      one: '$count متن',
+      one: 'یک متن',
     );
     return '$_temp0';
   }
@@ -645,7 +645,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count پانوشت',
-      one: '$count پانوشت',
+      one: 'یک پانوشت',
     );
     return '$_temp0';
   }
@@ -830,7 +830,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count روز',
-      one: '$count روز',
+      one: 'یک روز',
     );
     return '$_temp0';
   }
@@ -841,7 +841,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count جلسهٔ بارگیری‌شده',
-      one: '$count جلسهٔ بارگیری‌شده',
+      one: 'یک جلسهٔ بارگیری‌شده',
     );
     return '$_temp0';
   }
@@ -2155,7 +2155,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count اعلان',
-      one: '$count اعلان',
+      one: 'یک اعلان',
       zero: 'اعلانی نیست',
     );
     return '$_temp0';
@@ -2167,7 +2167,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count اعلان جدید',
-      one: '$count اعلان جدید',
+      one: 'یک اعلان جدید',
       zero: 'اعلان جدیدی نیست',
     );
     return '$_temp0';
@@ -2265,6 +2265,79 @@ class L10nFa extends L10n {
   @override
   String get languageReligiousTextNote =>
       'قرآن کریم، اذکار و دعاها با متن عربی اصلی خود نمایش داده می‌شوند.';
+
+  @override
+  String get onboardingNotificationsTitle => 'هیچ نمازی از دستت نرود';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'اجازهٔ اعلان‌ها را بدهید تا اذان به‌موقع برسد و برنامه اذکار و ورد روزانه‌تان را یادآوری کند.';
+
+  @override
+  String get onboardingNotificationsPointAthan =>
+      'اذان با فرارسیدن هر وقت نماز';
+
+  @override
+  String get onboardingNotificationsPointAdhkar => 'اذکار صبح و شامگاه سر وقت';
+
+  @override
+  String get onboardingNotificationsPointWird => 'یادآوری آرام ورد روزانه‌تان';
+
+  @override
+  String get onboardingNotificationsAllow => 'اجازهٔ اعلان‌ها';
+
+  @override
+  String get onboardingLocationTitle => 'اوقات دقیق برای شهر شما';
+
+  @override
+  String get onboardingLocationBody =>
+      'از موقعیت شما برای محاسبهٔ دقیق اوقات نماز و جهت قبله در جایی که هستید استفاده می‌کنیم.';
+
+  @override
+  String get onboardingLocationPointTimes => 'اوقات دقیقاً برای مکان شما';
+
+  @override
+  String get onboardingLocationPointTravel => 'به‌روزرسانی خودکار هنگام سفر';
+
+  @override
+  String get onboardingLocationPointQibla =>
+      'جهت قبله از همان جایی که ایستاده‌اید';
+
+  @override
+  String get onboardingLocationAllow => 'اجازهٔ موقعیت مکانی';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'نمی‌خواهید موقعیتتان را به اشتراک بگذارید؟ بعداً شهرتان را از صفحهٔ اوقات دستی انتخاب کنید.';
+
+  @override
+  String get onboardingChangeLater =>
+      'می‌توانید بعداً این را از تنظیمات دستگاهتان تغییر دهید.';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'مرحلهٔ $current از $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'اعلان‌ها خاموش است';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'تا فعالشان نکنید، اذان و یادآوری اذکار به شما نمی‌رسد.';
+
+  @override
+  String get homeNoticeNotificationsAction => 'فعال‌سازی';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'ممکن است اذان با تأخیر برسد';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'به برنامه اجازهٔ تنظیم هشدار بدهید تا اذان دقیقاً سر وقت برسد.';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'اجازه';
 
   @override
   String get outreachTitle => 'همراه نماز صبح';
@@ -2474,7 +2547,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count روز دیگر',
-      one: '$count روز دیگر',
+      one: 'یک روز دیگر',
     );
     return '$_temp0';
   }
@@ -2674,7 +2747,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count شماره',
-      one: '$count شماره',
+      one: 'یک شماره',
       zero: 'بدون شماره',
     );
     return '$_temp0';
@@ -3432,7 +3505,7 @@ class L10nFa extends L10n {
       days,
       locale: localeName,
       other: '$days روز پیاپی',
-      one: '$days روز پیاپی',
+      one: 'یک روز',
     );
     return '$_temp0';
   }
@@ -3663,7 +3736,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count وقت دستی تنظیم شده',
-      one: '$count وقت دستی تنظیم شده',
+      one: 'یک وقت دستی تنظیم شده',
     );
     return '$_temp0';
   }
@@ -4058,7 +4131,7 @@ class L10nFa extends L10n {
       minutes,
       locale: localeName,
       other: '$minutes دقیقهٔ دیگر',
-      one: '$minutes دقیقهٔ دیگر',
+      one: 'یک دقیقهٔ دیگر',
     );
     return '$prayer $_temp0';
   }
@@ -4069,7 +4142,7 @@ class L10nFa extends L10n {
       hours,
       locale: localeName,
       other: '$hours ساعت دیگر',
-      one: '$hours ساعت دیگر',
+      one: 'یک ساعت دیگر',
     );
     return '$prayer $_temp0';
   }
@@ -4223,7 +4296,7 @@ class L10nFa extends L10n {
       days,
       locale: localeName,
       other: '$days روز',
-      one: '$days روز',
+      one: 'یک روز',
     );
     return 'اوقات $_temp0 را با موقعیت و تنظیمات فعلی شما محاسبه می‌کند';
   }
@@ -4234,7 +4307,7 @@ class L10nFa extends L10n {
       days,
       locale: localeName,
       other: '$days روز',
-      one: '$days روز',
+      one: 'یک روز',
     );
     return 'ویجت‌ها $_temp0 بدون باز کردن برنامه کار می‌کنند و خودکار در پس‌زمینه تازه می‌شوند. با تغییر موقعیت یا روش محاسبه، خودشان به‌روز می‌شوند.';
   }
@@ -4727,7 +4800,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'هر $count دقیقه',
-      one: 'هر $count دقیقه',
+      one: 'هر دقیقه',
     );
     return '$_temp0';
   }
@@ -4749,7 +4822,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'زمان‌بندی سفارشی · $count زمان',
-      one: 'زمان‌بندی سفارشی · $count زمان',
+      one: 'زمان‌بندی سفارشی · یک زمان',
       zero: 'زمان‌بندی سفارشی · بدون زمان',
     );
     return '$_temp0';
@@ -4966,7 +5039,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count زمان سفارشی',
-      one: '$count زمان سفارشی',
+      one: 'یک زمان سفارشی',
       zero: 'زمان سفارشی ندارد',
     );
     return '$_temp0';
@@ -5218,7 +5291,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'و $count مورد دیگر',
-      one: 'و $count مورد دیگر',
+      one: 'و یک دانلود دیگر',
     );
     return '$_temp0';
   }
@@ -5279,7 +5352,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: 'پیوستگی: $count روز',
-      one: 'پیوستگی: $count روز',
+      one: 'پیوستگی: یک روز',
       zero: 'پیوستگی: ۰ روز',
     );
     return '$_temp0';
@@ -5637,7 +5710,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count بار',
-      one: '$count بار',
+      one: 'یک بار',
     );
     return '$_temp0';
   }
@@ -5812,7 +5885,7 @@ class L10nFa extends L10n {
       count,
       locale: localeName,
       other: '$count دقیقه',
-      one: '$count دقیقه',
+      one: 'یک دقیقه',
     );
     return '$_temp0';
   }

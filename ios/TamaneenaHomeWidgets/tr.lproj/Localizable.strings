@@ -1,0 +1,9 @@
+/* Widget gallery names and descriptions.
+   Keys are the Arabic literals passed to configurationDisplayName/description. */
+
+"الصلاة القادمة" = "Sıradaki namaz";
+"اسم الصلاة القادمة ووقتها مع عدّ تنازلي حيّ." = "Sıradaki namazın adı ve vakti, canlı geri sayımla.";
+"مواقيت اليوم" = "Bugünün vakitleri";
+"مواقيت الصلوات مع التاريخ الهجري والمدينة." = "Hicri tarih ve şehirle birlikte namaz vakitleri.";
+"آية اليوم" = "Günün ayeti";
+"آية قصيرة تتجدّد كل يوم." = "Her gün yenilenen kısa bir ayet.";

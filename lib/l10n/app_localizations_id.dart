@@ -2256,6 +2256,83 @@ class L10nId extends L10n {
       'Al-Qur\'an, zikir, dan doa tetap ditampilkan dalam teks Arab aslinya.';
 
   @override
+  String get onboardingNotificationsTitle => 'Jangan lewatkan salat';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'Izinkan notifikasi agar azan sampai tepat waktu dan aplikasi mengingatkan zikir serta wirid harian Anda.';
+
+  @override
+  String get onboardingNotificationsPointAthan =>
+      'Azan setiap masuk waktu salat';
+
+  @override
+  String get onboardingNotificationsPointAdhkar =>
+      'Zikir pagi dan petang tepat waktu';
+
+  @override
+  String get onboardingNotificationsPointWird =>
+      'Pengingat lembut untuk wirid harian Anda';
+
+  @override
+  String get onboardingNotificationsAllow => 'Izinkan notifikasi';
+
+  @override
+  String get onboardingLocationTitle => 'Waktu salat akurat untuk kota Anda';
+
+  @override
+  String get onboardingLocationBody =>
+      'Kami menggunakan lokasi Anda untuk menghitung waktu salat dan arah kiblat secara akurat di tempat Anda berada.';
+
+  @override
+  String get onboardingLocationPointTimes =>
+      'Waktu dihitung tepat untuk lokasi Anda';
+
+  @override
+  String get onboardingLocationPointTravel =>
+      'Diperbarui otomatis saat bepergian';
+
+  @override
+  String get onboardingLocationPointQibla =>
+      'Arah kiblat dari tempat Anda berdiri';
+
+  @override
+  String get onboardingLocationAllow => 'Izinkan lokasi';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'Tidak ingin berbagi lokasi? Pilih kota Anda secara manual nanti dari halaman waktu salat.';
+
+  @override
+  String get onboardingChangeLater =>
+      'Anda dapat mengubahnya nanti di pengaturan perangkat.';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'Langkah $current dari $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'Notifikasi nonaktif';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'Azan dan pengingat zikir tidak akan sampai sampai Anda mengaktifkannya.';
+
+  @override
+  String get homeNoticeNotificationsAction => 'Aktifkan';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'Azan mungkin terlambat';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'Izinkan aplikasi menyetel alarm agar azan tiba tepat waktu.';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'Izinkan';
+
+  @override
   String get outreachTitle => 'Teman Subuh';
 
   @override

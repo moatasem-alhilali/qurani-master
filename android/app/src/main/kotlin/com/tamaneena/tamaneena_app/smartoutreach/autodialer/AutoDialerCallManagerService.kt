@@ -22,6 +22,8 @@ import android.telecom.TelecomManager
 import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import com.tamaneena.tamaneena_app.MainActivity
+import com.tamaneena.tamaneena_app.R
+import com.tamaneena.tamaneena_app.l10n.appLocalized
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,6 +45,21 @@ class AutoDialerCallManagerService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var isRinging = false
     private var isAnswered = false
+
+    /**
+     * نصوص الإشعارات وأسباب الفشل (المحفوظة في سجل المكالمات ويعرضها Flutter كما هي)
+     * بلغة التطبيق المختارة لا لغة الجهاز. يُحدَّث مع كل بدء جلسة.
+     */
+    private var localizedContext: Context? = null
+
+    private fun text(resId: Int, vararg formatArgs: Any): String {
+        val context = localizedContext ?: appLocalized().also { localizedContext = it }
+        return if (formatArgs.isEmpty()) {
+            context.getString(resId)
+        } else {
+            context.getString(resId, *formatArgs)
+        }
+    }
 
     private val ringTimeoutRunnable = Runnable {
         if (isRinging && !isAnswered) {
@@ -79,7 +96,9 @@ class AutoDialerCallManagerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground(NOTIFICATION_ID, buildNotification("جاري بدء جلسة الاتصال..."))
+        localizedContext = appLocalized()
+        AutoDialerNotificationChannel.ensure(this)
+        startForeground(NOTIFICATION_ID, buildNotification(text(R.string.ad_session_starting)))
 
         groupId = intent?.getIntExtra("group_id", -1) ?: -1
         if (groupId <= 0) {
@@ -147,12 +166,12 @@ class AutoDialerCallManagerService : Service() {
 
     private fun callNext() {
         if (currentIndex >= numbers.size) {
-            finishSession("اكتملت الدورة الحالية")
+            finishSession(text(R.string.ad_cycle_completed))
             return
         }
 
         val number = numbers[currentIndex]
-        updateNotification("جاري الاتصال بـ $number")
+        updateNotification(text(R.string.ad_calling_number, number))
         placeCall(number)
         isRinging = true
         isAnswered = false
@@ -168,7 +187,7 @@ class AutoDialerCallManagerService : Service() {
 
     private fun handleAnsweredDone() {
         if (stopOnFirst) {
-            finishSession("تم الرد على المكالمة")
+            finishSession(text(R.string.ad_call_answered))
         } else {
             currentIndex++
             handler.postDelayed({ callNext() }, delayBetween)
@@ -188,7 +207,7 @@ class AutoDialerCallManagerService : Service() {
                     isAnswered = true
                     handler.removeCallbacks(ringTimeoutRunnable)
                     handler.postDelayed(hangupRunnable, hangupDelay)
-                    updateNotification("تم الرد، سيتم الإنهاء تلقائياً خلال ${hangupDelay / 1000}ث")
+                    updateNotification(text(R.string.ad_answered_auto_hangup, hangupDelay / 1000))
                 }
             }
             AutoDialerCallStateReceiver.STATE_IDLE -> {
@@ -212,14 +231,14 @@ class AutoDialerCallManagerService : Service() {
     private fun placeCall(number: String) {
         val cleanNumber = number.trim()
         if (cleanNumber.isBlank()) {
-            failCall(number, "رقم الهاتف غير صالح")
+            failCall(number, text(R.string.ad_reason_invalid_number))
             return
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) !=
             PackageManager.PERMISSION_GRANTED
         ) {
-            failCall(cleanNumber, "صلاحية الاتصال غير مفعلة")
+            failCall(cleanNumber, text(R.string.ad_reason_call_permission_disabled))
             return
         }
 
@@ -283,17 +302,17 @@ class AutoDialerCallManagerService : Service() {
         val message = error?.message?.lowercase(Locale.getDefault()).orEmpty()
         return when {
             message.contains("permission") ->
-                "صلاحية الاتصال غير مفعلة"
+                text(R.string.ad_reason_call_permission_disabled)
             message.contains("default dialer") || message.contains("dialer") ->
-                "قد يحتاج التطبيق إلى تعيينه كتطبيق الاتصال الافتراضي"
+                text(R.string.ad_reason_default_dialer_required)
             message.contains("background") ->
-                "النظام منع بدء المكالمة من الخلفية"
+                text(R.string.ad_reason_background_blocked)
             message.contains("activity") ->
-                "تعذر فتح شاشة الاتصال"
+                text(R.string.ad_reason_dialer_screen_failed)
             message.isNotBlank() ->
-                "تعذر بدء المكالمة: ${error?.message}"
+                text(R.string.ad_reason_call_failed_with_error, error?.message.orEmpty())
             else ->
-                "تعذر بدء المكالمة من الجهاز"
+                text(R.string.ad_reason_call_failed)
         }
     }
 
@@ -314,7 +333,7 @@ class AutoDialerCallManagerService : Service() {
             PendingIntent.FLAG_IMMUTABLE,
         )
         return NotificationCompat.Builder(this, AutoDialerConstants.NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("الاتصال التلقائي")
+            .setContentTitle(text(R.string.ad_notification_title))
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_menu_call)
             .setContentIntent(launchIntent)

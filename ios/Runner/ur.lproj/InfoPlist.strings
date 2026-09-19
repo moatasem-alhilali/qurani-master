@@ -1,0 +1,4 @@
+/* Permission prompts (Info.plist usage descriptions). */
+
+"NSLocationWhenInUseUsageDescription" = "قبلے کی سمت معلوم کرنے اور نماز کے اوقات کا درست حساب لگانے کے لیے ایپ استعمال کرتے وقت ہمیں آپ کے مقام کی ضرورت ہے۔";
+"NSContactsUsageDescription" = "فجر کے ساتھی میں نمبر ہاتھ سے لکھے بغیر آسانی سے منتخب کرنے کے لیے ہم آپ کے رابطے استعمال کرتے ہیں۔";

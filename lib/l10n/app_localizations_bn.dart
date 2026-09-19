@@ -2272,6 +2272,82 @@ class L10nBn extends L10n {
       'আল-কুরআন, জিকির ও দোয়া মূল আরবি লেখাতেই থাকবে।';
 
   @override
+  String get onboardingNotificationsTitle => 'কোনো নামাজ যেন না ছোটে';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'নোটিফিকেশনের অনুমতি দিন, যাতে সময়মতো আজান পৌঁছায় এবং অ্যাপ আপনাকে জিকির ও দৈনিক আমলের কথা মনে করিয়ে দেয়।';
+
+  @override
+  String get onboardingNotificationsPointAthan =>
+      'প্রতিটি ওয়াক্ত শুরু হলে আজান';
+
+  @override
+  String get onboardingNotificationsPointAdhkar =>
+      'সকাল-সন্ধ্যার জিকির সময়মতো';
+
+  @override
+  String get onboardingNotificationsPointWird =>
+      'আপনার দৈনিক আমলের কোমল রিমাইন্ডার';
+
+  @override
+  String get onboardingNotificationsAllow => 'নোটিফিকেশনের অনুমতি দিন';
+
+  @override
+  String get onboardingLocationTitle => 'আপনার শহরের নির্ভুল সময়সূচি';
+
+  @override
+  String get onboardingLocationBody =>
+      'আপনি যেখানে আছেন সেখানকার নামাজের সময় ও কিবলার দিক নির্ভুলভাবে হিসাব করতে আমরা আপনার লোকেশন ব্যবহার করি।';
+
+  @override
+  String get onboardingLocationPointTimes =>
+      'ঠিক আপনার স্থানের জন্য হিসাব করা সময়';
+
+  @override
+  String get onboardingLocationPointTravel => 'সফরে স্বয়ংক্রিয়ভাবে আপডেট হয়';
+
+  @override
+  String get onboardingLocationPointQibla =>
+      'যেখানে দাঁড়িয়ে আছেন সেখান থেকে কিবলার দিক';
+
+  @override
+  String get onboardingLocationAllow => 'লোকেশনের অনুমতি দিন';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'লোকেশন শেয়ার করতে চান না? পরে নামাজের সময়ের পাতা থেকে নিজেই শহর বেছে নিন।';
+
+  @override
+  String get onboardingChangeLater =>
+      'পরে আপনার ফোনের সেটিংস থেকে এটি বদলাতে পারবেন।';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'ধাপ $current / $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'নোটিফিকেশন বন্ধ';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'চালু না করা পর্যন্ত আজান ও জিকিরের রিমাইন্ডার পৌঁছাবে না।';
+
+  @override
+  String get homeNoticeNotificationsAction => 'চালু করুন';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'আজান দেরিতে আসতে পারে';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'অ্যাপকে অ্যালার্ম সেট করার অনুমতি দিন, যাতে আজান ঠিক সময়ে পৌঁছায়।';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'অনুমতি দিন';
+
+  @override
   String get outreachTitle => 'ফজরের সাথী';
 
   @override
@@ -2482,7 +2558,7 @@ class L10nBn extends L10n {
       count,
       locale: localeName,
       other: '$count দিন পর',
-      one: '$count দিন পর',
+      one: '১ দিন পর',
     );
     return '$_temp0';
   }
@@ -3442,7 +3518,7 @@ class L10nBn extends L10n {
       days,
       locale: localeName,
       other: 'টানা $days দিন',
-      one: 'টানা $days দিন',
+      one: '১ দিন',
     );
     return '$_temp0';
   }
@@ -5653,7 +5729,7 @@ class L10nBn extends L10n {
       count,
       locale: localeName,
       other: '$count বার',
-      one: '$count বার',
+      one: 'একবার',
     );
     return '$_temp0';
   }

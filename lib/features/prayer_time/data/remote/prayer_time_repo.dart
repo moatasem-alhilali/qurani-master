@@ -1,5 +1,4 @@
 import 'package:adhan/adhan.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/extensions/list_extension.dart';
@@ -100,13 +99,6 @@ class AdhanPrayerTimeService implements PrayerTimeService {
         return Coordinates(savedLocation.latitude, savedLocation.longitude);
       }
 
-      if (!CacheConfig.hasInitLocal) {
-        final permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.denied) {
-          await Geolocator.requestPermission();
-        }
-      }
-
       if (CacheConfig.hasInitLocal) {
         final coordsMap = await _coordinatesService.getCoordinates();
         if (coordsMap != null) {
@@ -117,7 +109,10 @@ class AdhanPrayerTimeService implements PrayerTimeService {
         }
       }
 
-      final pos = await ServicesLocation.determinePosition();
+      // يُستدعى من جدولة الإشعارات أيضًا — لا نافذة إذن من هنا.
+      final pos = await ServicesLocation.determinePosition(
+        requestPermission: false,
+      );
       final coords = Coordinates(pos.latitude, pos.longitude);
 
       await CacheService().setBool('hasInitLocal', true);

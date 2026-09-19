@@ -1,0 +1,9 @@
+/* Widget gallery names and descriptions.
+   Keys are the Arabic literals passed to configurationDisplayName/description. */
+
+"الصلاة القادمة" = "Salat Berikutnya";
+"اسم الصلاة القادمة ووقتها مع عدّ تنازلي حيّ." = "Nama dan waktu salat berikutnya dengan hitung mundur langsung.";
+"مواقيت اليوم" = "Jadwal Hari Ini";
+"مواقيت الصلوات مع التاريخ الهجري والمدينة." = "Jadwal salat beserta tanggal Hijriah dan kota.";
+"آية اليوم" = "Ayat Hari Ini";
+"آية قصيرة تتجدّد كل يوم." = "Ayat pendek yang berganti setiap hari.";

@@ -1,0 +1,90 @@
+{
+  "onboardingNotificationsTitle": "لا تفوتك صلاة",
+  "@onboardingNotificationsTitle": {
+    "description": "First-launch permission page title, asking to allow notifications. Warm, short."
+  },
+  "onboardingNotificationsBody": "اسمح بالإشعارات ليصلك الأذان في وقته، ويذكّرك التطبيق بأذكارك وورد يومك.",
+  "@onboardingNotificationsBody": {
+    "description": "First-launch permission page: why notifications are needed."
+  },
+  "onboardingNotificationsPointAthan": "الأذان عند دخول كل وقت",
+  "@onboardingNotificationsPointAthan": {
+    "description": "Bullet on the notifications permission page: the athan plays when each prayer time starts."
+  },
+  "onboardingNotificationsPointAdhkar": "أذكار الصباح والمساء في موعدها",
+  "@onboardingNotificationsPointAdhkar": {
+    "description": "Bullet on the notifications permission page."
+  },
+  "onboardingNotificationsPointWird": "تذكير لطيف بوردك اليومي",
+  "@onboardingNotificationsPointWird": {
+    "description": "Bullet on the notifications permission page: a gentle reminder of the user's daily wird (daily portion of worship/reading)."
+  },
+  "onboardingNotificationsAllow": "السماح بالإشعارات",
+  "@onboardingNotificationsAllow": {
+    "description": "Primary button: shows the system notification permission prompt."
+  },
+  "onboardingLocationTitle": "مواقيت دقيقة لمدينتك",
+  "@onboardingLocationTitle": {
+    "description": "First-launch permission page title, asking to allow location."
+  },
+  "onboardingLocationBody": "نستخدم موقعك لحساب مواقيت الصلاة واتجاه القبلة بدقة حيث أنت.",
+  "@onboardingLocationBody": {
+    "description": "First-launch permission page: why location is needed."
+  },
+  "onboardingLocationPointTimes": "مواقيت محسوبة لمكانك بالضبط",
+  "@onboardingLocationPointTimes": {
+    "description": "Bullet on the location permission page."
+  },
+  "onboardingLocationPointTravel": "تتحدّث تلقائيًا حين تسافر",
+  "@onboardingLocationPointTravel": {
+    "description": "Bullet on the location permission page: prayer times update automatically when travelling."
+  },
+  "onboardingLocationPointQibla": "اتجاه القبلة من حيث تقف",
+  "@onboardingLocationPointQibla": {
+    "description": "Bullet on the location permission page."
+  },
+  "onboardingLocationAllow": "السماح بالموقع",
+  "@onboardingLocationAllow": {
+    "description": "Primary button: shows the system location permission prompt."
+  },
+  "onboardingLocationManualHint": "تفضّل ألّا تشارك موقعك؟ اختر مدينتك يدويًا لاحقًا من صفحة المواقيت.",
+  "@onboardingLocationManualHint": {
+    "description": "Small note under the location permission buttons: the user can pick their city manually instead."
+  },
+  "onboardingChangeLater": "يمكنك تغيير ذلك لاحقًا من إعدادات جهازك.",
+  "@onboardingChangeLater": {
+    "description": "Small note under the notifications permission buttons."
+  },
+  "onboardingStepLabel": "الخطوة {current} من {total}",
+  "@onboardingStepLabel": {
+    "description": "Accessibility label for the step dots at the top of the onboarding pages, e.g. 'Step 2 of 3'.",
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "homeNoticeNotificationsTitle": "الإشعارات متوقفة",
+  "@homeNoticeNotificationsTitle": {
+    "description": "Home screen warning card title: the user has not allowed notifications."
+  },
+  "homeNoticeNotificationsBody": "لن يصلك الأذان ولا تذكير الأذكار حتى تفعّلها.",
+  "@homeNoticeNotificationsBody": {
+    "description": "Home screen warning card body for disabled notifications."
+  },
+  "homeNoticeNotificationsAction": "تفعيل",
+  "@homeNoticeNotificationsAction": {
+    "description": "Button on the home warning card: enable notifications (asks, or opens system settings). Very short."
+  },
+  "homeNoticeExactAlarmsTitle": "قد يتأخر الأذان",
+  "@homeNoticeExactAlarmsTitle": {
+    "description": "Home screen warning card title (Android): the app isn't allowed to schedule exact alarms, so the athan may arrive late."
+  },
+  "homeNoticeExactAlarmsBody": "اسمح للتطبيق بضبط المنبّهات ليصل الأذان في وقته تمامًا.",
+  "@homeNoticeExactAlarmsBody": {
+    "description": "Home screen warning card body: ask to allow 'Alarms & reminders' in system settings."
+  },
+  "homeNoticeExactAlarmsAction": "السماح",
+  "@homeNoticeExactAlarmsAction": {
+    "description": "Button on the exact-alarms warning card; opens the system 'Alarms & reminders' setting. Very short."
+  }
+}

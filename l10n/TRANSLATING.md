@@ -23,7 +23,9 @@ Only `@@locale` plus translated keys. No `@key` metadata (the template owns it).
 - ICU plural/select: keep the structure and the variable name; translate only the
   text inside the braces. Use the plural categories of YOUR language
   (id: `other` only; tr/fa/ur/bn: `one`, `other`). `=0`/`=1` explicit cases
-  may stay. Always include `other`.
+  may stay. Always include `other`. Never put both `=1{…}` and `one{…}` in the
+  same message: gen-l10n keeps only one and warns at build time. Use `=1` when
+  the singular needs its own wording, otherwise `one`.
 - Quranic/dhikr/dua text that appears inside a value stays in Arabic as-is.
 - Natural, short UI language as a native Muslim user of that language expects —
   not literal word-for-word. Buttons are short; widget labels are very short.

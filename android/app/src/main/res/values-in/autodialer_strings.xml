@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_channel_name">Tamaneena - Teman Subuh</string>
+    <string name="ad_channel_description">Notifikasi layanan panggilan otomatis</string>
+    <string name="ad_notification_title">Panggilan Otomatis</string>
+    <string name="ad_session_starting">Memulai sesi panggilan...</string>
+    <string name="ad_calling_number">Memanggil %1$s</string>
+    <string name="ad_answered_auto_hangup">Dijawab, panggilan akan diakhiri otomatis dalam %1$d detik</string>
+    <string name="ad_cycle_completed">Putaran saat ini selesai</string>
+    <string name="ad_call_answered">Panggilan dijawab</string>
+    <string name="ad_reason_invalid_number">Nomor telepon tidak valid</string>
+    <string name="ad_reason_call_permission_disabled">Izin panggilan belum aktif</string>
+    <string name="ad_reason_default_dialer_required">Aplikasi mungkin perlu dijadikan aplikasi telepon default</string>
+    <string name="ad_reason_background_blocked">Sistem memblokir panggilan yang dimulai dari latar belakang</string>
+    <string name="ad_reason_dialer_screen_failed">Layar panggilan tidak dapat dibuka</string>
+    <string name="ad_reason_call_failed_with_error">Panggilan tidak dapat dimulai: %1$s</string>
+    <string name="ad_reason_call_failed">Panggilan tidak dapat dimulai dari perangkat</string>
+</resources>

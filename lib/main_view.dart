@@ -27,6 +27,8 @@ import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart'
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/home_widgets/presentation/home_widget_click_router.dart';
 import 'package:quran_app/features/language/presentation/language_picker_screen.dart';
+import 'package:quran_app/features/onboarding/presentation/onboarding_cubit.dart';
+import 'package:quran_app/features/onboarding/presentation/permissions_onboarding_screen.dart';
 import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
@@ -124,10 +126,17 @@ class MyApp extends StatelessWidget {
           create: (context) => LocaleCubit(),
           lazy: false,
         ),
+
+        ///onboarding — شاشات الصلاحيات مرّة واحدة بعد اللغة.
+        BlocProvider(
+          create: (context) => OnboardingCubit(),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
           final localeState = context.watch<LocaleCubit>().state;
+          final permissionsDone = context.watch<OnboardingCubit>().state;
           return BlocBuilder<ConnectivityBloc, ConnectivityState>(
             builder: (context, state) {
               return ScreenUtilInit(
@@ -167,10 +176,12 @@ class MyApp extends StatelessWidget {
                     );
                   },
 
-                  // أوّل فتح: اختيار اللغة قبل أيّ شيء آخر.
-                  home: localeState.confirmed
-                      ? const _App()
-                      : const LanguagePickerScreen.onboarding(),
+                  // أوّل فتح: اللغة، ثم الإشعارات والموقع — مرّة واحدة لكلٍّ.
+                  home: !localeState.confirmed
+                      ? const LanguagePickerScreen.onboarding()
+                      : !permissionsDone
+                          ? const PermissionsOnboardingScreen()
+                          : const _App(),
                 ),
               );
             },

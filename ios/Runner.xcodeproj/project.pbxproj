@@ -23,6 +23,8 @@
 		E7A10B00000000000000001A /* PrayerTimesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000006 /* PrayerTimesWidget.swift */; };
 		E7A10B00000000000000001B /* DailyAyahWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A10B000000000000000007 /* DailyAyahWidget.swift */; };
 		E7A10B00000000000000001C /* TamaneenaHomeWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F1A20C000000000000000002 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1A20C000000000000000001 /* InfoPlist.strings */; };
+		F1A20C000000000000000004 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F1A20C000000000000000003 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,18 @@
 		E7A10B000000000000000009 /* TamaneenaHomeWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TamaneenaHomeWidgets.entitlements; sourceTree = "<group>"; };
 		E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = TamaneenaHomeWidgets.xcconfig; sourceTree = "<group>"; };
 		E7A10B00000000000000000B /* TamaneenaHomeWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TamaneenaHomeWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1A20C000000000000000100 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000101 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000102 /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bn; path = bn.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000103 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000104 /* fa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fa; path = fa.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000105 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000200 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000201 /* ur */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ur; path = ur.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000202 /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bn; path = bn.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000203 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000204 /* fa */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fa; path = fa.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F1A20C000000000000000205 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +176,7 @@
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
 				97C147021CF9000F007C117D /* Info.plist */,
+				F1A20C000000000000000001 /* InfoPlist.strings */,
 				A1B2C3D4E5F6071800112233 /* Runner.entitlements */,
 				8A7A10020000000000000001 /* athan.caf */,
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
@@ -183,6 +198,7 @@
 				E7A10B000000000000000006 /* PrayerTimesWidget.swift */,
 				E7A10B000000000000000007 /* DailyAyahWidget.swift */,
 				E7A10B000000000000000008 /* Info.plist */,
+				F1A20C000000000000000003 /* Localizable.strings */,
 				E7A10B000000000000000009 /* TamaneenaHomeWidgets.entitlements */,
 				E7A10B00000000000000000A /* TamaneenaHomeWidgets.xcconfig */,
 			);
@@ -237,6 +253,7 @@
 			buildPhases = (
 				E7A10B000000000000000023 /* Sources */,
 				E7A10B000000000000000020 /* Frameworks */,
+				F1A20C000000000000000005 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -277,6 +294,12 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
+				ur,
+				bn,
+				id,
+				fa,
+				tr,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -307,6 +330,15 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				8A7A10010000000000000001 /* athan.caf in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				F1A20C000000000000000002 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1A20C000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1A20C000000000000000004 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,6 +440,32 @@
 				97C147001CF9000F007C117D /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		F1A20C000000000000000001 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F1A20C000000000000000100 /* ar */,
+				F1A20C000000000000000101 /* ur */,
+				F1A20C000000000000000102 /* bn */,
+				F1A20C000000000000000103 /* id */,
+				F1A20C000000000000000104 /* fa */,
+				F1A20C000000000000000105 /* tr */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		F1A20C000000000000000003 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F1A20C000000000000000200 /* ar */,
+				F1A20C000000000000000201 /* ur */,
+				F1A20C000000000000000202 /* bn */,
+				F1A20C000000000000000203 /* id */,
+				F1A20C000000000000000204 /* fa */,
+				F1A20C000000000000000205 /* tr */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

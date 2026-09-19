@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:quran_app/core/services/permission/location_permission_service.dart';
 import 'package:quran_app/core/services/permission/notification_permission_service.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
@@ -13,6 +12,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/another_screen/presentation/view/widgets/another_featuers.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_continue_reading.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_daily_ayah.dart';
+import 'package:quran_app/features/home/presentation/view/widgets/home_permission_notices.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_prayer_tracker.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
@@ -49,15 +49,9 @@ class _HomeScreenState extends State<HomeScreenNew> {
     }
     _didStartPrayerBootstrap = true;
 
-    try {
-      await LocationPermissionService.init();
-    } catch (_) {
-      // PrayerTimeBloc will resolve the final UI state and show the notice.
-    } finally {
-      if (mounted) {
-        context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
-      }
-    }
+    // الموقع طُلب مرّة واحدة في شاشات البداية؛ إن رُفض تعرض بطاقة المواقيت
+    // تنبيهها وزرّها. لا طلب هنا عند كل إقلاع.
+    context.read<PrayerTimeBloc>().add(const PrayerTimeInitRequested());
 
     unawaited(
       NotificationPermissionService.handelNotification().catchError((_) {}),
@@ -79,6 +73,7 @@ class _HomeScreenState extends State<HomeScreenNew> {
           children: [
             // المشهد + مواقيت اليوم + المداخل السريعة.
             const NextPrayerCountdownWidget(),
+            const HomePermissionNotices(),
             const _HomeUpdateTile(),
 
             skin.divider(),

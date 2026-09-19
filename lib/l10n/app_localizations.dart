@@ -3910,6 +3910,132 @@ abstract class L10n {
   /// **'القرآن الكريم والأذكار والأدعية تبقى بنصّها العربي.'**
   String get languageReligiousTextNote;
 
+  /// First-launch permission page title, asking to allow notifications. Warm, short.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تفوتك صلاة'**
+  String get onboardingNotificationsTitle;
+
+  /// First-launch permission page: why notifications are needed.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمح بالإشعارات ليصلك الأذان في وقته، ويذكّرك التطبيق بأذكارك وورد يومك.'**
+  String get onboardingNotificationsBody;
+
+  /// Bullet on the notifications permission page: the athan plays when each prayer time starts.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأذان عند دخول كل وقت'**
+  String get onboardingNotificationsPointAthan;
+
+  /// Bullet on the notifications permission page.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار الصباح والمساء في موعدها'**
+  String get onboardingNotificationsPointAdhkar;
+
+  /// Bullet on the notifications permission page: a gentle reminder of the user's daily wird (daily portion of worship/reading).
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكير لطيف بوردك اليومي'**
+  String get onboardingNotificationsPointWird;
+
+  /// Primary button: shows the system notification permission prompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح بالإشعارات'**
+  String get onboardingNotificationsAllow;
+
+  /// First-launch permission page title, asking to allow location.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواقيت دقيقة لمدينتك'**
+  String get onboardingLocationTitle;
+
+  /// First-launch permission page: why location is needed.
+  ///
+  /// In ar, this message translates to:
+  /// **'نستخدم موقعك لحساب مواقيت الصلاة واتجاه القبلة بدقة حيث أنت.'**
+  String get onboardingLocationBody;
+
+  /// Bullet on the location permission page.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواقيت محسوبة لمكانك بالضبط'**
+  String get onboardingLocationPointTimes;
+
+  /// Bullet on the location permission page: prayer times update automatically when travelling.
+  ///
+  /// In ar, this message translates to:
+  /// **'تتحدّث تلقائيًا حين تسافر'**
+  String get onboardingLocationPointTravel;
+
+  /// Bullet on the location permission page.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتجاه القبلة من حيث تقف'**
+  String get onboardingLocationPointQibla;
+
+  /// Primary button: shows the system location permission prompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح بالموقع'**
+  String get onboardingLocationAllow;
+
+  /// Small note under the location permission buttons: the user can pick their city manually instead.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفضّل ألّا تشارك موقعك؟ اختر مدينتك يدويًا لاحقًا من صفحة المواقيت.'**
+  String get onboardingLocationManualHint;
+
+  /// Small note under the notifications permission buttons.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك تغيير ذلك لاحقًا من إعدادات جهازك.'**
+  String get onboardingChangeLater;
+
+  /// Accessibility label for the step dots at the top of the onboarding pages, e.g. 'Step 2 of 3'.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخطوة {current} من {total}'**
+  String onboardingStepLabel(int current, int total);
+
+  /// Home screen warning card title: the user has not allowed notifications.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات متوقفة'**
+  String get homeNoticeNotificationsTitle;
+
+  /// Home screen warning card body for disabled notifications.
+  ///
+  /// In ar, this message translates to:
+  /// **'لن يصلك الأذان ولا تذكير الأذكار حتى تفعّلها.'**
+  String get homeNoticeNotificationsBody;
+
+  /// Button on the home warning card: enable notifications (asks, or opens system settings). Very short.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفعيل'**
+  String get homeNoticeNotificationsAction;
+
+  /// Home screen warning card title (Android): the app isn't allowed to schedule exact alarms, so the athan may arrive late.
+  ///
+  /// In ar, this message translates to:
+  /// **'قد يتأخر الأذان'**
+  String get homeNoticeExactAlarmsTitle;
+
+  /// Home screen warning card body: ask to allow 'Alarms & reminders' in system settings.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمح للتطبيق بضبط المنبّهات ليصل الأذان في وقته تمامًا.'**
+  String get homeNoticeExactAlarmsBody;
+
+  /// Button on the exact-alarms warning card; opens the system 'Alarms & reminders' setting. Very short.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح'**
+  String get homeNoticeExactAlarmsAction;
+
   /// Name of the 'Dawn companionship' feature: scheduled call lists that phone relatives/friends (e.g. to wake them for Fajr prayer). Screen title.
   ///
   /// In ar, this message translates to:

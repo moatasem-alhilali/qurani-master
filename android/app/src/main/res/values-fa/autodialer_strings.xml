@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_channel_name">طمأنينة - همراه نماز صبح</string>
+    <string name="ad_channel_description">اعلان‌های سرویس تماس خودکار</string>
+    <string name="ad_notification_title">تماس خودکار</string>
+    <string name="ad_session_starting">در حال شروع جلسهٔ تماس...</string>
+    <string name="ad_calling_number">در حال تماس با %1$s</string>
+    <string name="ad_answered_auto_hangup">پاسخ داده شد؛ تماس تا %1$d ثانیهٔ دیگر خودکار قطع می‌شود</string>
+    <string name="ad_cycle_completed">دور فعلی به پایان رسید</string>
+    <string name="ad_call_answered">به تماس پاسخ داده شد</string>
+    <string name="ad_reason_invalid_number">شمارهٔ تلفن معتبر نیست</string>
+    <string name="ad_reason_call_permission_disabled">مجوز تماس فعال نیست</string>
+    <string name="ad_reason_default_dialer_required">ممکن است لازم باشد برنامه به‌عنوان برنامهٔ پیش‌فرض تماس تنظیم شود</string>
+    <string name="ad_reason_background_blocked">سیستم از شروع تماس در پس‌زمینه جلوگیری کرد</string>
+    <string name="ad_reason_dialer_screen_failed">باز کردن صفحهٔ تماس ممکن نشد</string>
+    <string name="ad_reason_call_failed_with_error">شروع تماس ممکن نشد: %1$s</string>
+    <string name="ad_reason_call_failed">شروع تماس از دستگاه ممکن نشد</string>
+</resources>

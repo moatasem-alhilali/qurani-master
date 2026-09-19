@@ -1,16 +1,14 @@
 package com.tamaneena.tamaneena_app
 
-import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.app.NotificationChannel
 import com.ryanheise.audioservice.AudioServiceActivity
 import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerCallManagerService
-import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerConstants
 import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerGroupScheduler
+import com.tamaneena.tamaneena_app.smartoutreach.autodialer.AutoDialerNotificationChannel
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
@@ -169,20 +167,7 @@ class MainActivity : AudioServiceActivity() {
     }
 
     private fun createAutoDialerNotificationChannel() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return
-        }
-
-        val channel = NotificationChannel(
-            AutoDialerConstants.NOTIFICATION_CHANNEL_ID,
-            AutoDialerConstants.NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
-            description = "إشعارات خدمة الاتصال التلقائي"
-            setShowBadge(false)
-        }
-
-        val manager = getSystemService(NotificationManager::class.java)
-        manager?.createNotificationChannel(channel)
+        // الاسم والوصف بلغة التطبيق المختارة، لا لغة الجهاز.
+        AutoDialerNotificationChannel.ensure(this)
     }
 }

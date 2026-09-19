@@ -42,15 +42,68 @@ enum AppLanguage {
     return null;
   }
 
-  /// أنسب لغة لجهاز المستخدم عند أوّل فتح: أوّل لغة من تفضيلات الجهاز نملكها،
-  /// وإلا العربية.
-  static AppLanguage suggestFor(List<Locale> deviceLocales) {
+  /// أنسب لغة عند أوّل فتح — بلا أيّ صلاحية.
+  ///
+  /// موقع GPS يحتاج إذنًا لا نملكه بعد (شاشة اللغة تسبق طلب الموقع)، فنستدلّ
+  /// على البلد بما يعطيه النظام مجّانًا، بالترتيب:
+  /// 1. لغة من لغات الجهاز المفضّلة ندعمها — المستخدم يقرؤها قطعًا.
+  /// 2. بلد الجهاز (`en_PK` ← الأردية): هاتف بالإنجليزية في باكستان.
+  /// 3. المنطقة الزمنية (`Asia/Dhaka` ← البنغالية): حين لا يحمل الإعداد بلدًا.
+  /// 4. العربية.
+  static AppLanguage suggestFor(
+    List<Locale> deviceLocales, {
+    String? timeZoneName,
+  }) {
     for (final locale in deviceLocales) {
       final match = fromCode(locale.languageCode);
       if (match != null) return match;
     }
+    for (final locale in deviceLocales) {
+      final match = _byCountry[locale.countryCode?.toUpperCase()];
+      if (match != null) return match;
+    }
+    final byZone = _byTimeZone[timeZoneName];
+    if (byZone != null) return byZone;
     return arabic;
   }
+
+  /// بلدان جمهور كل لغة. الماليزية قريبة من الإندونيسية ومفهومة لقرّائها،
+  /// والأذرية قريبة من التركية، ومسلمو الهند يقرؤون الأردية.
+  static const Map<String, AppLanguage> _byCountry = {
+    'PK': urdu,
+    'IN': urdu,
+    'BD': bengali,
+    'ID': indonesian,
+    'MY': indonesian,
+    'BN': indonesian,
+    'IR': persian,
+    'AF': persian,
+    'TJ': persian,
+    'TR': turkish,
+    'AZ': turkish,
+    'CY': turkish,
+  };
+
+  static const Map<String, AppLanguage> _byTimeZone = {
+    'Asia/Karachi': urdu,
+    'Asia/Kolkata': urdu,
+    'Asia/Calcutta': urdu,
+    'Asia/Dhaka': bengali,
+    'Asia/Dacca': bengali,
+    'Asia/Jakarta': indonesian,
+    'Asia/Pontianak': indonesian,
+    'Asia/Makassar': indonesian,
+    'Asia/Jayapura': indonesian,
+    'Asia/Kuala_Lumpur': indonesian,
+    'Asia/Kuching': indonesian,
+    'Asia/Brunei': indonesian,
+    'Asia/Tehran': persian,
+    'Asia/Kabul': persian,
+    'Asia/Dushanbe': persian,
+    'Europe/Istanbul': turkish,
+    'Asia/Istanbul': turkish,
+    'Asia/Baku': turkish,
+  };
 }
 
 extension L10nContext on BuildContext {

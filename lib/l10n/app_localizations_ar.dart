@@ -2260,6 +2260,78 @@ class L10nAr extends L10n {
       'القرآن الكريم والأذكار والأدعية تبقى بنصّها العربي.';
 
   @override
+  String get onboardingNotificationsTitle => 'لا تفوتك صلاة';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'اسمح بالإشعارات ليصلك الأذان في وقته، ويذكّرك التطبيق بأذكارك وورد يومك.';
+
+  @override
+  String get onboardingNotificationsPointAthan => 'الأذان عند دخول كل وقت';
+
+  @override
+  String get onboardingNotificationsPointAdhkar =>
+      'أذكار الصباح والمساء في موعدها';
+
+  @override
+  String get onboardingNotificationsPointWird => 'تذكير لطيف بوردك اليومي';
+
+  @override
+  String get onboardingNotificationsAllow => 'السماح بالإشعارات';
+
+  @override
+  String get onboardingLocationTitle => 'مواقيت دقيقة لمدينتك';
+
+  @override
+  String get onboardingLocationBody =>
+      'نستخدم موقعك لحساب مواقيت الصلاة واتجاه القبلة بدقة حيث أنت.';
+
+  @override
+  String get onboardingLocationPointTimes => 'مواقيت محسوبة لمكانك بالضبط';
+
+  @override
+  String get onboardingLocationPointTravel => 'تتحدّث تلقائيًا حين تسافر';
+
+  @override
+  String get onboardingLocationPointQibla => 'اتجاه القبلة من حيث تقف';
+
+  @override
+  String get onboardingLocationAllow => 'السماح بالموقع';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'تفضّل ألّا تشارك موقعك؟ اختر مدينتك يدويًا لاحقًا من صفحة المواقيت.';
+
+  @override
+  String get onboardingChangeLater =>
+      'يمكنك تغيير ذلك لاحقًا من إعدادات جهازك.';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'الإشعارات متوقفة';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'لن يصلك الأذان ولا تذكير الأذكار حتى تفعّلها.';
+
+  @override
+  String get homeNoticeNotificationsAction => 'تفعيل';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'قد يتأخر الأذان';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'اسمح للتطبيق بضبط المنبّهات ليصل الأذان في وقته تمامًا.';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'السماح';
+
+  @override
   String get outreachTitle => 'صحبة الفجر';
 
   @override

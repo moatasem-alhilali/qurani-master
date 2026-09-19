@@ -1,0 +1,4 @@
+/* Permission prompts (Info.plist usage descriptions). */
+
+"NSLocationWhenInUseUsageDescription" = "Kami memerlukan lokasi Anda saat aplikasi digunakan untuk menentukan arah kiblat dan menghitung jadwal salat dengan akurat.";
+"NSContactsUsageDescription" = "Kami menggunakan kontak Anda agar nomor di Teman Subuh dapat dipilih dengan mudah tanpa mengetik manual.";

@@ -1,0 +1,4 @@
+/* Permission prompts (Info.plist usage descriptions). */
+
+"NSLocationWhenInUseUsageDescription" = "نحتاج إلى موقعك أثناء استخدام التطبيق لتحديد القبلة وحساب أوقات الصلاة بدقة.";
+"NSContactsUsageDescription" = "نستخدم جهات الاتصال لتسهيل اختيار الأرقام في «صحبة الفجر» دون إدخال يدوي.";

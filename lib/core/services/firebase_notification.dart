@@ -41,7 +41,9 @@ class FirebaseNotificationService {
   static const String _actionView = 'view';
   static const String _actionDismiss = 'dismiss';
 
-  Future<void> initialize() async {
+  /// [requestPermission]: `false` يهيّئ دون عرض نافذة الإذن. شاشات البداية
+  /// هي من يسأل المستخدم (مرّة واحدة)؛ الإقلاع بعدها لا يعيد السؤال.
+  Future<void> initialize({bool requestPermission = true}) async {
     try {
       // Check if Firebase is initialized
       if (Firebase.apps.isEmpty) {
@@ -53,8 +55,9 @@ class FirebaseNotificationService {
         );
       }
 
-      // Request permission first
-      await _requestPermission();
+      if (requestPermission) {
+        await _requestPermission();
+      }
 
       // Setup local notifications
       await setupFlutterNotifications();

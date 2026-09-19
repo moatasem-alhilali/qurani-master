@@ -1,0 +1,4 @@
+/* Permission prompts (Info.plist usage descriptions). */
+
+"NSLocationWhenInUseUsageDescription" = "برای تعیین جهت قبله و محاسبهٔ دقیق اوقات نماز، هنگام استفاده از برنامه به موقعیت مکانی شما نیاز داریم.";
+"NSContactsUsageDescription" = "از مخاطبین شما استفاده می‌کنیم تا انتخاب شماره‌ها در «همراه نماز صبح» بدون وارد کردن دستی آسان شود.";

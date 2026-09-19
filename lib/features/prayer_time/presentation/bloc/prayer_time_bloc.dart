@@ -88,9 +88,12 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         return;
       }
 
+      // الإقلاع لا يعرض نافذة الموقع: طُلبت مرّة في شاشات البداية، والطلب
+      // بعدها بزرّ «استخدم موقعي» في بطاقة المواقيت فقط.
       await _loadUsingDeviceLocation(
         emit: emit,
         fallbackLocation: savedLocation,
+        requestPermission: false,
       );
     } catch (e) {
       logger.e(e);

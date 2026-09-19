@@ -2273,6 +2273,79 @@ class L10nUr extends L10n {
       'قرآنِ کریم، اذکار اور دعائیں اپنے عربی متن میں ہی رہیں گی۔';
 
   @override
+  String get onboardingNotificationsTitle => 'کوئی نماز نہ چھوٹے';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'اطلاعات کی اجازت دیں تاکہ اذان وقت پر پہنچے اور ایپ آپ کو اذکار اور روزانہ ورد یاد دلائے۔';
+
+  @override
+  String get onboardingNotificationsPointAthan => 'ہر نماز کے وقت پر اذان';
+
+  @override
+  String get onboardingNotificationsPointAdhkar => 'صبح و شام کے اذکار وقت پر';
+
+  @override
+  String get onboardingNotificationsPointWird =>
+      'آپ کے روزانہ ورد کی نرم یاد دہانی';
+
+  @override
+  String get onboardingNotificationsAllow => 'اطلاعات کی اجازت دیں';
+
+  @override
+  String get onboardingLocationTitle => 'آپ کے شہر کے درست اوقات';
+
+  @override
+  String get onboardingLocationBody =>
+      'ہم آپ کے مقام سے نماز کے اوقات اور قبلہ کی سمت درست طور پر معلوم کرتے ہیں۔';
+
+  @override
+  String get onboardingLocationPointTimes => 'آپ کی جگہ کے عین مطابق اوقات';
+
+  @override
+  String get onboardingLocationPointTravel => 'سفر میں خود بخود اپ ڈیٹ';
+
+  @override
+  String get onboardingLocationPointQibla =>
+      'جہاں آپ کھڑے ہیں وہاں سے قبلہ کی سمت';
+
+  @override
+  String get onboardingLocationAllow => 'مقام کی اجازت دیں';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'مقام شیئر نہیں کرنا چاہتے؟ بعد میں اوقاتِ نماز کے صفحے سے اپنا شہر خود منتخب کریں۔';
+
+  @override
+  String get onboardingChangeLater =>
+      'آپ اسے بعد میں اپنے فون کی سیٹنگز سے بدل سکتے ہیں۔';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'مرحلہ $current از $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'اطلاعات بند ہیں';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'جب تک آپ انہیں فعال نہیں کرتے، اذان اور اذکار کی یاد دہانی نہیں آئے گی۔';
+
+  @override
+  String get homeNoticeNotificationsAction => 'فعال کریں';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'اذان میں تاخیر ہو سکتی ہے';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'ایپ کو الارم سیٹ کرنے کی اجازت دیں تاکہ اذان عین وقت پر آئے۔';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'اجازت دیں';
+
+  @override
   String get outreachTitle => 'فجر کے ساتھی';
 
   @override
@@ -3437,7 +3510,7 @@ class L10nUr extends L10n {
       days,
       locale: localeName,
       other: 'مسلسل $days دن',
-      one: 'مسلسل $days دن',
+      one: 'دن',
     );
     return '$_temp0';
   }
@@ -5642,7 +5715,7 @@ class L10nUr extends L10n {
       count,
       locale: localeName,
       other: '$count بار',
-      one: '$count بار',
+      one: 'ایک بار',
     );
     return '$_temp0';
   }

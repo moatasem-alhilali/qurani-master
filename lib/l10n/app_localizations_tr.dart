@@ -179,7 +179,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count saniye',
-      one: '$count saniye',
+      one: '1 saniye',
     );
     return '$_temp0';
   }
@@ -284,7 +284,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 'Her $count dakikada',
-      one: 'Her $count dakikada',
+      one: 'Her dakika',
     );
     return '$_temp0';
   }
@@ -459,7 +459,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 'Bugün $count kez zikrettin',
-      one: 'Bugün $count kez zikrettin',
+      one: 'Bugün 1 kez zikrettin',
     );
     return '$_temp0';
   }
@@ -636,7 +636,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count metin',
-      one: '$count metin',
+      one: '1 metin',
     );
     return '$_temp0';
   }
@@ -647,7 +647,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count dipnot',
-      one: '$count dipnot',
+      one: '1 dipnot',
     );
     return '$_temp0';
   }
@@ -831,7 +831,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count gün',
-      one: '$count gün',
+      one: '1 gün',
     );
     return '$_temp0';
   }
@@ -842,7 +842,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count oturum yüklendi',
-      one: '$count oturum yüklendi',
+      one: '1 oturum yüklendi',
     );
     return '$_temp0';
   }
@@ -2156,7 +2156,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count bildirim',
-      one: '$count bildirim',
+      one: '1 bildirim',
       zero: 'Bildirim yok',
     );
     return '$_temp0';
@@ -2168,7 +2168,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count yeni bildirim',
-      one: '$count yeni bildirim',
+      one: '1 yeni bildirim',
       zero: 'Yeni bildirim yok',
     );
     return '$_temp0';
@@ -2267,6 +2267,80 @@ class L10nTr extends L10n {
   @override
   String get languageReligiousTextNote =>
       'Kur\'an-ı Kerim, zikirler ve dualar Arapça asıllarıyla kalır.';
+
+  @override
+  String get onboardingNotificationsTitle => 'Hiçbir namazı kaçırma';
+
+  @override
+  String get onboardingNotificationsBody =>
+      'Ezanın vaktinde gelmesi ve uygulamanın zikirlerini ve günlük virdini hatırlatması için bildirimlere izin ver.';
+
+  @override
+  String get onboardingNotificationsPointAthan => 'Her vakit girdiğinde ezan';
+
+  @override
+  String get onboardingNotificationsPointAdhkar =>
+      'Sabah ve akşam zikirleri vaktinde';
+
+  @override
+  String get onboardingNotificationsPointWird =>
+      'Günlük virdin için nazik bir hatırlatma';
+
+  @override
+  String get onboardingNotificationsAllow => 'Bildirimlere izin ver';
+
+  @override
+  String get onboardingLocationTitle => 'Şehrin için doğru vakitler';
+
+  @override
+  String get onboardingLocationBody =>
+      'Namaz vakitlerini ve kıble yönünü bulunduğun yere göre doğru hesaplamak için konumunu kullanıyoruz.';
+
+  @override
+  String get onboardingLocationPointTimes =>
+      'Tam bulunduğun yere göre vakitler';
+
+  @override
+  String get onboardingLocationPointTravel => 'Seyahatte otomatik güncellenir';
+
+  @override
+  String get onboardingLocationPointQibla => 'Durduğun yerden kıble yönü';
+
+  @override
+  String get onboardingLocationAllow => 'Konuma izin ver';
+
+  @override
+  String get onboardingLocationManualHint =>
+      'Konumunu paylaşmak istemiyor musun? Şehrini daha sonra vakitler sayfasından elle seçebilirsin.';
+
+  @override
+  String get onboardingChangeLater =>
+      'Bunu daha sonra cihaz ayarlarından değiştirebilirsin.';
+
+  @override
+  String onboardingStepLabel(int current, int total) {
+    return 'Adım $current / $total';
+  }
+
+  @override
+  String get homeNoticeNotificationsTitle => 'Bildirimler kapalı';
+
+  @override
+  String get homeNoticeNotificationsBody =>
+      'Açana kadar ezan ve zikir hatırlatmaları gelmeyecek.';
+
+  @override
+  String get homeNoticeNotificationsAction => 'Aç';
+
+  @override
+  String get homeNoticeExactAlarmsTitle => 'Ezan gecikebilir';
+
+  @override
+  String get homeNoticeExactAlarmsBody =>
+      'Ezanın tam vaktinde gelmesi için uygulamanın alarm kurmasına izin ver.';
+
+  @override
+  String get homeNoticeExactAlarmsAction => 'İzin ver';
 
   @override
   String get outreachTitle => 'Sabah Arkadaşı';
@@ -2477,7 +2551,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count gün sonra',
-      one: '$count gün sonra',
+      one: '1 gün sonra',
     );
     return '$_temp0';
   }
@@ -2677,7 +2751,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count numara',
-      one: '$count numara',
+      one: '1 numara',
       zero: 'Numara yok',
     );
     return '$_temp0';
@@ -3434,7 +3508,7 @@ class L10nTr extends L10n {
       days,
       locale: localeName,
       other: '$days gün üst üste',
-      one: '$days gün üst üste',
+      one: '1 gün',
     );
     return '$_temp0';
   }
@@ -3668,7 +3742,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count vakit elle düzeltildi',
-      one: '$count vakit elle düzeltildi',
+      one: '1 vakit elle düzeltildi',
     );
     return '$_temp0';
   }
@@ -4059,7 +4133,7 @@ class L10nTr extends L10n {
       minutes,
       locale: localeName,
       other: '$minutes dakika',
-      one: '$minutes dakika',
+      one: '1 dakika',
     );
     return '$prayer vaktine $_temp0 kaldı';
   }
@@ -4070,7 +4144,7 @@ class L10nTr extends L10n {
       hours,
       locale: localeName,
       other: '$hours saat',
-      one: '$hours saat',
+      one: '1 saat',
     );
     return '$prayer vaktine $_temp0 kaldı';
   }
@@ -4223,7 +4297,7 @@ class L10nTr extends L10n {
       days,
       locale: localeName,
       other: '$days günlük',
-      one: '$days günlük',
+      one: '1 günlük',
     );
     return 'Mevcut konumun ve ayarlarınla $_temp0 vakitleri hesaplar';
   }
@@ -4234,7 +4308,7 @@ class L10nTr extends L10n {
       days,
       locale: localeName,
       other: '$days gün',
-      one: '$days gün',
+      one: '1 gün',
     );
     return 'Widget\'lar uygulamayı açmadan $_temp0 çalışır ve arka planda otomatik yenilenir. Konumun veya hesaplama yöntemin değiştiğinde kendiliğinden güncellenir.';
   }
@@ -4723,7 +4797,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 'Her $count dakikada',
-      one: 'Her $count dakikada',
+      one: 'Her dakika',
     );
     return '$_temp0';
   }
@@ -4745,7 +4819,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 'Özel plan · $count saat',
-      one: 'Özel plan · $count saat',
+      one: 'Özel plan · 1 saat',
       zero: 'Özel plan · saat yok',
     );
     return '$_temp0';
@@ -4962,7 +5036,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count özel saat',
-      one: '$count özel saat',
+      one: '1 özel saat',
       zero: 'Özel saat yok',
     );
     return '$_temp0';
@@ -5212,7 +5286,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 've $count indirme daha',
-      one: 've $count indirme daha',
+      one: 've 1 indirme daha',
     );
     return '$_temp0';
   }
@@ -5273,7 +5347,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: 'Devamlılık: $count gün',
-      one: 'Devamlılık: $count gün',
+      one: 'Devamlılık: 1 gün',
       zero: 'Devamlılık: 0 gün',
     );
     return '$_temp0';
@@ -5633,7 +5707,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count kez',
-      one: '$count kez',
+      one: '1 kez',
     );
     return '$_temp0';
   }
@@ -5807,7 +5881,7 @@ class L10nTr extends L10n {
       count,
       locale: localeName,
       other: '$count dakika',
-      one: '$count dakika',
+      one: '1 dakika',
     );
     return '$_temp0';
   }
