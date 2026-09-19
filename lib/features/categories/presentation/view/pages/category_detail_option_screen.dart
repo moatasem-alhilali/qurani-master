@@ -13,6 +13,7 @@ import 'package:quran_app/features/categories/presentation/bloc/category_bloc.da
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/sheet_audio.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// عناصر تصنيف واحد: بحث ثم صفوف نحيلة، كل صفّ كتاب أو مادة صوتية.
 class CategoryDetailOptionScreen extends StatefulWidget {
@@ -46,13 +47,13 @@ class _CategoryDetailOptionScreenState
   String _typeLabel(String? type) {
     switch (type) {
       case 'audios':
-        return 'مادة صوتية';
+        return context.l10n.categoriesItemAudio;
       case 'books':
-        return 'كتاب';
+        return context.l10n.categoriesItemBook;
       case 'articles':
-        return 'مقال';
+        return context.l10n.categoriesItemArticle;
       case 'videos':
-        return 'مرئي';
+        return context.l10n.categoriesItemVideo;
       default:
         return type ?? '';
     }
@@ -82,7 +83,7 @@ class _CategoryDetailOptionScreenState
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title: widget.category.title ?? 'التصنيف',
+          title: widget.category.title ?? context.l10n.categoriesFallbackTitle,
           slivers: [
             SliverToBoxAdapter(
               child: ColoredBox(
@@ -107,9 +108,9 @@ class _CategoryDetailOptionScreenState
                     final items = _filter(state.categoriesOptionsSearch);
 
                     if (items.isEmpty) {
-                      return const SliverToBoxAdapter(
+                      return SliverToBoxAdapter(
                         child: CategoryNotice(
-                          message: 'لا توجد نتائج لهذا البحث.',
+                          message: context.l10n.categoriesNoSearchResults,
                         ),
                       );
                     }

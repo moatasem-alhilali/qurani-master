@@ -58,8 +58,11 @@ class _ItemRow extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${dailyWirdTimeLabel(item.timeCategory)} · '
-                        '${dailyWirdTypeLabel(item)}',
+                        '${dailyWirdTimeLabel(
+                          context.l10n,
+                          item.timeCategory,
+                        )} · '
+                        '${dailyWirdTypeLabel(context.l10n, item)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -162,7 +165,7 @@ class _ItemMenu extends StatelessWidget {
     final skin = AppSkin.of(context);
 
     return PopupMenuButton<_ItemAction>(
-      tooltip: 'خيارات العمل',
+      tooltip: context.l10n.dailyWirdItemOptions,
       color: skin.raised,
       surfaceTintColor: skin.raised,
       shape: RoundedRectangleBorder(
@@ -198,13 +201,21 @@ class _ItemMenu extends StatelessWidget {
       },
       itemBuilder: (context) => [
         if (item.hasCounter)
-          _menuItem(context, _ItemAction.editCount, 'تعديل العدد المقصود'),
-        _menuItem(context, _ItemAction.reset, 'البدء من جديد'),
+          _menuItem(
+            context,
+            _ItemAction.editCount,
+            context.l10n.dailyWirdEditTargetCount,
+          ),
+        _menuItem(context, _ItemAction.reset, context.l10n.dailyWirdStartOver),
         if (!isFirst)
-          _menuItem(context, _ItemAction.moveUp, 'تقديم في الترتيب'),
+          _menuItem(context, _ItemAction.moveUp, context.l10n.dailyWirdMoveUp),
         if (!isLast)
-          _menuItem(context, _ItemAction.moveDown, 'تأخير في الترتيب'),
-        _menuItem(context, _ItemAction.hide, 'إخفاء من الزاد'),
+          _menuItem(
+            context,
+            _ItemAction.moveDown,
+            context.l10n.dailyWirdMoveDown,
+          ),
+        _menuItem(context, _ItemAction.hide, context.l10n.dailyWirdHideItem),
       ],
     );
   }

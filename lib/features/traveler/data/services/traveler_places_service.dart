@@ -3,6 +3,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class TravelerLocationContext {
   const TravelerLocationContext({
@@ -35,7 +36,7 @@ class TravelerPlacesService {
 
     Placemark? placemark;
     try {
-      await setLocaleIdentifier('ar');
+      await setLocaleIdentifier(L10nService.savedLanguage.code);
       final placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -55,10 +56,11 @@ class TravelerPlacesService {
       if (country.isNotEmpty) country,
     ];
 
+    final separator = L10nService.current.travelerListSeparator;
     final label = labelCandidates.isEmpty
-        ? '${position.latitude.toStringAsFixed(4)}، '
+        ? '${position.latitude.toStringAsFixed(4)}$separator'
             '${position.longitude.toStringAsFixed(4)}'
-        : labelCandidates.join('، ');
+        : labelCandidates.join(separator);
 
     return TravelerLocationContext(
       latitude: position.latitude,
@@ -128,8 +130,9 @@ class TravelerPlacesService {
           ? Map<String, dynamic>.from(tagsRaw)
           : <String, dynamic>{};
 
-      final defaultName =
-          placeType == TravelerPlaceType.mosque ? 'مسجد قريب' : 'مطعم حلال';
+      final defaultName = placeType == TravelerPlaceType.mosque
+          ? L10nService.current.travelerDefaultMosqueName
+          : L10nService.current.travelerDefaultRestaurantName;
       final placeName = _cleanText(tags['name']);
       final finalName = placeName.isEmpty ? defaultName : placeName;
 
@@ -244,10 +247,10 @@ out center 120;
     ].where((item) => item.isNotEmpty).toList();
 
     if (fields.isEmpty) {
-      return 'بدون عنوان تفصيلي';
+      return L10nService.current.travelerNoDetailedAddress;
     }
 
-    return fields.join('، ');
+    return fields.join(L10nService.current.travelerListSeparator);
   }
 
   static String _readPhone(Map<String, dynamic> tags) {

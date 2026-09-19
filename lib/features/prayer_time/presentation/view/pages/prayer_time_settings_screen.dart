@@ -17,6 +17,7 @@ import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_n
 import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_settings_store.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_calculation_settings_card.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_time_settings_screen_sections_part.dart';
 part 'prayer_time_settings_screen_duration_part.dart';
@@ -74,7 +75,7 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'إعدادات أوقات الصلاة',
+        title: context.l10n.prayerTimeSettingsTitle,
         showLargeHeader: false,
         initialOffset: null,
         body: ColoredBox(
@@ -82,7 +83,9 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const HomeSectionHeader(title: 'طريقة حساب المواقيت'),
+              HomeSectionHeader(
+                title: context.l10n.prayerTimeSettingsCalcHeader,
+              ),
               PrayerCalculationSettingsCard(
                 settings: _calculationSettings,
                 isSaving: _isSaving,
@@ -94,7 +97,9 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
               ),
               if (isAndroid) ...[
                 skin.divider(),
-                const HomeSectionHeader(title: 'الصامت وقت الصلاة'),
+                HomeSectionHeader(
+                  title: context.l10n.prayerTimeSettingsSilentHeader,
+                ),
                 _SilentModeSection(
                   settings: _settings,
                   hasPolicyAccess: _hasNotificationPolicyAccess,
@@ -170,8 +175,8 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
         if (mounted) {
           _reloadPrayerTimesIfNeeded(calculationChanged);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('امنح صلاحية عدم الإزعاج أولًا حتى تعمل الميزة.'),
+            SnackBar(
+              content: Text(context.l10n.prayerTimeSilentNeedsPermission),
             ),
           );
         }
@@ -204,7 +209,7 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حفظ إعدادات أوقات الصلاة.')),
+        SnackBar(content: Text(context.l10n.prayerTimeSettingsSaved)),
       );
     } finally {
       if (mounted) {

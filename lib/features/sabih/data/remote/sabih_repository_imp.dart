@@ -49,7 +49,7 @@ class SabihRepositoryImpl implements SabihRepository {
       return right(result);
     } catch (e) {
       logger.e(e);
-      return left(LogicFailure(e.toString()));
+      return left(LogicFailure(null));
     }
   }
 
@@ -59,7 +59,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.addSubihItem(request);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -69,7 +71,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.updateSubihItem(request.id!, request);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -79,7 +83,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.deleteSubihItem(request);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -91,7 +97,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.logSubihTap(subihId);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -107,7 +115,9 @@ class SabihRepositoryImpl implements SabihRepository {
       );
       return right(result);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -122,7 +132,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.upsertSummary(subihId, date);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -138,7 +150,9 @@ class SabihRepositoryImpl implements SabihRepository {
       );
       return right(result);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -148,7 +162,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.resetTodayCounter(subihId);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 
@@ -160,7 +176,9 @@ class SabihRepositoryImpl implements SabihRepository {
       await DatabaseSabihService.performSubihTap(subihId);
       return right(null);
     } catch (e) {
-      return left(LogicFailure(e.toString()));
+      // السبب التقني للسجل فقط؛ الواجهة تعرض رسالة مترجمة.
+      logger.e(e);
+      return left(LogicFailure(null));
     }
   }
 }

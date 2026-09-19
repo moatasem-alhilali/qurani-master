@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class MyTextFormFieldWidget extends StatefulWidget {
   MyTextFormFieldWidget({
@@ -144,7 +145,7 @@ class _MyTextFormFieldWidgetState extends State<MyTextFormFieldWidget> {
         validator: widget.validator ??
             (value) {
               if (value!.isEmpty) {
-                return widget.messageValidate ?? 'هذا الحقل مطلوب';
+                return widget.messageValidate ?? context.l10n.coreFieldRequired;
               }
               return null;
             },

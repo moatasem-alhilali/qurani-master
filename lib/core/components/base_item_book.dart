@@ -50,9 +50,9 @@ class BaseBookItem extends StatelessWidget {
                   if (type != 'category' &&
                       type != '' &&
                       type != 'multicategories')
-                    Positioned(
+                    PositionedDirectional(
                       top: 10,
-                      left: 10,
+                      end: 10,
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(

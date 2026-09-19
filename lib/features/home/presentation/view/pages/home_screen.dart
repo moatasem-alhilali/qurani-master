@@ -19,6 +19,7 @@ import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dar
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/next_prayer_countdown/next_prayer_countdown_widget.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/src/core/update/app_update_cubit.dart';
 import 'package:quran_app/src/core/update/app_update_service.dart';
 import 'package:quran_app/src/core/update/update_prompts.dart';
@@ -81,24 +82,24 @@ class _HomeScreenState extends State<HomeScreenNew> {
             const _HomeUpdateTile(),
 
             skin.divider(),
-            const HomeSectionHeader(title: 'يومك'),
+            HomeSectionHeader(title: context.l10n.homeSectionYourDay),
             const HomePrayerTracker(),
             SizedBox(height: 4.h),
             const HomeContinueReading(),
 
             skin.divider(),
-            const HomeSectionHeader(title: 'آية من القرآن'),
+            HomeSectionHeader(title: context.l10n.homeSectionAyah),
             const HomeDailyAyah(),
 
             skin.divider(),
-            const HomeSectionHeader(title: 'المميزات'),
+            HomeSectionHeader(title: context.l10n.homeSectionFeatures),
             Padding(
               padding: AppSkin.gutter,
               child: const AnotherFeatures(),
             ),
 
             skin.divider(),
-            const HomeSectionHeader(title: 'قسم الأطفال'),
+            HomeSectionHeader(title: context.l10n.homeSectionKids),
             const _YoungMuslimRow(),
 
             SizedBox(height: 18.h),
@@ -130,7 +131,7 @@ class _YoungMuslimRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'المسلم الصغير',
+                    context.l10n.homeYoungMuslimTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -141,7 +142,7 @@ class _YoungMuslimRow extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'قصص وآداب وأذكار للطفل',
+                    context.l10n.homeYoungMuslimSubtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -155,7 +156,7 @@ class _YoungMuslimRow extends StatelessWidget {
               ),
             ),
             AppIcon(
-              AppIcons.chevronLeft,
+              AppIcons.forwardFor(context),
               color: skin.accent,
               size: 15.sp,
             ),
@@ -210,7 +211,7 @@ class _HomeUpdateTile extends StatelessWidget {
                   SizedBox(width: 9.w),
                   Expanded(
                     child: Text(
-                      'يوجد تحديث جديد · الإصدار ${state.storeVersion}',
+                      context.l10n.homeUpdateAvailable(state.storeVersion),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -230,7 +231,7 @@ class _HomeUpdateTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(999.r),
                     ),
                     child: Text(
-                      'تحديث',
+                      context.l10n.homeUpdateAction,
                       style: TextStyle(
                         color: AppColors.brandIvory,
                         fontSize: 9.5.sp,

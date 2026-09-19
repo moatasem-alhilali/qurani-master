@@ -12,18 +12,19 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
     final skin = AppSkin.of(context);
     final fajrTime =
         fajrPrayer == null ? null : _formatPrayerTime(context, fajrPrayer);
+    final l10n = context.l10n;
 
     return <Widget>[
-      const HomeSectionHeader(title: 'اسم القائمة'),
+      HomeSectionHeader(title: l10n.outreachListNameHeader),
       // خطّ الحقل نفسه هو الفاصل هنا، فلا داعي لشعرة ثانية تحته.
       _TitleField(controller: _titleController),
-      const HomeSectionHeader(title: 'وقت الاتصال'),
+      HomeSectionHeader(title: l10n.outreachCallTimeHeader),
       OutreachRow(
-        title: 'موعد البدء',
+        title: l10n.outreachStartTime,
         icon: AppIcons.clock,
         subtitle: fajrTime == null
-            ? 'اختر وقتًا يدويًا أو استعمل وقت الفجر'
-            : 'وقت الفجر اليوم $fajrTime',
+            ? l10n.outreachStartTimeHint
+            : l10n.outreachFajrTimeToday(fajrTime),
         trailing: OutreachValue(text: _selectedTime.format(context)),
         showChevron: true,
         isLast: true,
@@ -31,21 +32,21 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
       ),
       skin.divider(),
       HomeSectionHeader(
-        title: 'جهات الاتصال · ${_rows.length}',
+        title: l10n.outreachContactsHeader(_rows.length),
       ),
       ..._buildContactRows(),
       OutreachRow(
-        title: 'اختيار من جهات الاتصال',
+        title: l10n.outreachPickFromContacts,
         icon: AppIcons.add,
-        subtitle: 'أضف رقمًا جديدًا إلى هذه القائمة',
+        subtitle: l10n.outreachPickFromContactsSubtitle,
         isLast: true,
         onTap: _addFromContacts,
       ),
       skin.divider(),
       OutreachRow(
-        title: 'إعدادات متقدمة',
+        title: l10n.outreachAdvancedSettings,
         icon: AppIcons.sliders,
-        subtitle: 'الأيام، مدد الانتظار، وسلوك التكرار',
+        subtitle: l10n.outreachAdvancedSettingsSubtitle,
         isLast: !_showAdvancedSettings,
         trailing: AppIcon(
           _showAdvancedSettings ? AppIcons.up : AppIcons.down,
@@ -64,8 +65,8 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
         builder: (context, state) {
           return OutreachPrimaryButton(
             label: state.saveState == RequestState.loading
-                ? 'جارِ الحفظ...'
-                : 'حفظ القائمة',
+                ? l10n.outreachSaving
+                : l10n.outreachSaveList,
             icon: AppIcons.save,
             loading: state.saveState == RequestState.loading,
             onTap: _onSavePressed,
@@ -82,7 +83,7 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 10.h),
           child: Text(
-            'لم تُضف أرقام بعد.',
+            context.l10n.outreachNoNumbersYet,
             style: TextStyle(
               color: AppSkin.of(context).inkSoft.withValues(alpha: 0.78),
               fontSize: 9.5.sp,
@@ -97,7 +98,7 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
       for (final entry in _rows.asMap().entries)
         _ContactRow(
           name: entry.value.labelController.text.trim().isEmpty
-              ? 'بدون اسم'
+              ? context.l10n.outreachUnnamed
               : entry.value.labelController.text.trim(),
           phone: entry.value.phoneController.text,
           onRemove: () => _remove(entry.key),
@@ -106,62 +107,65 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
   }
 
   List<Widget> _buildAdvancedRows() {
+    final l10n = context.l10n;
+
     return <Widget>[
       OutreachSwitchRow(
-        title: 'تشغيل هذه القائمة',
+        title: l10n.outreachEnableList,
         icon: AppIcons.power,
         value: _isEnabled,
         onChanged: (value) => rebuild(() => _isEnabled = value),
       ),
       OutreachSwitchRow(
-        title: 'تكرار يومي',
+        title: l10n.outreachDailyRepeat,
         icon: AppIcons.calendar,
-        subtitle: _isDaily ? 'كل يوم' : 'أيام مختارة من الأسبوع',
+        subtitle:
+            _isDaily ? l10n.outreachEveryDay : l10n.outreachSelectedWeekdays,
         value: _isDaily,
         onChanged: (value) => rebuild(() => _isDaily = value),
       ),
       if (!_isDaily) _buildDaysPicker(),
       OutreachSliderRow(
-        label: 'مدة انتظار الرد',
+        label: l10n.outreachRingTimeout,
         value: _ringTimeout.toDouble(),
         min: 5,
         max: 60,
         divisions: 55,
-        valueLabel: '$_ringTimeout ث',
+        valueLabel: l10n.outreachSecondsValue(_ringTimeout),
         onChanged: (value) => rebuild(() => _ringTimeout = value.round()),
       ),
       OutreachSliderRow(
-        label: 'الانتظار بعد الرد',
+        label: l10n.outreachHangupDelay,
         value: _hangupDelay.toDouble(),
         min: 5,
         max: 120,
         divisions: 23,
-        valueLabel: '$_hangupDelay ث',
+        valueLabel: l10n.outreachSecondsValue(_hangupDelay),
         onChanged: (value) => rebuild(() => _hangupDelay = value.round()),
       ),
       OutreachSliderRow(
-        label: 'الفاصل بين الأرقام',
+        label: l10n.outreachDelayBetweenNumbers,
         value: _delayBetweenCalls.toDouble(),
         min: 1,
         max: 30,
         divisions: 29,
-        valueLabel: '$_delayBetweenCalls ث',
+        valueLabel: l10n.outreachSecondsValue(_delayBetweenCalls),
         onChanged: (value) => rebuild(() => _delayBetweenCalls = value.round()),
       ),
       OutreachSwitchRow(
-        title: 'إيقاف بعد أول رد',
+        title: l10n.outreachStopAfterFirstAnswer,
         icon: AppIcons.stop,
         value: _stopOnFirstAnswered,
         onChanged: (value) => rebuild(() => _stopOnFirstAnswered = value),
       ),
       OutreachSwitchRow(
-        title: 'إعادة عند عدم الرد',
+        title: l10n.outreachRetryOnNoAnswer,
         icon: AppIcons.replay,
         value: _retryEnabled,
         onChanged: (value) => rebuild(() => _retryEnabled = value),
       ),
       OutreachSwitchRow(
-        title: 'تكرار الحلقة بالكامل',
+        title: l10n.outreachRepeatWholeCycle,
         icon: AppIcons.refresh,
         value: _repeatCycle,
         isLast: true,
@@ -184,7 +188,7 @@ extension _UpsertScheduleSections on _SmartOutreachUpsertScheduleScreenState {
         children: <Widget>[
           for (var day = 1; day <= 7; day++)
             OutreachChoiceChip(
-              label: outreachWeekdayLabel(day),
+              label: outreachWeekdayLabel(context.l10n, day),
               selected: _selectedDays.contains(day),
               onTap: () => _toggleDay(day, !_selectedDays.contains(day)),
             ),

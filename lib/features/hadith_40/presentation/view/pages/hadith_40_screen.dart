@@ -10,6 +10,7 @@ import 'package:quran_app/features/hadith_40/data/models/hadith_40_model.dart';
 import 'package:quran_app/features/hadith_40/presentation/bloc/hadith_40_bloc.dart';
 import 'package:quran_app/features/hadith_40/presentation/view/widgets/hadith_40_sheet.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class Hadith40Screen extends StatefulWidget {
   const Hadith40Screen({super.key});
@@ -45,7 +46,7 @@ class _Hadith40ScreenState extends State<Hadith40Screen> {
       return lines.first;
     }
 
-    return 'الحديث ${index + 1}';
+    return context.l10n.hadith40Number(index + 1);
   }
 
   String _extractPreview(Hadith40Model item) {
@@ -87,7 +88,7 @@ class _Hadith40ScreenState extends State<Hadith40Screen> {
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title: 'الأربعون النووية',
+          title: context.l10n.hadith40Title,
           trailing: BlocBuilder<Hadith40Bloc, Hadith40State>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<Hadith40Model>(
@@ -105,7 +106,7 @@ class _Hadith40ScreenState extends State<Hadith40Screen> {
                   final index = list.indexOf(item);
                   _showDetails(context, item, index < 0 ? 0 : index);
                 },
-                hintText: 'بحث عن حديث',
+                hintText: context.l10n.hadith40SearchHint,
                 suggestionBuilder: (context, item) => _SearchSuggestion(
                   title: _extractTitle(item, 0),
                   subtitle: _extractPreview(item),
@@ -250,7 +251,9 @@ class _HadithRow extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 6.h),
               child: AppIcon(
-                AppIcons.chevronLeft,
+                Directionality.of(context) == TextDirection.rtl
+                    ? AppIcons.chevronLeft
+                    : AppIcons.chevronRight,
                 color: skin.accent,
                 size: 15.sp,
               ),
@@ -278,7 +281,7 @@ class _EmptyResult extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'لا توجد نتائج لهذا البحث',
+              context.l10n.hadith40NoResults,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 10.5.sp,
@@ -292,7 +295,7 @@ class _EmptyResult extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
                 child: Text(
-                  'عرض الأحاديث كلها',
+                  context.l10n.hadith40ShowAll,
                   style: TextStyle(
                     color: skin.accent,
                     fontSize: 10.5.sp,

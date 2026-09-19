@@ -4,6 +4,7 @@ import 'package:quran_app/core/notification/model/notification_schedule_model.da
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_settings_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class DailyWirdReminderService {
   DailyWirdReminderService({
@@ -19,6 +20,7 @@ class DailyWirdReminderService {
 
   Future<void> reschedule(DailyWirdSettings settings) async {
     await _cancelAll();
+    final l10n = L10nService.current;
 
     if (!settings.onboardingCompleted ||
         settings.selectedPresetId == null ||
@@ -30,8 +32,8 @@ class DailyWirdReminderService {
       await _schedule(
         key: _morningKey,
         time: settings.morningReminderTime,
-        title: 'زاد الصباح',
-        body: 'ابدأ نهارك بذكر الله وتلاوة كتابه والدعاء.',
+        title: l10n.dailyWirdReminderMorningTitle,
+        body: l10n.dailyWirdReminderMorningBody,
         channel: NotificationChannel.morning,
         settingKey: NotificationKeys.isNotificationDailyWirdMorning,
       );
@@ -41,8 +43,8 @@ class DailyWirdReminderService {
       await _schedule(
         key: _eveningKey,
         time: settings.eveningReminderTime,
-        title: 'زاد المساء',
-        body: 'جدد صلتك بالله، وأتم ما تيسر من زاد المساء.',
+        title: l10n.dailyWirdReminderEveningTitle,
+        body: l10n.dailyWirdReminderEveningBody,
         channel: NotificationChannel.night,
         settingKey: NotificationKeys.isNotificationDailyWirdEvening,
       );
@@ -52,8 +54,8 @@ class DailyWirdReminderService {
       await _schedule(
         key: _nightKey,
         time: settings.nightReminderTime,
-        title: 'زاد ما قبل النوم',
-        body: 'اختم يومك بالذكر والدعاء وما بقي من زادك التعبدي.',
+        title: l10n.dailyWirdReminderNightTitle,
+        body: l10n.dailyWirdReminderNightBody,
         channel: NotificationChannel.sleep,
         settingKey: NotificationKeys.isNotificationDailyWirdNight,
       );
@@ -63,8 +65,8 @@ class DailyWirdReminderService {
       await _schedule(
         key: _summaryKey,
         time: settings.endOfDaySummaryTime,
-        title: 'محاسبة آخر اليوم',
-        body: 'راجع زادك التعبدي اليوم، وانظر ما أتممت منه.',
+        title: l10n.dailyWirdReminderSummaryTitle,
+        body: l10n.dailyWirdReminderSummaryBody,
         channel: NotificationChannel.defaultChannel,
         settingKey: NotificationKeys.isNotificationDailyWirdSummary,
       );

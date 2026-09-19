@@ -10,6 +10,7 @@ import 'package:quran_app/features/home/data/surah_label.dart';
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_library/quran_library.dart';
 
 /// آية عشوائية بخطّ المصحف، على الأرضية مباشرة بلا بطاقة — الخطّ نفسه
@@ -61,6 +62,8 @@ class HomeDailyAyah extends StatelessWidget {
                 Text(
                   ayah?.text ?? 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
                   textAlign: TextAlign.center,
+                  // نصّ قرآني: عربي من اليمين دائمًا مهما كانت لغة الواجهة.
+                  textDirection: TextDirection.rtl,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -75,8 +78,11 @@ class HomeDailyAyah extends StatelessWidget {
                   padding: EdgeInsets.only(top: 4.h),
                   child: Text(
                     surahName != null
-                        ? '${surahLabel(surahName)} · الآية ${ayah.ayahNumber}'
-                        : 'الآية ${ayah.ayahNumber}',
+                        ? context.l10n.homeAyahReference(
+                            surahLabel(surahName),
+                            ayah.ayahNumber,
+                          )
+                        : context.l10n.homeAyahNumber(ayah.ayahNumber),
                     style: TextStyle(
                       color: skin.accent,
                       fontSize: 9.5.sp,
@@ -90,7 +96,7 @@ class HomeDailyAyah extends StatelessWidget {
                   Expanded(
                     child: _AyahAction(
                       icon: AppIcons.refresh,
-                      label: 'آية أخرى',
+                      label: context.l10n.homeAnotherAyah,
                       onTap: () => context
                           .read<RandomAyahBloc>()
                           .add(RefreshRandomAyahEvent()),
@@ -100,7 +106,7 @@ class HomeDailyAyah extends StatelessWidget {
                   Expanded(
                     child: _AyahAction(
                       icon: AppIcons.quran,
-                      label: 'اقرأها في المصحف',
+                      label: context.l10n.homeReadInMushaf,
                       onTap: page == null
                           ? null
                           : () => context.push(ReadQuranScreen(page: page - 1)),

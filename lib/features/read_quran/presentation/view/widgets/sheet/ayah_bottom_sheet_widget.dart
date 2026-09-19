@@ -10,6 +10,7 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/models_public/position_data_model.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class AyahBottomSheetWidget extends StatelessWidget {
   AyahBottomSheetWidget({
@@ -35,7 +36,7 @@ class AyahBottomSheetWidget extends StatelessWidget {
           children: [
             const SizedBox(height: 5),
             Text(
-              'السماع',
+              context.l10n.readQuranListen,
               style: titleMedium(context).copyWith(
                 fontSize: 16.sp,
               ),
@@ -48,7 +49,7 @@ class AyahBottomSheetWidget extends StatelessWidget {
               ),
             ),
             Text(
-              'الايه',
+              context.l10n.readQuranAyah,
               style: titleMedium(context).copyWith(
                 fontSize: 16.sp,
               ),
@@ -61,6 +62,7 @@ class AyahBottomSheetWidget extends StatelessWidget {
               child: Text(
                 ayah ?? '',
                 textAlign: TextAlign.right,
+                textDirection: TextDirection.rtl,
                 style: titleMedium(context).copyWith(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
@@ -74,7 +76,7 @@ class AyahBottomSheetWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                'تفسير الأية',
+                context.l10n.readQuranTafsir,
                 style: titleMedium(context).copyWith(
                   fontSize: 16.sp,
                 ),
@@ -87,6 +89,7 @@ class AyahBottomSheetWidget extends StatelessWidget {
               child: Text(
                 text ?? '',
                 textAlign: TextAlign.right,
+                textDirection: TextDirection.rtl,
                 style: titleMedium(context).copyWith(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,

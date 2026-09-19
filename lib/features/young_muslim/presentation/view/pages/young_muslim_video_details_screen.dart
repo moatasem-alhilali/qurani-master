@@ -13,6 +13,7 @@ import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_rewards_sheet.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_video_details_screen_content.dart';
 
@@ -54,7 +55,7 @@ class _YoungMuslimVideoDetailsScreenState
             if (details != null && details.video.id == widget.videoId) {
               return details.video.topicTitle;
             }
-            return 'المسلم الصغير';
+            return context.l10n.youngMuslimTitle;
           },
           builder: (context, title) => Text(
             title,

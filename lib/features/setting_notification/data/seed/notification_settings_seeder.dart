@@ -24,6 +24,9 @@ class NotificationSettingsSeeder {
       // - everyNMinutes: requires intervalMinutes
       // - weekly: requires weekdays/hour/minute
       // - customDates: requires customDates
+      //
+      // `label` is only the stored Arabic fallback: the displayed name comes
+      // from NotificationLabels (l10n by key), so it follows the app language.
       final seeds = <NotificationSettingSeedData>[
         // Master enable/disable (settings only)
         NotificationSettingSeedData(

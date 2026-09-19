@@ -7,6 +7,7 @@ import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
 import 'package:quran_app/features/zkar_after_pray/presentation/view/pages/zkar_after_pray_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class DailyWirdDestinationResolver {
   const DailyWirdDestinationResolver._();
@@ -46,15 +47,15 @@ class DailyWirdDestinationResolver {
 
   static Widget? _resolveDua(DailyWirdItem item) {
     if (item.id == 'sleep_dua' || item.timeCategory == 'night') {
-      return const WirdScreen.custom(
-        title: 'أذكار النوم والأحلام',
+      return WirdScreen.custom(
+        title: L10nService.current.thikrSleepTitle,
         assetPath: JsonLoaderService.adhkarSleepDreamsPath,
       );
     }
 
     if (item.id == 'dua_of_day_1' || item.id == 'dua_of_day_2') {
-      return const WirdScreen.custom(
-        title: 'أدعية جامعة',
+      return WirdScreen.custom(
+        title: L10nService.current.thikrComprehensiveDuasTitle,
         assetPath: JsonLoaderService.adhkarQuranDuasPath,
       );
     }

@@ -11,6 +11,7 @@ import 'package:quran_app/features/home/presentation/view/widgets/home_section_h
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_settings_store.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachSettingsScreen extends StatefulWidget {
   const SmartOutreachSettingsScreen({super.key});
@@ -69,15 +70,18 @@ class _SmartOutreachSettingsScreenState
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text('تم حفظ الإعدادات.')));
+      ..showSnackBar(
+        SnackBar(content: Text(context.l10n.outreachSettingsSaved)),
+      );
   }
 
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     return AppScaffoldWidget(
-      title: 'إعدادات الاتصال',
+      title: l10n.outreachSettingsTitle,
       initialOffset: null,
       showLargeHeader: false,
       body: _loading
@@ -87,7 +91,7 @@ class _SmartOutreachSettingsScreenState
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 4.h),
                   child: Text(
-                    'تُطبَّق هذه القيم على كل قائمة جديدة.',
+                    l10n.outreachSettingsIntro,
                     style: TextStyle(
                       color: skin.inkSoft.withValues(alpha: 0.78),
                       fontSize: 9.5.sp,
@@ -96,45 +100,45 @@ class _SmartOutreachSettingsScreenState
                     ),
                   ),
                 ),
-                const HomeSectionHeader(title: 'المدد الافتراضية'),
+                HomeSectionHeader(title: l10n.outreachDefaultDurationsHeader),
                 OutreachSliderRow(
-                  label: 'مدة انتظار الرد',
+                  label: l10n.outreachRingTimeout,
                   value: _ringTimeout.toDouble(),
                   min: 5,
                   max: 60,
                   divisions: 55,
-                  valueLabel: '$_ringTimeout ث',
+                  valueLabel: l10n.outreachSecondsValue(_ringTimeout),
                   onChanged: (value) {
                     setState(() => _ringTimeout = value.round());
                   },
                 ),
                 OutreachSliderRow(
-                  label: 'الانتظار بعد الرد',
+                  label: l10n.outreachHangupDelay,
                   value: _hangupDelay.toDouble(),
                   min: 5,
                   max: 120,
                   divisions: 23,
-                  valueLabel: '$_hangupDelay ث',
+                  valueLabel: l10n.outreachSecondsValue(_hangupDelay),
                   onChanged: (value) {
                     setState(() => _hangupDelay = value.round());
                   },
                 ),
                 OutreachSliderRow(
-                  label: 'الفاصل بين كل رقم',
+                  label: l10n.outreachDelayBetweenEach,
                   value: _delayBetweenCalls.toDouble(),
                   min: 1,
                   max: 30,
                   divisions: 29,
-                  valueLabel: '$_delayBetweenCalls ث',
+                  valueLabel: l10n.outreachSecondsValue(_delayBetweenCalls),
                   isLast: true,
                   onChanged: (value) {
                     setState(() => _delayBetweenCalls = value.round());
                   },
                 ),
                 skin.divider(),
-                const HomeSectionHeader(title: 'سلوك القوائم'),
+                HomeSectionHeader(title: l10n.outreachBehaviorHeader),
                 OutreachSwitchRow(
-                  title: 'إيقاف القائمة بعد أول رد',
+                  title: l10n.outreachStopAfterFirstAnswerList,
                   icon: AppIcons.stop,
                   value: _stopOnFirstAnswered,
                   onChanged: (value) {
@@ -142,7 +146,7 @@ class _SmartOutreachSettingsScreenState
                   },
                 ),
                 OutreachSwitchRow(
-                  title: 'إعادة الاتصال إذا لم يتم الرد',
+                  title: l10n.outreachRetryIfNoAnswer,
                   icon: AppIcons.replay,
                   value: _retryEnabled,
                   onChanged: (value) {
@@ -150,7 +154,7 @@ class _SmartOutreachSettingsScreenState
                   },
                 ),
                 OutreachSwitchRow(
-                  title: 'إعادة البدء بعد الانتهاء',
+                  title: l10n.outreachRestartAfterFinish,
                   icon: AppIcons.refresh,
                   value: _repeatCycle,
                   isLast: true,
@@ -159,17 +163,16 @@ class _SmartOutreachSettingsScreenState
                   },
                 ),
                 OutreachPrimaryButton(
-                  label: 'حفظ الإعدادات',
+                  label: l10n.outreachSaveSettings,
                   icon: AppIcons.save,
                   onTap: _save,
                 ),
                 SizedBox(height: 4.h),
-                const HomeSectionHeader(title: 'التشغيل في الخلفية'),
+                HomeSectionHeader(title: l10n.outreachBackgroundHeader),
                 OutreachRow(
-                  title: 'استثناء التطبيق من توفير البطارية',
+                  title: l10n.outreachBatteryTitle,
                   icon: AppIcons.battery,
-                  subtitle: 'إذا توقفت القوائم وهي في الخلفية، اسمح للتطبيق '
-                      'بالعمل من إعدادات البطارية.',
+                  subtitle: l10n.outreachBatterySubtitle,
                   showChevron: true,
                   isLast: true,
                   onTap: _repository.openBatterySettings,

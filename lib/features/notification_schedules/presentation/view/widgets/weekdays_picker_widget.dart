@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedule_form_fields.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// اختيار أيام الأسبوع: أزرار صغيرة بلا بطاقة، التعبئة الذهبية للمحدّد فقط.
 class WeekdaysPickerWidget extends StatefulWidget {
@@ -23,15 +25,29 @@ class WeekdaysPickerWidget extends StatefulWidget {
 class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget> {
   /// الأحد أولًا كما يبدأ الأسبوع عربيًا (7 = الأحد ... 6 = السبت).
   static const List<int> _weekDays = [7, 1, 2, 3, 4, 5, 6];
-  static const List<String> _labels = [
-    'أحد',
-    'اثنين',
-    'ثلاثاء',
-    'أربعاء',
-    'خميس',
-    'جمعة',
-    'سبت',
-  ];
+
+  /// عطلة نهاية الأسبوع في بلدان جمهور كل لغة (`DateTime.weekday`: 1 = الإثنين).
+  /// الخليج وبنغلاديش: الجمعة والسبت. إيران: الخميس والجمعة. باكستان
+  /// وإندونيسيا وتركيا: السبت والأحد.
+  static List<int> _weekendFor(String localeCode) {
+    switch (localeCode) {
+      case 'ar':
+      case 'bn':
+        return const [5, 6];
+      case 'fa':
+        return const [4, 5];
+      default:
+        return const [6, 7];
+    }
+  }
+
+  static List<int> _workDaysFor(String localeCode) {
+    final weekend = _weekendFor(localeCode);
+    return [
+      for (final day in _weekDays)
+        if (!weekend.contains(day)) day,
+    ];
+  }
 
   late List<int> _selected;
 
@@ -70,7 +86,7 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget> {
             children: [
               for (var i = 0; i < _weekDays.length; i++)
                 _DayChip(
-                  label: _labels[i],
+                  label: shortWeekdayName(context.l10n, _weekDays[i]),
                   selected: _selected.contains(_weekDays[i]),
                   onTap: () => _toggleDay(_weekDays[i]),
                 ),
@@ -81,19 +97,19 @@ class _WeekdaysPickerWidgetState extends State<WeekdaysPickerWidget> {
             spacing: 2.w,
             children: [
               SettingsGhostButton(
-                label: 'كل الأيام',
+                label: context.l10n.notifScheduleAllDays,
                 onPressed: () => _apply(List<int>.of(_weekDays)),
               ),
               SettingsGhostButton(
-                label: 'أيام العمل',
-                onPressed: () => _apply([7, 1, 2, 3, 4]),
+                label: context.l10n.notifScheduleWorkDays,
+                onPressed: () => _apply(_workDaysFor(context.localeCode)),
               ),
               SettingsGhostButton(
-                label: 'العطلة',
-                onPressed: () => _apply([5, 6]),
+                label: context.l10n.notifScheduleWeekend,
+                onPressed: () => _apply(_weekendFor(context.localeCode)),
               ),
               SettingsGhostButton(
-                label: 'مسح',
+                label: context.l10n.notifScheduleClear,
                 onPressed: () => _apply([]),
               ),
             ],

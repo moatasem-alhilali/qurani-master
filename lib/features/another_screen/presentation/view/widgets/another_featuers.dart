@@ -22,6 +22,7 @@ import 'package:quran_app/features/traveler/presentation/view/pages/flight_praye
 import 'package:quran_app/features/traveler/presentation/view/pages/travel_athkar_screen.dart';
 import 'package:quran_app/features/traveler/presentation/view/pages/travel_places_map_screen.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_options_sheet.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مميزات التطبيق، مقسّمة إلى مجموعات صغيرة بعناوين.
 ///
@@ -32,96 +33,97 @@ class AnotherFeatures extends StatelessWidget {
 
   /// الميزة التي تُفتح كل يوم — تأخذ صفًّا كاملاً فوق المجموعات.
   _FeatureShortcut _lead(BuildContext context) => _FeatureShortcut(
-        label: 'زاد اليوم والليلة',
-        subtitle: 'ورد تعبدي منظم لأذكارك وتلاوتك اليومية',
+        label: context.l10n.anotherScreenDailyWird,
+        subtitle: context.l10n.anotherScreenDailyWirdSubtitle,
         icon: AppIcons.dailyWird,
         onTap: () => context.push(const DailyWirdScreen()),
       );
 
   List<_FeatureGroup> _groups(BuildContext context) {
+    final l10n = context.l10n;
     return [
       _FeatureGroup(
-        title: 'وردك اليومي',
+        title: l10n.anotherScreenGroupDaily,
         items: [
           _FeatureShortcut(
-            label: 'خطط الختمة',
-            subtitle: 'خطط مرتبة لإتمام الختمة بما يناسبك',
+            label: l10n.anotherScreenKhatmaPlans,
+            subtitle: l10n.anotherScreenKhatmaPlansSubtitle,
             icon: AppIcons.quran,
             onTap: () => context.push(const QuranPlanListScreen()),
           ),
           _FeatureShortcut(
-            label: 'المسبحة',
-            subtitle: 'تسبيح سهل بعداد مريح وواضح',
+            label: l10n.sabihTitle,
+            subtitle: l10n.anotherScreenTasbihSubtitle,
             icon: AppIcons.tasbih,
             onTap: () => context.push(const TasbeehProvider()),
           ),
           _FeatureShortcut(
-            label: 'الأذكار العائمة',
-            subtitle: 'أذكار قصيرة تظهر فوق التطبيقات الأخرى',
+            label: l10n.floatingAdhkarTitle,
+            subtitle: l10n.anotherScreenFloatingAdhkarSubtitle,
             icon: AppIcons.focus,
             onTap: () => context.push(const FloatingAdhkarProvider()),
           ),
           _FeatureShortcut(
-            label: 'صحبة الفجر',
-            subtitle: 'تذكيرات دعوية واتصالات مجدولة',
+            label: l10n.anotherScreenFajrCompanion,
+            subtitle: l10n.anotherScreenFajrCompanionSubtitle,
             icon: AppIcons.phone,
             onTap: () => context.push(const SmartOutreachSchedulesScreen()),
           ),
         ],
       ),
       _FeatureGroup(
-        title: 'علم وتلاوة',
+        title: l10n.anotherScreenGroupKnowledge,
         items: [
           _FeatureShortcut(
-            label: 'موسوعة السور',
-            subtitle: 'استعراض السور وفضائلها وموضوعاتها',
+            label: l10n.anotherScreenSurahEncyclopedia,
+            subtitle: l10n.anotherScreenSurahEncyclopediaSubtitle,
             icon: AppIcons.quran,
             onTap: () => context.push(const SurahWithAllDetailScreen()),
           ),
           _FeatureShortcut(
-            label: 'الأربعون النووية',
-            subtitle: 'أحاديث جامعة في أبواب الدين',
+            label: l10n.anotherScreenNawawi40,
+            subtitle: l10n.anotherScreenNawawi40Subtitle,
             icon: AppIcons.book,
             onTap: () => context.push(const Hadith40Screen()),
           ),
           _FeatureShortcut(
-            label: 'أسماء الله الحسنى',
-            subtitle: 'تأمل الأسماء ومعانيها المباركة',
+            label: l10n.anotherScreenNamesOfAllah,
+            subtitle: l10n.anotherScreenNamesOfAllahSubtitle,
             icon: AppIcons.allah,
             onTap: () => context.push(const AllhNameScreen()),
           ),
           _FeatureShortcut(
-            label: 'الإذاعة',
-            subtitle: 'إذاعات قرآنية وإسلامية ببث مباشر متواصل',
+            label: l10n.anotherScreenRadio,
+            subtitle: l10n.anotherScreenRadioSubtitle,
             icon: AppIcons.radio,
             onTap: () => context.push(const RadioScreen()),
           ),
         ],
       ),
       _FeatureGroup(
-        title: 'أذكار وأدوات',
+        title: l10n.anotherScreenGroupTools,
         items: [
           _FeatureShortcut(
-            label: 'حصن المسلم',
-            subtitle: 'أذكار جامعة مرتبة للأحوال والمناسبات',
+            label: l10n.anotherScreenHisnMuslim,
+            subtitle: l10n.anotherScreenHisnMuslimSubtitle,
             icon: AppIcons.bookOpen,
             onTap: () => context.push(const HisnMuslimScreen()),
           ),
           _FeatureShortcut(
-            label: 'أدعيتي الخاصة',
-            subtitle: 'احتفظ بأدعيتك الشخصية في مكان واحد',
+            label: l10n.anotherScreenMyDuas,
+            subtitle: l10n.anotherScreenMyDuasSubtitle,
             icon: AppIcons.user,
             onTap: () => context.push(const MuDoaProvider()),
           ),
           _FeatureShortcut(
-            label: 'المسافر',
-            subtitle: 'أذكار السفر ومواقيت الرحلات وأماكن نافعة',
+            label: l10n.anotherScreenTraveler,
+            subtitle: l10n.anotherScreenTravelerSubtitle,
             icon: AppIcons.traveler,
             onTap: () => _openTravelerSheet(context),
           ),
           _FeatureShortcut(
-            label: 'ودجات الشاشة الرئيسية',
-            subtitle: 'الصلاة القادمة ومواقيت اليوم وآية اليوم',
+            label: l10n.anotherScreenHomeWidgets,
+            subtitle: l10n.anotherScreenHomeWidgetsSubtitle,
             icon: AppIcons.widgets,
             onTap: () => context.push(const HomeWidgetsScreen()),
           ),
@@ -300,7 +302,13 @@ class _FeaturedShortcutRow extends StatelessWidget {
                 ],
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

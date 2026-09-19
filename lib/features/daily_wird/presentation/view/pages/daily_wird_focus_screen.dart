@@ -9,6 +9,7 @@ import 'package:quran_app/features/daily_wird/data/models/daily_wird_program_ite
 import 'package:quran_app/features/daily_wird/presentation/bloc/daily_wird_bloc.dart';
 import 'package:quran_app/features/daily_wird/presentation/view/widgets/daily_wird_common.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة عمل واحد من الزاد: النصّ هو البطل، وما حوله سطر واحد لا أكثر.
 class DailyWirdFocusScreen extends StatelessWidget {
@@ -41,7 +42,7 @@ class DailyWirdFocusScreen extends StatelessWidget {
             backgroundColor: skin.ground,
             body: Center(
               child: Text(
-                'تعذر العثور على عنصر الزاد التعبدي.',
+                context.l10n.dailyWirdItemNotFound,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 10.5.sp,
@@ -90,8 +91,8 @@ class DailyWirdFocusScreen extends StatelessWidget {
                       padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
                       child: DailyWirdPrimaryButton(
                         label: resolvedItem.isCompleted
-                            ? 'إلغاء الإتمام'
-                            : 'إتمام هذا العمل',
+                            ? context.l10n.dailyWirdUncomplete
+                            : context.l10n.dailyWirdCompleteThis,
                         icon: AppIcons.checkSmall,
                         onTap: () {
                           context.read<DailyWirdBloc>().add(
@@ -125,16 +126,16 @@ class DailyWirdFocusScreen extends StatelessWidget {
         .join('\n\n');
   }
 
-  static String timeCategoryLabel(String value) {
+  static String timeCategoryLabel(L10n l10n, String value) {
     switch (value) {
       case 'morning':
-        return 'وقت الصباح';
+        return l10n.dailyWirdTimeMorningLong;
       case 'evening':
-        return 'وقت المساء';
+        return l10n.dailyWirdTimeEveningLong;
       case 'night':
-        return 'قبل النوم';
+        return l10n.dailyWirdTimeNightLong;
       default:
-        return 'في أي وقت';
+        return l10n.dailyWirdTimeAnyLong;
     }
   }
 }
@@ -163,8 +164,11 @@ class _FocusHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${DailyWirdFocusScreen.timeCategoryLabel(item.timeCategory)}'
-                  ' · ${dailyWirdTypeLabel(item)}',
+                  '${DailyWirdFocusScreen.timeCategoryLabel(
+                    context.l10n,
+                    item.timeCategory,
+                  )}'
+                  ' · ${dailyWirdTypeLabel(context.l10n, item)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -218,8 +222,11 @@ class _CounterSection extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 240),
                   child: Text(
-                    'أتممت ${item.countCompleted} من '
-                    '${item.countRequired ?? 0}$unit',
+                    context.l10n.dailyWirdCompletedOf(
+                      item.countCompleted,
+                      item.countRequired ?? 0,
+                      unit,
+                    ),
                     key: ValueKey(item.countCompleted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -249,7 +256,7 @@ class _CounterSection extends StatelessWidget {
             children: [
               Expanded(
                 child: _GhostButton(
-                  label: 'البدء من جديد',
+                  label: context.l10n.dailyWirdStartOver,
                   onTap: () {
                     HapticFeedback.selectionClick();
                     context.read<DailyWirdBloc>().add(
@@ -261,7 +268,9 @@ class _CounterSection extends StatelessWidget {
               SizedBox(width: 8.w),
               Expanded(
                 child: DailyWirdPrimaryButton(
-                  label: item.isCompleted ? 'أُنجز' : 'احتساب مرّة',
+                  label: item.isCompleted
+                      ? context.l10n.dailyWirdItemDone
+                      : context.l10n.dailyWirdCountOnce,
                   icon: item.isCompleted ? AppIcons.checkSmall : AppIcons.add,
                   onTap: () {
                     if (item.isCompleted) return;

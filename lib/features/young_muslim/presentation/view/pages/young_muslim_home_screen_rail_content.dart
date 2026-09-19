@@ -8,8 +8,8 @@ part of 'young_muslim_home_screen.dart';
 extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
   Widget _buildErrorBody(BuildContext context, String? message) {
     return YoungMuslimEmptyState(
-      title: 'تعذّر تحميل المحتوى',
-      subtitle: message ?? 'اسحب الصفحة للأسفل لإعادة المحاولة.',
+      title: context.l10n.youngMuslimContentLoadError,
+      subtitle: message ?? context.l10n.youngMuslimPullToRetry,
       icon: AppIcons.warning,
     );
   }
@@ -167,7 +167,7 @@ extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     YoungMuslimSectionHeader(
-                      title: 'تصفية المحتوى',
+                      title: context.l10n.youngMuslimFilterSheetTitle,
                       padded: false,
                       trailing: InkWell(
                         onTap: () => Navigator.of(sheetContext).pop(),
@@ -182,13 +182,13 @@ extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
                         ),
                       ),
                     ),
-                    groupLabel('القسم'),
+                    groupLabel(context.l10n.youngMuslimCategoryLabel),
                     Wrap(
                       spacing: 6.w,
                       runSpacing: 6.h,
                       children: [
                         YoungMuslimPillButton(
-                          label: 'الكل',
+                          label: context.l10n.youngMuslimFilterAll,
                           selected: selectedCategoryId == null,
                           onTap: () => setSheetState(
                             () => selectedCategoryId = null,
@@ -204,34 +204,34 @@ extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
                           ),
                       ],
                     ),
-                    groupLabel('اللغة'),
+                    groupLabel(context.l10n.youngMuslimFilterLanguage),
                     Wrap(
                       spacing: 6.w,
                       runSpacing: 6.h,
                       children: [
                         YoungMuslimPillButton(
-                          label: 'الكل',
+                          label: context.l10n.youngMuslimFilterAll,
                           selected: selectedLanguage == null,
                           onTap: () => setSheetState(
                             () => selectedLanguage = null,
                           ),
                         ),
                         YoungMuslimPillButton(
-                          label: 'العربية',
+                          label: context.l10n.youngMuslimLanguageArabic,
                           selected: selectedLanguage == 'ar',
                           onTap: () => setSheetState(
                             () => selectedLanguage = 'ar',
                           ),
                         ),
                         YoungMuslimPillButton(
-                          label: 'الفرنسية',
+                          label: context.l10n.youngMuslimLanguageFrench,
                           selected: selectedLanguage == 'fr',
                           onTap: () => setSheetState(
                             () => selectedLanguage = 'fr',
                           ),
                         ),
                         YoungMuslimPillButton(
-                          label: 'مختلط',
+                          label: context.l10n.youngMuslimLanguageMixed,
                           selected: selectedLanguage == 'mixed',
                           onTap: () => setSheetState(
                             () => selectedLanguage = 'mixed',
@@ -239,20 +239,20 @@ extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
                         ),
                       ],
                     ),
-                    groupLabel('نوع المحتوى'),
+                    groupLabel(context.l10n.youngMuslimFilterContentType),
                     Wrap(
                       spacing: 6.w,
                       runSpacing: 6.h,
                       children: [
                         YoungMuslimPillButton(
-                          label: 'الكل',
+                          label: context.l10n.youngMuslimFilterAll,
                           selected: selectedContentType == null,
                           onTap: () => setSheetState(
                             () => selectedContentType = null,
                           ),
                         ),
                         YoungMuslimPillButton(
-                          label: 'سلاسل قصصية',
+                          label: context.l10n.youngMuslimContentTypeStorySeries,
                           selected: selectedContentType == 'story_series',
                           onTap: () => setSheetState(
                             () => selectedContentType = 'story_series',
@@ -262,7 +262,7 @@ extension _YoungMuslimHomeScreenRail on _YoungMuslimHomeScreenState {
                     ),
                     SizedBox(height: 22.h),
                     YoungMuslimPrimaryButton(
-                      label: 'تطبيق الفلاتر',
+                      label: context.l10n.youngMuslimApplyFilters,
                       icon: AppIcons.check,
                       onTap: () {
                         context.read<YoungMuslimBloc>().add(

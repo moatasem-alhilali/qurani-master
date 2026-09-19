@@ -163,8 +163,11 @@ class YoungMuslimCategoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final audience = category.audience == 'kids' ? ' · للأطفال' : '';
-    final meta = '${category.seriesIds.length} سلسلة$audience';
+    final meta = category.audience == 'kids'
+        ? context.l10n
+            .youngMuslimCategorySeriesCountKids(category.seriesIds.length)
+        : context.l10n
+            .youngMuslimCategorySeriesCount(category.seriesIds.length);
 
     return InkWell(
       onTap: onTap,
@@ -217,7 +220,13 @@ class YoungMuslimCategoryRow extends StatelessWidget {
               ),
             ),
             SizedBox(width: 8.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

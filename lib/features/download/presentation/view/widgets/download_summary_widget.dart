@@ -6,6 +6,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ملخّص التنزيلات: أرقام في صفوف نحيلة، بلا بطاقات ملوّنة.
 ///
@@ -28,23 +29,23 @@ class DownloadSummaryWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _SummaryRow(
-              label: 'الإجمالي',
+              label: context.l10n.downloadTotal,
               value: '${state.downloads.length}',
             ),
             _SummaryRow(
-              label: 'نشط',
+              label: context.l10n.downloadStatusActive,
               value: '${state.activeDownloads.length}',
             ),
             _SummaryRow(
-              label: 'مكتمل',
+              label: context.l10n.downloadStatusCompleted,
               value: '${state.completedDownloads.length}',
             ),
             _SummaryRow(
-              label: 'متوقّف',
+              label: context.l10n.downloadStatusPaused,
               value: '${state.pausedDownloads.length}',
             ),
             _SummaryRow(
-              label: 'فشل',
+              label: context.l10n.downloadStatusFailed,
               value: '${state.failedDownloads.length}',
               isLast: running.isEmpty,
             ),
@@ -54,7 +55,7 @@ class DownloadSummaryWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      'يجري تنزيله الآن',
+                      context.l10n.downloadInProgressNow,
                       style: TextStyle(
                         color: skin.inkSoft.withValues(alpha: 0.8),
                         fontSize: 10.sp,
@@ -82,7 +83,7 @@ class DownloadSummaryWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 0),
                   child: Text(
-                    'و${running.length - 3} غيرها',
+                    context.l10n.downloadAndMore(running.length - 3),
                     style: TextStyle(
                       color: skin.inkSoft.withValues(alpha: 0.62),
                       fontSize: 9.5.sp,

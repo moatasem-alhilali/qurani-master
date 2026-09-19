@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachPermissionSnapshot {
   const SmartOutreachPermissionSnapshot({
@@ -26,18 +27,19 @@ class SmartOutreachPermissionSnapshot {
       notifications.isPermanentlyDenied;
 
   List<String> get missingPermissionLabels {
+    final l10n = L10nService.current;
     final labels = <String>[];
 
     if (_requiresPhonePermission && !phone.isGranted) {
-      labels.add('الاتصال');
+      labels.add(l10n.outreachPermissionPhone);
     }
     if (!contacts.isGranted) {
-      labels.add('جهات الاتصال');
+      labels.add(l10n.outreachPermissionContacts);
     }
     if (_usesRuntimeNotificationPermission &&
         !notifications.isGranted &&
         !notifications.isLimited) {
-      labels.add('الإشعارات');
+      labels.add(l10n.outreachPermissionNotifications);
     }
 
     return labels;

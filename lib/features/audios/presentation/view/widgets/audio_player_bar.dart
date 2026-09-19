@@ -10,6 +10,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// موضع التشغيل الحالي: الموضع، والمخزّن مسبقًا، والمدّة الكاملة.
 typedef _Position = ({Duration position, Duration buffered, Duration total});
@@ -45,6 +46,8 @@ class AudioPlayerBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    // السابق/التالي يتبعان اتجاه القراءة: في العربية «السابق» سهم يمين.
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
@@ -101,8 +104,8 @@ class AudioPlayerBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _SecondaryControl(
-                icon: AppIcons.chevronRight,
-                label: 'السابق',
+                icon: isRtl ? AppIcons.chevronRight : AppIcons.chevronLeft,
+                label: context.l10n.audiosPrevious,
                 onTap: () {
                   HapticFeedback.selectionClick();
                   unawaited(player.seekToPrevious());
@@ -112,8 +115,8 @@ class AudioPlayerBar extends StatelessWidget {
               _MainControl(player: player),
               SizedBox(width: 24.w),
               _SecondaryControl(
-                icon: AppIcons.chevronLeft,
-                label: 'التالي',
+                icon: isRtl ? AppIcons.chevronLeft : AppIcons.chevronRight,
+                label: context.l10n.audiosNext,
                 onTap: () {
                   HapticFeedback.selectionClick();
                   unawaited(player.seekToNext());
@@ -163,7 +166,7 @@ class _MainControl extends StatelessWidget {
 
         return Semantics(
           button: true,
-          label: playing ? 'إيقاف مؤقّت' : 'تشغيل',
+          label: playing ? context.l10n.audiosPause : context.l10n.audiosPlay,
           child: InkWell(
             borderRadius: BorderRadius.circular(18.r),
             onTap: () => _onTap(playing, processing),

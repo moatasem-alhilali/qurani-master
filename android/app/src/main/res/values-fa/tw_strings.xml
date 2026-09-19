@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">نماز بعدی</string>
+    <string name="tw_next_prayer_description">نام و وقت نماز بعدی با شمارش معکوس زنده</string>
+    <string name="tw_prayer_times_label">اوقات امروز</string>
+    <string name="tw_prayer_times_description">اوقات نماز با تاریخ هجری قمری و شهر</string>
+    <string name="tw_daily_ayah_label">آیهٔ روز</string>
+    <string name="tw_daily_ayah_description">آیه‌ای کوتاه که هر روز تازه می‌شود</string>
+    <string name="tw_open_app">طمأنينة را باز کنید</string>
+    <string name="tw_set_location">موقعیت خود را در برنامه تعیین کنید</string>
+    <string name="tw_refresh_needed">برای به‌روزرسانی اوقات</string>
+</resources>

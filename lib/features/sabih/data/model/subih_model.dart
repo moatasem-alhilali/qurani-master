@@ -1,3 +1,5 @@
+import 'package:quran_app/l10n/l10n.dart';
+
 class SubihModel {
   SubihModel({
     required this.title,
@@ -21,6 +23,34 @@ class SubihModel {
   final String content; // الفضل أو الشرح
   final bool isCustom; // هل مضاف من المستخدم؟ (يُمكن حذفه وتعديله)
   final DateTime createdAt;
+
+  /// الوصف المخزّن حين يترك المستخدم الحقل فارغًا — علامة لا تُعرض.
+  static const String noDescriptionMarker = 'بدون وصف';
+
+  /// معاني الأذكار المزروعة افتراضيًا (`SubihSeeder`)؛ خُزّنت بالإنجليزية في
+  /// قاعدة البيانات، فتُعرض بلغة الواجهة بمطابقة النص المخزّن.
+  static final Map<String, String Function(L10n)> _seedMeanings = {
+    'Glory be to Allah': (l10n) => l10n.cleanupDhikrMeaningSubhanAllah,
+    'All praise is due to Allah': (l10n) =>
+        l10n.cleanupDhikrMeaningAlhamdulillah,
+    'There is no god but Allah': (l10n) => l10n.cleanupDhikrMeaningLaIlaha,
+    'Allah is the Greatest': (l10n) => l10n.cleanupDhikrMeaningAllahuAkbar,
+    'There is no might nor power except with Allah': (l10n) =>
+        l10n.cleanupDhikrMeaningLaHawla,
+    'I seek forgiveness from Allah': (l10n) =>
+        l10n.cleanupDhikrMeaningAstaghfirullah,
+    'Glory be to Allah and praise Him, Glory be to Allah the Magnificent':
+        (l10n) => l10n.cleanupDhikrMeaningSubhanAllahWaBihamdihi,
+  };
+
+  /// الوصف كما يُعرض: معنى الذكر المزروع بلغة الواجهة، أو نص المستخدم كما
+  /// هو، أو فارغ إن لم يكن هناك وصف.
+  String displayContent(L10n l10n) {
+    final trimmed = content.trim();
+    if (trimmed == noDescriptionMarker) return '';
+    final meaning = _seedMeanings[trimmed];
+    return meaning != null ? meaning(l10n) : content;
+  }
 
   Map<String, dynamic> toJson() => {
         'id': id,

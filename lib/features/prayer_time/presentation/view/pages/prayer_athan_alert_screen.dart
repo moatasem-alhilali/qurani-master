@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة نداء الأذان: لحظة واحدة، فلا شيء فيها يزاحم اسم الصلاة.
 ///
@@ -58,7 +60,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                   border: Border.all(color: skin.raisedBorder, width: 1.2),
                   boxShadow: skin.raisedShadow,
                 ),
-                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+                padding: EdgeInsets.all(16.w),
                 child: Column(
                   children: [
                     Container(
@@ -78,7 +80,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      'حان الآن وقت الصلاة',
+                      context.l10n.prayerTimeAlertNow,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: skin.inkSoft.withValues(alpha: 0.78),
@@ -88,7 +90,10 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      prayerName,
+                      AthanAlarmPayloadService.displayPrayerName(
+                        prayerName,
+                        context.l10n,
+                      ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -118,7 +123,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                     Divider(height: 1, thickness: 1, color: skin.hairline),
                     SizedBox(height: 10.h),
                     Text(
-                      'أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.',
+                      context.l10n.prayerTimeAlertMessage,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: skin.inkSoft.withValues(alpha: 0.86),
@@ -151,7 +156,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'تم الاستعداد للصلاة',
+                          context.l10n.prayerTimeAlertReady,
                           style: TextStyle(
                             color: AppColors.brandIvory,
                             fontSize: 12.sp,
@@ -182,7 +187,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'فتح صفحة أوقات الصلاة',
+                        context.l10n.prayerTimeAlertOpenTimes,
                         style: TextStyle(
                           color: skin.accent,
                           fontSize: 10.5.sp,
@@ -190,7 +195,7 @@ class PrayerAthanAlertScreen extends StatelessWidget {
                         ),
                       ),
                       AppIcon(
-                        AppIcons.chevronLeft,
+                        AppIcons.forwardFor(context),
                         color: skin.accent,
                         size: 13.sp,
                       ),

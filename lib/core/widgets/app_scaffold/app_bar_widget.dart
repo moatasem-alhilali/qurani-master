@@ -31,7 +31,7 @@ class AppBarWidget extends StatelessWidget {
                 () {
                   context.pop();
                 },
-            icon: const AppIcon(AppIcons.back),
+            icon: AppIcon(AppIcons.backFor(context)),
           ),
           if (isCenterTitle) Text(title),
           const SizedBox(),

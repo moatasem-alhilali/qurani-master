@@ -47,8 +47,8 @@ class _PrayerWeekView extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
             child: Text(
               days.length == 1
-                  ? 'حدّد مدينتك لعرض مواقيت الأسبوع كاملًا'
-                  : 'اسحب الجدول أفقيًا لبقية الأيام · المس أي وقت لتفاصيله',
+                  ? context.l10n.prayerTimeWeekNeedsCity
+                  : context.l10n.prayerTimeWeekHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.7),
@@ -58,7 +58,11 @@ class _PrayerWeekView extends StatelessWidget {
             ),
           ),
           skin.divider(),
-          HomeSectionHeader(title: 'قيام الليل · ${_selectedLabel(days)}'),
+          HomeSectionHeader(
+            title: context.l10n.prayerTimeNightPrayerHeader(
+              _selectedLabel(context, days),
+            ),
+          ),
           Padding(
             padding: AppSkin.gutter,
             child: Column(
@@ -66,14 +70,14 @@ class _PrayerWeekView extends StatelessWidget {
               children: [
                 _InfoRow(
                   icon: AppIcons.moon,
-                  label: 'منتصف الليل',
-                  hint: 'منتصف ما بين المغرب والفجر',
+                  label: context.l10n.prayerTimeMidnight,
+                  hint: context.l10n.prayerTimeMidnightHint,
                   time: days[selectedDay].middleOfTheNight,
                 ),
                 _InfoRow(
                   icon: AppIcons.star,
-                  label: 'الثلث الأخير',
-                  hint: 'أفضل أوقات القيام والدعاء',
+                  label: context.l10n.prayerTimeLastThird,
+                  hint: context.l10n.prayerTimeLastThirdHint,
                   time: days[selectedDay].lastThirdOfTheNight,
                   isLast: true,
                 ),
@@ -82,7 +86,7 @@ class _PrayerWeekView extends StatelessWidget {
           ),
         ],
         skin.divider(),
-        const HomeSectionHeader(title: 'الموقع'),
+        HomeSectionHeader(title: context.l10n.prayerTimeLocationHeader),
         _LocationRow(
           selectedLocation: state.selectedLocation,
           onChangeLocation: onChangeLocation,
@@ -91,7 +95,7 @@ class _PrayerWeekView extends StatelessWidget {
         if (_shouldShowNotice(state))
           _LocationNoticeRow(
             message: (state.locationStatusMessage ?? '').trim().isEmpty
-                ? 'تعذر تحديث الموقع الحالي.'
+                ? context.l10n.prayerTimeLocationUpdateFailed
                 : state.locationStatusMessage!.trim(),
             needsAction: _noticeNeedsAction(state),
             onGrantPermission: onUseCurrentLocation,
@@ -103,10 +107,11 @@ class _PrayerWeekView extends StatelessWidget {
     );
   }
 
-  String _selectedLabel(List<_DayTimes> days) {
-    if (selectedDay == 0) return 'اليوم';
-    if (selectedDay == 1) return 'غدًا';
-    return DateFormat('EEEE', 'ar').format(days[selectedDay].date);
+  String _selectedLabel(BuildContext context, List<_DayTimes> days) {
+    if (selectedDay == 0) return context.l10n.prayerTimeToday;
+    if (selectedDay == 1) return context.l10n.prayerTimeTomorrow;
+    return DateFormat('EEEE', context.localeCode)
+        .format(days[selectedDay].date);
   }
 
   /// الصلاة التي دخل وقتها اليوم ولم يدخل ما بعدها، أو ‎-1‎ قبل الفجر.
@@ -205,7 +210,7 @@ class _PrayerNameColumn extends StatelessWidget {
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(
-                'الصلاة',
+                context.l10n.prayerTimeTablePrayerColumn,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.7),
                   fontSize: 9.sp,
@@ -214,7 +219,7 @@ class _PrayerNameColumn extends StatelessWidget {
               ),
             ),
           ),
-          for (var i = 0; i < _prayerNames.length; i++)
+          for (var i = 0; i < _prayerKeys.length; i++)
             Container(
               height: _tableRowHeight,
               alignment: AlignmentDirectional.centerStart,
@@ -222,7 +227,7 @@ class _PrayerNameColumn extends StatelessWidget {
                 border: Border(bottom: BorderSide(color: skin.hairline)),
               ),
               child: Text(
-                _prayerNames[i],
+                _prayerName(context.l10n, i),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -284,7 +289,7 @@ class _DayColumn extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _shortWeekday(day.date),
+                    _shortWeekday(context.l10n, day.date),
                     maxLines: 1,
                     style: TextStyle(
                       color: isSelected ? skin.accent : skin.inkSoft,

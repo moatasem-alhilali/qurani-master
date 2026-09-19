@@ -42,7 +42,9 @@ class _SaveButton extends StatelessWidget {
                 ),
               SizedBox(width: 8.w),
               Text(
-                isSaving ? 'جارِ الحفظ' : 'حفظ الإعدادات',
+                isSaving
+                    ? context.l10n.prayerTimeSaving
+                    : context.l10n.prayerTimeSaveSettings,
                 style: TextStyle(
                   color: AppColors.brandIvory,
                   fontSize: 12.sp,

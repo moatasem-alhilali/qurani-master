@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
@@ -11,9 +12,15 @@ import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_
 import 'package:quran_app/features/floating_adhkar/overlay/floating_adhkar_overlay_coordinator.dart';
 import 'package:quran_app/features/floating_adhkar/overlay/floating_adhkar_overlay_state.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 Future<void> runFloatingAdhkarOverlay() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // محرّك النافذة العائمة منفصل: نحمّل التخزين ليقرأ L10nService اللغة
+  // المحفوظة (وإلا عاد إلى العربية).
+  try {
+    await CacheService.init();
+  } catch (_) {}
   await DatabaseService().database;
 
   final repository = FloatingAdhkarRepository(
@@ -61,8 +68,12 @@ class _FloatingAdhkarOverlayAppState extends State<FloatingAdhkarOverlayApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: L10n.localizationsDelegates,
+      supportedLocales: L10n.supportedLocales,
+      locale: L10nService.savedLanguage.locale,
       theme: _buildOverlayTheme(Brightness.light),
       darkTheme: _buildOverlayTheme(Brightness.dark),
+      // نصّ الذكر عربي دائمًا، فيبقى اتجاهه من اليمين مهما كانت لغة الواجهة.
       home: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(

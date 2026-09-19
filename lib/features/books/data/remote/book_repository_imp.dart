@@ -4,6 +4,7 @@ import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/services/api_serves.dart';
 import 'package:quran_app/features/books/data/remote/book_repository.dart';
 import 'package:quran_app/main.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class BookRepositoryImpl implements BookRepository {
   @override
@@ -18,7 +19,7 @@ class BookRepositoryImpl implements BookRepository {
       return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 }

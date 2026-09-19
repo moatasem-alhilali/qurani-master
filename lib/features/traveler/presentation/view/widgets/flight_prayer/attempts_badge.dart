@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// عدّاد المحاولات المتبقّية للبحث عن رحلة.
 class AttemptsBadge extends StatelessWidget {
@@ -26,7 +27,7 @@ class AttemptsBadge extends StatelessWidget {
         TextSpan(
           children: [
             TextSpan(
-              text: 'محاولات متبقّية ',
+              text: '${context.l10n.travelerAttemptsRemaining} ',
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 9.5.sp,

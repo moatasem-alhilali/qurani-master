@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">পরবর্তী নামাজ</string>
+    <string name="tw_next_prayer_description">পরবর্তী নামাজের নাম ও সময়, সাথে লাইভ কাউন্টডাউন</string>
+    <string name="tw_prayer_times_label">আজকের সময়সূচি</string>
+    <string name="tw_prayer_times_description">হিজরি তারিখ ও শহরসহ নামাজের সময়সূচি</string>
+    <string name="tw_daily_ayah_label">আজকের আয়াত</string>
+    <string name="tw_daily_ayah_description">প্রতিদিন বদলে যাওয়া একটি ছোট আয়াত</string>
+    <string name="tw_open_app">তামানিনা খুলুন</string>
+    <string name="tw_set_location">অ্যাপে আপনার লোকেশন দিন</string>
+    <string name="tw_refresh_needed">সময়সূচি হালনাগাদ করতে</string>
+</resources>

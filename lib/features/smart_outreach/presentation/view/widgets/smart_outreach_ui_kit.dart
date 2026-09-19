@@ -8,12 +8,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أدوات شاشات «صحبة الفجر».
 ///
 /// كانت كل مجموعة حقول وكل جدولة تجلس داخل بطاقة بحدّ وظلّ، فصارت الشاشة
 /// شريطًا من الصناديق لا يبرز فيها شيء. هنا المحتوى يجلس على `skin.ground`
 /// مباشرة، ويفصل بين الصفوف خطّ بسُمك شعرة، والارتفاع محجوز لعنصر واحد.
+
+/// سهم «التالي» في صفّ قابل للنقر: يشير إلى نهاية السطر في كلا الاتجاهين.
+HugeIconData outreachForwardChevron(BuildContext context) =>
+    Directionality.of(context) == ui.TextDirection.rtl
+        ? AppIcons.chevronLeft
+        : AppIcons.chevronRight;
+
+/// محاذاة نصّ لاتينيّ الاتجاه (رقم هاتف) إلى بداية السطر بحسب لغة الواجهة.
+TextAlign outreachStartAlign(BuildContext context) =>
+    Directionality.of(context) == ui.TextDirection.rtl
+        ? TextAlign.right
+        : TextAlign.left;
 
 /// لون النصّ فوق تعبئة `skin.accent`.
 Color outreachOnAccent(AppSkin skin) =>
@@ -157,7 +170,11 @@ class OutreachRow extends StatelessWidget {
           ],
           if (showChevron) ...[
             SizedBox(width: 4.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              outreachForwardChevron(context),
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ],
       ),
@@ -215,10 +232,12 @@ class OutreachStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final label = active ? 'نشط' : 'متوقّف';
+    final l10n = context.l10n;
+    final label =
+        active ? l10n.outreachStatusActive : l10n.outreachStatusStopped;
 
     return Semantics(
-      label: active ? 'الحالة: نشط' : 'الحالة: متوقّف',
+      label: l10n.outreachStatusSemantics(label),
       excludeSemantics: true,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -800,22 +819,22 @@ class OutreachLoading extends StatelessWidget {
 }
 
 /// اسم اليوم بترقيم `DateTime.weekday` نفسه (١ الإثنين … ٧ الأحد).
-String outreachWeekdayLabel(int day) {
+String outreachWeekdayLabel(L10n l10n, int day) {
   switch (day) {
     case 1:
-      return 'الإثنين';
+      return l10n.outreachWeekday1;
     case 2:
-      return 'الثلاثاء';
+      return l10n.outreachWeekday2;
     case 3:
-      return 'الأربعاء';
+      return l10n.outreachWeekday3;
     case 4:
-      return 'الخميس';
+      return l10n.outreachWeekday4;
     case 5:
-      return 'الجمعة';
+      return l10n.outreachWeekday5;
     case 6:
-      return 'السبت';
+      return l10n.outreachWeekday6;
     case 7:
-      return 'الأحد';
+      return l10n.outreachWeekday7;
     default:
       return '$day';
   }

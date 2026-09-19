@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/quran_plan/data/model/plan_progress_analysis_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/plan_progress_line.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تحليل الخطة: أرقام قليلة في صفوف نحيلة، لا بطاقة زرقاء بتدرّج.
 class SmartAnalysisPlanWidget extends StatelessWidget {
@@ -14,7 +15,8 @@ class SmartAnalysisPlanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final formatter = DateFormat('yyyy/MM/dd');
+    final l10n = context.l10n;
+    final formatter = DateFormat('yyyy/MM/dd', context.localeCode);
     final finishDate = analysis.expectedFinishDate;
     final probability =
         (analysis.completionProbability.clamp(0.0, 1.0) * 100).round();
@@ -23,25 +25,26 @@ class SmartAnalysisPlanWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _StatRow(
-          label: 'توقّع يوم الختم',
+          label: l10n.quranPlanExpectedFinish,
           value: finishDate != null ? formatter.format(finishDate) : '—',
         ),
         _StatRow(
-          label: 'متوسّط الفاصل بين الجلسات',
-          value: '${analysis.averageSessionIntervalDays.toStringAsFixed(1)}'
-              ' يوم',
+          label: l10n.quranPlanAverageInterval,
+          value: l10n.quranPlanAverageIntervalValue(
+            analysis.averageSessionIntervalDays.toStringAsFixed(1),
+          ),
         ),
         _StatRow(
-          label: 'اليوم الأكثر نشاطًا',
+          label: l10n.quranPlanMostActiveDay,
           value: analysis.activityDay,
         ),
         _StatRow(
-          label: 'اليوم الأقلّ نشاطًا',
+          label: l10n.quranPlanLeastActiveDay,
           value: analysis.lazyDay,
         ),
         _StatRow(
-          label: 'احتمال إتمام الخطة',
-          value: '$probability بالمئة',
+          label: l10n.quranPlanCompletionProbability,
+          value: l10n.quranPlanPercentValue(probability),
           isLast: true,
         ),
         Padding(
@@ -67,7 +70,7 @@ class SmartAnalysisPlanWidget extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'أيام الركود',
+                  l10n.quranPlanStagnationDays,
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.8),
                     fontSize: 10.sp,

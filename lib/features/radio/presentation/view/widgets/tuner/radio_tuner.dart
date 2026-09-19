@@ -12,6 +12,7 @@ import 'package:quran_app/features/radio/presentation/bloc/radio_bloc.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_waveform.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/tuner/radio_dial_painter.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// موضع القرص الكسري، مع بديل آمن قبل أوّل تخطيط.
 ///
@@ -157,7 +158,7 @@ class _RadioTunerState extends State<RadioTuner> {
           isPowered: widget.isPowered,
           isPlaying: widget.isPlaying,
           isLoading: widget.isLoading,
-          kindLabel: station.kind.label,
+          kindLabel: station.kind.label(context.l10n),
         ),
         SizedBox(height: 12.h),
         _DialStrip(
@@ -179,7 +180,7 @@ class _RadioTunerState extends State<RadioTuner> {
                     SizedBox(width: 6.w),
                     _SmallAction(
                       icon: AppIcons.stop,
-                      label: 'إيقاف البثّ',
+                      label: context.l10n.radioStopBroadcast,
                       onTap: _stop,
                     ),
                   ],
@@ -270,11 +271,11 @@ class _TunerStatus extends StatelessWidget {
   final bool isLoading;
   final String kindLabel;
 
-  String get _label {
-    if (isLoading) return 'جارٍ الالتقاط…';
-    if (isPlaying) return 'بثّ مباشر';
-    if (isPowered) return 'متوقّف مؤقّتًا';
-    return 'اضغط للتشغيل';
+  String _label(L10n l10n) {
+    if (isLoading) return l10n.radioTuning;
+    if (isPlaying) return l10n.radioLive;
+    if (isPowered) return l10n.radioPaused;
+    return l10n.radioTapToPlay;
   }
 
   @override
@@ -305,7 +306,7 @@ class _TunerStatus extends StatelessWidget {
           ),
         ),
         Text(
-          _label,
+          _label(context.l10n),
           style: TextStyle(
             color:
                 isPlaying ? skin.accent : skin.inkSoft.withValues(alpha: 0.78),
@@ -434,7 +435,7 @@ class _PowerButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: isPlaying ? 'إيقاف مؤقّت' : 'تشغيل',
+      label: isPlaying ? context.l10n.radioPause : context.l10n.radioPlay,
       child: InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),

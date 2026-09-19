@@ -26,7 +26,7 @@ class _TabStrip extends StatelessWidget {
         children: [
           Expanded(
             child: _TabItem(
-              title: 'الأذكار الافتراضية',
+              title: context.l10n.floatingAdhkarTabBuiltIn,
               badge: builtInLabel,
               active: activeIndex == 0,
               onTap: () => onSelect(0),
@@ -34,7 +34,7 @@ class _TabStrip extends StatelessWidget {
           ),
           Expanded(
             child: _TabItem(
-              title: 'الأذكار الخاصة',
+              title: context.l10n.floatingAdhkarTabCustom,
               badge: customLabel,
               active: activeIndex == 1,
               onTap: () => onSelect(1),

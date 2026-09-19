@@ -149,7 +149,13 @@ class LibraryRow extends StatelessWidget {
               ),
             ],
             SizedBox(width: 6.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),
@@ -385,7 +391,7 @@ class LibraryDetailSheet extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 2.h, 8.w, 8.h),
+              padding: EdgeInsetsDirectional.fromSTEB(8.w, 2.h, 16.w, 8.h),
               child: Row(
                 children: [
                   Expanded(
@@ -407,7 +413,6 @@ class LibraryDetailSheet extends StatelessWidget {
                         if (note.isNotEmpty)
                           Text(
                             note,
-                            textDirection: TextDirection.rtl,
                             style: TextStyle(
                               color: skin.inkSoft.withValues(alpha: 0.78),
                               fontSize: 9.5.sp,
@@ -427,7 +432,6 @@ class LibraryDetailSheet extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
                 child: Text(
                   visibleFacts.join('  ·  '),
-                  textDirection: TextDirection.rtl,
                   style: TextStyle(
                     color: skin.accent,
                     fontSize: 9.5.sp,

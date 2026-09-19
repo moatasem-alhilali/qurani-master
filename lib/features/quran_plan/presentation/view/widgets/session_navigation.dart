@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_library/quran_library.dart';
 
 /// يفتح المصحف عند أوّل آية في الجلسة.
@@ -35,15 +36,23 @@ void openSessionInQuran(BuildContext context, QuranPlanSession session) {
 }
 
 /// نصّ مدى الجلسة: «من الفاتحة ١ إلى البقرة ٥».
-String sessionRangeLabel(QuranPlanSession session) {
+///
+/// أسماء السور تبقى بالعربية؛ ما حولها بلغة الواجهة.
+String sessionRangeLabel(L10n l10n, QuranPlanSession session) {
   final fromSurah = _findSurah(session.fromSurahId);
   final toSurah = _findSurah(session.toSurahId);
 
-  final fromName = fromSurah?.arabicName ?? 'سورة ${session.fromSurahId}';
-  final toName = toSurah?.arabicName ?? 'سورة ${session.toSurahId}';
+  final fromName =
+      fromSurah?.arabicName ?? l10n.quranPlanSurahFallback(session.fromSurahId);
+  final toName =
+      toSurah?.arabicName ?? l10n.quranPlanSurahFallback(session.toSurahId);
 
-  return 'من $fromName الآية ${session.fromAyahNumber}'
-      ' إلى $toName الآية ${session.toAyahNumber}';
+  return l10n.quranPlanSessionRange(
+    fromName,
+    session.fromAyahNumber,
+    toName,
+    session.toAyahNumber,
+  );
 }
 
 /// يبحث عن سورة برقمها في بيانات المكتبة.

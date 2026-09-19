@@ -8,6 +8,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class TravelPlacesMapLayer extends StatelessWidget {
   const TravelPlacesMapLayer({
@@ -107,7 +108,7 @@ class TravelPlacesMapLayer extends StatelessWidget {
               border: Border.all(color: skin.hairline),
             ),
             child: Text(
-              'اضغط على العلامة لعرض التفاصيل',
+              context.l10n.travelerTapMarkerHint,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 9.5.sp,

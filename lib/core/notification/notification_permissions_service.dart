@@ -4,6 +4,7 @@ import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 /// Service to handle notification permissions with proper error handling
@@ -85,23 +86,22 @@ class NotificationPermissionsService {
     BuildContext context, {
     String? customMessage,
   }) async {
-    final message = customMessage ??
-        'يحتاج التطبيق إلى إذن الإشعارات لتذكيرك بأوقات الصلاة والأذكار.\n'
-            'هذا يساعدك على البقاء على اتصال مع تعاليم الإسلام طوال اليوم.';
+    final l10n = context.l10n;
+    final message = customMessage ?? l10n.coreNotificationPermissionRationale;
 
     var granted = false;
     await AdaptiveAlertDialog.show(
       context: context,
-      title: 'إذن الإشعارات',
+      title: l10n.coreNotificationPermissionTitle,
       message: message,
       actions: [
         AlertAction(
-          title: 'ليس الآن',
+          title: l10n.coreNotNow,
           style: AlertActionStyle.cancel,
           onPressed: () => granted = false,
         ),
         AlertAction(
-          title: 'السماح',
+          title: l10n.coreAllow,
           style: AlertActionStyle.primary,
           onPressed: () => granted = true,
         ),
@@ -114,17 +114,16 @@ class NotificationPermissionsService {
   Future<void> showSettingsDialog(BuildContext context) async {
     await AdaptiveAlertDialog.show(
       context: context,
-      title: 'إعدادات الإشعارات',
-      message: 'تم رفض إذن الإشعارات بشكل دائم.\n'
-          'يرجى الذهاب إلى الإعدادات وتفعيل الإشعارات يدوياً.',
+      title: context.l10n.coreNotificationSettingsTitle,
+      message: context.l10n.coreNotificationPermanentlyDeniedMessage,
       actions: [
         AlertAction(
-          title: 'إلغاء',
+          title: context.l10n.commonCancel,
           style: AlertActionStyle.cancel,
           onPressed: () {},
         ),
-        const AlertAction(
-          title: 'فتح الإعدادات',
+        AlertAction(
+          title: context.l10n.coreOpenSettings,
           style: AlertActionStyle.primary,
           onPressed: openAppSettings,
         ),
@@ -246,15 +245,15 @@ extension NotificationPermissionStatusExtension
   String get description {
     switch (this) {
       case NotificationPermissionStatus.granted:
-        return 'تم منح جميع الأذونات';
+        return L10nService.current.corePermissionStatusGranted;
       case NotificationPermissionStatus.denied:
-        return 'تم رفض أذونات الإشعارات';
+        return L10nService.current.corePermissionStatusDenied;
       case NotificationPermissionStatus.permanentlyDenied:
-        return 'تم رفض الأذونات بشكل دائم';
+        return L10nService.current.corePermissionStatusPermanentlyDenied;
       case NotificationPermissionStatus.partiallyGranted:
-        return 'تم منح بعض الأذونات فقط';
+        return L10nService.current.corePermissionStatusPartial;
       case NotificationPermissionStatus.unknown:
-        return 'حالة الأذونات غير معروفة';
+        return L10nService.current.corePermissionStatusUnknown;
     }
   }
 }
@@ -272,15 +271,15 @@ extension NotificationPermissionResultExtension
   String get description {
     switch (this) {
       case NotificationPermissionResult.granted:
-        return 'تم منح جميع الأذونات بنجاح';
+        return L10nService.current.corePermissionResultGranted;
       case NotificationPermissionResult.denied:
-        return 'تم رفض طلب الأذونات';
+        return L10nService.current.corePermissionResultDenied;
       case NotificationPermissionResult.permanentlyDenied:
-        return 'تم رفض الأذونات بشكل دائم - يرجى الذهاب إلى الإعدادات';
+        return L10nService.current.corePermissionResultPermanentlyDenied;
       case NotificationPermissionResult.partiallyGranted:
-        return 'تم منح بعض الأذونات - قد تحتاج لأذونات إضافية';
+        return L10nService.current.corePermissionResultPartial;
       case NotificationPermissionResult.error:
-        return 'حدث خطأ أثناء طلب الأذونات';
+        return L10nService.current.corePermissionResultError;
     }
   }
 }

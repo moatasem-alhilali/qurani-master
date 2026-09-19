@@ -13,6 +13,7 @@ import 'package:quran_app/features/floating_adhkar/presentation/bloc/floating_ad
 import 'package:quran_app/features/floating_adhkar/presentation/view/widgets/floating_adhkar_widgets.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// إعدادات الأذكار العائمة.
 ///
@@ -49,8 +50,8 @@ class _FloatingAdhkarSettingsScreenState
     return GroundScaffoldTheme(
       child: AppScaffoldWidget(
         title: isIosReminderMode
-            ? 'إعدادات تذكيرات الأذكار'
-            : 'إعدادات الأذكار العائمة',
+            ? context.l10n.floatingAdhkarSettingsTitleIos
+            : context.l10n.floatingAdhkarSettingsTitle,
         showLargeHeader: false,
         initialOffset: null,
         body: ColoredBox(
@@ -68,16 +69,18 @@ class _FloatingAdhkarSettingsScreenState
               ),
               skin.divider(),
               HomeSectionHeader(
-                title: isIosReminderMode ? 'توقيت التذكير' : 'توقيت الظهور',
+                title: isIosReminderMode
+                    ? context.l10n.floatingAdhkarReminderTiming
+                    : context.l10n.floatingAdhkarAppearanceTiming,
               ),
               _OptionGroup(
                 label: isIosReminderMode
-                    ? 'معدل تكرار التنبيه'
-                    : 'معدل تكرار الظهور',
+                    ? context.l10n.floatingAdhkarReminderFrequency
+                    : context.l10n.floatingAdhkarAppearanceFrequency,
                 options: [
                   for (final value in _intervalOptions)
                     _Option(
-                      label: formatFloatingInterval(value),
+                      label: formatFloatingInterval(context.l10n, value),
                       selected: _draft.intervalMinutes == value,
                       onTap: () {
                         unawaited(HapticFeedback.selectionClick());
@@ -91,11 +94,11 @@ class _FloatingAdhkarSettingsScreenState
               ),
               if (!isIosReminderMode)
                 _OptionGroup(
-                  label: 'مدة بقاء الذكر',
+                  label: context.l10n.floatingAdhkarVisibleDurationTitle,
                   options: [
                     for (final value in _visibleOptions)
                       _Option(
-                        label: '$value ثانية',
+                        label: context.l10n.floatingAdhkarSecondsCount(value),
                         selected: _draft.visibleSeconds == value,
                         onTap: () {
                           unawaited(HapticFeedback.selectionClick());
@@ -108,11 +111,13 @@ class _FloatingAdhkarSettingsScreenState
                   ],
                 ),
               skin.divider(),
-              const HomeSectionHeader(title: 'مصادر الأذكار'),
+              HomeSectionHeader(
+                title: context.l10n.floatingAdhkarSourcesTitle,
+              ),
               FloatingAdhkarSwitchRow(
                 icon: AppIcons.tasbih,
-                title: 'الأذكار الافتراضية',
-                subtitle: 'المصدر الداخلي الأساسي للتطبيق',
+                title: context.l10n.floatingAdhkarTabBuiltIn,
+                subtitle: context.l10n.floatingAdhkarBuiltInSourceSubtitle,
                 value: _draft.includeBuiltIn,
                 onChanged: (value) {
                   unawaited(HapticFeedback.selectionClick());
@@ -123,8 +128,8 @@ class _FloatingAdhkarSettingsScreenState
               ),
               FloatingAdhkarSwitchRow(
                 icon: AppIcons.bookOpen,
-                title: 'أذكاري الخاصة',
-                subtitle: 'الأذكار التي أضفتها بنفسك',
+                title: context.l10n.floatingAdhkarSourceMyAdhkar,
+                subtitle: context.l10n.floatingAdhkarCustomSourceSubtitle,
                 value: _draft.includeCustom,
                 isLast: !(_draft.includeBuiltIn && _draft.includeCustom),
                 onChanged: (value) {
@@ -137,10 +142,10 @@ class _FloatingAdhkarSettingsScreenState
               if (_draft.includeBuiltIn && _draft.includeCustom)
                 FloatingAdhkarSwitchRow(
                   icon: AppIcons.layers,
-                  title: 'الخلط بين المصادر',
+                  title: context.l10n.floatingAdhkarMixSources,
                   subtitle: _draft.mixSources
-                      ? 'يتم الاختيار من قائمة موحدة'
-                      : 'يتم التناوب بين الافتراضي والمخصص',
+                      ? context.l10n.floatingAdhkarMixSourcesOn
+                      : context.l10n.floatingAdhkarMixSourcesOff,
                   value: _draft.mixSources,
                   isLast: true,
                   onChanged: (value) {
@@ -164,8 +169,8 @@ class _FloatingAdhkarSettingsScreenState
   void _saveSettings() {
     if (!_draft.hasAnySource) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('فعّل مصدرًا واحدًا على الأقل قبل الحفظ.'),
+        SnackBar(
+          content: Text(context.l10n.floatingAdhkarSaveNeedsSource),
         ),
       );
       return;
@@ -206,7 +211,7 @@ class _MasterSwitch extends StatelessWidget {
           ),
           boxShadow: skin.raisedShadow,
         ),
-        padding: EdgeInsets.fromLTRB(12.w, 8.h, 10.w, 8.h),
+        padding: EdgeInsetsDirectional.fromSTEB(10.w, 8.h, 12.w, 8.h),
         child: Row(
           children: [
             Container(
@@ -231,7 +236,7 @@ class _MasterSwitch extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'تشغيل الميزة بالكامل',
+                    context.l10n.floatingAdhkarMasterSwitch,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -243,8 +248,8 @@ class _MasterSwitch extends StatelessWidget {
                   ),
                   Text(
                     isIosReminderMode
-                        ? 'تُجدول تنبيهات أذكار على iPhone'
-                        : 'تبدأ الخدمة الخلفية في إظهار الأذكار',
+                        ? context.l10n.floatingAdhkarMasterSwitchIosHint
+                        : context.l10n.floatingAdhkarMasterSwitchHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -388,7 +393,7 @@ class _SaveButton extends StatelessWidget {
               AppIcon(AppIcons.save, color: onGold, size: 15.sp),
               SizedBox(width: 7.w),
               Text(
-                'حفظ الإعدادات',
+                context.l10n.floatingAdhkarSaveSettings,
                 style: TextStyle(
                   color: onGold,
                   fontSize: 12.sp,

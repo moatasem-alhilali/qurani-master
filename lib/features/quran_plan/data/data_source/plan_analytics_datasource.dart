@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:quran_app/features/quran_plan/data/model/plan_progress_analysis_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class PlanAnalyticsService {
   /// يحلل خطة ختم معينة ويعيد إحصائيات وتوقعات متقدمة
@@ -9,6 +10,9 @@ class PlanAnalyticsService {
     QuranPlan plan,
     List<QuranPlanSession> sessions,
   ) async {
+    // التحليل يُحسب خارج شجرة الواجهة، فنصوصه بلغة الواجهة المحفوظة.
+    final l10n = L10nService.current;
+
     // 1. استخراج الجلسات المكتملة بترتيب التنفيذ
     final completed = sessions
         .where((s) => s.completed && s.completedAt != null)
@@ -21,7 +25,7 @@ class PlanAnalyticsService {
         sessionsPerWeekday: {},
         activityDay: '-',
         lazyDay: '-',
-        predictionMessage: 'ابدأ أول جلسة لتحليل تقدمك.',
+        predictionMessage: l10n.quranPlanAnalysisStartFirst,
         completionProbability: 0,
         stagnationDays: [],
       );
@@ -65,18 +69,18 @@ class PlanAnalyticsService {
             ? 0.7
             : 0.4;
 
-    final f = DateFormat('EEEE', 'ar');
+    final f = DateFormat('EEEE', L10nService.savedLanguage.code);
     final activityDay = f.format(DateTime(2025, 7, 21 + maxEntry.key));
     final lazyDay = f.format(DateTime(2025, 7, 21 + minEntry.key));
 
     final predictionMsg = (sessionsRemaining == 0)
-        ? 'مبارك! لقد أنهيت الخطة.'
+        ? l10n.quranPlanAnalysisFinished
         : (expectedFinishDate != null &&
                 expectedFinishDate.isBefore(
                   plan.createdAt.add(Duration(days: plan.totalDays)),
                 ))
-            ? 'أنت على المسار الصحيح، ومتوقع أن تختم قبل الوقت المحدد!'
-            : 'قد تتأخر قليلاً عن الموعد. حاول تسريع وتيرة القراءة.';
+            ? l10n.quranPlanAnalysisOnTrack
+            : l10n.quranPlanAnalysisBehind;
 
     // 6. أيام الركود (أي يوم لم تتم فيه جلسة لأكثر من يوم متتالي)
     final stagnationDays = <DateTime>[];

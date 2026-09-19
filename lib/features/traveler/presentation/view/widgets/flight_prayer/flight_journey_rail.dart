@@ -8,6 +8,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مواقيت الرحلة كخطّ زمن رأسي: نقاط على سكّة واحدة من الإقلاع إلى الهبوط.
 ///
@@ -24,7 +25,7 @@ class FlightJourneyRail extends StatelessWidget {
   final FlightPrayerTimelineResult timeline;
   final void Function(LatLng center, double zoom) onFocusPoint;
 
-  List<_JourneyStop> _stops() {
+  List<_JourneyStop> _stops(L10n l10n) {
     final points = timeline.track.trackPoints;
     final stops = <_JourneyStop>[];
 
@@ -32,7 +33,7 @@ class FlightJourneyRail extends StatelessWidget {
       final first = points.first;
       stops.add(
         _JourneyStop(
-          title: 'الإقلاع',
+          title: l10n.travelerTakeoff,
           subtitle: timeline.track.originLabel,
           whenUtc: timeline.track.departureUtc,
           latitude: first.latitude,
@@ -46,8 +47,8 @@ class FlightJourneyRail extends StatelessWidget {
     for (final event in timeline.prayerEvents) {
       stops.add(
         _JourneyStop(
-          title: event.prayerNameAr,
-          subtitle: 'بالتوقيت المحلي فوق موضع الطائرة',
+          title: event.prayerName(l10n),
+          subtitle: l10n.travelerLocalTimeAbovePlane,
           whenUtc: event.eventUtc,
           whenLocal: event.eventLocal,
           latitude: event.latitude,
@@ -61,7 +62,7 @@ class FlightJourneyRail extends StatelessWidget {
       final last = points.last;
       stops.add(
         _JourneyStop(
-          title: 'الهبوط',
+          title: l10n.travelerLanding,
           subtitle: timeline.track.destinationLabel,
           whenUtc: timeline.track.arrivalUtc,
           latitude: last.latitude,
@@ -78,7 +79,7 @@ class FlightJourneyRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final stops = _stops();
+    final stops = _stops(context.l10n);
 
     if (stops.isEmpty) {
       return const SizedBox.shrink();
@@ -105,7 +106,7 @@ class FlightJourneyRail extends StatelessWidget {
           ),
         SizedBox(height: 4.h),
         Text(
-          'اضغط على أي محطّة لترى موضعها على الخريطة',
+          context.l10n.travelerTapStopHint,
           style: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.7),
             fontSize: 9.5.sp,
@@ -309,7 +310,9 @@ class _RaisedStopBody extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
-                  stop.isEdge ? 'قادم' : 'التالية',
+                  stop.isEdge
+                      ? context.l10n.travelerUpcoming
+                      : context.l10n.travelerNext,
                   style: TextStyle(
                     color: skin.isDark
                         ? AppColors.brandNight
@@ -337,7 +340,7 @@ class _RaisedStopBody extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            '${stop.subtitle} · جرينتش ${stop.utcTime}',
+            context.l10n.travelerStopGmt(stop.subtitle, stop.utcTime),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

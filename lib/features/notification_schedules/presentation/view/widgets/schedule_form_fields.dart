@@ -6,38 +6,61 @@ import 'package:quran_app/core/notification/model/notification_schedule_model.da
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// حقول جدولة الإشعار بلغة الصفوف النحيلة نفسها: بلا بطاقات ولا ألوان حرفية.
 
-/// اسم نوع الجدولة بالعربية.
-String scheduleTypeLabel(ScheduleType type) {
+/// اسم نوع الجدولة بلغة الواجهة.
+String scheduleTypeLabel(L10n l10n, ScheduleType type) {
   switch (type) {
     case ScheduleType.daily:
-      return 'يومي';
+      return l10n.notifScheduleTypeDaily;
     case ScheduleType.hourly:
-      return 'كل ساعة';
+      return l10n.notifScheduleTypeHourly;
     case ScheduleType.everyNMinutes:
-      return 'كل عدة دقائق';
+      return l10n.notifScheduleTypeEveryNMinutes;
     case ScheduleType.weekly:
-      return 'أسبوعي';
+      return l10n.notifScheduleTypeWeekly;
     case ScheduleType.customDates:
-      return 'تواريخ مخصصة';
+      return l10n.notifScheduleTypeCustomDates;
   }
 }
 
 /// شرح سطر واحد لكل نوع جدولة.
-String scheduleTypeDescription(ScheduleType type) {
+String scheduleTypeDescription(L10n l10n, ScheduleType type) {
   switch (type) {
     case ScheduleType.daily:
-      return 'يتكرر كل يوم في الوقت نفسه';
+      return l10n.notifScheduleTypeDailyDesc;
     case ScheduleType.hourly:
-      return 'يتكرر كل ساعة عند دقيقة محددة';
+      return l10n.notifScheduleTypeHourlyDesc;
     case ScheduleType.everyNMinutes:
-      return 'يتكرر كل فترة زمنية تحددها';
+      return l10n.notifScheduleTypeEveryNMinutesDesc;
     case ScheduleType.weekly:
-      return 'يتكرر في أيام محددة من الأسبوع';
+      return l10n.notifScheduleTypeWeeklyDesc;
     case ScheduleType.customDates:
-      return 'يظهر في تواريخ وأوقات تختارها';
+      return l10n.notifScheduleTypeCustomDatesDesc;
+  }
+}
+
+/// اسم يوم الأسبوع المختصر (1 = الاثنين ... 7 = الأحد).
+String shortWeekdayName(L10n l10n, int day) {
+  switch (day) {
+    case 1:
+      return l10n.notifScheduleDayShort1;
+    case 2:
+      return l10n.notifScheduleDayShort2;
+    case 3:
+      return l10n.notifScheduleDayShort3;
+    case 4:
+      return l10n.notifScheduleDayShort4;
+    case 5:
+      return l10n.notifScheduleDayShort5;
+    case 6:
+      return l10n.notifScheduleDayShort6;
+    case 7:
+      return l10n.notifScheduleDayShort7;
+    default:
+      return '?';
   }
 }
 
@@ -74,13 +97,13 @@ class ScheduleTypeSelector extends StatelessWidget {
     const types = ScheduleType.values;
 
     return SettingsGroup(
-      title: 'نوع الجدولة',
+      title: context.l10n.notifScheduleTypeTitle,
       children: [
         for (var i = 0; i < types.length; i++)
           SettingsRow(
             icon: scheduleTypeIcon(types[i]),
-            title: scheduleTypeLabel(types[i]),
-            subtitle: scheduleTypeDescription(types[i]),
+            title: scheduleTypeLabel(context.l10n, types[i]),
+            subtitle: scheduleTypeDescription(context.l10n, types[i]),
             active: types[i] == value,
             isLast: i == types.length - 1,
             onTap: () => onChanged(types[i]),
@@ -115,8 +138,8 @@ class ScheduleTimeRow extends StatelessWidget {
 
     return SettingsRow(
       icon: AppIcons.clock,
-      title: 'وقت التنبيه',
-      subtitle: 'اضغط لاختيار الساعة والدقيقة',
+      title: context.l10n.notifScheduleTimeTitle,
+      subtitle: context.l10n.notifScheduleTimeSubtitle,
       isLast: isLast,
       trailing: SettingsValueText('$h:$m'),
       onTap: () async {
@@ -250,7 +273,7 @@ class ScheduleLabelField extends StatelessWidget {
           isDense: true,
           filled: true,
           fillColor: skin.iconChip,
-          hintText: 'أضف وصفاً قصيراً لهذا الموعد',
+          hintText: context.l10n.notifScheduleLabelHint,
           hintStyle: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.6),
             fontSize: 10.sp,

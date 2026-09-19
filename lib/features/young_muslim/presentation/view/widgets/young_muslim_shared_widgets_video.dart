@@ -91,7 +91,10 @@ class YoungMuslimVideoRow extends StatelessWidget {
     final episode = video.episodeNumber;
     final meta = episode == null
         ? '$seriesTitle · ${youngMuslimDuration(video.durationSeconds)}'
-        : 'حلقة $episode · ${youngMuslimDuration(video.durationSeconds)}';
+        : context.l10n.youngMuslimEpisodeMeta(
+            episode,
+            youngMuslimDuration(video.durationSeconds),
+          );
 
     final row = Row(
       children: [
@@ -145,7 +148,7 @@ class YoungMuslimVideoRow extends StatelessWidget {
           YoungMuslimToggleButton(
             icon: video.isFavorite ? AppIcons.heartFilled : AppIcons.heart,
             active: video.isFavorite,
-            semanticLabel: 'المفضلة',
+            semanticLabel: context.l10n.youngMuslimFavorites,
             onTap: onFavoriteToggle!,
           ),
         ],
@@ -154,7 +157,7 @@ class YoungMuslimVideoRow extends StatelessWidget {
           YoungMuslimToggleButton(
             icon: video.isWatchLater ? AppIcons.bookmark : AppIcons.bookmarkAdd,
             active: video.isWatchLater,
-            semanticLabel: 'سأشاهد لاحقًا',
+            semanticLabel: context.l10n.youngMuslimWatchLater,
             onTap: onWatchLaterToggle!,
           ),
         ],
@@ -255,7 +258,7 @@ class YoungMuslimVideoPoster extends StatelessWidget {
                               ? AppIcons.heartFilled
                               : AppIcons.heart,
                           active: video.isFavorite,
-                          semanticLabel: 'المفضلة',
+                          semanticLabel: context.l10n.youngMuslimFavorites,
                           size: 24.w,
                           onTap: onFavoriteToggle!,
                         ),
@@ -266,7 +269,7 @@ class YoungMuslimVideoPoster extends StatelessWidget {
                               ? AppIcons.bookmark
                               : AppIcons.bookmarkAdd,
                           active: video.isWatchLater,
-                          semanticLabel: 'سأشاهد لاحقًا',
+                          semanticLabel: context.l10n.youngMuslimWatchLater,
                           size: 24.w,
                           onTap: onWatchLaterToggle!,
                         ),
@@ -437,7 +440,7 @@ class YoungMuslimResumeTile extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'تابع من حيث توقفت',
+                          context.l10n.youngMuslimResumeWhereLeft,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -481,7 +484,7 @@ class YoungMuslimResumeTile extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '$percent٪',
+                    context.l10n.youngMuslimPercent(percent),
                     style: youngMuslimNumber(
                       skin,
                       size: 15.sp,
@@ -491,8 +494,10 @@ class YoungMuslimResumeTile extends StatelessWidget {
                   const Spacer(),
                   Text(
                     remaining > 0
-                        ? 'يتبقّى ${youngMuslimDuration(remaining)}'
-                        : 'اقتربت النهاية',
+                        ? context.l10n.youngMuslimTimeRemaining(
+                            youngMuslimDuration(remaining),
+                          )
+                        : context.l10n.youngMuslimAlmostDone,
                     style: youngMuslimRowSubtitle(skin),
                   ),
                 ],

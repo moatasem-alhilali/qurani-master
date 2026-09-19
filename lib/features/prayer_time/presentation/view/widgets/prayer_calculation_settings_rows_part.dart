@@ -76,7 +76,11 @@ class PrayerSettingsPickerRow extends StatelessWidget {
                 ),
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              AppIcons.forwardFor(context),
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

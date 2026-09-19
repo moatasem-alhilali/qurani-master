@@ -57,7 +57,7 @@ class _DurationRowState extends State<_DurationRow> {
           SizedBox(width: 38.w),
           Expanded(
             child: Text(
-              'مدة الصامت بعد الصلاة',
+              context.l10n.prayerTimeSilentDuration,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -89,7 +89,7 @@ class _DurationRowState extends State<_DurationRow> {
               decoration: InputDecoration(
                 isDense: true,
                 filled: false,
-                suffixText: 'د',
+                suffixText: context.l10n.prayerTimeMinutesSuffix,
                 suffixStyle: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.7),
                   fontSize: 9.5.sp,

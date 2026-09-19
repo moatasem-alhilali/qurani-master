@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
 import 'package:quran_app/features/traveler/data/services/flight_prayer_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'flight_prayer_event.dart';
 part 'flight_prayer_state.dart';
@@ -22,7 +23,7 @@ class FlightPrayerBloc extends Bloc<FlightPrayerEvent, FlightPrayerState> {
     if (remainingAttempts <= 0) {
       emit(
         FlightPrayerFailure(
-          errorMessage: 'انتهت المحاولات. أعد فتح الصفحة للمحاولة مجددًا.',
+          errorMessage: L10nService.current.travelerFlightAttemptsExhausted,
           remainingAttempts: remainingAttempts,
         ),
       );
@@ -38,7 +39,7 @@ class FlightPrayerBloc extends Bloc<FlightPrayerEvent, FlightPrayerState> {
       remainingAttempts--;
       emit(
         FlightPrayerFailure(
-          errorMessage: 'رقم الرحلة غير صحيح. مثال: EK202 أو MS985',
+          errorMessage: L10nService.current.travelerFlightNumberInvalid,
           remainingAttempts: remainingAttempts,
         ),
       );
@@ -60,7 +61,7 @@ class FlightPrayerBloc extends Bloc<FlightPrayerEvent, FlightPrayerState> {
       remainingAttempts--;
       emit(
         FlightPrayerFailure(
-          errorMessage: 'تعذر جلب بيانات الرحلة حاليًا.',
+          errorMessage: L10nService.current.travelerFlightFetchFailed,
           remainingAttempts: remainingAttempts,
         ),
       );

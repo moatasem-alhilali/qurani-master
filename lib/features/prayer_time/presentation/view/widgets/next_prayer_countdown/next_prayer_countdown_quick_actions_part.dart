@@ -10,22 +10,22 @@ class _QuickActionsPanel extends StatelessWidget {
   List<_QuickActionItem> _actions(BuildContext context) {
     return [
       _QuickActionItem(
-        label: 'المصحف',
+        label: context.l10n.prayerTimeQuickMushaf,
         icon: AppIcons.quran,
         onTap: () => context.push(const ReadQuranScreen()),
       ),
       _QuickActionItem(
-        label: 'مواقيت الصلاة',
+        label: context.l10n.prayerTimeQuickPrayerTimes,
         icon: AppIcons.clock,
         onTap: () => context.push(const PrayerTimeScreen()),
       ),
       _QuickActionItem(
-        label: 'القبلة',
+        label: context.l10n.qiblahTitle,
         icon: AppIcons.compass,
         onTap: () => context.push(const QiblahMainScreen()),
       ),
       _QuickActionItem(
-        label: 'مكتبة الأذكار',
+        label: context.l10n.prayerTimeQuickAdhkar,
         icon: AppIcons.tasbih,
         onTap: () => context.push(const MainThikrScreen()),
       ),

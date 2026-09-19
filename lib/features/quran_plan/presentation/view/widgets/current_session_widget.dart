@@ -11,6 +11,7 @@ import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_navigation.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// جلسة اليوم — العنصر المرتفع الوحيد في شاشة الخطة.
 ///
@@ -29,9 +30,9 @@ class CurrentSessionWidget extends StatelessWidget {
   void _confirmComplete(BuildContext context) {
     HapticFeedback.selectionClick();
     context.showCustomSnackbar(
-      'سيتم إنهاء الجلسة ؟',
+      context.l10n.quranPlanCompleteConfirm,
       style: SnackBarType.warning,
-      actionLabel: 'تأكيد',
+      actionLabel: context.l10n.quranPlanConfirm,
       duration: const Duration(seconds: 3),
       paddingBottom: 100,
       onAction: () {
@@ -70,7 +71,7 @@ class CurrentSessionWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'جلسة ${session.sessionNumber}',
+                    context.l10n.quranPlanSessionNumber(session.sessionNumber),
                     style: TextStyle(
                       color: skin.ink,
                       fontSize: 14.sp,
@@ -81,7 +82,9 @@ class CurrentSessionWidget extends StatelessWidget {
                   SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
-                      isCompleted ? 'مُنجزة' : 'جلستك الحالية',
+                      isCompleted
+                          ? context.l10n.quranPlanSessionDone
+                          : context.l10n.quranPlanCurrentSession,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -99,7 +102,7 @@ class CurrentSessionWidget extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                sessionRangeLabel(session),
+                sessionRangeLabel(context.l10n, session),
                 style: TextStyle(
                   color: skin.inkSoft,
                   fontSize: 11.sp,
@@ -113,7 +116,7 @@ class CurrentSessionWidget extends StatelessWidget {
                   AppIcon(AppIcons.quran, color: skin.accent, size: 13.sp),
                   SizedBox(width: 6.w),
                   Text(
-                    'افتح المصحف عند بداية الجلسة',
+                    context.l10n.quranPlanOpenMushafHint,
                     style: TextStyle(
                       color: skin.accent,
                       fontSize: 9.5.sp,
@@ -143,7 +146,9 @@ class _CompleteButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: isCompleted ? 'جلسة مُنجزة' : 'إنهاء الجلسة',
+      label: isCompleted
+          ? context.l10n.quranPlanSessionCompleted
+          : context.l10n.quranPlanCompleteSession,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(10.r),

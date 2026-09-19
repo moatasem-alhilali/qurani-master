@@ -9,6 +9,7 @@ import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صدارة الصفحة: أقرب مكان، وجوابٌ عن السؤال الذي جاء المسافر لأجله.
 ///
@@ -34,7 +35,7 @@ class TravelPlacesHeadline extends StatelessWidget {
     if (!context.mounted || launched) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تعذّر فتح تطبيق الخرائط.')),
+      SnackBar(content: Text(context.l10n.travelerOpenMapsFailed)),
     );
   }
 
@@ -55,8 +56,8 @@ class TravelPlacesHeadline extends StatelessWidget {
         children: [
           Text(
             placeType == TravelerPlaceType.mosque
-                ? 'أقرب مسجد إليك'
-                : 'أقرب مطعم حلال',
+                ? context.l10n.travelerNearestMosque
+                : context.l10n.travelerNearestRestaurant,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.7),
               fontSize: 9.5.sp,
@@ -86,7 +87,8 @@ class TravelPlacesHeadline extends StatelessWidget {
               ),
               SizedBox(width: 4.w),
               Text(
-                '${place.distanceLabel} · ${place.walkingEtaLabel}',
+                '${place.distanceLabel(context.l10n)} · '
+                '${place.walkingEtaLabel(context.l10n)}',
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.85),
                   fontSize: 10.sp,
@@ -124,7 +126,7 @@ class TravelPlacesHeadline extends StatelessWidget {
                     ),
                     SizedBox(width: 6.w),
                     Text(
-                      'خذني إليه',
+                      context.l10n.travelerTakeMeThere,
                       style: TextStyle(
                         color: skin.isDark
                             ? AppColors.brandNight
@@ -213,8 +215,14 @@ class _PrayerRace extends StatelessWidget {
                 Expanded(
                   child: Text(
                     willMakeIt
-                        ? 'تلحق ${next.name} — تبقّى $minutesLeft دقيقة'
-                        : 'قد لا تلحق ${next.name} مشيًا — تبقّى $minutesLeft دقيقة',
+                        ? context.l10n.travelerWillMakeIt(
+                            minutesLeft,
+                            next.localizedName(context.l10n),
+                          )
+                        : context.l10n.travelerMightMiss(
+                            minutesLeft,
+                            next.localizedName(context.l10n),
+                          ),
                     maxLines: 2,
                     style: TextStyle(
                       color: tone,

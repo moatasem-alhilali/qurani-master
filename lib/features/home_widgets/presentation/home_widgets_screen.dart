@@ -11,6 +11,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_ids.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_sync.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة ودجات الشاشة الرئيسية: ما المتاح، وكيف يُضاف، والمزامنة اليدوية.
 class HomeWidgetsScreen extends StatefulWidget {
@@ -48,7 +49,8 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
     try {
       await HomeWidget.requestPinWidget(qualifiedAndroidName: provider);
     } catch (_) {
-      _toast('تعذّر فتح نافذة الإضافة. أضفها يدويًا من الشاشة الرئيسية.');
+      if (!mounted) return;
+      _toast(context.l10n.homeWidgetsPinFailed);
     }
   }
 
@@ -60,7 +62,9 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
     if (!mounted) return;
     setState(() => _syncing = false);
     _toast(
-      ok ? 'تم تحديث الودجات' : 'تعذّر التحديث. تأكّد من تحديد موقعك.',
+      ok
+          ? context.l10n.homeWidgetsSyncSuccess
+          : context.l10n.homeWidgetsSyncFailed,
       success: ok,
     );
   }
@@ -77,67 +81,63 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     Widget? addButton(String provider) {
       if (!_canPin) return null;
       return IconButton(
-        tooltip: 'إضافة إلى الشاشة الرئيسية',
+        tooltip: l10n.homeWidgetsAddTooltip,
         onPressed: () => _pin(provider),
         icon: AppIcon(AppIcons.add, size: 18.sp, color: skin.accent),
       );
     }
 
     return SettingsScaffold(
-      title: 'ودجات الشاشة الرئيسية',
+      title: l10n.homeWidgetsTitle,
       children: [
         SettingsGroup(
-          title: 'طريقة الإضافة',
+          title: l10n.homeWidgetsHowToHeader,
           children: [
             SettingsParagraph(
               _isAndroid
-                  ? 'اضغط زر الإضافة بجانب الودجت، أو اضغط مطوّلًا على مساحة '
-                      'فارغة في الشاشة الرئيسية ثم «التطبيقات المصغّرة» '
-                      'وابحث عن «طمأنينة».'
-                  : 'اضغط مطوّلًا على مساحة فارغة في الشاشة الرئيسية، ثم زر «+» '
-                      'أعلى الشاشة، وابحث عن «طمأنينة». ودجت الصلاة القادمة '
-                      'متاحة أيضًا لشاشة القفل.',
+                  ? l10n.homeWidgetsHowToAndroid(l10n.appName)
+                  : l10n.homeWidgetsHowToIos(l10n.appName),
             ),
           ],
         ),
         SettingsGroup(
-          title: 'الودجات',
+          title: l10n.homeWidgetsListHeader,
           children: [
             SettingsRow(
               icon: AppIcons.clock,
-              title: 'الصلاة القادمة',
+              title: l10n.homeWidgetsNextPrayerTitle,
               subtitle: _isAndroid
-                  ? 'اسم الصلاة ووقتها مع عدّ تنازلي حيّ'
-                  : 'صغيرة · وشاشة القفل بثلاثة أشكال',
+                  ? l10n.homeWidgetsNextPrayerSubtitleAndroid
+                  : l10n.homeWidgetsNextPrayerSubtitleIos,
               trailing: addButton(HomeWidgetIds.androidNextPrayer),
             ),
             SettingsRow(
               icon: AppIcons.prayerRug,
-              title: 'مواقيت اليوم',
-              subtitle: 'الصلوات الستّ مع التاريخ الهجري والمدينة',
+              title: l10n.homeWidgetsTodayTimesTitle,
+              subtitle: l10n.homeWidgetsTodayTimesSubtitle,
               trailing: addButton(HomeWidgetIds.androidPrayerTimes),
             ),
             SettingsRow(
               icon: AppIcons.bookOpen,
-              title: 'آية اليوم',
-              subtitle: 'آية قصيرة تتجدّد كل يوم',
+              title: l10n.homeWidgetsDailyAyahTitle,
+              subtitle: l10n.homeWidgetsDailyAyahSubtitle,
               trailing: addButton(HomeWidgetIds.androidDailyAyah),
               isLast: true,
             ),
           ],
         ),
         SettingsGroup(
-          title: 'المزامنة',
+          title: l10n.homeWidgetsSyncHeader,
           children: [
             SettingsRow(
               icon: AppIcons.refresh,
-              title: 'تحديث الودجات الآن',
-              subtitle: 'يحسب مواقيت ${HomeWidgetIds.daysAhead} يومًا '
-                  'بموقعك وإعداداتك الحالية',
+              title: l10n.homeWidgetsSyncNow,
+              subtitle: l10n.homeWidgetsSyncSubtitle(HomeWidgetIds.daysAhead),
               onTap: _syncing ? null : _syncNow,
               trailing: _syncing
                   ? SizedBox.square(
@@ -150,11 +150,7 @@ class _HomeWidgetsScreenState extends State<HomeWidgetsScreen> {
                   : null,
               isLast: true,
             ),
-            const SettingsHint(
-              'الودجات تعمل ${HomeWidgetIds.daysAhead} يومًا دون فتح التطبيق، '
-              'وتتجدّد تلقائيًا في الخلفية. تتحدّث وحدها عند تغيير موقعك أو '
-              'طريقة الحساب.',
-            ),
+            SettingsHint(l10n.homeWidgetsSyncHint(HomeWidgetIds.daysAhead)),
           ],
         ),
       ],

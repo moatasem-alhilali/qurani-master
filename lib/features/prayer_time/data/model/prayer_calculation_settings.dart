@@ -1,30 +1,34 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/foundation.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قاعدة معالجة خطوط العرض العالية، مع خيار "تلقائي" الذي يترك القرار
 /// للقيمة الافتراضية لطريقة الحساب المختارة.
 enum PrayerHighLatitudeOption {
-  auto(
-    'تلقائي',
-    'يترك المعالجة للقيمة الافتراضية لطريقة الحساب.',
-  ),
-  middleOfTheNight(
-    'منتصف الليل',
-    'لا يسبق الفجر منتصف الليل ولا يتأخر العشاء عنه.',
-  ),
-  seventhOfTheNight(
-    'سُبع الليل',
-    'يعتمد على سُبع الليل الأخير للفجر والأول للعشاء.',
-  ),
-  twilightAngle(
-    'زاوية الشفق',
-    'يقسّم الليل حسب زاويتي الفجر والعشاء المختارتين.',
-  );
+  auto,
+  middleOfTheNight,
+  seventhOfTheNight,
+  twilightAngle;
 
-  const PrayerHighLatitudeOption(this.label, this.description);
+  String label(L10n l10n) => switch (this) {
+        PrayerHighLatitudeOption.auto => l10n.prayerTimeHighLatAuto,
+        PrayerHighLatitudeOption.middleOfTheNight =>
+          l10n.prayerTimeHighLatMiddleOfNight,
+        PrayerHighLatitudeOption.seventhOfTheNight =>
+          l10n.prayerTimeHighLatSeventhOfNight,
+        PrayerHighLatitudeOption.twilightAngle =>
+          l10n.prayerTimeHighLatTwilightAngle,
+      };
 
-  final String label;
-  final String description;
+  String description(L10n l10n) => switch (this) {
+        PrayerHighLatitudeOption.auto => l10n.prayerTimeHighLatAutoDesc,
+        PrayerHighLatitudeOption.middleOfTheNight =>
+          l10n.prayerTimeHighLatMiddleOfNightDesc,
+        PrayerHighLatitudeOption.seventhOfTheNight =>
+          l10n.prayerTimeHighLatSeventhOfNightDesc,
+        PrayerHighLatitudeOption.twilightAngle =>
+          l10n.prayerTimeHighLatTwilightAngleDesc,
+      };
 
   HighLatitudeRule? get rule => switch (this) {
         PrayerHighLatitudeOption.auto => null,
@@ -39,13 +43,18 @@ enum PrayerHighLatitudeOption {
 
 /// طريقة تحديد وقت العشاء في الإعداد المخصص.
 enum PrayerIshaMode {
-  angle('زاوية', 'يُحسب العشاء بزاوية الشمس تحت الأفق.'),
-  interval('فاصل زمني', 'يُحسب العشاء بعدد دقائق ثابت بعد المغرب.');
+  angle,
+  interval;
 
-  const PrayerIshaMode(this.label, this.description);
+  String label(L10n l10n) => switch (this) {
+        PrayerIshaMode.angle => l10n.prayerTimeIshaModeAngle,
+        PrayerIshaMode.interval => l10n.prayerTimeIshaModeInterval,
+      };
 
-  final String label;
-  final String description;
+  String description(L10n l10n) => switch (this) {
+        PrayerIshaMode.angle => l10n.prayerTimeIshaModeAngleDesc,
+        PrayerIshaMode.interval => l10n.prayerTimeIshaModeIntervalDesc,
+      };
 }
 
 /// زوايا الإعداد المخصص، وتُستخدم فقط مع [CalculationMethod.other].
@@ -298,40 +307,43 @@ class PrayerCalculationSettings {
       );
 }
 
-/// أسماء وأوصاف عربية لطرق الحساب لعرضها في شاشة الإعدادات.
+/// أسماء وأوصاف طرق الحساب بلغة الواجهة لعرضها في شاشة الإعدادات.
 extension PrayerCalculationMethodLabels on CalculationMethod {
-  String get arabicLabel => switch (this) {
-        CalculationMethod.umm_al_qura => 'أم القرى - مكة المكرمة',
-        CalculationMethod.muslim_world_league => 'رابطة العالم الإسلامي',
-        CalculationMethod.egyptian => 'الهيئة المصرية العامة للمساحة',
-        CalculationMethod.karachi => 'جامعة العلوم الإسلامية - كراتشي',
-        CalculationMethod.dubai => 'دبي',
-        CalculationMethod.qatar => 'قطر',
-        CalculationMethod.kuwait => 'الكويت',
-        CalculationMethod.singapore => 'سنغافورة',
-        CalculationMethod.turkey => 'ديانت - تركيا',
-        CalculationMethod.tehran => 'جامعة طهران للجيوفيزياء',
-        CalculationMethod.moon_sighting_committee => 'لجنة رؤية الهلال',
-        CalculationMethod.north_america => 'الجمعية الإسلامية لأمريكا الشمالية',
-        CalculationMethod.other => 'إعداد مخصص',
+  String label(L10n l10n) => switch (this) {
+        CalculationMethod.umm_al_qura => l10n.prayerTimeMethodUmmAlQura,
+        CalculationMethod.muslim_world_league =>
+          l10n.prayerTimeMethodMuslimWorldLeague,
+        CalculationMethod.egyptian => l10n.prayerTimeMethodEgyptian,
+        CalculationMethod.karachi => l10n.prayerTimeMethodKarachi,
+        CalculationMethod.dubai => l10n.prayerTimeMethodDubai,
+        CalculationMethod.qatar => l10n.prayerTimeMethodQatar,
+        CalculationMethod.kuwait => l10n.prayerTimeMethodKuwait,
+        CalculationMethod.singapore => l10n.prayerTimeMethodSingapore,
+        CalculationMethod.turkey => l10n.prayerTimeMethodTurkey,
+        CalculationMethod.tehran => l10n.prayerTimeMethodTehran,
+        CalculationMethod.moon_sighting_committee =>
+          l10n.prayerTimeMethodMoonSighting,
+        CalculationMethod.north_america => l10n.prayerTimeMethodNorthAmerica,
+        CalculationMethod.other => l10n.prayerTimeMethodCustom,
       };
 
-  String get arabicDescription => switch (this) {
-        CalculationMethod.umm_al_qura =>
-          'الفجر 18.5° والعشاء بعد المغرب بـ 90 دقيقة.',
-        CalculationMethod.muslim_world_league => 'الفجر 18° والعشاء 17°.',
-        CalculationMethod.egyptian => 'الفجر 19.5° والعشاء 17.5°.',
-        CalculationMethod.karachi => 'الفجر 18° والعشاء 18°.',
-        CalculationMethod.dubai => 'الفجر والعشاء 18.2°.',
-        CalculationMethod.qatar => 'الفجر 18° والعشاء بعد المغرب بـ 90 دقيقة.',
-        CalculationMethod.kuwait => 'الفجر 18° والعشاء 17.5°.',
-        CalculationMethod.singapore => 'الفجر 20° والعشاء 18°.',
-        CalculationMethod.turkey => 'الفجر 18° والعشاء 17° مع تعديلات ديانت.',
-        CalculationMethod.tehran => 'الفجر 17.7° والعشاء 14° والمغرب 4.5°.',
+  String description(L10n l10n) => switch (this) {
+        CalculationMethod.umm_al_qura => l10n.prayerTimeMethodUmmAlQuraDesc,
+        CalculationMethod.muslim_world_league =>
+          l10n.prayerTimeMethodMuslimWorldLeagueDesc,
+        CalculationMethod.egyptian => l10n.prayerTimeMethodEgyptianDesc,
+        CalculationMethod.karachi => l10n.prayerTimeMethodKarachiDesc,
+        CalculationMethod.dubai => l10n.prayerTimeMethodDubaiDesc,
+        CalculationMethod.qatar => l10n.prayerTimeMethodQatarDesc,
+        CalculationMethod.kuwait => l10n.prayerTimeMethodKuwaitDesc,
+        CalculationMethod.singapore => l10n.prayerTimeMethodSingaporeDesc,
+        CalculationMethod.turkey => l10n.prayerTimeMethodTurkeyDesc,
+        CalculationMethod.tehran => l10n.prayerTimeMethodTehranDesc,
         CalculationMethod.moon_sighting_committee =>
-          'الفجر 18° والعشاء 18° مع تعديلات موسمية.',
-        CalculationMethod.north_america => 'الفجر 15° والعشاء 15°.',
-        CalculationMethod.other => 'حدّد زوايا الفجر والعشاء والمغرب بنفسك.',
+          l10n.prayerTimeMethodMoonSightingDesc,
+        CalculationMethod.north_america =>
+          l10n.prayerTimeMethodNorthAmericaDesc,
+        CalculationMethod.other => l10n.prayerTimeMethodCustomDesc,
       };
 
   /// الطرق المعروضة في الإعدادات، مرتّبة بالأقرب للمستخدم العربي.
@@ -353,14 +365,13 @@ extension PrayerCalculationMethodLabels on CalculationMethod {
 }
 
 extension PrayerMadhabLabels on Madhab {
-  String get arabicLabel => switch (this) {
-        Madhab.shafi => 'الشافعي والمالكي والحنبلي',
-        Madhab.hanafi => 'الحنفي',
+  String label(L10n l10n) => switch (this) {
+        Madhab.shafi => l10n.prayerTimeMadhabShafi,
+        Madhab.hanafi => l10n.prayerTimeMadhabHanafi,
       };
 
-  String get arabicDescription => switch (this) {
-        Madhab.shafi =>
-          'العصر عندما يصير ظل الشيء مثله، وعليه المالكي والحنبلي أيضًا.',
-        Madhab.hanafi => 'العصر عندما يصير ظل الشيء مثليه.',
+  String description(L10n l10n) => switch (this) {
+        Madhab.shafi => l10n.prayerTimeMadhabShafiDesc,
+        Madhab.hanafi => l10n.prayerTimeMadhabHanafiDesc,
       };
 }

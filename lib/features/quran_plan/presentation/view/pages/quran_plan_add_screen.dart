@@ -14,6 +14,7 @@ import 'package:quran_app/core/widgets/app_scaffold/back_icon_widget.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// إنشاء خطة ختمة.
 ///
@@ -99,7 +100,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
           data:
               Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
           child: AppScaffoldWidget(
-            title: 'إضافة خطة ختم جديدة',
+            title: context.l10n.quranPlanAddTitle,
             leading: const Hero(
               tag: 'add_plan',
               child: BackIconWidget(),
@@ -111,59 +112,68 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const HomeSectionHeader(title: 'تفاصيل الخطة'),
+                    HomeSectionHeader(
+                      title: context.l10n.quranPlanDetailsHeader,
+                    ),
                     _FieldRow(
-                      label: 'عنوان الخطة',
+                      label: context.l10n.quranPlanTitleLabel,
                       child: TextFormField(
                         controller: _titleController,
                         textAlign: TextAlign.end,
                         cursorColor: skin.accent,
                         style: _valueStyle(skin),
-                        decoration: _fieldDecoration(skin, 'اسم الخطة'),
+                        decoration: _fieldDecoration(
+                          skin,
+                          context.l10n.quranPlanTitleHint,
+                        ),
                         validator: (value) => value == null || value.isEmpty
-                            ? 'أدخل عنوانًا'
+                            ? context.l10n.quranPlanTitleRequired
                             : null,
                       ),
                     ),
                     _FieldRow(
-                      label: 'من الجزء',
+                      label: context.l10n.quranPlanFromJuz,
                       child: _JuzDropdown(
                         value: _startJuz,
                         onChanged: (value) => setState(() => _startJuz = value),
-                        validator: (value) =>
-                            value == null ? 'اختر البداية' : null,
+                        validator: (value) => value == null
+                            ? context.l10n.quranPlanChooseStart
+                            : null,
                       ),
                     ),
                     _FieldRow(
-                      label: 'إلى الجزء',
+                      label: context.l10n.quranPlanToJuz,
                       child: _JuzDropdown(
                         value: _endJuz,
                         onChanged: (value) => setState(() => _endJuz = value),
                         validator: (value) {
                           if (value == null) {
-                            return 'اختر النهاية';
+                            return context.l10n.quranPlanChooseEnd;
                           }
                           final start = _startJuz;
                           if (start != null && value < start) {
-                            return 'النهاية قبل البداية';
+                            return context.l10n.quranPlanEndBeforeStart;
                           }
                           return null;
                         },
                       ),
                     ),
                     _FieldRow(
-                      label: 'عدد الأيام',
+                      label: context.l10n.quranPlanDaysLabel,
                       child: TextFormField(
                         textAlign: TextAlign.end,
                         cursorColor: skin.accent,
                         style: _valueStyle(skin),
                         keyboardType: TextInputType.number,
-                        decoration: _fieldDecoration(skin, 'مثال: 30'),
+                        decoration: _fieldDecoration(
+                          skin,
+                          context.l10n.quranPlanDaysHint,
+                        ),
                         onChanged: (value) => _totalDays = int.tryParse(value),
                         validator: (value) {
                           final days = int.tryParse(value ?? '');
                           if (days == null || days <= 0) {
-                            return 'أدخل عدد الأيام بشكل صحيح';
+                            return context.l10n.quranPlanDaysInvalid;
                           }
                           return null;
                         },
@@ -180,7 +190,7 @@ class _QuranPlanAddScreenState extends State<QuranPlanAddScreen> {
                       child: ProgressButtonState(
                         state: state.createRequestState,
                         onPressed: _save,
-                        text: 'حفظ الخطة',
+                        text: context.l10n.quranPlanSave,
                         borderRadius: 12.r,
                         defaultColor: AppColors.gold,
                         colorText: skin.isDark
@@ -292,13 +302,16 @@ class _JuzDropdown extends StatelessWidget {
         size: 14.sp,
       ),
       style: _valueStyle(skin),
-      decoration: _fieldDecoration(skin, 'اختر'),
+      decoration: _fieldDecoration(skin, context.l10n.quranPlanChoose),
       items: List.generate(30, (i) => i + 1)
           .map(
             (juz) => DropdownMenuItem<int>(
               value: juz,
               alignment: AlignmentDirectional.centerEnd,
-              child: Text('الجزء $juz', style: _valueStyle(skin)),
+              child: Text(
+                context.l10n.quranPlanJuz(juz),
+                style: _valueStyle(skin),
+              ),
             ),
           )
           .toList(),
@@ -337,7 +350,7 @@ class _ReminderRow extends StatelessWidget {
             SizedBox(
               width: 92.w,
               child: Text(
-                'تذكير يومي',
+                context.l10n.quranPlanDailyReminder,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 11.sp,
@@ -347,7 +360,9 @@ class _ReminderRow extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                time == null ? 'غير محدّد' : time!.format(context),
+                time == null
+                    ? context.l10n.quranPlanNotSet
+                    : time!.format(context),
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   color: time == null

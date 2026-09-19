@@ -13,6 +13,7 @@ import 'package:quran_app/features/books/presentation/bloc/book_bloc.dart';
 import 'package:quran_app/features/books/presentation/view/pages/read_book.dart';
 import 'package:quran_app/features/books/presentation/view/widgets/book_row.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تفاصيل كتاب: ملفّاته ثم وصفه ومرجعه.
 ///
@@ -65,11 +66,11 @@ class _BookDetailState extends State<BookDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const HomeSectionHeader(title: 'ملفّات الكتاب'),
+                HomeSectionHeader(title: context.l10n.booksFilesHeader),
                 if (attachments.isEmpty)
-                  const _InfoBlock(
-                    title: 'لا توجد ملفّات',
-                    body: 'لم تُرفق بهذا الكتاب ملفّات للتنزيل.',
+                  _InfoBlock(
+                    title: context.l10n.booksNoFilesTitle,
+                    body: context.l10n.booksNoFilesBody,
                   )
                 else
                   for (var i = 0; i < attachments.length; i++)
@@ -81,12 +82,12 @@ class _BookDetailState extends State<BookDetail> {
                     ),
                 if (description.trim().isNotEmpty) ...[
                   skin.divider(),
-                  const HomeSectionHeader(title: 'الوصف'),
+                  HomeSectionHeader(title: context.l10n.booksDescriptionHeader),
                   _InfoBlock(body: description),
                 ],
                 if (reference.trim().isNotEmpty) ...[
                   skin.divider(),
-                  const HomeSectionHeader(title: 'المرجع'),
+                  HomeSectionHeader(title: context.l10n.booksReferenceHeader),
                   _InfoBlock(body: reference),
                 ],
                 SizedBox(height: 22.h),
@@ -119,7 +120,9 @@ class _AttachmentRow extends StatelessWidget {
     final url = bookFieldOf(attachment, 'url');
     final size = bookFieldOf(attachment, 'size');
     final description = bookFieldOf(attachment, 'description').trim();
-    final label = description.isEmpty ? 'الملفّ ${index + 1}' : description;
+    final label = description.isEmpty
+        ? context.l10n.booksFileNumber(index + 1)
+        : description;
 
     return BookRow(
       title: label,
@@ -147,7 +150,13 @@ class _AttachmentRow extends StatelessWidget {
               ),
             ),
           SizedBox(width: 2.w),
-          AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+          AppIcon(
+            Directionality.of(context) == TextDirection.rtl
+                ? AppIcons.chevronLeft
+                : AppIcons.chevronRight,
+            color: skin.accent,
+            size: 15.sp,
+          ),
         ],
       ),
     );

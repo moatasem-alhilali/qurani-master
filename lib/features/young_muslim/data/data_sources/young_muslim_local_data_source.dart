@@ -3,6 +3,7 @@ import 'package:quran_app/features/young_muslim/data/data_sources/young_muslim_a
 import 'package:quran_app/features/young_muslim/data/models/young_muslim_models.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 DateTime? _localParseDate(dynamic value) {
   if (value == null) {
@@ -61,7 +62,7 @@ String _resolveSubmittedAnswer(
   String? answer,
 ) {
   if (answer == null || answer.trim().isEmpty) {
-    return 'لم تتم الإجابة';
+    return L10nService.current.youngMuslimQuizUnanswered;
   }
 
   if (question.options.isNotEmpty) {

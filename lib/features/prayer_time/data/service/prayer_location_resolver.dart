@@ -1,5 +1,6 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class PrayerLocationResolver {
   static Future<PrayerLocationSelection> fromCoordinates({
@@ -12,7 +13,7 @@ class PrayerLocationResolver {
     Placemark? placemark;
 
     try {
-      await setLocaleIdentifier('ar');
+      await setLocaleIdentifier(L10nService.savedLanguage.code);
       final placemarks = await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         placemark = placemarks.first;
@@ -47,7 +48,7 @@ class PrayerLocationResolver {
     if (trimmed.isEmpty) return const [];
 
     try {
-      await setLocaleIdentifier('ar');
+      await setLocaleIdentifier(L10nService.savedLanguage.code);
       final locations = await locationFromAddress(trimmed);
       final unique = <String>{};
       final futures = locations.take(6).map((location) async {

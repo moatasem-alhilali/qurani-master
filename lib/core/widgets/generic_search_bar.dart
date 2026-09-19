@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 typedef AsyncSuggestionCallback<T> = Future<List<T>> Function(String query);
 typedef SuggestionWidgetBuilder<T> = Widget Function(
@@ -80,27 +81,28 @@ class _GenericSearchAnchorAsyncState<T>
       );
     }
 
+    final l10n = context.l10n;
     return SearchAnchor(
       builder: (context, controller) => widget.icon == null
-          ? barIcon(AppIcons.search, controller.openView, 'بحث')
+          ? barIcon(AppIcons.search, controller.openView, l10n.commonSearch)
           : IconButton(
               onPressed: controller.openView,
-              tooltip: widget.hintText ?? 'بحث',
+              tooltip: widget.hintText ?? l10n.commonSearch,
               padding: EdgeInsets.zero,
               constraints: BoxConstraints(minWidth: 38.w, minHeight: 38.w),
               icon: Icon(widget.icon, color: skin.accent, size: 20.sp),
             ),
       searchController: searchController,
       viewLeading: barIcon(
-        AppIcons.back,
+        AppIcons.backFor(context),
         () => searchController.closeView(''),
-        'إغلاق البحث',
+        l10n.coreCloseSearch,
       ),
       viewTrailing: [
-        barIcon(AppIcons.close, searchController.clear, 'مسح'),
+        barIcon(AppIcons.close, searchController.clear, l10n.coreClear),
         SizedBox(width: 4.w),
       ],
-      viewHintText: widget.hintText ?? 'بحث',
+      viewHintText: widget.hintText ?? l10n.commonSearch,
       viewElevation: 0,
       viewSurfaceTintColor: Colors.transparent,
       dividerColor: skin.hairline,

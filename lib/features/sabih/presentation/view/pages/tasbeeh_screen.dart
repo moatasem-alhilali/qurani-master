@@ -13,6 +13,7 @@ import 'package:quran_app/features/sabih/presentation/view/widgets/sabih_state_v
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_analytics_header.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_stage.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbih_settings_sheet.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة المسبحة.
 ///
@@ -56,7 +57,9 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
         listener: (context, state) {
           if (state.actionState == RequestState.error) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'حدث خطأ')),
+              SnackBar(
+                content: Text(state.errorMessage ?? context.l10n.commonError),
+              ),
             );
           }
         },
@@ -64,13 +67,13 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
           final current = _current(state.subihList);
 
           return AppScaffoldWidget(
-            title: 'المسبحة',
+            title: context.l10n.sabihTitle,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (current != null)
                   IconButton(
-                    tooltip: 'إعدادات الذكر',
+                    tooltip: context.l10n.sabihDhikrSettingsTooltip,
                     onPressed: () => showTasbihSettingsSheet(
                       context,
                       subih: current,
@@ -83,7 +86,7 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
                     ),
                   ),
                 IconButton(
-                  tooltip: 'إضافة ذكر مخصص',
+                  tooltip: context.l10n.sabihAddCustomDhikr,
                   onPressed: () => showDhikrSheet(context),
                   icon: AppIcon(AppIcons.add, color: skin.accent, size: 18.sp),
                 ),
@@ -112,16 +115,16 @@ class _TasbeehScreenState extends State<TasbeehScreen> {
 
     if (state.loadState == RequestState.error) {
       return SabihNotice(
-        message: state.errorMessage ?? 'حدث خطأ',
-        actionLabel: 'إعادة المحاولة',
+        message: state.errorMessage ?? context.l10n.commonError,
+        actionLabel: context.l10n.commonRetry,
         onAction: () => context.read<SabihBloc>().add(LoadAllSubihEvent()),
       );
     }
 
     if (current == null) {
       return SabihNotice(
-        message: 'لم يتم العثور على عناصر ذكر',
-        actionLabel: 'أضف ذكرك الأول',
+        message: context.l10n.sabihEmptyMessage,
+        actionLabel: context.l10n.sabihAddFirst,
         onAction: () => showDhikrSheet(context),
       );
     }

@@ -8,6 +8,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قارئ الكتب (PDF).
 ///
@@ -97,17 +98,23 @@ class _TopBar extends StatelessWidget {
     final skin = AppSkin.of(context);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(8.w, 6.h, 16.w, 6.h),
+      padding: EdgeInsetsDirectional.fromSTEB(16.w, 6.h, 8.w, 6.h),
       child: Row(
         children: [
           IconButton(
             onPressed: context.pop,
-            tooltip: 'رجوع',
-            icon: AppIcon(AppIcons.backRight, color: skin.ink, size: 18.sp),
+            tooltip: context.l10n.commonBack,
+            icon: AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.backRight
+                  : AppIcons.back,
+              color: skin.ink,
+              size: 18.sp,
+            ),
           ),
           Expanded(
             child: Text(
-              'قراءة الكتاب',
+              context.l10n.booksReadTitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -151,7 +158,7 @@ class _OpenOutsideNote extends StatelessWidget {
             AppIcon(AppIcons.book, color: skin.accent, size: 22.sp),
             SizedBox(height: 10.h),
             Text(
-              'تعذّر عرض الكتاب داخل التطبيق',
+              context.l10n.booksViewerFailed,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: skin.ink,
@@ -162,7 +169,7 @@ class _OpenOutsideNote extends StatelessWidget {
             if (url.isNotEmpty) ...[
               SizedBox(height: 4.h),
               Text(
-                'يمكنك فتحه خارج التطبيق',
+                context.l10n.booksOpenOutsideHint,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
@@ -184,7 +191,7 @@ class _OpenOutsideNote extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Text(
-                    'فتح خارج التطبيق',
+                    context.l10n.booksOpenOutside,
                     style: TextStyle(
                       color: skin.accent,
                       fontSize: 11.sp,

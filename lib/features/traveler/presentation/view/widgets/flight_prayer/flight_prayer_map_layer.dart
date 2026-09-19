@@ -10,6 +10,7 @@ import 'package:quran_app/features/traveler/presentation/bloc/flight_prayer/flig
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_edge_marker.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/prayer_marker.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/round_map_button.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FlightPrayerMapLayer extends StatelessWidget {
   const FlightPrayerMapLayer({
@@ -74,7 +75,7 @@ class FlightPrayerMapLayer extends StatelessWidget {
                 width: 58.w,
                 height: 30.h,
                 child: PrayerMarker(
-                  text: prayer.shortName,
+                  text: prayer.shortName(context.l10n),
                   onTap: () => onMoveMapTo(
                     LatLng(prayer.latitude, prayer.longitude),
                     7.2,
@@ -133,20 +134,20 @@ class FlightPrayerMapControls extends StatelessWidget {
       children: [
         RoundMapButton(
           icon: AppIcons.traveler,
-          tooltip: 'عرض المسار كاملًا',
+          tooltip: context.l10n.travelerShowFullRoute,
           onTap: onFocusRoute,
         ),
         SizedBox(height: 6.h),
         RoundMapButton(
           icon: AppIcons.add,
-          tooltip: 'تكبير',
+          tooltip: context.l10n.travelerZoomIn,
           onTap: onZoomIn,
         ),
         SizedBox(height: 6.h),
         RoundMapButton(
           // لا مقابل لـ«ناقص» في `AppIcons`، وهو خارج نطاق هذا التعديل.
           icon: HugeIcons.strokeRoundedRemoveCircle,
-          tooltip: 'تصغير',
+          tooltip: context.l10n.travelerZoomOut,
           onTap: onZoomOut,
         ),
       ],

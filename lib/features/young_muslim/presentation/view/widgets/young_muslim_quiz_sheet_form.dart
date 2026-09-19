@@ -26,7 +26,7 @@ class _QuizFormView extends StatelessWidget {
             trailing: const _SheetCloseButton(),
           ),
           Text(
-            'أسئلة بسيطة تساعد الطفل على تثبيت ما شاهده.',
+            context.l10n.youngMuslimQuizIntro,
             style: youngMuslimRowSubtitle(skin, size: 10.sp),
           ),
           SizedBox(height: 12.h),
@@ -35,15 +35,16 @@ class _QuizFormView extends StatelessWidget {
             runSpacing: 6.h,
             children: [
               YoungMuslimMetricChip(
-                label: '${questions.length} أسئلة',
+                label: context.l10n.youngMuslimQuestionsCount(questions.length),
                 icon: AppIcons.list,
               ),
               YoungMuslimMetricChip(
-                label: '+${state.quizSet.xpReward} نقطة عند النجاح',
+                label: context.l10n.youngMuslimXpOnPass(state.quizSet.xpReward),
                 icon: AppIcons.star,
               ),
               YoungMuslimMetricChip(
-                label: 'النجاح من ${state.quizSet.passingScore}',
+                label: context.l10n
+                    .youngMuslimPassingScore(state.quizSet.passingScore),
                 icon: AppIcons.checkSmall,
               ),
             ],
@@ -76,7 +77,9 @@ class _QuizFormView extends StatelessWidget {
             ),
           SizedBox(height: 6.h),
           YoungMuslimPrimaryButton(
-            label: busy ? 'جارٍ تصحيح الإجابات' : 'إرسال الإجابات',
+            label: busy
+                ? context.l10n.youngMuslimGrading
+                : context.l10n.youngMuslimSubmitAnswers,
             icon: AppIcons.check,
             busy: busy,
             onTap: state.canSubmit
@@ -169,7 +172,7 @@ class _QuestionBlock extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
               decoration: InputDecoration(
-                hintText: 'اكتب إجابتك هنا بوضوح...',
+                hintText: context.l10n.youngMuslimAnswerHint,
                 hintStyle: youngMuslimRowSubtitle(skin, size: 11.sp),
                 filled: true,
                 fillColor: skin.iconChip,

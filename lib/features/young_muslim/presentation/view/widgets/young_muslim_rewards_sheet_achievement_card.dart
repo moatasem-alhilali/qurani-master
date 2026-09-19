@@ -62,7 +62,7 @@ class _AchievementRow extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               YoungMuslimMetricChip(
-                label: '+${achievement.xpReward} نقطة',
+                label: context.l10n.youngMuslimXpGained(achievement.xpReward),
                 icon: AppIcons.star,
               ),
             ],
@@ -72,8 +72,10 @@ class _AchievementRow extends StatelessWidget {
               padding: EdgeInsets.only(top: 8.h),
               child: Text(
                 achievement.unlockedAt == null
-                    ? 'تم فتح هذا الإنجاز.'
-                    : 'فُتح ${youngMuslimRelative(achievement.unlockedAt)}',
+                    ? context.l10n.youngMuslimAchievementUnlocked
+                    : context.l10n.youngMuslimAchievementUnlockedAt(
+                        youngMuslimRelative(achievement.unlockedAt),
+                      ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: youngMuslimNumber(skin, size: 9.5.sp),
@@ -85,14 +87,17 @@ class _AchievementRow extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'التقدّم الحالي',
+                    context.l10n.youngMuslimCurrentProgress,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: youngMuslimRowSubtitle(skin),
                   ),
                 ),
                 Text(
-                  '$currentValue من ${achievement.threshold}',
+                  context.l10n.youngMuslimProgressOf(
+                    currentValue,
+                    achievement.threshold,
+                  ),
                   style: youngMuslimNumber(skin, size: 10.sp),
                 ),
               ],

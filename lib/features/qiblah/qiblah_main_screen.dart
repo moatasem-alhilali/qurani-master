@@ -12,6 +12,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/qiblah/qiblah_compass.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'qiblah_main_screen_compass_part.dart';
 part 'qiblah_main_screen_widgets_part.dart';
@@ -84,7 +85,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       if (deviceSupported != true) {
         if (!mounted) return;
         setState(() {
-          _errorMessage = 'جهازك لا يدعم استشعار الاتجاه';
+          _errorMessage = context.l10n.qiblahErrorNoSensor;
           _isLoading = false;
         });
         return;
@@ -94,7 +95,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
       if (!hasPermission) {
         if (!mounted) return;
         setState(() {
-          _errorMessage ??= 'يجب السماح بالوصول للموقع لتحديد اتجاه القبلة';
+          _errorMessage ??= context.l10n.qiblahErrorPermissionRequired;
           _isLoading = false;
         });
         return;
@@ -108,7 +109,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'حدث خطأ في تحديد اتجاه القبلة: $e';
+          _errorMessage = context.l10n.qiblahErrorGeneric(e.toString());
           _isLoading = false;
         });
       }
@@ -120,7 +121,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     if (!serviceEnabled) {
       if (!mounted) return false;
       setState(() {
-        _errorMessage = 'خدمات الموقع غير مفعلة. يرجى تفعيلها من الإعدادات';
+        _errorMessage = context.l10n.qiblahErrorLocationServiceOff;
       });
       return false;
     }
@@ -136,8 +137,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     if (permission == LocationPermission.deniedForever) {
       if (!mounted) return false;
       setState(() {
-        _errorMessage =
-            'تم رفض أذونات الموقع نهائياً. يرجى تفعيلها من إعدادات التطبيق';
+        _errorMessage = context.l10n.qiblahErrorPermissionDeniedForever;
       });
       return false;
     }
@@ -163,7 +163,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _errorMessage = 'فشل في الحصول على الموقع الحالي';
+        _errorMessage = context.l10n.qiblahErrorLocationFailed;
       });
     }
   }
@@ -195,13 +195,13 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
           _cityName = placemark.locality ??
               placemark.administrativeArea ??
               placemark.country ??
-              'موقع غير معروف';
+              context.l10n.qiblahUnknownLocation;
         });
       }
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _cityName = 'موقع غير معروف';
+        _cityName = context.l10n.qiblahUnknownLocation;
       });
     }
   }
@@ -230,7 +230,8 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
         onError: (Object error) {
           if (mounted) {
             setState(() {
-              _errorMessage = 'خطأ في تحديد الاتجاه: $error';
+              _errorMessage =
+                  context.l10n.qiblahErrorDirection(error.toString());
               _isLoading = false;
             });
           }
@@ -240,7 +241,7 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'فشل في بدء تتبع الاتجاه';
+          _errorMessage = context.l10n.qiblahErrorStreamFailed;
           _isLoading = false;
         });
       }
@@ -286,47 +287,44 @@ class _QiblahMainScreenState extends State<QiblahMainScreen>
   }
 
   String get _directionInstruction {
-    if (_currentPosition == null) return 'جاري تحديد الموقع...';
-    if (_isAligned) return 'أنت متوجّه إلى القبلة';
+    if (_currentPosition == null) return context.l10n.qiblahLocating;
+    if (_isAligned) return context.l10n.qiblahAligned;
 
     if (_qiblaDirection2 <= 180) {
-      return 'استدر يسارًا ${_qiblaDirection2.toInt()}°';
+      return context.l10n.qiblahTurnLeft(_qiblaDirection2.toInt());
     }
-    return 'استدر يمينًا ${(360 - _qiblaDirection2).toInt()}°';
+    return context.l10n.qiblahTurnRight((360 - _qiblaDirection2).toInt());
   }
 
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Theme(
-        data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
-        child: AppScaffoldWidget(
-          title: 'القبلة',
-          trailing: IconButton(
-            tooltip: 'تحديث الاتجاه',
-            onPressed: _refreshQiblah,
-            icon: AppIcon(AppIcons.refresh, size: 16.sp, color: skin.accent),
-          ),
-          body: ColoredBox(
-            color: skin.ground,
-            child: _errorMessage != null
-                ? _QiblahMessage(
-                    icon: AppIcons.warning,
-                    title: _errorMessage!,
-                    actionLabel: 'إعادة المحاولة',
-                    onAction: _refreshQiblah,
-                  )
-                : _isLoading
-                    ? const _QiblahMessage(
-                        icon: AppIcons.compass,
-                        title: 'جارِ تحديد اتجاه القبلة',
-                        subtitle: 'تأكد من تفعيل الموقع والسماح بالأذونات',
-                      )
-                    : _buildCompassView(context, skin),
-          ),
+    return Theme(
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
+      child: AppScaffoldWidget(
+        title: context.l10n.qiblahTitle,
+        trailing: IconButton(
+          tooltip: context.l10n.qiblahRefreshTooltip,
+          onPressed: _refreshQiblah,
+          icon: AppIcon(AppIcons.refresh, size: 16.sp, color: skin.accent),
+        ),
+        body: ColoredBox(
+          color: skin.ground,
+          child: _errorMessage != null
+              ? _QiblahMessage(
+                  icon: AppIcons.warning,
+                  title: _errorMessage!,
+                  actionLabel: context.l10n.commonRetry,
+                  onAction: _refreshQiblah,
+                )
+              : _isLoading
+                  ? _QiblahMessage(
+                      icon: AppIcons.compass,
+                      title: context.l10n.qiblahLoadingTitle,
+                      subtitle: context.l10n.qiblahLoadingSubtitle,
+                    )
+                  : _buildCompassView(context, skin),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// اختيار المدّة: شارات صغيرة، المختارة منها بتعبئة ذهبية.
 class AnalyticsPeriodSelector extends StatefulWidget {
@@ -22,31 +23,32 @@ class AnalyticsPeriodSelector extends StatefulWidget {
 class _AnalyticsPeriodSelectorState extends State<AnalyticsPeriodSelector> {
   PeriodType? selectedPeriod;
 
-  static const _periods = <(PeriodType, String)>[
-    (PeriodType.today, 'اليوم'),
-    (PeriodType.week, 'الأسبوع'),
-    (PeriodType.month, 'الشهر'),
-    (PeriodType.year, 'السنة'),
-    (PeriodType.allTime, 'الكل'),
-  ];
+  List<(PeriodType, String)> _periodsOf(L10n l10n) => [
+        (PeriodType.today, l10n.sabihPeriodToday),
+        (PeriodType.week, l10n.sabihPeriodWeek),
+        (PeriodType.month, l10n.sabihPeriodMonth),
+        (PeriodType.year, l10n.sabihPeriodYear),
+        (PeriodType.allTime, l10n.sabihPeriodAll),
+      ];
 
   @override
   Widget build(BuildContext context) {
+    final periods = _periodsOf(context.l10n);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
       child: Row(
         children: [
-          for (var i = 0; i < _periods.length; i++) ...[
+          for (var i = 0; i < periods.length; i++) ...[
             if (i != 0) SizedBox(width: 6.w),
             _PeriodChip(
-              label: _periods[i].$2,
-              selected: selectedPeriod == _periods[i].$1,
+              label: periods[i].$2,
+              selected: selectedPeriod == periods[i].$1,
               onTap: () {
                 HapticFeedback.selectionClick();
-                widget.onPeriodChanged(_periods[i].$1);
+                widget.onPeriodChanged(periods[i].$1);
                 setState(() {
-                  selectedPeriod = _periods[i].$1;
+                  selectedPeriod = periods[i].$1;
                 });
               },
             ),

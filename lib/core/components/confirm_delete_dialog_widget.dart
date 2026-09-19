@@ -6,6 +6,7 @@ import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 Future<bool?> showDeleteConfirmationDialog<T>(
   BuildContext context, {
@@ -124,7 +125,7 @@ class _AnimatedDialogContent extends StatelessWidget {
                 end: Offset.zero,
               ).animate(titleAnimation),
               child: Text(
-                title ?? 'حذف الذكر؟',
+                title ?? context.l10n.coreDeleteDhikrTitle,
                 style: titleMedium(context).copyWith(
                   // color: context.secondaryColor,
                   fontSize: 18.sp,
@@ -141,7 +142,7 @@ class _AnimatedDialogContent extends StatelessWidget {
                 end: Offset.zero,
               ).animate(messageAnimation),
               child: Text(
-                message ?? 'هل أنت متأكد من حذف الذكر؟',
+                message ?? context.l10n.coreDeleteDhikrMessage,
                 style: titleMedium(context).copyWith(
                   color: FxColors.gray1,
                 ),
@@ -164,7 +165,7 @@ class _AnimatedDialogContent extends StatelessWidget {
                     child: ProgressButtonState(
                       defaultColor: Colors.transparent,
                       onPressed: () => Navigator.of(context).pop(false),
-                      text: 'إلغاء',
+                      text: context.l10n.commonCancel,
                       colorText: context.primaryColor,
                     ),
                   ),
@@ -172,7 +173,7 @@ class _AnimatedDialogContent extends StatelessWidget {
                   Expanded(
                     child: ProgressButtonState(
                       onPressed: () => Navigator.of(context).pop(true),
-                      text: 'نعم',
+                      text: context.l10n.commonYes,
                       defaultColor: FxColors.error,
                     ),
                   ),

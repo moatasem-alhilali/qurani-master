@@ -5,6 +5,7 @@ import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ إشعار نظام مجدول: عنوانه ونصّه وزر إلغائه.
 class SystemNotificationItemWidget extends StatelessWidget {
@@ -26,12 +27,12 @@ class SystemNotificationItemWidget extends StatelessWidget {
 
     return SettingsRow(
       icon: AppIcons.clock,
-      title: notification.title ?? 'إشعار بلا عنوان',
+      title: notification.title ?? context.l10n.notifSettingsUntitled,
       subtitle: notification.body ?? '',
       isLast: isLast,
       trailing: SettingsIconButton(
         icon: AppIcons.delete,
-        tooltip: 'إلغاء الإشعار',
+        tooltip: context.l10n.notifSettingsCancelNotification,
         color: AppColors.error,
         onTap: () => context.read<NotificationBloc>().add(
               CancelPendingNotificationEvent(id: notification.id),

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// حالة التشغيل المتتابع: سطر واحد يقول ما يُتلى الآن وكم بقي من تكراره.
 class WirdPlayAllStatus extends StatelessWidget {
@@ -35,7 +36,7 @@ class WirdPlayAllStatus extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               child: Text(
-                'تم الانتهاء من تشغيل جميع الأذكار.',
+                context.l10n.wirdPlayAllFinished,
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 10.sp,
@@ -64,7 +65,7 @@ class WirdPlayAllStatus extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'يُتلى الآن',
+                      context.l10n.wirdNowPlaying,
                       style: TextStyle(
                         color: skin.accent,
                         fontSize: 9.sp,
@@ -87,7 +88,7 @@ class WirdPlayAllStatus extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Text(
-                'التكرار $repeatIndex من $repeatTotal',
+                context.l10n.wirdRepeatProgress(repeatIndex, repeatTotal),
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,

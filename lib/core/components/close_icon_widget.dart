@@ -14,7 +14,7 @@ class CloseIconWidget extends StatelessWidget {
       children: [
         ButtonIconCircleWidget(
           icon: AppIcon(
-            AppIcons.back,
+            AppIcons.backFor(context),
             color: context.primaryColor,
           ),
           onPressed: () {

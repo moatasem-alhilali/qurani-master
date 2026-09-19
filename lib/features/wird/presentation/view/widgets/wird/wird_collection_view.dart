@@ -10,6 +10,7 @@ import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_disp
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_item_card.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_play_all_button.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_play_all_status.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class WirdCollectionView extends StatefulWidget {
   const WirdCollectionView({super.key});
@@ -180,7 +181,7 @@ class _PagerBar extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'الذكر ${current + 1} من $total',
+              context.l10n.wirdPagerPosition(current + 1, total),
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 9.5.sp,
@@ -189,14 +190,18 @@ class _PagerBar extends StatelessWidget {
             ),
           ),
           _PagerButton(
-            icon: AppIcons.chevronRight,
-            tooltip: 'السابق',
+            icon: Directionality.of(context) == TextDirection.rtl
+                ? AppIcons.chevronRight
+                : AppIcons.chevronLeft,
+            tooltip: context.l10n.wirdPrevious,
             onTap: onPrevious,
           ),
           SizedBox(width: 6.w),
           _PagerButton(
-            icon: AppIcons.chevronLeft,
-            tooltip: 'التالي',
+            icon: Directionality.of(context) == TextDirection.rtl
+                ? AppIcons.chevronLeft
+                : AppIcons.chevronRight,
+            tooltip: context.l10n.wirdNext,
             onTap: onNext,
           ),
         ],

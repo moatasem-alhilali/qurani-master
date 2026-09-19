@@ -1,0 +1,497 @@
+{
+  "settingsDeveloperName": "معتصم الهلالي",
+  "@settingsDeveloperName": {
+    "description": "The developer's personal name (Moatasem Alhilali). Transliterate for Latin-script languages."
+  },
+  "settingsUpdateStarting": "جارٍ بدء تحديث التطبيق...",
+  "settingsUpdateUpToDate": "أنت تستخدم أحدث إصدار من التطبيق.",
+  "settingsUpdateCheckFailed": "تعذّر التحقق من التحديثات، حاول لاحقاً.",
+  "settingsGroupPreferences": "التفضيلات",
+  "settingsDarkModeTitle": "النمط الداكن",
+  "settingsStatusOn": "مفعل",
+  "@settingsStatusOn": {
+    "description": "Subtitle under a switch row when the option is enabled."
+  },
+  "settingsStatusOff": "معطل",
+  "@settingsStatusOff": {
+    "description": "Subtitle under a switch row when the option is disabled."
+  },
+  "settingsNotificationsTitle": "إعدادات الإشعارات",
+  "settingsNotificationsSubtitle": "تحكّم بكل تنبيه يصلك من التطبيق",
+  "settingsDownloadsTitle": "إعدادات التنزيل",
+  "settingsDownloadsSubtitle": "إدارة الملفات المحمّلة والمساحة",
+  "settingsGroupApp": "التطبيق",
+  "settingsCheckUpdatesTitle": "التحقق من التحديثات",
+  "settingsCheckUpdatesSubtitle": "تأكد من أنك تستخدم أحدث إصدار",
+  "settingsAboutUsTitle": "من نحن",
+  "settingsAboutUsSubtitle": "تعرف على تطبيق طمأنينة ورسالته",
+  "settingsRateAppTitle": "قيّم التطبيق",
+  "settingsRateAppSubtitle": "ساهم في نشر الخير بتقييمك على المتجر",
+  "settingsGroupPrivacy": "الخصوصية والأمان",
+  "settingsPrivacyPolicyTitle": "سياسة الخصوصية",
+  "settingsPrivacyPolicySubtitle": "كيف يتعامل التطبيق مع بياناتك وصلاحياتك",
+  "settingsDataSafetyTitle": "أمان البيانات",
+  "settingsDataSafetySubtitle": "ملخص البيانات والصلاحيات وطريقة استخدامها",
+  "settingsGroupDeveloper": "المطوّر",
+  "settingsAboutDeveloperTitle": "حول المطور",
+  "settingsAboutDeveloperSubtitle": "معلومات وروابط التواصل الخاصة بالمطور",
+  "settingsDeveloperContactSubtitle": "تواصل مباشر عبر الموقع أو واتس اب",
+  "settingsPersonalWebsite": "الموقع الشخصي",
+  "settingsGroupFollowNews": "تابع آخر الأخبار",
+  "settingsSocialTelegram": "تليجرام",
+  "settingsSocialWhatsapp": "واتس اب",
+  "settingsSocialFacebook": "فيسبوك",
+  "settingsSocialInstagram": "انستجرام",
+  "settingsSocialTwitter": "تويتر",
+  "@settingsSocialTelegram": {
+    "description": "Social network names shown under icon tiles (Telegram, WhatsApp, Facebook, Instagram, Twitter/X). Use the usual local spelling."
+  },
+  "settingsPrivacyIntro": "معلومات واضحة ومختصرة حول طريقة تعامل التطبيق مع بياناتك.",
+  "settingsPrivacyMattersTitle": "خصوصيتك تهمنا",
+  "settingsPrivacyMattersBody": "نحرص في طمأنينة على أن تكون تجربة استخدام التطبيق واضحة وآمنة. نستخدم البيانات الضرورية فقط لتشغيل مزايا التطبيق وتحسينها، ولا نبيع بيانات المستخدمين أو نشاركها لأغراض إعلانية.",
+  "settingsPrivacyDataUsedTitle": "البيانات التي قد يستخدمها التطبيق",
+  "settingsPrivacyDataUsedBody": "قد يستخدم التطبيق الموقع لحساب أوقات الصلاة والقبلة، والإشعارات لتنبيهات الأذان والأذكار، وبيانات التخزين لحفظ المحتوى المحمل والإعدادات المحلية، وجهات الاتصال فقط في الميزات التي يفعّلها المستخدم مثل صحبة الفجر.",
+  "settingsPrivacyControlTitle": "التحكم ببياناتك",
+  "settingsPrivacyControlBody": "يمكنك تعطيل الإشعارات أو تعديلها من إعدادات الإشعارات داخل التطبيق، ويمكنك إدارة صلاحيات النظام من إعدادات جهازك في أي وقت.",
+  "settingsPrivacyThirdPartyTitle": "الخدمات الخارجية",
+  "settingsPrivacyThirdPartyBody": "قد يستخدم التطبيق خدمات مثل Firebase Remote Config وFirebase Messaging لتحديث الإعدادات وإرسال التنبيهات العامة. يتم استخدام هذه الخدمات لتشغيل التطبيق وتحسين التجربة فقط.",
+  "settingsDataSafetyIntro": "ملخص للبيانات التي يستخدمها التطبيق وكيف تُحفظ وتُشارك.",
+  "settingsDataSafetySensitiveTitle": "البيانات الحساسة",
+  "settingsDataSafetySensitiveBody": "لا يطلب التطبيق بيانات حساسة إلا عند الحاجة لميزة واضحة يختارها المستخدم. بعض البيانات مثل أوقات التنبيه، التفضيلات، وخطط القراءة تُحفظ محليًا على الجهاز.",
+  "settingsDataSafetyLocationTitle": "الموقع",
+  "settingsDataSafetyLocationBody": "يُستخدم الموقع لحساب مواقيت الصلاة، اتجاه القبلة، والخدمات المعتمدة على المكان. يمكن للمستخدم إيقاف صلاحية الموقع من إعدادات النظام.",
+  "settingsDataSafetyNotificationsTitle": "الإشعارات",
+  "settingsDataSafetyNotificationsBody": "يستخدم التطبيق الإشعارات للأذان، الأذكار، التذكيرات، وبعض رسائل التطبيق العامة. يمكن التحكم بكل نوع إشعار من صفحة إعدادات الإشعارات.",
+  "settingsDataSafetyStorageTitle": "التخزين والتحميل",
+  "settingsDataSafetyStorageBody": "قد يستخدم التطبيق التخزين لحفظ الملفات والمحتوى الذي يختار المستخدم تحميله، مثل الصوتيات أو المواد المتاحة داخل التطبيق.",
+  "settingsDataSafetySharingTitle": "المشاركة",
+  "settingsDataSafetySharingBody": "لا تتم مشاركة بياناتك الشخصية مع أطراف خارجية للبيع أو التسويق. أي مشاركة تتم تكون ضمن خدمات تشغيل ضرورية أو إجراء يبدأه المستخدم.",
+  "settingsAboutAppBody": "تطبيق قرآني وعبادي يساعدك على الصلاة، الذكر، تلاوة القرآن، والاستمرار على ورد يومي بهدوء وبأسلوب قريب من المستخدم.",
+  "settingsAboutMissionTitle": "رسالتنا",
+  "settingsAboutMissionBody": "أن يكون التطبيق رفيقًا خفيفًا يعين المستخدم على الطاعة دون إزعاج، ويجمع الأدوات اليومية المهمة مثل المصحف، الأذكار، مواقيت الصلاة، التنبيهات، والميزات المساعدة للأسرة.",
+  "settingsAboutOfferTitle": "ما نقدمه",
+  "settingsAboutOfferBody": "مصحف، أذكار، مواقيت صلاة، قبلة، ورد يومي، تطبيقات مصغرة، صحبة الفجر، المسلم الصغير، خدمات للمسافر، وتنبيهات قابلة للتخصيص حسب حاجة المستخدم.",
+  "settingsDeveloperHeroBody": "مهندس برمجيات Full Stack وMobile بخبرة تتجاوز 7 سنوات، متخصص في Flutter وLaravel وNext.js وبناء تطبيقات إنتاجية للويب والجوال.",
+  "settingsDeveloperBioTitle": "نبذة مختصرة",
+  "settingsDeveloperBioBody": "يعمل معتصم الهلالي على بناء تطبيقات ومنصات رقمية تخدم مستخدمين حقيقيين، مع اهتمام خاص بتطبيقات الجوال، الأنظمة الخلفية، واجهات الاستخدام، ومنصات Fintech وSaaS.",
+  "settingsDeveloperFieldsTitle": "مجالات العمل",
+  "settingsDeveloperFieldsBody": "Flutter، Laravel، Next.js، React، API Development، تطبيقات الجوال، تطبيقات الويب، حلول Fintech، ومنصات SaaS.",
+  "settingsDeveloperContactTitle": "طرق التواصل",
+  "settingsContactWebsite": "الموقع",
+  "settingsContactEmail": "البريد",
+  "settingsAppLinksTitle": "روابط التطبيق",
+  "@settingsPrivacyThirdPartyBody": {
+    "description": "Keep product names 'Firebase Remote Config' and 'Firebase Messaging' in Latin script."
+  },
+  "@settingsDeveloperFieldsBody": {
+    "description": "Comma-separated list of technologies; keep technology names (Flutter, Laravel, Next.js, React, API, Fintech, SaaS) in Latin script."
+  },
+  "@settingsContactWebsite": {
+    "description": "Short tile label for the developer's website link."
+  },
+  "notifSettingsLabelAppNotifications": "اشعارات التطبيق",
+  "notifSettingsLabelAllAthan": "إشعارات جميع الأذان",
+  "notifSettingsAthanOf": "أذان {prayer}",
+  "@notifSettingsAthanOf": {
+    "description": "Name of the call-to-prayer (adhan) notification for one prayer, e.g. 'Fajr adhan'. Used as a notification title.",
+    "placeholders": {
+      "prayer": {
+        "type": "String",
+        "example": "الفجر"
+      }
+    }
+  },
+  "notifSettingsLabelMiddleNight": "قيام الليل",
+  "notifSettingsLabelThikrMorning": "أذكار الصباح",
+  "notifSettingsLabelThikrEvening": "أذكار المساء",
+  "notifSettingsLabelThikrWakeUp": "أذكار الاستيقاظ",
+  "notifSettingsLabelThikrSleep": "أذكار النوم",
+  "notifSettingsLabelSalawat": "الصلاة على محمد ﷺ",
+  "@notifSettingsLabelSalawat": {
+    "description": "Reminder to send blessings upon the Prophet Muhammad ﷺ. Keep the ﷺ ligature."
+  },
+  "notifSettingsLabelRandomAudioThikr": "الأذكار الصوتية العشوائية",
+  "notifSettingsLabelFloatingAdhkar": "الأذكار العائمة والتنبيهات البديلة",
+  "notifSettingsLabelDailyQuranWird": "الورد القرآني اليومي",
+  "notifSettingsLabelReadSurahMulk": "قراءة سورة الملك",
+  "notifSettingsLabelReadSpecificSurah": "قراءة سورة محددة",
+  "notifSettingsLabelReadSurahKahf": "قراءة سورة الكهف",
+  "notifSettingsLabelFasting": "تذكير بالصيام",
+  "notifSettingsLabelFastingMonday": "صيام الاثنين",
+  "notifSettingsLabelFastingThursday": "صيام الخميس",
+  "notifSettingsLabelBestDua": "أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم",
+  "@notifSettingsLabelBestDua": {
+    "description": "Title/body of the recurring 'Hasbuna Allah wa ni'ma al-wakil' dhikr reminder: 'The best supplication beloved to Allah, with great effect'."
+  },
+  "notifSettingsLabelWirdMorning": "ورد الصباح",
+  "notifSettingsLabelWirdEvening": "ورد المساء",
+  "notifSettingsLabelWirdNight": "ورد ما قبل النوم",
+  "notifSettingsLabelWirdSummary": "ملخص الورد اليومي",
+  "@notifSettingsLabelWirdMorning": {
+    "description": "'Wird' = a daily devotional portion (worship routine)."
+  },
+  "notifSettingsLabelYoungMuslim": "تذكير المسلم الصغير",
+  "@notifSettingsLabelYoungMuslim": {
+    "description": "Reminder for the 'Young Muslim' (kids) section of the app."
+  },
+  "notifSettingsLabelQuranPlan": "تذكير خطط القرآن",
+  "notifSettingsLabelGeneral": "إشعارات التطبيق العامة",
+  "notifSettingsTitleRandomThikr": "ذكر عشوائي",
+  "notifSettingsTitleFloatingAdhkar": "الأذكار العائمة",
+  "notifSettingsTitlePrayerAthan": "أذان الصلاة",
+  "notifSettingsBodyThikrMorning": "لا تنس أذكار الصباح!",
+  "notifSettingsBodyThikrEvening": "لا تنس أذكار المساء!",
+  "notifSettingsBodyMiddleNight": "حان وقت قيام الليل، استغل الثلث الأخير من الليل.",
+  "notifSettingsBodySalawat": "صلِّ على النبي ﷺ تسعد في يومك.",
+  "notifSettingsBodyRememberAllah": "اذكر الله يذكرك!",
+  "notifSettingsBodyReadQuran": "خصص وقتًا لوردك القرآني اليومي.",
+  "notifSettingsBodyReadSurahMulk": "لا تنس قراءة سورة الملك الليلة.",
+  "notifSettingsBodyThikrSleep": "اذكار النوم قبل أن تغفو.",
+  "notifSettingsBodyThikrWakeUp": "ابدأ يومك بذكر الله بعد الاستيقاظ.",
+  "notifSettingsBodyReadSurah": "لا تنس قراءة السورة التي اخترتها اليوم.",
+  "notifSettingsBodyReadSurahKahf": "لا تنس قراءة سورة الكهف في يوم الجمعة.",
+  "notifSettingsBodyFasting": "تذكير بصيام التطوع.",
+  "notifSettingsBodyFastingMonday": "تذكير بصيام يوم الاثنين.",
+  "notifSettingsBodyFastingThursday": "تذكير بصيام يوم الخميس.",
+  "notifSettingsBodyAthanTime": "حان الآن موعد الأذان.",
+  "notifSettingsBodyWirdMorning": "ابدأ نهارك بزادك التعبدي.",
+  "notifSettingsBodyWirdEvening": "جدد صلتك بالله في زاد المساء.",
+  "notifSettingsBodyWirdNight": "اختم يومك بالذكر والدعاء.",
+  "notifSettingsBodyWirdSummary": "راجع زادك التعبدي اليوم.",
+  "notifSettingsBodyYoungMuslim": "تذكير للعودة إلى محتوى المسلم الصغير.",
+  "notifSettingsBodyQuranPlan": "لا تنس جلسة اليوم من خطتك القرآنية.",
+  "notifSettingsBodyGeneral": "إشعارات وتنبيهات عامة من تطبيق طمأنينة.",
+  "@notifSettingsBodyThikrMorning": {
+    "description": "Body text of a scheduled reminder notification."
+  },
+  "notifSettingsAllPrayers": "كل الصلوات",
+  "@notifSettingsAllPrayers": {
+    "description": "Row title: adhan notifications for all prayers."
+  },
+  "notifSettingsSalawatShort": "الصلاة على محمد",
+  "@notifSettingsSalawatShort": {
+    "description": "Short row title: reminder to send blessings upon the Prophet Muhammad."
+  },
+  "notifSettingsQuranWirdShort": "الورد القرآني",
+  "@notifSettingsQuranWirdShort": {
+    "description": "Short row title: daily Quran reading portion reminder."
+  },
+  "notifSettingsGroupGeneral": "عام",
+  "notifSettingsGroupAthan": "الأذان",
+  "notifSettingsGroupDailyWird": "الورد اليومي",
+  "notifSettingsGroupAdhkar": "الأذكار",
+  "notifSettingsGroupQuran": "القرآن",
+  "notifSettingsGroupAppSections": "أقسام التطبيق",
+  "notifSettingsGroupNightAndWaking": "الليل واليقظة",
+  "notifSettingsGroupFasting": "الصيام",
+  "notifSettingsGroupRecurringAdhkar": "أذكار متكررة",
+  "notifSettingsGroupSystem": "النظام",
+  "@notifSettingsGroupGeneral": {
+    "description": "Section headers on the notification settings screen."
+  },
+  "notifSettingsMasterTitle": "كل إشعارات التطبيق",
+  "notifSettingsMasterOnSubtitle": "الإشعارات مفعّلة، وتستطيع ضبط كل نوع أدناه",
+  "notifSettingsMasterOffSubtitle": "كل الإشعارات موقوفة حتى تفعّل هذا المفتاح",
+  "notifSettingsSystemTitle": "إشعارات النظام",
+  "notifSettingsSystemSubtitle": "استعرض الإشعارات المجدولة والمفعّلة على جهازك",
+  "notifSettingsStatusStopped": "موقوف",
+  "notifSettingsStatusEnabled": "مفعّل",
+  "@notifSettingsStatusStopped": {
+    "description": "Short status under a notification row."
+  },
+  "notifSettingsSummaryDaily": "يومياً · {time}",
+  "@notifSettingsSummaryDaily": {
+    "description": "Schedule summary: every day at {time} (HH:mm).",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "07:30"
+      }
+    }
+  },
+  "notifSettingsSummaryHourly": "كل ساعة عند الدقيقة {minute}",
+  "@notifSettingsSummaryHourly": {
+    "description": "Schedule summary: every hour at minute {minute} past the hour.",
+    "placeholders": {
+      "minute": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsSummaryEveryNMinutes": "{count, plural, =1{كل دقيقة} =2{كل دقيقتين} few{كل {count} دقائق} many{كل {count} دقيقة} other{كل {count} دقيقة}}",
+  "@notifSettingsSummaryEveryNMinutes": {
+    "description": "Schedule summary: repeats every {count} minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsListSeparator": "، ",
+  "@notifSettingsListSeparator": {
+    "description": "Separator between items in a short list (e.g. weekday names). Arabic comma plus space; use ', ' for Latin-script languages."
+  },
+  "notifSettingsNoDaysSelected": "بدون أيام محددة",
+  "notifSettingsSummaryWeekly": "أسبوعياً ({days}) · {time}",
+  "@notifSettingsSummaryWeekly": {
+    "description": "Schedule summary: weekly on {days} at {time}.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "الاثنين، الخميس"
+      },
+      "time": {
+        "type": "String",
+        "example": "20:30"
+      }
+    }
+  },
+  "notifSettingsSummaryCustom": "{count, plural, =0{جدولة مخصصة · بدون توقيت} =1{جدولة مخصصة · توقيت واحد} =2{جدولة مخصصة · توقيتان} few{جدولة مخصصة · {count} توقيتات} many{جدولة مخصصة · {count} توقيتًا} other{جدولة مخصصة · {count} توقيت}}",
+  "@notifSettingsSummaryCustom": {
+    "description": "Schedule summary: custom schedule with {count} specific dates/times.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsScheduleTimesTooltip": "مواعيد التنبيه",
+  "notifSettingsEditScheduleTitle": "تعديل الجدولة",
+  "notifSettingsEditScheduleSubtitle": "غيّر نوع التكرار ووقت التنبيه",
+  "notifSettingsExtraSchedulesTitle": "إدارة مواعيد إضافية",
+  "notifSettingsExtraSchedulesSubtitle": "أضف أكثر من موعد لهذا الإشعار",
+  "notifScheduleBodyAllAthan": "سيتكرر تنبيه جميع الأذان في أوقاتها المحددة.",
+  "notifScheduleBodyAthanFajr": "حان الآن وقت أذان الفجر، بادر بالصلاة.",
+  "notifScheduleBodyAthanDhuhr": "حان الآن وقت أذان الظهر.",
+  "notifScheduleBodyAthanAsr": "حان الآن وقت أذان العصر.",
+  "notifScheduleBodyAthanMaghrib": "حان الآن وقت أذان المغرب.",
+  "notifScheduleBodyAthanIsha": "حان الآن وقت أذان العشاء.",
+  "notifScheduleBodyMiddleNight": "حان وقت قيام الليل! قم وناجِ الرحمن.",
+  "notifScheduleBodyThikrMorning": "لا تنسَ أذكار الصباح!",
+  "notifScheduleBodyThikrEvening": "لا تنسَ أذكار المساء!",
+  "notifScheduleBodySalawat": "صَلِّ على النبي الكريم ﷺ، تُكتب لك عشرُ حسنات.",
+  "notifScheduleBodyReadQuran": "لا تنسَ وردك من القرآن اليوم.",
+  "notifScheduleBodyReadSurahMulk": "اقرأ سورة الملك قبل النوم.",
+  "notifScheduleBodyThikrSleep": "اقرأ أذكار النوم قبل أن تنام.",
+  "notifScheduleBodyThikrWakeUp": "ابدأ يومك بأذكار الاستيقاظ.",
+  "notifScheduleBodyReadSurah": "لا تنسَ قراءة السورة المحددة لهذا اليوم.",
+  "notifScheduleBodyReadSurahKahf": "اقرأ سورة الكهف يوم الجمعة.",
+  "notifScheduleBodyFasting": "صيام النوافل له أجر عظيم، لا تفوت الفرصة.",
+  "notifScheduleTitleRandomThikr": "مخصصة من أذكار عشوائية",
+  "@notifScheduleTitleRandomThikr": {
+    "description": "Notification title for custom-scheduled random dhikr reminders."
+  },
+  "@notifScheduleBodyAllAthan": {
+    "description": "Bodies of notifications scheduled from the per-notification schedules screen."
+  },
+  "notifScheduleValidateTime": "حدد وقت التنبيه أولاً",
+  "notifScheduleValidateMinute": "حدد الدقيقة من كل ساعة",
+  "notifScheduleValidateWeekday": "حدد يوماً واحداً على الأقل من الأسبوع",
+  "notifScheduleValidateInterval": "أدخل عدد الدقائق (أكبر من صفر)",
+  "notifScheduleValidateDate": "أضف تاريخاً واحداً على الأقل",
+  "notifScheduleDetails": "التفاصيل",
+  "notifScheduleMinuteOfHourTitle": "الدقيقة من كل ساعة",
+  "notifScheduleMinuteOfHourSubtitle": "رقم بين 0 و 59",
+  "notifScheduleMinuteUnit": "دقيقة",
+  "@notifScheduleMinuteUnit": {
+    "description": "Unit suffix shown after a number input field (minutes)."
+  },
+  "notifScheduleRepeatTitle": "التكرار",
+  "notifScheduleRepeatSubtitle": "المدة بين كل تنبيه والذي يليه",
+  "notifScheduleCustomTime": "موعد مخصص",
+  "notifScheduleDeleteTime": "حذف الموعد",
+  "notifScheduleNoTimesYet": "لم تضف أي موعد بعد",
+  "notifScheduleAddTime": "إضافة موعد",
+  "notifScheduleSaveSchedule": "حفظ الجدولة",
+  "notifScheduleAddNewTitle": "إضافة موعد جديد",
+  "notifScheduleEditTitle": "تعديل الموعد",
+  "notifScheduleOptionalLabel": "وصف اختياري",
+  "notifScheduleAddConfirm": "إضافة الموعد",
+  "notifScheduleSaveEdit": "حفظ التعديل",
+  "notifScheduleTypeDaily": "يومي",
+  "notifScheduleTypeHourly": "كل ساعة",
+  "notifScheduleTypeEveryNMinutes": "كل عدة دقائق",
+  "notifScheduleTypeWeekly": "أسبوعي",
+  "notifScheduleTypeCustomDates": "تواريخ مخصصة",
+  "notifScheduleTypeDailyDesc": "يتكرر كل يوم في الوقت نفسه",
+  "notifScheduleTypeHourlyDesc": "يتكرر كل ساعة عند دقيقة محددة",
+  "notifScheduleTypeEveryNMinutesDesc": "يتكرر كل فترة زمنية تحددها",
+  "notifScheduleTypeWeeklyDesc": "يتكرر في أيام محددة من الأسبوع",
+  "notifScheduleTypeCustomDatesDesc": "يظهر في تواريخ وأوقات تختارها",
+  "notifScheduleTypeTitle": "نوع الجدولة",
+  "notifScheduleTimeTitle": "وقت التنبيه",
+  "notifScheduleTimeSubtitle": "اضغط لاختيار الساعة والدقيقة",
+  "notifScheduleLabelHint": "أضف وصفاً قصيراً لهذا الموعد",
+  "notifScheduleRowDaily": "كل يوم · {time}",
+  "@notifScheduleRowDaily": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "07:30"
+      }
+    }
+  },
+  "notifScheduleRowWeekly": "{days} · {time}",
+  "@notifScheduleRowWeekly": {
+    "description": "Weekly schedule row: short day names then time.",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleNoDays": "بدون أيام",
+  "notifScheduleRowCustom": "{count, plural, =0{لا مواعيد مخصصة} =1{موعد مخصص واحد} =2{موعدان مخصصان} few{{count} مواعيد مخصصة} many{{count} موعدًا مخصصًا} other{{count} موعد مخصص}}",
+  "@notifScheduleRowCustom": {
+    "description": "Number of custom date/time entries in a schedule.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifScheduleDayShort1": "اثنين",
+  "notifScheduleDayShort2": "ثلاثاء",
+  "notifScheduleDayShort3": "أربعاء",
+  "notifScheduleDayShort4": "خميس",
+  "notifScheduleDayShort5": "جمعة",
+  "notifScheduleDayShort6": "سبت",
+  "notifScheduleDayShort7": "أحد",
+  "@notifScheduleDayShort1": {
+    "description": "Short weekday names for small chips: 1=Monday … 7=Sunday."
+  },
+  "notifScheduleAllDays": "كل الأيام",
+  "notifScheduleWorkDays": "أيام العمل",
+  "@notifScheduleWorkDays": {
+    "description": "Quick-select button: working days (currently Sunday–Thursday)."
+  },
+  "notifScheduleWeekend": "العطلة",
+  "@notifScheduleWeekend": {
+    "description": "Quick-select button: weekend days (currently Friday–Saturday)."
+  },
+  "notifScheduleClear": "مسح",
+  "notifScheduleStatTotal": "الإجمالي",
+  "notifScheduleStatEnabled": "مفعّل",
+  "notifScheduleStatStopped": "موقوف",
+  "notifScheduleUnexpectedError": "حدث خطأ غير متوقع",
+  "notifScheduleSaved": "تم الحفظ",
+  "notifScheduleScreenTitle": "مواعيد الإشعار",
+  "notifScheduleListTitle": "المواعيد",
+  "notifScheduleEmpty": "لا توجد مواعيد بعد — أضف موعداً من زر «إضافة موعد».",
+  "notifScheduleDeleteTitle": "حذف موعد",
+  "notifScheduleDeleteMessage": "هل أنت متأكد من حذف هذا الموعد؟\nسيتم إلغاء جميع الإشعارات المرتبطة به.",
+  "notifScheduleSaving": "جارٍ الحفظ...",
+  "notifScheduleLoading": "جارٍ تحميل المواعيد...",
+  "notifScheduleLoadFailed": "فشل في تحميل المواعيد: {error}",
+  "@notifScheduleLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleAdded": "تم إضافة الموعد بنجاح",
+  "notifScheduleAddFailed": "فشل في إضافة الموعد: {error}",
+  "@notifScheduleAddFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleUpdated": "تم تحديث الموعد بنجاح",
+  "notifScheduleUpdateFailed": "فشل في تحديث الموعد: {error}",
+  "@notifScheduleUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleDeleted": "تم حذف الموعد بنجاح",
+  "notifScheduleDeleteFailed": "فشل في حذف الموعد: {error}",
+  "@notifScheduleDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleActivated": "تم تفعيل الموعد",
+  "notifScheduleDeactivated": "تم إلغاء تفعيل الموعد",
+  "notifScheduleToggleFailed": "فشل في تغيير حالة الموعد: {error}",
+  "@notifScheduleToggleFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifSettingsScheduledGroup": "مجدولة",
+  "notifSettingsNoScheduled": "لا توجد إشعارات مجدولة حالياً",
+  "notifSettingsShownNowGroup": "ظاهرة الآن",
+  "notifSettingsNoShown": "لا توجد إشعارات ظاهرة في شريط الإشعارات",
+  "notifSettingsUntitled": "إشعار بلا عنوان",
+  "notifSettingsDismiss": "إخفاء الإشعار",
+  "notifSettingsCancelNotification": "إلغاء الإشعار",
+  "notifSettingsAthanTicker": "حان الآن أذان {prayer}",
+  "@notifSettingsAthanTicker": {
+    "description": "Accessibility ticker text of an adhan notification.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadTitle": "التنزيلات",
+  "downloadEmptyAll": "لا توجد تنزيلات بعد، أضف تنزيلاً للبدء.",
+  "downloadEmptyActive": "لا توجد تنزيلات نشطة",
+  "downloadEmptyCompleted": "لا توجد تنزيلات مكتملة",
+  "downloadEmptyPaused": "لا توجد تنزيلات متوقّفة",
+  "downloadEmptyFailed": "لا توجد تنزيلات فاشلة",
+  "downloadCancelAll": "إلغاء الكل",
+  "downloadCancelAllConfirm": "هل أنت متأكد من إلغاء جميع التنزيلات النشطة؟",
+  "downloadAdd": "إضافة تنزيل",
+  "downloadFilterAll": "الكل",
+  "downloadStatusActive": "نشط",
+  "downloadStatusCompleted": "مكتمل",
+  "downloadStatusPaused": "متوقّف",
+  "downloadStatusFailed": "فشل",
+  "@downloadStatusActive": {
+    "description": "Download status names, used as filter tab labels and summary row labels."
+  },
+  "downloadStarted": "بدأ التحميل",
+  "downloadAddNewTitle": "إضافة تنزيل جديد",
+  "downloadUrlLabel": "رابط الملفّ",
+  "downloadUrlRequired": "الرجاء إدخال رابط التحميل",
+  "downloadUrlInvalid": "الرجاء إدخال رابط صحيح",
+  "downloadFileNameLabel": "اسم الملفّ",
+  "downloadOptional": "اختياري",
+  "downloadPublicStorageTitle": "التخزين العام",
+  "downloadPublicStorageSubtitle": "حفظ في مجلّد التنزيلات",
+  "downloadAllowCellularTitle": "السماح بالبيانات الخلوية",
+  "downloadAllowCellularSubtitle": "التحميل عبر بيانات الجوّال",
+  "downloadStart": "بدء التحميل",
+  "downloadPause": "إيقاف مؤقّت",
+  "downloadResume": "متابعة",
+  "@downloadResume": {
+    "description": "Action: resume a paused download."
+  },
+  "downloadOpenFile": "فتح الملفّ",
+  "downloadRemoveFromList": "حذف من القائمة",
+  "downloadDeleteFile": "حذف الملفّ",
+  "downloadTotal": "الإجمالي",
+  "downloadInProgressNow": "يجري تنزيله الآن",
+  "downloadAndMore": "{count, plural, =1{وتنزيل آخر} =2{وتنزيلان آخران} few{و{count} غيرها} many{و{count} غيرها} other{و{count} غيرها}}",
+  "@downloadAndMore": {
+    "description": "Shown after the first 3 running downloads: 'and {count} more'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

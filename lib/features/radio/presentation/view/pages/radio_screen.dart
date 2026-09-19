@@ -17,6 +17,7 @@ import 'package:quran_app/features/radio/presentation/view/widgets/radio_search_
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_sleep_chip.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_tile.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/tuner/radio_tuner.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفحة الإذاعة.
 ///
@@ -98,7 +99,7 @@ class _RadioScreenState extends State<RadioScreen> {
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'الإذاعة',
+        title: context.l10n.radioTitle,
         initialOffset: 0,
         body: ColoredBox(
           color: skin.ground,
@@ -220,7 +221,7 @@ class _StationSections extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 26.h),
         child: Text(
-          'لا توجد محطة بهذا الاسم.',
+          context.l10n.radioNoMatch,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.78),
@@ -235,8 +236,8 @@ class _StationSections extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _group(RadioStationKind.reciter.label, reciters),
-        _group(RadioStationKind.program.label, programs),
+        _group(RadioStationKind.reciter.label(context.l10n), reciters),
+        _group(RadioStationKind.program.label(context.l10n), programs),
       ],
     );
   }

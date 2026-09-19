@@ -100,7 +100,7 @@ class _AdhkarManageRow extends StatelessWidget {
           ),
           if (hasMenu)
             PopupMenuButton<_ManageAction>(
-              tooltip: 'خيارات الذكر',
+              tooltip: context.l10n.floatingAdhkarItemOptions,
               color: skin.raised,
               onSelected: (action) {
                 switch (action) {
@@ -112,19 +112,19 @@ class _AdhkarManageRow extends StatelessWidget {
               },
               itemBuilder: (context) => [
                 if (onEdit != null)
-                  const PopupMenuItem<_ManageAction>(
+                  PopupMenuItem<_ManageAction>(
                     value: _ManageAction.edit,
                     child: _ManageMenuLabel(
                       icon: AppIcons.edit,
-                      label: 'تعديل',
+                      label: context.l10n.commonEdit,
                     ),
                   ),
                 if (onDelete != null)
-                  const PopupMenuItem<_ManageAction>(
+                  PopupMenuItem<_ManageAction>(
                     value: _ManageAction.delete,
                     child: _ManageMenuLabel(
                       icon: AppIcons.delete,
-                      label: 'حذف',
+                      label: context.l10n.commonDelete,
                     ),
                   ),
               ],

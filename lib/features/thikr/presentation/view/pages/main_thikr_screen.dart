@@ -12,6 +12,7 @@ import 'package:quran_app/features/sabih/presentation/view/tasbeeh_provider.dart
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/thikr_slider.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مكتبة الأذكار.
 ///
@@ -24,38 +25,38 @@ class MainThikrScreen extends StatelessWidget {
   List<_ThikrGroup> _groups(BuildContext context) {
     return [
       _ThikrGroup(
-        title: 'أذكار يومك',
+        title: context.l10n.thikrGroupDaily,
         items: [
           _ThikrShortcut(
-            label: 'أذكار الصباح',
-            subtitle: 'وردك بعد الفجر إلى ارتفاع النهار',
+            label: context.l10n.wirdMorningAdhkar,
+            subtitle: context.l10n.thikrMorningSubtitle,
             icon: FlutterIslamicIcons.prayer,
             onTap: () => context.push(const WirdScreen(isMorning: true)),
           ),
           _ThikrShortcut(
-            label: 'أذكار المساء',
-            subtitle: 'وردك بعد العصر إلى الليل',
+            label: context.l10n.wirdEveningAdhkar,
+            subtitle: context.l10n.thikrEveningSubtitle,
             icon: FlutterIslamicIcons.prayer,
             onTap: () => context.push(const WirdScreen(isMorning: false)),
           ),
           _ThikrShortcut(
-            label: 'أذكار النوم والأحلام',
-            subtitle: 'ما تقوله قبل النوم وعند الفزع منه',
+            label: context.l10n.thikrSleepTitle,
+            subtitle: context.l10n.thikrSleepSubtitle,
             icon: Icons.bedtime_rounded,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'أذكار النوم والأحلام',
+              WirdScreen.custom(
+                title: context.l10n.thikrSleepTitle,
                 assetPath: JsonLoaderService.adhkarSleepDreamsPath,
               ),
             ),
           ),
           _ThikrShortcut(
-            label: 'أذكار الصلاة والجمعة',
-            subtitle: 'أذكار الأذان ودبر الصلاة ويوم الجمعة',
+            label: context.l10n.thikrPrayerJumuahTitle,
+            subtitle: context.l10n.thikrPrayerJumuahSubtitle,
             icon: Icons.mosque_rounded,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'أذكار الصلاة والجمعة',
+              WirdScreen.custom(
+                title: context.l10n.thikrPrayerJumuahTitle,
                 assetPath: JsonLoaderService.adhkarSalahJumuahPath,
               ),
             ),
@@ -63,48 +64,48 @@ class MainThikrScreen extends StatelessWidget {
         ],
       ),
       _ThikrGroup(
-        title: 'أدعية مأثورة',
+        title: context.l10n.thikrGroupDuas,
         items: [
           _ThikrShortcut(
-            label: 'الأدعية القرآنية',
-            subtitle: 'دعاء الأنبياء كما جاء في كتاب الله',
+            label: context.l10n.thikrQuranicDuasTitle,
+            subtitle: context.l10n.thikrQuranicDuasSubtitle,
             icon: Icons.menu_book_outlined,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'الأدعية القرآنية',
+              WirdScreen.custom(
+                title: context.l10n.thikrQuranicDuasTitle,
                 assetPath: JsonLoaderService.adhkarQuranicDuasPath,
               ),
             ),
           ),
           _ThikrShortcut(
-            label: 'أدعية جامعة',
-            subtitle: 'دعوات تجمع خير الدنيا والآخرة',
+            label: context.l10n.thikrComprehensiveDuasTitle,
+            subtitle: context.l10n.thikrComprehensiveDuasSubtitle,
             icon: Icons.auto_stories_rounded,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'أدعية جامعة',
+              WirdScreen.custom(
+                title: context.l10n.thikrComprehensiveDuasTitle,
                 assetPath: JsonLoaderService.adhkarQuranDuasPath,
               ),
             ),
           ),
           _ThikrShortcut(
-            label: 'أدعية الحج والعمرة',
-            subtitle: 'دعاء الإحرام والطواف والسعي والمشاعر',
+            label: context.l10n.thikrHajjTitle,
+            subtitle: context.l10n.thikrHajjSubtitle,
             icon: FlutterIslamicIcons.kaaba,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'أدعية الحج والعمرة',
+              WirdScreen.custom(
+                title: context.l10n.thikrHajjTitle,
                 assetPath: JsonLoaderService.adhkarHajjUmrahPath,
               ),
             ),
           ),
           _ThikrShortcut(
-            label: 'أدعية للميت والجنازة',
-            subtitle: 'ما يُقال في الصلاة على الميت وعند القبر',
+            label: context.l10n.thikrFuneralTitle,
+            subtitle: context.l10n.thikrFuneralSubtitle,
             icon: Icons.menu_book_rounded,
             onTap: () => context.push(
-              const WirdScreen.custom(
-                title: 'أدعية للميت والجنازة',
+              WirdScreen.custom(
+                title: context.l10n.thikrFuneralTitle,
                 assetPath: JsonLoaderService.adhkarFuneralPath,
               ),
             ),
@@ -112,17 +113,17 @@ class MainThikrScreen extends StatelessWidget {
         ],
       ),
       _ThikrGroup(
-        title: 'أدواتك',
+        title: context.l10n.thikrGroupTools,
         items: [
           _ThikrShortcut(
-            label: 'التسبيح',
-            subtitle: 'عدّاد يحصي تسبيحك ويحفظ حصيلة يومك',
+            label: context.l10n.thikrTasbeehTitle,
+            subtitle: context.l10n.thikrTasbeehSubtitle,
             icon: FlutterIslamicIcons.tasbih2,
             onTap: () => navigateTo(const TasbeehProvider(), context),
           ),
           _ThikrShortcut(
-            label: 'أدعيتي',
-            subtitle: 'أدعيتك التي أضفتها بنفسك في مكان واحد',
+            label: context.l10n.myDuasTitle,
+            subtitle: context.l10n.thikrMyDuasSubtitle,
             icon: FlutterIslamicIcons.muslim2,
             onTap: () => context.push(const MuDoaProvider()),
           ),
@@ -137,7 +138,7 @@ class MainThikrScreen extends StatelessWidget {
 
     return GroundScaffoldTheme(
       child: AppScaffoldWidget(
-        title: 'مكتبة الأذكار',
+        title: context.l10n.thikrLibraryTitle,
         body: ColoredBox(
           color: skin.ground,
           child: Column(
@@ -282,7 +283,13 @@ class _ThikrRow extends StatelessWidget {
                 ],
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

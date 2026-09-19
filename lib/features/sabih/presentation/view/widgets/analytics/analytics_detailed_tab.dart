@@ -6,6 +6,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics_period_selector.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/dhikr_stats_card.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/sabih_state_views.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class AnalyticsDetailedTab extends StatelessWidget {
   const AnalyticsDetailedTab({
@@ -55,7 +56,7 @@ class AnalyticsDetailedTab extends StatelessWidget {
         skin.divider(),
         Expanded(
           child: state.subihList.isEmpty
-              ? const SabihNotice(message: 'لا يوجد ذكر مخصص')
+              ? SabihNotice(message: context.l10n.sabihNoCustomDhikr)
               : ListView.separated(
                   padding: EdgeInsets.only(bottom: 24.h),
                   itemCount: state.subihList.length,

@@ -5,6 +5,7 @@ import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// المكان المختار — العنصر الوحيد المرتفع في شاشة الخريطة.
 ///
@@ -36,7 +37,7 @@ class TravelPlacesSelectedCard extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(content: Text('تعذر فتح تطبيق الاتصال.')),
+        SnackBar(content: Text(context.l10n.travelerOpenPhoneFailed)),
       );
   }
 
@@ -45,7 +46,9 @@ class TravelPlacesSelectedCard extends StatelessWidget {
     if (!context.mounted || launched) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text('تعذر فتح الرابط.')));
+      ..showSnackBar(
+        SnackBar(content: Text(context.l10n.travelerOpenLinkFailed)),
+      );
   }
 
   @override
@@ -79,7 +82,8 @@ class TravelPlacesSelectedCard extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           Text(
-            '${selected.distanceLabel} · ${selected.walkingEtaLabel}',
+            '${selected.distanceLabel(context.l10n)} · '
+            '${selected.walkingEtaLabel(context.l10n)}',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -106,19 +110,19 @@ class TravelPlacesSelectedCard extends StatelessWidget {
             runSpacing: 6.h,
             children: [
               TravelerPillButton(
-                label: 'الاتجاه',
+                label: context.l10n.travelerDirections,
                 icon: AppIcons.direction,
                 filled: true,
                 onTap: () => _openDirections(context),
               ),
               TravelerPillButton(
-                label: 'خرائط جوجل',
+                label: context.l10n.travelerGoogleMaps,
                 icon: AppIcons.mapPin,
                 onTap: () => _openPlace(context),
               ),
               if (hasPhone)
                 TravelerPillButton(
-                  label: 'اتصال',
+                  label: context.l10n.travelerCall,
                   icon: AppIcons.phone,
                   onTap: () => _openPhone(context, selected.phone!),
                 ),

@@ -1,0 +1,400 @@
+{
+  "dailyWirdTitle": "زاد اليوم والليلة",
+  "@dailyWirdTitle": {
+    "description": "Title of the Daily Wird screen: the user's daily program of worship acts (adhkar, Quran reading, duas). 'Zad' = provision for the day and night."
+  },
+  "dailyWirdSettingsTooltip": "إعدادات الزاد",
+  "dailyWirdUnexpectedError": "حدث خطأ غير متوقع.",
+  "dailyWirdRemindersHeader": "التذكيرات",
+  "dailyWirdReminderSleepLabel": "أذكار النوم",
+  "@dailyWirdReminderSleepLabel": {
+    "description": "Label of the bedtime adhkar reminder switch in Daily Wird settings."
+  },
+  "dailyWirdProgramHeader": "البرنامج",
+  "@dailyWirdProgramHeader": {
+    "description": "Section header in Daily Wird settings above the list of ready-made programs (presets)."
+  },
+  "dailyWirdSaveSetup": "حفظ التهيئة",
+  "@dailyWirdSaveSetup": {
+    "description": "Button that saves the Daily Wird settings (reminders + chosen program)."
+  },
+  "dailyWirdSetupFailed": "تعذر إعداد الزاد التعبدي.",
+  "dailyWirdItemNotFound": "تعذر العثور على عنصر الزاد التعبدي.",
+  "dailyWirdTodayTasksHeader": "أعمال اليوم",
+  "@dailyWirdTodayTasksHeader": {
+    "description": "Section header above today's list of worship acts in Daily Wird."
+  },
+  "dailyWirdStreakDays": "{count, plural, =0{المداومة 0 يوم} =1{المداومة يوم واحد} =2{المداومة يومان} few{المداومة {count} أيام} many{المداومة {count} يومًا} other{المداومة {count} يوم}}",
+  "@dailyWirdStreakDays": {
+    "description": "Streak: number of consecutive days the user kept up the daily program.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dailyWirdWeeklyAdherence": "مواظبة الأسبوع {percent}%",
+  "@dailyWirdWeeklyAdherence": {
+    "description": "Percentage of the daily program completed over the last week.",
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "dailyWirdChoosePresetTitle": "اختر زادك التعبدي",
+  "dailyWirdChoosePresetSubtitle": "ابدأ ببرنامج جاهز ثم خصّصه كما يناسبك",
+  "dailyWirdItemOptions": "خيارات العمل",
+  "@dailyWirdItemOptions": {
+    "description": "Tooltip of the overflow menu on one worship act in the Daily Wird list."
+  },
+  "dailyWirdEditTargetCount": "تعديل العدد المقصود",
+  "@dailyWirdEditTargetCount": {
+    "description": "Menu item / sheet title: change how many times a counted dhikr should be repeated."
+  },
+  "dailyWirdStartOver": "البدء من جديد",
+  "@dailyWirdStartOver": {
+    "description": "Reset the progress of one worship act to zero."
+  },
+  "dailyWirdMoveUp": "تقديم في الترتيب",
+  "dailyWirdMoveDown": "تأخير في الترتيب",
+  "dailyWirdHideItem": "إخفاء من الزاد",
+  "dailyWirdCountHint": "مثال: ٥٠ مرة",
+  "@dailyWirdCountHint": {
+    "description": "Hint in the number field for the target repeat count. Use the target language's digits/wording, e.g. 'e.g. 50 times'."
+  },
+  "dailyWirdTimeMorning": "صباح",
+  "dailyWirdTimeEvening": "مساء",
+  "dailyWirdTimeNight": "ليل",
+  "dailyWirdTimeAny": "أي وقت",
+  "@dailyWirdTimeMorning": {
+    "description": "Short time-of-day tags shown next to a worship act (morning / evening / night / any time)."
+  },
+  "dailyWirdTimeMorningLong": "وقت الصباح",
+  "dailyWirdTimeEveningLong": "وقت المساء",
+  "dailyWirdTimeNightLong": "قبل النوم",
+  "dailyWirdTimeAnyLong": "في أي وقت",
+  "@dailyWirdTimeMorningLong": {
+    "description": "Longer time-of-day labels on the single worship act screen (morning time / evening time / before sleep / any time)."
+  },
+  "dailyWirdTypeDhikrSet": "أذكار",
+  "dailyWirdTypeCountedDhikr": "ذكر بعدد",
+  "dailyWirdTypeQuran": "ورد قرآن",
+  "dailyWirdTypeDua": "دعاء",
+  "dailyWirdTypeSurah": "سورة",
+  "@dailyWirdTypeDhikrSet": {
+    "description": "Type tags of a worship act: set of adhkar / counted dhikr / Quran portion / dua (supplication) / surah."
+  },
+  "dailyWirdCountProgress": "{done} من {total}",
+  "@dailyWirdCountProgress": {
+    "description": "Progress on a counted dhikr button, e.g. '12 of 33'.",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "dailyWirdCompletedOf": "أتممت {done} من {total}{unit}",
+  "@dailyWirdCompletedOf": {
+    "description": "Counter on the single worship act screen, e.g. 'You completed 12 of 33 times'. {unit} is an optional unit from the content data (Arabic), already prefixed with a space, or empty.",
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "unit": { "type": "String" }
+    }
+  },
+  "dailyWirdItemDone": "أُنجز",
+  "@dailyWirdItemDone": {
+    "description": "State label of a worship act that has been completed today."
+  },
+  "dailyWirdMarkComplete": "إتمام",
+  "@dailyWirdMarkComplete": {
+    "description": "Short button: mark a worship act as done."
+  },
+  "dailyWirdCountOnce": "احتساب مرّة",
+  "@dailyWirdCountOnce": {
+    "description": "Button that adds one repetition to a counted dhikr."
+  },
+  "dailyWirdCompleteThis": "إتمام هذا العمل",
+  "dailyWirdUncomplete": "إلغاء الإتمام",
+  "dailyWirdReminderMorningTitle": "زاد الصباح",
+  "dailyWirdReminderMorningBody": "ابدأ نهارك بذكر الله وتلاوة كتابه والدعاء.",
+  "dailyWirdReminderEveningTitle": "زاد المساء",
+  "dailyWirdReminderEveningBody": "جدد صلتك بالله، وأتم ما تيسر من زاد المساء.",
+  "dailyWirdReminderNightTitle": "زاد ما قبل النوم",
+  "dailyWirdReminderNightBody": "اختم يومك بالذكر والدعاء وما بقي من زادك التعبدي.",
+  "dailyWirdReminderSummaryTitle": "محاسبة آخر اليوم",
+  "dailyWirdReminderSummaryBody": "راجع زادك التعبدي اليوم، وانظر ما أتممت منه.",
+  "@dailyWirdReminderMorningTitle": {
+    "description": "Daily Wird notification titles/bodies (morning, evening, before sleep, end-of-day self-review). The summary title is also the label of its reminder switch."
+  },
+
+  "wirdMorningAdhkar": "أذكار الصباح",
+  "wirdEveningAdhkar": "أذكار المساء",
+  "@wirdMorningAdhkar": {
+    "description": "Names of the morning / evening adhkar collections (remembrances of Allah said after Fajr and after Asr)."
+  },
+  "wirdMorningTitle": "الورد الصباحي",
+  "wirdEveningTitle": "الورد المسائي",
+  "wirdSearchHint": "بحث عن ذكر",
+  "wirdPagerPosition": "الذكر {current} من {total}",
+  "@wirdPagerPosition": {
+    "description": "Position in single-dhikr view, e.g. 'Dhikr 3 of 24'.",
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "wirdPrevious": "السابق",
+  "wirdNext": "التالي",
+  "wirdShowSingle": "عرض ذكرًا واحدًا",
+  "wirdShowList": "عرض الأذكار قائمةً",
+  "@wirdShowSingle": {
+    "description": "Tooltips of the view-mode toggle: show one dhikr at a time / show all as a list."
+  },
+  "wirdTypeMorningOnly": "صباح فقط",
+  "wirdTypeEveningOnly": "مساء فقط",
+  "wirdTypeBoth": "صباح ومساء",
+  "wirdNoAudio": "لا يوجد ملف صوتي",
+  "wirdPause": "إيقاف مؤقت",
+  "wirdReplay": "إعادة التشغيل",
+  "wirdPlayAudio": "تشغيل الصوت",
+  "wirdRemaining": "بقي {remaining} من {total}",
+  "@wirdRemaining": {
+    "description": "Repetitions left for a dhikr, e.g. '2 left of 3'.",
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "wirdCompleted": "أتممتها",
+  "@wirdCompleted": {
+    "description": "Shown when the user finished all repetitions of a dhikr."
+  },
+  "wirdResetCount": "إعادة العدّ",
+  "wirdCopyDhikr": "نسخ الذكر",
+  "wirdSource": "المصدر",
+  "wirdShowDetails": "عرض التفاصيل",
+  "wirdHideDetails": "إخفاء التفاصيل",
+  "wirdVirtue": "الفضل",
+  "@wirdVirtue": {
+    "description": "Heading: the virtue/reward of saying this dhikr (fadl)."
+  },
+  "wirdHadithText": "نص الحديث",
+  "wirdWordExplanations": "شرح مفردات مختارة",
+  "wirdReadOnce": "قرأت مرة",
+  "@wirdReadOnce": {
+    "description": "Counter button: 'I read it once' — decreases the remaining repetitions by one."
+  },
+  "wirdPlayAll": "تشغيل الورد كاملًا",
+  "wirdPreparingAudio": "تهيئة الصوت",
+  "wirdReplayAll": "إعادة تشغيل الورد",
+  "wirdPlayAllFinished": "تم الانتهاء من تشغيل جميع الأذكار.",
+  "wirdNowPlaying": "يُتلى الآن",
+  "@wirdNowPlaying": {
+    "description": "Label above the dhikr currently being recited in audio playback."
+  },
+  "wirdRepeatProgress": "التكرار {current} من {total}",
+  "@wirdRepeatProgress": {
+    "description": "Audio playback: which repetition of the current dhikr is playing, e.g. 'Repeat 2 of 3'.",
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "thikrLibraryTitle": "مكتبة الأذكار",
+  "thikrGroupDaily": "أذكار يومك",
+  "thikrMorningSubtitle": "وردك بعد الفجر إلى ارتفاع النهار",
+  "thikrEveningSubtitle": "وردك بعد العصر إلى الليل",
+  "thikrSleepTitle": "أذكار النوم والأحلام",
+  "thikrSleepSubtitle": "ما تقوله قبل النوم وعند الفزع منه",
+  "thikrPrayerJumuahTitle": "أذكار الصلاة والجمعة",
+  "thikrPrayerJumuahSubtitle": "أذكار الأذان ودبر الصلاة ويوم الجمعة",
+  "thikrGroupDuas": "أدعية مأثورة",
+  "@thikrGroupDuas": {
+    "description": "Group header: supplications transmitted from the Quran and Sunnah."
+  },
+  "thikrQuranicDuasTitle": "الأدعية القرآنية",
+  "thikrQuranicDuasSubtitle": "دعاء الأنبياء كما جاء في كتاب الله",
+  "thikrComprehensiveDuasTitle": "أدعية جامعة",
+  "thikrComprehensiveDuasSubtitle": "دعوات تجمع خير الدنيا والآخرة",
+  "thikrHajjTitle": "أدعية الحج والعمرة",
+  "thikrHajjSubtitle": "دعاء الإحرام والطواف والسعي والمشاعر",
+  "thikrFuneralTitle": "أدعية للميت والجنازة",
+  "thikrFuneralSubtitle": "ما يُقال في الصلاة على الميت وعند القبر",
+  "thikrGroupTools": "أدواتك",
+  "thikrTasbeehTitle": "التسبيح",
+  "thikrTasbeehSubtitle": "عدّاد يحصي تسبيحك ويحفظ حصيلة يومك",
+  "thikrMyDuasSubtitle": "أدعيتك التي أضفتها بنفسك في مكان واحد",
+  "thikrSliderSubtitle": "وردُ هذا الوقت، افتحه الآن",
+  "@thikrSliderSubtitle": {
+    "description": "Subtitle on the highlighted card that opens the morning or evening adhkar depending on the current time."
+  },
+
+  "afterPrayerTitle": "أذكار بعد الصلاة",
+  "afterPrayerSubtitle": "أذكار ما بعد الصلاة",
+  "afterPrayerSearchHint": "بحث عن أذكار",
+  "afterPrayerFallbackTitle": "ذكر بعد الصلاة {number}",
+  "@afterPrayerFallbackTitle": {
+    "description": "Fallback title of an after-prayer dhikr whose text is empty.",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "afterPrayerRepeatCountLine": "عدد التكرار: {count}",
+  "@afterPrayerRepeatCountLine": {
+    "description": "Line in the shared/copied text of a dhikr.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "afterPrayerVirtueLine": "الفضل: {virtue}",
+  "@afterPrayerVirtueLine": {
+    "description": "Line in the shared/copied text. {virtue} is Arabic religious text from the content data.",
+    "placeholders": {
+      "virtue": { "type": "String" }
+    }
+  },
+  "afterPrayerRepeatLabel": "التكرار",
+  "afterPrayerVirtueLabel": "الفضل",
+  "afterPrayerMentioned": "مذكور",
+  "afterPrayerNotMentioned": "غير مذكور",
+  "@afterPrayerMentioned": {
+    "description": "Value of the 'Virtue' badge: whether a virtue is stated for this dhikr (stated / not stated)."
+  },
+  "afterPrayerTextSection": "نص الذكر",
+  "afterPrayerVirtueSection": "فضل الذكر",
+  "afterPrayerRepeatTimes": "{count, plural, =1{مرة} =2{مرتان} few{{count} مرات} many{{count} مرة} other{{count} مرة}}",
+  "@afterPrayerRepeatTimes": {
+    "description": "How many times to repeat a dhikr, e.g. 'once', '3 times'.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "afterPrayerNoResults": "لا توجد نتائج مطابقة",
+  "afterPrayerShowAll": "عرض الأذكار كلها",
+
+  "myDuasTitle": "أدعيتي",
+  "@myDuasTitle": {
+    "description": "'My duas': supplications the user wrote and added themselves."
+  },
+  "myDuasActionFailed": "تعذر تنفيذ العملية.",
+  "myDuasEmptyCustomTitle": "لا توجد أدعية مضافة",
+  "myDuasEmptyCustomMessage": "هذا القسم يعرض الأدعية التي أضفتها أنت فقط.",
+  "myDuasEmptyTitle": "لا توجد أدعية بعد",
+  "myDuasEmptyMessage": "أضف دعاءك الأول وسيظهر هنا مباشرة.",
+  "myDuasAddNew": "إضافة دعاء جديد",
+  "myDuasAdd": "إضافة دعاء",
+  "myDuasAddSubtitle": "اكتب الدعاء ليظهر ضمن أدعيتك الخاصة.",
+  "myDuasEditTitle": "تعديل الدعاء",
+  "myDuasEditSubtitle": "يمكنك تعديل النص أو الوصف وحفظ التغييرات مباشرة.",
+  "myDuasCountLabel": "عدد الأدعية",
+  "myDuasTodayLabel": "ترديد اليوم",
+  "@myDuasTodayLabel": {
+    "description": "Total number of times the user repeated their duas today."
+  },
+  "myDuasOptions": "خيارات الدعاء",
+  "myDuasResetToday": "تصفير عداد اليوم",
+
+  "ruqyahTitle": "الرقية الشرعية",
+  "@ruqyahTitle": {
+    "description": "Ruqyah: Quranic verses and prophetic supplications recited for healing and protection."
+  },
+  "ruqyahSearchHint": "بحث عن رقية",
+  "ruqyahDefaultReference": "القرآن الكريم",
+  "@ruqyahDefaultReference": {
+    "description": "Source shown when a ruqyah item has no reference: 'The Holy Quran'."
+  },
+  "ruqyahUnspecified": "غير محدد",
+  "ruqyahRepeatLine": "التكرار: {count}",
+  "@ruqyahRepeatLine": {
+    "description": "Repeat count of a ruqyah item. {count} comes from the content data (may be a word or a number).",
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "ruqyahReferenceLine": "المرجع: {reference}",
+  "@ruqyahReferenceLine": {
+    "description": "Line in the shared text. {reference} is the source (Arabic content).",
+    "placeholders": {
+      "reference": { "type": "String" }
+    }
+  },
+  "ruqyahDescriptionLine": "الوصف: {description}",
+  "@ruqyahDescriptionLine": {
+    "description": "Line in the shared text. {description} is Arabic content.",
+    "placeholders": {
+      "description": { "type": "String" }
+    }
+  },
+  "ruqyahNumber": "الرقية {number}",
+  "@ruqyahNumber": {
+    "description": "Ordinal label of a ruqyah item, e.g. 'Ruqyah 3'.",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "ruqyahTextSection": "نص الرقية",
+  "ruqyahDescriptionSection": "الوصف",
+  "ruqyahNoResultsTitle": "لا توجد نتائج",
+  "ruqyahNoResultsMessage": "لم نجد رقية تطابق بحثك.",
+  "ruqyahShowAll": "عرض الرقى كلها",
+
+  "radioTitle": "الإذاعة",
+  "@radioTitle": {
+    "description": "Title of the Islamic radio screen (live Quran recitation stations)."
+  },
+  "radioKindReciters": "قرّاء",
+  "radioKindPrograms": "برامج وتلاوات",
+  "@radioKindReciters": {
+    "description": "Station groups: Quran reciters / programs and recitations."
+  },
+  "radioLoadFailed": "تعذّر تحميل الإذاعات حاليًا.",
+  "radioPlayFailed": "تعذّر تشغيل الإذاعة الآن.",
+  "radioToggleFailed": "تعذّر تغيير حالة التشغيل.",
+  "radioStopFailed": "تعذّر إيقاف الإذاعة.",
+  "radioNoMatch": "لا توجد محطة بهذا الاسم.",
+  "radioSearchHint": "ابحث عن قارئ أو برنامج",
+  "radioFavouritesHint": "اضغط مطوّلًا على أي محطة لإضافتها إلى المفضّلة.",
+  "radioAddFavourite": "إضافة إلى المفضّلة",
+  "radioRemoveFavourite": "إزالة من المفضّلة",
+  "radioAddedToFavourites": "أُضيفت {station} إلى المفضّلة",
+  "@radioAddedToFavourites": {
+    "description": "Snackbar after long-press. {station} is the station name (from the server, usually Arabic).",
+    "placeholders": {
+      "station": { "type": "String" }
+    }
+  },
+  "radioRemovedFromFavourites": "أُزيلت {station} من المفضّلة",
+  "@radioRemovedFromFavourites": {
+    "placeholders": {
+      "station": { "type": "String" }
+    }
+  },
+  "radioSleepTimer": "مؤقّت النوم",
+  "radioSleepTimerDescription": "يتوقّف البثّ وحده بعد المدّة المختارة.",
+  "radioStopsIn": "يتوقّف بعد {time}",
+  "@radioStopsIn": {
+    "description": "Sleep timer countdown. {time} is mm:ss.",
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "radioCancelTimer": "إلغاء المؤقّت",
+  "radioMinutes": "{count, plural, =1{دقيقة واحدة} =2{دقيقتان} few{{count} دقائق} many{{count} دقيقة} other{{count} دقيقة}}",
+  "@radioMinutes": {
+    "description": "Sleep timer duration option in minutes.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "radioStopBroadcast": "إيقاف البثّ",
+  "@radioStopBroadcast": {
+    "description": "Stops the stream completely (different from pause)."
+  },
+  "radioTuning": "جارٍ الالتقاط…",
+  "@radioTuning": {
+    "description": "Status while the station stream is connecting/buffering ('tuning in…')."
+  },
+  "radioLive": "بثّ مباشر",
+  "radioPaused": "متوقّف مؤقّتًا",
+  "radioTapToPlay": "اضغط للتشغيل",
+  "radioPause": "إيقاف مؤقّت",
+  "radioPlay": "تشغيل"
+}

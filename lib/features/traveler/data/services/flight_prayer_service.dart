@@ -4,6 +4,7 @@ import 'package:adhan/adhan.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FlightTrackProvider {
   const FlightTrackProvider();
@@ -156,16 +157,16 @@ class FlightPrayerService {
 
 class MockFlightTrackProvider implements FlightTrackProvider {
   static const List<_AirportSeed> _seeds = <_AirportSeed>[
-    _AirportSeed(code: 'RUH', name: 'الرياض', lat: 24.9576, lon: 46.6988),
-    _AirportSeed(code: 'JED', name: 'جدة', lat: 21.6702, lon: 39.1525),
-    _AirportSeed(code: 'DXB', name: 'دبي', lat: 25.2528, lon: 55.3644),
-    _AirportSeed(code: 'DOH', name: 'الدوحة', lat: 25.2731, lon: 51.6081),
-    _AirportSeed(code: 'IST', name: 'إسطنبول', lat: 41.2753, lon: 28.7519),
-    _AirportSeed(code: 'CAI', name: 'القاهرة', lat: 30.1219, lon: 31.4056),
-    _AirportSeed(code: 'KUL', name: 'كوالالمبور', lat: 2.7456, lon: 101.7072),
-    _AirportSeed(code: 'LHR', name: 'لندن', lat: 51.4700, lon: -0.4543),
-    _AirportSeed(code: 'CDG', name: 'باريس', lat: 49.0097, lon: 2.5479),
-    _AirportSeed(code: 'JFK', name: 'نيويورك', lat: 40.6413, lon: -73.7781),
+    _AirportSeed(code: 'RUH', lat: 24.9576, lon: 46.6988),
+    _AirportSeed(code: 'JED', lat: 21.6702, lon: 39.1525),
+    _AirportSeed(code: 'DXB', lat: 25.2528, lon: 55.3644),
+    _AirportSeed(code: 'DOH', lat: 25.2731, lon: 51.6081),
+    _AirportSeed(code: 'IST', lat: 41.2753, lon: 28.7519),
+    _AirportSeed(code: 'CAI', lat: 30.1219, lon: 31.4056),
+    _AirportSeed(code: 'KUL', lat: 2.7456, lon: 101.7072),
+    _AirportSeed(code: 'LHR', lat: 51.4700, lon: -0.4543),
+    _AirportSeed(code: 'CDG', lat: 49.0097, lon: 2.5479),
+    _AirportSeed(code: 'JFK', lat: 40.6413, lon: -73.7781),
   ];
 
   @override
@@ -196,15 +197,45 @@ class MockFlightTrackProvider implements FlightTrackProvider {
       arrivalUtc: arrivalUtc,
     );
 
+    final l10n = L10nService.current;
+
     return FlightTrackResult(
       flightNumber: flightNumber,
-      sourceLabel: 'محاكاة محلية (بدون API)',
+      sourceLabel: l10n.travelerSourceMock,
       departureUtc: departureUtc,
       arrivalUtc: arrivalUtc,
-      originLabel: '${origin.name} (${origin.code})',
-      destinationLabel: '${destination.name} (${destination.code})',
+      originLabel: '${_cityName(l10n, origin.code)} (${origin.code})',
+      destinationLabel:
+          '${_cityName(l10n, destination.code)} (${destination.code})',
       trackPoints: points,
     );
+  }
+
+  static String _cityName(L10n l10n, String code) {
+    switch (code) {
+      case 'RUH':
+        return l10n.travelerCityRiyadh;
+      case 'JED':
+        return l10n.travelerCityJeddah;
+      case 'DXB':
+        return l10n.travelerCityDubai;
+      case 'DOH':
+        return l10n.travelerCityDoha;
+      case 'IST':
+        return l10n.travelerCityIstanbul;
+      case 'CAI':
+        return l10n.travelerCityCairo;
+      case 'KUL':
+        return l10n.travelerCityKualaLumpur;
+      case 'LHR':
+        return l10n.travelerCityLondon;
+      case 'CDG':
+        return l10n.travelerCityParis;
+      case 'JFK':
+        return l10n.travelerCityNewYork;
+      default:
+        return code;
+    }
   }
 
   int _seedFromFlight(String flightNumber) {
@@ -269,13 +300,11 @@ class MockFlightTrackProvider implements FlightTrackProvider {
 class _AirportSeed {
   const _AirportSeed({
     required this.code,
-    required this.name,
     required this.lat,
     required this.lon,
   });
 
   final String code;
-  final String name;
   final double lat;
   final double lon;
 }

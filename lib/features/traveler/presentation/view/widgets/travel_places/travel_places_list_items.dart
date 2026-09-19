@@ -8,6 +8,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفوف الأماكن القريبة: نحيلة، بفواصل شعرة، بلا بطاقة حول كل مكان.
 class TravelPlacesListItems extends StatelessWidget {
@@ -29,7 +30,7 @@ class TravelPlacesListItems extends StatelessWidget {
     if (state.places.isEmpty) {
       return TravelerNotice(
         icon: AppIcons.searchOff,
-        message: placeType.emptyMessage,
+        message: placeType.emptyMessage(context.l10n),
       );
     }
 
@@ -74,7 +75,7 @@ class _PlaceRow extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(content: Text('تعذر فتح تطبيق الخرائط.')),
+        SnackBar(content: Text(context.l10n.travelerOpenMapsFailed)),
       );
   }
 
@@ -130,7 +131,7 @@ class _PlaceRow extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${place.distanceLabel} · ${place.address}',
+                    '${place.distanceLabel(context.l10n)} · ${place.address}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -146,7 +147,7 @@ class _PlaceRow extends StatelessWidget {
             SizedBox(width: 6.w),
             TravelerIconAction(
               icon: AppIcons.direction,
-              tooltip: 'فتح في خرائط جوجل',
+              tooltip: context.l10n.travelerOpenInGoogleMaps,
               onTap: () => _openInMaps(context),
             ),
           ],

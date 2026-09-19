@@ -1,17 +1,113 @@
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
+/// إعداد إشعار لمفتاح واحد. العنوان والنص يُترجمان بلغة التطبيق المحفوظة
+/// لحظة القراءة، لأنهما يُمرَّران إلى الإشعارات المجدولة (بلا `BuildContext`).
 class NotificationConfig {
   const NotificationConfig({
     required this.key,
     required this.channel,
-    required this.title,
-    required this.body,
   });
   final String key;
   final NotificationChannel channel;
-  final String title;
-  final String body;
+
+  String get title => _title(L10nService.current);
+  String get body => _body(L10nService.current);
+
+  String _title(L10n l10n) {
+    switch (key) {
+      case NotificationKeys.isNotificationAllAthan:
+        return l10n.notifSettingsLabelAllAthan;
+      case NotificationKeys.isNotificationAthanFagr:
+        return l10n.notifSettingsAthanOf(l10n.prayerFajr);
+      case NotificationKeys.isNotificationAthanDuhr:
+        return l10n.notifSettingsAthanOf(l10n.prayerDhuhr);
+      case NotificationKeys.isNotificationAthanAsr:
+        return l10n.notifSettingsAthanOf(l10n.prayerAsr);
+      case NotificationKeys.isNotificationAthanMagrib:
+        return l10n.notifSettingsAthanOf(l10n.prayerMaghrib);
+      case NotificationKeys.isNotificationAthanIsha:
+        return l10n.notifSettingsAthanOf(l10n.prayerIsha);
+      case NotificationKeys.isNotificationMiddleNight:
+        return l10n.notifSettingsLabelMiddleNight;
+      case NotificationKeys.isNotificationThikrMorning:
+        return l10n.notifSettingsLabelThikrMorning;
+      case NotificationKeys.isNotificationThikrNight:
+        return l10n.notifSettingsLabelThikrEvening;
+      case NotificationKeys.isNotificationMohammed:
+        return l10n.notifSettingsLabelSalawat;
+      case NotificationKeys.isNotificationRandomThikr:
+        return l10n.notifScheduleTitleRandomThikr;
+      case NotificationKeys.isNotificationReadQuran:
+        return l10n.notifSettingsLabelDailyQuranWird;
+      case NotificationKeys.isNotificationReadSurahMulk:
+        return l10n.notifSettingsLabelReadSurahMulk;
+      case NotificationKeys.isNotificationWridSleep:
+        return l10n.notifSettingsLabelThikrSleep;
+      case NotificationKeys.isNotificationWridGetup:
+        return l10n.notifSettingsLabelThikrWakeUp;
+      case NotificationKeys.isNotificationReadSurah:
+        return l10n.notifSettingsLabelReadSpecificSurah;
+      case NotificationKeys.isNotificationReadSurahAlkahf:
+        return l10n.notifSettingsLabelReadSurahKahf;
+      case NotificationKeys.isNotificationFasting:
+        return l10n.notifSettingsLabelFasting;
+      case NotificationKeys.isNotificationFastingMonday:
+        return l10n.notifSettingsLabelFastingMonday;
+      case NotificationKeys.isNotificationFastingThursday:
+        return l10n.notifSettingsLabelFastingThursday;
+      default:
+        return key;
+    }
+  }
+
+  String _body(L10n l10n) {
+    switch (key) {
+      case NotificationKeys.isNotificationAllAthan:
+        return l10n.notifScheduleBodyAllAthan;
+      case NotificationKeys.isNotificationAthanFagr:
+        return l10n.notifScheduleBodyAthanFajr;
+      case NotificationKeys.isNotificationAthanDuhr:
+        return l10n.notifScheduleBodyAthanDhuhr;
+      case NotificationKeys.isNotificationAthanAsr:
+        return l10n.notifScheduleBodyAthanAsr;
+      case NotificationKeys.isNotificationAthanMagrib:
+        return l10n.notifScheduleBodyAthanMaghrib;
+      case NotificationKeys.isNotificationAthanIsha:
+        return l10n.notifScheduleBodyAthanIsha;
+      case NotificationKeys.isNotificationMiddleNight:
+        return l10n.notifScheduleBodyMiddleNight;
+      case NotificationKeys.isNotificationThikrMorning:
+        return l10n.notifScheduleBodyThikrMorning;
+      case NotificationKeys.isNotificationThikrNight:
+        return l10n.notifScheduleBodyThikrEvening;
+      case NotificationKeys.isNotificationMohammed:
+        return l10n.notifScheduleBodySalawat;
+      case NotificationKeys.isNotificationRandomThikr:
+        return l10n.notifSettingsBodyRememberAllah;
+      case NotificationKeys.isNotificationReadQuran:
+        return l10n.notifScheduleBodyReadQuran;
+      case NotificationKeys.isNotificationReadSurahMulk:
+        return l10n.notifScheduleBodyReadSurahMulk;
+      case NotificationKeys.isNotificationWridSleep:
+        return l10n.notifScheduleBodyThikrSleep;
+      case NotificationKeys.isNotificationWridGetup:
+        return l10n.notifScheduleBodyThikrWakeUp;
+      case NotificationKeys.isNotificationReadSurah:
+        return l10n.notifScheduleBodyReadSurah;
+      case NotificationKeys.isNotificationReadSurahAlkahf:
+        return l10n.notifScheduleBodyReadSurahKahf;
+      case NotificationKeys.isNotificationFasting:
+        return l10n.notifScheduleBodyFasting;
+      case NotificationKeys.isNotificationFastingMonday:
+        return l10n.notifSettingsBodyFastingMonday;
+      case NotificationKeys.isNotificationFastingThursday:
+        return l10n.notifSettingsBodyFastingThursday;
+      default:
+        return key;
+    }
+  }
 }
 
 class NotificationConfigs {
@@ -19,122 +115,82 @@ class NotificationConfigs {
     NotificationConfig(
       key: NotificationKeys.isNotificationAllAthan,
       channel: NotificationChannel.athan,
-      title: 'إشعارات جميع الأذان',
-      body: 'سيتكرر تنبيه جميع الأذان في أوقاتها المحددة.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationAthanFagr,
       channel: NotificationChannel.athan,
-      title: 'أذان الفجر',
-      body: 'حان الآن وقت أذان الفجر، بادر بالصلاة.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationAthanDuhr,
       channel: NotificationChannel.athan,
-      title: 'أذان الظهر',
-      body: 'حان الآن وقت أذان الظهر.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationAthanAsr,
       channel: NotificationChannel.athan,
-      title: 'أذان العصر',
-      body: 'حان الآن وقت أذان العصر.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationAthanMagrib,
       channel: NotificationChannel.athan,
-      title: 'أذان المغرب',
-      body: 'حان الآن وقت أذان المغرب.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationAthanIsha,
       channel: NotificationChannel.athan,
-      title: 'أذان العشاء',
-      body: 'حان الآن وقت أذان العشاء.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationMiddleNight,
       channel: NotificationChannel.middleNight,
-      title: 'قيام الليل',
-      body: 'حان وقت قيام الليل! قم وناجِ الرحمن.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationThikrMorning,
       channel: NotificationChannel.morning,
-      title: 'أذكار الصباح',
-      body: 'لا تنسَ أذكار الصباح!',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationThikrNight,
       channel: NotificationChannel.night,
-      title: 'أذكار المساء',
-      body: 'لا تنسَ أذكار المساء!',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationMohammed,
       channel: NotificationChannel.mohammed,
-      title: 'الصلاة على محمد ﷺ',
-      body: 'صَلِّ على النبي الكريم ﷺ، تُكتب لك عشرُ حسنات.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationRandomThikr,
       channel: NotificationChannel.randomThikr,
-      title: 'مخصصة من أذكار عشوائية',
-      body: 'اذكر الله يذكرك!',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationReadQuran,
       channel: NotificationChannel.defaultChannel,
-      title: 'الورد القرآني اليومي',
-      body: 'لا تنسَ وردك من القرآن اليوم.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationReadSurahMulk,
       channel: NotificationChannel.defaultChannel,
-      title: 'قراءة سورة الملك',
-      body: 'اقرأ سورة الملك قبل النوم.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationWridSleep,
       channel: NotificationChannel.sleep,
-      title: 'أذكار النوم',
-      body: 'اقرأ أذكار النوم قبل أن تنام.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationWridGetup,
       channel: NotificationChannel.getUp,
-      title: 'أذكار الاستيقاظ',
-      body: 'ابدأ يومك بأذكار الاستيقاظ.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationReadSurah,
       channel: NotificationChannel.defaultChannel,
-      title: 'قراءة سورة محددة',
-      body: 'لا تنسَ قراءة السورة المحددة لهذا اليوم.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationReadSurahAlkahf,
       channel: NotificationChannel.defaultChannel,
-      title: 'قراءة سورة الكهف',
-      body: 'اقرأ سورة الكهف يوم الجمعة.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationFasting,
       channel: NotificationChannel.defaultChannel,
-      title: 'تذكير بالصيام',
-      body: 'صيام النوافل له أجر عظيم، لا تفوت الفرصة.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationFastingMonday,
       channel: NotificationChannel.defaultChannel,
-      title: 'صيام الاثنين',
-      body: 'تذكير بصيام يوم الاثنين.',
     ),
     NotificationConfig(
       key: NotificationKeys.isNotificationFastingThursday,
       channel: NotificationChannel.defaultChannel,
-      title: 'صيام الخميس',
-      body: 'تذكير بصيام يوم الخميس.',
     ),
     // يمكن إضافة المزيد هنا...
   ];

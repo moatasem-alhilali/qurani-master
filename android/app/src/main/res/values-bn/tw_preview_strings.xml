@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample text shown only in the widget picker preview (previewLayout). -->
+<resources>
+    <string name="tw_preview_city">রিয়াদ</string>
+    <string name="tw_preview_hijri_date">4 রবিউস সানি 1448 হিজরি</string>
+    <string name="tw_preview_fajr">ফজর</string>
+    <string name="tw_preview_sunrise">সূর্যোদয়</string>
+    <string name="tw_preview_dhuhr">যোহর</string>
+    <string name="tw_preview_asr">আসর</string>
+    <string name="tw_preview_maghrib">মাগরিব</string>
+    <string name="tw_preview_isha">ইশা</string>
+    <string name="tw_preview_time_fajr">4:25 AM</string>
+    <string name="tw_preview_time_sunrise">5:43 AM</string>
+    <string name="tw_preview_time_dhuhr">11:48 AM</string>
+    <string name="tw_preview_time_asr">3:15 PM</string>
+    <string name="tw_preview_time_maghrib">6:10 PM</string>
+    <string name="tw_preview_time_isha">7:40 PM</string>
+    <string name="tw_preview_next_in">আসর বাকি</string>
+</resources>

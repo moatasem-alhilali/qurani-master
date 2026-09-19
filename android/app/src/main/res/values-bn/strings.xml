@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Flutter Downloader Notification Strings -->
+    <string name="flutter_downloader_notification_started">ডাউনলোড শুরু হয়েছে</string>
+    <string name="flutter_downloader_notification_in_progress">ডাউনলোড চলছে</string>
+    <string name="flutter_downloader_notification_canceled">ডাউনলোড বাতিল হয়েছে</string>
+    <string name="flutter_downloader_notification_failed">ডাউনলোড ব্যর্থ হয়েছে</string>
+    <string name="flutter_downloader_notification_complete">ডাউনলোড সম্পন্ন হয়েছে</string>
+    <string name="flutter_downloader_notification_paused">ডাউনলোড সাময়িকভাবে থেমে আছে</string>
+</resources>

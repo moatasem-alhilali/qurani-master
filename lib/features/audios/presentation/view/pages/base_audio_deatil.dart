@@ -14,6 +14,7 @@ import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart
 import 'package:quran_app/features/audios/presentation/view/widgets/audio_player_bar.dart';
 import 'package:quran_app/features/audios/presentation/view/widgets/audio_row.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تفاصيل السلسلة الصوتية: المشغّل في الأعلى ثم مقاطعها صفًّا صفًّا.
 ///
@@ -51,7 +52,7 @@ class _BaseAudioDetailState extends State<BaseAudioDetail> {
       return description;
     }
     final title = audioFieldOf(track, 'title').trim();
-    return title.isNotEmpty ? title : 'المقطع ${index + 1}';
+    return title.isNotEmpty ? title : context.l10n.audiosTrackNumber(index + 1);
   }
 
   @override
@@ -87,8 +88,10 @@ class _BaseAudioDetailState extends State<BaseAudioDetail> {
                     ),
                   ),
                 SliverToBoxAdapter(child: skin.divider()),
-                const SliverToBoxAdapter(
-                  child: HomeSectionHeader(title: 'المقاطع'),
+                SliverToBoxAdapter(
+                  child: HomeSectionHeader(
+                    title: context.l10n.audiosTracksHeader,
+                  ),
                 ),
                 state.famousBaseAudioState.whenSliver<dynamic>(
                   sliverList: tracks,

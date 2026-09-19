@@ -1,3 +1,9 @@
+import 'package:quran_app/l10n/l10n.dart';
+
+/// فاصل أجزاء اسم المكان: الفاصلة العربية «، » للغات التي تُكتب من اليمين
+/// (العربية والأردية والفارسية)، والفاصلة اللاتينية لغيرها.
+String get _placeSeparator => L10nService.savedLanguage.isRtl ? '، ' : ', ';
+
 enum PrayerLocationSource {
   device,
   manualSearch,
@@ -50,7 +56,7 @@ class PrayerLocationSelection {
       if (area.contains(city) || city.contains(area)) {
         return area.length >= city.length ? area : city;
       }
-      return '$city، $area';
+      return '$city$_placeSeparator$area';
     }
 
     if (area.isNotEmpty) return area;
@@ -70,7 +76,7 @@ class PrayerLocationSelection {
       if ((country ?? '').trim().isNotEmpty) country!.trim(),
     ];
 
-    return parts.join('، ');
+    return parts.join(_placeSeparator);
   }
 
   PrayerLocationSelection copyWith({

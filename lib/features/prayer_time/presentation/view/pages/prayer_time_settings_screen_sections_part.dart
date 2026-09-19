@@ -22,14 +22,14 @@ class _SilentModeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final enabled = settings.enabled;
-    const hint = 'يحوّل الجهاز إلى صامت مع وقت الصلاة ثم يعيد الصوت تلقائيًا.';
+    final hint = context.l10n.prayerTimeSilentHint;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PrayerSettingsSwitchRow(
           icon: AppIcons.mute,
-          label: 'تفعيل الصامت تلقائيًا',
+          label: context.l10n.prayerTimeSilentEnable,
           hint: hint,
           value: enabled,
           enabled: !isSaving,
@@ -55,7 +55,7 @@ class _SilentModeSection extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'تحتاج الميزة صلاحية «عدم الإزعاج» من النظام.',
+                            context.l10n.prayerTimeSilentPermissionNote,
                             style: TextStyle(
                               color: skin.inkSoft.withValues(alpha: 0.78),
                               fontSize: 9.5.sp,
@@ -66,7 +66,7 @@ class _SilentModeSection extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         PrayerSettingsTextLink(
-                          label: 'منح الصلاحية',
+                          label: context.l10n.prayerTimeGrantPermission,
                           icon: AppIcons.shield,
                           onTap: onOpenPermission,
                         ),

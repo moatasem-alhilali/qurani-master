@@ -11,6 +11,7 @@ import 'package:quran_app/features/young_muslim/presentation/bloc/young_muslim_b
 import 'package:quran_app/features/young_muslim/presentation/view/pages/young_muslim_video_details_screen.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class YoungMuslimCategoryScreen extends StatefulWidget {
   const YoungMuslimCategoryScreen({
@@ -51,7 +52,7 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
             if (details != null && details.category.id == widget.categoryId) {
               return details.category.titleAr;
             }
-            return 'المسلم الصغير';
+            return context.l10n.youngMuslimTitle;
           },
           builder: (context, title) => Text(
             title,
@@ -131,8 +132,8 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
             chips: [
               YoungMuslimMetricChip(
                 label: details.category.audience == 'kids'
-                    ? 'واجهة آمنة للأطفال'
-                    : 'مشاهدة عامة',
+                    ? context.l10n.youngMuslimAudienceKidsSafe
+                    : context.l10n.youngMuslimAudienceGeneral,
                 icon: AppIcons.shield,
               ),
             ],
@@ -143,18 +144,18 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
           cells: [
             YoungMuslimStatCell(
               value: '${details.series.length}',
-              label: 'سلسلة',
+              label: context.l10n.youngMuslimStatSeries,
               icon: AppIcons.layers,
             ),
             YoungMuslimStatCell(
               value: '${details.videos.length}',
-              label: 'حلقة',
+              label: context.l10n.youngMuslimStatEpisode,
               icon: AppIcons.play,
             ),
           ],
         ),
         skin.divider(),
-        const HomeSectionHeader(title: 'اختر السلسلة'),
+        HomeSectionHeader(title: context.l10n.youngMuslimChooseSeries),
         Padding(
           padding: AppSkin.gutter,
           child: Wrap(
@@ -172,15 +173,15 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
         ),
         skin.divider(),
         YoungMuslimSectionHeader(
-          title: 'الحلقات',
+          title: context.l10n.youngMuslimEpisodes,
           trailing: YoungMuslimMetricChip(
-            label: '${filteredVideos.length} حلقة',
+            label: context.l10n.youngMuslimEpisodesCount(filteredVideos.length),
           ),
         ),
         if (filteredVideos.isEmpty)
-          const YoungMuslimEmptyState(
-            title: 'لا توجد حلقات الآن',
-            subtitle: 'غيّر السلسلة المختارة أو عد لاحقًا بعد تحديث الفلاتر.',
+          YoungMuslimEmptyState(
+            title: context.l10n.youngMuslimNoEpisodesTitle,
+            subtitle: context.l10n.youngMuslimNoEpisodesSubtitle,
             icon: AppIcons.play,
           )
         else
@@ -215,8 +216,8 @@ class _YoungMuslimCategoryScreenState extends State<YoungMuslimCategoryScreen> {
 
   Widget _buildErrorBody(BuildContext context, String? message) {
     return YoungMuslimEmptyState(
-      title: 'تعذّر تحميل القسم',
-      subtitle: message ?? 'حاول مرة أخرى بعد قليل.',
+      title: context.l10n.youngMuslimCategoryLoadError,
+      subtitle: message ?? context.l10n.youngMuslimTryAgainShortly,
       icon: AppIcons.warning,
     );
   }

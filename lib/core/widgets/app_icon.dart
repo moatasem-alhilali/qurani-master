@@ -94,6 +94,7 @@ abstract final class AppIcons {
   static const news = HugeIcons.strokeRoundedNews;
   static const user = HugeIcons.strokeRoundedUserCircle;
   static const globe = HugeIcons.strokeRoundedGlobe02;
+  static const language = HugeIcons.strokeRoundedLanguageSquare;
   static const telegram = HugeIcons.strokeRoundedTelegram;
   static const whatsapp = HugeIcons.strokeRoundedWhatsapp;
   static const facebook = HugeIcons.strokeRoundedFacebook02;
@@ -111,6 +112,19 @@ abstract final class AppIcons {
   static const down = HugeIcons.strokeRoundedArrowDown01;
   static const chevronRight = HugeIcons.strokeRoundedArrowRight01;
   static const chevronLeft = HugeIcons.strokeRoundedArrowLeft01;
+
+  /// سهم الرجوع حسب اتجاه الواجهة: يشير يمينًا في RTL ويسارًا في LTR.
+  ///
+  /// أيقونات HugeIcons لا تنعكس تلقائيًا مثل أيقونات Material، فاستعمل هذا
+  /// بدل [back]/[backRight] في أزرار الرجوع.
+  static HugeIconData backFor(BuildContext context) =>
+      Directionality.of(context) == TextDirection.rtl ? backRight : back;
+
+  /// سهم "التالي/الدخول" نحو نهاية السطر: يسار في RTL ويمين في LTR.
+  static HugeIconData forwardFor(BuildContext context) =>
+      Directionality.of(context) == TextDirection.rtl
+          ? chevronLeft
+          : chevronRight;
   static const check = HugeIcons.strokeRoundedCheckmarkCircle02;
   static const checkSmall = HugeIcons.strokeRoundedCheckmarkBadge02;
   static const cancel = HugeIcons.strokeRoundedCancelCircle;

@@ -20,6 +20,7 @@ import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_upsert_schedule_screen.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_schedule_item_card.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'smart_outreach_schedules_screen_logic_part.dart';
 
@@ -103,7 +104,7 @@ class _SmartOutreachSchedulesViewState
       },
       builder: (context, state) {
         return AppScaffoldWidget(
-          title: 'صحبة الفجر',
+          title: context.l10n.outreachTitle,
           showLargeHeader: false,
           initialOffset: null,
           onRefresh: () async {
@@ -118,7 +119,7 @@ class _SmartOutreachSchedulesViewState
             },
             backgroundColor: skin.accent,
             foregroundColor: outreachOnAccent(skin),
-            tooltip: 'إضافة قائمة',
+            tooltip: context.l10n.outreachAddList,
             child: AppIcon(
               AppIcons.add,
               color: outreachOnAccent(skin),
@@ -136,6 +137,7 @@ class _SmartOutreachSchedulesViewState
     SmartOutreachSchedulesState state,
   ) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
     final notice = _buildPermissionsNotice();
     final enabledCount =
         state.schedules.where((bundle) => bundle.schedule.isEnabled).length;
@@ -149,7 +151,7 @@ class _SmartOutreachSchedulesViewState
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
           child: Text(
-            'قوائم اتصال هادئة تبدأ يوم من تحبّ بالخير',
+            l10n.outreachTagline,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -163,21 +165,27 @@ class _SmartOutreachSchedulesViewState
         OutreachStatsRow(
           cells: <OutreachStatCell>[
             OutreachStatCell(
-              label: 'القوائم',
+              label: l10n.outreachStatLists,
               value: '${state.schedules.length}',
             ),
-            OutreachStatCell(label: 'المفعّلة', value: '$enabledCount'),
-            OutreachStatCell(label: 'الأرقام', value: '$contactsCount'),
+            OutreachStatCell(
+              label: l10n.outreachStatEnabled,
+              value: '$enabledCount',
+            ),
+            OutreachStatCell(
+              label: l10n.outreachStatNumbers,
+              value: '$contactsCount',
+            ),
           ],
         ),
         if (notice != null) notice,
-        const HomeSectionHeader(title: 'قوائم الاتصال'),
+        HomeSectionHeader(title: l10n.outreachListsHeader),
         _buildContent(context, state),
         skin.divider(),
-        const HomeSectionHeader(title: 'أدوات'),
+        HomeSectionHeader(title: l10n.outreachToolsHeader),
         OutreachRow(
-          title: 'سجل المكالمات',
-          subtitle: 'نتيجة كل اتصال: من ردّ ومن لم يردّ',
+          title: l10n.outreachCallLogsTitle,
+          subtitle: l10n.outreachCallLogsSubtitle,
           icon: AppIcons.clock,
           showChevron: true,
           onTap: () {
@@ -192,8 +200,8 @@ class _SmartOutreachSchedulesViewState
           },
         ),
         OutreachRow(
-          title: 'إعدادات الاتصال',
-          subtitle: 'المدد الافتراضية وسلوك القوائم الجديدة',
+          title: l10n.outreachSettingsTitle,
+          subtitle: l10n.outreachSettingsSubtitle,
           icon: AppIcons.settings,
           showChevron: true,
           isLast: true,
@@ -223,10 +231,10 @@ class _SmartOutreachSchedulesViewState
 
     if (state.schedules.isEmpty) {
       return OutreachEmptyState(
-        title: 'لا توجد قوائم بعد',
+        title: context.l10n.outreachNoListsTitle,
         icon: AppIcons.contacts,
-        message: 'أضف قائمة وحدّد وقتها والأرقام التي تودّ الاتصال بها.',
-        actionLabel: 'إضافة قائمة',
+        message: context.l10n.outreachNoListsMessage,
+        actionLabel: context.l10n.outreachAddList,
         onAction: () => _openUpsertScreen(context),
       );
     }
@@ -242,7 +250,10 @@ class _SmartOutreachSchedulesViewState
             isNext: entry.key == nextIndex,
             isLast: entry.key == state.schedules.length - 1,
             countdownLabel: entry.key == nextIndex
-                ? _remainingLabel(_minutesUntilNextRun(entry.value.schedule))
+                ? _remainingLabel(
+                    context.l10n,
+                    _minutesUntilNextRun(entry.value.schedule),
+                  )
                 : null,
             onTap: () => _openUpsertScreen(context, bundle: entry.value),
             onStart: () => _handleStartNow(context, entry.value.schedule.id!),

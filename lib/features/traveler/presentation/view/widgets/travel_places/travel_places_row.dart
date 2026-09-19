@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ مكان قريب: سهم الاتجاه، ثم الاسم، ثم المسافة وزمن المشي.
 ///
@@ -96,7 +97,7 @@ class TravelPlacesRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  place.distanceLabel,
+                  place.distanceLabel(context.l10n),
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 11.sp,
@@ -106,7 +107,7 @@ class TravelPlacesRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  place.walkingEtaLabel,
+                  place.walkingEtaLabel(context.l10n),
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.6),
                     fontSize: 8.5.sp,

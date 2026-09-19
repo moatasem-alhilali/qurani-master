@@ -6,6 +6,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/pages/analytics_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مدخل ملخّص الذكر: صفّ نحيل يحمل مجموع تسبيح اليوم، لا بطاقة.
 class TasbeehAnalyticsHeader extends StatelessWidget {
@@ -58,7 +59,7 @@ class TasbeehAnalyticsHeader extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'ملخّص الذكر',
+                        context.l10n.sabihSummaryTitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -70,8 +71,8 @@ class TasbeehAnalyticsHeader extends StatelessWidget {
                       ),
                       Text(
                         total == 0
-                            ? 'لم تبدأ ذكر اليوم بعد'
-                            : 'ذكرت اليوم $total مرّة',
+                            ? context.l10n.sabihTodayNotStarted
+                            : context.l10n.sabihTodayCount(total),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -84,7 +85,13 @@ class TasbeehAnalyticsHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-                AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+                AppIcon(
+                  Directionality.of(context) == TextDirection.rtl
+                      ? AppIcons.chevronLeft
+                      : AppIcons.chevronRight,
+                  color: skin.accent,
+                  size: 15.sp,
+                ),
               ],
             ),
           ),

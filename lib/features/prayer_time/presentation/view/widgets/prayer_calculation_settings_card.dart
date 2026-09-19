@@ -8,6 +8,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_calculation_settings.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_calculation_settings_rows_part.dart';
 part 'prayer_calculation_settings_atoms_part.dart';
@@ -43,6 +44,7 @@ class _PrayerCalculationSettingsCardState
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -50,8 +52,7 @@ class _PrayerCalculationSettingsCardState
         Padding(
           padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
           child: Text(
-            'اختر التقويم الذي تعتمده جهتك المحلية، وعدّل المواقيت يدويًا '
-            'إن احتجت مطابقتها مع مسجد الحي.',
+            l10n.prayerTimeCalcIntro,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
               fontSize: 9.5.sp,
@@ -62,37 +63,38 @@ class _PrayerCalculationSettingsCardState
         ),
         PrayerSettingsPickerRow(
           icon: AppIcons.mosque,
-          label: 'طريقة الحساب',
-          value: _settings.method.arabicLabel,
-          hint: _settings.method.arabicDescription,
+          label: l10n.prayerTimeCalcMethod,
+          value: _settings.method.label(l10n),
+          hint: _settings.method.description(l10n),
           enabled: !widget.isSaving,
           onTap: _pickMethod,
         ),
         PrayerSettingsSegmentedRow<Madhab>(
           icon: AppIcons.clock,
-          label: 'مذهب حساب العصر',
-          hint: _settings.madhab.arabicDescription,
+          label: l10n.prayerTimeCalcAsrMadhab,
+          hint: _settings.madhab.description(l10n),
           value: _settings.madhab,
           options: Madhab.values,
-          labelOf: (madhab) => madhab == Madhab.shafi ? 'الشافعي' : 'الحنفي',
+          labelOf: (madhab) => madhab == Madhab.shafi
+              ? l10n.prayerTimeMadhabShafiShort
+              : l10n.prayerTimeMadhabHanafi,
           enabled: !widget.isSaving,
           onChanged: (madhab) => _emit(_settings.copyWith(madhab: madhab)),
         ),
         if (_settings.isCustomMethod) ..._customAnglesSection(),
         PrayerSettingsPickerRow(
           icon: AppIcons.globe,
-          label: 'خطوط العرض العالية',
-          value: _settings.effectiveHighLatitudeOption.label,
-          hint: _settings.effectiveHighLatitudeOption.description,
+          label: l10n.prayerTimeCalcHighLatitude,
+          value: _settings.effectiveHighLatitudeOption.label(l10n),
+          hint: _settings.effectiveHighLatitudeOption.description(l10n),
           enabled: !widget.isSaving,
           onTap: _pickHighLatitudeRule,
         ),
         if (_settings.supportsRamadanIshaAdjustment)
           PrayerSettingsSwitchRow(
             icon: AppIcons.moon,
-            label: 'تأخير العشاء في رمضان',
-            hint: 'يضيف ٣٠ دقيقة على العشاء طوال الشهر '
-                'كما في تقويم أم القرى.',
+            label: l10n.prayerTimeCalcRamadanIsha,
+            hint: l10n.prayerTimeCalcRamadanIshaHint,
             value: _settings.ramadanIshaAdjustmentEnabled,
             enabled: !widget.isSaving,
             onChanged: (value) => _emit(
@@ -106,7 +108,7 @@ class _PrayerCalculationSettingsCardState
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: PrayerSettingsTextLink(
-                label: 'استعادة إعدادات أم القرى',
+                label: l10n.prayerTimeCalcRestoreDefaults,
                 icon: AppIcons.refresh,
                 onTap: widget.isSaving
                     ? null
@@ -121,11 +123,12 @@ class _PrayerCalculationSettingsCardState
   List<Widget> _customAnglesSection() {
     final custom = _settings.customAngles;
     final maghribAngle = custom.maghribAngle;
+    final l10n = context.l10n;
 
     return [
-      const PrayerSettingsGroupTitle(title: 'زوايا الحساب المخصصة'),
+      PrayerSettingsGroupTitle(title: l10n.prayerTimeCalcCustomAngles),
       PrayerSettingsStepperRow(
-        label: 'زاوية الفجر',
+        label: l10n.prayerTimeCalcFajrAngle,
         display: '${_formatAngle(custom.fajrAngle)}°',
         canDecrease:
             !widget.isSaving && custom.fajrAngle > PrayerCustomAngles.minAngle,
@@ -144,17 +147,17 @@ class _PrayerCalculationSettingsCardState
       ),
       PrayerSettingsSegmentedRow<PrayerIshaMode>(
         icon: AppIcons.sun,
-        label: 'حساب العشاء',
-        hint: 'إمّا بزاوية الشفق، وإمّا بفاصل ثابت بعد المغرب.',
+        label: l10n.prayerTimeCalcIshaMode,
+        hint: l10n.prayerTimeCalcIshaModeHint,
         value: custom.ishaMode,
         options: PrayerIshaMode.values,
-        labelOf: (mode) => 'العشاء بـ${mode.label}',
+        labelOf: (mode) => mode.label(l10n),
         enabled: !widget.isSaving,
         onChanged: (mode) => _emitCustom(custom.copyWith(ishaMode: mode)),
       ),
       if (custom.ishaMode == PrayerIshaMode.angle)
         PrayerSettingsStepperRow(
-          label: 'زاوية العشاء',
+          label: l10n.prayerTimeCalcIshaAngle,
           display: '${_formatAngle(custom.ishaAngle)}°',
           canDecrease: !widget.isSaving &&
               custom.ishaAngle > PrayerCustomAngles.minAngle,
@@ -173,8 +176,8 @@ class _PrayerCalculationSettingsCardState
         )
       else
         PrayerSettingsStepperRow(
-          label: 'العشاء بعد المغرب',
-          display: '${custom.ishaInterval} د',
+          label: l10n.prayerTimeCalcIshaAfterMaghrib,
+          display: l10n.prayerTimeMinutesShort('${custom.ishaInterval}'),
           canDecrease: !widget.isSaving &&
               custom.ishaInterval > PrayerCustomAngles.minIshaInterval,
           canIncrease: !widget.isSaving &&
@@ -194,8 +197,8 @@ class _PrayerCalculationSettingsCardState
         ),
       PrayerSettingsSwitchRow(
         icon: AppIcons.sunset,
-        label: 'زاوية المغرب بدل الغروب',
-        hint: 'لِمن يعتمد زاوية شفق للمغرب بدل لحظة الغروب.',
+        label: l10n.prayerTimeCalcMaghribAngleToggle,
+        hint: l10n.prayerTimeCalcMaghribAngleToggleHint,
         value: maghribAngle != null,
         enabled: !widget.isSaving,
         onChanged: (enabled) => _emitCustom(
@@ -208,7 +211,7 @@ class _PrayerCalculationSettingsCardState
       ),
       if (maghribAngle != null)
         PrayerSettingsStepperRow(
-          label: 'زاوية المغرب',
+          label: l10n.prayerTimeCalcMaghribAngle,
           display: '${_formatAngle(maghribAngle)}°',
           canDecrease: !widget.isSaving &&
               maghribAngle > PrayerCustomAngles.minMaghribAngle,
@@ -241,6 +244,7 @@ class _PrayerCalculationSettingsCardState
       adjustments.maghrib,
       adjustments.isha,
     ].where((value) => value != 0).length;
+    final l10n = context.l10n;
 
     return [
       _AdjustmentsToggleRow(
@@ -251,32 +255,32 @@ class _PrayerCalculationSettingsCardState
       ),
       if (_showAdjustments) ...[
         _adjustmentRow(
-          'الفجر',
+          l10n.prayerFajr,
           adjustments.fajr,
           (value) => _emitAdjustments(adjustments.copyWith(fajr: value)),
         ),
         _adjustmentRow(
-          'الشروق',
+          l10n.prayerSunrise,
           adjustments.sunrise,
           (value) => _emitAdjustments(adjustments.copyWith(sunrise: value)),
         ),
         _adjustmentRow(
-          'الظهر',
+          l10n.prayerDhuhr,
           adjustments.dhuhr,
           (value) => _emitAdjustments(adjustments.copyWith(dhuhr: value)),
         ),
         _adjustmentRow(
-          'العصر',
+          l10n.prayerAsr,
           adjustments.asr,
           (value) => _emitAdjustments(adjustments.copyWith(asr: value)),
         ),
         _adjustmentRow(
-          'المغرب',
+          l10n.prayerMaghrib,
           adjustments.maghrib,
           (value) => _emitAdjustments(adjustments.copyWith(maghrib: value)),
         ),
         _adjustmentRow(
-          'العشاء',
+          l10n.prayerIsha,
           adjustments.isha,
           (value) => _emitAdjustments(adjustments.copyWith(isha: value)),
         ),
@@ -299,9 +303,9 @@ class _PrayerCalculationSettingsCardState
   }
 
   String _formatMinutes(int value) {
-    if (value == 0) return '٠ د';
+    if (value == 0) return context.l10n.prayerTimeMinutesZero;
     final sign = value > 0 ? '+' : '-';
-    return '$sign${value.abs()} د';
+    return context.l10n.prayerTimeMinutesShort('$sign${value.abs()}');
   }
 
   void _emit(PrayerCalculationSettings settings) => widget.onChanged(settings);
@@ -315,11 +319,11 @@ class _PrayerCalculationSettingsCardState
   Future<void> _pickMethod() async {
     final selected = await showPrayerSettingsOptionsSheet<CalculationMethod>(
       context: context,
-      title: 'طريقة الحساب',
+      title: context.l10n.prayerTimeCalcMethod,
       options: PrayerCalculationMethodLabels.selectable,
       selected: _settings.method,
-      labelOf: (method) => method.arabicLabel,
-      descriptionOf: (method) => method.arabicDescription,
+      labelOf: (method) => method.label(context.l10n),
+      descriptionOf: (method) => method.description(context.l10n),
     );
     if (selected == null || selected == _settings.method) {
       return;
@@ -340,11 +344,11 @@ class _PrayerCalculationSettingsCardState
     final selected =
         await showPrayerSettingsOptionsSheet<PrayerHighLatitudeOption>(
       context: context,
-      title: 'خطوط العرض العالية',
+      title: context.l10n.prayerTimeCalcHighLatitude,
       options: _settings.availableHighLatitudeOptions,
       selected: _settings.effectiveHighLatitudeOption,
-      labelOf: (option) => option.label,
-      descriptionOf: (option) => option.description,
+      labelOf: (option) => option.label(context.l10n),
+      descriptionOf: (option) => option.description(context.l10n),
     );
     if (selected != null && selected != _settings.highLatitudeOption) {
       _emit(_settings.copyWith(highLatitudeOption: selected));

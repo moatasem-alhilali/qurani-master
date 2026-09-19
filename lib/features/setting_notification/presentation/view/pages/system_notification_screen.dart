@@ -5,6 +5,7 @@ import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/system_active_notification_item_widget.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/system_notification_item_widget.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// إشعارات النظام: مجموعتان — ما هو مجدول، وما هو ظاهر الآن.
 class SystemNotificationScreen extends StatelessWidget {
@@ -13,13 +14,13 @@ class SystemNotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SettingsScaffold(
-      title: 'إشعارات النظام',
+      title: context.l10n.notifSettingsSystemTitle,
       children: [
         BlocBuilder<NotificationBloc, NotificationState>(
           builder: (context, state) {
             return state.pendingNotificationsState.handle<Object>(
               context: context,
-              onSuccess: () => _buildBody(state),
+              onSuccess: () => _buildBody(context, state),
             );
           },
         ),
@@ -27,7 +28,7 @@ class SystemNotificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(NotificationState state) {
+  Widget _buildBody(BuildContext context, NotificationState state) {
     final pending = state.pendingNotifications;
     final active = state.activeNotifications;
 
@@ -35,10 +36,10 @@ class SystemNotificationScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SettingsGroup(
-          title: 'مجدولة',
+          title: context.l10n.notifSettingsScheduledGroup,
           children: [
             if (pending.isEmpty)
-              const SettingsHint('لا توجد إشعارات مجدولة حالياً')
+              SettingsHint(context.l10n.notifSettingsNoScheduled)
             else
               for (var i = 0; i < pending.length; i++)
                 SystemNotificationItemWidget(
@@ -48,10 +49,10 @@ class SystemNotificationScreen extends StatelessWidget {
           ],
         ),
         SettingsGroup(
-          title: 'ظاهرة الآن',
+          title: context.l10n.notifSettingsShownNowGroup,
           children: [
             if (active.isEmpty)
-              const SettingsHint('لا توجد إشعارات ظاهرة في شريط الإشعارات')
+              SettingsHint(context.l10n.notifSettingsNoShown)
             else
               for (var i = 0; i < active.length; i++)
                 SystemActiveNotificationItemWidget(

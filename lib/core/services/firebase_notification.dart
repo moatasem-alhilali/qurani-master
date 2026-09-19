@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
 import 'package:quran_app/firebase_options.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FirebaseNotificationService {
   FirebaseNotificationService._();
@@ -25,10 +26,15 @@ class FirebaseNotificationService {
   static const String _chatChannelId = 'chat_channel';
   static const String _orderChannelId = 'order_channel';
 
-  static const String _highImportanceChannelName = 'طمأنينة - إشعارات مهمة';
-  static const String _defaultChannelName = 'طمأنينة - الإشعارات العامة';
-  static const String _chatChannelName = 'طمأنينة - الرسائل';
-  static const String _orderChannelName = 'طمأنينة - التحديثات';
+  // Channel names/descriptions show in the system notification settings, so
+  // they follow the saved app language (no BuildContext here).
+  static String get _highImportanceChannelName =>
+      L10nService.current.coreFcmChannelHighImportance;
+  static String get _defaultChannelName =>
+      L10nService.current.coreChannelDefaultChannel;
+  static String get _chatChannelName => L10nService.current.coreFcmChannelChat;
+  static String get _orderChannelName =>
+      L10nService.current.coreFcmChannelUpdates;
 
   // Notification action IDs
   static const String _actionReply = 'reply';
@@ -154,10 +160,10 @@ class FirebaseNotificationService {
       if (androidImplementation != null) {
         // High importance channel
         await androidImplementation.createNotificationChannel(
-          const AndroidNotificationChannel(
+          AndroidNotificationChannel(
             _highImportanceChannelId,
             _highImportanceChannelName,
-            description: 'قناة الإشعارات المهمة في تطبيق طمأنينة.',
+            description: _getChannelDescription('high_importance'),
             importance: Importance.high,
             enableLights: true,
           ),
@@ -165,20 +171,20 @@ class FirebaseNotificationService {
 
         // Default channel
         await androidImplementation.createNotificationChannel(
-          const AndroidNotificationChannel(
+          AndroidNotificationChannel(
             _defaultChannelId,
             _defaultChannelName,
-            description: 'قناة الإشعارات العامة في تطبيق طمأنينة.',
+            description: _getChannelDescription(null),
             enableLights: true,
           ),
         );
 
         // Chat channel
         await androidImplementation.createNotificationChannel(
-          const AndroidNotificationChannel(
+          AndroidNotificationChannel(
             _chatChannelId,
             _chatChannelName,
-            description: 'قناة رسائل وتنبيهات تطبيق طمأنينة.',
+            description: _getChannelDescription('chat'),
             importance: Importance.high,
             enableLights: true,
           ),
@@ -186,10 +192,10 @@ class FirebaseNotificationService {
 
         // Order channel
         await androidImplementation.createNotificationChannel(
-          const AndroidNotificationChannel(
+          AndroidNotificationChannel(
             _orderChannelId,
             _orderChannelName,
-            description: 'قناة تحديثات تطبيق طمأنينة.',
+            description: _getChannelDescription('order'),
             importance: Importance.high,
             enableLights: true,
           ),
@@ -258,14 +264,14 @@ class FirebaseNotificationService {
 
         // Create notification actions
         final androidActions = <AndroidNotificationAction>[
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             _actionView,
-            'View',
-            icon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+            L10nService.current.cleanupNotificationActionView,
+            icon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
           ),
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             _actionDismiss,
-            'Dismiss',
+            L10nService.current.cleanupNotificationActionDismiss,
           ),
         ];
 
@@ -286,12 +292,12 @@ class FirebaseNotificationService {
           colorized: true,
         );
 
-        const iosNotificationDetails = DarwinNotificationDetails(
+        final iosNotificationDetails = DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
           badgeNumber: 1,
-          subtitle: 'New notification',
+          subtitle: L10nService.current.cleanupNotificationSubtitle,
           threadIdentifier: 'notification_thread',
           categoryIdentifier: 'general',
           interruptionLevel: InterruptionLevel.active,
@@ -373,13 +379,13 @@ class FirebaseNotificationService {
   String _getChannelDescription(String? type) {
     switch (type) {
       case 'chat':
-        return 'قناة رسائل وتنبيهات تطبيق طمأنينة';
+        return L10nService.current.coreFcmChannelChatDescription;
       case 'order':
-        return 'قناة تحديثات تطبيق طمأنينة';
+        return L10nService.current.coreFcmChannelUpdatesDescription;
       case 'high_importance':
-        return 'قناة الإشعارات المهمة في تطبيق طمأنينة';
+        return L10nService.current.coreFcmChannelHighImportanceDescription;
       default:
-        return 'قناة الإشعارات العامة في تطبيق طمأنينة';
+        return L10nService.current.coreFcmChannelDefaultDescription;
     }
   }
 

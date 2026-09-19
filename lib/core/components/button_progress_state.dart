@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// A customizable progress button that changes its appearance based on its state.
 ///
@@ -175,7 +176,7 @@ class ProgressButtonState extends StatelessWidget {
               if (icon != null) const SizedBox(width: 8),
             ],
             Text(
-              text ?? 'Add',
+              text ?? context.l10n.commonAdd,
               style: TextStyle(
                 color: colorText ?? Colors.white,
                 fontSize: 20.sp,
@@ -196,7 +197,7 @@ class ProgressButtonState extends StatelessWidget {
             Visibility(
               visible: textLoading != null,
               child: Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsetsDirectional.only(start: 8),
                 child: Text(
                   textLoading ?? '',
                   style: TextStyle(
@@ -228,7 +229,7 @@ class ProgressButtonState extends StatelessWidget {
             Visibility(
               visible: textSuccess != null,
               child: Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsetsDirectional.only(start: 8),
                 child: Text(
                   textSuccess ?? '',
                   style: TextStyle(

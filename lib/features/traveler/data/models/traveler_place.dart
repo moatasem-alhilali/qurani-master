@@ -1,24 +1,26 @@
+import 'package:quran_app/l10n/l10n.dart';
+
 enum TravelerPlaceType {
   mosque,
   halalRestaurant,
 }
 
 extension TravelerPlaceTypeX on TravelerPlaceType {
-  String get title {
+  String title(L10n l10n) {
     switch (this) {
       case TravelerPlaceType.mosque:
-        return 'المساجد القريبة';
+        return l10n.travelerNearbyMosques;
       case TravelerPlaceType.halalRestaurant:
-        return 'مطاعم حلال قريبة';
+        return l10n.travelerNearbyHalalRestaurants;
     }
   }
 
-  String get emptyMessage {
+  String emptyMessage(L10n l10n) {
     switch (this) {
       case TravelerPlaceType.mosque:
-        return 'لم نعثر على مساجد في النطاق الحالي.';
+        return l10n.travelerNoMosquesFound;
       case TravelerPlaceType.halalRestaurant:
-        return 'لم نعثر على مطاعم حلال في هذا النطاق.';
+        return l10n.travelerNoRestaurantsFound;
     }
   }
 
@@ -53,15 +55,15 @@ class TravelerPlace {
   final String? phone;
   final String? openingHours;
 
-  String get distanceLabel {
+  String distanceLabel(L10n l10n) {
     if (distanceMeters < 1000) {
-      return '${distanceMeters.round()} م';
+      return l10n.travelerDistanceMeters('${distanceMeters.round()}');
     }
-    return '${(distanceMeters / 1000).toStringAsFixed(1)} كم';
+    return l10n.travelerDistanceKm((distanceMeters / 1000).toStringAsFixed(1));
   }
 
-  String get walkingEtaLabel {
+  String walkingEtaLabel(L10n l10n) {
     final walkingMinutes = (distanceMeters / 80).round().clamp(1, 120);
-    return '$walkingMinutes دقيقة مشيًا';
+    return l10n.travelerWalkingMinutes(walkingMinutes);
   }
 }

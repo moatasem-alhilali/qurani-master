@@ -1,3 +1,5 @@
+import 'package:quran_app/l10n/l10n.dart';
+
 /// تاريخ هجري محسوب من التاريخ الميلادي بالمعادلة الفلكية الجدولية.
 ///
 /// يُستخدم في عرض التاريخ الهجري داخل شاشات المواقيت، وفي تحديد شهر رمضان
@@ -40,6 +42,7 @@ class HijriDate {
   /// ترتيب شهر رمضان في السنة الهجرية.
   static const int ramadanMonth = 9;
 
+  /// أسماء الشهور بالعربية. للعرض في الواجهة استعمل [localizedMonthName].
   static const List<String> months = [
     'محرم',
     'صفر',
@@ -59,5 +62,18 @@ class HijriDate {
 
   String get monthName => months[(month - 1).clamp(0, months.length - 1)];
 
+  /// التاريخ بالعربية دائمًا، مهما كانت لغة الواجهة. أُبقي للتوافق؛ للعرض في
+  /// الواجهة استعمل [format].
   String formatArabic() => '$day $monthName $year هـ';
+
+  /// اسم الشهر بلغة الواجهة: `hijri.localizedMonthName(context.l10n)`.
+  String localizedMonthName(L10n l10n) => l10n.hijriMonth(month);
+
+  /// التاريخ الهجري بلغة الواجهة: `hijri.format(context.l10n)`، أو
+  /// `hijri.format(L10nService.current)` حيث لا يوجد `BuildContext`.
+  String format(L10n l10n) => l10n.hijriDate(
+        day.toString(),
+        localizedMonthName(l10n),
+        year.toString(),
+      );
 }

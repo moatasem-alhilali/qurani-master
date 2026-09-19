@@ -5,6 +5,7 @@ import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/services/api_serves.dart';
 import 'package:quran_app/core/services/audio_service.dart';
 import 'package:quran_app/main.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 abstract class BaseAudioRepository {
   Future<Either<Failure, List<dynamic>>> famousReader(String id);
@@ -27,7 +28,7 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
       return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 
@@ -42,7 +43,7 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
       return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 
@@ -58,7 +59,7 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
       return right(audioService.audioPlayer);
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 
@@ -73,7 +74,7 @@ class BaseAudioRepositoryImpl implements BaseAudioRepository {
       return right(data as List<dynamic>);
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 }

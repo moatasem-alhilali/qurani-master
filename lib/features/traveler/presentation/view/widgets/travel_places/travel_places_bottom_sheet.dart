@@ -6,6 +6,7 @@ import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_list_items.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قائمة الأماكن المنزلقة أسفل الخريطة.
 class TravelPlacesListSheet extends StatelessWidget {
@@ -39,7 +40,7 @@ class TravelPlacesListSheet extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'أقرب الأماكن',
+                      context.l10n.travelerNearestPlaces,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -50,7 +51,7 @@ class TravelPlacesListSheet extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'وجدنا ${state.places.length} نتيجة قربك',
+                      context.l10n.travelerFoundResults(state.places.length),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

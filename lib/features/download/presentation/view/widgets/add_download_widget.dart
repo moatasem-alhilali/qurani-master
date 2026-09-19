@@ -7,6 +7,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ورقة «إضافة تنزيل»: حقلان وخياران وزرّ واحد.
 ///
@@ -55,9 +56,9 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
     _fileNameController.clear();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('بدأ التحميل'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(context.l10n.downloadStarted),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -79,7 +80,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
                   child: Text(
-                    'إضافة تنزيل جديد',
+                    context.l10n.downloadAddNewTitle,
                     style: TextStyle(
                       color: skin.ink,
                       fontSize: 12.5.sp,
@@ -88,7 +89,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   ),
                 ),
                 _FieldRow(
-                  label: 'رابط الملفّ',
+                  label: context.l10n.downloadUrlLabel,
                   child: TextFormField(
                     controller: _urlController,
                     textAlign: TextAlign.end,
@@ -98,36 +99,39 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                     decoration: _fieldDecoration(skin, 'https://…'),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'الرجاء إدخال رابط التحميل';
+                        return context.l10n.downloadUrlRequired;
                       }
                       final uri = Uri.tryParse(value.trim());
                       if (uri == null || !uri.hasAbsolutePath) {
-                        return 'الرجاء إدخال رابط صحيح';
+                        return context.l10n.downloadUrlInvalid;
                       }
                       return null;
                     },
                   ),
                 ),
                 _FieldRow(
-                  label: 'اسم الملفّ',
+                  label: context.l10n.downloadFileNameLabel,
                   child: TextFormField(
                     controller: _fileNameController,
                     textAlign: TextAlign.end,
                     cursorColor: skin.accent,
                     style: _valueStyle(skin),
-                    decoration: _fieldDecoration(skin, 'اختياري'),
+                    decoration: _fieldDecoration(
+                      skin,
+                      context.l10n.downloadOptional,
+                    ),
                   ),
                 ),
                 _ToggleRow(
-                  title: 'التخزين العام',
-                  subtitle: 'حفظ في مجلّد التنزيلات',
+                  title: context.l10n.downloadPublicStorageTitle,
+                  subtitle: context.l10n.downloadPublicStorageSubtitle,
                   value: _saveInPublicStorage,
                   onChanged: (value) =>
                       setState(() => _saveInPublicStorage = value),
                 ),
                 _ToggleRow(
-                  title: 'السماح بالبيانات الخلوية',
-                  subtitle: 'التحميل عبر بيانات الجوّال',
+                  title: context.l10n.downloadAllowCellularTitle,
+                  subtitle: context.l10n.downloadAllowCellularSubtitle,
                   value: _allowCellular,
                   onChanged: (value) => setState(() => _allowCellular = value),
                 ),
@@ -137,7 +141,7 @@ class _AddDownloadWidgetState extends State<AddDownloadWidget> {
                   child: ProgressButtonState(
                     state: state.loadState,
                     onPressed: _startDownload,
-                    text: 'بدء التحميل',
+                    text: context.l10n.downloadStart,
                     borderRadius: 12.r,
                     defaultColor: AppColors.gold,
                     colorText: skin.isDark

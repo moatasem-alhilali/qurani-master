@@ -7,6 +7,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// يختار رقمًا واحدًا حين يكون للاسم أكثر من رقم.
 ///
@@ -55,11 +56,11 @@ Future<String?> showSmartOutreachPhonePicker(
                 ),
               ),
             ),
-            const HomeSectionHeader(title: 'اختر الرقم'),
+            HomeSectionHeader(title: context.l10n.outreachPickNumber),
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
               child: Text(
-                'هذا الاسم فيه أكثر من رقم.',
+                context.l10n.outreachMultipleNumbers,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,
@@ -120,7 +121,7 @@ class _PhoneOptionRow extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textDirection: TextDirection.ltr,
-                textAlign: TextAlign.right,
+                textAlign: outreachStartAlign(context),
                 style: TextStyle(
                   color: skin.ink,
                   fontSize: 12.5.sp,
@@ -130,7 +131,11 @@ class _PhoneOptionRow extends StatelessWidget {
               ),
             ),
             SizedBox(width: 6.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              outreachForwardChevron(context),
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

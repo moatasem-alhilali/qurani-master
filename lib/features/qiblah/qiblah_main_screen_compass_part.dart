@@ -49,8 +49,8 @@ extension _QiblahCompassView on _QiblahMainScreenState {
             ),
             Text(
               _isAligned
-                  ? 'ثبّت الجهاز، السهم على علامة القبلة'
-                  : 'حرّك الجهاز ببطء حتى يصل السهم إلى العلامة',
+                  ? context.l10n.qiblahHintAligned
+                  : context.l10n.qiblahHintMove,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
@@ -61,7 +61,7 @@ extension _QiblahCompassView on _QiblahMainScreenState {
             ),
             SizedBox(height: 14.h),
             skin.divider(),
-            const HomeSectionHeader(title: 'قراءة البوصلة'),
+            HomeSectionHeader(title: context.l10n.qiblahReadingsHeader),
             Padding(
               padding: AppSkin.gutter,
               child: Column(
@@ -69,26 +69,27 @@ extension _QiblahCompassView on _QiblahMainScreenState {
                 children: [
                   _ReadingRow(
                     icon: AppIcons.direction,
-                    label: 'اتجاهك الحالي',
+                    label: context.l10n.qiblahCurrentHeading,
                     value: '${_currentDirection.toInt()}°',
                   ),
                   _ReadingRow(
                     icon: AppIcons.compass,
-                    label: 'زاوية القبلة',
+                    label: context.l10n.qiblahAngle,
                     value: '${_qiblaDirection2.toInt()}°',
                   ),
                   _ReadingRow(
                     icon: AppIcons.mapPin,
-                    label: 'موقعك الحالي',
-                    value: _cityName ?? 'يتم تحديد الموقع...',
+                    label: context.l10n.qiblahCurrentLocation,
+                    value: _cityName ?? context.l10n.qiblahLocating,
                     isNumeric: false,
                   ),
                   _ReadingRow(
                     icon: AppIcons.mosque,
-                    label: 'المسافة إلى مكة',
+                    label: context.l10n.qiblahDistanceToMecca,
                     value: _distanceToMecca == null
                         ? '—'
-                        : '${_distanceToMecca!.toInt()} كم',
+                        : context.l10n
+                            .qiblahDistanceKm(_distanceToMecca!.toInt()),
                     isNumeric: false,
                     isLast: true,
                   ),
@@ -96,15 +97,11 @@ extension _QiblahCompassView on _QiblahMainScreenState {
               ),
             ),
             skin.divider(),
-            const HomeSectionHeader(title: 'تعليمات الاستخدام'),
+            HomeSectionHeader(title: context.l10n.qiblahInstructionsHeader),
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Text(
-                '• امسك الهاتف مستويًا أمامك.\n'
-                '• تحرّك ببطء حتى يلتقي السهم الذهبي بالعلامة العلوية.\n'
-                '• عند المحاذاة تضيء الحلقة وتشعر باهتزازة خفيفة.\n'
-                '• أبعد الأجسام المعدنية عن الهاتف.\n'
-                '• إذا اضطرب المؤشر، حرّك الهاتف على شكل رقم ٨.',
+                context.l10n.qiblahInstructions,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'notification_schedule_event.dart';
 part 'notification_schedule_state.dart';
@@ -46,7 +47,7 @@ class NotificationScheduleBloc
       emit(
         state.copyWith(
           isLoading: false,
-          error: 'فشل في تحميل المواعيد: $e',
+          error: L10nService.current.notifScheduleLoadFailed('$e'),
         ),
       );
     }
@@ -72,7 +73,7 @@ class NotificationScheduleBloc
         state.copyWith(
           schedules: updatedSchedules,
           isSubmitting: false,
-          successMessage: 'تم إضافة الموعد بنجاح',
+          successMessage: L10nService.current.notifScheduleAdded,
         ),
       );
 
@@ -82,7 +83,7 @@ class NotificationScheduleBloc
       emit(
         state.copyWith(
           isSubmitting: false,
-          error: 'فشل في إضافة الموعد: $e',
+          error: L10nService.current.notifScheduleAddFailed('$e'),
         ),
       );
     }
@@ -111,14 +112,14 @@ class NotificationScheduleBloc
         state.copyWith(
           schedules: updatedSchedules,
           isSubmitting: false,
-          successMessage: 'تم تحديث الموعد بنجاح',
+          successMessage: L10nService.current.notifScheduleUpdated,
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
           isSubmitting: false,
-          error: 'فشل في تحديث الموعد: $e',
+          error: L10nService.current.notifScheduleUpdateFailed('$e'),
         ),
       );
     }
@@ -147,14 +148,14 @@ class NotificationScheduleBloc
         state.copyWith(
           schedules: updatedSchedules,
           isSubmitting: false,
-          successMessage: 'تم حذف الموعد بنجاح',
+          successMessage: L10nService.current.notifScheduleDeleted,
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
           isSubmitting: false,
-          error: 'فشل في حذف الموعد: $e',
+          error: L10nService.current.notifScheduleDeleteFailed('$e'),
         ),
       );
     }
@@ -186,15 +187,15 @@ class NotificationScheduleBloc
           schedules: updatedSchedules,
           isSubmitting: false,
           successMessage: toggledModel.enabled
-              ? 'تم تفعيل الموعد'
-              : 'تم إلغاء تفعيل الموعد',
+              ? L10nService.current.notifScheduleActivated
+              : L10nService.current.notifScheduleDeactivated,
         ),
       );
     } catch (e) {
       emit(
         state.copyWith(
           isSubmitting: false,
-          error: 'فشل في تغيير حالة الموعد: $e',
+          error: L10nService.current.notifScheduleToggleFailed('$e'),
         ),
       );
     }

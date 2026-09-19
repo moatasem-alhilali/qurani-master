@@ -6,6 +6,7 @@ import 'package:quran_app/core/services/share_service.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ورقة الحديث: النصّ هو البطل.
 ///
@@ -19,7 +20,7 @@ Future<void> showHadith40Sheet(
   required String explanation,
 }) async {
   final skin = AppSkin.of(context);
-  final shareText = '$title\n\n$hadith\n\nشرح الحديث:\n$explanation';
+  final shareText = context.l10n.hadith40ShareText(title, hadith, explanation);
 
   await showModalBottomSheet<void>(
     context: context,
@@ -109,7 +110,7 @@ class _Hadith40SheetBody extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'الأربعون النووية · الحديث $order',
+                        context.l10n.hadith40SheetSubtitle(order),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -124,7 +125,7 @@ class _Hadith40SheetBody extends StatelessWidget {
                 ),
                 _SheetAction(
                   icon: AppIcons.copy,
-                  tooltip: 'نسخ',
+                  tooltip: context.l10n.commonCopy,
                   onTap: () async {
                     await HapticFeedback.selectionClick();
                     await CopyService.copyToClipboard(shareText);
@@ -133,12 +134,12 @@ class _Hadith40SheetBody extends StatelessWidget {
                 SizedBox(width: 4.w),
                 _SheetAction(
                   icon: AppIcons.share,
-                  tooltip: 'مشاركة',
+                  tooltip: context.l10n.commonShare,
                   onTap: () async {
                     await HapticFeedback.selectionClick();
                     await ShareService.shareText(
                       text: shareText,
-                      subject: 'الأربعون النووية',
+                      subject: context.l10n.hadith40Title,
                     );
                   },
                 ),
@@ -165,7 +166,7 @@ class _Hadith40SheetBody extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 8.h),
               child: Text(
-                'شرح الحديث',
+                context.l10n.hadith40Explanation,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.8),
                   fontSize: 10.sp,

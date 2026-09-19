@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class ErrorRetryWidget extends StatelessWidget {
   const ErrorRetryWidget({
@@ -66,7 +67,7 @@ class ErrorRetryWidget extends StatelessWidget {
                 children: [
                   if (statusCode != null)
                     Text(
-                      'الحالة: $statusCode',
+                      context.l10n.coreErrorStatus(statusCode.toString()),
                       style: context.titleMedium
                           ?.copyWith(color: iconColor.withValues(alpha: 0.7)),
                     ),
@@ -78,9 +79,9 @@ class ErrorRetryWidget extends StatelessWidget {
               TextButton.icon(
                 onPressed: onRetry,
                 icon: const AppIcon(AppIcons.refresh, color: Colors.black),
-                label: const Text(
-                  'إعادة المحاولة',
-                  style: TextStyle(color: Colors.black),
+                label: Text(
+                  context.l10n.commonRetry,
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ],

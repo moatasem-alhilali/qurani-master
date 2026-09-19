@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class AthanAlarmPayloadData {
   const AthanAlarmPayloadData({
@@ -75,6 +76,9 @@ class AthanAlarmPayloadService {
     }
   }
 
+  /// اسم الصلاة كمعرّف ثابت (عربي) يُخزَّن في حمولة الإشعار.
+  ///
+  /// لا يُعرض كما هو: [displayPrayerName] يحوّله إلى لغة الواجهة.
   String prayerNameFromKey(String key) {
     switch (key) {
       case NotificationKeys.isNotificationAthanFagr:
@@ -92,6 +96,60 @@ class AthanAlarmPayloadService {
     }
   }
 
+  static const List<String> _prayerKeys = [
+    'fajr',
+    'sunrise',
+    'dhuhr',
+    'asr',
+    'maghrib',
+    'isha',
+    'jumuah',
+  ];
+
+  /// مفاتيح الصلوات (`fajr`…) من أسمائها بكل اللغات المدعومة.
+  ///
+  /// اسم الصلاة الذي يصل هنا قد يكون عربيًا (حمولات قديمة و[prayerNameFromKey])
+  /// أو بلغة الواجهة وقت الجدولة (`PrayerInfoModel.name`)، ثم قد تتغيّر لغة
+  /// الواجهة بعد ذلك — فنطابقه مع أسماء كل اللغات لا العربية وحدها.
+  static final Map<String, String> _prayerKeyByName = () {
+    final map = <String, String>{
+      for (final key in _prayerKeys) key: key,
+    };
+    for (final language in AppLanguage.values) {
+      final strings = L10nService.forCode(language.code);
+      for (final key in _prayerKeys) {
+        map.putIfAbsent(strings.prayerName(key).trim(), () => key);
+      }
+    }
+    return map;
+  }();
+
+  /// المعرّف العام حين لا تُعرف الصلاة (انظر [prayerNameFromKey]).
+  static const String _genericPrayerName = 'الصلاة';
+
+  /// مفتاح الصلاة (`fajr`, `dhuhr`…) من اسمها المخزّن بأي لغة، أو `null`.
+  static String? prayerKeyOf(String prayerName) {
+    final trimmed = prayerName.trim();
+    return _prayerKeyByName[trimmed] ?? _prayerKeyByName[trimmed.toLowerCase()];
+  }
+
+  /// اسم الصلاة بلغة الواجهة المحفوظة (أو [l10n] إن مُرِّرت).
+  static String displayPrayerName(String prayerName, [L10n? l10n]) {
+    final strings = l10n ?? L10nService.current;
+    final trimmed = prayerName.trim();
+    final key = prayerKeyOf(trimmed);
+    if (key != null) return strings.prayerName(key);
+    if (trimmed == _genericPrayerName ||
+        AppLanguage.values.any(
+          (language) =>
+              L10nService.forCode(language.code).prayerTimeGenericPrayer ==
+              trimmed,
+        )) {
+      return strings.prayerTimeGenericPrayer;
+    }
+    return trimmed;
+  }
+
   /// عنوان الإشعار: اسم الصلاة ووقتها.
   ///
   /// هذا هو الموضع **الوحيد** الذي يُذكر فيه الوقت. كان يتكرّر ثلاث مرّات —
@@ -101,12 +159,13 @@ class AthanAlarmPayloadService {
     required String prayerName,
     String? prayerTimeLabel,
   }) {
-    final cleanPrayerName = prayerName.trim();
+    final l10n = L10nService.current;
+    final displayName = displayPrayerName(prayerName, l10n);
     final cleanTime = _normalizeTimeLabel(prayerTimeLabel);
     if (cleanTime == null) {
-      return 'أذان $cleanPrayerName';
+      return l10n.prayerTimeAthanTitle(displayName);
     }
-    return 'أذان $cleanPrayerName • $cleanTime';
+    return l10n.prayerTimeAthanTitleWithTime(displayName, cleanTime);
   }
 
   /// النصّ المصاحب في رأس الإشعار: **مكان** الحساب.
@@ -128,19 +187,20 @@ class AthanAlarmPayloadService {
   ///
   /// العنوان فوقه يقول «أذان الظهر • 11:48» بالفعل، فإعادتها هنا حشو.
   String buildAthanBody({required String prayerName}) {
-    switch (prayerName.trim()) {
-      case 'الفجر':
-        return 'حيّ على الصلاة — ابدأ يومك بنور الفجر.';
-      case 'الظهر':
-        return 'اجعلها استراحة قلب.';
-      case 'العصر':
-        return 'جدّد حضورك مع الله.';
-      case 'المغرب':
-        return 'اختم يومك بطاعة وسكينة.';
-      case 'العشاء':
-        return 'لا تفوّت ختام الصلوات.';
+    final l10n = L10nService.current;
+    switch (prayerKeyOf(prayerName)) {
+      case 'fajr':
+        return l10n.prayerTimeAthanBodyFajr;
+      case 'dhuhr':
+        return l10n.prayerTimeAthanBodyDhuhr;
+      case 'asr':
+        return l10n.prayerTimeAthanBodyAsr;
+      case 'maghrib':
+        return l10n.prayerTimeAthanBodyMaghrib;
+      case 'isha':
+        return l10n.prayerTimeAthanBodyIsha;
       default:
-        return 'تقبّل الله طاعتك.';
+        return l10n.prayerTimeAthanBodyDefault;
     }
   }
 
@@ -149,7 +209,13 @@ class AthanAlarmPayloadService {
   /// لا يعيد المكان: النصّ المصاحب يظلّ ظاهرًا في الرأس عند التوسيع.
   String buildAthanExpandedBody({required String prayerName}) {
     return '${buildAthanBody(prayerName: prayerName)}\n'
-        'اضغط لفتح تنبيه الصلاة والتفاصيل.';
+        '${L10nService.current.prayerTimeAthanExpandedHint}';
+  }
+
+  /// نصّ شريط الحالة (ticker) لإشعار الأذان: «حان الآن أذان الظهر».
+  String buildAthanTicker({required String prayerName}) {
+    final l10n = L10nService.current;
+    return l10n.prayerTimeAthanTicker(displayPrayerName(prayerName, l10n));
   }
 
   String? _normalizeTimeLabel(String? prayerTimeLabel) {

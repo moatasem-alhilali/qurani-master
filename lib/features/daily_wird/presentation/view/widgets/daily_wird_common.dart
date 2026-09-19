@@ -7,6 +7,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/daily_wird/data/models/daily_wird_program_item_model.dart';
 import 'package:quran_app/features/daily_wird/presentation/bloc/daily_wird_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أيقونة العمل حسب نوعه.
 HugeIconData dailyWirdItemIcon(DailyWirdItem item) {
@@ -26,31 +27,31 @@ HugeIconData dailyWirdItemIcon(DailyWirdItem item) {
   }
 }
 
-String dailyWirdTimeLabel(String value) {
+String dailyWirdTimeLabel(L10n l10n, String value) {
   switch (value) {
     case 'morning':
-      return 'صباح';
+      return l10n.dailyWirdTimeMorning;
     case 'evening':
-      return 'مساء';
+      return l10n.dailyWirdTimeEvening;
     case 'night':
-      return 'ليل';
+      return l10n.dailyWirdTimeNight;
     default:
-      return 'أي وقت';
+      return l10n.dailyWirdTimeAny;
   }
 }
 
-String dailyWirdTypeLabel(DailyWirdItem item) {
+String dailyWirdTypeLabel(L10n l10n, DailyWirdItem item) {
   switch (item.type) {
     case 'dhikr_set':
-      return 'أذكار';
+      return l10n.dailyWirdTypeDhikrSet;
     case 'counted_dhikr':
-      return 'ذكر بعدد';
+      return l10n.dailyWirdTypeCountedDhikr;
     case 'quran':
-      return 'ورد قرآن';
+      return l10n.dailyWirdTypeQuran;
     case 'dua':
-      return 'دعاء';
+      return l10n.dailyWirdTypeDua;
     case 'surah':
-      return 'سورة';
+      return l10n.dailyWirdTypeSurah;
     default:
       return item.type;
   }
@@ -253,10 +254,15 @@ class _DailyWirdActionButtonState extends State<DailyWirdActionButton>
   String get _label {
     final item = widget.item;
     if (item.hasCounter) {
-      if (item.isCompleted) return 'أُنجز';
-      return '${item.countCompleted} من ${item.countRequired ?? 0}';
+      if (item.isCompleted) return context.l10n.dailyWirdItemDone;
+      return context.l10n.dailyWirdCountProgress(
+        item.countCompleted,
+        item.countRequired ?? 0,
+      );
     }
-    return item.isCompleted ? 'تم' : 'إتمام';
+    return item.isCompleted
+        ? context.l10n.commonDone
+        : context.l10n.dailyWirdMarkComplete;
   }
 
   @override
@@ -425,7 +431,7 @@ Future<int?> showDailyWirdCountSheet(
               ),
               SizedBox(height: 14.h),
               Text(
-                'تعديل العدد المقصود',
+                context.l10n.dailyWirdEditTargetCount,
                 style: TextStyle(
                   color: skin.ink,
                   fontSize: 12.5.sp,
@@ -447,7 +453,7 @@ Future<int?> showDailyWirdCountSheet(
                   isDense: true,
                   filled: true,
                   fillColor: skin.raised,
-                  hintText: 'مثال: ٥٠ مرة',
+                  hintText: context.l10n.dailyWirdCountHint,
                   hintStyle: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.5),
                     fontSize: 10.sp,
@@ -469,7 +475,7 @@ Future<int?> showDailyWirdCountSheet(
               ),
               SizedBox(height: 14.h),
               DailyWirdPrimaryButton(
-                label: 'حفظ',
+                label: context.l10n.commonSave,
                 icon: AppIcons.save,
                 onTap: () {
                   final parsed = int.tryParse(controller.text.trim());

@@ -139,13 +139,14 @@ flutter_gen:
       - assets/raw/**
 
 flutter:
+  # يولّد L10n من lib/l10n/*.arb (انظر l10n.yaml).
+  generate: true
   assets:
     - assets/
     - assets/image/
     - assets/json/
     # - assets/pdf/
     - assets/athores/
-    - assets/lang/
     - assets/logo/
     - assets/svg/
     # - assets/lottie/   المجلّد فارغ ولا يتعقّبه git، فيختفي على CI ويرمي

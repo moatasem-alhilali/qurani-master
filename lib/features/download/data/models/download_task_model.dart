@@ -1,4 +1,5 @@
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class DownloadTaskModel {
   const DownloadTaskModel({
@@ -71,6 +72,26 @@ class DownloadTaskModel {
         return 'Canceled';
       case DownloadTaskStatus.paused:
         return 'Paused';
+    }
+  }
+
+  /// حالة التنزيل بلغة الواجهة (يبقى [statusText] للسجلات).
+  String statusLabel(L10n l10n) {
+    switch (status) {
+      case DownloadTaskStatus.undefined:
+        return l10n.cleanupDownloadStatusUnknown;
+      case DownloadTaskStatus.enqueued:
+        return l10n.cleanupDownloadStatusQueued;
+      case DownloadTaskStatus.running:
+        return l10n.downloadStatusActive;
+      case DownloadTaskStatus.complete:
+        return l10n.downloadStatusCompleted;
+      case DownloadTaskStatus.failed:
+        return l10n.downloadStatusFailed;
+      case DownloadTaskStatus.canceled:
+        return l10n.cleanupDownloadStatusCanceled;
+      case DownloadTaskStatus.paused:
+        return l10n.downloadStatusPaused;
     }
   }
 

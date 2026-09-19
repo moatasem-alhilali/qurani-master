@@ -14,6 +14,10 @@ class _PrayerMiniEntry {
   final Prayer type;
   final bool isCurrent;
   final bool isNext;
+
+  /// اسم الصلاة بلغة الواجهة؛ [name] يبقى احتياطًا لغير الصلوات المعروفة.
+  String displayName(L10n l10n) =>
+      type == Prayer.none ? name : l10n.prayerName(type.name);
 }
 
 class _ResolvedPrayerState {

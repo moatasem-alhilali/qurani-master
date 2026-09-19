@@ -9,6 +9,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_location_picker_sheet_widgets_part.dart';
 
@@ -125,7 +126,7 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
       latitude: point.latitude,
       longitude: point.longitude,
       source: PrayerLocationSource.manualMap,
-      fallbackLabel: 'موقع محدد على الخريطة',
+      fallbackLabel: context.l10n.prayerTimePickerMapPointLabel,
     );
 
     if (!mounted) return;
@@ -325,8 +326,8 @@ class _PrayerLocationPickerSheetState extends State<PrayerLocationPickerSheet>
                           Expanded(
                             child: Text(
                               _isResolvingMapLocation
-                                  ? 'جارِ قراءة اسم الموقع المحدد...'
-                                  : 'اضغط على الخريطة لتحديد المنطقة',
+                                  ? context.l10n.prayerTimePickerResolving
+                                  : context.l10n.prayerTimePickerTapMap,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

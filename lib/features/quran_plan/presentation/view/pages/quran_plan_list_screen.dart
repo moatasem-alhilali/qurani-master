@@ -17,6 +17,7 @@ import 'package:quran_app/features/quran_plan/presentation/bloc/quran_plan_bloc.
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_add_screen.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/pages/quran_plan_session_screen.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/plan_progress_line.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قائمة خطط الختمة.
 ///
@@ -36,7 +37,7 @@ class QuranPlanListScreen extends StatelessWidget {
         child: BlocBuilder<QuranPlanBloc, QuranPlanState>(
           builder: (ctx, state) {
             return AppScaffoldWidget(
-              title: 'خطط الختم',
+              title: context.l10n.quranPlanListTitle,
               onRefresh: () async {
                 ctx.read<QuranPlanBloc>().add(LoadAllPlansEvent());
               },
@@ -50,7 +51,7 @@ class QuranPlanListScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r),
                 ),
-                tooltip: 'خطة جديدة',
+                tooltip: context.l10n.quranPlanNewTooltip,
                 onPressed: () {
                   HapticFeedback.selectionClick();
                   context.push(
@@ -77,7 +78,7 @@ class QuranPlanListScreen extends StatelessWidget {
                           .toList();
                     },
                     onSelected: (item) {},
-                    hintText: 'بحث عن خطة',
+                    hintText: context.l10n.quranPlanSearchHint,
                     suggestionBuilder: (context, item) =>
                         PlanRow(plan: item, isLast: true),
                   );
@@ -181,8 +182,11 @@ class PlanRow extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'الجزء ${plan.startJuz} إلى ${plan.endJuz}'
-                        ' · ${plan.totalDays} يومًا',
+                        [
+                          context.l10n
+                              .quranPlanJuzRange(plan.startJuz, plan.endJuz),
+                          context.l10n.quranPlanDaysCount(plan.totalDays),
+                        ].join(' · '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -195,10 +199,10 @@ class PlanRow extends StatelessWidget {
                     ],
                   ),
                 ),
-                // «٣ من ٥» بالعربية: الكسر ينقلب في الاتجاه
+                // «٣ من ٥» بالكلمات: الكسر ينقلب في الاتجاه
                 // العربي فيُقرأ مقلوبًا.
                 Text(
-                  '$done من $total',
+                  context.l10n.quranPlanProgress(done, total),
                   style: TextStyle(
                     color: skin.accent,
                     fontSize: 10.sp,
@@ -245,9 +249,9 @@ class _PlanMenu extends StatelessWidget {
           height: 36.h,
           onTap: () {
             context.showCustomSnackbar(
-              'سيتم حذف الخطة ؟',
+              context.l10n.quranPlanDeleteConfirm,
               style: SnackBarType.warning,
-              actionLabel: 'تأكيد',
+              actionLabel: context.l10n.quranPlanConfirm,
               duration: const Duration(seconds: 3),
               paddingBottom: 100,
               onAction: () {
@@ -259,7 +263,7 @@ class _PlanMenu extends StatelessWidget {
             );
           },
           child: Text(
-            'حذف الخطة',
+            context.l10n.quranPlanDelete,
             style: TextStyle(
               color: AppColors.error,
               fontSize: 11.sp,

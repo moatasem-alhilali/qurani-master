@@ -10,6 +10,7 @@ import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_s
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_ios_reminder_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_overlay_controller.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'floating_adhkar_event.dart';
 part 'floating_adhkar_state.dart';
@@ -80,7 +81,8 @@ class FloatingAdhkarBloc
         emit(
           state.copyWith(
             actionState: RequestState.error,
-            errorMessage: 'هذه الميزة غير متاحة على هذه المنصة.',
+            errorMessage:
+                L10nService.current.floatingAdhkarErrorUnsupportedPlatform,
           ),
         );
         return;
@@ -96,8 +98,8 @@ class FloatingAdhkarBloc
           emit,
           actionState: RequestState.error,
           errorMessage: _iosReminderService.isSupportedPlatform
-              ? 'يجب السماح بالإشعارات لتشغيل تذكيرات الأذكار على iPhone.'
-              : 'يجب منح صلاحية الظهور فوق التطبيقات الأخرى أولًا.',
+              ? L10nService.current.floatingAdhkarErrorIosNotificationsToEnable
+              : L10nService.current.floatingAdhkarErrorOverlayPermissionFirst,
         );
         return;
       }
@@ -144,7 +146,7 @@ class FloatingAdhkarBloc
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: 'فعّل مصدرًا واحدًا على الأقل للأذكار العائمة.',
+          errorMessage: L10nService.current.floatingAdhkarErrorNoSource,
         ),
       );
       return;
@@ -161,8 +163,10 @@ class FloatingAdhkarBloc
           state.copyWith(
             actionState: RequestState.error,
             errorMessage: _iosReminderService.isSupportedPlatform
-                ? 'صلاحية الإشعارات مطلوبة لتشغيل تذكيرات iPhone.'
-                : 'الصلاحية مطلوبة لتشغيل النافذة العائمة.',
+                ? L10nService
+                    .current.floatingAdhkarErrorIosNotificationsRequired
+                : L10nService
+                    .current.floatingAdhkarErrorOverlayPermissionRequired,
           ),
         );
         await _refreshState(emit);
@@ -231,7 +235,8 @@ class FloatingAdhkarBloc
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: 'العنوان والنص مطلوبان لتحديث الذكر الافتراضي.',
+          errorMessage:
+              L10nService.current.floatingAdhkarErrorTitleAndTextRequired,
         ),
       );
       return;
@@ -312,8 +317,8 @@ class FloatingAdhkarBloc
       errorMessage: granted
           ? null
           : _iosReminderService.isSupportedPlatform
-              ? 'لم يتم منح صلاحية الإشعارات.'
-              : 'لم يتم منح صلاحية الظهور فوق التطبيقات الأخرى.',
+              ? L10nService.current.floatingAdhkarErrorNotificationsDenied
+              : L10nService.current.floatingAdhkarErrorOverlayDenied,
     );
   }
 
@@ -333,7 +338,8 @@ class FloatingAdhkarBloc
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: 'فعّل الميزة أولًا ثم استخدم المعاينة المباشرة.',
+          errorMessage:
+              L10nService.current.floatingAdhkarErrorEnableBeforePreview,
         ),
       );
       return;
@@ -345,8 +351,9 @@ class FloatingAdhkarBloc
         state.copyWith(
           actionState: RequestState.error,
           errorMessage: _iosReminderService.isSupportedPlatform
-              ? 'صلاحية الإشعارات مطلوبة لعرض ذكر الآن.'
-              : 'الصلاحية مطلوبة لعرض الذكر العائم.',
+              ? L10nService
+                  .current.floatingAdhkarErrorPreviewNotificationsRequired
+              : L10nService.current.floatingAdhkarErrorPreviewOverlayRequired,
         ),
       );
       return;

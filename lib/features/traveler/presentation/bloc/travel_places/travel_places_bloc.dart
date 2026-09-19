@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/data/services/traveler_country_policy.dart';
 import 'package:quran_app/features/traveler/data/services/traveler_places_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'travel_places_event.dart';
 part 'travel_places_state.dart';
@@ -62,7 +63,7 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
       emit(
         state.copyWith(
           isLoadingLocation: false,
-          errorMessage: 'تعذر تحديد موقعك الحالي. حاول مرة أخرى.',
+          errorMessage: L10nService.current.travelerLocationFailed,
         ),
       );
     }
@@ -73,7 +74,7 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
     if (!serviceEnabled) {
       emit(
         state.copyWith(
-          errorMessage: 'خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.',
+          errorMessage: L10nService.current.travelerLocationServiceDisabled,
         ),
       );
       return false;
@@ -87,7 +88,7 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
     if (permission == LocationPermission.denied) {
       emit(
         state.copyWith(
-          errorMessage: 'يجب منح صلاحية الموقع حتى تعمل هذه الميزة.',
+          errorMessage: L10nService.current.travelerLocationPermissionRequired,
         ),
       );
       return false;
@@ -96,7 +97,8 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
     if (permission == LocationPermission.deniedForever) {
       emit(
         state.copyWith(
-          errorMessage: 'تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.',
+          errorMessage:
+              L10nService.current.travelerLocationPermissionDeniedForever,
         ),
       );
       return false;
@@ -136,7 +138,7 @@ class TravelPlacesBloc extends Bloc<TravelPlacesEvent, TravelPlacesState> {
       emit(
         state.copyWith(
           isLoadingPlaces: false,
-          errorMessage: 'تعذر جلب النتائج القريبة الآن. حاول مجددًا.',
+          errorMessage: L10nService.current.travelerPlacesFetchFailed,
         ),
       );
     }

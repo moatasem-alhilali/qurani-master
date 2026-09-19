@@ -54,7 +54,7 @@ class _AdjustmentsToggleRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'تعديل يدوي لكل وقت',
+                    context.l10n.prayerTimeCalcManualAdjust,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -66,8 +66,10 @@ class _AdjustmentsToggleRow extends StatelessWidget {
                   ),
                   Text(
                     activeCount == 0
-                        ? 'طابق المواقيت مع مسجد الحي دقيقة بدقيقة'
-                        : '$activeCount من المواقيت معدّلة يدويًا',
+                        ? context.l10n.prayerTimeCalcManualAdjustHint
+                        : context.l10n.prayerTimeCalcManualAdjustCount(
+                            activeCount,
+                          ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

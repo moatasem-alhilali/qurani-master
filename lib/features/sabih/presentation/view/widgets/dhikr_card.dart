@@ -7,6 +7,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_counter.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفحة ذكر واحد داخل المسبحة.
 ///
@@ -37,7 +38,8 @@ class DhikrCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final hasContent = subih.content.trim().isNotEmpty;
+    final content = subih.displayContent(context.l10n);
+    final hasContent = content.trim().isNotEmpty;
 
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: 10.h),
@@ -62,7 +64,7 @@ class DhikrCardWidget extends StatelessWidget {
                 if (hasContent) ...[
                   SizedBox(height: 2.h),
                   Text(
-                    subih.content,
+                    content,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: skin.inkSoft.withValues(alpha: 0.78),
@@ -94,14 +96,14 @@ class DhikrCardWidget extends StatelessWidget {
           skin.divider(),
           _ActionRow(
             icon: AppIcons.refresh,
-            label: 'إعادة تعيين عدّاد اليوم',
+            label: context.l10n.sabihResetTodayCounter,
             onTap: onReset,
           ),
           if (onEdit != null) ...[
             skin.divider(),
             _ActionRow(
               icon: AppIcons.edit,
-              label: 'تعديل هذا الذكر',
+              label: context.l10n.sabihEditThisDhikr,
               onTap: onEdit!,
             ),
           ],
@@ -109,7 +111,7 @@ class DhikrCardWidget extends StatelessWidget {
             skin.divider(),
             _ActionRow(
               icon: AppIcons.delete,
-              label: 'حذف هذا الذكر',
+              label: context.l10n.sabihDeleteThisDhikr,
               onTap: onDelete!,
               isDestructive: true,
             ),

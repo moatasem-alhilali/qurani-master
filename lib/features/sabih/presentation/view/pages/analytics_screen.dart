@@ -11,6 +11,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics/analytics_detailed_tab.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/analytics/analytics_overview_tab.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/sabih_state_views.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -48,7 +49,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'الإحصائيات',
+        title: context.l10n.sabihAnalyticsTitle,
         onRefresh: () async {
           context.read<SabihBloc>().add(GetAnalyticsDataEvent());
         },
@@ -61,7 +62,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               children: [
                 _TabSwitcher(
                   controller: _tabController,
-                  labels: const ['نظرة عامة', 'تفصيل الأذكار'],
+                  labels: [
+                    context.l10n.sabihTabOverview,
+                    context.l10n.sabihTabDetails,
+                  ],
                 ),
                 Expanded(
                   child: BlocBuilder<SabihBloc, SabihState>(
@@ -79,8 +83,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
                       if (state.analyticsLoadState == RequestState.error) {
                         return SabihNotice(
-                          message: state.errorMessage ?? 'حدث خطأ',
-                          actionLabel: 'إعادة المحاولة',
+                          message:
+                              state.errorMessage ?? context.l10n.commonError,
+                          actionLabel: context.l10n.commonRetry,
                           onAction: () {
                             context
                                 .read<SabihBloc>()

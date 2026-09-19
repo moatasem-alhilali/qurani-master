@@ -1,7 +1,8 @@
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
-import 'package:quran_app/core/notification/data/notification_data_const.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_labels.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 // This class manages notification settings and applies changes to the advanced notification scheduler
 class NotificationDataConst {
@@ -109,126 +110,90 @@ class NotificationDataConst {
   }
 
   /// جلب عنوان الإشعار الافتراضي حسب المفتاح (لو ما كان معرف)
+  ///
+  /// يُترجم بلغة التطبيق المحفوظة، فيُستدعى بلا `BuildContext`.
   static String resolveTitle(String key) {
-    final seeder = NotificationDataConstSeed();
+    final l10n = L10nService.current;
     switch (key) {
-      case NotificationKeys.isNotificationThikrMorning:
-        return seeder.thikrMorning.title;
-      case NotificationKeys.isNotificationThikrNight:
-        return seeder.thikrNight.title;
-      case NotificationKeys.isNotificationMohammed:
-        return seeder.notificationMohummed.title;
       case NotificationKeys.isNotificationRandomThikr:
-        return 'ذكر عشوائي';
+        return l10n.notifSettingsTitleRandomThikr;
       case NotificationKeys.isNotificationFloatingAdhkar:
-        return 'الأذكار العائمة';
-      case NotificationKeys.isNotificationReadQuran:
-        return seeder.readQuran.title;
-      case NotificationKeys.isNotificationReadSurahMulk:
-        return seeder.readSurahMulk.title;
-      case NotificationKeys.isNotificationMiddleNight:
-        return seeder.middleNight.title;
-      case NotificationKeys.isNotificationWridSleep:
-        return seeder.thikrSleep.title;
-      case NotificationKeys.isNotificationWridGetup:
-        return seeder.thikrGetup.title;
+        return l10n.notifSettingsTitleFloatingAdhkar;
       case NotificationKeys.isNotificationAllAthan:
-        return 'أذان الصلاة';
-      case NotificationKeys.isNotificationAthanFagr:
-        return 'أذان الفجر';
-      case NotificationKeys.isNotificationAthanDuhr:
-        return 'أذان الظهر';
-      case NotificationKeys.isNotificationAthanAsr:
-        return 'أذان ا لعصر';
-      case NotificationKeys.isNotificationAthanMagrib:
-        return 'أذان المغرب';
-      case NotificationKeys.isNotificationAthanIsha:
-        return 'أذان العشاء';
-      case NotificationKeys.isNotificationAthanSunrise:
-        return 'أذان الشروق';
-      case NotificationKeys.isNotificationDailyWirdMorning:
-        return 'ورد الصباح';
-      case NotificationKeys.isNotificationDailyWirdEvening:
-        return 'ورد المساء';
-      case NotificationKeys.isNotificationDailyWirdNight:
-        return 'ورد ما قبل النوم';
-      case NotificationKeys.isNotificationDailyWirdSummary:
-        return 'ملخص الورد اليومي';
-      case NotificationKeys.isNotificationYoungMuslimResume:
-        return 'تذكير المسلم الصغير';
-      case NotificationKeys.isNotificationQuranPlan:
-        return 'تذكير خطط القرآن';
-      case NotificationKeys.isNotificationFirebaseGeneral:
-        return 'إشعارات التطبيق العامة';
-
+        return l10n.notifSettingsTitlePrayerAthan;
       default:
-        return key;
+        return NotificationLabels.labelFor(l10n, key) ?? key;
     }
   }
 
   /// You can customize notification body per key
+  ///
+  /// نصوص التذكير تُترجم؛ أمّا الأذكار المقتبسة (استغفر الله، لا حول ولا قوة
+  /// إلا بالله، سبحان الله…) فتبقى عربية كما هي.
   static String resolveNotificationBody(String key) {
+    final l10n = L10nService.current;
     switch (key) {
       case NotificationKeys.isNotificationThikrMorning:
-        return 'لا تنس أذكار الصباح!';
+        return l10n.notifSettingsBodyThikrMorning;
       case NotificationKeys.isNotificationThikrNight:
-        return 'لا تنس أذكار المساء!';
+        return l10n.notifSettingsBodyThikrEvening;
       case NotificationKeys.isNotificationMiddleNight:
-        return 'حان وقت قيام الليل، استغل الثلث الأخير من الليل.';
+        return l10n.notifSettingsBodyMiddleNight;
       case NotificationKeys.isNotificationMohammed:
-        return 'صلِّ على النبي ﷺ تسعد في يومك.';
+        return l10n.notifSettingsBodySalawat;
       case NotificationKeys.isNotificationRandomThikr:
       case NotificationKeys.isNotificationFloatingAdhkar:
-        return 'اذكر الله يذكرك!';
+        return l10n.notifSettingsBodyRememberAllah;
       case NotificationKeys.isNotificationReadQuran:
-        return 'خصص وقتًا لوردك القرآني اليومي.';
+        return l10n.notifSettingsBodyReadQuran;
       case NotificationKeys.isNotificationReadSurahMulk:
-        return 'لا تنس قراءة سورة الملك الليلة.';
+        return l10n.notifSettingsBodyReadSurahMulk;
       case NotificationKeys.isNotificationWridSleep:
-        return 'اذكار النوم قبل أن تغفو.';
+        return l10n.notifSettingsBodyThikrSleep;
       case NotificationKeys.isNotificationWridGetup:
-        return 'ابدأ يومك بذكر الله بعد الاستيقاظ.';
+        return l10n.notifSettingsBodyThikrWakeUp;
       case NotificationKeys.isNotificationReadSurah:
-        return 'لا تنس قراءة السورة التي اخترتها اليوم.';
+        return l10n.notifSettingsBodyReadSurah;
       case NotificationKeys.isNotificationReadSurahAlkahf:
-        return 'لا تنس قراءة سورة الكهف في يوم الجمعة.';
+        return l10n.notifSettingsBodyReadSurahKahf;
       case NotificationKeys.isNotificationFasting:
-        return 'تذكير بصيام التطوع.';
+        return l10n.notifSettingsBodyFasting;
       case NotificationKeys.isNotificationFastingMonday:
-        return 'تذكير بصيام يوم الاثنين.';
+        return l10n.notifSettingsBodyFastingMonday;
       case NotificationKeys.isNotificationFastingThursday:
-        return 'تذكير بصيام يوم الخميس.';
+        return l10n.notifSettingsBodyFastingThursday;
       case NotificationKeys.isNotificationAllAthan:
       case NotificationKeys.isNotificationAthanFagr:
       case NotificationKeys.isNotificationAthanDuhr:
       case NotificationKeys.isNotificationAthanAsr:
       case NotificationKeys.isNotificationAthanMagrib:
       case NotificationKeys.isNotificationAthanIsha:
-        return 'حان الآن موعد الأذان.';
+        return l10n.notifSettingsBodyAthanTime;
+      // نصوص أذكار: تبقى عربية.
       case NotificationKeys.isNotificationAstgferAllh:
         return 'استغفر الله';
       case NotificationKeys.isNotificationHasbnaAllh:
-        return 'أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم';
+        return l10n.notifSettingsLabelBestDua;
       case NotificationKeys.isNotificationLahawlaWlaquoah:
         return 'لا حول ولا قوة الا بالله العلي العظيم';
       case NotificationKeys.isNotificationSubhanAllh:
         return 'سبحان الله والحمدلله ولا اله الا الله والله اكبر';
       case NotificationKeys.isNotificationAthanSunrise:
-        return 'أذان الشروق';
+        return l10n.notifSettingsAthanOf(l10n.prayerSunrise);
       case NotificationKeys.isNotificationDailyWirdMorning:
-        return 'ابدأ نهارك بزادك التعبدي.';
+        return l10n.notifSettingsBodyWirdMorning;
       case NotificationKeys.isNotificationDailyWirdEvening:
-        return 'جدد صلتك بالله في زاد المساء.';
+        return l10n.notifSettingsBodyWirdEvening;
       case NotificationKeys.isNotificationDailyWirdNight:
-        return 'اختم يومك بالذكر والدعاء.';
+        return l10n.notifSettingsBodyWirdNight;
       case NotificationKeys.isNotificationDailyWirdSummary:
-        return 'راجع زادك التعبدي اليوم.';
+        return l10n.notifSettingsBodyWirdSummary;
       case NotificationKeys.isNotificationYoungMuslimResume:
-        return 'تذكير للعودة إلى محتوى المسلم الصغير.';
+        return l10n.notifSettingsBodyYoungMuslim;
       case NotificationKeys.isNotificationQuranPlan:
-        return 'لا تنس جلسة اليوم من خطتك القرآنية.';
+        return l10n.notifSettingsBodyQuranPlan;
       case NotificationKeys.isNotificationFirebaseGeneral:
-        return 'إشعارات وتنبيهات عامة من تطبيق طمأنينة.';
+        return l10n.notifSettingsBodyGeneral;
       default:
         return key; // fallback
     }

@@ -49,7 +49,7 @@ class _PrayerTimesHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          DateFormat('EEEE، d MMMM yyyy', 'ar')
+                          DateFormat.yMMMMEEEEd(context.localeCode)
                               .format(locationNow),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -61,7 +61,7 @@ class _PrayerTimesHeader extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${hijri.formatArabic()} · '
+                          '${hijri.format(context.l10n)} · '
                           '${_formatUtcOffset(offsetMinutes)}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -109,7 +109,8 @@ class _PrayerTimesHeader extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            location?.label ?? 'لم يتم تحديد موقع بعد',
+                            location?.label ??
+                                context.l10n.prayerTimeLocationNotSet,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -121,11 +122,13 @@ class _PrayerTimesHeader extends StatelessWidget {
                           ),
                           Text(
                             location == null
-                                ? 'اختر مدينة أو استخدم موقع الجهاز'
+                                ? context.l10n.prayerTimeLocationPickHint
                                 : location.detailsLabel.isEmpty
                                     ? (location.isManual
-                                        ? 'اختيار يدوي'
-                                        : 'موقع الجهاز')
+                                        ? context
+                                            .l10n.prayerTimeLocationSourceManual
+                                        : context.l10n
+                                            .prayerTimeLocationSourceDevice)
                                     : location.detailsLabel,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -154,7 +157,7 @@ class _PrayerTimesHeader extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     AppIcon(
-                      AppIcons.chevronLeft,
+                      AppIcons.forwardFor(context),
                       color: skin.accent,
                       size: 15.sp,
                     ),
@@ -167,8 +170,14 @@ class _PrayerTimesHeader extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 2.h),
                 child: Text(
                   [
-                    if (currentPrayer != null) 'الحالية ${currentPrayer!.name}',
-                    if (nextPrayer != null) 'القادمة ${nextPrayer!.name}',
+                    if (currentPrayer != null)
+                      context.l10n.prayerTimeCurrentLabel(
+                        currentPrayer!.localizedName(context.l10n),
+                      ),
+                    if (nextPrayer != null)
+                      context.l10n.prayerTimeNextLabel(
+                        nextPrayer!.localizedName(context.l10n),
+                      ),
                   ].join('  ·  '),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

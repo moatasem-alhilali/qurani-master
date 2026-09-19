@@ -21,6 +21,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/add_dhikr_dialog.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'floating_adhkar_my_adhkar_screen_tabs_part.dart';
 part 'floating_adhkar_my_adhkar_screen_lists_part.dart';
@@ -124,7 +125,7 @@ class _FloatingAdhkarMyAdhkarViewState
       ],
       child: GroundScaffoldTheme(
         child: AppScaffoldWidget(
-          title: 'إدارة الأذكار',
+          title: context.l10n.floatingAdhkarManageTitle,
           showLargeHeader: false,
           initialOffset: null,
           onRefresh: () async {
@@ -135,7 +136,7 @@ class _FloatingAdhkarMyAdhkarViewState
               ? null
               : FloatingActionButton(
                   onPressed: () => _showAddDialog(context),
-                  tooltip: 'إضافة ذكر خاص',
+                  tooltip: context.l10n.floatingAdhkarAddPrivateTooltip,
                   backgroundColor: AppColors.gold,
                   child: AppIcon(
                     AppIcons.add,
@@ -191,7 +192,10 @@ class _FloatingAdhkarMyAdhkarViewState
                         _TabStrip(
                           activeIndex: _tabController.index,
                           builtInLabel:
-                              '$activeBuiltInCount من ${builtInItems.length}',
+                              context.l10n.floatingAdhkarEnabledOfTotal(
+                            activeBuiltInCount,
+                            builtInItems.length,
+                          ),
                           customLabel: '${customItems.length}',
                           onSelect: _selectTab,
                         ),
@@ -234,8 +238,8 @@ class _FloatingAdhkarMyAdhkarViewState
         value: context.read<SabihBloc>(),
         child: const AddDhikrDialog(),
       ),
-      title: 'إضافة ذكر مخصص',
-      subtitle: 'سيصبح متاحًا ضمن الأذكار العائمة عند تفعيله.',
+      title: context.l10n.floatingAdhkarAddCustomTitle,
+      subtitle: context.l10n.floatingAdhkarAddCustomSubtitle,
     );
   }
 
@@ -245,8 +249,8 @@ class _FloatingAdhkarMyAdhkarViewState
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: item),
       ),
-      title: 'تعديل الذكر',
-      subtitle: 'حدّث النص ثم احفظ التغييرات مباشرة.',
+      title: context.l10n.floatingAdhkarEditTitle,
+      subtitle: context.l10n.floatingAdhkarEditSubtitle,
     );
   }
 

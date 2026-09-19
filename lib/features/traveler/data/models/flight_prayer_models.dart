@@ -1,4 +1,5 @@
 import 'package:adhan/adhan.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FlightTrackPoint {
   const FlightTrackPoint({
@@ -53,39 +54,26 @@ class FlightPrayerEvent {
   final double latitude;
   final double longitude;
 
-  String get prayerNameAr {
-    switch (prayer) {
-      case Prayer.fajr:
-        return 'الفجر';
-      case Prayer.sunrise:
-        return 'الشروق';
-      case Prayer.dhuhr:
-        return 'الظهر';
-      case Prayer.asr:
-        return 'العصر';
-      case Prayer.maghrib:
-        return 'المغرب';
-      case Prayer.isha:
-        return 'العشاء';
-      case Prayer.none:
-        return 'غير محدد';
-    }
-  }
+  /// اسم الصلاة بلغة الواجهة.
+  String prayerName(L10n l10n) => prayer == Prayer.none
+      ? l10n.travelerPrayerUnknown
+      : l10n.prayerName(prayer.name);
 
-  String get shortName {
+  /// اسم مختصر لعلامات الخريطة الصغيرة.
+  String shortName(L10n l10n) {
     switch (prayer) {
       case Prayer.fajr:
-        return 'فجر';
+        return l10n.travelerPrayerShortFajr;
       case Prayer.sunrise:
-        return 'شروق';
+        return l10n.travelerPrayerShortSunrise;
       case Prayer.dhuhr:
-        return 'ظهر';
+        return l10n.travelerPrayerShortDhuhr;
       case Prayer.asr:
-        return 'عصر';
+        return l10n.travelerPrayerShortAsr;
       case Prayer.maghrib:
-        return 'مغرب';
+        return l10n.travelerPrayerShortMaghrib;
       case Prayer.isha:
-        return 'عشاء';
+        return l10n.travelerPrayerShortIsha;
       case Prayer.none:
         return '---';
     }

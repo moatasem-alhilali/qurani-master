@@ -12,6 +12,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachCallLogsScreen extends StatefulWidget {
   const SmartOutreachCallLogsScreen({
@@ -70,9 +71,10 @@ class _SmartOutreachCallLogsScreenState
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final stats = _stats;
+    final l10n = context.l10n;
 
     return AppScaffoldWidget(
-      title: 'سجل المكالمات',
+      title: l10n.outreachCallLogsTitle,
       showLargeHeader: false,
       initialOffset: null,
       trailing: IconButton(
@@ -82,7 +84,7 @@ class _SmartOutreachCallLogsScreenState
           color: _loading ? skin.inkSoft.withValues(alpha: 0.4) : skin.accent,
           size: 17.sp,
         ),
-        tooltip: 'مسح السجل',
+        tooltip: l10n.outreachClearLog,
       ),
       onRefresh: _load,
       body: _loading
@@ -93,29 +95,29 @@ class _SmartOutreachCallLogsScreenState
                   OutreachStatsRow(
                     cells: <OutreachStatCell>[
                       OutreachStatCell(
-                        label: 'الإجمالي',
+                        label: l10n.outreachStatTotal,
                         value: '${stats.total}',
                       ),
                       OutreachStatCell(
-                        label: 'ردّوا',
+                        label: l10n.outreachStatAnswered,
                         value: '${stats.answered}',
                       ),
                       OutreachStatCell(
-                        label: 'لم يردّوا',
+                        label: l10n.outreachStatNotAnswered,
                         value: '${stats.notAnswered}',
                       ),
                       OutreachStatCell(
-                        label: 'فشل',
+                        label: l10n.outreachStatFailed,
                         value: '${stats.failed}',
                       ),
                     ],
                   ),
-                const HomeSectionHeader(title: 'النتائج'),
+                HomeSectionHeader(title: l10n.outreachResultsHeader),
                 if (_logs.isEmpty)
-                  const OutreachEmptyState(
-                    title: 'لا توجد نتائج بعد',
+                  OutreachEmptyState(
+                    title: l10n.outreachNoResultsTitle,
                     icon: AppIcons.clock,
-                    message: 'ستظهر هنا نتيجة كل مكالمة بعد أول تشغيل.',
+                    message: l10n.outreachNoResultsMessage,
                   )
                 else
                   for (final entry in _logs.asMap().entries)
@@ -145,13 +147,14 @@ class _LogRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final timeText =
-        intl.DateFormat('yyyy/MM/dd - HH:mm', 'ar').format(log.calledAt);
+    final l10n = context.l10n;
+    final timeText = intl.DateFormat('yyyy/MM/dd - HH:mm', context.localeCode)
+        .format(log.calledAt);
     final reason = log.reason?.trim() ?? '';
     final color = _statusColor(skin, log.status);
     final meta = reason.isEmpty
-        ? '${_statusLabel(log.status)} · $timeText'
-        : '${_statusLabel(log.status)} · $timeText · $reason';
+        ? '${_statusLabel(l10n, log.status)} · $timeText'
+        : '${_statusLabel(l10n, log.status)} · $timeText · $reason';
 
     return Container(
       padding: EdgeInsets.fromLTRB(16.w, 9.h, 16.w, 9.h),
@@ -183,7 +186,7 @@ class _LogRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
+                  textAlign: outreachStartAlign(context),
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 12.5.sp,
@@ -208,7 +211,10 @@ class _LogRow extends StatelessWidget {
           ),
           if (log.duration > 0) ...[
             SizedBox(width: 8.w),
-            OutreachValue(text: '${log.duration}ث', accented: true),
+            OutreachValue(
+              text: l10n.outreachSecondsShort(log.duration),
+              accented: true,
+            ),
           ],
         ],
       ),
@@ -237,14 +243,14 @@ class _LogRow extends StatelessWidget {
     }
   }
 
-  static String _statusLabel(String status) {
+  static String _statusLabel(L10n l10n, String status) {
     switch (status) {
       case 'answered':
-        return 'تم الرد';
+        return l10n.outreachCallStatusAnswered;
       case 'not_answered':
-        return 'لم يتم الرد';
+        return l10n.outreachCallStatusNotAnswered;
       case 'failed':
-        return 'فشل الاتصال';
+        return l10n.outreachCallStatusFailed;
       default:
         return status;
     }

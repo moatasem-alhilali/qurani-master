@@ -106,36 +106,39 @@ class _DayTimes {
   }
 }
 
-const List<String> _prayerNames = [
-  'الفجر',
-  'الشروق',
-  'الظهر',
-  'العصر',
-  'المغرب',
-  'العشاء',
+/// مفاتيح الصلوات الستّ بترتيب [_DayTimes.slots].
+const List<String> _prayerKeys = [
+  'fajr',
+  'sunrise',
+  'dhuhr',
+  'asr',
+  'maghrib',
+  'isha',
 ];
+
+String _prayerName(L10n l10n, int index) => l10n.prayerName(_prayerKeys[index]);
 
 double get _tableHeaderHeight => 38.h;
 
 double get _tableRowHeight => 34.h;
 
 /// اسم اليوم مختصرًا: الاثنين ← «إثن».
-String _shortWeekday(DateTime date) {
+String _shortWeekday(L10n l10n, DateTime date) {
   switch (date.weekday) {
     case DateTime.saturday:
-      return 'سبت';
+      return l10n.prayerTimeWeekdaySat;
     case DateTime.sunday:
-      return 'أحد';
+      return l10n.prayerTimeWeekdaySun;
     case DateTime.monday:
-      return 'إثن';
+      return l10n.prayerTimeWeekdayMon;
     case DateTime.tuesday:
-      return 'ثلا';
+      return l10n.prayerTimeWeekdayTue;
     case DateTime.wednesday:
-      return 'أرب';
+      return l10n.prayerTimeWeekdayWed;
     case DateTime.thursday:
-      return 'خمي';
+      return l10n.prayerTimeWeekdayThu;
     default:
-      return 'جمع';
+      return l10n.prayerTimeWeekdayFri;
   }
 }
 
@@ -146,23 +149,26 @@ String _formatClock(DateTime date) {
 
 String _twoDigits(int value) => value.toString().padLeft(2, '0');
 
-String _formatDuration(Duration duration) {
-  if (duration.inMinutes < 1) return 'أقل من دقيقة';
-  if (duration.inMinutes < 60) return '${duration.inMinutes} د';
+String _formatDuration(L10n l10n, Duration duration) {
+  if (duration.inMinutes < 1) return l10n.prayerTimeLessThanMinute;
+  if (duration.inMinutes < 60) {
+    return l10n.prayerTimeMinutesShort('${duration.inMinutes}');
+  }
 
   final hours = duration.inHours;
   final minutes = duration.inMinutes.remainder(60);
-  if (minutes == 0) return '$hours س';
-  return '$hours س $minutes د';
+  if (minutes == 0) return l10n.prayerTimeHoursShort(hours);
+  return l10n.prayerTimeHoursMinutesShort(hours, minutes);
 }
 
 /// «‎+3 د‎» أو «‎-2 د‎» مقارنةً بنفس الصلاة اليوم.
-String _shiftLabel(Duration shift, {required bool isToday}) {
-  if (isToday) return 'اليوم نفسه';
+String _shiftLabel(L10n l10n, Duration shift, {required bool isToday}) {
+  if (isToday) return l10n.prayerTimeShiftSameDay;
 
   final minutes = shift.inMinutes;
-  if (minutes == 0) return 'بلا فارق';
+  if (minutes == 0) return l10n.prayerTimeShiftNone;
 
-  final sign = minutes > 0 ? 'متأخّر' : 'مبكّر';
-  return '$sign ${minutes.abs()} د';
+  return minutes > 0
+      ? l10n.prayerTimeShiftLater(minutes.abs())
+      : l10n.prayerTimeShiftEarlier(minutes.abs());
 }

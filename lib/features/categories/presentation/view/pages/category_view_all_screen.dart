@@ -9,6 +9,7 @@ import 'package:quran_app/features/categories/data/model/section_type_model.dart
 import 'package:quran_app/features/categories/presentation/view/pages/category_data_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أبواب قسم واحد من المكتبة — صفوف نحيلة بلا بطاقات.
 class CategoryViewAllScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class CategoryViewAllScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (data.isEmpty)
-                const CategoryNotice(message: 'لا توجد أبواب في هذا القسم.')
+                CategoryNotice(message: context.l10n.categoriesNoChapters)
               else
                 for (var i = 0; i < data.length; i++)
                   CategoryRow(

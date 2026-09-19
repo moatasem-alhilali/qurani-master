@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:quran_app/l10n/l10n.dart';
+
 class EnhancedSpiritualLoadingWidget extends StatefulWidget {
   const EnhancedSpiritualLoadingWidget({
     super.key,
@@ -295,7 +297,8 @@ class EnhancedSpiritualLoadingPainter extends CustomPainter {
 
     final textPainter = TextPainter(
       text: TextSpan(
-        text: 'طمأنينه', // Arabic text meaning "tranquility"
+        // The app name, in the user's language (no BuildContext in a painter).
+        text: L10nService.current.appName,
         style: TextStyle(
           fontFamily: 'ios-1',
           fontSize: textSize,

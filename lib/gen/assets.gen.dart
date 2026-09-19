@@ -160,19 +160,6 @@ class $AssetsJsonGen {
       ];
 }
 
-class $AssetsLangGen {
-  const $AssetsLangGen();
-
-  /// File path: assets/lang/ar.json
-  String get ar => 'assets/lang/ar.json';
-
-  /// File path: assets/lang/en.json
-  String get en => 'assets/lang/en.json';
-
-  /// List of all assets
-  List<String> get values => [ar, en];
-}
-
 class $AssetsLogoGen {
   const $AssetsLogoGen();
 
@@ -1172,7 +1159,6 @@ class Assets {
   static const $AssetsAthoresGen athores = $AssetsAthoresGen();
   static const $AssetsImageGen image = $AssetsImageGen();
   static const $AssetsJsonGen json = $AssetsJsonGen();
-  static const $AssetsLangGen lang = $AssetsLangGen();
   static const $AssetsLogoGen logo = $AssetsLogoGen();
   static const $AssetsSvgGen svg = $AssetsSvgGen();
 }

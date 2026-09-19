@@ -5,6 +5,7 @@ import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/presentation/view/pages/wird_screen.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// وردُ هذا الوقت — العنصر الوحيد المسموح له بالارتفاع في شاشة الأذكار.
 ///
@@ -21,7 +22,9 @@ class ThikrSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final isEvening = DateTime.now().hour >= 17;
-    final title = isEvening ? 'أذكار المساء' : 'أذكار الصباح';
+    final title = isEvening
+        ? context.l10n.wirdEveningAdhkar
+        : context.l10n.wirdMorningAdhkar;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 2.h),
@@ -76,7 +79,7 @@ class ThikrSlider extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'وردُ هذا الوقت، افتحه الآن',
+                          context.l10n.thikrSliderSubtitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -90,7 +93,9 @@ class ThikrSlider extends StatelessWidget {
                     ),
                   ),
                   AppIcon(
-                    AppIcons.chevronLeft,
+                    Directionality.of(context) == TextDirection.rtl
+                        ? AppIcons.chevronLeft
+                        : AppIcons.chevronRight,
                     color: skin.accent,
                     size: 15.sp,
                   ),

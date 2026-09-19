@@ -1,6 +1,7 @@
 import 'package:quran_app/core/cash/cache_service.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class DatabaseCoordinatesService {
   final _db = DatabaseService();
@@ -78,7 +79,8 @@ class DatabaseCoordinatesService {
     return PrayerLocationSelection(
       latitude: coordinates['latitude'] as double,
       longitude: coordinates['longitude'] as double,
-      label: _cache.getString(_labelKey) ?? 'الموقع المحفوظ',
+      label: _cache.getString(_labelKey) ??
+          L10nService.current.prayerTimeSavedLocation,
       source: PrayerLocationSelection.sourceFromStorage(
         _cache.getString(_sourceKey),
       ),

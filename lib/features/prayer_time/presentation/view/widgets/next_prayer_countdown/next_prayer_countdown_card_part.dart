@@ -108,9 +108,11 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final locationNow = _resolveLocationNowFromOffset(widget.utcOffsetMinutes);
-    final hijri = HijriDate.fromDate(locationNow).formatArabic();
-    final locationLabel = widget.locationLabel ?? 'الموقع الحالي';
+    final hijri = HijriDate.fromDate(locationNow).format(l10n);
+    final locationLabel =
+        widget.locationLabel ?? l10n.prayerTimeCurrentLocationFallback;
 
     final resolvedPrayers = _resolvePrayerStateFromList(
       prayerTimes: widget.prayerTimes,
@@ -125,7 +127,8 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
     // يلتقطه المؤقّت ليحسب المتبقّي دون إعادة بناء.
     _nextPrayerAt = nextPrayer?.time;
 
-    final nextPrayerLabel = nextPrayer?.name ?? widget.nextPrayer.title;
+    final nextPrayerLabel =
+        nextPrayer?.localizedName(l10n) ?? widget.nextPrayer.title;
     final effectiveRemaining = nextPrayer != null
         ? nextPrayer.time.difference(locationNow)
         : _currentRemainingTime;
@@ -170,18 +173,20 @@ class _NextPrayerCountdownCardState extends State<_NextPrayerCountdownCard>
           palette: palette,
           pathData: pathData,
           locationLabel: locationLabel,
-          currentPrayerLabel:
-              currentPrayer?.name ?? widget.currentPrayerName ?? '—',
-          countdownText: _buildCountdownLine(nextPrayerLabel, safeRemaining),
+          currentPrayerLabel: currentPrayer?.localizedName(l10n) ??
+              widget.currentPrayerName ??
+              '—',
+          countdownText:
+              _buildCountdownLine(l10n, nextPrayerLabel, safeRemaining),
           onSettingsTap: () => context.push(const SettingScreen()),
           notice: widget.notice,
         ),
         _PrayerBoard(
           entries: prayerEntries,
           hijriText: hijri,
-          gregorianText: _formatGregorianArabic(locationNow),
+          gregorianText: _formatGregorian(context.localeCode, locationNow),
           windowProgress: windowProgress,
-          remainingText: _formatShortRemaining(safeRemaining),
+          remainingText: _formatShortRemaining(l10n, safeRemaining),
           onOpenAll: () => context.push(const PrayerTimeScreen()),
         ),
         const _QuickActionsPanel(),

@@ -40,7 +40,7 @@ class _PrayerScheduleRow extends StatelessWidget {
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
-                entry.prayer.name,
+                entry.prayer.localizedName(context.l10n),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -58,7 +58,7 @@ class _PrayerScheduleRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999.r),
               ),
               child: Text(
-                'الآن',
+                context.l10n.prayerTimeNow,
                 style: TextStyle(
                   color:
                       skin.isDark ? AppColors.brandNight : AppColors.brandIvory,
@@ -94,7 +94,7 @@ class _PrayerScheduleRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  entry.prayer.name,
+                  entry.prayer.localizedName(context.l10n),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -106,7 +106,7 @@ class _PrayerScheduleRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _subtitle,
+                  _subtitle(context.l10n),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -121,7 +121,7 @@ class _PrayerScheduleRow extends StatelessWidget {
           ),
           if (_isNext) ...[
             Text(
-              'التالية',
+              context.l10n.prayerTimeNextBadge,
               style: TextStyle(
                 color: skin.accent,
                 fontSize: 9.sp,
@@ -136,10 +136,10 @@ class _PrayerScheduleRow extends StatelessWidget {
     );
   }
 
-  String get _subtitle {
-    if (_isNext) return 'الصلاة القادمة';
-    if (_isCompleted) return 'انتهى وقتها';
-    return 'الوقت المحلي';
+  String _subtitle(L10n l10n) {
+    if (_isNext) return l10n.prayerTimeRowNext;
+    if (_isCompleted) return l10n.prayerTimeRowCompleted;
+    return l10n.prayerTimeRowLocalTime;
   }
 
   HugeIconData _iconForPrayer(Prayer prayer) {
@@ -172,7 +172,8 @@ class _PrayerTimeText extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final clock = DateFormat('hh:mm').format(time);
-    final period = time.hour < 12 ? 'ص' : 'م';
+    final period =
+        time.hour < 12 ? context.l10n.prayerTimeAm : context.l10n.prayerTimePm;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

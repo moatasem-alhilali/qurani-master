@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// زرّ التشغيل/الإيقاف الرئيسي في مشغّل الصوت.
 ///
@@ -94,7 +95,7 @@ class _IconPlayToggleAudioWidgetState extends State<IconPlayToggleAudioWidget>
     final onGold = skin.isDark ? AppColors.brandNight : AppColors.brandIvory;
 
     return Semantics(
-      label: 'تشغيل أو إيقاف',
+      label: context.l10n.quranAudioPlayPause,
       button: true,
       child: InkWell(
         onTap: widget.onPressed ??

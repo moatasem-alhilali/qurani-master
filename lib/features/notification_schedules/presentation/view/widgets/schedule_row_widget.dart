@@ -5,6 +5,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedule_form_fields.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ موعد واحد: نوعه وتفاصيله ووقته، مع الحذف والتشغيل في طرف الصفّ.
 class ScheduleRowWidget extends StatelessWidget {
@@ -27,8 +28,8 @@ class ScheduleRowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingsRow(
       icon: scheduleTypeIcon(schedule.scheduleType),
-      title: scheduleTypeLabel(schedule.scheduleType),
-      subtitle: _subtitle(),
+      title: scheduleTypeLabel(context.l10n, schedule.scheduleType),
+      subtitle: _subtitle(context.l10n),
       active: schedule.enabled,
       isLast: isLast,
       onTap: onEdit,
@@ -37,7 +38,7 @@ class ScheduleRowWidget extends StatelessWidget {
         children: [
           SettingsIconButton(
             icon: AppIcons.delete,
-            tooltip: 'حذف الموعد',
+            tooltip: context.l10n.notifScheduleDeleteTime,
             color: AppColors.error,
             onTap: onDelete,
           ),
@@ -50,29 +51,34 @@ class ScheduleRowWidget extends StatelessWidget {
     );
   }
 
-  String _subtitle() {
+  String _subtitle(L10n l10n) {
     final label = schedule.label?.trim();
-    final details = _details();
+    final details = _details(l10n);
     if (label != null && label.isNotEmpty) {
       return '$details · $label';
     }
     return details;
   }
 
-  String _details() {
+  String _details(L10n l10n) {
     switch (schedule.scheduleType) {
       case ScheduleType.daily:
-        return 'كل يوم · ${_time()}';
+        return l10n.notifScheduleRowDaily(_time());
       case ScheduleType.hourly:
-        return 'كل ساعة عند الدقيقة ${schedule.minute ?? 0}';
+        return l10n.notifSettingsSummaryHourly(schedule.minute ?? 0);
       case ScheduleType.weekly:
-        final days = schedule.weekdays?.map(_shortDayName).join('، ') ?? '';
-        final when = days.isEmpty ? 'بدون أيام' : days;
-        return '$when · ${_time()}';
+        final days = schedule.weekdays
+                ?.map((day) => shortWeekdayName(l10n, day))
+                .join(l10n.notifSettingsListSeparator) ??
+            '';
+        final when = days.isEmpty ? l10n.notifScheduleNoDays : days;
+        return l10n.notifScheduleRowWeekly(when, _time());
       case ScheduleType.everyNMinutes:
-        return 'كل ${schedule.intervalMinutes ?? 1} دقيقة';
+        return l10n.notifSettingsSummaryEveryNMinutes(
+          schedule.intervalMinutes ?? 1,
+        );
       case ScheduleType.customDates:
-        return '${schedule.customDates?.length ?? 0} موعد مخصص';
+        return l10n.notifScheduleRowCustom(schedule.customDates?.length ?? 0);
     }
   }
 
@@ -84,26 +90,5 @@ class ScheduleRowWidget extends StatelessWidget {
     }
     return '${hour.toString().padLeft(2, '0')}:'
         '${minute.toString().padLeft(2, '0')}';
-  }
-
-  String _shortDayName(int day) {
-    switch (day) {
-      case 1:
-        return 'اثنين';
-      case 2:
-        return 'ثلاثاء';
-      case 3:
-        return 'أربعاء';
-      case 4:
-        return 'خميس';
-      case 5:
-        return 'جمعة';
-      case 6:
-        return 'سبت';
-      case 7:
-        return 'أحد';
-      default:
-        return '؟';
-    }
   }
 }

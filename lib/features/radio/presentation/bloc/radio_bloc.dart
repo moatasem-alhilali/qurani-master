@@ -6,6 +6,7 @@ import 'package:quran_app/core/failure/request_state.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/data/repo/radio_repository.dart';
 import 'package:quran_app/features/radio/data/service/radio_audio_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'radio_event.dart';
 part 'radio_state.dart';
@@ -52,8 +53,12 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
         ),
       );
     } catch (_) {
-      emit(_withError('تعذّر تحميل الإذاعات حاليًا.',
-          loadState: RequestState.error));
+      emit(
+        _withError(
+          L10nService.current.radioLoadFailed,
+          loadState: RequestState.error,
+        ),
+      );
     }
   }
 
@@ -65,7 +70,7 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     try {
       await _repository.playStation(event.station);
     } catch (_) {
-      emit(_withError('تعذّر تشغيل الإذاعة الآن.'));
+      emit(_withError(L10nService.current.radioPlayFailed));
     }
   }
 
@@ -90,7 +95,7 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     try {
       await _repository.togglePlayPause();
     } catch (_) {
-      emit(_withError('تعذّر تغيير حالة التشغيل.'));
+      emit(_withError(L10nService.current.radioToggleFailed));
     }
   }
 
@@ -99,7 +104,7 @@ class RadioBloc extends Bloc<RadioEvent, RadioState> {
     try {
       await _repository.stop();
     } catch (_) {
-      emit(_withError('تعذّر إيقاف الإذاعة.'));
+      emit(_withError(L10nService.current.radioStopFailed));
     }
   }
 

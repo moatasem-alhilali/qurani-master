@@ -11,9 +11,9 @@ class _BuiltInList extends StatelessWidget {
     if (items.isEmpty) {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 24.h),
-        child: const LibraryEmptyState(
-          title: 'لا توجد أذكار افتراضية متاحة',
-          message: 'لم يتم العثور على مكتبة الأذكار الافتراضية داخل التطبيق.',
+        child: LibraryEmptyState(
+          title: context.l10n.floatingAdhkarEmptyBuiltInTitle,
+          message: context.l10n.floatingAdhkarEmptyBuiltInMessage,
           icon: AppIcons.tasbih,
         ),
       );
@@ -58,10 +58,10 @@ class _CustomList extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 24.h),
         child: LibraryEmptyState(
-          title: 'لا توجد أذكار خاصة بعد',
-          message: 'أضف ذكرك أو دعاءك ليدخل ضمن الدوران العشوائي العائم.',
+          title: context.l10n.floatingAdhkarEmptyCustomTitle,
+          message: context.l10n.floatingAdhkarEmptyCustomMessage,
           icon: AppIcons.noteEdit,
-          actionLabel: 'إضافة ذكر جديد',
+          actionLabel: context.l10n.floatingAdhkarAddNewDhikr,
           onAction: onAddItem,
         ),
       );

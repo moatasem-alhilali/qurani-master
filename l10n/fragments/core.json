@@ -1,0 +1,277 @@
+{
+  "coreUpdateDownloaded": "تم تحميل التحديث، يمكنك تثبيته الآن.",
+  "@coreUpdateDownloaded": {
+    "description": "Android snackbar shown when an in-app (flexible) update finished downloading."
+  },
+  "coreUpdateInstallNow": "تثبيت الآن",
+  "@coreUpdateInstallNow": {
+    "description": "Snackbar action that installs the downloaded app update."
+  },
+  "coreUpdateAvailableTitle": "يتوفر تحديث جديد",
+  "@coreUpdateAvailableTitle": {
+    "description": "Title of the iOS 'new version available' dialog."
+  },
+  "coreUpdateAvailableMessage": "الإصدار {version} متاح الآن على App Store.",
+  "@coreUpdateAvailableMessage": {
+    "description": "Body of the iOS update dialog. Keep 'App Store' as is.",
+    "placeholders": {
+      "version": { "type": "String", "example": "2.4.0" }
+    }
+  },
+  "coreUpdateWhatsNew": "الجديد في هذا الإصدار:",
+  "@coreUpdateWhatsNew": {
+    "description": "Heading shown above the store release notes in the update dialog."
+  },
+  "coreUpdateNow": "تحديث الآن",
+  "@coreUpdateNow": {
+    "description": "Update dialog button that opens the App Store page."
+  },
+
+  "coreExitDialogTitle": "تنبيه",
+  "@coreExitDialogTitle": {
+    "description": "Title of the 'exit the app?' confirmation dialog (literally 'Notice')."
+  },
+  "coreExitDialogMessage": "هل أنت متأكد من الخروج من التطبيق",
+  "@coreExitDialogMessage": {
+    "description": "Body of the exit confirmation dialog shown on back press from the home screen."
+  },
+  "coreExitConfirmMessage": "هل أنت متأكد من الخروج",
+  "@coreExitConfirmMessage": {
+    "description": "Short exit confirmation used by the older exit dialog."
+  },
+  "coreExitStay": "تراجع",
+  "@coreExitStay": {
+    "description": "Button in the exit dialog that cancels leaving the app (stay)."
+  },
+  "coreExitAction": "الخروج",
+  "@coreExitAction": {
+    "description": "Button in the exit dialog that closes the app."
+  },
+
+  "coreDeleteDhikrTitle": "حذف الذكر؟",
+  "@coreDeleteDhikrTitle": {
+    "description": "Default title of the delete confirmation dialog (deleting a dhikr/remembrance item)."
+  },
+  "coreDeleteDhikrMessage": "هل أنت متأكد من حذف الذكر؟",
+  "@coreDeleteDhikrMessage": {
+    "description": "Default message of the delete confirmation dialog for a dhikr item."
+  },
+  "coreFieldRequired": "هذا الحقل مطلوب",
+  "@coreFieldRequired": {
+    "description": "Form validation error for an empty required text field."
+  },
+
+  "coreNoData": "لا توجد بيانات.",
+  "@coreNoData": {
+    "description": "Generic empty state when a list or detail has no data."
+  },
+  "coreNoDataToShow": "لا يوجد بيانات للعرض",
+  "@coreNoDataToShow": {
+    "description": "Generic empty state for lists with nothing to display."
+  },
+  "coreContent": "المحتوى",
+  "@coreContent": {
+    "description": "Section heading 'Content' in library detail sheets."
+  },
+  "coreGenericError": "هناك خطأ ما يرجى المحاولة مرة أخرى",
+  "@coreGenericError": {
+    "description": "Generic error with a retry button: 'Something went wrong, please try again'."
+  },
+  "coreLoadDataError": "حدث خطأ أثناء تحميل البيانات",
+  "@coreLoadDataError": {
+    "description": "Error shown when loading data failed."
+  },
+  "coreErrorStatus": "الحالة: {code}",
+  "@coreErrorStatus": {
+    "description": "Shows the HTTP/server status code under an error message.",
+    "placeholders": {
+      "code": { "type": "String", "example": "404" }
+    }
+  },
+
+  "coreCloseSearch": "إغلاق البحث",
+  "@coreCloseSearch": {
+    "description": "Tooltip of the back button that closes the search view."
+  },
+  "coreClear": "مسح",
+  "@coreClear": {
+    "description": "Tooltip of the button that clears the search text."
+  },
+  "coreSheetDefaultTitle": "إضافة جديد",
+  "@coreSheetDefaultTitle": {
+    "description": "Fallback header title of a generic bottom sheet ('Add new')."
+  },
+  "coreSheetDefaultSubtitle": "قم بتخصيص المحتوى",
+  "@coreSheetDefaultSubtitle": {
+    "description": "Fallback header subtitle of a generic bottom sheet ('Customize the content')."
+  },
+
+  "coreCopiedSuccessfully": "تم النسخ بنجاح",
+  "@coreCopiedSuccessfully": {
+    "description": "Toast after copying text to the clipboard."
+  },
+  "coreDownloadStarted": "التنزيل بدأ",
+  "@coreDownloadStarted": {
+    "description": "Toast when a file download starts."
+  },
+  "coreDownloadCompleted": "تم التنزيل",
+  "@coreDownloadCompleted": {
+    "description": "Toast when a file download has been queued/finished."
+  },
+  "coreSaveReadingPositionPrompt": "هل تريد حفظ مكان قراءتك؟",
+  "@coreSaveReadingPositionPrompt": {
+    "description": "Toast asking whether to save the user's current Quran reading position."
+  },
+
+  "coreLocationServiceDisabled": "خدمة الموقع غير مفعّلة. فعّلها لتحديد مواقيت الصلاة.",
+  "@coreLocationServiceDisabled": {
+    "description": "Toast when the device location service (GPS) is turned off."
+  },
+  "coreLocationPermissionDenied": "لم يتم منح صلاحية الوصول إلى الموقع.",
+  "@coreLocationPermissionDenied": {
+    "description": "Toast when the user denied the location permission."
+  },
+  "coreLocationPermissionDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. فعّلها من إعدادات التطبيق.",
+  "@coreLocationPermissionDeniedForever": {
+    "description": "Toast when the location permission is permanently denied and must be enabled from system settings."
+  },
+
+  "coreNotNow": "ليس الآن",
+  "coreAllow": "السماح",
+  "@coreAllow": {
+    "description": "Button that grants a requested permission."
+  },
+  "coreOpenSettings": "فتح الإعدادات",
+  "@coreOpenSettings": {
+    "description": "Button that opens the system settings page of the app."
+  },
+  "coreNotificationPermissionTitle": "إذن الإشعارات",
+  "@coreNotificationPermissionTitle": {
+    "description": "Title of the dialog explaining why notification permission is needed."
+  },
+  "coreNotificationPermissionRationale": "يحتاج التطبيق إلى إذن الإشعارات لتذكيرك بأوقات الصلاة والأذكار.\nهذا يساعدك على البقاء على اتصال مع تعاليم الإسلام طوال اليوم.",
+  "@coreNotificationPermissionRationale": {
+    "description": "Body of the notification permission rationale dialog. Keep the line break."
+  },
+  "coreNotificationSettingsTitle": "إعدادات الإشعارات",
+  "coreNotificationPermanentlyDeniedMessage": "تم رفض إذن الإشعارات بشكل دائم.\nيرجى الذهاب إلى الإعدادات وتفعيل الإشعارات يدوياً.",
+  "@coreNotificationPermanentlyDeniedMessage": {
+    "description": "Dialog body when notification permission is permanently denied."
+  },
+  "corePermissionStatusGranted": "تم منح جميع الأذونات",
+  "corePermissionStatusDenied": "تم رفض أذونات الإشعارات",
+  "corePermissionStatusPermanentlyDenied": "تم رفض الأذونات بشكل دائم",
+  "corePermissionStatusPartial": "تم منح بعض الأذونات فقط",
+  "corePermissionStatusUnknown": "حالة الأذونات غير معروفة",
+  "@corePermissionStatusGranted": {
+    "description": "corePermissionStatus*: short descriptions of the current notification permission state."
+  },
+  "corePermissionResultGranted": "تم منح جميع الأذونات بنجاح",
+  "corePermissionResultDenied": "تم رفض طلب الأذونات",
+  "corePermissionResultPermanentlyDenied": "تم رفض الأذونات بشكل دائم - يرجى الذهاب إلى الإعدادات",
+  "corePermissionResultPartial": "تم منح بعض الأذونات - قد تحتاج لأذونات إضافية",
+  "corePermissionResultError": "حدث خطأ أثناء طلب الأذونات",
+  "@corePermissionResultGranted": {
+    "description": "corePermissionResult*: outcome of asking the user for notification permissions."
+  },
+
+  "coreNotificationActionOpenApp": "فتح التطبيق",
+  "@coreNotificationActionOpenApp": {
+    "description": "iOS notification action button that opens the app."
+  },
+  "coreNotificationActionDismiss": "إخفاء",
+  "@coreNotificationActionDismiss": {
+    "description": "iOS notification action button that dismisses the notification."
+  },
+  "coreNotificationActionMarkRead": "تم القراءة",
+  "@coreNotificationActionMarkRead": {
+    "description": "iOS notification action: mark the reminder (e.g. adhkar) as read/done."
+  },
+  "coreNotificationActionRemindLater": "تذكير لاحقاً",
+  "@coreNotificationActionRemindLater": {
+    "description": "iOS notification action: remind me later."
+  },
+  "coreNotificationGroupName": "الإشعارات الإسلامية",
+  "@coreNotificationGroupName": {
+    "description": "Android notification channel group name shown in system settings."
+  },
+  "coreNotificationGroupDescription": "مجموعة الإشعارات الخاصة بالتطبيق الإسلامي",
+  "@coreNotificationGroupDescription": {
+    "description": "Android notification channel group description shown in system settings."
+  },
+  "coreNotificationChannelDescription": "قناة {channel} للإشعارات الإسلامية",
+  "@coreNotificationChannelDescription": {
+    "description": "Android notification channel description in system settings. {channel} is one of the coreChannel* names.",
+    "placeholders": {
+      "channel": { "type": "String", "example": "طمأنينة - الأذان" }
+    }
+  },
+  "coreNotificationAppLabel": "تطبيق طمأنينة",
+  "@coreNotificationAppLabel": {
+    "description": "'Tamaneena app' — default notification ticker/iOS subtitle. Latin-script languages write 'Tamaneena'."
+  },
+  "coreNotificationMore": "المزيد...",
+  "@coreNotificationMore": {
+    "description": "Summary text of an expandable (big text) notification: 'More...'."
+  },
+  "coreNotificationCount": "{count, plural, =0{لا إشعارات} =1{إشعار واحد} =2{إشعاران} few{{count} إشعارات} many{{count} إشعارًا} other{{count} إشعار}}",
+  "@coreNotificationCount": {
+    "description": "Summary line of a grouped Android notification: number of notifications.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "coreNotificationNewCount": "{count, plural, =0{لا إشعارات جديدة} =1{إشعار جديد واحد} =2{إشعاران جديدان} few{{count} إشعارات جديدة} many{{count} إشعارًا جديدًا} other{{count} إشعار جديد}}",
+  "@coreNotificationNewCount": {
+    "description": "Body of a grouped Android notification summary: number of new notifications.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "coreAthanTicker": "حان الآن أذان {prayer}",
+  "@coreAthanTicker": {
+    "description": "Accessibility ticker of the adhan notification: 'It is now time for the adhan of {prayer}'.",
+    "placeholders": {
+      "prayer": { "type": "String", "example": "الفجر" }
+    }
+  },
+  "coreAthanDescription": "أذان {prayer}",
+  "@coreAthanDescription": {
+    "description": "Short label 'Adhan of {prayer}' (e.g. 'Fajr adhan'). {prayer} is a prayer name.",
+    "placeholders": {
+      "prayer": { "type": "String", "example": "الفجر" }
+    }
+  },
+
+  "coreChannelAthan": "طمأنينة - الأذان",
+  "@coreChannelAthan": {
+    "description": "coreChannel*: Android notification channel names shown in system settings, formatted '<app name> - <channel>'. Latin-script languages write the app name as 'Tamaneena'. Dhikr phrases (e.g. 'Subhan Allah', 'La hawla wa la quwwata illa billah') should use the transliteration Muslims use in the target language."
+  },
+  "coreChannelMohammed": "طمأنينة - الصلاة على النبي",
+  "coreChannelMorning": "طمأنينة - أذكار الصباح",
+  "coreChannelNight": "طمأنينة - أذكار المساء",
+  "coreChannelSleep": "طمأنينة - أذكار النوم",
+  "coreChannelGetUp": "طمأنينة - أذكار الاستيقاظ",
+  "coreChannelMiddleNight": "طمأنينة - قيام الليل",
+  "coreChannelRandomThikr": "طمأنينة - أذكار عشوائية",
+  "coreChannelAstgferAllh": "طمأنينة - الاستغفار",
+  "coreChannelHasbnaAllh": "طمأنينة - حسبنا الله",
+  "coreChannelLaHawla": "طمأنينة - لا حول ولا قوة إلا بالله",
+  "coreChannelSubhanAllh": "طمأنينة - سبحان الله",
+  "coreChannelDefaultChannel": "طمأنينة - الإشعارات العامة",
+  "coreChannelSmartOutreach": "طمأنينة - صحبة الفجر",
+  "@coreChannelSmartOutreach": {
+    "description": "Channel for the 'Fajr companion' smart-outreach reminders."
+  },
+
+  "coreFcmChannelHighImportance": "طمأنينة - إشعارات مهمة",
+  "@coreFcmChannelHighImportance": {
+    "description": "coreFcmChannel*: Android channels for push (Firebase) notifications, '<app name> - <channel>'."
+  },
+  "coreFcmChannelChat": "طمأنينة - الرسائل",
+  "coreFcmChannelUpdates": "طمأنينة - التحديثات",
+  "coreFcmChannelHighImportanceDescription": "قناة الإشعارات المهمة في تطبيق طمأنينة",
+  "coreFcmChannelDefaultDescription": "قناة الإشعارات العامة في تطبيق طمأنينة",
+  "coreFcmChannelChatDescription": "قناة رسائل وتنبيهات تطبيق طمأنينة",
+  "coreFcmChannelUpdatesDescription": "قناة تحديثات تطبيق طمأنينة"
+}

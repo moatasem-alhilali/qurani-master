@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/components/copy_icon_widget.dart';
 import 'package:quran_app/core/components/icon_share_widget.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// لبنات المكتبات المشتركة (السور، حصن المسلم، الرقية، أسماء الله، أذكار
 /// بعد الصلاة) — أُعيد بناؤها على [AppSkin].
@@ -236,7 +237,7 @@ class UnifiedLibraryDetailSheet extends StatelessWidget {
     this.shareSubject,
     this.badges = const [],
     this.sections = const [],
-    this.emptyText = 'لا توجد بيانات.',
+    this.emptyText,
     super.key,
   });
 
@@ -247,11 +248,14 @@ class UnifiedLibraryDetailSheet extends StatelessWidget {
   final String? shareSubject;
   final List<UnifiedLibraryMeta> badges;
   final List<UnifiedLibrarySection> sections;
-  final String emptyText;
+
+  /// Falls back to [L10n.coreNoData] when null.
+  final String? emptyText;
 
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final emptyText = this.emptyText ?? context.l10n.coreNoData;
     final visibleBadges = badges.where((badge) => badge.hasValue).toList();
     final hasSubtitle = subtitle != null && subtitle!.trim().isNotEmpty;
     final visibleSections =
@@ -318,7 +322,7 @@ class UnifiedLibraryDetailSheet extends StatelessWidget {
             if (visibleSections.isEmpty)
               _DetailSection(
                 section: UnifiedLibrarySection(
-                  title: 'المحتوى',
+                  title: context.l10n.coreContent,
                   content: emptyText,
                   selectable: false,
                 ),
@@ -409,8 +413,10 @@ class _DetailSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final content =
-        section.content.trim().isEmpty ? emptyText : section.content;
+    final isEmpty = section.content.trim().isEmpty;
+    final content = isEmpty ? emptyText : section.content;
+    // The Arabic library content stays RTL; the UI fallback follows the locale.
+    final contentDirection = isEmpty ? null : TextDirection.rtl;
     final style = TextStyle(
       color: skin.ink.withValues(alpha: 0.9),
       fontSize: 12.sp,
@@ -427,7 +433,6 @@ class _DetailSection extends StatelessWidget {
             children: [
               Text(
                 section.title,
-                textDirection: TextDirection.rtl,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.8),
                   fontSize: 10.sp,
@@ -444,11 +449,11 @@ class _DetailSection extends StatelessWidget {
           if (section.selectable)
             SelectableText(
               content,
-              textDirection: TextDirection.rtl,
+              textDirection: contentDirection,
               style: style,
             )
           else
-            Text(content, textDirection: TextDirection.rtl, style: style),
+            Text(content, textDirection: contentDirection, style: style),
         ],
       ),
     );

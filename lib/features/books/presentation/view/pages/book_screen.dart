@@ -11,6 +11,7 @@ import 'package:quran_app/features/books/data/remote/book_repository_imp.dart';
 import 'package:quran_app/features/books/presentation/bloc/book_bloc.dart';
 import 'package:quran_app/features/books/presentation/view/pages/book_deatil.dart';
 import 'package:quran_app/features/books/presentation/view/widgets/book_row.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قائمة الكتب.
 ///
@@ -30,7 +31,7 @@ class BookScreen extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title: 'كتب',
+          title: context.l10n.booksTitle,
           body: ColoredBox(
             color: skin.ground,
             child: BlocBuilder<BookBloc, BookState>(
@@ -40,10 +41,10 @@ class BookScreen extends StatelessWidget {
                   case RequestState.loading:
                     return const _BooksSkeleton();
                   case RequestState.error:
-                    return const _BooksNote(text: 'تعذّر تحميل الكتب حاليًا.');
+                    return _BooksNote(text: context.l10n.booksLoadError);
                   case RequestState.success:
                     if (state.books.isEmpty) {
-                      return const _BooksNote(text: 'لا توجد كتب للعرض.');
+                      return _BooksNote(text: context.l10n.booksEmpty);
                     }
                     return Column(
                       children: [

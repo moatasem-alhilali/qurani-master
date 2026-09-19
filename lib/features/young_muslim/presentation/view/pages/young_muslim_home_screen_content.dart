@@ -25,25 +25,26 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
             ),
           ),
         skin.divider(),
-        const HomeSectionHeader(title: 'الإنجازات'),
+        HomeSectionHeader(title: context.l10n.youngMuslimAchievements),
         RepaintBoundary(
           child: _buildRewardsBlock(context, dashboard),
         ),
         skin.divider(),
-        const HomeSectionHeader(title: 'تصفية سريعة'),
+        HomeSectionHeader(title: context.l10n.youngMuslimQuickFilter),
         _buildQuickFilters(context, state),
         if (state.filters.hasActiveFilters) ...[
           _buildActiveFiltersRow(context),
           YoungMuslimSectionHeader(
-            title: 'نتائج الفلترة',
+            title: context.l10n.youngMuslimFilterResults,
             trailing: YoungMuslimMetricChip(
-              label: '${dashboard.searchResults.length} نتيجة',
+              label: context.l10n
+                  .youngMuslimResultsCount(dashboard.searchResults.length),
             ),
           ),
           if (dashboard.searchResults.isEmpty)
-            const YoungMuslimEmptyState(
-              title: 'لا توجد نتائج مطابقة',
-              subtitle: 'جرّب كلمات أبسط أو غيّر الفلاتر لتظهر حلقات أكثر.',
+            YoungMuslimEmptyState(
+              title: context.l10n.youngMuslimNoMatchesTitle,
+              subtitle: context.l10n.youngMuslimNoMatchesSubtitle,
               icon: AppIcons.searchOff,
             )
           else
@@ -52,7 +53,7 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
             ),
         ],
         skin.divider(),
-        const HomeSectionHeader(title: 'الأقسام'),
+        HomeSectionHeader(title: context.l10n.youngMuslimSections),
         RepaintBoundary(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,31 +72,31 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
         ),
         _buildRailSection(
           context,
-          title: 'أكمل المشاهدة',
+          title: context.l10n.youngMuslimContinueWatching,
           videos: remainingResume,
           dashboard: dashboard,
         ),
         _buildRailSection(
           context,
-          title: 'شاهدت مؤخرًا',
+          title: context.l10n.youngMuslimRecentlyWatched,
           videos: dashboard.recentlyWatched,
           dashboard: dashboard,
         ),
         _buildRailSection(
           context,
-          title: 'المفضلة',
+          title: context.l10n.youngMuslimFavorites,
           videos: dashboard.favorites,
           dashboard: dashboard,
         ),
         _buildRailSection(
           context,
-          title: 'سأشاهد لاحقًا',
+          title: context.l10n.youngMuslimWatchLater,
           videos: dashboard.watchLater,
           dashboard: dashboard,
         ),
         _buildRailSection(
           context,
-          title: 'اقتراحات مناسبة',
+          title: context.l10n.youngMuslimSuggestions,
           videos: dashboard.suggestions,
           dashboard: dashboard,
         ),
@@ -115,10 +116,10 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
       padding: EdgeInsets.fromLTRB(16.w, 2.h, 16.w, 10.h),
       child: Text(
         dashboard == null
-            ? 'مرحبًا بك في عالم القصص والتعلّم'
+            ? context.l10n.youngMuslimGreetingWelcome
             : waiting == 0
-                ? 'اختر قصة جديدة وابدأ رحلتك اليوم'
-                : 'لديك $waiting حلقة بانتظارك لتعود إليها',
+                ? context.l10n.youngMuslimGreetingPickNew
+                : context.l10n.youngMuslimGreetingWaiting(waiting),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: youngMuslimRowSubtitle(skin, size: 10.sp),
@@ -140,8 +141,9 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
       children: [
         YoungMuslimActionRow(
           icon: AppIcons.target,
-          title: 'نقاطي وإنجازاتي',
-          subtitle: 'المستوى ${rewards.level} · ${rewards.xp} نقطة',
+          title: context.l10n.youngMuslimRewardsTitle,
+          subtitle:
+              context.l10n.youngMuslimLevelAndPoints(rewards.level, rewards.xp),
           isLast: true,
           onTap: () {
             YoungMuslimRewardsSheet.show(
@@ -157,14 +159,15 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
             children: [
               Expanded(
                 child: Text(
-                  'التقدّم للمستوى التالي',
+                  context.l10n.youngMuslimNextLevelProgress,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: youngMuslimRowSubtitle(skin),
                 ),
               ),
               Text(
-                '${rewards.xpIntoCurrentLevel} من 100',
+                context.l10n
+                    .youngMuslimProgressOf(rewards.xpIntoCurrentLevel, 100),
                 style: youngMuslimNumber(skin, size: 10.sp),
               ),
             ],
@@ -179,17 +182,17 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
           cells: [
             YoungMuslimStatCell(
               value: '${rewards.unlockedAchievements}',
-              label: 'إنجازات',
+              label: context.l10n.youngMuslimStatAchievements,
               icon: AppIcons.star,
             ),
             YoungMuslimStatCell(
               value: '${rewards.completedVideos}',
-              label: 'حلقات',
+              label: context.l10n.youngMuslimStatEpisodes,
               icon: AppIcons.play,
             ),
             YoungMuslimStatCell(
               value: '${rewards.correctAnswers}',
-              label: 'إجابات',
+              label: context.l10n.youngMuslimStatAnswers,
               icon: AppIcons.checkSmall,
             ),
           ],
@@ -203,12 +206,13 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
     BuildContext context,
     YoungMuslimState state,
   ) {
-    const statuses = <YoungMuslimStatusFilter, String>{
-      YoungMuslimStatusFilter.all: 'الكل',
-      YoungMuslimStatusFilter.inProgress: 'قيد المشاهدة',
-      YoungMuslimStatusFilter.completed: 'مكتمل',
-      YoungMuslimStatusFilter.favorites: 'المفضلة',
-      YoungMuslimStatusFilter.watchLater: 'لاحقًا',
+    final l10n = context.l10n;
+    final statuses = <YoungMuslimStatusFilter, String>{
+      YoungMuslimStatusFilter.all: l10n.youngMuslimFilterAll,
+      YoungMuslimStatusFilter.inProgress: l10n.youngMuslimStatusInProgress,
+      YoungMuslimStatusFilter.completed: l10n.youngMuslimStatusCompleted,
+      YoungMuslimStatusFilter.favorites: l10n.youngMuslimFavorites,
+      YoungMuslimStatusFilter.watchLater: l10n.youngMuslimStatusWatchLater,
     };
 
     return SizedBox(
@@ -249,7 +253,7 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'الفلاتر مفعّلة الآن، ويمكنك تعديلها من زرّ التصفية أعلى الصفحة.',
+              context.l10n.youngMuslimFiltersActiveNote,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: youngMuslimRowSubtitle(skin),
@@ -268,7 +272,7 @@ extension _YoungMuslimHomeScreenContent on _YoungMuslimHomeScreenState {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
               child: Text(
-                'مسح',
+                context.l10n.youngMuslimClearFilters,
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 10.5.sp,

@@ -3,6 +3,7 @@ import 'package:quran_app/features/young_muslim/data/data_sources/young_muslim_l
 import 'package:quran_app/features/young_muslim/data/services/young_muslim_reminder_service.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/domain/repositories/young_muslim_repository.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class YoungMuslimRepositoryImpl implements YoungMuslimRepository {
   YoungMuslimRepositoryImpl({
@@ -142,8 +143,9 @@ class YoungMuslimRepositoryImpl implements YoungMuslimRepository {
     final details = await _localDataSource.getVideoDetails(videoId);
     await _reminderService.scheduleResumeReminder(
       videoId: videoId,
-      title: 'كمل المشاهدة في المسلم الصغير',
-      body: 'ارجع إلى "${details.video.topicTitle}" وأكمل رحلتك بهدوء.',
+      title: L10nService.current.youngMuslimResumeReminderTitle,
+      body: L10nService.current
+          .youngMuslimResumeReminderBody(details.video.topicTitle),
     );
   }
 

@@ -10,6 +10,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/download/data/models/download_task_model.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ تنزيل: اسم الملفّ وحالته، وخطّ تقدّم رفيع تحته.
 ///
@@ -69,7 +70,7 @@ class DownloadItemWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          task.statusText,
+                          task.statusLabel(context.l10n),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -123,12 +124,12 @@ class DownloadItemWidget extends StatelessWidget {
         return [
           _ActionIcon(
             icon: AppIcons.pause,
-            label: 'إيقاف مؤقّت',
+            label: context.l10n.downloadPause,
             onTap: () => send(PauseDownloadEvent(taskId: task.taskId)),
           ),
           _ActionIcon(
             icon: AppIcons.close,
-            label: 'إلغاء',
+            label: context.l10n.commonCancel,
             color: AppColors.error,
             onTap: () => send(CancelDownloadEvent(taskId: task.taskId)),
           ),
@@ -137,12 +138,12 @@ class DownloadItemWidget extends StatelessWidget {
         return [
           _ActionIcon(
             icon: AppIcons.play,
-            label: 'متابعة',
+            label: context.l10n.downloadResume,
             onTap: () => send(ResumeDownloadEvent(taskId: task.taskId)),
           ),
           _ActionIcon(
             icon: AppIcons.close,
-            label: 'إلغاء',
+            label: context.l10n.commonCancel,
             color: AppColors.error,
             onTap: () => send(CancelDownloadEvent(taskId: task.taskId)),
           ),
@@ -151,7 +152,7 @@ class DownloadItemWidget extends StatelessWidget {
         return [
           _ActionIcon(
             icon: AppIcons.refresh,
-            label: 'إعادة المحاولة',
+            label: context.l10n.commonRetry,
             onTap: () => send(RetryDownloadEvent(taskId: task.taskId)),
           ),
         ];
@@ -159,7 +160,7 @@ class DownloadItemWidget extends StatelessWidget {
         return [
           _ActionIcon(
             icon: AppIcons.link,
-            label: 'فتح الملفّ',
+            label: context.l10n.downloadOpenFile,
             onTap: () => send(OpenDownloadedFileEvent(taskId: task.taskId)),
           ),
         ];
@@ -278,7 +279,7 @@ class _MoreMenu extends StatelessWidget {
           value: 'delete',
           height: 36.h,
           child: Text(
-            'حذف من القائمة',
+            context.l10n.downloadRemoveFromList,
             style: TextStyle(
               color: skin.ink,
               fontSize: 11.sp,
@@ -290,7 +291,7 @@ class _MoreMenu extends StatelessWidget {
           value: 'delete_with_file',
           height: 36.h,
           child: Text(
-            'حذف الملفّ',
+            context.l10n.downloadDeleteFile,
             style: TextStyle(
               color: AppColors.error,
               fontSize: 11.sp,

@@ -19,7 +19,7 @@ class _PresetSelectionSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'اختر زادك التعبدي',
+                context.l10n.dailyWirdChoosePresetTitle,
                 style: TextStyle(
                   color: skin.ink,
                   fontSize: 14.sp,
@@ -29,7 +29,7 @@ class _PresetSelectionSection extends StatelessWidget {
               ),
               SizedBox(height: 3.h),
               Text(
-                'ابدأ ببرنامج جاهز ثم خصّصه كما يناسبك',
+                context.l10n.dailyWirdChoosePresetSubtitle,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,
@@ -111,7 +111,13 @@ class _PresetRow extends StatelessWidget {
                 ],
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

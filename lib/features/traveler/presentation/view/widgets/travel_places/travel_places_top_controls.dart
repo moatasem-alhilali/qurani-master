@@ -9,6 +9,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/traveler_place.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_places/travel_places_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شريط التحكّم فوق الخريطة: الموقع، عدد النتائج، ثم نطاق البحث.
 ///
@@ -28,12 +29,14 @@ class TravelPlacesTopControls extends StatelessWidget {
 
   static const List<int> _radiusOptions = [1000, 3000, 5000, 10000];
 
-  String _radiusLabel(int meters) {
+  String _radiusLabel(L10n l10n, int meters) {
     if (meters >= 1000) {
       final km = meters / 1000;
-      return '${km.toStringAsFixed(km.truncateToDouble() == km ? 0 : 1)} كم';
+      return l10n.travelerDistanceKm(
+        km.toStringAsFixed(km.truncateToDouble() == km ? 0 : 1),
+      );
     }
-    return '$meters م';
+    return l10n.travelerDistanceMeters('$meters');
   }
 
   Future<void> _openNearbySearch(BuildContext context) async {
@@ -50,7 +53,7 @@ class TravelPlacesTopControls extends StatelessWidget {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(content: Text('تعذر فتح الرابط الآن.')),
+        SnackBar(content: Text(context.l10n.travelerOpenLinkFailed)),
       );
   }
 
@@ -58,9 +61,10 @@ class TravelPlacesTopControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final location = state.locationContext;
+    final l10n = context.l10n;
     final countLabel = state.isLoadingPlaces
-        ? 'جارٍ التحديث…'
-        : 'عدد النتائج ${state.places.length}';
+        ? l10n.travelerUpdating
+        : l10n.travelerResultsCount(state.places.length);
 
     return Container(
       width: double.infinity,
@@ -81,7 +85,7 @@ class TravelPlacesTopControls extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      location?.label ?? 'موقعي الحالي',
+                      location?.label ?? l10n.travelerMyCurrentLocation,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -107,7 +111,7 @@ class TravelPlacesTopControls extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               TravelerPillButton(
-                label: 'الخرائط',
+                label: l10n.travelerMaps,
                 icon: AppIcons.direction,
                 filled: true,
                 onTap: () => _openNearbySearch(context),
@@ -122,7 +126,7 @@ class TravelPlacesTopControls extends StatelessWidget {
             child: Row(
               children: [
                 TravelerPillButton(
-                  label: 'تحديث',
+                  label: l10n.commonRefresh,
                   icon: AppIcons.refresh,
                   onTap: state.isLoadingPlaces
                       ? null
@@ -135,7 +139,7 @@ class TravelPlacesTopControls extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 TravelerPillButton(
-                  label: 'موقعي',
+                  label: l10n.travelerMyLocation,
                   icon: AppIcons.location,
                   onTap: () {
                     HapticFeedback.selectionClick();
@@ -145,7 +149,7 @@ class TravelPlacesTopControls extends StatelessWidget {
                 for (final radius in _radiusOptions) ...[
                   SizedBox(width: 6.w),
                   _RadiusChip(
-                    label: _radiusLabel(radius),
+                    label: _radiusLabel(l10n, radius),
                     selected: state.radiusMeters == radius,
                     onTap: state.isLoadingPlaces
                         ? null

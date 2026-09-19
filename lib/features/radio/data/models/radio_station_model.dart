@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// نوع المحطة.
 ///
@@ -6,15 +7,18 @@ import 'dart:convert';
 /// العيد، التفسير…) وكانت تعرضها كلّها بشكل واحد، فيبحث المستخدم بعينه في
 /// أربعة وعشرين صفًّا متطابقًا. النوع يأتي من ملفّ البيانات نفسه لا من الكود.
 enum RadioStationKind {
-  reciter('قرّاء'),
-  program('برامج وتلاوات');
+  reciter,
+  program;
 
-  const RadioStationKind(this.label);
+  const RadioStationKind();
 
   factory RadioStationKind.fromRaw(String? raw) =>
       raw == 'program' ? RadioStationKind.program : RadioStationKind.reciter;
 
-  final String label;
+  /// اسم المجموعة بلغة الواجهة.
+  String label(L10n l10n) => this == RadioStationKind.program
+      ? l10n.radioKindPrograms
+      : l10n.radioKindReciters;
 
   String get raw => this == RadioStationKind.program ? 'program' : 'reciter';
 }

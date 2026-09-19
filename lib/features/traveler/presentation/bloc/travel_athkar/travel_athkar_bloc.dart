@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran_app/features/traveler/data/models/travel_dhikr_model.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'travel_athkar_event.dart';
 part 'travel_athkar_state.dart';
@@ -51,7 +52,7 @@ class TravelAthkarBloc extends Bloc<TravelAthkarEvent, TravelAthkarState> {
       emit(
         state.copyWith(
           status: TravelAthkarStatus.failure,
-          errorMessage: 'تعذر تحميل أذكار السفر.',
+          errorMessage: L10nService.current.travelerAthkarLoadFailed,
         ),
       );
     }

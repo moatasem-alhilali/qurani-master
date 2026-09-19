@@ -41,7 +41,15 @@ class WidgetPayload(
     val location: String?,
     val days: List<WidgetDay>,
     val verses: List<WidgetVerse>,
+    /** اتّجاه لغة التطبيق (لا الجهاز). بيانات قديمة بلا الحقل ← عربية. */
+    val rtl: Boolean = true,
+    /** نصوص الودجت بلغة التطبيق، يكتبها Dart من L10n. */
+    val labels: Map<String, String> = emptyMap(),
 ) {
+    /** نصّ بلغة التطبيق، وإلا [fallback] (نصّ الموارد العربي). */
+    fun label(key: String, fallback: String): String =
+        labels[key]?.takeIf { it.isNotBlank() } ?: fallback
+
     private val offsetMillis: Long get() = utcOffsetMinutes * 60_000L
 
     /** أوّل صلاة لم يحن وقتها بعد (الشروق مستثنى)، مع يومها. */
@@ -113,6 +121,10 @@ class WidgetPayload(
                         source = verse.optString("source"),
                     )
                 },
+                rtl = json.optBoolean("rtl", true),
+                labels = json.optJSONObject("labels")?.let { labels ->
+                    labels.keys().asSequence().associateWith { labels.optString(it) }
+                } ?: emptyMap(),
             )
         }
 

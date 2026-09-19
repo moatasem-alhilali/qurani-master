@@ -17,7 +17,7 @@ class _PickerHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'اختيار المنطقة',
+                context.l10n.prayerTimePickerTitle,
                 style: TextStyle(
                   color: skin.ink,
                   fontSize: 12.5.sp,
@@ -26,7 +26,7 @@ class _PickerHeader extends StatelessWidget {
                 ),
               ),
               Text(
-                'ابحث أو حدّد نقطة من الخريطة',
+                context.l10n.prayerTimePickerSubtitle,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,
@@ -96,8 +96,8 @@ class _CurrentLocationButton extends StatelessWidget {
               SizedBox(width: 8.w),
               Text(
                 isLoading
-                    ? 'جارِ استخدام موقع الجهاز...'
-                    : 'استخدام موقع الجهاز الحالي',
+                    ? context.l10n.prayerTimePickerUsingDevice
+                    : context.l10n.prayerTimePickerUseDevice,
                 style: TextStyle(
                   color: AppColors.brandIvory,
                   fontSize: 11.5.sp,
@@ -132,9 +132,9 @@ class _PickerTabs extends StatelessWidget {
         fontSize: 11.5.sp,
         fontWeight: FontWeight.w600,
       ),
-      tabs: const [
-        Tab(text: 'بحث'),
-        Tab(text: 'الخريطة'),
+      tabs: [
+        Tab(text: context.l10n.commonSearch),
+        Tab(text: context.l10n.prayerTimePickerMapTab),
       ],
     );
   }
@@ -166,7 +166,7 @@ class _SearchField extends StatelessWidget {
         fontWeight: FontWeight.w600,
       ),
       decoration: InputDecoration(
-        hintText: 'اسم المدينة أو الدولة',
+        hintText: context.l10n.prayerTimePickerSearchHint,
         hintStyle: TextStyle(
           color: skin.inkSoft.withValues(alpha: 0.6),
           fontSize: 11.sp,
@@ -210,7 +210,9 @@ class _SearchEmptyState extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            hasQuery ? 'لم نعثر على نتائج مطابقة' : 'ابدأ بكتابة اسم المدينة',
+            hasQuery
+                ? context.l10n.prayerTimePickerNoResults
+                : context.l10n.prayerTimePickerStartTyping,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
@@ -298,7 +300,11 @@ class _LocationResultRow extends StatelessWidget {
               ),
             ),
             SizedBox(width: 8.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              AppIcons.forwardFor(context),
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),
@@ -335,7 +341,7 @@ class _MapSelectionRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  selected?.label ?? 'لم يتم تحديد موقع بعد',
+                  selected?.label ?? context.l10n.prayerTimeLocationNotSet,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -348,7 +354,7 @@ class _MapSelectionRow extends StatelessWidget {
                 Text(
                   (selected?.detailsLabel.isNotEmpty ?? false)
                       ? selected!.detailsLabel
-                      : 'اضغط على الخريطة لاختيار المنطقة',
+                      : context.l10n.prayerTimePickerTapMapToChoose,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -388,7 +394,9 @@ class _MapSelectionRow extends StatelessWidget {
                     ),
                   SizedBox(width: 5.w),
                   Text(
-                    isApplying ? 'جارِ الاعتماد' : 'اعتماد',
+                    isApplying
+                        ? context.l10n.prayerTimePickerApplying
+                        : context.l10n.prayerTimePickerApply,
                     style: TextStyle(
                       color: canApply || isApplying
                           ? skin.accent

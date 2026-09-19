@@ -22,7 +22,7 @@ class _Body extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
         child: Text(
-          'تعذر إعداد الزاد التعبدي.',
+          context.l10n.dailyWirdSetupFailed,
           style: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.78),
             fontSize: 10.5.sp,
@@ -48,7 +48,7 @@ class _Body extends StatelessWidget {
         _SummaryPanel(preset: selectedPreset, state: state),
         SizedBox(height: 6.h),
         skin.divider(),
-        const HomeSectionHeader(title: 'أعمال اليوم'),
+        HomeSectionHeader(title: context.l10n.dailyWirdTodayTasksHeader),
         for (var i = 0; i < program.items.length; i++)
           _ItemRow(
             index: i,
@@ -145,7 +145,7 @@ class _SummaryPanel extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'المداومة ${stats?.streakDays ?? 0} يومًا',
+                    context.l10n.dailyWirdStreakDays(stats?.streakDays ?? 0),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -156,8 +156,9 @@ class _SummaryPanel extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'مواظبة الأسبوع '
-                  '${(stats?.weeklyAdherence ?? 0).round()}%',
+                  context.l10n.dailyWirdWeeklyAdherence(
+                    (stats?.weeklyAdherence ?? 0).round(),
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

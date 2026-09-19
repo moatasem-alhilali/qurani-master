@@ -5,6 +5,7 @@ import 'package:quran_app/features/home_widgets/data/home_widget_ids.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_calculation_settings.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// آية مرشّحة لودجت «آية اليوم».
 class WidgetVerse {
@@ -33,6 +34,12 @@ class WidgetVerse {
 ///
 /// والتاريخ `date` مفتاح بأرقام لاتينية ثابتة `yyyy-MM-dd` — الكود الأصلي
 /// يقارنه، فلا يجوز أن تُحوّله لغة الجهاز إلى أرقام عربية.
+///
+/// ## اللغة
+///
+/// كل نصّ تعرضه الودجت يأتي من هنا بلغة التطبيق [language]: أسماء الصلوات،
+/// التواريخ، وعناوين الودجت في `labels`، واتّجاهها في `rtl`. الكود الأصلي لا
+/// يحمل نصوصًا إلا احتياطًا (العربية) لبيانات قديمة لا تحوي `labels`.
 abstract final class HomeWidgetPayloadBuilder {
   static Map<String, Object?> build({
     required DateTime now,
@@ -41,7 +48,9 @@ abstract final class HomeWidgetPayloadBuilder {
     required List<WidgetVerse> versePool,
     List<Map<String, Object?>> previousVerses = const [],
     int days = HomeWidgetIds.daysAhead,
+    AppLanguage language = AppLanguage.arabic,
   }) {
+    final l10n = lookupL10n(language.locale);
     final offsetMinutes =
         location?.utcOffsetMinutes ?? now.timeZoneOffset.inMinutes;
     final offset = Duration(minutes: offsetMinutes);
@@ -58,11 +67,22 @@ abstract final class HomeWidgetPayloadBuilder {
       'generatedAt': now.millisecondsSinceEpoch,
       'utcOffsetMinutes': offsetMinutes,
       'location': location?.qualifiedLabel,
+      'lang': language.code,
+      'rtl': language.isRtl,
+      'labels': <String, String>{
+        'nextPrayer': l10n.widgetLabelNextPrayer,
+        'dailyAyah': l10n.widgetLabelDailyAyah,
+        'openApp': l10n.widgetLabelOpenApp,
+        'setLocation': l10n.widgetLabelSetLocation,
+        'refreshNeeded': l10n.widgetLabelRefreshNeeded,
+        // قالب: الكود الأصلي يستبدل {prayer} باسم الصلاة التي يختارها بنفسه.
+        'nextIn': l10n.widgetLabelNextIn('{prayer}'),
+      },
       'days': location == null || settings == null
           ? const <Object?>[]
           : [
               for (final date in dates)
-                _buildDay(date, location, settings, offset),
+                _buildDay(date, location, settings, offset, l10n),
             ],
       'verses': _buildVerses(dates, versePool, previousVerses),
     };
@@ -73,7 +93,9 @@ abstract final class HomeWidgetPayloadBuilder {
     PrayerLocationSelection location,
     PrayerCalculationSettings settings,
     Duration offset,
+    L10n l10n,
   ) {
+    final localeCode = l10n.localeName;
     final times = PrayerTimes.utcOffset(
       Coordinates(location.latitude, location.longitude),
       DateComponents.from(date),
@@ -83,31 +105,37 @@ abstract final class HomeWidgetPayloadBuilder {
 
     Map<String, Object?> prayer(
       String key,
-      String name,
       DateTime shifted, {
       bool isPrayer = true,
     }) {
       return <String, Object?>{
         'key': key,
-        'name': name,
+        'name': l10n.prayerName(key),
         'at': wallClockToEpochMillis(shifted, offset),
-        'time': formatWallClock(shifted),
+        'time': formatWallClock(shifted, localeCode: localeCode),
         'isPrayer': isPrayer,
       };
     }
 
     return <String, Object?>{
       'date': dateKey(date),
-      'weekday': DateFormat('EEEE', 'ar').format(date),
-      'gregorian': DateFormat('d MMMM', 'ar').format(date),
-      'hijri': HijriDate.fromDate(date).formatArabic(),
+      'weekday': DateFormat('EEEE', localeCode).format(date),
+      'gregorian': DateFormat('d MMMM', localeCode).format(date),
+      'hijri': () {
+        final hijri = HijriDate.fromDate(date);
+        return l10n.hijriDate(
+          '${hijri.day}',
+          l10n.hijriMonth(hijri.month),
+          '${hijri.year}',
+        );
+      }(),
       'prayers': [
-        prayer('fajr', 'الفجر', times.fajr),
-        prayer('sunrise', 'الشروق', times.sunrise, isPrayer: false),
-        prayer('dhuhr', 'الظهر', times.dhuhr),
-        prayer('asr', 'العصر', times.asr),
-        prayer('maghrib', 'المغرب', times.maghrib),
-        prayer('isha', 'العشاء', times.isha),
+        prayer('fajr', times.fajr),
+        prayer('sunrise', times.sunrise, isPrayer: false),
+        prayer('dhuhr', times.dhuhr),
+        prayer('asr', times.asr),
+        prayer('maghrib', times.maghrib),
+        prayer('isha', times.isha),
       ],
     };
   }
@@ -159,8 +187,8 @@ abstract final class HomeWidgetPayloadBuilder {
   }
 
   /// «7:38 م» بساعة المدينة — التنسيق نفسه المستعمل في التطبيق.
-  static String formatWallClock(DateTime shifted) {
-    return DateFormat.jm('ar').format(
+  static String formatWallClock(DateTime shifted, {String localeCode = 'ar'}) {
+    return DateFormat.jm(localeCode).format(
       DateTime(
         shifted.year,
         shifted.month,

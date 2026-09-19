@@ -1,5 +1,8 @@
 import 'dart:math' as math;
 
+import 'package:intl/intl.dart';
+import 'package:quran_app/l10n/l10n.dart';
+
 /// المسافة والاتجاه من موضع المسافر إلى الكعبة.
 ///
 /// حسابٌ خالص بلا شبكة ولا حسّاسات: الإحداثيات موجودة أصلًا في
@@ -53,8 +56,14 @@ class MakkahGeo {
   bool get isAtDestination => distanceKm < 5;
 
   /// «٢٬٣١٤ كم» — بفاصل الآلاف العربي.
+  ///
+  /// في غير العربية يُنسَّق الرقم بقواعد لغة الواجهة.
   String get distanceLabel {
     final rounded = distanceKm.round();
+    final code = L10nService.savedLanguage.code;
+    if (code != 'ar') {
+      return NumberFormat.decimalPattern(code).format(rounded);
+    }
     final digits = rounded.toString();
     final buffer = StringBuffer();
 
@@ -66,16 +75,16 @@ class MakkahGeo {
   }
 
   /// جهة الاتجاه بالعربية — أوضح للقارئ من رقم الدرجات وحده.
-  String get directionLabel {
-    const names = [
-      'شمالًا',
-      'شمال شرق',
-      'شرقًا',
-      'جنوب شرق',
-      'جنوبًا',
-      'جنوب غرب',
-      'غربًا',
-      'شمال غرب',
+  String directionLabel(L10n l10n) {
+    final names = [
+      l10n.travelerDirectionN,
+      l10n.travelerDirectionNE,
+      l10n.travelerDirectionE,
+      l10n.travelerDirectionSE,
+      l10n.travelerDirectionS,
+      l10n.travelerDirectionSW,
+      l10n.travelerDirectionW,
+      l10n.travelerDirectionNW,
     ];
     // ثماني جهات، فكل جهة تغطّي ٤٥°، والإزاحة نصفها حتى تتمركز على اسمها.
     final index = (((bearingDegrees + 22.5) % 360) ~/ 45).clamp(0, 7);

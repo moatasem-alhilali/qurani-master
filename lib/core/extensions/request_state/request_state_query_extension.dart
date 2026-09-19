@@ -4,6 +4,7 @@ import 'package:quran_app/core/bloc/generic/query/query_bloc.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/widgets/error_retry_widget.dart';
 
@@ -113,7 +114,7 @@ extension QueryStateWidgetX<T> on QueryState<T> {
                 child: Column(
                   children: [
                     Text(
-                      'لا يوجد بيانات للعرض',
+                      (context?.l10n ?? L10nService.current).coreNoDataToShow,
                       style: context?.bodyMedium?.copyWith(
                         color: context.onSurfaceColor,
                       ),

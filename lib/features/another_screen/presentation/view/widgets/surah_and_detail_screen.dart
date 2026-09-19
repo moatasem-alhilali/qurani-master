@@ -13,6 +13,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/another_screen/data/models/surah_info_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/surah_info/surah_info_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// موسوعة السور.
 ///
@@ -46,7 +47,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title: 'موسوعة السور',
+          title: context.l10n.anotherScreenSurahEncyclopedia,
           trailing: BlocBuilder<SurahInfoBloc, SurahInfoState>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<SurahInfoModel>(
@@ -65,7 +66,7 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
                   setState(() => _query = item.surah);
                   _showSurahDetails(context, item, state.data.indexOf(item));
                 },
-                hintText: 'بحث عن سورة',
+                hintText: context.l10n.anotherScreenSurahSearchHint,
                 suggestionBuilder: (context, item) =>
                     UnifiedLibrarySearchSuggestion(
                   title: item.surah,
@@ -124,77 +125,85 @@ class _SurahWithAllDetailScreenState extends State<SurahWithAllDetailScreen> {
   }
 
   void _showSurahDetails(BuildContext context, SurahInfoModel data, int index) {
+    final l10n = context.l10n;
+    String heading(String label) => l10n.anotherScreenLabelHeading(label);
     final shareContent = [
-      'سورة ${data.surah}',
+      l10n.anotherScreenSurahTitle(data.surah),
       '',
-      'رقم السورة: ${data.id}',
-      'عدد الآيات: ${data.ayaatiha}',
+      l10n.anotherScreenLabelValue(l10n.anotherScreenSurahNumber, '${data.id}'),
+      l10n.anotherScreenLabelValue(l10n.anotherScreenAyahCount, data.ayaatiha),
       '',
-      'معنى اسم السورة:',
+      heading(l10n.anotherScreenSurahNameMeaning),
       data.maeniAsamuha,
       '',
-      'سبب التسمية:',
+      heading(l10n.anotherScreenSurahNamingReason),
       data.sababTasmiatiha,
       '',
-      'أسماء أخرى:',
+      heading(l10n.anotherScreenSurahOtherNamesShort),
       data.asmawuha,
       '',
-      'المقصد العام:',
+      heading(l10n.anotherScreenSurahPurpose),
       data.maqsiduhaAleamu,
       '',
-      'سبب النزول:',
+      heading(l10n.anotherScreenSurahRevelationReason),
       data.sababNuzuliha,
       '',
-      'فضائل السورة:',
+      heading(l10n.anotherScreenSurahVirtues),
       _asBullets(data.fadluha),
       '',
-      'مناسبات السورة:',
+      heading(l10n.anotherScreenSurahRelations),
       _asBullets(data.munasabatiha),
     ].join('\n');
 
     context.showBottomSheet(
       child: UnifiedLibraryDetailSheet(
         title: data.surah,
-        subtitle: 'موسوعة السور',
+        subtitle: l10n.anotherScreenSurahEncyclopedia,
         shareText: shareContent,
         copyText: shareContent,
-        shareSubject: 'موسوعة السور',
+        shareSubject: l10n.anotherScreenSurahEncyclopedia,
         badges: [
           UnifiedLibraryMeta(
-            label: 'الترتيب',
+            label: l10n.anotherScreenSurahOrder,
             value: '${index + 1}',
             isPrimary: true,
           ),
-          UnifiedLibraryMeta(label: 'رقم السورة', value: '${data.id}'),
-          UnifiedLibraryMeta(label: 'عدد الآيات', value: data.ayaatiha),
+          UnifiedLibraryMeta(
+            label: l10n.anotherScreenSurahNumber,
+            value: '${data.id}',
+          ),
+          UnifiedLibraryMeta(
+            label: l10n.anotherScreenAyahCount,
+            value: data.ayaatiha,
+          ),
         ],
         sections: [
           UnifiedLibrarySection(
-            title: 'معنى اسم السورة',
+            title: l10n.anotherScreenSurahNameMeaning,
             content: data.maeniAsamuha,
           ),
           UnifiedLibrarySection(
-            title: 'سبب التسمية',
+            title: l10n.anotherScreenSurahNamingReason,
             content: data.sababTasmiatiha,
           ),
           UnifiedLibrarySection(
-            title: 'أسماء أخرى للسورة',
+            title: l10n.anotherScreenSurahOtherNames,
             content: data.asmawuha,
           ),
           UnifiedLibrarySection(
-            title: 'المقصد العام',
+            title: l10n.anotherScreenSurahPurpose,
             content: data.maqsiduhaAleamu,
           ),
           UnifiedLibrarySection(
-            title: 'سبب النزول',
+            title: l10n.anotherScreenSurahRevelationReason,
             content: data.sababNuzuliha,
           ),
           UnifiedLibrarySection(
-            title: 'فضائل السورة',
+            title: l10n.anotherScreenSurahVirtues,
             content: _asBullets(data.fadluha),
           ),
           UnifiedLibrarySection(
-            title: 'مناسبات السورة',
+            title: l10n.anotherScreenSurahRelations,
             content: _asBullets(data.munasabatiha),
           ),
         ],
@@ -285,7 +294,7 @@ class _SurahRow extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Text(
-                '${data.ayaatiha} آية',
+                context.l10n.anotherScreenAyahsLabel(data.ayaatiha),
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.62),
                   fontSize: 9.5.sp,
@@ -294,7 +303,13 @@ class _SurahRow extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 6.w),
-              AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+              AppIcon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? AppIcons.chevronLeft
+                    : AppIcons.chevronRight,
+                color: skin.accent,
+                size: 15.sp,
+              ),
             ],
           ),
         ),
@@ -321,7 +336,7 @@ class _NoResultsNote extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'لا توجد نتائج مطابقة',
+              context.l10n.anotherScreenNoMatchingResults,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 11.sp,
@@ -335,7 +350,7 @@ class _NoResultsNote extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
               child: Text(
-                'عرض جميع السور',
+                context.l10n.anotherScreenShowAllSurahs,
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 10.5.sp,

@@ -9,6 +9,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// دورة التسبيح الواحدة. عندها يهتزّ الجهاز اهتزازة أوضح ويبدأ العدّاد
 /// من جديد بصريًّا، فيُحسّ المستخدم أنه أتمّ شيئًا لا أنّ رقمًا زاد.
@@ -117,31 +118,31 @@ class MyDhikrCardWidget extends StatelessWidget {
               ),
             ),
             PopupMenuButton<_RowMenuAction>(
-              tooltip: 'خيارات الدعاء',
+              tooltip: context.l10n.myDuasOptions,
               onSelected: _handleMenuAction,
               color: skin.raised,
               itemBuilder: (context) => [
                 if (canEdit)
-                  const PopupMenuItem<_RowMenuAction>(
+                  PopupMenuItem<_RowMenuAction>(
                     value: _RowMenuAction.edit,
                     child: _MenuItemLabel(
                       icon: AppIcons.edit,
-                      label: 'تعديل',
+                      label: context.l10n.commonEdit,
                     ),
                   ),
-                const PopupMenuItem<_RowMenuAction>(
+                PopupMenuItem<_RowMenuAction>(
                   value: _RowMenuAction.reset,
                   child: _MenuItemLabel(
                     icon: AppIcons.refresh,
-                    label: 'تصفير عداد اليوم',
+                    label: context.l10n.myDuasResetToday,
                   ),
                 ),
                 if (canDelete)
-                  const PopupMenuItem<_RowMenuAction>(
+                  PopupMenuItem<_RowMenuAction>(
                     value: _RowMenuAction.delete,
                     child: _MenuItemLabel(
                       icon: AppIcons.delete,
-                      label: 'حذف',
+                      label: context.l10n.commonDelete,
                     ),
                   ),
               ],

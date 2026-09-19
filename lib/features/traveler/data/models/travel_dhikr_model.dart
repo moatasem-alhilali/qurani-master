@@ -1,3 +1,5 @@
+import 'package:quran_app/l10n/l10n.dart';
+
 class TravelDhikrReference {
   const TravelDhikrReference({
     required this.source,
@@ -66,19 +68,32 @@ class TravelDhikrModel {
   final bool isDynamicRepeat;
   final TravelDhikrReference reference;
 
-  String get repeatLabel {
+  String repeatLabel(L10n l10n) {
     if (isDynamicRepeat) {
-      return 'بحسب الموقف';
+      return l10n.travelerRepeatBySituation;
     }
-    return repeatCount == null ? 'مرة' : '$repeatCount مرة';
+    return repeatCount == null
+        ? l10n.travelerRepeatOnce
+        : l10n.travelerRepeatTimes(repeatCount!);
   }
 }
 
-const travelTriggerLabels = <String, String>{
-  'on_start_travel': 'عند بداية السفر',
-  'on_elevation_change': 'أثناء الطريق',
-  'on_stop': 'عند التوقف',
-  'on_return': 'عند الرجوع',
-  'on_farewell': 'توديع المسافر',
-  'on_farewell_reply': 'دعاء للمسافر',
-};
+/// اسم مرحلة الطريق التي يُقال فيها الذكر، أو `null` لمفتاح غير معروف.
+String? travelTriggerLabel(L10n l10n, String trigger) {
+  switch (trigger) {
+    case 'on_start_travel':
+      return l10n.travelerStageStart;
+    case 'on_elevation_change':
+      return l10n.travelerStageOnTheWay;
+    case 'on_stop':
+      return l10n.travelerStageStop;
+    case 'on_return':
+      return l10n.travelerStageReturn;
+    case 'on_farewell':
+      return l10n.travelerStageFarewell;
+    case 'on_farewell_reply':
+      return l10n.travelerStageFarewellReply;
+    default:
+      return null;
+  }
+}

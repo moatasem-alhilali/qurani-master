@@ -9,6 +9,7 @@ import 'package:quran_app/features/notification_schedules/presentation/view/widg
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/weekdays_picker_widget.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تعديل جدولة إشعار: نموذج واحد بدل معالج بثلاث صفحات.
 ///
@@ -51,19 +52,19 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
   String? _validate() {
     if (_type == ScheduleType.daily || _type == ScheduleType.weekly) {
       if (_hour == null || _minute == null) {
-        return 'حدد وقت التنبيه أولاً';
+        return context.l10n.notifScheduleValidateTime;
       }
     }
     if (_type == ScheduleType.weekly && _weekdays.isEmpty) {
-      return 'حدد يوماً واحداً على الأقل من الأسبوع';
+      return context.l10n.notifScheduleValidateWeekday;
     }
     if (_type == ScheduleType.everyNMinutes) {
       if (_interval == null || _interval! < 1) {
-        return 'أدخل عدد الدقائق (أكبر من صفر)';
+        return context.l10n.notifScheduleValidateInterval;
       }
     }
     if (_type == ScheduleType.customDates && _customDates.isEmpty) {
-      return 'أضف تاريخاً واحداً على الأقل';
+      return context.l10n.notifScheduleValidateDate;
     }
     return null;
   }
@@ -135,8 +136,8 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SettingsSheetHeader(
-            title: 'تعديل الجدولة',
-            subtitle: scheduleTypeDescription(_type),
+            title: context.l10n.notifSettingsEditScheduleTitle,
+            subtitle: scheduleTypeDescription(context.l10n, _type),
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -154,7 +155,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
                     }),
                   ),
                   SettingsGroup(
-                    title: 'التفاصيل',
+                    title: context.l10n.notifScheduleDetails,
                     children: _detailFields(),
                   ),
                   if (_error != null) SettingsHint(_error!),
@@ -164,7 +165,7 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
             ),
           ),
           SettingsPrimaryButton(
-            label: 'حفظ الجدولة',
+            label: context.l10n.notifScheduleSaveSchedule,
             icon: AppIcons.save,
             onPressed: _save,
           ),
@@ -210,10 +211,10 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
         return [
           ScheduleNumberRow(
             icon: AppIcons.clock,
-            title: 'الدقيقة من كل ساعة',
-            subtitle: 'رقم بين 0 و 59',
+            title: context.l10n.notifScheduleMinuteOfHourTitle,
+            subtitle: context.l10n.notifScheduleMinuteOfHourSubtitle,
             value: _minute,
-            suffix: 'دقيقة',
+            suffix: context.l10n.notifScheduleMinuteUnit,
             isLast: true,
             onChanged: (value) => _minute = value,
           ),
@@ -222,10 +223,10 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
         return [
           ScheduleNumberRow(
             icon: AppIcons.refresh,
-            title: 'التكرار',
-            subtitle: 'المدة بين كل تنبيه والذي يليه',
+            title: context.l10n.notifScheduleRepeatTitle,
+            subtitle: context.l10n.notifScheduleRepeatSubtitle,
             value: _interval,
-            suffix: 'دقيقة',
+            suffix: context.l10n.notifScheduleMinuteUnit,
             isLast: true,
             onChanged: (value) => _interval = value,
           ),
@@ -236,21 +237,22 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
             SettingsRow(
               icon: AppIcons.calendar,
               title: _formatDate(_customDates[i]),
-              subtitle: 'موعد مخصص',
+              subtitle: context.l10n.notifScheduleCustomTime,
               trailing: SettingsIconButton(
                 icon: AppIcons.delete,
-                tooltip: 'حذف الموعد',
+                tooltip: context.l10n.notifScheduleDeleteTime,
                 color: AppColors.error,
                 onTap: () => setState(() => _customDates.removeAt(i)),
               ),
             ),
-          if (_customDates.isEmpty) const SettingsHint('لم تضف أي موعد بعد'),
+          if (_customDates.isEmpty)
+            SettingsHint(context.l10n.notifScheduleNoTimesYet),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: SettingsGhostButton(
-                label: 'إضافة موعد',
+                label: context.l10n.notifScheduleAddTime,
                 icon: AppIcons.add,
                 onPressed: _addCustomDate,
               ),

@@ -8,6 +8,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/travel_dhikr_model.dart';
 import 'package:quran_app/features/traveler/presentation/bloc/travel_athkar/travel_athkar_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// محطّة واحدة على طريق السفر.
 ///
@@ -39,7 +40,8 @@ class TravelRoadStation extends StatelessWidget {
 
   bool get _isDone => item.isDynamicRepeat ? count > 0 : count >= _target;
 
-  String get _stageLabel => travelTriggerLabels[item.trigger] ?? item.trigger;
+  String _stageLabel(L10n l10n) =>
+      travelTriggerLabel(l10n, item.trigger) ?? item.trigger;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +89,7 @@ class TravelRoadStation extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            _stageLabel,
+                            _stageLabel(context.l10n),
                             style: TextStyle(
                               color: _isDone || isExpanded
                                   ? skin.accent
@@ -159,7 +161,7 @@ class _StationBody extends StatelessWidget {
   final int target;
   final bool isDone;
 
-  String get _shareText {
+  String _shareText(L10n l10n) {
     final buffer = StringBuffer()
       ..writeln(item.title)
       ..writeln()
@@ -168,11 +170,13 @@ class _StationBody extends StatelessWidget {
     if (item.virtue.trim().isNotEmpty) {
       buffer
         ..writeln()
-        ..writeln('الفضل: ${item.virtue}');
+        ..writeln(l10n.travelerShareVirtue(item.virtue));
     }
     buffer
       ..writeln()
-      ..writeln('المصدر: ${item.reference.source} (${item.reference.hadith})');
+      ..writeln(
+        l10n.travelerShareSource(item.reference.source, item.reference.hadith),
+      );
 
     return buffer.toString();
   }
@@ -182,25 +186,30 @@ class _StationBody extends StatelessWidget {
     final skin = AppSkin.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(top: 8.h, left: 4.w),
+      padding: EdgeInsetsDirectional.only(top: 8.h, end: 4.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SelectableText(
-            item.text,
-            textAlign: TextAlign.justify,
-            style: TextStyle(
-              color: skin.ink,
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              height: 1.95,
+          // نصّ الذكر عربيّ في كل اللغات، فيبقى اتجاهه من اليمين.
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: SelectableText(
+              item.text,
+              textAlign: TextAlign.justify,
+              style: TextStyle(
+                color: skin.ink,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                height: 1.95,
+              ),
             ),
           ),
           if (item.virtue.trim().isNotEmpty) ...[
             SizedBox(height: 10.h),
             Text(
               item.virtue,
+              textDirection: TextDirection.rtl,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.8),
                 fontSize: 10.sp,
@@ -218,7 +227,7 @@ class _StationBody extends StatelessWidget {
               if (count > 0)
                 _GhostAction(
                   icon: AppIcons.refresh,
-                  tooltip: 'تصفير العدّاد',
+                  tooltip: context.l10n.travelerResetCounter,
                   onTap: () {
                     HapticFeedback.selectionClick();
                     context
@@ -227,7 +236,10 @@ class _StationBody extends StatelessWidget {
                   },
                 ),
               const Spacer(),
-              IconShareWidget(text: _shareText, subject: 'أذكار السفر'),
+              IconShareWidget(
+                text: _shareText(context.l10n),
+                subject: context.l10n.travelerAthkarTitle,
+              ),
             ],
           ),
           SizedBox(height: 8.h),
@@ -264,12 +276,14 @@ class _CounterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final onGold = skin.isDark ? AppColors.brandNight : AppColors.brandIvory;
-    final label =
-        item.isDynamicRepeat ? (isDone ? 'تمّ' : 'عدّ') : '$count / $target';
+    final l10n = context.l10n;
+    final label = item.isDynamicRepeat
+        ? (isDone ? l10n.travelerCounterDone : l10n.travelerCounterCount)
+        : '$count / $target';
 
     return Semantics(
       button: true,
-      label: 'عدّ الذكر',
+      label: l10n.travelerCountDhikr,
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();

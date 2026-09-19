@@ -1,0 +1,14 @@
+# إعداد الترجمة الرسمي في Flutter (gen-l10n).
+#
+# المصدر: العربية (app_ar.arb) — كل نصوص التطبيق كُتبت بها أصلًا.
+# لا تعدّل lib/l10n/app_ar.arb يدويًا: يُولَّد من l10n/fragments/*.json بالأمر
+#   python tool/l10n_sync.py
+# الذي يدمج الأجزاء ثم يشغّل `flutter gen-l10n`. انظر l10n/README.md.
+#
+# `synthetic-package` حُذف من Flutter (3.41): تفعيله يُفشل البناء، فلا يُذكر هنا.
+arb-dir: lib/l10n
+template-arb-file: app_ar.arb
+output-localization-file: app_localizations.dart
+output-class: L10n
+nullable-getter: false
+untranslated-messages-file: build/l10n_untranslated.json

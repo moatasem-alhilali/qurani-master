@@ -4,6 +4,7 @@ import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loadi
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/core/widgets/error_retry_widget.dart';
 
@@ -89,7 +90,7 @@ extension RequestStateSliverX on RequestState {
                       ),
                       SizedBox(height: 16.h),
                       Text(
-                        'جاري تحميل ...',
+                        (context?.l10n ?? L10nService.current).commonLoading,
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: context?.gray1,
@@ -105,7 +106,8 @@ extension RequestStateSliverX on RequestState {
             : SliverFillRemaining(
                 hasScrollBody: false,
                 child: ErrorRetryWidget(
-                  message: failure?.message ?? 'حدث خطأ أثناء تحميل البيانات',
+                  message: failure?.message ??
+                      (context?.l10n ?? L10nService.current).coreLoadDataError,
                   onRetry: () => onRefresh?.call(),
                 ),
               );
@@ -123,7 +125,8 @@ extension RequestStateSliverX on RequestState {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          'لا يوجد بيانات للعرض',
+                          (context?.l10n ?? L10nService.current)
+                              .coreNoDataToShow,
                           style: context?.bodyMedium?.copyWith(
                             color: context.onSurfaceColor,
                           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 import 'package:quran_app/main_view.dart';
 
@@ -22,12 +23,12 @@ class RouterGenerator {
 
   static Route<dynamic> unDefinedRoute() {
     return MaterialPageRoute(
-      builder: (_) => Scaffold(
+      builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text('Not Found Route'),
+          title: Text(context.l10n.cleanupRouteNotFound),
         ),
-        body: const Center(
-          child: Text('Not Found Route'),
+        body: Center(
+          child: Text(context.l10n.cleanupRouteNotFound),
         ),
       ),
     );

@@ -32,7 +32,7 @@ class _TitleField extends StatelessWidget {
               decoration: InputDecoration(
                 filled: false,
                 isDense: true,
-                hintText: 'مثال: تذكير الفجر',
+                hintText: context.l10n.outreachListNameHint,
                 hintStyle: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.5),
                   fontSize: 11.sp,
@@ -59,7 +59,7 @@ class _TitleField extends StatelessWidget {
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'اكتب اسمًا للقائمة';
+                  return context.l10n.outreachTitleFieldRequired;
                 }
                 return null;
               },
@@ -118,7 +118,7 @@ class _ContactRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
+                  textAlign: outreachStartAlign(context),
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.78),
                     fontSize: 9.5.sp,
@@ -131,7 +131,7 @@ class _ContactRow extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           OutreachTextAction(
-            label: 'حذف',
+            label: context.l10n.commonDelete,
             icon: AppIcons.delete,
             danger: true,
             onTap: onRemove,

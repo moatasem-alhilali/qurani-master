@@ -16,6 +16,7 @@ import 'package:quran_app/features/floating_adhkar/presentation/view/widgets/flo
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// الأذكار العائمة.
 ///
@@ -47,7 +48,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
 
         return GroundScaffoldTheme(
           child: AppScaffoldWidget(
-            title: 'الأذكار العائمة',
+            title: context.l10n.floatingAdhkarTitle,
             showLargeHeader: false,
             initialOffset: null,
             onRefresh: () async {
@@ -59,7 +60,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  tooltip: 'إدارة الأذكار',
+                  tooltip: context.l10n.floatingAdhkarManageTitle,
                   onPressed: () => _openManageAdhkar(context),
                   icon: AppIcon(
                     AppIcons.bookOpen,
@@ -68,7 +69,7 @@ class FloatingAdhkarScreen extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'الإعدادات',
+                  tooltip: context.l10n.commonSettings,
                   onPressed:
                       settings == null ? null : () => _openSettings(context),
                   icon: AppIcon(
@@ -152,13 +153,13 @@ class _BodyState extends State<_Body> {
       children: [
         _ServiceCard(state: state, settings: settings),
         skin.divider(),
-        const HomeSectionHeader(title: 'معاينة الذكر'),
+        HomeSectionHeader(title: context.l10n.floatingAdhkarPreviewHeader),
         _PreviewBlock(item: state.previewItem),
         skin.divider(),
         FloatingAdhkarRow(
           icon: AppIcons.settings,
-          title: 'إعدادات متقدمة',
-          subtitle: 'معدل الظهور ومدّة البقاء والمصادر',
+          title: context.l10n.floatingAdhkarAdvancedTitle,
+          subtitle: context.l10n.floatingAdhkarAdvancedSubtitle,
           trailing: AppIcon(
             _showAdvancedSettings ? AppIcons.up : AppIcons.down,
             color: skin.accent,
@@ -171,21 +172,25 @@ class _BodyState extends State<_Body> {
         if (_showAdvancedSettings) ...[
           FloatingAdhkarRow(
             icon: AppIcons.clock,
-            title: 'معدل الظهور',
-            subtitle: formatFloatingInterval(settings.intervalMinutes),
+            title: context.l10n.floatingAdhkarFrequencyTitle,
+            subtitle: formatFloatingInterval(
+              context.l10n,
+              settings.intervalMinutes,
+            ),
             onTap: () => FloatingAdhkarScreen._openSettings(context),
           ),
           if (!isIosReminderMode)
             FloatingAdhkarRow(
               icon: AppIcons.eye,
-              title: 'مدة بقاء الذكر',
-              subtitle: '${settings.visibleSeconds} ثانية',
+              title: context.l10n.floatingAdhkarVisibleDurationTitle,
+              subtitle: context.l10n
+                  .floatingAdhkarSecondsCount(settings.visibleSeconds),
               onTap: () => FloatingAdhkarScreen._openSettings(context),
             ),
           FloatingAdhkarRow(
             icon: AppIcons.source,
-            title: 'مصادر الأذكار',
-            subtitle: describeFloatingSources(settings),
+            title: context.l10n.floatingAdhkarSourcesTitle,
+            subtitle: describeFloatingSources(context.l10n, settings),
             onTap: () => FloatingAdhkarScreen._openSettings(context),
           ),
         ],
@@ -194,9 +199,9 @@ class _BodyState extends State<_Body> {
           FloatingAdhkarRow(
             icon: AppIcons.security,
             title: isIosReminderMode
-                ? 'السماح بالإشعارات'
-                : 'منح الصلاحية المطلوبة',
-            subtitle: 'بدونها لن يظهر الذكر فوق التطبيقات',
+                ? context.l10n.floatingAdhkarAllowNotifications
+                : context.l10n.floatingAdhkarGrantPermission,
+            subtitle: context.l10n.floatingAdhkarPermissionHint,
             tone: AppColors.error,
             onTap: () {
               context.read<FloatingAdhkarBloc>().add(
@@ -206,10 +211,12 @@ class _BodyState extends State<_Body> {
           ),
         FloatingAdhkarRow(
           icon: AppIcons.play,
-          title: isIosReminderMode ? 'إرسال ذكر الآن' : 'عرض ذكر الآن',
+          title: isIosReminderMode
+              ? context.l10n.floatingAdhkarSendNow
+              : context.l10n.floatingAdhkarShowNow,
           subtitle: canPreview
-              ? 'جرّب شكل الذكر كما سيظهر لك'
-              : 'فعّل الخدمة وامنح الصلاحية أولًا',
+              ? context.l10n.floatingAdhkarPreviewReadyHint
+              : context.l10n.floatingAdhkarPreviewDisabledHint,
           enabled: canPreview,
           onTap: () {
             context
@@ -219,8 +226,8 @@ class _BodyState extends State<_Body> {
         ),
         FloatingAdhkarRow(
           icon: AppIcons.noteEdit,
-          title: 'إدارة الأذكار',
-          subtitle: 'اختر ما يظهر من الافتراضي وأضف أذكارك',
+          title: context.l10n.floatingAdhkarManageTitle,
+          subtitle: context.l10n.floatingAdhkarManageSubtitle,
           isLast: true,
           onTap: () => FloatingAdhkarScreen._openManageAdhkar(context),
         ),
@@ -253,7 +260,7 @@ class _ServiceCard extends StatelessWidget {
           ),
           boxShadow: skin.raisedShadow,
         ),
-        padding: EdgeInsets.fromLTRB(12.w, 10.h, 10.w, 11.h),
+        padding: EdgeInsetsDirectional.fromSTEB(10.w, 10.h, 12.w, 11.h),
         child: Column(
           children: [
             Row(
@@ -280,7 +287,9 @@ class _ServiceCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        isIosReminderMode ? 'تذكيرات iPhone' : 'الخدمة العائمة',
+                        isIosReminderMode
+                            ? context.l10n.floatingAdhkarIosReminders
+                            : context.l10n.floatingAdhkarFloatingService,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -292,8 +301,8 @@ class _ServiceCard extends StatelessWidget {
                       ),
                       Text(
                         state.isSupportedPlatform
-                            ? state.status.label
-                            : 'غير مدعوم على هذه المنصة',
+                            ? state.status.label(context.l10n)
+                            : context.l10n.floatingAdhkarUnsupportedPlatform,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -325,16 +334,18 @@ class _ServiceCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ServiceStat(
-                    label: 'الافتراضية',
+                    label: context.l10n.floatingAdhkarStatBuiltIn,
                     value: '${state.counts.builtInCount}',
                   ),
                 ),
                 Container(width: 1, height: 20.h, color: skin.hairline),
                 Expanded(
                   child: _ServiceStat(
-                    label: 'الخاصة',
-                    value: '${state.counts.customEnabledCount} '
-                        'من ${state.counts.customTotalCount}',
+                    label: context.l10n.floatingAdhkarStatCustom,
+                    value: context.l10n.floatingAdhkarEnabledOfTotal(
+                      state.counts.customEnabledCount,
+                      state.counts.customTotalCount,
+                    ),
                   ),
                 ),
               ],
@@ -393,7 +404,8 @@ class _PreviewBlock extends StatelessWidget {
     final skin = AppSkin.of(context);
     final hasText = item?.text.trim().isNotEmpty ?? false;
     final text = hasText ? item!.text : 'اللهم أعني على ذكرك وشكرك وحسن عبادتك';
-    final source = item?.sourceLabel ?? 'افتراضي';
+    final source =
+        item?.sourceLabel ?? context.l10n.floatingAdhkarSourceBuiltIn;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_overlay_command.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FloatingAdhkarOverlayController {
   static const int overlayWidth = 250;
@@ -80,8 +81,8 @@ class FloatingAdhkarOverlayController {
 
     try {
       await FlutterOverlayWindow.showOverlay(
-        overlayTitle: 'الأذكار العشوائية العائمة',
-        overlayContent: 'خدمة الأذكار العائمة تعمل في الخلفية',
+        overlayTitle: L10nService.current.floatingAdhkarOverlayServiceTitle,
+        overlayContent: L10nService.current.floatingAdhkarOverlayServiceContent,
         width: overlayWindowWidth,
         height: 1,
         alignment: OverlayAlignment.centerRight,

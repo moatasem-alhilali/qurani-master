@@ -5,6 +5,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/data/service/radio_favourites_store.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ المفضّلة: أغلفة صغيرة تُدير القرص إلى محطتها بلمسة.
 ///
@@ -49,7 +50,7 @@ class RadioFavouritesStrip extends StatelessWidget {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
-                    'اضغط مطوّلًا على أي محطة لإضافتها إلى المفضّلة.',
+                    context.l10n.radioFavouritesHint,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -150,7 +151,9 @@ class RadioFavouriteButton extends StatelessWidget {
           onPressed: () => favourites.toggle(current.id),
           padding: EdgeInsets.zero,
           constraints: BoxConstraints.tightFor(width: 40.w, height: 40.w),
-          tooltip: isFavourite ? 'إزالة من المفضّلة' : 'إضافة إلى المفضّلة',
+          tooltip: isFavourite
+              ? context.l10n.radioRemoveFavourite
+              : context.l10n.radioAddFavourite,
           icon: AppIcon(
             AppIcons.heart,
             color: isFavourite

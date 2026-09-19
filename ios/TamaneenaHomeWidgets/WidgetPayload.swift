@@ -36,6 +36,25 @@ struct WidgetPayload: Decodable {
     let location: String?
     let days: [WidgetDay]
     let verses: [WidgetVerse]
+    /// اتّجاه لغة التطبيق (لا الجهاز). غائب في بيانات قديمة ← عربية.
+    var rtl: Bool? = nil
+    /// نصوص الودجت بلغة التطبيق، يكتبها Dart من L10n.
+    var labels: [String: String]? = nil
+
+    var isRtl: Bool { rtl ?? true }
+
+    /// نصّ بلغة التطبيق، وإلا [fallback] العربي.
+    func label(_ key: String, _ fallback: String) -> String {
+        guard let value = labels?[key], !value.isEmpty else { return fallback }
+        return value
+    }
+
+    /// «العصر بعد» / «Asr in» — القالب من Dart، و{prayer} يُملأ هنا.
+    func nextIn(_ prayerName: String) -> String {
+        let template = label("nextIn", "{prayer} بعد")
+        guard template.contains("{prayer}") else { return "\(prayerName) بعد" }
+        return template.replacingOccurrences(of: "{prayer}", with: prayerName)
+    }
 
     /// أوّل صلاة لم يحن وقتها (الشروق مستثنى)، مع يومها.
     func nextPrayer(after now: Date) -> (day: WidgetDay, prayer: WidgetPrayer)? {

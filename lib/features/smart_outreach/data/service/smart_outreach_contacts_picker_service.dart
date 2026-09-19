@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachPickedContact {
   const SmartOutreachPickedContact({
@@ -49,11 +50,11 @@ class SmartOutreachContactPickerResult {
   String? get errorMessage {
     switch (failure) {
       case SmartOutreachContactPickerFailure.permissionDenied:
-        return 'يجب السماح بالوصول لجهات الاتصال لاختيار رقم تلقائياً.';
+        return L10nService.current.outreachContactsPermissionDenied;
       case SmartOutreachContactPickerFailure.noPhoneNumbers:
-        return 'جهة الاتصال المختارة لا تحتوي على رقم هاتف.';
+        return L10nService.current.outreachContactNoPhone;
       case SmartOutreachContactPickerFailure.unknown:
-        return 'حدث خطأ أثناء اختيار جهة الاتصال.';
+        return L10nService.current.outreachContactPickError;
       case null:
         return null;
     }
@@ -156,6 +157,6 @@ class SmartOutreachContactsPickerService {
       return display;
     }
 
-    return 'بدون اسم';
+    return L10nService.current.outreachUnnamed;
   }
 }

@@ -9,6 +9,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/home/data/prayer_tracker_store.dart';
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// متتبّع الصلوات الخمس لليوم.
 ///
@@ -124,8 +125,8 @@ class _HomePrayerTrackerState extends State<HomePrayerTracker>
                       duration: const Duration(milliseconds: 320),
                       child: Text(
                         complete
-                            ? 'أتممت صلوات اليوم، تقبّل الله'
-                            : 'علّم ما أدّيته اليوم',
+                            ? context.l10n.homeTrackerComplete
+                            : context.l10n.homeTrackerPrompt,
                         key: ValueKey(complete),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -145,7 +146,8 @@ class _HomePrayerTrackerState extends State<HomePrayerTracker>
                     SizedBox(width: 8.w),
                   ],
                   Text(
-                    '$count من ${kTrackedPrayers.length}',
+                    context.l10n
+                        .homeTrackerProgress(count, kTrackedPrayers.length),
                     style: TextStyle(
                       color: skin.accent,
                       fontSize: 10.5.sp,
@@ -163,7 +165,8 @@ class _HomePrayerTrackerState extends State<HomePrayerTracker>
                       if (i != 0) SizedBox(width: 6.w),
                       Expanded(
                         child: _TrackerButton(
-                          label: kTrackedPrayerNames[i],
+                          label:
+                              context.l10n.prayerName(kTrackedPrayers[i].name),
                           done: _done[i],
                           enabled: entered[i],
                           onTap: () => _toggle(i, now),
@@ -202,7 +205,7 @@ class _StreakChip extends StatelessWidget {
           AppIcon(AppIcons.checkSmall, color: skin.accent, size: 11.sp),
           SizedBox(width: 3.w),
           Text(
-            days == 1 ? 'يوم' : '$days أيام متتالية',
+            context.l10n.homeTrackerStreak(days),
             style: TextStyle(
               color: skin.accent,
               fontSize: 9.sp,
@@ -235,8 +238,8 @@ class _CelebrationSweep extends StatelessWidget {
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
             return LinearGradient(
-              begin: Alignment.centerRight,
-              end: Alignment.centerLeft,
+              begin: AlignmentDirectional.centerStart,
+              end: AlignmentDirectional.centerEnd,
               colors: [
                 Colors.white.withValues(alpha: 0),
                 Colors.white.withValues(alpha: 0.55),
@@ -247,7 +250,7 @@ class _CelebrationSweep extends StatelessWidget {
                 t.clamp(0.0, 1.0),
                 (t + 0.18).clamp(0.0, 1.0),
               ],
-            ).createShader(bounds);
+            ).createShader(bounds, textDirection: Directionality.of(context));
           },
           child: inner,
         );

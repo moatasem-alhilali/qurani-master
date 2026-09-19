@@ -1,0 +1,1141 @@
+{
+  "qiblahTitle": "القبلة",
+  "@qiblahTitle": {
+    "description": "Title of the Qibla compass screen."
+  },
+  "qiblahRefreshTooltip": "تحديث الاتجاه",
+  "@qiblahRefreshTooltip": {
+    "description": "Tooltip of the refresh button that restarts the Qibla direction detection."
+  },
+  "qiblahErrorNoSensor": "جهازك لا يدعم استشعار الاتجاه",
+  "@qiblahErrorNoSensor": {
+    "description": "Error: the device has no compass/orientation sensor."
+  },
+  "qiblahErrorPermissionRequired": "يجب السماح بالوصول للموقع لتحديد اتجاه القبلة",
+  "qiblahErrorGeneric": "حدث خطأ في تحديد اتجاه القبلة: {error}",
+  "@qiblahErrorGeneric": {
+    "description": "Generic error on the Qibla screen. {error} is a technical error message.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblahErrorLocationServiceOff": "خدمات الموقع غير مفعلة. يرجى تفعيلها من الإعدادات",
+  "qiblahErrorPermissionDeniedForever": "تم رفض أذونات الموقع نهائياً. يرجى تفعيلها من إعدادات التطبيق",
+  "qiblahErrorLocationFailed": "فشل في الحصول على الموقع الحالي",
+  "qiblahUnknownLocation": "موقع غير معروف",
+  "@qiblahUnknownLocation": {
+    "description": "Shown instead of a city name when reverse geocoding fails."
+  },
+  "qiblahErrorDirection": "خطأ في تحديد الاتجاه: {error}",
+  "@qiblahErrorDirection": {
+    "description": "Compass stream error. {error} is a technical error message.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblahErrorStreamFailed": "فشل في بدء تتبع الاتجاه",
+  "qiblahLocating": "جاري تحديد الموقع...",
+  "qiblahAligned": "أنت متوجّه إلى القبلة",
+  "@qiblahAligned": {
+    "description": "Shown when the phone points at the Qibla."
+  },
+  "qiblahTurnLeft": "استدر يسارًا {degrees}°",
+  "@qiblahTurnLeft": {
+    "description": "Instruction to rotate the phone to the left by {degrees} degrees.",
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahTurnRight": "استدر يمينًا {degrees}°",
+  "@qiblahTurnRight": {
+    "description": "Instruction to rotate the phone to the right by {degrees} degrees.",
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahLoadingTitle": "جارِ تحديد اتجاه القبلة",
+  "qiblahLoadingSubtitle": "تأكد من تفعيل الموقع والسماح بالأذونات",
+  "qiblahHintAligned": "ثبّت الجهاز، السهم على علامة القبلة",
+  "@qiblahHintAligned": {
+    "description": "Hint under the direction line when aligned: hold the device still, the arrow is on the Qibla mark."
+  },
+  "qiblahHintMove": "حرّك الجهاز ببطء حتى يصل السهم إلى العلامة",
+  "qiblahReadingsHeader": "قراءة البوصلة",
+  "@qiblahReadingsHeader": {
+    "description": "Section header above the compass readings (heading, Qibla angle, location, distance)."
+  },
+  "qiblahCurrentHeading": "اتجاهك الحالي",
+  "qiblahAngle": "زاوية القبلة",
+  "qiblahCurrentLocation": "موقعك الحالي",
+  "qiblahDistanceToMecca": "المسافة إلى مكة",
+  "qiblahDistanceKm": "{km} كم",
+  "@qiblahDistanceKm": {
+    "description": "Distance in kilometres.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahInstructionsHeader": "تعليمات الاستخدام",
+  "qiblahInstructions": "• امسك الهاتف مستويًا أمامك.\n• تحرّك ببطء حتى يلتقي السهم الذهبي بالعلامة العلوية.\n• عند المحاذاة تضيء الحلقة وتشعر باهتزازة خفيفة.\n• أبعد الأجسام المعدنية عن الهاتف.\n• إذا اضطرب المؤشر، حرّك الهاتف على شكل رقم ٨.",
+  "@qiblahInstructions": {
+    "description": "Bulleted usage instructions for the Qibla compass, one bullet per line (keep the \\n line breaks and bullets)."
+  },
+  "qiblahCompassNorth": "شمال",
+  "qiblahCompassEast": "شرق",
+  "qiblahCompassSouth": "جنوب",
+  "qiblahCompassWest": "غرب",
+  "@qiblahCompassNorth": {
+    "description": "Cardinal direction labels painted on the compass dial (N/E/S/W). Keep short."
+  },
+  "homeSectionYourDay": "يومك",
+  "@homeSectionYourDay": {
+    "description": "Home section header above the daily prayer tracker and continue-reading row."
+  },
+  "homeSectionAyah": "آية من القرآن",
+  "@homeSectionAyah": {
+    "description": "Home section header above a random Quran verse."
+  },
+  "homeSectionFeatures": "المميزات",
+  "@homeSectionFeatures": {
+    "description": "Home section header above the grid of app features."
+  },
+  "homeSectionKids": "قسم الأطفال",
+  "@homeSectionKids": {
+    "description": "Home section header for the children's section."
+  },
+  "homeYoungMuslimTitle": "المسلم الصغير",
+  "@homeYoungMuslimTitle": {
+    "description": "Name of the children's section ('The Young Muslim')."
+  },
+  "homeYoungMuslimSubtitle": "قصص وآداب وأذكار للطفل",
+  "@homeYoungMuslimSubtitle": {
+    "description": "Subtitle of the children's section: stories, manners and adhkar for kids."
+  },
+  "homeUpdateAvailable": "يوجد تحديث جديد · الإصدار {version}",
+  "@homeUpdateAvailable": {
+    "description": "Home banner telling the user an app update is available.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "homeUpdateAction": "تحديث",
+  "@homeUpdateAction": {
+    "description": "Small button on the update banner."
+  },
+  "homeContinueReading": "تكملة القراءة",
+  "@homeContinueReading": {
+    "description": "Home row to resume Quran reading where the user stopped."
+  },
+  "homeStartReading": "ابدأ القراءة",
+  "@homeStartReading": {
+    "description": "Home row to start reading the Quran (no progress yet)."
+  },
+  "homeContinueReadingPosition": "{surah} · صفحة {page}",
+  "@homeContinueReadingPosition": {
+    "description": "Last reading position. {surah} is the Arabic surah name (e.g. 'سورة البقرة'), {page} the Mushaf page number.",
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "page": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStartReadingPosition": "من سورة الفاتحة · صفحة ١",
+  "@homeStartReadingPosition": {
+    "description": "Subtitle when nothing was read yet: start from Surah Al-Fatiha, page 1."
+  },
+  "homeAyahReference": "{surah} · الآية {number}",
+  "@homeAyahReference": {
+    "description": "Reference under a Quran verse. {surah} is the Arabic surah name, {number} the verse number.",
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAyahNumber": "الآية {number}",
+  "@homeAyahNumber": {
+    "description": "Verse number when the surah name is unavailable.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAnotherAyah": "آية أخرى",
+  "@homeAnotherAyah": {
+    "description": "Button that shows another random verse."
+  },
+  "homeReadInMushaf": "اقرأها في المصحف",
+  "@homeReadInMushaf": {
+    "description": "Button that opens the verse in the Quran reader."
+  },
+  "homeTrackerComplete": "أتممت صلوات اليوم، تقبّل الله",
+  "@homeTrackerComplete": {
+    "description": "Prayer tracker message when all five prayers are marked done ('May Allah accept it')."
+  },
+  "homeTrackerPrompt": "علّم ما أدّيته اليوم",
+  "@homeTrackerPrompt": {
+    "description": "Prayer tracker hint: mark the prayers you have performed today."
+  },
+  "homeTrackerProgress": "{count} من {total}",
+  "@homeTrackerProgress": {
+    "description": "Prayer tracker counter, e.g. '3 of 5'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeTrackerStreak": "{days, plural, =1{يوم} =2{يومان متتاليان} few{{days} أيام متتالية} many{{days} يومًا متتاليًا} other{{days} يوم متتالٍ}}",
+  "@homeTrackerStreak": {
+    "description": "Streak chip: number of consecutive days all five prayers were marked done. For =1 a bare 'day' is enough.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNavHome": "الرئيسية",
+  "@homeNavHome": {
+    "description": "Bottom navigation tab: Home."
+  },
+  "homeNavSections": "الاقسام",
+  "@homeNavSections": {
+    "description": "Bottom navigation tab: Sections/categories."
+  },
+  "homeNextPrayerRemaining": "  {prayer} : {time}  \n الوقت المتبقي : {remaining} ",
+  "@homeNextPrayerRemaining": {
+    "description": "Two lines: next prayer name and time, then the remaining time (h:mm:ss).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeHighLatAuto": "تلقائي",
+  "@prayerTimeHighLatAuto": {
+    "description": "High-latitude rule option: automatic (use the calculation method's default)."
+  },
+  "prayerTimeHighLatAutoDesc": "يترك المعالجة للقيمة الافتراضية لطريقة الحساب.",
+  "prayerTimeHighLatMiddleOfNight": "منتصف الليل",
+  "@prayerTimeHighLatMiddleOfNight": {
+    "description": "High-latitude rule: 'Middle of the night' (standard astronomical rule name)."
+  },
+  "prayerTimeHighLatMiddleOfNightDesc": "لا يسبق الفجر منتصف الليل ولا يتأخر العشاء عنه.",
+  "prayerTimeHighLatSeventhOfNight": "سُبع الليل",
+  "@prayerTimeHighLatSeventhOfNight": {
+    "description": "High-latitude rule: 'Seventh of the night'."
+  },
+  "prayerTimeHighLatSeventhOfNightDesc": "يعتمد على سُبع الليل الأخير للفجر والأول للعشاء.",
+  "prayerTimeHighLatTwilightAngle": "زاوية الشفق",
+  "@prayerTimeHighLatTwilightAngle": {
+    "description": "High-latitude rule: 'Twilight angle'."
+  },
+  "prayerTimeHighLatTwilightAngleDesc": "يقسّم الليل حسب زاويتي الفجر والعشاء المختارتين.",
+  "prayerTimeIshaModeAngle": "العشاء بزاوية",
+  "@prayerTimeIshaModeAngle": {
+    "description": "Segmented option in the custom method: Isha computed by sun angle."
+  },
+  "prayerTimeIshaModeAngleDesc": "يُحسب العشاء بزاوية الشمس تحت الأفق.",
+  "prayerTimeIshaModeInterval": "العشاء بفاصل زمني",
+  "@prayerTimeIshaModeInterval": {
+    "description": "Segmented option in the custom method: Isha computed as fixed minutes after Maghrib."
+  },
+  "prayerTimeIshaModeIntervalDesc": "يُحسب العشاء بعدد دقائق ثابت بعد المغرب.",
+  "prayerTimeMethodUmmAlQura": "أم القرى - مكة المكرمة",
+  "@prayerTimeMethodUmmAlQura": {
+    "description": "Prayer calculation method names. Use the name commonly used for these institutions in the target language."
+  },
+  "prayerTimeMethodMuslimWorldLeague": "رابطة العالم الإسلامي",
+  "prayerTimeMethodEgyptian": "الهيئة المصرية العامة للمساحة",
+  "prayerTimeMethodKarachi": "جامعة العلوم الإسلامية - كراتشي",
+  "prayerTimeMethodDubai": "دبي",
+  "prayerTimeMethodQatar": "قطر",
+  "prayerTimeMethodKuwait": "الكويت",
+  "prayerTimeMethodSingapore": "سنغافورة",
+  "prayerTimeMethodTurkey": "ديانت - تركيا",
+  "@prayerTimeMethodTurkey": {
+    "description": "Turkish Presidency of Religious Affairs (Diyanet)."
+  },
+  "prayerTimeMethodTehran": "جامعة طهران للجيوفيزياء",
+  "prayerTimeMethodMoonSighting": "لجنة رؤية الهلال",
+  "@prayerTimeMethodMoonSighting": {
+    "description": "Moonsighting Committee Worldwide."
+  },
+  "prayerTimeMethodNorthAmerica": "الجمعية الإسلامية لأمريكا الشمالية",
+  "@prayerTimeMethodNorthAmerica": {
+    "description": "ISNA."
+  },
+  "prayerTimeMethodCustom": "إعداد مخصص",
+  "@prayerTimeMethodCustom": {
+    "description": "Custom calculation method where the user sets the angles."
+  },
+  "prayerTimeMethodUmmAlQuraDesc": "الفجر 18.5° والعشاء بعد المغرب بـ 90 دقيقة.",
+  "@prayerTimeMethodUmmAlQuraDesc": {
+    "description": "Short technical description of a calculation method (sun angles / minutes)."
+  },
+  "prayerTimeMethodMuslimWorldLeagueDesc": "الفجر 18° والعشاء 17°.",
+  "prayerTimeMethodEgyptianDesc": "الفجر 19.5° والعشاء 17.5°.",
+  "prayerTimeMethodKarachiDesc": "الفجر 18° والعشاء 18°.",
+  "prayerTimeMethodDubaiDesc": "الفجر والعشاء 18.2°.",
+  "prayerTimeMethodQatarDesc": "الفجر 18° والعشاء بعد المغرب بـ 90 دقيقة.",
+  "prayerTimeMethodKuwaitDesc": "الفجر 18° والعشاء 17.5°.",
+  "prayerTimeMethodSingaporeDesc": "الفجر 20° والعشاء 18°.",
+  "prayerTimeMethodTurkeyDesc": "الفجر 18° والعشاء 17° مع تعديلات ديانت.",
+  "prayerTimeMethodTehranDesc": "الفجر 17.7° والعشاء 14° والمغرب 4.5°.",
+  "prayerTimeMethodMoonSightingDesc": "الفجر 18° والعشاء 18° مع تعديلات موسمية.",
+  "prayerTimeMethodNorthAmericaDesc": "الفجر 15° والعشاء 15°.",
+  "prayerTimeMethodCustomDesc": "حدّد زوايا الفجر والعشاء والمغرب بنفسك.",
+  "prayerTimeMadhabShafi": "الشافعي والمالكي والحنبلي",
+  "@prayerTimeMadhabShafi": {
+    "description": "Asr juristic method: Shafi'i, Maliki and Hanbali (the 'standard' Asr)."
+  },
+  "prayerTimeMadhabHanafi": "الحنفي",
+  "@prayerTimeMadhabHanafi": {
+    "description": "Asr juristic method: Hanafi."
+  },
+  "prayerTimeMadhabShafiDesc": "العصر عندما يصير ظل الشيء مثله، وعليه المالكي والحنبلي أيضًا.",
+  "@prayerTimeMadhabShafiDesc": {
+    "description": "Asr begins when an object's shadow equals its length."
+  },
+  "prayerTimeMadhabHanafiDesc": "العصر عندما يصير ظل الشيء مثليه.",
+  "@prayerTimeMadhabHanafiDesc": {
+    "description": "Asr begins when an object's shadow is twice its length."
+  },
+  "prayerTimeCalcIntro": "اختر التقويم الذي تعتمده جهتك المحلية، وعدّل المواقيت يدويًا إن احتجت مطابقتها مع مسجد الحي.",
+  "@prayerTimeCalcIntro": {
+    "description": "Intro text above the prayer calculation settings."
+  },
+  "prayerTimeCalcMethod": "طريقة الحساب",
+  "@prayerTimeCalcMethod": {
+    "description": "Setting label and sheet title: prayer-time calculation method."
+  },
+  "prayerTimeCalcAsrMadhab": "مذهب حساب العصر",
+  "@prayerTimeCalcAsrMadhab": {
+    "description": "Setting label: juristic school used to compute Asr."
+  },
+  "prayerTimeMadhabShafiShort": "الشافعي",
+  "@prayerTimeMadhabShafiShort": {
+    "description": "Short segmented-button label for the Shafi'i (standard) Asr method."
+  },
+  "prayerTimeCalcHighLatitude": "خطوط العرض العالية",
+  "@prayerTimeCalcHighLatitude": {
+    "description": "Setting label and sheet title: high-latitude adjustment rule."
+  },
+  "prayerTimeCalcRamadanIsha": "تأخير العشاء في رمضان",
+  "@prayerTimeCalcRamadanIsha": {
+    "description": "Toggle: delay Isha during Ramadan."
+  },
+  "prayerTimeCalcRamadanIshaHint": "يضيف ٣٠ دقيقة على العشاء طوال الشهر كما في تقويم أم القرى.",
+  "@prayerTimeCalcRamadanIshaHint": {
+    "description": "Hint of the Ramadan Isha toggle: adds 30 minutes to Isha for the whole month, as the Umm al-Qura calendar does."
+  },
+  "prayerTimeCalcRestoreDefaults": "استعادة إعدادات أم القرى",
+  "@prayerTimeCalcRestoreDefaults": {
+    "description": "Link that resets calculation settings to the Umm al-Qura defaults."
+  },
+  "prayerTimeCalcCustomAngles": "زوايا الحساب المخصصة",
+  "@prayerTimeCalcCustomAngles": {
+    "description": "Group title for the custom-method angles."
+  },
+  "prayerTimeCalcFajrAngle": "زاوية الفجر",
+  "@prayerTimeCalcFajrAngle": {
+    "description": "Stepper label: Fajr sun angle (degrees)."
+  },
+  "prayerTimeCalcIshaMode": "حساب العشاء",
+  "@prayerTimeCalcIshaMode": {
+    "description": "Setting label: how Isha is computed (angle or interval)."
+  },
+  "prayerTimeCalcIshaModeHint": "إمّا بزاوية الشفق، وإمّا بفاصل ثابت بعد المغرب.",
+  "prayerTimeCalcIshaAngle": "زاوية العشاء",
+  "@prayerTimeCalcIshaAngle": {
+    "description": "Stepper label: Isha sun angle (degrees)."
+  },
+  "prayerTimeCalcIshaAfterMaghrib": "العشاء بعد المغرب",
+  "@prayerTimeCalcIshaAfterMaghrib": {
+    "description": "Stepper label: minutes between Maghrib and Isha."
+  },
+  "prayerTimeCalcMaghribAngleToggle": "زاوية المغرب بدل الغروب",
+  "@prayerTimeCalcMaghribAngleToggle": {
+    "description": "Toggle: compute Maghrib by a twilight angle instead of sunset."
+  },
+  "prayerTimeCalcMaghribAngleToggleHint": "لِمن يعتمد زاوية شفق للمغرب بدل لحظة الغروب.",
+  "prayerTimeCalcMaghribAngle": "زاوية المغرب",
+  "@prayerTimeCalcMaghribAngle": {
+    "description": "Stepper label: Maghrib sun angle (degrees)."
+  },
+  "prayerTimeMinutesShort": "{value} د",
+  "@prayerTimeMinutesShort": {
+    "description": "Compact minutes value in a stepper, e.g. '+5 min' or '90 min'. {value} may carry a +/- sign. Use the language's short minute abbreviation.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeMinutesZero": "٠ د",
+  "@prayerTimeMinutesZero": {
+    "description": "Zero-minutes value in the manual adjustment stepper (same abbreviation as prayerTimeMinutesShort)."
+  },
+  "prayerTimeCalcManualAdjust": "تعديل يدوي لكل وقت",
+  "@prayerTimeCalcManualAdjust": {
+    "description": "Expandable row: manual per-prayer minute adjustments."
+  },
+  "prayerTimeCalcManualAdjustHint": "طابق المواقيت مع مسجد الحي دقيقة بدقيقة",
+  "@prayerTimeCalcManualAdjustHint": {
+    "description": "Hint: match the times with your local mosque minute by minute."
+  },
+  "prayerTimeCalcManualAdjustCount": "{count, plural, =1{وقت واحد معدّل يدويًا} =2{وقتان معدّلان يدويًا} few{{count} مواقيت معدّلة يدويًا} other{{count} من المواقيت معدّلة يدويًا}}",
+  "@prayerTimeCalcManualAdjustCount": {
+    "description": "How many prayer times have a manual adjustment.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeGenericPrayer": "الصلاة",
+  "@prayerTimeGenericPrayer": {
+    "description": "Generic word 'the prayer', used when the specific prayer is unknown (e.g. in an athan notification title)."
+  },
+  "prayerTimeAthanTitle": "أذان {prayer}",
+  "@prayerTimeAthanTitle": {
+    "description": "Athan notification title without a time. {prayer} is a prayer name (e.g. 'Dhuhr').",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAthanTitleWithTime": "أذان {prayer} • {time}",
+  "@prayerTimeAthanTitleWithTime": {
+    "description": "Athan notification title: prayer name and its time, e.g. 'Dhuhr Athan • 11:48'. Keep the • separator.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAthanBodyFajr": "حيّ على الصلاة — ابدأ يومك بنور الفجر.",
+  "@prayerTimeAthanBodyFajr": {
+    "description": "One-line athan notification body for Fajr: 'Come to prayer — start your day with the light of dawn.'"
+  },
+  "prayerTimeAthanBodyDhuhr": "اجعلها استراحة قلب.",
+  "@prayerTimeAthanBodyDhuhr": {
+    "description": "Athan notification body for Dhuhr: 'Make it a rest for the heart.'"
+  },
+  "prayerTimeAthanBodyAsr": "جدّد حضورك مع الله.",
+  "@prayerTimeAthanBodyAsr": {
+    "description": "Athan notification body for Asr: 'Renew your presence with Allah.'"
+  },
+  "prayerTimeAthanBodyMaghrib": "اختم يومك بطاعة وسكينة.",
+  "@prayerTimeAthanBodyMaghrib": {
+    "description": "Athan notification body for Maghrib: 'Close your day with obedience and serenity.'"
+  },
+  "prayerTimeAthanBodyIsha": "لا تفوّت ختام الصلوات.",
+  "@prayerTimeAthanBodyIsha": {
+    "description": "Athan notification body for Isha: 'Don't miss the last prayer of the day.'"
+  },
+  "prayerTimeAthanBodyDefault": "تقبّل الله طاعتك.",
+  "@prayerTimeAthanBodyDefault": {
+    "description": "Athan notification body fallback: 'May Allah accept your worship.'"
+  },
+  "prayerTimeAthanExpandedHint": "اضغط لفتح تنبيه الصلاة والتفاصيل.",
+  "@prayerTimeAthanExpandedHint": {
+    "description": "Second line of the expanded athan notification: tap to open the prayer alert and details."
+  },
+  "prayerTimeAthanTicker": "حان الآن أذان {prayer}",
+  "@prayerTimeAthanTicker": {
+    "description": "Accessibility/status-bar ticker of the athan notification: 'It is now time for the {prayer} athan'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAlertNow": "حان الآن وقت الصلاة",
+  "@prayerTimeAlertNow": {
+    "description": "Athan alert screen: 'It is now time for prayer', shown above the prayer name."
+  },
+  "prayerTimeAlertMessage": "أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.",
+  "@prayerTimeAlertMessage": {
+    "description": "Athan alert screen encouragement: 'Pray with humility; it is light for the heart and calm for the soul.'"
+  },
+  "prayerTimeAlertReady": "تم الاستعداد للصلاة",
+  "@prayerTimeAlertReady": {
+    "description": "Main button on the athan alert screen: 'I'm ready for prayer' (dismisses the screen)."
+  },
+  "prayerTimeAlertOpenTimes": "فتح صفحة أوقات الصلاة",
+  "@prayerTimeAlertOpenTimes": {
+    "description": "Link on the athan alert screen that opens the prayer times page."
+  },
+  "prayerTimeTitle": "أوقات الصلاة",
+  "@prayerTimeTitle": {
+    "description": "Title of the prayer times screen."
+  },
+  "prayerTimeSettingsTitle": "إعدادات أوقات الصلاة",
+  "@prayerTimeSettingsTitle": {
+    "description": "Title of the prayer times settings screen (also the settings button tooltip)."
+  },
+  "prayerTimeSheetAthanTime": "وقت الأذان",
+  "@prayerTimeSheetAthanTime": {
+    "description": "Details sheet row: time of the athan."
+  },
+  "prayerTimeSheetUntilDhuhr": "حتى الظهر",
+  "@prayerTimeSheetUntilDhuhr": {
+    "description": "Details sheet row label for Sunrise: time from sunrise until Dhuhr."
+  },
+  "prayerTimeSheetWindow": "مدّة النافذة",
+  "@prayerTimeSheetWindow": {
+    "description": "Details sheet row: duration of the prayer's time window (until the next prayer)."
+  },
+  "prayerTimeSheetShift": "الفارق عن اليوم",
+  "@prayerTimeSheetShift": {
+    "description": "Details sheet row: difference compared with the same prayer today."
+  },
+  "prayerTimeWeekdaySat": "سبت",
+  "@prayerTimeWeekdaySat": {
+    "description": "Very short weekday names (about 3 letters) for the weekly prayer table header."
+  },
+  "prayerTimeWeekdaySun": "أحد",
+  "prayerTimeWeekdayMon": "إثن",
+  "prayerTimeWeekdayTue": "ثلا",
+  "prayerTimeWeekdayWed": "أرب",
+  "prayerTimeWeekdayThu": "خمي",
+  "prayerTimeWeekdayFri": "جمع",
+  "prayerTimeLessThanMinute": "أقل من دقيقة",
+  "@prayerTimeLessThanMinute": {
+    "description": "Duration shorter than one minute."
+  },
+  "prayerTimeHoursShort": "{hours} س",
+  "@prayerTimeHoursShort": {
+    "description": "Compact duration in hours, e.g. '2 h'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeHoursMinutesShort": "{hours} س {minutes} د",
+  "@prayerTimeHoursMinutesShort": {
+    "description": "Compact duration, e.g. '2 h 15 min'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeShiftSameDay": "اليوم نفسه",
+  "@prayerTimeShiftSameDay": {
+    "description": "Shift value when the selected day is today itself."
+  },
+  "prayerTimeShiftNone": "بلا فارق",
+  "@prayerTimeShiftNone": {
+    "description": "Shift value: no difference from today."
+  },
+  "prayerTimeShiftLater": "متأخّر {minutes} د",
+  "@prayerTimeShiftLater": {
+    "description": "The prayer is {minutes} minutes later than today.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeShiftEarlier": "مبكّر {minutes} د",
+  "@prayerTimeShiftEarlier": {
+    "description": "The prayer is {minutes} minutes earlier than today.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeAm": "ص",
+  "@prayerTimeAm": {
+    "description": "Short AM marker shown after a 12-hour time."
+  },
+  "prayerTimePm": "م",
+  "@prayerTimePm": {
+    "description": "Short PM marker shown after a 12-hour time."
+  },
+  "prayerTimeLocationSourceManual": "اختيار يدوي",
+  "@prayerTimeLocationSourceManual": {
+    "description": "Location source: chosen manually by the user."
+  },
+  "prayerTimeLocationSourceDevice": "موقع الجهاز",
+  "@prayerTimeLocationSourceDevice": {
+    "description": "Location source: the device's GPS location."
+  },
+  "prayerTimeLocationPickHint": "اختر مدينة أو استخدم موقع الجهاز",
+  "@prayerTimeLocationPickHint": {
+    "description": "Hint when no location is set: choose a city or use the device location."
+  },
+  "prayerTimeLocationDetails": "{details} · {source}",
+  "@prayerTimeLocationDetails": {
+    "description": "Location subtitle: region/country details followed by the location source.",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeLocationNotSet": "لم يتم تحديد موقع بعد",
+  "@prayerTimeLocationNotSet": {
+    "description": "No location has been set yet."
+  },
+  "prayerTimeMyLocation": "موقعي الحالي",
+  "@prayerTimeMyLocation": {
+    "description": "Tooltip of the button that uses the device's current location."
+  },
+  "prayerTimeGrantPermission": "منح الصلاحية",
+  "@prayerTimeGrantPermission": {
+    "description": "Link/button that requests a system permission."
+  },
+  "prayerTimeEmptyWeekTitle": "حدّد موقعك ليظهر جدول الأسبوع",
+  "@prayerTimeEmptyWeekTitle": {
+    "description": "Empty state: set your location to show the weekly table."
+  },
+  "prayerTimeEmptyWeekSubtitle": "ابحث عن مدينتك أو استخدم موقع الجهاز",
+  "prayerTimeSetLocation": "تحديد الموقع",
+  "@prayerTimeSetLocation": {
+    "description": "Link that opens the location picker."
+  },
+  "prayerTimeWeekNeedsCity": "حدّد مدينتك لعرض مواقيت الأسبوع كاملًا",
+  "@prayerTimeWeekNeedsCity": {
+    "description": "Shown when only one day is available: set a city to see the whole week."
+  },
+  "prayerTimeWeekHint": "اسحب الجدول أفقيًا لبقية الأيام · المس أي وقت لتفاصيله",
+  "@prayerTimeWeekHint": {
+    "description": "Hint under the weekly table: swipe horizontally for more days; tap a time for details."
+  },
+  "prayerTimeNightPrayerHeader": "قيام الليل · {day}",
+  "@prayerTimeNightPrayerHeader": {
+    "description": "Section header for night-prayer (Qiyam al-Layl) times. {day} is 'Today', 'Tomorrow' or a weekday name.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeMidnight": "منتصف الليل",
+  "@prayerTimeMidnight": {
+    "description": "Islamic midnight (halfway between Maghrib and Fajr)."
+  },
+  "prayerTimeMidnightHint": "منتصف ما بين المغرب والفجر",
+  "prayerTimeLastThird": "الثلث الأخير",
+  "@prayerTimeLastThird": {
+    "description": "The last third of the night."
+  },
+  "prayerTimeLastThirdHint": "أفضل أوقات القيام والدعاء",
+  "@prayerTimeLastThirdHint": {
+    "description": "The best time for night prayer and supplication."
+  },
+  "prayerTimeLocationHeader": "الموقع",
+  "@prayerTimeLocationHeader": {
+    "description": "Section header: location."
+  },
+  "prayerTimeLocationUpdateFailed": "تعذر تحديث الموقع الحالي.",
+  "@prayerTimeLocationUpdateFailed": {
+    "description": "Fallback notice when the current location could not be updated."
+  },
+  "prayerTimeToday": "اليوم",
+  "@prayerTimeToday": {
+    "description": "Today."
+  },
+  "prayerTimeTomorrow": "غدًا",
+  "@prayerTimeTomorrow": {
+    "description": "Tomorrow."
+  },
+  "prayerTimeTablePrayerColumn": "الصلاة",
+  "@prayerTimeTablePrayerColumn": {
+    "description": "Header of the prayer-name column in the weekly table."
+  },
+  "prayerTimeSettingsCalcHeader": "طريقة حساب المواقيت",
+  "@prayerTimeSettingsCalcHeader": {
+    "description": "Settings section header: how prayer times are calculated."
+  },
+  "prayerTimeSettingsSilentHeader": "الصامت وقت الصلاة",
+  "@prayerTimeSettingsSilentHeader": {
+    "description": "Settings section header: silent mode during prayer."
+  },
+  "prayerTimeSilentNeedsPermission": "امنح صلاحية عدم الإزعاج أولًا حتى تعمل الميزة.",
+  "@prayerTimeSilentNeedsPermission": {
+    "description": "Snackbar: grant the Do Not Disturb permission first."
+  },
+  "prayerTimeSettingsSaved": "تم حفظ إعدادات أوقات الصلاة.",
+  "@prayerTimeSettingsSaved": {
+    "description": "Snackbar after saving prayer time settings."
+  },
+  "prayerTimeSilentHint": "يحوّل الجهاز إلى صامت مع وقت الصلاة ثم يعيد الصوت تلقائيًا.",
+  "@prayerTimeSilentHint": {
+    "description": "Explains the auto-silent feature: phone goes silent at prayer time, then sound is restored automatically."
+  },
+  "prayerTimeSilentEnable": "تفعيل الصامت تلقائيًا",
+  "@prayerTimeSilentEnable": {
+    "description": "Toggle: enable automatic silent mode."
+  },
+  "prayerTimeSilentPermissionNote": "تحتاج الميزة صلاحية «عدم الإزعاج» من النظام.",
+  "@prayerTimeSilentPermissionNote": {
+    "description": "Note: the feature needs the system 'Do Not Disturb' access permission."
+  },
+  "prayerTimeSilentDuration": "مدة الصامت بعد الصلاة",
+  "@prayerTimeSilentDuration": {
+    "description": "Label: how long the phone stays silent after the prayer time."
+  },
+  "prayerTimeMinutesSuffix": "د",
+  "@prayerTimeMinutesSuffix": {
+    "description": "Short 'min' suffix after a minutes input field."
+  },
+  "prayerTimeSaving": "جارِ الحفظ",
+  "@prayerTimeSaving": {
+    "description": "Save button while saving."
+  },
+  "prayerTimeSaveSettings": "حفظ الإعدادات",
+  "@prayerTimeSaveSettings": {
+    "description": "Save settings button."
+  },
+  "prayerTimeSavedLocation": "الموقع المحفوظ",
+  "@prayerTimeSavedLocation": {
+    "description": "Fallback name of the user's saved location when no place name was stored."
+  },
+  "prayerTimePickerMapPointLabel": "موقع محدد على الخريطة",
+  "@prayerTimePickerMapPointLabel": {
+    "description": "Fallback name for a point picked on the map when no place name is found."
+  },
+  "prayerTimePickerResolving": "جارِ قراءة اسم الموقع المحدد...",
+  "@prayerTimePickerResolving": {
+    "description": "Map picker: looking up the name of the tapped point."
+  },
+  "prayerTimePickerTapMap": "اضغط على الخريطة لتحديد المنطقة",
+  "@prayerTimePickerTapMap": {
+    "description": "Map picker hint: tap the map to set the area."
+  },
+  "prayerTimePickerTitle": "اختيار المنطقة",
+  "@prayerTimePickerTitle": {
+    "description": "Title of the location picker sheet."
+  },
+  "prayerTimePickerSubtitle": "ابحث أو حدّد نقطة من الخريطة",
+  "@prayerTimePickerSubtitle": {
+    "description": "Subtitle of the location picker: search, or pick a point on the map."
+  },
+  "prayerTimePickerUsingDevice": "جارِ استخدام موقع الجهاز...",
+  "@prayerTimePickerUsingDevice": {
+    "description": "Button while the device location is being fetched."
+  },
+  "prayerTimePickerUseDevice": "استخدام موقع الجهاز الحالي",
+  "@prayerTimePickerUseDevice": {
+    "description": "Button: use the device's current location."
+  },
+  "prayerTimePickerMapTab": "الخريطة",
+  "@prayerTimePickerMapTab": {
+    "description": "Tab label: map."
+  },
+  "prayerTimePickerSearchHint": "اسم المدينة أو الدولة",
+  "@prayerTimePickerSearchHint": {
+    "description": "Search field hint: city or country name."
+  },
+  "prayerTimePickerNoResults": "لم نعثر على نتائج مطابقة",
+  "@prayerTimePickerNoResults": {
+    "description": "No matching search results."
+  },
+  "prayerTimePickerStartTyping": "ابدأ بكتابة اسم المدينة",
+  "@prayerTimePickerStartTyping": {
+    "description": "Empty search state: start typing a city name."
+  },
+  "prayerTimePickerTapMapToChoose": "اضغط على الخريطة لاختيار المنطقة",
+  "@prayerTimePickerTapMapToChoose": {
+    "description": "Map picker footer hint when nothing is selected yet."
+  },
+  "prayerTimePickerApplying": "جارِ الاعتماد",
+  "@prayerTimePickerApplying": {
+    "description": "Apply button while applying the chosen location."
+  },
+  "prayerTimePickerApply": "اعتماد",
+  "@prayerTimePickerApply": {
+    "description": "Button that confirms the chosen location."
+  },
+  "prayerTimeCurrentLabel": "الحالية {prayer}",
+  "@prayerTimeCurrentLabel": {
+    "description": "Shows the current prayer, e.g. 'Current: Asr'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeNextLabel": "القادمة {prayer}",
+  "@prayerTimeNextLabel": {
+    "description": "Shows the next prayer, e.g. 'Next: Maghrib'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeEnableLocation": "تفعيل الموقع",
+  "@prayerTimeEnableLocation": {
+    "description": "Button that turns on the device location service."
+  },
+  "prayerTimeTimelineEmptyTitle": "لا يمكن عرض مواقيت الصلاة قبل تحديد المنطقة",
+  "@prayerTimeTimelineEmptyTitle": {
+    "description": "Empty state: prayer times cannot be shown before an area is set."
+  },
+  "prayerTimeTimelineEmptySubtitle": "اختر مدينة يدويًا أو استخدم موقع الجهاز الحالي",
+  "prayerTimeTimelineChooseArea": "اختيار منطقة",
+  "@prayerTimeTimelineChooseArea": {
+    "description": "Link that opens the area picker."
+  },
+  "prayerTimeNow": "الآن",
+  "@prayerTimeNow": {
+    "description": "Badge on the prayer whose time is now (current prayer)."
+  },
+  "prayerTimeNextBadge": "التالية",
+  "@prayerTimeNextBadge": {
+    "description": "Badge on the next prayer ('Next'). Feminine in Arabic because 'prayer' is feminine."
+  },
+  "prayerTimeRowNext": "الصلاة القادمة",
+  "@prayerTimeRowNext": {
+    "description": "Row subtitle: the upcoming prayer."
+  },
+  "prayerTimeRowCompleted": "انتهى وقتها",
+  "@prayerTimeRowCompleted": {
+    "description": "Row subtitle: this prayer's time has passed."
+  },
+  "prayerTimeRowLocalTime": "الوقت المحلي",
+  "@prayerTimeRowLocalTime": {
+    "description": "Row subtitle: local time."
+  },
+  "prayerTimeLoadingTimes": "جاري تحميل المواقيت",
+  "@prayerTimeLoadingTimes": {
+    "description": "Placeholder while prayer times load."
+  },
+  "prayerTimeLocatingShort": "جاري تحديد الموقع",
+  "@prayerTimeLocatingShort": {
+    "description": "Placeholder while the location is being determined."
+  },
+  "prayerTimeNoticeUnavailable": "فعّل الموقع أو امنح الصلاحية لعرض مواقيت الصلاة بدقة.",
+  "@prayerTimeNoticeUnavailable": {
+    "description": "Notice when prayer times are unavailable: enable location or grant permission."
+  },
+  "prayerTimeNoticeServiceOffSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. فعّل الموقع لتحديثها تلقائيًا.",
+  "@prayerTimeNoticeServiceOffSaved": {
+    "description": "Location service is off; times use the last saved location."
+  },
+  "prayerTimeNoticeServiceOff": "خدمة الموقع غير مفعلة. فعّلها لعرض مواقيت الصلاة حسب موقعك الحالي.",
+  "prayerTimeNoticePermissionDeniedSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. اسمح بالوصول للموقع لتحديثها الآن.",
+  "@prayerTimeNoticePermissionDeniedSaved": {
+    "description": "Location permission denied; times use the last saved location."
+  },
+  "prayerTimeNoticePermissionDenied": "صلاحية الموقع غير ممنوحة. اسمح بها لعرض المواقيت حسب موقعك الحالي.",
+  "prayerTimeNoticeDeniedForeverSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. افتح الإعدادات لإعادة تفعيل صلاحية الموقع.",
+  "@prayerTimeNoticeDeniedForeverSaved": {
+    "description": "Location permission permanently denied; times use the last saved location."
+  },
+  "prayerTimeNoticeDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات وفعّلها لعرض المواقيت بدقة.",
+  "prayerTimeNoticeErrorSaved": "تعذر تحديث الموقع الآن، لذلك يتم استخدام آخر موقع محفوظ للمستخدم.",
+  "@prayerTimeNoticeErrorSaved": {
+    "description": "Location update failed; the last saved location is used."
+  },
+  "prayerTimeNoticeError": "تعذر تحديد الموقع حاليًا. فعّل الموقع أو اسمح بالصلاحية لإظهار المواقيت.",
+  "prayerTimeOpenSettings": "فتح الإعدادات",
+  "@prayerTimeOpenSettings": {
+    "description": "Button that opens the system app settings."
+  },
+  "prayerTimeCountdownNow": "حان الآن وقت {prayer}",
+  "@prayerTimeCountdownNow": {
+    "description": "Countdown line when the prayer time has arrived.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeCountdownUnderMinute": "{prayer} بعد أقل من دقيقة",
+  "@prayerTimeCountdownUnderMinute": {
+    "description": "Countdown: prayer in less than a minute.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeCountdownMinutes": "{prayer} بعد {minutes, plural, =1{دقيقة واحدة} =2{دقيقتين} few{{minutes} دقائق} other{{minutes} دقيقة}}",
+  "@prayerTimeCountdownMinutes": {
+    "description": "Countdown: prayer in N minutes (1-59).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCountdownHours": "{prayer} بعد {hours, plural, =1{ساعة} =2{ساعتين} few{{hours} ساعات} other{{hours} ساعة}}",
+  "@prayerTimeCountdownHours": {
+    "description": "Countdown: prayer in N whole hours.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCountdownHoursMinutes": "{prayer} بعد {hours} س {minutes} د",
+  "@prayerTimeCountdownHoursMinutes": {
+    "description": "Countdown: prayer in H hours M minutes, compact ('h'/'min' abbreviations).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingNow": "حان الوقت",
+  "@prayerTimeRemainingNow": {
+    "description": "Short remaining-time label when the time has come."
+  },
+  "prayerTimeRemainingMinutes": "بقي {minutes} د",
+  "@prayerTimeRemainingMinutes": {
+    "description": "Short remaining time, e.g. '45 min left'.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingHours": "بقي {hours} س",
+  "@prayerTimeRemainingHours": {
+    "description": "Short remaining time, e.g. '2 h left'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingHoursMinutes": "بقي {hours} س {minutes} د",
+  "@prayerTimeRemainingHoursMinutes": {
+    "description": "Short remaining time, e.g. '2 h 5 min left'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCurrentLocationFallback": "الموقع الحالي",
+  "@prayerTimeCurrentLocationFallback": {
+    "description": "Fallback location label: 'Current location'."
+  },
+  "prayerTimeYouAreInTime": "أنت الآن في وقت",
+  "@prayerTimeYouAreInTime": {
+    "description": "Label above the current prayer name on the home sky panel: 'You are now in the time of'. Followed by the prayer name on the next line."
+  },
+  "prayerTimeBoardHijriLine": "{hijri} · توقيت أم القرى",
+  "@prayerTimeBoardHijriLine": {
+    "description": "Hijri date followed by the note that the calendar is Umm al-Qura.",
+    "placeholders": {
+      "hijri": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAllTimes": "كل المواقيت",
+  "@prayerTimeAllTimes": {
+    "description": "Link that opens all prayer times."
+  },
+  "prayerTimeMuteAthan": "كتم أذان هذه الصلاة",
+  "@prayerTimeMuteAthan": {
+    "description": "Tooltip: mute the athan for this prayer."
+  },
+  "prayerTimeUnmuteAthan": "تشغيل أذان هذه الصلاة",
+  "@prayerTimeUnmuteAthan": {
+    "description": "Tooltip: turn on the athan for this prayer."
+  },
+  "prayerTimeQuickMushaf": "المصحف",
+  "@prayerTimeQuickMushaf": {
+    "description": "Quick action: the Quran (Mushaf)."
+  },
+  "prayerTimeQuickPrayerTimes": "مواقيت الصلاة",
+  "@prayerTimeQuickPrayerTimes": {
+    "description": "Quick action: prayer times."
+  },
+  "prayerTimeQuickAdhkar": "مكتبة الأذكار",
+  "@prayerTimeQuickAdhkar": {
+    "description": "Quick action: the adhkar library."
+  },
+  "prayerTimeErrorLoad": "تعذر تحميل مواقيت الصلاة حاليًا",
+  "@prayerTimeErrorLoad": {
+    "description": "Location/status notice: prayer times could not be loaded."
+  },
+  "prayerTimeErrorUpdateArea": "تعذر تحديث المنطقة المختارة",
+  "@prayerTimeErrorUpdateArea": {
+    "description": "Notice: the selected area could not be applied."
+  },
+  "prayerTimeErrorApplySettings": "تعذر تحديث المواقيت بالإعدادات الجديدة",
+  "@prayerTimeErrorApplySettings": {
+    "description": "Notice: prayer times could not be recalculated with the new settings."
+  },
+  "prayerTimeErrorServiceOff": "خدمة الموقع غير مفعلة. فعّلها أو اختر مدينة يدويًا.",
+  "@prayerTimeErrorServiceOff": {
+    "description": "Notice: location service is off; enable it or pick a city manually."
+  },
+  "prayerTimeErrorPermission": "يلزم منح صلاحية الموقع أو اختيار مدينة يدويًا.",
+  "@prayerTimeErrorPermission": {
+    "description": "Notice: location permission is needed, or pick a city manually."
+  },
+  "prayerTimeErrorDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات أو اختر مدينة.",
+  "@prayerTimeErrorDeniedForever": {
+    "description": "Notice: location permission permanently denied; open settings or pick a city."
+  },
+  "prayerTimeErrorDeviceLocation": "تعذر تحديد موقع الجهاز حاليًا",
+  "@prayerTimeErrorDeviceLocation": {
+    "description": "Notice: the device location could not be determined."
+  },
+  "homeWidgetsPinFailed": "تعذّر فتح نافذة الإضافة. أضفها يدويًا من الشاشة الرئيسية.",
+  "@homeWidgetsPinFailed": {
+    "description": "Toast: the system 'add widget' dialog could not be opened; add it manually from the home screen."
+  },
+  "homeWidgetsSyncSuccess": "تم تحديث الودجات",
+  "@homeWidgetsSyncSuccess": {
+    "description": "Toast after refreshing the home-screen widgets."
+  },
+  "homeWidgetsSyncFailed": "تعذّر التحديث. تأكّد من تحديد موقعك.",
+  "@homeWidgetsSyncFailed": {
+    "description": "Toast: widget refresh failed; make sure a location is set."
+  },
+  "homeWidgetsAddTooltip": "إضافة إلى الشاشة الرئيسية",
+  "@homeWidgetsAddTooltip": {
+    "description": "Tooltip of the button that pins a widget to the home screen."
+  },
+  "homeWidgetsTitle": "ودجات الشاشة الرئيسية",
+  "@homeWidgetsTitle": {
+    "description": "Title of the home-screen widgets page. Use the platform's usual word for 'widgets'."
+  },
+  "homeWidgetsHowToHeader": "طريقة الإضافة",
+  "@homeWidgetsHowToHeader": {
+    "description": "Group title: how to add a widget."
+  },
+  "homeWidgetsHowToAndroid": "اضغط زر الإضافة بجانب الودجت، أو اضغط مطوّلًا على مساحة فارغة في الشاشة الرئيسية ثم «التطبيقات المصغّرة» وابحث عن «{appName}».",
+  "@homeWidgetsHowToAndroid": {
+    "description": "Android instructions for adding a widget. «التطبيقات المصغّرة» is Android's 'Widgets' menu — use the name Android shows in the target language. {appName} is the app name.",
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWidgetsHowToIos": "اضغط مطوّلًا على مساحة فارغة في الشاشة الرئيسية، ثم زر «+» أعلى الشاشة، وابحث عن «{appName}». ودجت الصلاة القادمة متاحة أيضًا لشاشة القفل.",
+  "@homeWidgetsHowToIos": {
+    "description": "iOS instructions for adding a widget. {appName} is the app name.",
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWidgetsListHeader": "الودجات",
+  "@homeWidgetsListHeader": {
+    "description": "Group title listing the available widgets."
+  },
+  "homeWidgetsNextPrayerTitle": "الصلاة القادمة",
+  "@homeWidgetsNextPrayerTitle": {
+    "description": "Widget name: Next prayer."
+  },
+  "homeWidgetsNextPrayerSubtitleAndroid": "اسم الصلاة ووقتها مع عدّ تنازلي حيّ",
+  "@homeWidgetsNextPrayerSubtitleAndroid": {
+    "description": "Android: prayer name and time with a live countdown."
+  },
+  "homeWidgetsNextPrayerSubtitleIos": "صغيرة · وشاشة القفل بثلاثة أشكال",
+  "@homeWidgetsNextPrayerSubtitleIos": {
+    "description": "iOS: small size, plus the lock screen in three styles."
+  },
+  "homeWidgetsTodayTimesTitle": "مواقيت اليوم",
+  "@homeWidgetsTodayTimesTitle": {
+    "description": "Widget name: Today's prayer times."
+  },
+  "homeWidgetsTodayTimesSubtitle": "الصلوات الستّ مع التاريخ الهجري والمدينة",
+  "@homeWidgetsTodayTimesSubtitle": {
+    "description": "The six prayer times with the Hijri date and city."
+  },
+  "homeWidgetsDailyAyahTitle": "آية اليوم",
+  "@homeWidgetsDailyAyahTitle": {
+    "description": "Widget name: Verse of the day."
+  },
+  "homeWidgetsDailyAyahSubtitle": "آية قصيرة تتجدّد كل يوم",
+  "@homeWidgetsDailyAyahSubtitle": {
+    "description": "A short Quran verse that changes every day."
+  },
+  "homeWidgetsSyncHeader": "المزامنة",
+  "@homeWidgetsSyncHeader": {
+    "description": "Group title: sync."
+  },
+  "homeWidgetsSyncNow": "تحديث الودجات الآن",
+  "@homeWidgetsSyncNow": {
+    "description": "Row: refresh the widgets now."
+  },
+  "homeWidgetsSyncSubtitle": "يحسب مواقيت {days, plural, =1{يومًا واحدًا} =2{يومين} few{{days} أيام} many{{days} يومًا} other{{days} يوم}} بموقعك وإعداداتك الحالية",
+  "@homeWidgetsSyncSubtitle": {
+    "description": "Refresh row subtitle: computes prayer times for {days} days with your current location and settings.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeWidgetsSyncHint": "الودجات تعمل {days, plural, =1{يومًا واحدًا} =2{يومين} few{{days} أيام} many{{days} يومًا} other{{days} يوم}} دون فتح التطبيق، وتتجدّد تلقائيًا في الخلفية. تتحدّث وحدها عند تغيير موقعك أو طريقة الحساب.",
+  "@homeWidgetsSyncHint": {
+    "description": "Hint: widgets keep working for {days} days without opening the app and refresh automatically in the background; they update when location or calculation method changes.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
+}

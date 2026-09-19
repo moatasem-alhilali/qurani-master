@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_library/quran_library.dart';
 
 enum RadioPlaybackStatus {
@@ -50,9 +51,9 @@ class RadioAudioService {
     try {
       final mediaItem = MediaItem(
         id: station.id.toString(),
-        album: 'Radio',
+        album: L10nService.current.radioTitle,
         title: station.name,
-        artist: 'Quran Radio',
+        artist: L10nService.current.cleanupRadioMediaArtist,
         artUri:
             station.imageUrl.isNotEmpty ? Uri.parse(station.imageUrl) : null,
       );

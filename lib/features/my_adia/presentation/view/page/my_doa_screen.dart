@@ -15,6 +15,7 @@ import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/add_dhikr_dialog.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أدعيتي: أدعية أضافها المستخدم بنفسه، ولكلٍّ عدّاد ترديد لليوم.
 ///
@@ -40,7 +41,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
 
     return GroundScaffoldTheme(
       child: AppScaffoldWidget(
-        title: 'أدعيتي',
+        title: context.l10n.myDuasTitle,
         onRefresh: () async {
           context.read<SabihBloc>().add(RefreshAllSubihEvent());
         },
@@ -52,7 +53,9 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
               if (state.actionState == RequestState.error) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.errorMessage ?? 'تعذر تنفيذ العملية.'),
+                    content: Text(
+                      state.errorMessage ?? context.l10n.myDuasActionFailed,
+                    ),
                   ),
                 );
               }
@@ -73,8 +76,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
                     return SliverFillRemaining(
                       hasScrollBody: false,
                       child: _emptyState(
-                        title: 'لا توجد أدعية مضافة',
-                        message: 'هذا القسم يعرض الأدعية التي أضفتها أنت فقط.',
+                        title: context.l10n.myDuasEmptyCustomTitle,
+                        message: context.l10n.myDuasEmptyCustomMessage,
                       ),
                     );
                   }
@@ -135,8 +138,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
                 onEmptyList: SliverFillRemaining(
                   hasScrollBody: false,
                   child: _emptyState(
-                    title: 'لا توجد أدعية بعد',
-                    message: 'أضف دعاءك الأول وسيظهر هنا مباشرة.',
+                    title: context.l10n.myDuasEmptyTitle,
+                    message: context.l10n.myDuasEmptyMessage,
                   ),
                 ),
               );
@@ -145,7 +148,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         ],
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddDhikrDialog,
-          tooltip: 'إضافة دعاء جديد',
+          tooltip: context.l10n.myDuasAddNew,
           backgroundColor: AppColors.gold,
           foregroundColor:
               skin.isDark ? AppColors.brandNight : AppColors.brandIvory,
@@ -164,7 +167,7 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
       title: title,
       message: message,
       icon: AppIcons.dailyWird,
-      actionLabel: 'إضافة دعاء',
+      actionLabel: context.l10n.myDuasAdd,
       onAction: _showAddDhikrDialog,
     );
   }
@@ -175,8 +178,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         value: context.read<SabihBloc>(),
         child: const AddDhikrDialog(),
       ),
-      title: 'إضافة دعاء جديد',
-      subtitle: 'اكتب الدعاء ليظهر ضمن أدعيتك الخاصة.',
+      title: context.l10n.myDuasAddNew,
+      subtitle: context.l10n.myDuasAddSubtitle,
     );
   }
 
@@ -186,8 +189,8 @@ class _MuDoaScreenState extends State<MuDoaScreen> {
         value: context.read<SabihBloc>(),
         child: AddDhikrDialog(subihToEdit: subih),
       ),
-      title: 'تعديل الدعاء',
-      subtitle: 'يمكنك تعديل النص أو الوصف وحفظ التغييرات مباشرة.',
+      title: context.l10n.myDuasEditTitle,
+      subtitle: context.l10n.myDuasEditSubtitle,
     );
   }
 
@@ -229,14 +232,14 @@ class _SummaryStrip extends StatelessWidget {
             children: [
               Expanded(
                 child: _SummaryStat(
-                  label: 'عدد الأدعية',
+                  label: context.l10n.myDuasCountLabel,
                   value: '$totalItems',
                 ),
               ),
               Container(width: 1, height: 22.h, color: skin.hairline),
               Expanded(
                 child: _SummaryStat(
-                  label: 'ترديد اليوم',
+                  label: context.l10n.myDuasTodayLabel,
                   value: '$totalToday',
                 ),
               ),

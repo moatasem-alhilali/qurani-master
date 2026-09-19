@@ -13,6 +13,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_sliver_widget.dart';
 import 'package:quran_app/features/download/presentation/bloc/download_bloc.dart';
 import 'package:quran_app/features/download/presentation/view/widgets/add_download_widget.dart';
 import 'package:quran_app/features/download/presentation/view/widgets/download_item_widget.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة التنزيلات.
 ///
@@ -53,7 +54,7 @@ class _DownloadScreenState extends State<DownloadScreen>
           buildWhen: (prev, curr) => prev.loadState != curr.loadState,
           builder: (context, state) {
             return AppScaffoldWidget(
-              title: 'التنزيلات',
+              title: context.l10n.downloadTitle,
               onRefresh: () async {
                 context.read<DownloadBloc>().add(LoadDownloadTasksEvent());
               },
@@ -66,12 +67,13 @@ class _DownloadScreenState extends State<DownloadScreen>
               ],
               body: BlocConsumer<DownloadBloc, DownloadState>(
                 listener: (context, state) {
-                  final message = state.errorMessage;
+                  // errorMessage holds the technical (English) cause for
+                  // logs; the user sees a localized message.
                   if (state.loadState == RequestState.error &&
-                      message != null) {
+                      state.errorMessage != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(message),
+                        content: Text(context.l10n.cleanupDownloadActionFailed),
                         backgroundColor: AppColors.error,
                       ),
                     );
@@ -83,27 +85,27 @@ class _DownloadScreenState extends State<DownloadScreen>
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        const _DownloadList(
-                          emptyText: 'لا توجد تنزيلات بعد، أضف تنزيلاً للبدء.',
+                        _DownloadList(
+                          emptyText: context.l10n.downloadEmptyAll,
                         ),
-                        const _DownloadList(
-                          statuses: [
+                        _DownloadList(
+                          statuses: const [
                             DownloadTaskStatus.running,
                             DownloadTaskStatus.enqueued,
                           ],
-                          emptyText: 'لا توجد تنزيلات نشطة',
+                          emptyText: context.l10n.downloadEmptyActive,
                         ),
-                        const _DownloadList(
-                          statuses: [DownloadTaskStatus.complete],
-                          emptyText: 'لا توجد تنزيلات مكتملة',
+                        _DownloadList(
+                          statuses: const [DownloadTaskStatus.complete],
+                          emptyText: context.l10n.downloadEmptyCompleted,
                         ),
-                        const _DownloadList(
-                          statuses: [DownloadTaskStatus.paused],
-                          emptyText: 'لا توجد تنزيلات متوقّفة',
+                        _DownloadList(
+                          statuses: const [DownloadTaskStatus.paused],
+                          emptyText: context.l10n.downloadEmptyPaused,
                         ),
-                        const _DownloadList(
-                          statuses: [DownloadTaskStatus.failed],
-                          emptyText: 'لا توجد تنزيلات فاشلة',
+                        _DownloadList(
+                          statuses: const [DownloadTaskStatus.failed],
+                          emptyText: context.l10n.downloadEmptyFailed,
                         ),
                       ],
                     ),
@@ -120,8 +122,8 @@ class _DownloadScreenState extends State<DownloadScreen>
   Future<void> _showCancelAllDialog(BuildContext ctx) async {
     final result = await showDeleteConfirmationDialog<bool>(
       context,
-      title: 'إلغاء الكل',
-      message: 'هل أنت متأكد من إلغاء جميع التنزيلات النشطة؟',
+      title: context.l10n.downloadCancelAll,
+      message: context.l10n.downloadCancelAllConfirm,
     );
     if ((result ?? false) && ctx.mounted) {
       ctx.read<DownloadBloc>().add(CancelAllDownloadsEvent());
@@ -143,7 +145,7 @@ class _HeaderActions extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          tooltip: 'إضافة تنزيل',
+          tooltip: context.l10n.downloadAdd,
           onPressed: () {
             context.showBottomSheetUIHeader(
               child: BlocProvider.value(
@@ -173,7 +175,7 @@ class _HeaderActions extends StatelessWidget {
               value: 'refresh',
               height: 36.h,
               child: Text(
-                'تحديث',
+                context.l10n.commonRefresh,
                 style: TextStyle(
                   color: skin.ink,
                   fontSize: 11.sp,
@@ -185,7 +187,7 @@ class _HeaderActions extends StatelessWidget {
               value: 'cancel_all',
               height: 36.h,
               child: Text(
-                'إلغاء الكل',
+                context.l10n.downloadCancelAll,
                 style: TextStyle(
                   color: AppColors.error,
                   fontSize: 11.sp,
@@ -231,12 +233,12 @@ class _FilterTabs extends StatelessWidget {
             fontSize: 11.5.sp,
             fontWeight: FontWeight.w500,
           ),
-          tabs: const [
-            Tab(text: 'الكل'),
-            Tab(text: 'نشط'),
-            Tab(text: 'مكتمل'),
-            Tab(text: 'متوقّف'),
-            Tab(text: 'فشل'),
+          tabs: [
+            Tab(text: context.l10n.downloadFilterAll),
+            Tab(text: context.l10n.downloadStatusActive),
+            Tab(text: context.l10n.downloadStatusCompleted),
+            Tab(text: context.l10n.downloadStatusPaused),
+            Tab(text: context.l10n.downloadStatusFailed),
           ],
         ),
         Padding(

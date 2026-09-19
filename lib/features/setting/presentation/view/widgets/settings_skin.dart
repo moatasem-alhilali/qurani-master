@@ -211,7 +211,13 @@ class SettingsRow extends StatelessWidget {
             if (trailing != null)
               trailing!
             else if (onTap != null)
-              AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+              AppIcon(
+                Directionality.of(context) == TextDirection.rtl
+                    ? AppIcons.chevronLeft
+                    : AppIcons.chevronRight,
+                color: skin.accent,
+                size: 15.sp,
+              ),
           ],
         ),
       ),

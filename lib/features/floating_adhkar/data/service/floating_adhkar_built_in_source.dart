@@ -1,5 +1,6 @@
 import 'package:quran_app/core/services/json_loader_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_item.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FloatingAdhkarBuiltInSource {
   static const Set<String> _excludedKeys = {
@@ -16,6 +17,7 @@ class FloatingAdhkarBuiltInSource {
       raw['content_library'] as Map? ?? const {},
     );
 
+    final l10n = L10nService.current;
     final seenTexts = <String>{};
     final results = <FloatingAdhkarItem>[];
 
@@ -28,7 +30,9 @@ class FloatingAdhkarBuiltInSource {
       final item = Map<String, dynamic>.from(value);
       final text = (item['text'] as String? ?? '').trim();
       final title = (item['title'] as String? ?? '').trim();
-      final source = (item['source'] as String? ?? 'مكتبة التطبيق').trim();
+      final source =
+          (item['source'] as String? ?? l10n.floatingAdhkarSourceAppLibrary)
+              .trim();
 
       if (text.isEmpty) {
         continue;
@@ -42,11 +46,12 @@ class FloatingAdhkarBuiltInSource {
       results.add(
         FloatingAdhkarItem(
           id: 'builtin:${entry.key}',
-          title: title.isEmpty ? 'ذكر افتراضي' : title,
+          title: title.isEmpty ? l10n.floatingAdhkarDefaultDhikrTitle : title,
           text: text,
           sourceType: FloatingAdhkarSourceType.builtIn,
           sourceLabel: source,
-          originalTitle: title.isEmpty ? 'ذكر افتراضي' : title,
+          originalTitle:
+              title.isEmpty ? l10n.floatingAdhkarDefaultDhikrTitle : title,
           originalText: text,
         ),
       );

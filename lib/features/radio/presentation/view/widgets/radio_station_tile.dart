@@ -7,6 +7,7 @@ import 'package:quran_app/features/radio/data/models/radio_station_model.dart';
 import 'package:quran_app/features/radio/data/service/radio_favourites_store.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_station_artwork.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_waveform.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ محطة في القائمة.
 ///
@@ -45,8 +46,8 @@ class RadioStationTile extends StatelessWidget {
           duration: const Duration(milliseconds: 1400),
           content: Text(
             added
-                ? 'أُضيفت ${station.shortName} إلى المفضّلة'
-                : 'أُزيلت ${station.shortName} من المفضّلة',
+                ? context.l10n.radioAddedToFavourites(station.shortName)
+                : context.l10n.radioRemovedFromFavourites(station.shortName),
           ),
         ),
       );
@@ -89,7 +90,7 @@ class RadioStationTile extends StatelessWidget {
               builder: (context, ids, _) {
                 if (!ids.contains(station.id)) return const SizedBox.shrink();
                 return Padding(
-                  padding: EdgeInsets.only(left: 8.w),
+                  padding: EdgeInsetsDirectional.only(end: 8.w),
                   child: AppIcon(
                     AppIcons.heart,
                     color: skin.accent.withValues(alpha: 0.75),
@@ -100,7 +101,7 @@ class RadioStationTile extends StatelessWidget {
             ),
             if (isPlayingCurrent)
               Padding(
-                padding: EdgeInsets.only(left: 8.w),
+                padding: EdgeInsetsDirectional.only(end: 8.w),
                 child: const RadioWaveform(isActive: true, barCount: 3),
               ),
           ],

@@ -41,8 +41,8 @@ class _QuizResultView extends StatelessWidget {
                   children: [
                     Text(
                       result.passed
-                          ? 'أحسنت يا بطل'
-                          : 'أنت قريب من الإجابة الكاملة',
+                          ? context.l10n.youngMuslimQuizPassed
+                          : context.l10n.youngMuslimQuizAlmost,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -55,8 +55,10 @@ class _QuizResultView extends StatelessWidget {
                     SizedBox(height: 3.h),
                     // الكسر «٣ / ٥» ينقلب في الاتجاه العربي، فيُكتب بالعربية.
                     Text(
-                      'أجبت ${result.correctAnswers} من '
-                      '${result.totalQuestions} إجابة صحيحة',
+                      context.l10n.youngMuslimQuizScore(
+                        result.correctAnswers,
+                        result.totalQuestions,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: youngMuslimRowSubtitle(skin, size: 10.sp),
@@ -74,22 +76,23 @@ class _QuizResultView extends StatelessWidget {
             runSpacing: 6.h,
             children: [
               YoungMuslimMetricChip(
-                label: '$scorePercent٪',
+                label: context.l10n.youngMuslimPercent(scorePercent),
                 icon: AppIcons.target,
               ),
               YoungMuslimMetricChip(
-                label: '+${result.awardedXp} نقطة',
+                label: context.l10n.youngMuslimXpGained(result.awardedXp),
                 icon: AppIcons.star,
               ),
               YoungMuslimMetricChip(
-                label: 'المستوى ${result.rewardsSummary.level}',
+                label:
+                    context.l10n.youngMuslimLevel(result.rewardsSummary.level),
                 icon: AppIcons.checkSmall,
               ),
             ],
           ),
           if (result.newlyUnlockedAchievements.isNotEmpty) ...[
-            const YoungMuslimSectionHeader(
-              title: 'إنجازات جديدة',
+            YoungMuslimSectionHeader(
+              title: context.l10n.youngMuslimNewAchievements,
               padded: false,
             ),
             for (var i = 0; i < result.newlyUnlockedAchievements.length; i++)
@@ -98,8 +101,8 @@ class _QuizResultView extends StatelessWidget {
                 isLast: i == result.newlyUnlockedAchievements.length - 1,
               ),
           ],
-          const YoungMuslimSectionHeader(
-            title: 'مراجعة الإجابات',
+          YoungMuslimSectionHeader(
+            title: context.l10n.youngMuslimReviewAnswers,
             padded: false,
           ),
           for (var i = 0; i < result.answerReviews.length; i++)
@@ -109,7 +112,7 @@ class _QuizResultView extends StatelessWidget {
             ),
           SizedBox(height: 14.h),
           YoungMuslimPrimaryButton(
-            label: 'إنهاء',
+            label: context.l10n.youngMuslimFinish,
             icon: AppIcons.check,
             onTap: () => Navigator.of(context).pop(result),
           ),
@@ -178,13 +181,13 @@ class _AnswerReviewBlock extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           _AnswerLine(
-            title: 'إجابتك',
+            title: context.l10n.youngMuslimYourAnswer,
             value: review.submittedAnswer,
             color: accentColor,
           ),
           SizedBox(height: 8.h),
           _AnswerLine(
-            title: 'الإجابة الصحيحة',
+            title: context.l10n.youngMuslimCorrectAnswer,
             value: review.correctAnswer,
             color: skin.accent,
           ),
@@ -313,7 +316,7 @@ class _UnlockedAchievementRow extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           YoungMuslimMetricChip(
-            label: '+${achievement.xpReward} نقطة',
+            label: context.l10n.youngMuslimXpGained(achievement.xpReward),
             icon: AppIcons.star,
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// زرّ رجوع مستقلّ للشاشات التي تبني ترويستها بنفسها.
 ///
@@ -17,9 +18,9 @@ class BackIconWidget extends StatelessWidget {
 
     return IconButton(
       onPressed: () => context.pop(),
-      tooltip: 'رجوع',
+      tooltip: context.l10n.commonBack,
       icon: AppIcon(
-        AppIcons.backRight,
+        AppIcons.backFor(context),
         color: skin.accent,
         size: kAppBarIconSize,
       ),

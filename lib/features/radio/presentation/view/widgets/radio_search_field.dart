@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// بحث فوري في المحطات.
 ///
@@ -99,7 +100,7 @@ class _RadioSearchFieldState extends State<RadioSearchField> {
                   focusedBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 11.h),
-                  hintText: 'ابحث عن قارئ أو برنامج',
+                  hintText: context.l10n.radioSearchHint,
                   hintStyle: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.55),
                     fontSize: 11.sp,

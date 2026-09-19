@@ -36,7 +36,7 @@
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="1"
-            android:text="العصر"
+            android:text="@string/tw_preview_asr"
             android:textColor="@color/tw_accent"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -48,7 +48,7 @@
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="1"
-            android:text="3:15 م"
+            android:text="@string/tw_preview_time_asr"
             android:textColor="@color/tw_ink"
             android:textSize="14sp" />
 
@@ -73,7 +73,7 @@
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="1"
-            android:text="منطقة الرياض"
+            android:text="@string/tw_preview_city"
             android:textColor="@color/tw_ink_soft"
             android:textSize="11sp" />
     </LinearLayout>

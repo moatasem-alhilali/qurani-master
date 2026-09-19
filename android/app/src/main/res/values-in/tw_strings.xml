@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">Salat berikutnya</string>
+    <string name="tw_next_prayer_description">Nama dan waktu salat berikutnya dengan hitung mundur langsung</string>
+    <string name="tw_prayer_times_label">Jadwal hari ini</string>
+    <string name="tw_prayer_times_description">Jadwal salat beserta tanggal Hijriah dan kota</string>
+    <string name="tw_daily_ayah_label">Ayat hari ini</string>
+    <string name="tw_daily_ayah_description">Ayat pendek yang berganti setiap hari</string>
+    <string name="tw_open_app">Buka Tamaneena</string>
+    <string name="tw_set_location">Atur lokasi di aplikasi</string>
+    <string name="tw_refresh_needed">untuk memperbarui jadwal</string>
+</resources>

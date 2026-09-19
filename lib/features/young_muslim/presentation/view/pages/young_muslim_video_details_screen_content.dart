@@ -39,7 +39,9 @@ extension _YoungMuslimVideoDetailsScreenContent
             children: [
               Expanded(
                 child: YoungMuslimPrimaryButton(
-                  label: video.hasProgress ? 'متابعة المشاهدة' : 'تشغيل الآن',
+                  label: video.hasProgress
+                      ? context.l10n.youngMuslimResumeButton
+                      : context.l10n.youngMuslimPlayNow,
                   icon: AppIcons.play,
                   onTap: () => _openPlayer(video.id),
                 ),
@@ -48,7 +50,7 @@ extension _YoungMuslimVideoDetailsScreenContent
               YoungMuslimToggleButton(
                 icon: video.isFavorite ? AppIcons.heartFilled : AppIcons.heart,
                 active: video.isFavorite,
-                semanticLabel: 'المفضلة',
+                semanticLabel: context.l10n.youngMuslimFavorites,
                 size: 38.w,
                 onTap: () => context.read<YoungMuslimBloc>().add(
                       YoungMuslimFavoriteToggled(video.id),
@@ -60,7 +62,7 @@ extension _YoungMuslimVideoDetailsScreenContent
                     ? AppIcons.bookmark
                     : AppIcons.bookmarkAdd,
                 active: video.isWatchLater,
-                semanticLabel: 'سأشاهد لاحقًا',
+                semanticLabel: context.l10n.youngMuslimWatchLater,
                 size: 38.w,
                 onTap: () => context.read<YoungMuslimBloc>().add(
                       YoungMuslimWatchLaterToggled(video.id),
@@ -80,18 +82,18 @@ extension _YoungMuslimVideoDetailsScreenContent
         YoungMuslimStatStrip(
           cells: [
             YoungMuslimStatCell(
-              value: '$percent٪',
-              label: 'التقدّم',
+              value: context.l10n.youngMuslimPercent(percent),
+              label: context.l10n.youngMuslimProgress,
               icon: AppIcons.target,
             ),
             YoungMuslimStatCell(
               value: '${video.watchCount}',
-              label: 'مرات المشاهدة',
+              label: context.l10n.youngMuslimWatchCount,
               icon: AppIcons.replay,
             ),
             YoungMuslimStatCell(
               value: youngMuslimDuration(video.durationSeconds),
-              label: 'مدّة الحلقة',
+              label: context.l10n.youngMuslimEpisodeDuration,
               icon: AppIcons.clock,
             ),
           ],
@@ -100,46 +102,56 @@ extension _YoungMuslimVideoDetailsScreenContent
         Padding(
           padding: AppSkin.gutter,
           child: Text(
-            'آخر مشاهدة: ${youngMuslimRelative(video.lastWatchedAt)}',
+            context.l10n.youngMuslimLastWatched(
+              youngMuslimRelative(video.lastWatchedAt),
+            ),
             textAlign: TextAlign.center,
             style: youngMuslimRowSubtitle(skin),
           ),
         ),
         skin.divider(),
-        const HomeSectionHeader(title: 'معلومات الحلقة'),
-        YoungMuslimInfoRow(label: 'القصة', value: video.topicTitle),
-        YoungMuslimInfoRow(label: 'القسم', value: details.category.titleAr),
+        HomeSectionHeader(title: context.l10n.youngMuslimEpisodeInfo),
         YoungMuslimInfoRow(
-          label: 'السلسلة',
+          label: context.l10n.youngMuslimStory,
+          value: video.topicTitle,
+        ),
+        YoungMuslimInfoRow(
+          label: context.l10n.youngMuslimCategoryLabel,
+          value: details.category.titleAr,
+        ),
+        YoungMuslimInfoRow(
+          label: context.l10n.youngMuslimSeries,
           value: details.series.titleAr,
           isLast: video.episodeNumber == null,
         ),
         if (video.episodeNumber != null)
           YoungMuslimInfoRow(
-            label: 'رقم الحلقة',
+            label: context.l10n.youngMuslimEpisodeNumber,
             value: '${video.episodeNumber}',
             isLast: true,
           ),
         skin.divider(),
-        const HomeSectionHeader(title: 'أدوات الحلقة'),
+        HomeSectionHeader(title: context.l10n.youngMuslimEpisodeTools),
         if (details.videoQuiz != null)
           YoungMuslimActionRow(
             icon: AppIcons.target,
-            title: 'أسئلة الحلقة',
-            subtitle: 'أسئلة قصيرة تثبّت ما شاهده الطفل',
+            title: context.l10n.youngMuslimEpisodeQuestions,
+            subtitle: context.l10n.youngMuslimEpisodeQuestionsSubtitle,
             onTap: () {
               YoungMuslimQuizSheet.show(
                 context: context,
                 quizSet: details.videoQuiz!,
-                title: 'سؤال بعد المشاهدة',
+                title: context.l10n.youngMuslimAfterWatchQuestion,
               );
             },
           ),
         YoungMuslimActionRow(
           icon: AppIcons.star,
-          title: 'نقاطي وإنجازاتي',
-          subtitle: 'المستوى ${details.rewardsSummary.level}'
-              ' · ${details.rewardsSummary.xp} نقطة',
+          title: context.l10n.youngMuslimRewardsTitle,
+          subtitle: context.l10n.youngMuslimLevelAndPoints(
+            details.rewardsSummary.level,
+            details.rewardsSummary.xp,
+          ),
           isLast: true,
           onTap: () {
             YoungMuslimRewardsSheet.show(
@@ -151,7 +163,7 @@ extension _YoungMuslimVideoDetailsScreenContent
         ),
         if (details.nextVideo != null) ...[
           skin.divider(),
-          const HomeSectionHeader(title: 'الحلقة التالية'),
+          HomeSectionHeader(title: context.l10n.youngMuslimNextEpisode),
           RepaintBoundary(
             child: YoungMuslimVideoRow(
               video: details.nextVideo!,
@@ -169,7 +181,7 @@ extension _YoungMuslimVideoDetailsScreenContent
         ],
         if (details.similarVideos.isNotEmpty) ...[
           skin.divider(),
-          const HomeSectionHeader(title: 'حلقات مشابهة'),
+          HomeSectionHeader(title: context.l10n.youngMuslimSimilarEpisodes),
           RepaintBoundary(
             child: YoungMuslimVideoRail(
               videos: details.similarVideos,
@@ -193,8 +205,8 @@ extension _YoungMuslimVideoDetailsScreenContent
 
   Widget _buildErrorBody(BuildContext context, String? message) {
     return YoungMuslimEmptyState(
-      title: 'تعذّر تحميل تفاصيل الحلقة',
-      subtitle: message ?? 'حاول مرة أخرى بعد قليل.',
+      title: context.l10n.youngMuslimDetailsLoadError,
+      subtitle: message ?? context.l10n.youngMuslimTryAgainShortly,
       icon: AppIcons.warning,
     );
   }

@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// خامات السبحة. تُرسم برمجيًا بتدرّجات وعروق لا بصور، فلا تزيد حجم
 /// التطبيق ولا تحتاج نسخة لكل كثافة شاشة، وتبقى حادّة على أي مقاس.
 enum TasbihBeadMaterial {
-  walnut('جوز'),
-  oak('بلّوط'),
-  emerald('زمرّد'),
-  onyx('عقيق أسود'),
-  amber('كهرمان'),
-  mahogany('ماهوجني'),
-  sage('زيتوني'),
-  garnet('عقيق أحمر');
+  walnut,
+  oak,
+  emerald,
+  onyx,
+  amber,
+  mahogany,
+  sage,
+  garnet;
 
-  const TasbihBeadMaterial(this.label);
-
-  final String label;
+  /// اسم الخامة بلغة الواجهة.
+  String label(L10n l10n) => switch (this) {
+        TasbihBeadMaterial.walnut => l10n.sabihBeadWalnut,
+        TasbihBeadMaterial.oak => l10n.sabihBeadOak,
+        TasbihBeadMaterial.emerald => l10n.sabihBeadEmerald,
+        TasbihBeadMaterial.onyx => l10n.sabihBeadOnyx,
+        TasbihBeadMaterial.amber => l10n.sabihBeadAmber,
+        TasbihBeadMaterial.mahogany => l10n.sabihBeadMahogany,
+        TasbihBeadMaterial.sage => l10n.sabihBeadSage,
+        TasbihBeadMaterial.garnet => l10n.sabihBeadGarnet,
+      };
 
   TasbihBeadPalette get palette => switch (this) {
         TasbihBeadMaterial.walnut => const TasbihBeadPalette(

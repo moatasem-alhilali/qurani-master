@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_labels.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class NotificationSettingModel {
   NotificationSettingModel({
     required this.key,
-    required this.label,
+    required String label,
     required this.enabled,
     required this.scheduleType,
     this.id,
@@ -15,7 +17,7 @@ class NotificationSettingModel {
     this.intervalMinutes,
     this.weekdays,
     this.customDates,
-  });
+  }) : storedLabel = label;
 
   /// Converts a DB row (Map) to NotificationSettingModel instance
   factory NotificationSettingModel.fromMap(Map<String, dynamic> map) {
@@ -51,7 +53,19 @@ class NotificationSettingModel {
   }
   final int? id; // For DB autoincrement (optional)
   final String key; // e.g., 'isNotificationRandomThikr'
-  final String label; // e.g., 'Random Thikr'
+
+  /// The label as stored in the DB (seeded in Arabic). Kept only as a
+  /// fallback and written back unchanged by [toMap].
+  final String storedLabel;
+
+  /// Display label in the saved app language (no BuildContext needed — used
+  /// for scheduled notification titles). Falls back to [storedLabel] for
+  /// unknown keys and for dhikr whose name is the Arabic dhikr text itself.
+  String get label => NotificationLabels.resolve(key, fallback: storedLabel);
+
+  /// Display label for widgets, following the language of [l10n].
+  String displayLabel(L10n l10n) =>
+      NotificationLabels.resolve(key, fallback: storedLabel, l10n: l10n);
   final bool enabled; // is notification enabled
   final ScheduleType scheduleType;
   final int? hour;
@@ -65,7 +79,7 @@ class NotificationSettingModel {
   Map<String, dynamic> toMap() => {
         'id': id,
         'key': key,
-        'label': label,
+        'label': storedLabel,
         'value': enabled ? 1 : 0,
         'only_setting': onlySetting ? 1 : 0,
         'schedule_type': scheduleType.name,
@@ -117,7 +131,7 @@ class NotificationSettingModel {
     return NotificationSettingModel(
       id: id ?? this.id,
       key: key ?? this.key,
-      label: label ?? this.label,
+      label: label ?? storedLabel,
       onlySetting: onlySetting ?? this.onlySetting,
       enabled: enabled ?? this.enabled,
       scheduleType: scheduleType ?? this.scheduleType,

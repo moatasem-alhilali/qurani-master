@@ -36,7 +36,7 @@ extension MyTextAuto on String {
           ),
       minFontSize: minFontSize,
       maxLines: maxLines,
-      textAlign: textAlign ?? TextAlign.right,
+      textAlign: textAlign ?? TextAlign.start,
       overflow: overflow ?? TextOverflow.ellipsis,
     );
   }

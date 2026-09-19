@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/traveler/data/models/flight_prayer_models.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// رأس الرحلة: بطاقة صعود تقول أين أنت منها وما الصلاة القادمة على متنها.
 ///
@@ -94,7 +95,9 @@ class _FlightBoardingHeaderState extends State<FlightBoardingHeader> {
               ),
               const Spacer(),
               Text(
-                track.isLiveSource ? 'مسار مباشر' : track.sourceLabel,
+                track.isLiveSource
+                    ? context.l10n.travelerLiveTrack
+                    : track.sourceLabel,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.6),
                   fontSize: 8.5.sp,
@@ -111,7 +114,7 @@ class _FlightBoardingHeaderState extends State<FlightBoardingHeader> {
               _Endpoint(
                 label: track.originLabel,
                 time: track.departureUtc,
-                caption: 'الإقلاع',
+                caption: context.l10n.travelerTakeoff,
                 alignment: CrossAxisAlignment.start,
               ),
               Expanded(
@@ -123,7 +126,7 @@ class _FlightBoardingHeaderState extends State<FlightBoardingHeader> {
               _Endpoint(
                 label: track.destinationLabel,
                 time: track.arrivalUtc,
-                caption: 'الهبوط',
+                caption: context.l10n.travelerLanding,
                 alignment: CrossAxisAlignment.end,
               ),
             ],
@@ -223,9 +226,10 @@ class _ProgressTrack extends StatelessWidget {
           final width = constraints.maxWidth;
           // في العربية يُقرأ المشهد من اليمين لليسار، فالمنشأ يمينًا.
           final travelled = width * progress;
+          final isRtl = Directionality.of(context) == TextDirection.rtl;
 
           return Stack(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerStart,
             children: [
               Align(
                 child: Container(
@@ -237,7 +241,7 @@ class _ProgressTrack extends StatelessWidget {
                 ),
               ),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerStart,
                 child: Container(
                   height: 2.h,
                   width: travelled,
@@ -247,11 +251,11 @@ class _ProgressTrack extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                right: (travelled - 8).clamp(0.0, width - 16),
+              PositionedDirectional(
+                start: (travelled - 8).clamp(0.0, width - 16),
                 child: Transform.rotate(
-                  // الأيقونة تشير يمينًا أصلًا، والسير يسارًا.
-                  angle: 3.14159,
+                  // الأيقونة تشير يمينًا أصلًا؛ في RTL يكون السير يسارًا.
+                  angle: isRtl ? 3.14159 : 0,
                   child: AppIcon(
                     AppIcons.flight,
                     color: skin.accent,
@@ -297,15 +301,16 @@ class _NextAboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
     final next = event;
 
     if (next == null) {
       return Text(
         hasLanded
-            ? 'انتهت الرحلة — لم تبقَ مواقيت على متنها.'
+            ? l10n.travelerFlightEnded
             : total == 0
-                ? 'لم تقع أي صلاة ضمن مدّة هذه الرحلة.'
-                : 'مضت كل مواقيت هذه الرحلة.',
+                ? l10n.travelerNoPrayerDuringFlight
+                : l10n.travelerAllFlightPrayersPassed,
         style: TextStyle(
           color: skin.inkSoft.withValues(alpha: 0.75),
           fontSize: 10.sp,
@@ -318,8 +323,10 @@ class _NextAboard extends StatelessWidget {
     final remaining = next.eventUtc.difference(nowUtc);
     final hours = remaining.inHours;
     final minutes = remaining.inMinutes % 60;
-    final countdown =
-        hours > 0 ? 'بعد $hours س و$minutes د' : 'بعد $minutes دقيقة';
+    final countdown = hours > 0
+        ? l10n.travelerCountdownHoursMinutes(hours, minutes)
+        : l10n.travelerCountdownMinutes(minutes);
+    final prayerName = next.prayerName(l10n);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,8 +340,8 @@ class _NextAboard extends StatelessWidget {
             children: [
               Text(
                 hasDeparted
-                    ? '${next.prayerNameAr} على متن الرحلة — $countdown'
-                    : 'أوّل صلاة على متن الرحلة: ${next.prayerNameAr}',
+                    ? l10n.travelerNextPrayerAboard(prayerName, countdown)
+                    : l10n.travelerFirstPrayerAboard(prayerName),
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 11.5.sp,
@@ -344,8 +351,10 @@ class _NextAboard extends StatelessWidget {
               ),
               SizedBox(height: 2.h),
               Text(
-                '${DateFormat('HH:mm').format(next.eventLocal)} '
-                'بتوقيت موضع الطائرة (${_offsetLabel(next.utcOffsetMinutes)})',
+                l10n.travelerAtPlaneLocalTime(
+                  DateFormat('HH:mm').format(next.eventLocal),
+                  _offsetLabel(next.utcOffsetMinutes),
+                ),
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.78),
                   fontSize: 9.5.sp,

@@ -25,6 +25,7 @@ import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_se
 import 'package:quran_app/features/smart_outreach/presentation/bloc/smart_outreach_schedules_bloc.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_phone_picker_sheet.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'smart_outreach_upsert_schedule_screen_sections_part.dart';
 part 'smart_outreach_upsert_schedule_screen_actions_part.dart';
@@ -165,7 +166,9 @@ class _SmartOutreachUpsertScheduleScreenState
         }
       },
       child: AppScaffoldWidget(
-        title: _isEditing ? 'تعديل القائمة' : 'قائمة جديدة',
+        title: _isEditing
+            ? context.l10n.outreachEditList
+            : context.l10n.outreachNewList,
         showLargeHeader: false,
         initialOffset: null,
         body: _loadingDefaults

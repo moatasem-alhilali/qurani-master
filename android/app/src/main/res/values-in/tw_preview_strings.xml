@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample text shown only in the widget picker preview (previewLayout). -->
+<resources>
+    <string name="tw_preview_city">Riyadh</string>
+    <string name="tw_preview_hijri_date">4 Rabiulakhir 1448 H</string>
+    <string name="tw_preview_fajr">Subuh</string>
+    <string name="tw_preview_sunrise">Terbit</string>
+    <string name="tw_preview_dhuhr">Zuhur</string>
+    <string name="tw_preview_asr">Asar</string>
+    <string name="tw_preview_maghrib">Magrib</string>
+    <string name="tw_preview_isha">Isya</string>
+    <string name="tw_preview_time_fajr">04.25</string>
+    <string name="tw_preview_time_sunrise">05.43</string>
+    <string name="tw_preview_time_dhuhr">11.48</string>
+    <string name="tw_preview_time_asr">15.15</string>
+    <string name="tw_preview_time_maghrib">18.10</string>
+    <string name="tw_preview_time_isha">19.40</string>
+    <string name="tw_preview_next_in">Asar dalam</string>
+</resources>

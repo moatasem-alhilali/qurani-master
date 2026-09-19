@@ -10,6 +10,7 @@ import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/another_screen/data/models/hisn_almuslim_model.dart';
 import 'package:quran_app/features/another_screen/presentation/bloc/hisn_muslim/hisn_muslim_bloc.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// حصن المسلم: قائمة أبواب طويلة.
 ///
@@ -60,6 +61,7 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
     HisnMuslimModel item,
     int index,
   ) {
+    final l10n = context.l10n;
     final textContent = item.text.join('\n\n');
     final footnoteContent = _asBullets(item.footnote);
     final shareContent = [
@@ -68,7 +70,7 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
       textContent,
       if (item.footnote.isNotEmpty) ...[
         '',
-        'الحواشي:',
+        l10n.anotherScreenLabelHeading(l10n.anotherScreenFootnotes),
         footnoteContent,
       ],
     ].join('\n');
@@ -77,18 +79,23 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
       showLibraryDetailSheet(
         context,
         title: item.title,
-        subtitle: 'حصن المسلم',
+        subtitle: l10n.anotherScreenHisnMuslim,
         shareText: shareContent,
-        shareSubject: 'حصن المسلم',
+        shareSubject: l10n.anotherScreenHisnMuslim,
         facts: [
-          'الباب ${index + 1}',
-          if (item.text.length > 1) '${item.text.length} نصوص',
-          if (item.footnote.isNotEmpty) '${item.footnote.length} حاشية',
+          l10n.anotherScreenChapterNumber(index + 1),
+          if (item.text.length > 1)
+            l10n.anotherScreenTextsCount(item.text.length),
+          if (item.footnote.isNotEmpty)
+            l10n.anotherScreenFootnotesCount(item.footnote.length),
         ],
         sections: [
-          LibraryDetailSection(title: 'نص الذكر', content: textContent),
           LibraryDetailSection(
-            title: 'الحواشي',
+            title: l10n.anotherScreenDhikrText,
+            content: textContent,
+          ),
+          LibraryDetailSection(
+            title: l10n.anotherScreenFootnotes,
             content: footnoteContent,
             scripture: false,
           ),
@@ -103,7 +110,7 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
       create: (context) => HisnMuslimBloc()..add(LoadHisnMuslimEvent()),
       child: GroundScaffoldTheme(
         child: AppScaffoldWidget(
-          title: 'حصن المسلم',
+          title: context.l10n.anotherScreenHisnMuslim,
           trailing: BlocBuilder<HisnMuslimBloc, HisnMuslimState>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<HisnMuslimModel>(
@@ -123,7 +130,7 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                   final index = state.hisnMuslim.indexOf(item);
                   _showDetailBottomSheet(context, item, index < 0 ? 0 : index);
                 },
-                hintText: 'بحث عن حصن المسلم',
+                hintText: context.l10n.anotherScreenHisnSearchHint,
                 suggestionBuilder: (context, item) =>
                     UnifiedLibrarySearchSuggestion(
                   title: item.title,
@@ -143,9 +150,10 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                       return SliverFillRemaining(
                         hasScrollBody: false,
                         child: LibraryEmptyState(
-                          title: 'لا توجد نتائج',
-                          message: 'لم نجد بابًا يطابق بحثك في حصن المسلم.',
-                          actionLabel: 'عرض جميع الأذكار',
+                          title: context.l10n.anotherScreenNoResults,
+                          message:
+                              context.l10n.anotherScreenHisnNoResultsMessage,
+                          actionLabel: context.l10n.anotherScreenShowAllAdhkar,
                           onAction: () => setState(() => _query = ''),
                         ),
                       );
@@ -164,7 +172,9 @@ class _HisnMuslimScreenState extends State<HisnMuslimScreen> {
                               title: item.title,
                               subtitle: _preview(item),
                               trailingLabel: item.text.length > 1
-                                  ? '${item.text.length} نصوص'
+                                  ? context.l10n.anotherScreenTextsCount(
+                                      item.text.length,
+                                    )
                                   : null,
                               isLast: index == data.length - 1,
                               onTap: () => _showDetailBottomSheet(

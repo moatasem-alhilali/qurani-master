@@ -16,6 +16,7 @@ import 'package:quran_app/features/young_muslim/presentation/cubit/young_muslim_
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_quiz_sheet.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_player_screen_content.dart';
 
@@ -76,7 +77,7 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
             scaffoldBackgroundColor: skin.ground,
           ),
           child: AppScaffoldWidget(
-            title: 'تشغيل آمن للأطفال',
+            title: context.l10n.youngMuslimPlayerTitle,
             showLargeHeader: false,
             initialOffset: null,
             body: ColoredBox(
@@ -146,7 +147,7 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
       await YoungMuslimQuizSheet.show(
         context: context,
         quizSet: session.videoQuiz!,
-        title: 'سؤال الحلقة بعد المشاهدة',
+        title: context.l10n.youngMuslimEpisodeQuizTitle,
       );
       if (!mounted) {
         return;
@@ -157,7 +158,7 @@ class _YoungMuslimPlayerScreenState extends State<YoungMuslimPlayerScreen> {
       await YoungMuslimQuizSheet.show(
         context: context,
         quizSet: session.seriesQuiz!,
-        title: 'تحدي السلسلة',
+        title: context.l10n.youngMuslimSeriesChallenge,
       );
       if (!mounted) {
         return;

@@ -59,28 +59,28 @@ extension _SchedulesLogic on _SmartOutreachSchedulesViewState {
     return null;
   }
 
-  String? _remainingLabel(int? minutes) {
+  String? _remainingLabel(L10n l10n, int? minutes) {
     if (minutes == null) {
       return null;
     }
     if (minutes < 1) {
-      return 'تبدأ الآن';
+      return l10n.outreachStartsNow;
     }
     if (minutes < 60) {
-      return 'بعد $minutes دقيقة';
+      return l10n.outreachStartsInMinutes(minutes);
     }
 
     final hours = minutes ~/ 60;
     if (hours < 24) {
       final rest = minutes % 60;
       if (rest == 0) {
-        return 'بعد $hours ساعة';
+        return l10n.outreachStartsInHours(hours);
       }
-      return 'بعد $hours ساعة و$rest دقيقة';
+      return l10n.outreachStartsInHoursMinutes(hours, rest);
     }
 
     final days = hours ~/ 24;
-    return days == 1 ? 'بعد يوم' : 'بعد $days أيام';
+    return l10n.outreachStartsInDays(days);
   }
 
   Future<void> _openUpsertScreen(
@@ -159,7 +159,8 @@ extension _SchedulesLogic on _SmartOutreachSchedulesViewState {
   }
 
   void _showPermissionsMessage(SmartOutreachPermissionSnapshot status) {
-    final missing = status.missingPermissionLabels.join('، ');
+    final missing =
+        status.missingPermissionLabels.join(context.l10n.outreachListSeparator);
     if (missing.isEmpty) {
       return;
     }
@@ -168,7 +169,7 @@ extension _SchedulesLogic on _SmartOutreachSchedulesViewState {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('لازم تفعيل هذه الصلاحيات أولًا: $missing'),
+          content: Text(context.l10n.outreachPermissionsRequiredSnack(missing)),
         ),
       );
   }
@@ -179,21 +180,22 @@ extension _SchedulesLogic on _SmartOutreachSchedulesViewState {
       return null;
     }
 
-    final missing = snapshot.missingPermissionLabels.join('، ');
+    final l10n = context.l10n;
+    final missing =
+        snapshot.missingPermissionLabels.join(l10n.outreachListSeparator);
 
     return OutreachNotice(
-      message: 'الصلاحيات المطلوبة غير مكتملة. لتعمل القوائم في وقتها '
-          'فعّل: $missing',
+      message: l10n.outreachPermissionsNotice(missing),
       icon: AppIcons.shield,
       tone: OutreachNoticeTone.alert,
       actions: <Widget>[
         OutreachTextAction(
-          label: 'منح الصلاحيات',
+          label: l10n.outreachGrantPermissions,
           icon: AppIcons.shield,
           onTap: () => _ensurePermissions(requestIfNeeded: true),
         ),
         OutreachTextAction(
-          label: 'فتح الإعدادات',
+          label: l10n.outreachOpenSettings,
           icon: AppIcons.settings,
           onTap: _permissionService.openSettings,
         ),

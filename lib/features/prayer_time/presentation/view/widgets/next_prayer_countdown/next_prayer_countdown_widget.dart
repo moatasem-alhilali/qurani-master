@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quran_app/core/components/shimmer_widget.dart';
 import 'package:quran_app/core/failure/request_state.dart';
@@ -26,6 +27,7 @@ import 'package:quran_app/features/qiblah/qiblah_main_screen.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
 import 'package:quran_app/features/setting/presentation/view/pages/setting_screen.dart';
 import 'package:quran_app/features/thikr/presentation/view/pages/main_thikr_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'next_prayer_countdown_card_logic_part.dart';
 part 'next_prayer_countdown_card_part.dart';
@@ -86,7 +88,7 @@ class NextPrayerCountdownWidget extends StatelessWidget {
     }
 
     if (!useBlocFallback) {
-      return _buildLoadingState();
+      return _buildLoadingState(context);
     }
 
     return BlocBuilder<PrayerTimeBloc, PrayerTimeState>(
@@ -96,7 +98,7 @@ class NextPrayerCountdownWidget extends StatelessWidget {
         if (state.prayerState == RequestState.loading ||
             (state.prayerState == RequestState.initial &&
                 state.selectedLocation == null)) {
-          return _buildLoadingState();
+          return _buildLoadingState(context);
         }
 
         if (state.prayerState == RequestState.success &&
@@ -108,7 +110,7 @@ class NextPrayerCountdownWidget extends StatelessWidget {
 
           final nextPrayerModel = TimePrayerModel(
             id: 999,
-            title: state.nextPrayer!.name,
+            title: state.nextPrayer!.localizedName(context.l10n),
             time: state.nextPrayer!.time12,
             type: state.nextPrayer!.type,
             image: state.nextPrayer!.type.imageAsset,
@@ -122,7 +124,7 @@ class NextPrayerCountdownWidget extends StatelessWidget {
             prayerTimes: state.prayerList,
             currentPrayerInfo: state.currentPrayer,
             nextPrayerInfo: state.nextPrayer,
-            currentPrayerName: state.currentPrayer?.name,
+            currentPrayerName: state.currentPrayer?.localizedName(context.l10n),
             locationLabel: state.selectedLocation?.label,
             utcOffsetMinutes: state.selectedLocation?.utcOffsetMinutes,
             notice: notice,
@@ -138,22 +140,23 @@ class NextPrayerCountdownWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
+    final l10n = context.l10n;
     return ShimmerSkeletonizerWidget(
       child: _NextPrayerCountdownCard(
         nextPrayer: TimePrayerModel(
           id: -1,
-          title: 'الفجر',
+          title: l10n.prayerFajr,
           time: '04:13',
           type: Prayer.fajr,
           image: Prayer.fajr.imageAsset,
-          content: 'تحميل المواقيت',
+          content: l10n.prayerTimeLoadingTimes,
           color: AppColors.gold,
         ),
         remainingTime: const Duration(hours: 1, minutes: 12),
         prayerTimes: const [],
-        currentPrayerName: 'جاري تحميل المواقيت',
-        locationLabel: 'جاري تحديد الموقع',
+        currentPrayerName: l10n.prayerTimeLoadingTimes,
+        locationLabel: l10n.prayerTimeLocatingShort,
         utcOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
         prayerEntriesOverride: _placeholderPrayerEntries(),
       ),
@@ -183,13 +186,13 @@ class NextPrayerCountdownWidget extends StatelessWidget {
       prayerEntriesOverride: _placeholderPrayerEntries(),
       notice: notice ??
           _LocationNoticeConfig(
-            message: 'فعّل الموقع أو امنح الصلاحية لعرض مواقيت الصلاة بدقة.',
+            message: context.l10n.prayerTimeNoticeUnavailable,
             primaryAction: _LocationNoticeAction(
-              label: 'منح الصلاحية',
+              label: context.l10n.prayerTimeGrantPermission,
               onTap: () => _requestLocationPermission(context),
             ),
             secondaryAction: _LocationNoticeAction(
-              label: 'تفعيل الموقع',
+              label: context.l10n.prayerTimeEnableLocation,
               onTap: () => _openLocationSettings(context),
             ),
           ),
@@ -200,32 +203,31 @@ class NextPrayerCountdownWidget extends StatelessWidget {
     BuildContext context,
     PrayerTimeState state,
   ) {
+    final l10n = context.l10n;
     switch (state.locationStatus) {
       case PrayerLocationStatus.serviceDisabled:
         if (state.selectedLocation != null) {
           return _LocationNoticeConfig(
-            message:
-                'الأوقات الحالية تستخدم آخر موقع محفوظ. فعّل الموقع لتحديثها تلقائيًا.',
+            message: l10n.prayerTimeNoticeServiceOffSaved,
             primaryAction: _LocationNoticeAction(
-              label: 'تفعيل الموقع',
+              label: l10n.prayerTimeEnableLocation,
               onTap: () => _openLocationSettings(context),
             ),
             secondaryAction: _LocationNoticeAction(
-              label: 'تحديث',
+              label: l10n.commonRefresh,
               onTap: () => _retryFetchPrayerTimes(context),
               isRefreshIcon: true,
             ),
           );
         }
         return _LocationNoticeConfig(
-          message:
-              'خدمة الموقع غير مفعلة. فعّلها لعرض مواقيت الصلاة حسب موقعك الحالي.',
+          message: l10n.prayerTimeNoticeServiceOff,
           primaryAction: _LocationNoticeAction(
-            label: 'تفعيل الموقع',
+            label: l10n.prayerTimeEnableLocation,
             onTap: () => _openLocationSettings(context),
           ),
           secondaryAction: _LocationNoticeAction(
-            label: 'تحديث',
+            label: l10n.commonRefresh,
             onTap: () => _retryFetchPrayerTimes(context),
             isRefreshIcon: true,
           ),
@@ -233,57 +235,51 @@ class NextPrayerCountdownWidget extends StatelessWidget {
       case PrayerLocationStatus.permissionDenied:
         if (state.selectedLocation != null) {
           return _LocationNoticeConfig(
-            message:
-                'الأوقات الحالية تستخدم آخر موقع محفوظ. اسمح بالوصول للموقع لتحديثها الآن.',
+            message: l10n.prayerTimeNoticePermissionDeniedSaved,
             primaryAction: _LocationNoticeAction(
-              label: 'منح الصلاحية',
+              label: l10n.prayerTimeGrantPermission,
               onTap: () => _requestLocationPermission(context),
             ),
           );
         }
         return _LocationNoticeConfig(
-          message:
-              'صلاحية الموقع غير ممنوحة. اسمح بها لعرض المواقيت حسب موقعك الحالي.',
+          message: l10n.prayerTimeNoticePermissionDenied,
           primaryAction: _LocationNoticeAction(
-            label: 'منح الصلاحية',
+            label: l10n.prayerTimeGrantPermission,
             onTap: () => _requestLocationPermission(context),
           ),
         );
       case PrayerLocationStatus.permissionDeniedForever:
         if (state.selectedLocation != null) {
           return _LocationNoticeConfig(
-            message:
-                'الأوقات الحالية تستخدم آخر موقع محفوظ. افتح الإعدادات لإعادة تفعيل صلاحية الموقع.',
+            message: l10n.prayerTimeNoticeDeniedForeverSaved,
             primaryAction: _LocationNoticeAction(
-              label: 'فتح الإعدادات',
+              label: l10n.prayerTimeOpenSettings,
               onTap: () => _openPermissionSettings(context),
             ),
           );
         }
         return _LocationNoticeConfig(
-          message:
-              'صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات وفعّلها لعرض المواقيت بدقة.',
+          message: l10n.prayerTimeNoticeDeniedForever,
           primaryAction: _LocationNoticeAction(
-            label: 'فتح الإعدادات',
+            label: l10n.prayerTimeOpenSettings,
             onTap: () => _openPermissionSettings(context),
           ),
         );
       case PrayerLocationStatus.error:
         if (state.selectedLocation != null) {
           return _LocationNoticeConfig(
-            message:
-                'تعذر تحديث الموقع الآن، لذلك يتم استخدام آخر موقع محفوظ للمستخدم.',
+            message: l10n.prayerTimeNoticeErrorSaved,
             primaryAction: _LocationNoticeAction(
-              label: 'إعادة المحاولة',
+              label: l10n.commonRetry,
               onTap: () => _requestLocationPermission(context),
             ),
           );
         }
         return _LocationNoticeConfig(
-          message:
-              'تعذر تحديد الموقع حاليًا. فعّل الموقع أو اسمح بالصلاحية لإظهار المواقيت.',
+          message: l10n.prayerTimeNoticeError,
           primaryAction: _LocationNoticeAction(
-            label: 'إعادة المحاولة',
+            label: l10n.commonRetry,
             onTap: () => _requestLocationPermission(context),
           ),
         );

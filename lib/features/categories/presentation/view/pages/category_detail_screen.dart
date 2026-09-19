@@ -17,6 +17,7 @@ import 'package:quran_app/features/categories/data/remote/category_repository_im
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تفاصيل مادة واحدة: وصفها ثم مرفقاتها صفوفًا نحيلة.
 class CategoryDetailScreen extends StatelessWidget {
@@ -61,9 +62,9 @@ class CategoryDetailScreen extends StatelessWidget {
                             state.categoryDetail?.attachments ?? const [];
 
                         if (items.isEmpty) {
-                          return const SliverToBoxAdapter(
+                          return SliverToBoxAdapter(
                             child: CategoryNotice(
-                              message: 'لا توجد مرفقات لهذه المادة.',
+                              message: context.l10n.categoriesNoAttachments,
                             ),
                           );
                         }
@@ -120,7 +121,7 @@ class _DetailHeader extends StatelessWidget {
             ),
           ),
         skin.divider(),
-        const HomeSectionHeader(title: 'المرفقات'),
+        HomeSectionHeader(title: context.l10n.categoriesAttachments),
       ],
     );
   }
@@ -169,11 +170,11 @@ class _AttachmentRowState extends State<_AttachmentRow> {
     switch (widget.data.extensionType) {
       case 'MP4':
       case 'YOUTUBE':
-        return 'مشاهدة';
+        return context.l10n.categoriesActionWatch;
       case 'PDF':
-        return 'قراءة';
+        return context.l10n.categoriesActionRead;
       case 'LINK':
-        return 'فتح';
+        return context.l10n.categoriesActionOpen;
       default:
         return '';
     }
@@ -261,7 +262,7 @@ class _AttachmentRowState extends State<_AttachmentRow> {
                         if (type.isNotEmpty) type,
                         if (size.isNotEmpty) size,
                         if (widget.data.order != null)
-                          'الترتيب ${widget.data.order}',
+                          context.l10n.categoriesOrder('${widget.data.order}'),
                       ].join(' · '),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -289,7 +290,7 @@ class _AttachmentRowState extends State<_AttachmentRow> {
               if (_allowOpen && _allowDownload) SizedBox(width: 6.w),
               if (_allowDownload)
                 CategoryActionButton(
-                  label: 'تحميل',
+                  label: context.l10n.categoriesDownload,
                   icon: AppIcons.download,
                   isPrimary: false,
                   onTap: () {
@@ -298,7 +299,9 @@ class _AttachmentRowState extends State<_AttachmentRow> {
                     HapticFeedback.selectionClick();
                     _downloadService.download(
                       url,
-                      description.isEmpty ? 'مرفق' : description,
+                      description.isEmpty
+                          ? context.l10n.categoriesAttachmentFallback
+                          : description,
                     );
                   },
                 ),

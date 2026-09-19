@@ -1,0 +1,70 @@
+{
+  "cleanupRouteNotFound": "الصفحة غير موجودة",
+  "@cleanupRouteNotFound": {
+    "description": "Title and body of the fallback screen shown when the app navigates to a page that does not exist."
+  },
+
+  "cleanupNotificationSubtitle": "إشعار جديد",
+  "@cleanupNotificationSubtitle": {
+    "description": "iOS subtitle line under the title of a push notification sent from the server: 'New notification'."
+  },
+  "cleanupNotificationActionView": "عرض",
+  "@cleanupNotificationActionView": {
+    "description": "Button on a push notification (Android): open/view it. One short word."
+  },
+  "cleanupNotificationActionDismiss": "تجاهل",
+  "@cleanupNotificationActionDismiss": {
+    "description": "Button on a push notification (Android): dismiss it. One short word."
+  },
+
+  "cleanupDownloadActionFailed": "تعذّر إتمام عملية التنزيل. حاول مرة أخرى.",
+  "@cleanupDownloadActionFailed": {
+    "description": "Error snackbar on the Downloads screen when starting/pausing/resuming/cancelling/opening a download fails."
+  },
+  "cleanupDownloadStatusQueued": "في الانتظار",
+  "@cleanupDownloadStatusQueued": {
+    "description": "Download status under a file name: waiting in the queue to start."
+  },
+  "cleanupDownloadStatusCanceled": "أُلغي",
+  "@cleanupDownloadStatusCanceled": {
+    "description": "Download status under a file name: the download was cancelled."
+  },
+  "cleanupDownloadStatusUnknown": "غير معروف",
+  "@cleanupDownloadStatusUnknown": {
+    "description": "Download status under a file name when the state is unknown."
+  },
+
+  "cleanupRadioMediaArtist": "إذاعة القرآن الكريم",
+  "@cleanupRadioMediaArtist": {
+    "description": "Second line on the lock screen / media notification while a Quran radio station is playing: 'Holy Quran Radio'."
+  },
+
+  "cleanupDhikrMeaningSubhanAllah": "تنزيه الله عن كل نقص",
+  "@cleanupDhikrMeaningSubhanAllah": {
+    "description": "Short meaning shown in small text under the built-in dhikr «سبحان الله» in the Tasbih (the dhikr itself stays Arabic). Arabic source is a short explanation; other languages give the translation of the phrase, e.g. 'Glory be to Allah'."
+  },
+  "cleanupDhikrMeaningAlhamdulillah": "الثناء على الله بكل كمال",
+  "@cleanupDhikrMeaningAlhamdulillah": {
+    "description": "Short meaning under the built-in dhikr «الحمد لله» in the Tasbih. Other languages: translation of the phrase, e.g. 'All praise is due to Allah'."
+  },
+  "cleanupDhikrMeaningLaIlaha": "لا معبود بحقّ إلا الله",
+  "@cleanupDhikrMeaningLaIlaha": {
+    "description": "Short meaning under the built-in dhikr «لا إله إلا الله» in the Tasbih. Other languages: translation, e.g. 'There is no god but Allah'."
+  },
+  "cleanupDhikrMeaningAllahuAkbar": "الله أعظم من كل شيء",
+  "@cleanupDhikrMeaningAllahuAkbar": {
+    "description": "Short meaning under the built-in dhikr «الله أكبر» in the Tasbih. Other languages: translation, e.g. 'Allah is the Greatest'."
+  },
+  "cleanupDhikrMeaningLaHawla": "لا تحوّل ولا قدرة إلا بعون الله",
+  "@cleanupDhikrMeaningLaHawla": {
+    "description": "Short meaning under the built-in dhikr «لا حول ولا قوة إلا بالله» in the Tasbih. Other languages: translation, e.g. 'There is no might nor power except with Allah'."
+  },
+  "cleanupDhikrMeaningAstaghfirullah": "أطلب من الله المغفرة",
+  "@cleanupDhikrMeaningAstaghfirullah": {
+    "description": "Short meaning under the built-in dhikr «أستغفر الله» in the Tasbih. Other languages: translation, e.g. 'I seek forgiveness from Allah'."
+  },
+  "cleanupDhikrMeaningSubhanAllahWaBihamdihi": "تنزيه الله مع حمده وتعظيمه",
+  "@cleanupDhikrMeaningSubhanAllahWaBihamdihi": {
+    "description": "Short meaning under the built-in dhikr «سبحان الله وبحمده سبحان الله العظيم» in the Tasbih. Other languages: translation, e.g. 'Glory be to Allah and praise Him, glory be to Allah the Magnificent'."
+  }
+}

@@ -8,6 +8,7 @@ import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/core/services/time_zone_service.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -100,6 +101,7 @@ abstract class BaseNotificationService {
     );
 
     // iOS initialization settings with proper permissions
+    final l10n = L10nService.current;
     final iosSettings = DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
@@ -110,12 +112,15 @@ abstract class BaseNotificationService {
           actions: <DarwinNotificationAction>[
             DarwinNotificationAction.plain(
               'open_app',
-              'فتح التطبيق',
+              l10n.coreNotificationActionOpenApp,
               options: <DarwinNotificationActionOption>{
                 DarwinNotificationActionOption.foreground,
               },
             ),
-            DarwinNotificationAction.plain('dismiss', 'إخفاء'),
+            DarwinNotificationAction.plain(
+              'dismiss',
+              l10n.coreNotificationActionDismiss,
+            ),
           ],
           options: <DarwinNotificationCategoryOption>{
             DarwinNotificationCategoryOption.allowInCarPlay,
@@ -164,10 +169,11 @@ abstract class BaseNotificationService {
       final androidPlugin = plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       // Create notification channel group for better organization
-      const channelGroup = AndroidNotificationChannelGroup(
+      final l10n = L10nService.current;
+      final channelGroup = AndroidNotificationChannelGroup(
         'islamic_notifications',
-        'الإشعارات الإسلامية',
-        description: 'مجموعة الإشعارات الخاصة بالتطبيق الإسلامي',
+        l10n.coreNotificationGroupName,
+        description: l10n.coreNotificationGroupDescription,
       );
 
       await androidPlugin?.createNotificationChannelGroup(channelGroup);
@@ -181,7 +187,7 @@ abstract class BaseNotificationService {
         final androidChannel = AndroidNotificationChannel(
           data.id,
           data.name,
-          description: 'قناة ${data.name} للإشعارات الإسلامية',
+          description: l10n.coreNotificationChannelDescription(data.name),
           importance: Importance.max,
           sound: RawResourceAndroidNotificationSound(data.sound),
           audioAttributesUsage: channel == NotificationChannel.athan
@@ -211,14 +217,14 @@ abstract class BaseNotificationService {
       final actions = [
         DarwinNotificationAction.plain(
           'mark_as_read',
-          'تم القراءة',
+          L10nService.current.coreNotificationActionMarkRead,
           options: <DarwinNotificationActionOption>{
             DarwinNotificationActionOption.destructive,
           },
         ),
         DarwinNotificationAction.plain(
           'remind_later',
-          'تذكير لاحقاً',
+          L10nService.current.coreNotificationActionRemindLater,
           options: <DarwinNotificationActionOption>{
             DarwinNotificationActionOption.foreground,
           },
@@ -415,7 +421,8 @@ abstract class BaseNotificationService {
     final android = AndroidNotificationDetails(
       data.id,
       data.name,
-      channelDescription: 'قناة ${data.name}',
+      channelDescription:
+          L10nService.current.coreNotificationChannelDescription(data.name),
       icon: icon,
       sound: RawResourceAndroidNotificationSound(data.sound),
       audioAttributesUsage: channel == NotificationChannel.athan
@@ -433,7 +440,7 @@ abstract class BaseNotificationService {
           enableVibration ? Int64List.fromList([0, 1000, 500, 1000]) : null,
       enableLights: true,
       ledColor: const Color.fromARGB(255, 0, 255, 0),
-      ticker: ticker ?? 'تطبيق طمأنينة',
+      ticker: ticker ?? L10nService.current.coreNotificationAppLabel,
       when: whenMillisecondsSinceEpoch,
       category: category ?? AndroidNotificationCategory.reminder,
       visibility: visibility ?? NotificationVisibility.public,
@@ -467,7 +474,7 @@ abstract class BaseNotificationService {
       presentList: true,
       sound: iosSound,
       badgeNumber: iosBadgeNumber ?? 1,
-      subtitle: iosSubtitle ?? 'تطبيق طمأنينة',
+      subtitle: iosSubtitle ?? L10nService.current.coreNotificationAppLabel,
       threadIdentifier:
           iosThreadIdentifier ?? 'islamic_app_notifications_${data.id}',
       categoryIdentifier: iosCategoryIdentifier ?? 'islamic_notifications',
@@ -582,7 +589,7 @@ abstract class BaseNotificationService {
         htmlFormatBigText: true,
         contentTitle: title,
         htmlFormatContentTitle: true,
-        summaryText: summaryText ?? 'المزيد...',
+        summaryText: summaryText ?? L10nService.current.coreNotificationMore,
         htmlFormatSummaryText: true,
       );
 
@@ -719,7 +726,8 @@ abstract class BaseNotificationService {
         final inboxStyleInformation = InboxStyleInformation(
           lines,
           contentTitle: groupTitle,
-          summaryText: '${notifications.length} إشعارات',
+          summaryText:
+              L10nService.current.coreNotificationCount(notifications.length),
         );
 
         final details = await buildNotificationDetails(
@@ -732,7 +740,7 @@ abstract class BaseNotificationService {
         await plugin.show(
           groupKey.hashCode.abs(),
           groupTitle,
-          '${notifications.length} إشعارات جديدة',
+          L10nService.current.coreNotificationNewCount(notifications.length),
           details,
         );
       }

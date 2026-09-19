@@ -1,0 +1,66 @@
+{
+  "appName": "طمأنينة",
+  "@appName": {
+    "description": "Brand name of the app. Keep recognizable; Latin-script languages use the transliteration 'Tamaneena'."
+  },
+
+  "commonContinue": "متابعة",
+  "commonSave": "حفظ",
+  "commonCancel": "إلغاء",
+  "commonOk": "حسنًا",
+  "commonClose": "إغلاق",
+  "commonDone": "تم",
+  "commonRetry": "إعادة المحاولة",
+  "commonSearch": "بحث",
+  "commonSettings": "الإعدادات",
+  "commonLoading": "جارٍ التحميل…",
+  "commonError": "حدث خطأ",
+  "commonDelete": "حذف",
+  "commonEdit": "تعديل",
+  "commonAdd": "إضافة",
+  "commonShare": "مشاركة",
+  "commonCopy": "نسخ",
+  "commonCopied": "تم النسخ",
+  "commonBack": "رجوع",
+  "commonYes": "نعم",
+  "commonNo": "لا",
+  "commonRefresh": "تحديث",
+  "commonSeeAll": "عرض الكل",
+  "commonEnable": "تفعيل",
+  "commonDisable": "إيقاف",
+  "commonLater": "لاحقًا",
+
+  "prayerFajr": "الفجر",
+  "prayerSunrise": "الشروق",
+  "prayerDhuhr": "الظهر",
+  "prayerAsr": "العصر",
+  "prayerMaghrib": "المغرب",
+  "prayerIsha": "العشاء",
+  "prayerJumuah": "الجمعة",
+
+  "hijriMonth1": "محرم",
+  "hijriMonth2": "صفر",
+  "hijriMonth3": "ربيع الأول",
+  "hijriMonth4": "ربيع الآخر",
+  "hijriMonth5": "جمادى الأولى",
+  "hijriMonth6": "جمادى الآخرة",
+  "hijriMonth7": "رجب",
+  "hijriMonth8": "شعبان",
+  "hijriMonth9": "رمضان",
+  "hijriMonth10": "شوال",
+  "hijriMonth11": "ذو القعدة",
+  "hijriMonth12": "ذو الحجة",
+  "@hijriMonth1": {
+    "description": "Islamic (Hijri) month names 1-12. Use the standard spelling Muslims use in the target language (e.g. Turkish 'Muharrem', Indonesian 'Muharram')."
+  },
+
+  "hijriDate": "{day} {month} {year} هـ",
+  "@hijriDate": {
+    "description": "A Hijri date. {month} is one of hijriMonth1..12. The 'هـ' suffix marks the Hijri era; use the target language's equivalent (e.g. 'H' in Indonesian/Turkish).",
+    "placeholders": {
+      "day": { "type": "String" },
+      "month": { "type": "String" },
+      "year": { "type": "String" }
+    }
+  }
+}

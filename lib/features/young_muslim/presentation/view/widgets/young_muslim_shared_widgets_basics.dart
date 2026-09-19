@@ -371,7 +371,13 @@ class YoungMuslimActionRow extends StatelessWidget {
               trailing!,
               SizedBox(width: 8.w),
             ],
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

@@ -16,8 +16,8 @@ class _PrayerLocationNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
     final actionLabel = type == PrayerLocationNoticeType.serviceDisabled
-        ? 'تفعيل الموقع'
-        : 'منح الصلاحية';
+        ? context.l10n.prayerTimeEnableLocation
+        : context.l10n.prayerTimeGrantPermission;
 
     return Container(
       decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class _PrayerEmptyState extends StatelessWidget {
           AppIcon(AppIcons.clock, color: skin.accent, size: 22.sp),
           SizedBox(height: 8.h),
           Text(
-            'لا يمكن عرض مواقيت الصلاة قبل تحديد المنطقة',
+            context.l10n.prayerTimeTimelineEmptyTitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.ink,
@@ -98,7 +98,7 @@ class _PrayerEmptyState extends StatelessWidget {
             ),
           ),
           Text(
-            'اختر مدينة يدويًا أو استخدم موقع الجهاز الحالي',
+            context.l10n.prayerTimeTimelineEmptySubtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
@@ -114,7 +114,7 @@ class _PrayerEmptyState extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
               child: Text(
-                'اختيار منطقة',
+                context.l10n.prayerTimeTimelineChooseArea,
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 10.5.sp,

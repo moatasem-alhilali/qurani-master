@@ -12,6 +12,7 @@ import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart
 import 'package:quran_app/features/audios/presentation/view/pages/base_audio_deatil.dart';
 import 'package:quran_app/features/audios/presentation/view/widgets/audio_row.dart';
 import 'package:quran_app/features/audios/presentation/view/widgets/audio_search_field.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قائمة القرّاء أو السلاسل الصوتية.
 ///
@@ -68,7 +69,7 @@ class _BaseAudioScreenState extends State<BaseAudioScreen> {
                 SliverToBoxAdapter(
                   child: AudioSearchField(
                     controller: _search,
-                    hintText: 'ابحث عن سلسلة',
+                    hintText: context.l10n.audiosSearchSeriesHint,
                     onChanged: (text) => setState(() => _query = text),
                   ),
                 ),
@@ -81,7 +82,7 @@ class _BaseAudioScreenState extends State<BaseAudioScreen> {
                       final item = items[index];
                       return AudioRow(
                         title: audioFieldOf(item, 'title'),
-                        subtitle: 'سلسلة صوتية',
+                        subtitle: context.l10n.audiosSeriesSubtitle,
                         icon: AppIcons.sound,
                         isLast: index == items.length - 1,
                         onTap: () => context.push(BaseAudioDetail(data: item)),
@@ -117,7 +118,9 @@ class _EmptyNote extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              query.isEmpty ? 'لا توجد سلاسل للعرض' : 'لا نتائج لبحثك',
+              query.isEmpty
+                  ? context.l10n.audiosNoSeries
+                  : context.l10n.audiosNoResults,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 11.sp,

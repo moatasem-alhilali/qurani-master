@@ -1,0 +1,29 @@
+{
+  "widgetLabelNextPrayer": "الصلاة القادمة",
+  "@widgetLabelNextPrayer": {
+    "description": "Home-screen widget header above the next prayer's name. Very little space: keep it short."
+  },
+  "widgetLabelDailyAyah": "آية اليوم",
+  "@widgetLabelDailyAyah": {
+    "description": "Home-screen widget header: 'Verse of the day'. Keep it short."
+  },
+  "widgetLabelOpenApp": "افتح طمأنينة",
+  "@widgetLabelOpenApp": {
+    "description": "Home-screen widget placeholder when it has no data yet: 'Open Tamaneena' (the app name)."
+  },
+  "widgetLabelSetLocation": "حدّد موقعك في التطبيق",
+  "@widgetLabelSetLocation": {
+    "description": "Home-screen widget hint: the user has not chosen a location in the app yet, so prayer times can't be shown."
+  },
+  "widgetLabelRefreshNeeded": "لتحديث المواقيت",
+  "@widgetLabelRefreshNeeded": {
+    "description": "Second line under 'Open Tamaneena' on the home-screen widget: '…to refresh the prayer times' (the stored times ran out)."
+  },
+  "widgetLabelNextIn": "{prayer} بعد",
+  "@widgetLabelNextIn": {
+    "description": "Home-screen widget footer shown right before a live countdown timer (e.g. '01:23:45'). Reads as 'Asr in' + timer. Keep the timer at the position that is natural in your language: the widget always places the countdown AFTER this text.",
+    "placeholders": {
+      "prayer": { "type": "String", "example": "العصر" }
+    }
+  }
+}

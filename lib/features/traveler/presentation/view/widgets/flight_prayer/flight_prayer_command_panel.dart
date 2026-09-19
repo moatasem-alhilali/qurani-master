@@ -13,6 +13,7 @@ import 'package:quran_app/features/traveler/presentation/view/widgets/flight_pra
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_journey_rail.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/hint_tile.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// جسم شاشة الطيران تحت الخريطة: البحث، ثم تفاصيل الرحلة، ثم خطّ زمنها.
 ///
@@ -52,7 +53,9 @@ class FlightPrayerCommandPanel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const HomeSectionHeader(title: 'ابحث برقم الرحلة'),
+            HomeSectionHeader(
+              title: context.l10n.travelerSearchByFlightNumberHeader,
+            ),
             Padding(
               padding: AppSkin.gutter,
               child: Row(
@@ -60,7 +63,7 @@ class FlightPrayerCommandPanel extends StatelessWidget {
                   Expanded(child: _FlightNumberField(controller: controller)),
                   SizedBox(width: 8.w),
                   TravelerPillButton(
-                    label: 'تشغيل',
+                    label: context.l10n.travelerRun,
                     icon: AppIcons.search,
                     filled: true,
                     busy: isSearching,
@@ -74,8 +77,7 @@ class FlightPrayerCommandPanel extends StatelessWidget {
               padding: AppSkin.gutter,
               child: HintTile(
                 icon: errorMessage == null ? AppIcons.compass : AppIcons.error,
-                text: errorMessage ??
-                    'اكتب رقم الرحلة لنحسب مواقيت الصلاة على طول المسار.',
+                text: errorMessage ?? context.l10n.travelerFlightSearchHint,
                 isError: errorMessage != null,
               ),
             ),
@@ -89,26 +91,26 @@ class FlightPrayerCommandPanel extends StatelessWidget {
             ),
             if (timeline != null) ...[
               skin.divider(),
-              const HomeSectionHeader(title: 'تفاصيل الرحلة'),
+              HomeSectionHeader(title: context.l10n.travelerFlightDetails),
               Padding(
                 padding: AppSkin.gutter,
                 child: Column(
                   children: [
                     FlightDetailRow(
-                      label: 'رقم الرحلة',
+                      label: context.l10n.travelerFlightNumber,
                       value: timeline.track.flightNumber,
                       emphasised: true,
                     ),
                     FlightDetailRow(
-                      label: 'من',
+                      label: context.l10n.travelerFrom,
                       value: timeline.track.originLabel,
                     ),
                     FlightDetailRow(
-                      label: 'إلى',
+                      label: context.l10n.travelerTo,
                       value: timeline.track.destinationLabel,
                     ),
                     FlightDetailRow(
-                      label: 'مصدر البيانات',
+                      label: context.l10n.travelerDataSource,
                       value: timeline.track.sourceLabel,
                       isLast: true,
                     ),
@@ -116,7 +118,7 @@ class FlightPrayerCommandPanel extends StatelessWidget {
                 ),
               ),
               skin.divider(),
-              const HomeSectionHeader(title: 'خطّ زمن الرحلة'),
+              HomeSectionHeader(title: context.l10n.travelerFlightTimeline),
               Padding(
                 padding: AppSkin.gutter,
                 child: _Timeline(
@@ -142,9 +144,9 @@ class _Timeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (timeline.prayerEvents.isEmpty && timeline.track.trackPoints.isEmpty) {
-      return const HintTile(
+      return HintTile(
         icon: AppIcons.clock,
-        text: 'لم تظهر مواقيت ضمن مدة هذه الرحلة.',
+        text: context.l10n.travelerNoTimesDuringFlight,
       );
     }
 
@@ -189,7 +191,7 @@ class _FlightNumberField extends StatelessWidget {
       decoration: InputDecoration(
         isDense: true,
         filled: false,
-        hintText: 'مثال: EK202',
+        hintText: context.l10n.travelerFlightNumberExample,
         hintStyle: TextStyle(
           color: skin.inkSoft.withValues(alpha: 0.6),
           fontSize: 10.5.sp,

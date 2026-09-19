@@ -6,6 +6,7 @@ import 'package:quran_app/core/extensions/num_duration_extensions.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 Future<void> showMyBottomSheetFunction({
   required BuildContext context,
@@ -141,7 +142,7 @@ Future<void> showMyExitDialogFunction({
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(
-                      'هل أنت متأكد من الخروج',
+                      context.l10n.coreExitConfirmMessage,
                       style: titleMedium(context)
                           .copyWith(fontSize: 20, color: Colors.black),
                     ),
@@ -161,7 +162,7 @@ Future<void> showMyExitDialogFunction({
                             decoration:
                                 BoxDecoration(color: context.primaryColor),
                             child: Text(
-                              'تراجع',
+                              context.l10n.coreExitStay,
                               style: titleMedium(context)
                                   .copyWith(color: Colors.white),
                             ),
@@ -180,7 +181,7 @@ Future<void> showMyExitDialogFunction({
                               color: Colors.red,
                             ),
                             child: Text(
-                              'الخروج',
+                              context.l10n.coreExitAction,
                               style: titleMedium(context)
                                   .copyWith(color: Colors.white),
                             ),

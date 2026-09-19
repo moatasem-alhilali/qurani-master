@@ -7,6 +7,7 @@ import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/util/navigator_manager.dart';
 import 'package:quran_app/core/widgets/auto_text.dart';
 import 'package:quran_app/core/widgets/icon_button_widget.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 //=================================Navigator===============================
 extension MyNavigator on BuildContext {
@@ -101,7 +102,8 @@ extension MyNavigator on BuildContext {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            (title ?? 'اضافه جديد').autoSize(
+                            (title ?? context.l10n.coreSheetDefaultTitle)
+                                .autoSize(
                               context,
                               fontSize: 13.sp,
                               minFontSize: 10,
@@ -118,7 +120,8 @@ extension MyNavigator on BuildContext {
                             //   overflow: TextOverflow.ellipsis,
                             // ),
                             SizedBox(height: 4.h),
-                            (subtitle ?? 'قم بت خصيص المحتوي').autoSize(
+                            (subtitle ?? context.l10n.coreSheetDefaultSubtitle)
+                                .autoSize(
                               context,
                               fontSize: 10.sp,
                               minFontSize: 8,

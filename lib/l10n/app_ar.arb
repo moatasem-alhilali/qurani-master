@@ -1,0 +1,4808 @@
+{
+  "@@locale": "ar",
+  "floatingAdhkarTitle": "الأذكار العائمة",
+  "@floatingAdhkarTitle": {
+    "description": "Name of the \"floating adhkar\" feature: short remembrances of Allah that pop up over other apps (Android overlay) or as periodic reminders (iPhone)."
+  },
+  "floatingAdhkarSourceBuiltIn": "افتراضي",
+  "@floatingAdhkarSourceBuiltIn": {
+    "description": "Source tag for adhkar that ship with the app (built-in), shown next to a dhikr."
+  },
+  "floatingAdhkarSourceCustom": "مخصص",
+  "@floatingAdhkarSourceCustom": {
+    "description": "Source tag for adhkar the user added themselves."
+  },
+  "floatingAdhkarSourceMyAdhkar": "أذكاري الخاصة",
+  "@floatingAdhkarSourceMyAdhkar": {
+    "description": "Label for the user's own adhkar (\"my adhkar\"): a source name and a settings row title."
+  },
+  "floatingAdhkarSourceAppLibrary": "مكتبة التطبيق",
+  "@floatingAdhkarSourceAppLibrary": {
+    "description": "Fallback source name for a built-in dhikr whose source is unknown (\"the app library\")."
+  },
+  "floatingAdhkarDefaultDhikrTitle": "ذكر افتراضي",
+  "@floatingAdhkarDefaultDhikrTitle": {
+    "description": "Fallback title for a built-in dhikr that has no title."
+  },
+  "floatingAdhkarRandomDhikrTitle": "ذكر عشوائي",
+  "@floatingAdhkarRandomDhikrTitle": {
+    "description": "Fallback notification title for a random dhikr reminder (iPhone) when the dhikr has no title."
+  },
+  "floatingAdhkarIosNotificationSubtitle": "الأذكار العشوائية",
+  "@floatingAdhkarIosNotificationSubtitle": {
+    "description": "iOS notification subtitle for random adhkar reminders."
+  },
+  "floatingAdhkarOverlayServiceTitle": "الأذكار العشوائية العائمة",
+  "@floatingAdhkarOverlayServiceTitle": {
+    "description": "Title of the Android persistent notification while the floating adhkar background service runs."
+  },
+  "floatingAdhkarOverlayServiceContent": "خدمة الأذكار العائمة تعمل في الخلفية",
+  "@floatingAdhkarOverlayServiceContent": {
+    "description": "Body of the Android persistent notification while the floating adhkar service runs."
+  },
+  "floatingAdhkarErrorUnsupportedPlatform": "هذه الميزة غير متاحة على هذه المنصة.",
+  "floatingAdhkarErrorIosNotificationsToEnable": "يجب السماح بالإشعارات لتشغيل تذكيرات الأذكار على iPhone.",
+  "floatingAdhkarErrorOverlayPermissionFirst": "يجب منح صلاحية الظهور فوق التطبيقات الأخرى أولًا.",
+  "@floatingAdhkarErrorOverlayPermissionFirst": {
+    "description": "Android permission \"display over other apps\" is needed first."
+  },
+  "floatingAdhkarErrorNoSource": "فعّل مصدرًا واحدًا على الأقل للأذكار العائمة.",
+  "floatingAdhkarErrorIosNotificationsRequired": "صلاحية الإشعارات مطلوبة لتشغيل تذكيرات iPhone.",
+  "floatingAdhkarErrorOverlayPermissionRequired": "الصلاحية مطلوبة لتشغيل النافذة العائمة.",
+  "floatingAdhkarErrorTitleAndTextRequired": "العنوان والنص مطلوبان لتحديث الذكر الافتراضي.",
+  "floatingAdhkarErrorNotificationsDenied": "لم يتم منح صلاحية الإشعارات.",
+  "floatingAdhkarErrorOverlayDenied": "لم يتم منح صلاحية الظهور فوق التطبيقات الأخرى.",
+  "floatingAdhkarErrorEnableBeforePreview": "فعّل الميزة أولًا ثم استخدم المعاينة المباشرة.",
+  "floatingAdhkarErrorPreviewNotificationsRequired": "صلاحية الإشعارات مطلوبة لعرض ذكر الآن.",
+  "floatingAdhkarErrorPreviewOverlayRequired": "الصلاحية مطلوبة لعرض الذكر العائم.",
+  "floatingAdhkarStatusUnsupported": "غير مدعومة",
+  "@floatingAdhkarStatusUnsupported": {
+    "description": "Status of the floating adhkar service (feminine: refers to \"the service\")."
+  },
+  "floatingAdhkarStatusPermissionRequired": "تحتاج صلاحية",
+  "@floatingAdhkarStatusPermissionRequired": {
+    "description": "Status of the floating adhkar service: needs a permission."
+  },
+  "floatingAdhkarStatusMisconfigured": "تحتاج تهيئة",
+  "@floatingAdhkarStatusMisconfigured": {
+    "description": "Status of the floating adhkar service: needs setup."
+  },
+  "floatingAdhkarStatusActive": "تعمل الآن",
+  "@floatingAdhkarStatusActive": {
+    "description": "Status of the floating adhkar service: running now."
+  },
+  "floatingAdhkarStatusInactive": "متوقفة",
+  "@floatingAdhkarStatusInactive": {
+    "description": "Status of the floating adhkar service: stopped."
+  },
+  "floatingAdhkarManageTitle": "إدارة الأذكار",
+  "@floatingAdhkarManageTitle": {
+    "description": "Screen title / button: manage which adhkar appear."
+  },
+  "floatingAdhkarManageSubtitle": "اختر ما يظهر من الافتراضي وأضف أذكارك",
+  "floatingAdhkarAddPrivateTooltip": "إضافة ذكر خاص",
+  "floatingAdhkarAddCustomTitle": "إضافة ذكر مخصص",
+  "floatingAdhkarAddCustomSubtitle": "سيصبح متاحًا ضمن الأذكار العائمة عند تفعيله.",
+  "floatingAdhkarEditTitle": "تعديل الذكر",
+  "floatingAdhkarEditSubtitle": "حدّث النص ثم احفظ التغييرات مباشرة.",
+  "floatingAdhkarEnabledOfTotal": "{enabled} من {total}",
+  "@floatingAdhkarEnabledOfTotal": {
+    "description": "Count badge: how many adhkar are enabled out of the total, e.g. \"3 of 10\".",
+    "placeholders": {
+      "enabled": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "floatingAdhkarEmptyBuiltInTitle": "لا توجد أذكار افتراضية متاحة",
+  "floatingAdhkarEmptyBuiltInMessage": "لم يتم العثور على مكتبة الأذكار الافتراضية داخل التطبيق.",
+  "floatingAdhkarEmptyCustomTitle": "لا توجد أذكار خاصة بعد",
+  "floatingAdhkarEmptyCustomMessage": "أضف ذكرك أو دعاءك ليدخل ضمن الدوران العشوائي العائم.",
+  "floatingAdhkarAddNewDhikr": "إضافة ذكر جديد",
+  "floatingAdhkarItemOptions": "خيارات الذكر",
+  "@floatingAdhkarItemOptions": {
+    "description": "Tooltip of the \"more\" menu on a dhikr row."
+  },
+  "floatingAdhkarTabBuiltIn": "الأذكار الافتراضية",
+  "@floatingAdhkarTabBuiltIn": {
+    "description": "Built-in adhkar (tab title and source row title)."
+  },
+  "floatingAdhkarTabCustom": "الأذكار الخاصة",
+  "@floatingAdhkarTabCustom": {
+    "description": "The user's own adhkar (tab title)."
+  },
+  "floatingAdhkarPreviewHeader": "معاينة الذكر",
+  "@floatingAdhkarPreviewHeader": {
+    "description": "Section header above a preview of the next dhikr."
+  },
+  "floatingAdhkarAdvancedTitle": "إعدادات متقدمة",
+  "floatingAdhkarAdvancedSubtitle": "معدل الظهور ومدّة البقاء والمصادر",
+  "floatingAdhkarFrequencyTitle": "معدل الظهور",
+  "@floatingAdhkarFrequencyTitle": {
+    "description": "How often a floating dhikr appears."
+  },
+  "floatingAdhkarVisibleDurationTitle": "مدة بقاء الذكر",
+  "@floatingAdhkarVisibleDurationTitle": {
+    "description": "How long a floating dhikr stays on screen."
+  },
+  "floatingAdhkarSecondsCount": "{count, plural, =1{ثانية واحدة} =2{ثانيتان} few{{count} ثوانٍ} other{{count} ثانية}}",
+  "@floatingAdhkarSecondsCount": {
+    "description": "A duration in seconds.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "floatingAdhkarSourcesTitle": "مصادر الأذكار",
+  "floatingAdhkarAllowNotifications": "السماح بالإشعارات",
+  "floatingAdhkarGrantPermission": "منح الصلاحية المطلوبة",
+  "floatingAdhkarPermissionHint": "بدونها لن يظهر الذكر فوق التطبيقات",
+  "floatingAdhkarSendNow": "إرسال ذكر الآن",
+  "@floatingAdhkarSendNow": {
+    "description": "iPhone: send a dhikr notification now."
+  },
+  "floatingAdhkarShowNow": "عرض ذكر الآن",
+  "@floatingAdhkarShowNow": {
+    "description": "Android: show a floating dhikr now."
+  },
+  "floatingAdhkarPreviewReadyHint": "جرّب شكل الذكر كما سيظهر لك",
+  "floatingAdhkarPreviewDisabledHint": "فعّل الخدمة وامنح الصلاحية أولًا",
+  "floatingAdhkarIosReminders": "تذكيرات iPhone",
+  "floatingAdhkarFloatingService": "الخدمة العائمة",
+  "floatingAdhkarUnsupportedPlatform": "غير مدعوم على هذه المنصة",
+  "floatingAdhkarStatBuiltIn": "الافتراضية",
+  "@floatingAdhkarStatBuiltIn": {
+    "description": "Short stat label under a number: built-in adhkar."
+  },
+  "floatingAdhkarStatCustom": "الخاصة",
+  "@floatingAdhkarStatCustom": {
+    "description": "Short stat label under a number: the user's own adhkar."
+  },
+  "floatingAdhkarSettingsTitleIos": "إعدادات تذكيرات الأذكار",
+  "floatingAdhkarSettingsTitle": "إعدادات الأذكار العائمة",
+  "floatingAdhkarReminderTiming": "توقيت التذكير",
+  "floatingAdhkarAppearanceTiming": "توقيت الظهور",
+  "floatingAdhkarReminderFrequency": "معدل تكرار التنبيه",
+  "floatingAdhkarAppearanceFrequency": "معدل تكرار الظهور",
+  "floatingAdhkarBuiltInSourceSubtitle": "المصدر الداخلي الأساسي للتطبيق",
+  "floatingAdhkarCustomSourceSubtitle": "الأذكار التي أضفتها بنفسك",
+  "floatingAdhkarMixSources": "الخلط بين المصادر",
+  "floatingAdhkarMixSourcesOn": "يتم الاختيار من قائمة موحدة",
+  "floatingAdhkarMixSourcesOff": "يتم التناوب بين الافتراضي والمخصص",
+  "floatingAdhkarSaveNeedsSource": "فعّل مصدرًا واحدًا على الأقل قبل الحفظ.",
+  "floatingAdhkarMasterSwitch": "تشغيل الميزة بالكامل",
+  "floatingAdhkarMasterSwitchIosHint": "تُجدول تنبيهات أذكار على iPhone",
+  "floatingAdhkarMasterSwitchHint": "تبدأ الخدمة الخلفية في إظهار الأذكار",
+  "floatingAdhkarSaveSettings": "حفظ الإعدادات",
+  "floatingAdhkarEveryMinutes": "{count, plural, =1{كل دقيقة} =2{كل دقيقتين} few{كل {count} دقائق} other{كل {count} دقيقة}}",
+  "@floatingAdhkarEveryMinutes": {
+    "description": "How often a dhikr appears, e.g. \"every 5 minutes\".",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "floatingAdhkarSourcesMixed": "دمج بين الافتراضي والمخصص",
+  "floatingAdhkarSourcesAlternating": "تناوب بين الافتراضي والمخصص",
+  "floatingAdhkarSourcesBuiltInOnly": "الأذكار الافتراضية فقط",
+  "floatingAdhkarSourcesCustomOnly": "أذكار المستخدم فقط",
+  "floatingAdhkarSourcesNone": "لا يوجد مصدر مفعّل",
+  "sabihTitle": "المسبحة",
+  "@sabihTitle": {
+    "description": "Name of the digital tasbih (prayer beads counter) screen."
+  },
+  "sabihBeadWalnut": "جوز",
+  "@sabihBeadWalnut": {
+    "description": "Prayer-bead material: walnut wood."
+  },
+  "sabihBeadOak": "بلّوط",
+  "@sabihBeadOak": {
+    "description": "Prayer-bead material: oak wood."
+  },
+  "sabihBeadEmerald": "زمرّد",
+  "@sabihBeadEmerald": {
+    "description": "Prayer-bead material: emerald."
+  },
+  "sabihBeadOnyx": "عقيق أسود",
+  "@sabihBeadOnyx": {
+    "description": "Prayer-bead material: black onyx."
+  },
+  "sabihBeadAmber": "كهرمان",
+  "@sabihBeadAmber": {
+    "description": "Prayer-bead material: amber."
+  },
+  "sabihBeadMahogany": "ماهوجني",
+  "@sabihBeadMahogany": {
+    "description": "Prayer-bead material: mahogany wood."
+  },
+  "sabihBeadSage": "زيتوني",
+  "@sabihBeadSage": {
+    "description": "Prayer-bead material colour: olive/sage green."
+  },
+  "sabihBeadGarnet": "عقيق أحمر",
+  "@sabihBeadGarnet": {
+    "description": "Prayer-bead material: red agate / garnet."
+  },
+  "sabihErrorRefreshList": "تعذر تحديث قائمة الأذكار.",
+  "sabihErrorLoad": "تعذر تحميل الأذكار.",
+  "sabihErrorRecord": "تعذر تسجيل الذكر.",
+  "sabihErrorResetToday": "تعذر تصفير عداد اليوم.",
+  "sabihAnalyticsTitle": "الإحصائيات",
+  "sabihTabOverview": "نظرة عامة",
+  "sabihTabDetails": "تفصيل الأذكار",
+  "sabihDhikrSettingsTooltip": "إعدادات الذكر",
+  "sabihAddCustomDhikr": "إضافة ذكر مخصص",
+  "sabihEmptyMessage": "لم يتم العثور على عناصر ذكر",
+  "sabihAddFirst": "أضف ذكرك الأول",
+  "sabihSaveChanges": "حفظ التعديلات",
+  "sabihAddDhikr": "إضافة الذكر",
+  "sabihSaveFailed": "تعذر حفظ الذكر.",
+  "sabihUpdatedSuccess": "تم تحديث الذكر بنجاح.",
+  "sabihAddedSuccess": "تمت إضافة الذكر بنجاح.",
+  "sabihEditDhikr": "تعديل الذكر",
+  "sabihFieldText": "نص الذكر",
+  "sabihExampleHint": "مثال: {example}",
+  "@sabihExampleHint": {
+    "description": "Input hint showing an example value. {example} is an Arabic dhikr or a number and is not translated.",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "sabihTextRequired": "يرجى إدخال نص الذكر",
+  "sabihTextTooShort": "نص الذكر قصير جدًا",
+  "sabihFieldVirtue": "الفضل أو وصف مختصر (اختياري)",
+  "@sabihFieldVirtue": {
+    "description": "Optional field: the virtue (reward) of the dhikr or a short description."
+  },
+  "sabihPeriodToday": "اليوم",
+  "sabihPeriodWeek": "الأسبوع",
+  "sabihPeriodMonth": "الشهر",
+  "sabihPeriodYear": "السنة",
+  "sabihPeriodAll": "الكل",
+  "@sabihPeriodAll": {
+    "description": "Period filter: all time."
+  },
+  "sabihThisWeek": "هذا الأسبوع",
+  "sabihThisMonth": "هذا الشهر",
+  "sabihAllTime": "كل الوقت",
+  "sabihMostUsed": "الأذكار الأكثر استخدامًا",
+  "sabihTotalCount": "إجمالي عدد الأذكار",
+  "sabihNoDataYet": "لا توجد بيانات بعد",
+  "sabihResetTodayCounter": "إعادة تعيين عدّاد اليوم",
+  "sabihEditThisDhikr": "تعديل هذا الذكر",
+  "sabihDeleteThisDhikr": "حذف هذا الذكر",
+  "sabihCustomBadge": "مخصص",
+  "@sabihCustomBadge": {
+    "description": "Small badge on a dhikr the user added."
+  },
+  "sabihNoCustomDhikr": "لا يوجد ذكر مخصص",
+  "sabihSummaryTitle": "ملخّص الذكر",
+  "sabihTodayNotStarted": "لم تبدأ ذكر اليوم بعد",
+  "sabihTodayCount": "{count, plural, =1{ذكرت اليوم مرّة واحدة} =2{ذكرت اليوم مرّتين} few{ذكرت اليوم {count} مرّات} other{ذكرت اليوم {count} مرّة}}",
+  "@sabihTodayCount": {
+    "description": "How many times the user did tasbih today.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sabihCounterSemantics": "تسبيح",
+  "@sabihCounterSemantics": {
+    "description": "Screen-reader label of the tap-to-count ring."
+  },
+  "sabihTargetReached": "بلغت {target}",
+  "@sabihTargetReached": {
+    "description": "Shown under the counter when the goal is reached, e.g. \"Reached 33\".",
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "sabihTargetOf": "من {target}",
+  "@sabihTargetOf": {
+    "description": "Shown under the count: \"out of 33\".",
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "sabihTargetLabel": "الهدف {target}",
+  "@sabihTargetLabel": {
+    "description": "Goal count, e.g. \"Goal 33\".",
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "sabihTapAnywhere": "المس أي مكان للتسبيح",
+  "sabihCountSemantics": "عدد التسبيح",
+  "@sabihCountSemantics": {
+    "description": "Screen-reader label of the big count number."
+  },
+  "sabihInvalidNumber": "أدخل رقمًا صحيحًا أكبر من صفر",
+  "sabihSettingsTitle": "إعدادات المسبحة",
+  "sabihTargetSection": "هدف الذكر",
+  "sabihTargetAutoHint": "اتركه كما هو وسيتدرّج تلقائيًا: ٣٣ ثم ٩٩ ثم كل مئة.",
+  "@sabihTargetAutoHint": {
+    "description": "If the goal is left unchanged it steps up automatically: 33, then 99, then every 100."
+  },
+  "sabihFontSize": "حجم الخط",
+  "sabihFontSizeGlyph": "أ",
+  "@sabihFontSizeGlyph": {
+    "description": "A single letter shown small and large on both ends of the font-size slider (like \"A\"). Use the first letter of your alphabet."
+  },
+  "sabihPercent": "{value}٪",
+  "@sabihPercent": {
+    "description": "A percentage value.",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "sabihVibration": "الاهتزاز",
+  "sabihVibrationTitle": "اهتزاز خفيف مع كل تسبيحة",
+  "sabihVibrationSubtitle": "واهتزازة أوضح عند بلوغ الهدف",
+  "sabihBeadDesign": "تصميم السبحة",
+  "@sabihBeadDesign": {
+    "description": "Section title: choose the prayer-beads style/material."
+  },
+  "sabihResetTodayCounterAction": "إعادة ضبط عدّاد اليوم",
+  "anotherScreenGroupDaily": "وردك اليومي",
+  "@anotherScreenGroupDaily": {
+    "description": "Group title in the features hub: your daily devotions."
+  },
+  "anotherScreenGroupKnowledge": "علم وتلاوة",
+  "@anotherScreenGroupKnowledge": {
+    "description": "Group title in the features hub: knowledge and recitation."
+  },
+  "anotherScreenGroupTools": "أذكار وأدوات",
+  "@anotherScreenGroupTools": {
+    "description": "Group title in the features hub: adhkar and tools."
+  },
+  "anotherScreenDailyWird": "زاد اليوم والليلة",
+  "@anotherScreenDailyWird": {
+    "description": "Feature name: a daily/nightly devotional programme (adhkar, Quran, duas)."
+  },
+  "anotherScreenDailyWirdSubtitle": "ورد تعبدي منظم لأذكارك وتلاوتك اليومية",
+  "anotherScreenKhatmaPlans": "خطط الختمة",
+  "@anotherScreenKhatmaPlans": {
+    "description": "Feature name: plans for completing a full reading of the Quran (khatm)."
+  },
+  "anotherScreenKhatmaPlansSubtitle": "خطط مرتبة لإتمام الختمة بما يناسبك",
+  "anotherScreenTasbihSubtitle": "تسبيح سهل بعداد مريح وواضح",
+  "anotherScreenFloatingAdhkarSubtitle": "أذكار قصيرة تظهر فوق التطبيقات الأخرى",
+  "anotherScreenFajrCompanion": "صحبة الفجر",
+  "@anotherScreenFajrCompanion": {
+    "description": "Feature name: scheduled reminders/calls to wake friends for Fajr prayer."
+  },
+  "anotherScreenFajrCompanionSubtitle": "تذكيرات دعوية واتصالات مجدولة",
+  "anotherScreenSurahEncyclopedia": "موسوعة السور",
+  "@anotherScreenSurahEncyclopedia": {
+    "description": "Feature name: an encyclopedia of the Quran's surahs (meaning, virtues, themes)."
+  },
+  "anotherScreenSurahEncyclopediaSubtitle": "استعراض السور وفضائلها وموضوعاتها",
+  "anotherScreenNawawi40": "الأربعون النووية",
+  "@anotherScreenNawawi40": {
+    "description": "Feature name: Imam al-Nawawi's Forty Hadith."
+  },
+  "anotherScreenNawawi40Subtitle": "أحاديث جامعة في أبواب الدين",
+  "anotherScreenNamesOfAllah": "أسماء الله الحسنى",
+  "@anotherScreenNamesOfAllah": {
+    "description": "Feature name: the 99 Beautiful Names of Allah."
+  },
+  "anotherScreenNamesOfAllahSubtitle": "تأمل الأسماء ومعانيها المباركة",
+  "anotherScreenRadio": "الإذاعة",
+  "@anotherScreenRadio": {
+    "description": "Feature name: Quran/Islamic radio stations."
+  },
+  "anotherScreenRadioSubtitle": "إذاعات قرآنية وإسلامية ببث مباشر متواصل",
+  "anotherScreenHisnMuslim": "حصن المسلم",
+  "@anotherScreenHisnMuslim": {
+    "description": "Title of the well-known dua book \"Hisn al-Muslim\" (Fortress of the Muslim). Use the name Muslims know it by in your language."
+  },
+  "anotherScreenHisnMuslimSubtitle": "أذكار جامعة مرتبة للأحوال والمناسبات",
+  "anotherScreenMyDuas": "أدعيتي الخاصة",
+  "@anotherScreenMyDuas": {
+    "description": "Feature name: the user's personal duas."
+  },
+  "anotherScreenMyDuasSubtitle": "احتفظ بأدعيتك الشخصية في مكان واحد",
+  "anotherScreenTraveler": "المسافر",
+  "@anotherScreenTraveler": {
+    "description": "Feature name: tools for travellers."
+  },
+  "anotherScreenTravelerSubtitle": "أذكار السفر ومواقيت الرحلات وأماكن نافعة",
+  "anotherScreenHomeWidgets": "ودجات الشاشة الرئيسية",
+  "@anotherScreenHomeWidgets": {
+    "description": "Feature name: home-screen widgets."
+  },
+  "anotherScreenHomeWidgetsSubtitle": "الصلاة القادمة ومواقيت اليوم وآية اليوم",
+  "anotherScreenFootnotes": "الحواشي",
+  "@anotherScreenFootnotes": {
+    "description": "Footnotes section of a Hisn al-Muslim chapter."
+  },
+  "anotherScreenChapterNumber": "الباب {number}",
+  "@anotherScreenChapterNumber": {
+    "description": "Chapter number in Hisn al-Muslim.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "anotherScreenTextsCount": "{count, plural, =1{نص واحد} =2{نصّان} few{{count} نصوص} other{{count} نصًّا}}",
+  "@anotherScreenTextsCount": {
+    "description": "Number of texts (adhkar) in a chapter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anotherScreenFootnotesCount": "{count, plural, =1{حاشية واحدة} =2{حاشيتان} few{{count} حواشٍ} other{{count} حاشية}}",
+  "@anotherScreenFootnotesCount": {
+    "description": "Number of footnotes in a chapter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anotherScreenDhikrText": "نص الذكر",
+  "@anotherScreenDhikrText": {
+    "description": "Section title: the text of the dhikr."
+  },
+  "anotherScreenHisnSearchHint": "بحث عن حصن المسلم",
+  "anotherScreenNoResults": "لا توجد نتائج",
+  "anotherScreenHisnNoResultsMessage": "لم نجد بابًا يطابق بحثك في حصن المسلم.",
+  "anotherScreenShowAllAdhkar": "عرض جميع الأذكار",
+  "anotherScreenSurahSearchHint": "بحث عن سورة",
+  "anotherScreenSurahTitle": "سورة {name}",
+  "@anotherScreenSurahTitle": {
+    "description": "Surah heading; {name} is the Arabic surah name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "anotherScreenLabelHeading": "{label}:",
+  "@anotherScreenLabelHeading": {
+    "description": "A label followed by a colon, used as a heading in shared text. Adjust the colon to your language.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "anotherScreenLabelValue": "{label}: {value}",
+  "@anotherScreenLabelValue": {
+    "description": "A \"label: value\" line in shared text. Adjust the colon/spacing to your language.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "anotherScreenSurahOrder": "الترتيب",
+  "@anotherScreenSurahOrder": {
+    "description": "Position of the surah in the list."
+  },
+  "anotherScreenSurahNumber": "رقم السورة",
+  "anotherScreenAyahCount": "عدد الآيات",
+  "anotherScreenSurahNameMeaning": "معنى اسم السورة",
+  "anotherScreenSurahNamingReason": "سبب التسمية",
+  "anotherScreenSurahOtherNamesShort": "أسماء أخرى",
+  "anotherScreenSurahOtherNames": "أسماء أخرى للسورة",
+  "anotherScreenSurahPurpose": "المقصد العام",
+  "@anotherScreenSurahPurpose": {
+    "description": "The overall theme/purpose of the surah."
+  },
+  "anotherScreenSurahRevelationReason": "سبب النزول",
+  "@anotherScreenSurahRevelationReason": {
+    "description": "Occasion of revelation (asbab al-nuzul)."
+  },
+  "anotherScreenSurahVirtues": "فضائل السورة",
+  "anotherScreenSurahRelations": "مناسبات السورة",
+  "@anotherScreenSurahRelations": {
+    "description": "How the surah connects to the surahs around it (munasabat)."
+  },
+  "anotherScreenAyahsLabel": "{count} آية",
+  "@anotherScreenAyahsLabel": {
+    "description": "{count} is the Arabic verse count from the data (e.g. \"سَبْعٌ (7)\"), not a number to format.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "anotherScreenNoMatchingResults": "لا توجد نتائج مطابقة",
+  "anotherScreenShowAllSurahs": "عرض جميع السور",
+  "quranPlanAnalysisStartFirst": "ابدأ أول جلسة لتحليل تقدمك.",
+  "quranPlanAnalysisFinished": "مبارك! لقد أنهيت الخطة.",
+  "quranPlanAnalysisOnTrack": "أنت على المسار الصحيح، ومتوقع أن تختم قبل الوقت المحدد!",
+  "quranPlanAnalysisBehind": "قد تتأخر قليلاً عن الموعد. حاول تسريع وتيرة القراءة.",
+  "quranPlanReminderTitle": "خطة ختم القرآن: {title}",
+  "@quranPlanReminderTitle": {
+    "description": "Daily reminder notification title. {title} is the plan name the user typed.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "quranPlanReminderBody": "لا تنس جلسة اليوم في خطتك \"{title}\"!",
+  "@quranPlanReminderBody": {
+    "description": "Daily reminder notification body. {title} is the plan name.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "quranPlanAddTitle": "إضافة خطة ختم جديدة",
+  "quranPlanDetailsHeader": "تفاصيل الخطة",
+  "quranPlanTitleLabel": "عنوان الخطة",
+  "quranPlanTitleHint": "اسم الخطة",
+  "quranPlanTitleRequired": "أدخل عنوانًا",
+  "quranPlanFromJuz": "من الجزء",
+  "@quranPlanFromJuz": {
+    "description": "Form label: starting juz (one of the 30 parts of the Quran)."
+  },
+  "quranPlanToJuz": "إلى الجزء",
+  "@quranPlanToJuz": {
+    "description": "Form label: ending juz."
+  },
+  "quranPlanChooseStart": "اختر البداية",
+  "quranPlanChooseEnd": "اختر النهاية",
+  "quranPlanEndBeforeStart": "النهاية قبل البداية",
+  "quranPlanDaysLabel": "عدد الأيام",
+  "quranPlanDaysHint": "مثال: 30",
+  "quranPlanDaysInvalid": "أدخل عدد الأيام بشكل صحيح",
+  "quranPlanSave": "حفظ الخطة",
+  "quranPlanChoose": "اختر",
+  "@quranPlanChoose": {
+    "description": "Dropdown hint: choose."
+  },
+  "quranPlanJuz": "الجزء {number}",
+  "@quranPlanJuz": {
+    "description": "A juz (one of the 30 parts of the Quran), e.g. \"Juz 5\".",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanDailyReminder": "تذكير يومي",
+  "quranPlanNotSet": "غير محدّد",
+  "@quranPlanNotSet": {
+    "description": "No reminder time chosen."
+  },
+  "quranPlanListTitle": "خطط الختم",
+  "@quranPlanListTitle": {
+    "description": "Title: plans for completing the Quran (khatm)."
+  },
+  "quranPlanNewTooltip": "خطة جديدة",
+  "quranPlanSearchHint": "بحث عن خطة",
+  "quranPlanJuzRange": "الجزء {start} إلى {end}",
+  "@quranPlanJuzRange": {
+    "description": "Juz range of a plan, e.g. \"Juz 1 to 30\".",
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanDaysCount": "{count, plural, =1{يوم واحد} =2{يومان} few{{count} أيام} other{{count} يومًا}}",
+  "@quranPlanDaysCount": {
+    "description": "Plan length in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanLoadedSessions": "{count, plural, =1{جلسة واحدة محمّلة} =2{جلستان محمّلتان} few{{count} جلسات محمّلة} other{{count} جلسة محمّلة}}",
+  "@quranPlanLoadedSessions": {
+    "description": "How many reading sessions of the plan are loaded on screen.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanProgress": "{done} من {total}",
+  "@quranPlanProgress": {
+    "description": "Sessions done out of total, e.g. \"3 of 30\".",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanDeleteConfirm": "سيتم حذف الخطة ؟",
+  "@quranPlanDeleteConfirm": {
+    "description": "Snackbar asking to confirm deleting a plan."
+  },
+  "quranPlanConfirm": "تأكيد",
+  "quranPlanDelete": "حذف الخطة",
+  "quranPlanStagnationWarning": "انتبه: لديك عدة أيام ركود. جلسة قصيرة اليوم تكفي لإعادة الإيقاع.",
+  "@quranPlanStagnationWarning": {
+    "description": "Warning shown when the user skipped reading for several days."
+  },
+  "quranPlanLoadFailed": "تعذّر تحميل هذه الخطة حاليًا.",
+  "quranPlanTodaySession": "جلسة اليوم",
+  "quranPlanAllSessionsDone": "أتممت جلسات هذه الخطة، بارك الله فيك.",
+  "quranPlanRhythm": "إيقاع الخطة",
+  "@quranPlanRhythm": {
+    "description": "Section header: statistics about the user's reading pace."
+  },
+  "quranPlanPath": "مسار الختمة",
+  "@quranPlanPath": {
+    "description": "Section header: the list of all reading sessions of the plan."
+  },
+  "quranPlanNoSessions": "لا توجد جلسات ظاهرة بعد.",
+  "quranPlanCompleteConfirm": "سيتم إنهاء الجلسة ؟",
+  "@quranPlanCompleteConfirm": {
+    "description": "Snackbar asking to confirm marking the session as done."
+  },
+  "quranPlanSessionNumber": "جلسة {number}",
+  "@quranPlanSessionNumber": {
+    "description": "Reading session number, e.g. \"Session 4\".",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanSessionDone": "مُنجزة",
+  "@quranPlanSessionDone": {
+    "description": "Status: this session is done."
+  },
+  "quranPlanCurrentSession": "جلستك الحالية",
+  "quranPlanOpenMushafHint": "افتح المصحف عند بداية الجلسة",
+  "@quranPlanOpenMushafHint": {
+    "description": "Hint: tap to open the Quran at the start of the session."
+  },
+  "quranPlanSessionCompleted": "جلسة مُنجزة",
+  "quranPlanCompleteSession": "إنهاء الجلسة",
+  "quranPlanSurahFallback": "سورة {number}",
+  "@quranPlanSurahFallback": {
+    "description": "Fallback surah label when its name is unknown.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanSessionRange": "من {fromSurah} الآية {fromAyah} إلى {toSurah} الآية {toAyah}",
+  "@quranPlanSessionRange": {
+    "description": "Range of a reading session. Surah names stay in Arabic.",
+    "placeholders": {
+      "fromSurah": {
+        "type": "String"
+      },
+      "fromAyah": {
+        "type": "int"
+      },
+      "toSurah": {
+        "type": "String"
+      },
+      "toAyah": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanCompletedAt": "تم الإنجاز · {date}",
+  "@quranPlanCompletedAt": {
+    "description": "When a session was completed; {date} is a formatted date and time.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quranPlanExpectedFinish": "توقّع يوم الختم",
+  "@quranPlanExpectedFinish": {
+    "description": "Predicted date of finishing the Quran."
+  },
+  "quranPlanAverageInterval": "متوسّط الفاصل بين الجلسات",
+  "quranPlanAverageIntervalValue": "{days} يوم",
+  "@quranPlanAverageIntervalValue": {
+    "description": "Average days between sessions; {days} is a decimal like \"1.5\".",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "quranPlanMostActiveDay": "اليوم الأكثر نشاطًا",
+  "@quranPlanMostActiveDay": {
+    "description": "Weekday on which the user reads most."
+  },
+  "quranPlanLeastActiveDay": "اليوم الأقلّ نشاطًا",
+  "@quranPlanLeastActiveDay": {
+    "description": "Weekday on which the user reads least."
+  },
+  "quranPlanCompletionProbability": "احتمال إتمام الخطة",
+  "quranPlanPercentValue": "{percent} بالمئة",
+  "@quranPlanPercentValue": {
+    "description": "A percentage written out, e.g. \"70 percent\".",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "quranPlanStagnationDays": "أيام الركود",
+  "@quranPlanStagnationDays": {
+    "description": "Days on which the user did not read."
+  },
+  "cleanupRouteNotFound": "الصفحة غير موجودة",
+  "@cleanupRouteNotFound": {
+    "description": "Title and body of the fallback screen shown when the app navigates to a page that does not exist."
+  },
+  "cleanupNotificationSubtitle": "إشعار جديد",
+  "@cleanupNotificationSubtitle": {
+    "description": "iOS subtitle line under the title of a push notification sent from the server: 'New notification'."
+  },
+  "cleanupNotificationActionView": "عرض",
+  "@cleanupNotificationActionView": {
+    "description": "Button on a push notification (Android): open/view it. One short word."
+  },
+  "cleanupNotificationActionDismiss": "تجاهل",
+  "@cleanupNotificationActionDismiss": {
+    "description": "Button on a push notification (Android): dismiss it. One short word."
+  },
+  "cleanupDownloadActionFailed": "تعذّر إتمام عملية التنزيل. حاول مرة أخرى.",
+  "@cleanupDownloadActionFailed": {
+    "description": "Error snackbar on the Downloads screen when starting/pausing/resuming/cancelling/opening a download fails."
+  },
+  "cleanupDownloadStatusQueued": "في الانتظار",
+  "@cleanupDownloadStatusQueued": {
+    "description": "Download status under a file name: waiting in the queue to start."
+  },
+  "cleanupDownloadStatusCanceled": "أُلغي",
+  "@cleanupDownloadStatusCanceled": {
+    "description": "Download status under a file name: the download was cancelled."
+  },
+  "cleanupDownloadStatusUnknown": "غير معروف",
+  "@cleanupDownloadStatusUnknown": {
+    "description": "Download status under a file name when the state is unknown."
+  },
+  "cleanupRadioMediaArtist": "إذاعة القرآن الكريم",
+  "@cleanupRadioMediaArtist": {
+    "description": "Second line on the lock screen / media notification while a Quran radio station is playing: 'Holy Quran Radio'."
+  },
+  "cleanupDhikrMeaningSubhanAllah": "تنزيه الله عن كل نقص",
+  "@cleanupDhikrMeaningSubhanAllah": {
+    "description": "Short meaning shown in small text under the built-in dhikr «سبحان الله» in the Tasbih (the dhikr itself stays Arabic). Arabic source is a short explanation; other languages give the translation of the phrase, e.g. 'Glory be to Allah'."
+  },
+  "cleanupDhikrMeaningAlhamdulillah": "الثناء على الله بكل كمال",
+  "@cleanupDhikrMeaningAlhamdulillah": {
+    "description": "Short meaning under the built-in dhikr «الحمد لله» in the Tasbih. Other languages: translation of the phrase, e.g. 'All praise is due to Allah'."
+  },
+  "cleanupDhikrMeaningLaIlaha": "لا معبود بحقّ إلا الله",
+  "@cleanupDhikrMeaningLaIlaha": {
+    "description": "Short meaning under the built-in dhikr «لا إله إلا الله» in the Tasbih. Other languages: translation, e.g. 'There is no god but Allah'."
+  },
+  "cleanupDhikrMeaningAllahuAkbar": "الله أعظم من كل شيء",
+  "@cleanupDhikrMeaningAllahuAkbar": {
+    "description": "Short meaning under the built-in dhikr «الله أكبر» in the Tasbih. Other languages: translation, e.g. 'Allah is the Greatest'."
+  },
+  "cleanupDhikrMeaningLaHawla": "لا تحوّل ولا قدرة إلا بعون الله",
+  "@cleanupDhikrMeaningLaHawla": {
+    "description": "Short meaning under the built-in dhikr «لا حول ولا قوة إلا بالله» in the Tasbih. Other languages: translation, e.g. 'There is no might nor power except with Allah'."
+  },
+  "cleanupDhikrMeaningAstaghfirullah": "أطلب من الله المغفرة",
+  "@cleanupDhikrMeaningAstaghfirullah": {
+    "description": "Short meaning under the built-in dhikr «أستغفر الله» in the Tasbih. Other languages: translation, e.g. 'I seek forgiveness from Allah'."
+  },
+  "cleanupDhikrMeaningSubhanAllahWaBihamdihi": "تنزيه الله مع حمده وتعظيمه",
+  "@cleanupDhikrMeaningSubhanAllahWaBihamdihi": {
+    "description": "Short meaning under the built-in dhikr «سبحان الله وبحمده سبحان الله العظيم» in the Tasbih. Other languages: translation, e.g. 'Glory be to Allah and praise Him, glory be to Allah the Magnificent'."
+  },
+  "appName": "طمأنينة",
+  "@appName": {
+    "description": "Brand name of the app. Keep recognizable; Latin-script languages use the transliteration 'Tamaneena'."
+  },
+  "commonContinue": "متابعة",
+  "commonSave": "حفظ",
+  "commonCancel": "إلغاء",
+  "commonOk": "حسنًا",
+  "commonClose": "إغلاق",
+  "commonDone": "تم",
+  "commonRetry": "إعادة المحاولة",
+  "commonSearch": "بحث",
+  "commonSettings": "الإعدادات",
+  "commonLoading": "جارٍ التحميل…",
+  "commonError": "حدث خطأ",
+  "commonDelete": "حذف",
+  "commonEdit": "تعديل",
+  "commonAdd": "إضافة",
+  "commonShare": "مشاركة",
+  "commonCopy": "نسخ",
+  "commonCopied": "تم النسخ",
+  "commonBack": "رجوع",
+  "commonYes": "نعم",
+  "commonNo": "لا",
+  "commonRefresh": "تحديث",
+  "commonSeeAll": "عرض الكل",
+  "commonEnable": "تفعيل",
+  "commonDisable": "إيقاف",
+  "commonLater": "لاحقًا",
+  "prayerFajr": "الفجر",
+  "prayerSunrise": "الشروق",
+  "prayerDhuhr": "الظهر",
+  "prayerAsr": "العصر",
+  "prayerMaghrib": "المغرب",
+  "prayerIsha": "العشاء",
+  "prayerJumuah": "الجمعة",
+  "hijriMonth1": "محرم",
+  "@hijriMonth1": {
+    "description": "Islamic (Hijri) month names 1-12. Use the standard spelling Muslims use in the target language (e.g. Turkish 'Muharrem', Indonesian 'Muharram')."
+  },
+  "hijriMonth2": "صفر",
+  "hijriMonth3": "ربيع الأول",
+  "hijriMonth4": "ربيع الآخر",
+  "hijriMonth5": "جمادى الأولى",
+  "hijriMonth6": "جمادى الآخرة",
+  "hijriMonth7": "رجب",
+  "hijriMonth8": "شعبان",
+  "hijriMonth9": "رمضان",
+  "hijriMonth10": "شوال",
+  "hijriMonth11": "ذو القعدة",
+  "hijriMonth12": "ذو الحجة",
+  "hijriDate": "{day} {month} {year} هـ",
+  "@hijriDate": {
+    "description": "A Hijri date. {month} is one of hijriMonth1..12. The 'هـ' suffix marks the Hijri era; use the target language's equivalent (e.g. 'H' in Indonesian/Turkish).",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimTitle": "المسلم الصغير",
+  "@youngMuslimTitle": {
+    "description": "Name of the kids section (Young Muslim) with Islamic story videos; screen title."
+  },
+  "youngMuslimQuizUnanswered": "لم تتم الإجابة",
+  "@youngMuslimQuizUnanswered": {
+    "description": "Shown in quiz review when the child left a question unanswered."
+  },
+  "youngMuslimResumeReminderTitle": "كمل المشاهدة في المسلم الصغير",
+  "@youngMuslimResumeReminderTitle": {
+    "description": "Notification title reminding the child to resume a video."
+  },
+  "youngMuslimResumeReminderBody": "ارجع إلى \"{topic}\" وأكمل رحلتك بهدوء.",
+  "@youngMuslimResumeReminderBody": {
+    "description": "Notification body. {topic} is the story title (Arabic content).",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimAudienceKidsSafe": "واجهة آمنة للأطفال",
+  "@youngMuslimAudienceKidsSafe": {
+    "description": "Chip on a kids category cover."
+  },
+  "youngMuslimAudienceGeneral": "مشاهدة عامة",
+  "@youngMuslimAudienceGeneral": {
+    "description": "Chip on a general-audience category cover."
+  },
+  "youngMuslimStatSeries": "سلسلة",
+  "@youngMuslimStatSeries": {
+    "description": "Label under a number: count of series."
+  },
+  "youngMuslimStatEpisode": "حلقة",
+  "@youngMuslimStatEpisode": {
+    "description": "Label under a number: count of episodes."
+  },
+  "youngMuslimChooseSeries": "اختر السلسلة",
+  "youngMuslimEpisodes": "الحلقات",
+  "@youngMuslimEpisodes": {
+    "description": "Section header: list of episodes."
+  },
+  "youngMuslimEpisodesCount": "{count, plural, other{{count} حلقة}}",
+  "@youngMuslimEpisodesCount": {
+    "description": "Number of episodes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoEpisodesTitle": "لا توجد حلقات الآن",
+  "youngMuslimNoEpisodesSubtitle": "غيّر السلسلة المختارة أو عد لاحقًا بعد تحديث الفلاتر.",
+  "youngMuslimCategoryLoadError": "تعذّر تحميل القسم",
+  "youngMuslimTryAgainShortly": "حاول مرة أخرى بعد قليل.",
+  "youngMuslimSearchHint": "ابحث عن قصة...",
+  "youngMuslimAchievements": "الإنجازات",
+  "@youngMuslimAchievements": {
+    "description": "Section header."
+  },
+  "youngMuslimQuickFilter": "تصفية سريعة",
+  "@youngMuslimQuickFilter": {
+    "description": "Section header above quick filter chips."
+  },
+  "youngMuslimFilterResults": "نتائج الفلترة",
+  "youngMuslimResultsCount": "{count, plural, other{{count} نتيجة}}",
+  "@youngMuslimResultsCount": {
+    "description": "Number of search/filter results.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoMatchesTitle": "لا توجد نتائج مطابقة",
+  "youngMuslimNoMatchesSubtitle": "جرّب كلمات أبسط أو غيّر الفلاتر لتظهر حلقات أكثر.",
+  "youngMuslimSections": "الأقسام",
+  "@youngMuslimSections": {
+    "description": "Section header: content categories."
+  },
+  "youngMuslimContinueWatching": "أكمل المشاهدة",
+  "@youngMuslimContinueWatching": {
+    "description": "Section header: videos in progress."
+  },
+  "youngMuslimRecentlyWatched": "شاهدت مؤخرًا",
+  "youngMuslimFavorites": "المفضلة",
+  "youngMuslimWatchLater": "سأشاهد لاحقًا",
+  "@youngMuslimWatchLater": {
+    "description": "Watch-later list / toggle."
+  },
+  "youngMuslimSuggestions": "اقتراحات مناسبة",
+  "youngMuslimGreetingWelcome": "مرحبًا بك في عالم القصص والتعلّم",
+  "youngMuslimGreetingPickNew": "اختر قصة جديدة وابدأ رحلتك اليوم",
+  "youngMuslimGreetingWaiting": "{count, plural, other{لديك {count} حلقة بانتظارك لتعود إليها}}",
+  "@youngMuslimGreetingWaiting": {
+    "description": "Greeting when the child has unfinished episodes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimRewardsTitle": "نقاطي وإنجازاتي",
+  "@youngMuslimRewardsTitle": {
+    "description": "My points and achievements."
+  },
+  "youngMuslimLevelAndPoints": "المستوى {level} · {points} نقطة",
+  "@youngMuslimLevelAndPoints": {
+    "description": "Gamification: current level and total points (XP).",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNextLevelProgress": "التقدّم للمستوى التالي",
+  "youngMuslimProgressOf": "{current} من {total}",
+  "@youngMuslimProgressOf": {
+    "description": "Progress fraction, e.g. \"40 of 100\".",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimStatAchievements": "إنجازات",
+  "@youngMuslimStatAchievements": {
+    "description": "Label under a number."
+  },
+  "youngMuslimStatEpisodes": "حلقات",
+  "@youngMuslimStatEpisodes": {
+    "description": "Label under a number: completed episodes."
+  },
+  "youngMuslimStatAnswers": "إجابات",
+  "@youngMuslimStatAnswers": {
+    "description": "Label under a number: correct answers."
+  },
+  "youngMuslimFilterAll": "الكل",
+  "@youngMuslimFilterAll": {
+    "description": "Filter option: all."
+  },
+  "youngMuslimStatusInProgress": "قيد المشاهدة",
+  "youngMuslimStatusCompleted": "مكتمل",
+  "youngMuslimStatusWatchLater": "لاحقًا",
+  "@youngMuslimStatusWatchLater": {
+    "description": "Short filter chip: watch later."
+  },
+  "youngMuslimFiltersActiveNote": "الفلاتر مفعّلة الآن، ويمكنك تعديلها من زرّ التصفية أعلى الصفحة.",
+  "youngMuslimClearFilters": "مسح",
+  "@youngMuslimClearFilters": {
+    "description": "Button: clear filters."
+  },
+  "youngMuslimContentLoadError": "تعذّر تحميل المحتوى",
+  "youngMuslimPullToRetry": "اسحب الصفحة للأسفل لإعادة المحاولة.",
+  "youngMuslimFilterSheetTitle": "تصفية المحتوى",
+  "youngMuslimCategoryLabel": "القسم",
+  "@youngMuslimCategoryLabel": {
+    "description": "Label: the content category (filter group / info row)."
+  },
+  "youngMuslimFilterLanguage": "اللغة",
+  "@youngMuslimFilterLanguage": {
+    "description": "Filter group: language of the video content."
+  },
+  "youngMuslimLanguageArabic": "العربية",
+  "@youngMuslimLanguageArabic": {
+    "description": "Content language filter option."
+  },
+  "youngMuslimLanguageFrench": "الفرنسية",
+  "@youngMuslimLanguageFrench": {
+    "description": "Content language filter option."
+  },
+  "youngMuslimLanguageMixed": "مختلط",
+  "@youngMuslimLanguageMixed": {
+    "description": "Content language filter option: mixed languages."
+  },
+  "youngMuslimFilterContentType": "نوع المحتوى",
+  "youngMuslimContentTypeStorySeries": "سلاسل قصصية",
+  "youngMuslimApplyFilters": "تطبيق الفلاتر",
+  "youngMuslimPlayerTitle": "تشغيل آمن للأطفال",
+  "@youngMuslimPlayerTitle": {
+    "description": "Title of the kid-safe video player screen."
+  },
+  "youngMuslimEpisodeQuizTitle": "سؤال الحلقة بعد المشاهدة",
+  "youngMuslimSeriesChallenge": "تحدي السلسلة",
+  "@youngMuslimSeriesChallenge": {
+    "description": "Quiz at the end of a whole series."
+  },
+  "youngMuslimPlayerLoadError": "تعذّر تحميل المشغّل الآن.",
+  "youngMuslimWatchOptions": "خيارات المشاهدة",
+  "youngMuslimPlayNextEpisode": "تشغيل الحلقة التالية",
+  "youngMuslimNextEpisodeFromSeries": "الحلقة {episode} من نفس السلسلة",
+  "@youngMuslimNextEpisodeFromSeries": {
+    "description": "{episode} is the episode number.",
+    "placeholders": {
+      "episode": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimSeriesPlaylist": "قائمة السلسلة",
+  "youngMuslimAutoPlayNext": "تشغيل الحلقة التالية تلقائيًا",
+  "youngMuslimAutoPlayNextSubtitle": "ضمن السلسلة نفسها فقط بعد نهاية الحلقة",
+  "youngMuslimResumeButton": "متابعة المشاهدة",
+  "@youngMuslimResumeButton": {
+    "description": "Button: resume watching."
+  },
+  "youngMuslimPlayNow": "تشغيل الآن",
+  "youngMuslimPercent": "{percent}٪",
+  "@youngMuslimPercent": {
+    "description": "A percentage; use the target language percent format.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimProgress": "التقدّم",
+  "youngMuslimWatchCount": "مرات المشاهدة",
+  "youngMuslimEpisodeDuration": "مدّة الحلقة",
+  "youngMuslimLastWatched": "آخر مشاهدة: {when}",
+  "@youngMuslimLastWatched": {
+    "description": "{when} is a relative time like \"5 minutes ago\".",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimEpisodeInfo": "معلومات الحلقة",
+  "youngMuslimStory": "القصة",
+  "youngMuslimSeries": "السلسلة",
+  "youngMuslimEpisodeNumber": "رقم الحلقة",
+  "youngMuslimEpisodeTools": "أدوات الحلقة",
+  "youngMuslimEpisodeQuestions": "أسئلة الحلقة",
+  "youngMuslimEpisodeQuestionsSubtitle": "أسئلة قصيرة تثبّت ما شاهده الطفل",
+  "youngMuslimAfterWatchQuestion": "سؤال بعد المشاهدة",
+  "youngMuslimNextEpisode": "الحلقة التالية",
+  "youngMuslimSimilarEpisodes": "حلقات مشابهة",
+  "youngMuslimDetailsLoadError": "تعذّر تحميل تفاصيل الحلقة",
+  "youngMuslimQuizIntro": "أسئلة بسيطة تساعد الطفل على تثبيت ما شاهده.",
+  "youngMuslimQuestionsCount": "{count, plural, other{{count} أسئلة}}",
+  "@youngMuslimQuestionsCount": {
+    "description": "Number of quiz questions.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimXpOnPass": "+{points} نقطة عند النجاح",
+  "@youngMuslimXpOnPass": {
+    "description": "Points awarded for passing a quiz.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimPassingScore": "النجاح من {score}",
+  "@youngMuslimPassingScore": {
+    "description": "Minimum correct answers needed to pass.",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimGrading": "جارٍ تصحيح الإجابات",
+  "youngMuslimSubmitAnswers": "إرسال الإجابات",
+  "youngMuslimAnswerHint": "اكتب إجابتك هنا بوضوح...",
+  "youngMuslimQuizPassed": "أحسنت يا بطل",
+  "@youngMuslimQuizPassed": {
+    "description": "Praise for a child who passed the quiz (\"Well done, champ\")."
+  },
+  "youngMuslimQuizAlmost": "أنت قريب من الإجابة الكاملة",
+  "youngMuslimQuizScore": "أجبت {correct} من {total} إجابة صحيحة",
+  "@youngMuslimQuizScore": {
+    "description": "Quiz result summary.",
+    "placeholders": {
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimXpGained": "+{points} نقطة",
+  "@youngMuslimXpGained": {
+    "description": "Points gained.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimLevel": "المستوى {level}",
+  "@youngMuslimLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimPoints": "{points, plural, other{{points} نقطة}}",
+  "@youngMuslimPoints": {
+    "description": "Total points.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNewAchievements": "إنجازات جديدة",
+  "youngMuslimReviewAnswers": "مراجعة الإجابات",
+  "youngMuslimFinish": "إنهاء",
+  "@youngMuslimFinish": {
+    "description": "Button: finish the quiz."
+  },
+  "youngMuslimYourAnswer": "إجابتك",
+  "youngMuslimCorrectAnswer": "الإجابة الصحيحة",
+  "youngMuslimStatSeriesPlural": "سلاسل",
+  "@youngMuslimStatSeriesPlural": {
+    "description": "Label under a number: completed series."
+  },
+  "youngMuslimStatPerfectScores": "نتائج كاملة",
+  "@youngMuslimStatPerfectScores": {
+    "description": "Label under a number: quizzes with full marks."
+  },
+  "youngMuslimUnlockedAchievements": "الإنجازات المفتوحة",
+  "youngMuslimAchievementsCount": "{count, plural, other{{count} إنجاز}}",
+  "@youngMuslimAchievementsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoAchievementsTitle": "لا توجد إنجازات بعد",
+  "youngMuslimNoAchievementsSubtitle": "أكمل أول حلقة أو أجب عن أول سؤال لتبدأ الرحلة.",
+  "youngMuslimUpcomingAchievements": "إنجازات قادمة",
+  "youngMuslimAchievementUnlocked": "تم فتح هذا الإنجاز.",
+  "youngMuslimAchievementUnlockedAt": "فُتح {when}",
+  "@youngMuslimAchievementUnlockedAt": {
+    "description": "{when} is a relative time like \"5 minutes ago\".",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimCurrentProgress": "التقدّم الحالي",
+  "youngMuslimDurationHoursMinutes": "{hours}س {minutes}د",
+  "@youngMuslimDurationHoursMinutes": {
+    "description": "Compact video duration: hours and minutes (e.g. \"1h 20m\").",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimDurationMinutes": "{minutes}د",
+  "@youngMuslimDurationMinutes": {
+    "description": "Compact video duration in minutes (e.g. \"12m\").",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNotWatchedYet": "لم يُشاهد بعد",
+  "youngMuslimJustNow": "الآن",
+  "@youngMuslimJustNow": {
+    "description": "Relative time: just now."
+  },
+  "youngMuslimMinutesAgo": "{count, plural, other{منذ {count} دقيقة}}",
+  "@youngMuslimMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimHoursAgo": "{count, plural, other{منذ {count} ساعة}}",
+  "@youngMuslimHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimDaysAgo": "{count, plural, other{منذ {count} يوم}}",
+  "@youngMuslimDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimWatched": "تمت المشاهدة",
+  "@youngMuslimWatched": {
+    "description": "Episode status: watched."
+  },
+  "youngMuslimProgressPercent": "تقدّم {percent}٪",
+  "@youngMuslimProgressPercent": {
+    "description": "Episode status: percent watched.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimReadyToWatch": "جاهزة للمشاهدة",
+  "@youngMuslimReadyToWatch": {
+    "description": "Episode status: not started yet."
+  },
+  "youngMuslimCategorySeriesCount": "{count, plural, other{{count} سلسلة}}",
+  "@youngMuslimCategorySeriesCount": {
+    "description": "Number of series in a category.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimCategorySeriesCountKids": "{count, plural, other{{count} سلسلة · للأطفال}}",
+  "@youngMuslimCategorySeriesCountKids": {
+    "description": "Number of series in a category aimed at kids.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimEpisodeMeta": "حلقة {episode} · {duration}",
+  "@youngMuslimEpisodeMeta": {
+    "description": "Episode number and its duration.",
+    "placeholders": {
+      "episode": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimResumeWhereLeft": "تابع من حيث توقفت",
+  "youngMuslimTimeRemaining": "يتبقّى {duration}",
+  "@youngMuslimTimeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimAlmostDone": "اقتربت النهاية",
+  "@youngMuslimAlmostDone": {
+    "description": "The video is almost finished."
+  },
+  "categoriesRequestFailed": "غير قادر على معالجة العملية",
+  "@categoriesRequestFailed": {
+    "description": "Generic error when loading library content (categories, books, audios) from the server fails."
+  },
+  "categoriesLibraryTitle": "المكتبة",
+  "@categoriesLibraryTitle": {
+    "description": "Title of the Islamic library screen (books, audios, lessons)."
+  },
+  "categoriesQuranSciencesHeader": "القرآن الكريم وعلومه",
+  "@categoriesQuranSciencesHeader": {
+    "description": "Section header: the Holy Quran and its sciences."
+  },
+  "categoriesTypesHeader": "تصنيفات",
+  "@categoriesTypesHeader": {
+    "description": "Section header: content types (books, stories, audios...)."
+  },
+  "categoriesSectionsHeader": "الأقسام",
+  "@categoriesSectionsHeader": {
+    "description": "Section header: library topics."
+  },
+  "categoriesFamousRecitations": "تلاوات مشهورة",
+  "@categoriesFamousRecitations": {
+    "description": "Audio collection: famous Quran recitations."
+  },
+  "categoriesKidsTeaching": "تعليم أطفال",
+  "@categoriesKidsTeaching": {
+    "description": "Audio collection: Quran teaching for children."
+  },
+  "categoriesRecitationsByNarration": "تلاوات بروايات وقراءات",
+  "@categoriesRecitationsByNarration": {
+    "description": "Audio collection: Quran recitations in different riwayat/qira'at (screen title)."
+  },
+  "categoriesRecitationsByNarrationShort": "تلاوات بروايات",
+  "@categoriesRecitationsByNarrationShort": {
+    "description": "Short tile label for categoriesRecitationsByNarration."
+  },
+  "categoriesHaramainMushafs": "مصاحف الحرمين",
+  "@categoriesHaramainMushafs": {
+    "description": "Audio collection: recitations by imams of the Two Holy Mosques (Makkah & Madinah)."
+  },
+  "categoriesTypeVideos": "فيديوهات",
+  "categoriesTypeBooks": "كتب",
+  "categoriesTypeStories": "قصص",
+  "categoriesTypeAudios": "أصوات",
+  "@categoriesTypeAudios": {
+    "description": "Content type: audio lectures."
+  },
+  "categoriesTypeFatwas": "فتاوى",
+  "@categoriesTypeFatwas": {
+    "description": "Content type: fatwas (religious rulings)."
+  },
+  "categoriesTypeQuran": "قرآن",
+  "@categoriesTypeQuran": {
+    "description": "Content type: Quran-related materials."
+  },
+  "categoriesTypePresentations": "عروض تقديمية",
+  "categoriesTypeNews": "أخبار",
+  "categoriesTypeArticles": "مقالات",
+  "categoriesTypeApps": "تطبيقات",
+  "categoriesTypeSermons": "خطب",
+  "@categoriesTypeSermons": {
+    "description": "Content type: Friday sermons (khutbahs)."
+  },
+  "categoriesTopicQuran": "القرآن",
+  "@categoriesTopicQuran": {
+    "description": "Library topic."
+  },
+  "categoriesTopicSunnah": "السنة",
+  "@categoriesTopicSunnah": {
+    "description": "Library topic: the Prophetic Sunnah."
+  },
+  "categoriesTopicSeerah": "السيرة النبوية",
+  "@categoriesTopicSeerah": {
+    "description": "Library topic: biography of the Prophet ﷺ."
+  },
+  "categoriesTopicAqeedah": "العقيدة",
+  "@categoriesTopicAqeedah": {
+    "description": "Library topic: Islamic creed (aqeedah)."
+  },
+  "categoriesTopicFiqh": "فقه",
+  "@categoriesTopicFiqh": {
+    "description": "Library topic: Islamic jurisprudence (fiqh)."
+  },
+  "categoriesTopicHistory": "التاريخ",
+  "@categoriesTopicHistory": {
+    "description": "Library topic: history."
+  },
+  "categoriesTopicArabic": "اللغة العربية",
+  "@categoriesTopicArabic": {
+    "description": "Library topic: the Arabic language."
+  },
+  "categoriesTopicIslamicStudies": "دراسات إسلامية",
+  "@categoriesTopicIslamicStudies": {
+    "description": "Library topic."
+  },
+  "categoriesTopicLessons": "الدروس العلمية",
+  "@categoriesTopicLessons": {
+    "description": "Library topic: scholarly lessons."
+  },
+  "categoriesTopicMajorSins": "الكبائر والمحرمات",
+  "@categoriesTopicMajorSins": {
+    "description": "Library topic: major sins and prohibitions."
+  },
+  "categoriesNoSearchResults": "لا توجد نتائج لهذا البحث.",
+  "categoriesItemsCount": "{count, plural, other{{count} عنصرًا}}",
+  "@categoriesItemsCount": {
+    "description": "Number of items in a library section.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesItemAudio": "مادة صوتية",
+  "@categoriesItemAudio": {
+    "description": "Type label of a library item: audio."
+  },
+  "categoriesItemBook": "كتاب",
+  "@categoriesItemBook": {
+    "description": "Type label of a library item: book."
+  },
+  "categoriesItemArticle": "مقال",
+  "@categoriesItemArticle": {
+    "description": "Type label of a library item: article."
+  },
+  "categoriesItemVideo": "مرئي",
+  "@categoriesItemVideo": {
+    "description": "Type label of a library item: video."
+  },
+  "categoriesFallbackTitle": "التصنيف",
+  "@categoriesFallbackTitle": {
+    "description": "Fallback screen title when a category has no name."
+  },
+  "categoriesNoAttachments": "لا توجد مرفقات لهذه المادة.",
+  "categoriesAttachments": "المرفقات",
+  "@categoriesAttachments": {
+    "description": "Section header: files attached to a library item."
+  },
+  "categoriesActionWatch": "مشاهدة",
+  "@categoriesActionWatch": {
+    "description": "Button: watch a video attachment."
+  },
+  "categoriesActionRead": "قراءة",
+  "@categoriesActionRead": {
+    "description": "Button: read a PDF attachment."
+  },
+  "categoriesActionOpen": "فتح",
+  "@categoriesActionOpen": {
+    "description": "Button: open a link attachment."
+  },
+  "categoriesOrder": "الترتيب {order}",
+  "@categoriesOrder": {
+    "description": "Position of an attachment in its list.",
+    "placeholders": {
+      "order": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesDownload": "تحميل",
+  "@categoriesDownload": {
+    "description": "Button: download a file."
+  },
+  "categoriesAttachmentFallback": "مرفق",
+  "@categoriesAttachmentFallback": {
+    "description": "Default name of a downloaded attachment without a description."
+  },
+  "categoriesNoChapters": "لا توجد أبواب في هذا القسم.",
+  "categoriesClearSearch": "مسح البحث",
+  "@categoriesClearSearch": {
+    "description": "Tooltip: clear the search field."
+  },
+  "categoriesAudioLoadError": "تعذر تحميل المواد الصوتية.",
+  "categoriesAudioClipNumber": "مقطع {number}",
+  "@categoriesAudioClipNumber": {
+    "description": "Name of an untitled audio clip by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesAudioClipFallback": "مقطع صوتي",
+  "@categoriesAudioClipFallback": {
+    "description": "Default name of a downloaded audio clip."
+  },
+  "booksTitle": "كتب",
+  "@booksTitle": {
+    "description": "Title of the books screen."
+  },
+  "booksLoadError": "تعذّر تحميل الكتب حاليًا.",
+  "booksEmpty": "لا توجد كتب للعرض.",
+  "booksFilesHeader": "ملفّات الكتاب",
+  "@booksFilesHeader": {
+    "description": "Section header: downloadable files of a book."
+  },
+  "booksNoFilesTitle": "لا توجد ملفّات",
+  "booksNoFilesBody": "لم تُرفق بهذا الكتاب ملفّات للتنزيل.",
+  "booksDescriptionHeader": "الوصف",
+  "@booksDescriptionHeader": {
+    "description": "Section header: book description."
+  },
+  "booksReferenceHeader": "المرجع",
+  "@booksReferenceHeader": {
+    "description": "Section header: bibliographic reference of the book."
+  },
+  "booksFileNumber": "الملفّ {number}",
+  "@booksFileNumber": {
+    "description": "Name of an untitled book file by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "booksReadTitle": "قراءة الكتاب",
+  "@booksReadTitle": {
+    "description": "Title bar of the in-app PDF book reader."
+  },
+  "booksViewerFailed": "تعذّر عرض الكتاب داخل التطبيق",
+  "booksOpenOutsideHint": "يمكنك فتحه خارج التطبيق",
+  "booksOpenOutside": "فتح خارج التطبيق",
+  "@booksOpenOutside": {
+    "description": "Button: open the book in an external app/browser."
+  },
+  "hadith40Title": "الأربعون النووية",
+  "@hadith40Title": {
+    "description": "Title: Imam al-Nawawi's Forty Hadith collection. Use the name Muslims know in the target language (e.g. 'Arbain Nawawi')."
+  },
+  "hadith40Number": "الحديث {number}",
+  "@hadith40Number": {
+    "description": "Fallback title of a hadith by its number in the collection.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hadith40SearchHint": "بحث عن حديث",
+  "hadith40NoResults": "لا توجد نتائج لهذا البحث",
+  "hadith40ShowAll": "عرض الأحاديث كلها",
+  "hadith40SheetSubtitle": "الأربعون النووية · الحديث {number}",
+  "@hadith40SheetSubtitle": {
+    "description": "Subtitle in the hadith sheet: collection name and hadith number.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hadith40Explanation": "شرح الحديث",
+  "@hadith40Explanation": {
+    "description": "Heading above the explanation (commentary) of the hadith."
+  },
+  "hadith40ShareText": "{title}\n\n{hadith}\n\nشرح الحديث:\n{explanation}",
+  "@hadith40ShareText": {
+    "description": "Text shared/copied for a hadith. {title}, {hadith} and {explanation} are Arabic content; translate only the \"Explanation of the hadith:\" label.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "hadith": {
+        "type": "String"
+      },
+      "explanation": {
+        "type": "String"
+      }
+    }
+  },
+  "allahNamesTitle": "أسماء الله الحسنى",
+  "@allahNamesTitle": {
+    "description": "Title: the 99 Beautiful Names of Allah (Asma ul-Husna)."
+  },
+  "allahNamesNameOrder": "الاسم {number} من أسماء الله الحسنى",
+  "@allahNamesNameOrder": {
+    "description": "Subtitle in the name details sheet, e.g. \"Name 5 of the Beautiful Names of Allah\".",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "allahNamesMeaning": "المعنى",
+  "@allahNamesMeaning": {
+    "description": "Section header: meaning of the name."
+  },
+  "allahNamesSearchHint": "بحث عن أسماء الله الحسنى",
+  "allahNamesNoResultsTitle": "لا توجد نتائج",
+  "allahNamesNoResultsMessage": "لم نجد اسمًا يطابق بحثك.",
+  "allahNamesShowAll": "عرض الأسماء كلها",
+  "readQuranListen": "السماع",
+  "@readQuranListen": {
+    "description": "Section header in the ayah sheet: listen to the recitation."
+  },
+  "readQuranAyah": "الآية",
+  "@readQuranAyah": {
+    "description": "Section header in the ayah sheet: the verse text."
+  },
+  "readQuranTafsir": "تفسير الآية",
+  "@readQuranTafsir": {
+    "description": "Section header in the ayah sheet: exegesis (tafsir) of the verse."
+  },
+  "quranAudioPlayPause": "تشغيل أو إيقاف",
+  "@quranAudioPlayPause": {
+    "description": "Accessibility label of the play/pause button."
+  },
+  "audiosTrackNumber": "المقطع {number}",
+  "@audiosTrackNumber": {
+    "description": "Name of an untitled audio track by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "audiosTracksHeader": "المقاطع",
+  "@audiosTracksHeader": {
+    "description": "Section header: audio tracks of a series."
+  },
+  "audiosSearchSeriesHint": "ابحث عن سلسلة",
+  "audiosSeriesSubtitle": "سلسلة صوتية",
+  "@audiosSeriesSubtitle": {
+    "description": "Subtitle of a row: an audio lecture series."
+  },
+  "audiosNoSeries": "لا توجد سلاسل للعرض",
+  "audiosNoResults": "لا نتائج لبحثك",
+  "audiosPrevious": "السابق",
+  "@audiosPrevious": {
+    "description": "Player button: previous track."
+  },
+  "audiosNext": "التالي",
+  "@audiosNext": {
+    "description": "Player button: next track."
+  },
+  "audiosPause": "إيقاف مؤقّت",
+  "@audiosPause": {
+    "description": "Accessibility label: pause."
+  },
+  "audiosPlay": "تشغيل",
+  "@audiosPlay": {
+    "description": "Accessibility label: play."
+  },
+  "coreUpdateDownloaded": "تم تحميل التحديث، يمكنك تثبيته الآن.",
+  "@coreUpdateDownloaded": {
+    "description": "Android snackbar shown when an in-app (flexible) update finished downloading."
+  },
+  "coreUpdateInstallNow": "تثبيت الآن",
+  "@coreUpdateInstallNow": {
+    "description": "Snackbar action that installs the downloaded app update."
+  },
+  "coreUpdateAvailableTitle": "يتوفر تحديث جديد",
+  "@coreUpdateAvailableTitle": {
+    "description": "Title of the iOS 'new version available' dialog."
+  },
+  "coreUpdateAvailableMessage": "الإصدار {version} متاح الآن على App Store.",
+  "@coreUpdateAvailableMessage": {
+    "description": "Body of the iOS update dialog. Keep 'App Store' as is.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "2.4.0"
+      }
+    }
+  },
+  "coreUpdateWhatsNew": "الجديد في هذا الإصدار:",
+  "@coreUpdateWhatsNew": {
+    "description": "Heading shown above the store release notes in the update dialog."
+  },
+  "coreUpdateNow": "تحديث الآن",
+  "@coreUpdateNow": {
+    "description": "Update dialog button that opens the App Store page."
+  },
+  "coreExitDialogTitle": "تنبيه",
+  "@coreExitDialogTitle": {
+    "description": "Title of the 'exit the app?' confirmation dialog (literally 'Notice')."
+  },
+  "coreExitDialogMessage": "هل أنت متأكد من الخروج من التطبيق",
+  "@coreExitDialogMessage": {
+    "description": "Body of the exit confirmation dialog shown on back press from the home screen."
+  },
+  "coreExitConfirmMessage": "هل أنت متأكد من الخروج",
+  "@coreExitConfirmMessage": {
+    "description": "Short exit confirmation used by the older exit dialog."
+  },
+  "coreExitStay": "تراجع",
+  "@coreExitStay": {
+    "description": "Button in the exit dialog that cancels leaving the app (stay)."
+  },
+  "coreExitAction": "الخروج",
+  "@coreExitAction": {
+    "description": "Button in the exit dialog that closes the app."
+  },
+  "coreDeleteDhikrTitle": "حذف الذكر؟",
+  "@coreDeleteDhikrTitle": {
+    "description": "Default title of the delete confirmation dialog (deleting a dhikr/remembrance item)."
+  },
+  "coreDeleteDhikrMessage": "هل أنت متأكد من حذف الذكر؟",
+  "@coreDeleteDhikrMessage": {
+    "description": "Default message of the delete confirmation dialog for a dhikr item."
+  },
+  "coreFieldRequired": "هذا الحقل مطلوب",
+  "@coreFieldRequired": {
+    "description": "Form validation error for an empty required text field."
+  },
+  "coreNoData": "لا توجد بيانات.",
+  "@coreNoData": {
+    "description": "Generic empty state when a list or detail has no data."
+  },
+  "coreNoDataToShow": "لا يوجد بيانات للعرض",
+  "@coreNoDataToShow": {
+    "description": "Generic empty state for lists with nothing to display."
+  },
+  "coreContent": "المحتوى",
+  "@coreContent": {
+    "description": "Section heading 'Content' in library detail sheets."
+  },
+  "coreGenericError": "هناك خطأ ما يرجى المحاولة مرة أخرى",
+  "@coreGenericError": {
+    "description": "Generic error with a retry button: 'Something went wrong, please try again'."
+  },
+  "coreLoadDataError": "حدث خطأ أثناء تحميل البيانات",
+  "@coreLoadDataError": {
+    "description": "Error shown when loading data failed."
+  },
+  "coreErrorStatus": "الحالة: {code}",
+  "@coreErrorStatus": {
+    "description": "Shows the HTTP/server status code under an error message.",
+    "placeholders": {
+      "code": {
+        "type": "String",
+        "example": "404"
+      }
+    }
+  },
+  "coreCloseSearch": "إغلاق البحث",
+  "@coreCloseSearch": {
+    "description": "Tooltip of the back button that closes the search view."
+  },
+  "coreClear": "مسح",
+  "@coreClear": {
+    "description": "Tooltip of the button that clears the search text."
+  },
+  "coreSheetDefaultTitle": "إضافة جديد",
+  "@coreSheetDefaultTitle": {
+    "description": "Fallback header title of a generic bottom sheet ('Add new')."
+  },
+  "coreSheetDefaultSubtitle": "قم بتخصيص المحتوى",
+  "@coreSheetDefaultSubtitle": {
+    "description": "Fallback header subtitle of a generic bottom sheet ('Customize the content')."
+  },
+  "coreCopiedSuccessfully": "تم النسخ بنجاح",
+  "@coreCopiedSuccessfully": {
+    "description": "Toast after copying text to the clipboard."
+  },
+  "coreDownloadStarted": "التنزيل بدأ",
+  "@coreDownloadStarted": {
+    "description": "Toast when a file download starts."
+  },
+  "coreDownloadCompleted": "تم التنزيل",
+  "@coreDownloadCompleted": {
+    "description": "Toast when a file download has been queued/finished."
+  },
+  "coreSaveReadingPositionPrompt": "هل تريد حفظ مكان قراءتك؟",
+  "@coreSaveReadingPositionPrompt": {
+    "description": "Toast asking whether to save the user's current Quran reading position."
+  },
+  "coreLocationServiceDisabled": "خدمة الموقع غير مفعّلة. فعّلها لتحديد مواقيت الصلاة.",
+  "@coreLocationServiceDisabled": {
+    "description": "Toast when the device location service (GPS) is turned off."
+  },
+  "coreLocationPermissionDenied": "لم يتم منح صلاحية الوصول إلى الموقع.",
+  "@coreLocationPermissionDenied": {
+    "description": "Toast when the user denied the location permission."
+  },
+  "coreLocationPermissionDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. فعّلها من إعدادات التطبيق.",
+  "@coreLocationPermissionDeniedForever": {
+    "description": "Toast when the location permission is permanently denied and must be enabled from system settings."
+  },
+  "coreNotNow": "ليس الآن",
+  "coreAllow": "السماح",
+  "@coreAllow": {
+    "description": "Button that grants a requested permission."
+  },
+  "coreOpenSettings": "فتح الإعدادات",
+  "@coreOpenSettings": {
+    "description": "Button that opens the system settings page of the app."
+  },
+  "coreNotificationPermissionTitle": "إذن الإشعارات",
+  "@coreNotificationPermissionTitle": {
+    "description": "Title of the dialog explaining why notification permission is needed."
+  },
+  "coreNotificationPermissionRationale": "يحتاج التطبيق إلى إذن الإشعارات لتذكيرك بأوقات الصلاة والأذكار.\nهذا يساعدك على البقاء على اتصال مع تعاليم الإسلام طوال اليوم.",
+  "@coreNotificationPermissionRationale": {
+    "description": "Body of the notification permission rationale dialog. Keep the line break."
+  },
+  "coreNotificationSettingsTitle": "إعدادات الإشعارات",
+  "coreNotificationPermanentlyDeniedMessage": "تم رفض إذن الإشعارات بشكل دائم.\nيرجى الذهاب إلى الإعدادات وتفعيل الإشعارات يدوياً.",
+  "@coreNotificationPermanentlyDeniedMessage": {
+    "description": "Dialog body when notification permission is permanently denied."
+  },
+  "corePermissionStatusGranted": "تم منح جميع الأذونات",
+  "@corePermissionStatusGranted": {
+    "description": "corePermissionStatus*: short descriptions of the current notification permission state."
+  },
+  "corePermissionStatusDenied": "تم رفض أذونات الإشعارات",
+  "corePermissionStatusPermanentlyDenied": "تم رفض الأذونات بشكل دائم",
+  "corePermissionStatusPartial": "تم منح بعض الأذونات فقط",
+  "corePermissionStatusUnknown": "حالة الأذونات غير معروفة",
+  "corePermissionResultGranted": "تم منح جميع الأذونات بنجاح",
+  "@corePermissionResultGranted": {
+    "description": "corePermissionResult*: outcome of asking the user for notification permissions."
+  },
+  "corePermissionResultDenied": "تم رفض طلب الأذونات",
+  "corePermissionResultPermanentlyDenied": "تم رفض الأذونات بشكل دائم - يرجى الذهاب إلى الإعدادات",
+  "corePermissionResultPartial": "تم منح بعض الأذونات - قد تحتاج لأذونات إضافية",
+  "corePermissionResultError": "حدث خطأ أثناء طلب الأذونات",
+  "coreNotificationActionOpenApp": "فتح التطبيق",
+  "@coreNotificationActionOpenApp": {
+    "description": "iOS notification action button that opens the app."
+  },
+  "coreNotificationActionDismiss": "إخفاء",
+  "@coreNotificationActionDismiss": {
+    "description": "iOS notification action button that dismisses the notification."
+  },
+  "coreNotificationActionMarkRead": "تم القراءة",
+  "@coreNotificationActionMarkRead": {
+    "description": "iOS notification action: mark the reminder (e.g. adhkar) as read/done."
+  },
+  "coreNotificationActionRemindLater": "تذكير لاحقاً",
+  "@coreNotificationActionRemindLater": {
+    "description": "iOS notification action: remind me later."
+  },
+  "coreNotificationGroupName": "الإشعارات الإسلامية",
+  "@coreNotificationGroupName": {
+    "description": "Android notification channel group name shown in system settings."
+  },
+  "coreNotificationGroupDescription": "مجموعة الإشعارات الخاصة بالتطبيق الإسلامي",
+  "@coreNotificationGroupDescription": {
+    "description": "Android notification channel group description shown in system settings."
+  },
+  "coreNotificationChannelDescription": "قناة {channel} للإشعارات الإسلامية",
+  "@coreNotificationChannelDescription": {
+    "description": "Android notification channel description in system settings. {channel} is one of the coreChannel* names.",
+    "placeholders": {
+      "channel": {
+        "type": "String",
+        "example": "طمأنينة - الأذان"
+      }
+    }
+  },
+  "coreNotificationAppLabel": "تطبيق طمأنينة",
+  "@coreNotificationAppLabel": {
+    "description": "'Tamaneena app' — default notification ticker/iOS subtitle. Latin-script languages write 'Tamaneena'."
+  },
+  "coreNotificationMore": "المزيد...",
+  "@coreNotificationMore": {
+    "description": "Summary text of an expandable (big text) notification: 'More...'."
+  },
+  "coreNotificationCount": "{count, plural, =0{لا إشعارات} =1{إشعار واحد} =2{إشعاران} few{{count} إشعارات} many{{count} إشعارًا} other{{count} إشعار}}",
+  "@coreNotificationCount": {
+    "description": "Summary line of a grouped Android notification: number of notifications.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coreNotificationNewCount": "{count, plural, =0{لا إشعارات جديدة} =1{إشعار جديد واحد} =2{إشعاران جديدان} few{{count} إشعارات جديدة} many{{count} إشعارًا جديدًا} other{{count} إشعار جديد}}",
+  "@coreNotificationNewCount": {
+    "description": "Body of a grouped Android notification summary: number of new notifications.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coreAthanTicker": "حان الآن أذان {prayer}",
+  "@coreAthanTicker": {
+    "description": "Accessibility ticker of the adhan notification: 'It is now time for the adhan of {prayer}'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String",
+        "example": "الفجر"
+      }
+    }
+  },
+  "coreAthanDescription": "أذان {prayer}",
+  "@coreAthanDescription": {
+    "description": "Short label 'Adhan of {prayer}' (e.g. 'Fajr adhan'). {prayer} is a prayer name.",
+    "placeholders": {
+      "prayer": {
+        "type": "String",
+        "example": "الفجر"
+      }
+    }
+  },
+  "coreChannelAthan": "طمأنينة - الأذان",
+  "@coreChannelAthan": {
+    "description": "coreChannel*: Android notification channel names shown in system settings, formatted '<app name> - <channel>'. Latin-script languages write the app name as 'Tamaneena'. Dhikr phrases (e.g. 'Subhan Allah', 'La hawla wa la quwwata illa billah') should use the transliteration Muslims use in the target language."
+  },
+  "coreChannelMohammed": "طمأنينة - الصلاة على النبي",
+  "coreChannelMorning": "طمأنينة - أذكار الصباح",
+  "coreChannelNight": "طمأنينة - أذكار المساء",
+  "coreChannelSleep": "طمأنينة - أذكار النوم",
+  "coreChannelGetUp": "طمأنينة - أذكار الاستيقاظ",
+  "coreChannelMiddleNight": "طمأنينة - قيام الليل",
+  "coreChannelRandomThikr": "طمأنينة - أذكار عشوائية",
+  "coreChannelAstgferAllh": "طمأنينة - الاستغفار",
+  "coreChannelHasbnaAllh": "طمأنينة - حسبنا الله",
+  "coreChannelLaHawla": "طمأنينة - لا حول ولا قوة إلا بالله",
+  "coreChannelSubhanAllh": "طمأنينة - سبحان الله",
+  "coreChannelDefaultChannel": "طمأنينة - الإشعارات العامة",
+  "coreChannelSmartOutreach": "طمأنينة - صحبة الفجر",
+  "@coreChannelSmartOutreach": {
+    "description": "Channel for the 'Fajr companion' smart-outreach reminders."
+  },
+  "coreFcmChannelHighImportance": "طمأنينة - إشعارات مهمة",
+  "@coreFcmChannelHighImportance": {
+    "description": "coreFcmChannel*: Android channels for push (Firebase) notifications, '<app name> - <channel>'."
+  },
+  "coreFcmChannelChat": "طمأنينة - الرسائل",
+  "coreFcmChannelUpdates": "طمأنينة - التحديثات",
+  "coreFcmChannelHighImportanceDescription": "قناة الإشعارات المهمة في تطبيق طمأنينة",
+  "coreFcmChannelDefaultDescription": "قناة الإشعارات العامة في تطبيق طمأنينة",
+  "coreFcmChannelChatDescription": "قناة رسائل وتنبيهات تطبيق طمأنينة",
+  "coreFcmChannelUpdatesDescription": "قناة تحديثات تطبيق طمأنينة",
+  "languageTitle": "اختر لغتك",
+  "@languageTitle": {
+    "description": "Title of the first-launch language picker."
+  },
+  "languageSubtitle": "يمكنك تغييرها لاحقًا من الإعدادات.",
+  "@languageSubtitle": {
+    "description": "Subtitle under the picker title."
+  },
+  "languageSettingTitle": "اللغة",
+  "@languageSettingTitle": {
+    "description": "Settings row and page title for changing the app language."
+  },
+  "languageSettingSubtitle": "لغة واجهة التطبيق",
+  "@languageSettingSubtitle": {
+    "description": "Settings row subtitle. The current language name is shown separately."
+  },
+  "languageReligiousTextNote": "القرآن الكريم والأذكار والأدعية تبقى بنصّها العربي.",
+  "@languageReligiousTextNote": {
+    "description": "Tells the user that Quran, adhkar and duas are always shown in their original Arabic text, whatever the interface language."
+  },
+  "outreachTitle": "صحبة الفجر",
+  "@outreachTitle": {
+    "description": "Name of the 'Dawn companionship' feature: scheduled call lists that phone relatives/friends (e.g. to wake them for Fajr prayer). Screen title."
+  },
+  "outreachTagline": "قوائم اتصال هادئة تبدأ يوم من تحبّ بالخير",
+  "@outreachTagline": {
+    "description": "One-line subtitle under the feature title: calm call lists that start your loved ones' day with good."
+  },
+  "outreachActionCallOnly": "اتصال فقط",
+  "@outreachActionCallOnly": {
+    "description": "Action type of a contact in a call list: just place a phone call."
+  },
+  "outreachErrorScheduleNotFound": "هذه القائمة غير موجودة.",
+  "@outreachErrorScheduleNotFound": {
+    "description": "Error: the call list (schedule) no longer exists."
+  },
+  "outreachContactsPermissionDenied": "يجب السماح بالوصول لجهات الاتصال لاختيار رقم تلقائياً.",
+  "outreachContactNoPhone": "جهة الاتصال المختارة لا تحتوي على رقم هاتف.",
+  "outreachContactPickError": "حدث خطأ أثناء اختيار جهة الاتصال.",
+  "outreachUnnamed": "بدون اسم",
+  "@outreachUnnamed": {
+    "description": "Fallback name for a contact that has no name."
+  },
+  "outreachPermissionPhone": "الاتصال",
+  "@outreachPermissionPhone": {
+    "description": "Name of the Phone (make calls) permission, listed among missing permissions."
+  },
+  "outreachPermissionContacts": "جهات الاتصال",
+  "@outreachPermissionContacts": {
+    "description": "Name of the Contacts permission, listed among missing permissions."
+  },
+  "outreachPermissionNotifications": "الإشعارات",
+  "@outreachPermissionNotifications": {
+    "description": "Name of the Notifications permission, listed among missing permissions."
+  },
+  "outreachListSeparator": "، ",
+  "@outreachListSeparator": {
+    "description": "Separator placed between items of an inline list (permission names, weekday names). Arabic comma followed by a space; use the target language's comma + space."
+  },
+  "outreachValidationTitleRequired": "اكتب اسمًا للقائمة.",
+  "outreachValidationAddNumber": "أضف رقمًا واحدًا على الأقل.",
+  "outreachValidationEmptyPhone": "كل خانة يجب أن تحتوي على رقم هاتف.",
+  "outreachValidationIncompleteNumber": "يوجد رقم غير مكتمل.",
+  "outreachValidationDuplicateNumber": "يوجد رقم مكرر في نفس القائمة.",
+  "outreachValidationPickDay": "اختر يومًا واحدًا على الأقل.",
+  "outreachValidationEnableWithoutNumbers": "لا يمكن تشغيل قائمة بدون أرقام.",
+  "outreachCallLogsTitle": "سجل المكالمات",
+  "outreachClearLog": "مسح السجل",
+  "outreachStatTotal": "الإجمالي",
+  "outreachStatAnswered": "ردّوا",
+  "@outreachStatAnswered": {
+    "description": "Stat label: number of people who answered the call."
+  },
+  "outreachStatNotAnswered": "لم يردّوا",
+  "@outreachStatNotAnswered": {
+    "description": "Stat label: number of people who did not answer."
+  },
+  "outreachStatFailed": "فشل",
+  "@outreachStatFailed": {
+    "description": "Stat label: number of calls that failed."
+  },
+  "outreachResultsHeader": "النتائج",
+  "outreachNoResultsTitle": "لا توجد نتائج بعد",
+  "outreachNoResultsMessage": "ستظهر هنا نتيجة كل مكالمة بعد أول تشغيل.",
+  "outreachSecondsShort": "{seconds}ث",
+  "@outreachSecondsShort": {
+    "description": "Compact duration in seconds, e.g. '12s'. 'ث' is the Arabic abbreviation for seconds.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachSecondsValue": "{seconds} ث",
+  "@outreachSecondsValue": {
+    "description": "Slider value in seconds, e.g. '30 s'. 'ث' is the Arabic abbreviation for seconds.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachCallStatusAnswered": "تم الرد",
+  "outreachCallStatusNotAnswered": "لم يتم الرد",
+  "outreachCallStatusFailed": "فشل الاتصال",
+  "outreachExecutionTitle": "بدء المكالمات",
+  "outreachCallsStartedFromAlert": "بدأت المكالمات من التنبيه.",
+  "outreachCallsStartedNow": "بدأت المكالمات الآن.",
+  "outreachCallsStartFailed": "تعذر بدء المكالمات الآن. حاول مرة أخرى.",
+  "outreachCallLogsReviewSubtitle": "راجع من ردّ ومن لم يردّ بعد انتهاء القائمة",
+  "outreachPreparingCalls": "جارِ تجهيز المكالمات...",
+  "outreachDontCloseHint": "لا تغلق الصفحة حتى تبدأ العملية.",
+  "outreachCanCloseHint": "يمكنك إغلاق الصفحة الآن ومراجعة النتيجة من السجل.",
+  "outreachAddList": "إضافة قائمة",
+  "outreachStatLists": "القوائم",
+  "outreachStatEnabled": "المفعّلة",
+  "@outreachStatEnabled": {
+    "description": "Stat label: number of enabled call lists."
+  },
+  "outreachStatNumbers": "الأرقام",
+  "@outreachStatNumbers": {
+    "description": "Stat label: total number of phone numbers across all lists."
+  },
+  "outreachListsHeader": "قوائم الاتصال",
+  "outreachToolsHeader": "أدوات",
+  "outreachCallLogsSubtitle": "نتيجة كل اتصال: من ردّ ومن لم يردّ",
+  "outreachSettingsTitle": "إعدادات الاتصال",
+  "outreachSettingsSubtitle": "المدد الافتراضية وسلوك القوائم الجديدة",
+  "outreachNoListsTitle": "لا توجد قوائم بعد",
+  "outreachNoListsMessage": "أضف قائمة وحدّد وقتها والأرقام التي تودّ الاتصال بها.",
+  "outreachStartsNow": "تبدأ الآن",
+  "@outreachStartsNow": {
+    "description": "Countdown label on the next call list: it starts now."
+  },
+  "outreachStartsInMinutes": "{count, plural, other{بعد {count} دقيقة}}",
+  "@outreachStartsInMinutes": {
+    "description": "Countdown until the next call list runs: 'in N minutes'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInHours": "{count, plural, other{بعد {count} ساعة}}",
+  "@outreachStartsInHours": {
+    "description": "Countdown until the next call list runs: 'in N hours'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInHoursMinutes": "بعد {hours} ساعة و{minutes} دقيقة",
+  "@outreachStartsInHoursMinutes": {
+    "description": "Countdown until the next call list runs: 'in H hours and M minutes'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInDays": "{count, plural, =1{بعد يوم} other{بعد {count} أيام}}",
+  "@outreachStartsInDays": {
+    "description": "Countdown until the next call list runs: 'in N days'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachPermissionsRequiredSnack": "لازم تفعيل هذه الصلاحيات أولًا: {permissions}",
+  "@outreachPermissionsRequiredSnack": {
+    "description": "Snackbar. {permissions} is a comma-separated list of permission names.",
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachPermissionsNotice": "الصلاحيات المطلوبة غير مكتملة. لتعمل القوائم في وقتها فعّل: {permissions}",
+  "@outreachPermissionsNotice": {
+    "description": "Notice banner. {permissions} is a comma-separated list of permission names.",
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachGrantPermissions": "منح الصلاحيات",
+  "outreachOpenSettings": "فتح الإعدادات",
+  "outreachSettingsSaved": "تم حفظ الإعدادات.",
+  "outreachSettingsIntro": "تُطبَّق هذه القيم على كل قائمة جديدة.",
+  "outreachDefaultDurationsHeader": "المدد الافتراضية",
+  "outreachRingTimeout": "مدة انتظار الرد",
+  "@outreachRingTimeout": {
+    "description": "Slider: how long to let the phone ring before giving up."
+  },
+  "outreachHangupDelay": "الانتظار بعد الرد",
+  "@outreachHangupDelay": {
+    "description": "Slider: how long to stay on the call after it is answered before hanging up."
+  },
+  "outreachDelayBetweenEach": "الفاصل بين كل رقم",
+  "outreachBehaviorHeader": "سلوك القوائم",
+  "outreachStopAfterFirstAnswerList": "إيقاف القائمة بعد أول رد",
+  "outreachRetryIfNoAnswer": "إعادة الاتصال إذا لم يتم الرد",
+  "outreachRestartAfterFinish": "إعادة البدء بعد الانتهاء",
+  "outreachSaveSettings": "حفظ الإعدادات",
+  "outreachBackgroundHeader": "التشغيل في الخلفية",
+  "outreachBatteryTitle": "استثناء التطبيق من توفير البطارية",
+  "outreachBatterySubtitle": "إذا توقفت القوائم وهي في الخلفية، اسمح للتطبيق بالعمل من إعدادات البطارية.",
+  "outreachEditList": "تعديل القائمة",
+  "outreachNewList": "قائمة جديدة",
+  "outreachCallTimeHeader": "وقت الاتصال",
+  "outreachManualTime": "اختيار وقت يدوي",
+  "outreachManualTimeSubtitle": "حدّد الساعة والدقيقة بنفسك",
+  "outreachUseFajrTime": "استخدام وقت الفجر",
+  "outreachUseFajrTimeWithTime": "استخدام وقت الفجر · {time}",
+  "@outreachUseFajrTimeWithTime": {
+    "description": "Option to use today's Fajr (dawn prayer) time. {time} is the formatted time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachPrayerTimesNotReady": "مواقيت الصلاة غير جاهزة الآن",
+  "outreachFajrAutoFill": "يُعبَّأ الوقت تلقائيًا من مواقيت اليوم",
+  "outreachFajrUnavailable": "وقت الفجر غير متاح الآن. جرّب بعد قليل.",
+  "outreachFajrTimeUsed": "تم استخدام وقت الفجر: {time}",
+  "@outreachFajrTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachContactFetchFailed": "ما قدرنا نجيب جهة الاتصال الآن.",
+  "outreachExactAlarmHint": "لضمان صحبة الفجر في وقتها بدقة، فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.",
+  "outreachListNameHeader": "اسم القائمة",
+  "outreachStartTime": "موعد البدء",
+  "outreachStartTimeHint": "اختر وقتًا يدويًا أو استعمل وقت الفجر",
+  "outreachFajrTimeToday": "وقت الفجر اليوم {time}",
+  "@outreachFajrTimeToday": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachContactsHeader": "جهات الاتصال · {count}",
+  "@outreachContactsHeader": {
+    "description": "Section header with the number of contacts in the list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachPickFromContacts": "اختيار من جهات الاتصال",
+  "outreachPickFromContactsSubtitle": "أضف رقمًا جديدًا إلى هذه القائمة",
+  "outreachAdvancedSettings": "إعدادات متقدمة",
+  "outreachAdvancedSettingsSubtitle": "الأيام، مدد الانتظار، وسلوك التكرار",
+  "outreachSaving": "جارِ الحفظ...",
+  "outreachSaveList": "حفظ القائمة",
+  "outreachNoNumbersYet": "لم تُضف أرقام بعد.",
+  "outreachEnableList": "تشغيل هذه القائمة",
+  "outreachDailyRepeat": "تكرار يومي",
+  "outreachEveryDay": "كل يوم",
+  "outreachSelectedWeekdays": "أيام مختارة من الأسبوع",
+  "outreachDelayBetweenNumbers": "الفاصل بين الأرقام",
+  "outreachStopAfterFirstAnswer": "إيقاف بعد أول رد",
+  "outreachRetryOnNoAnswer": "إعادة عند عدم الرد",
+  "outreachRepeatWholeCycle": "تكرار الحلقة بالكامل",
+  "outreachListNameHint": "مثال: تذكير الفجر",
+  "outreachTitleFieldRequired": "اكتب اسمًا للقائمة",
+  "outreachPickNumber": "اختر الرقم",
+  "outreachMultipleNumbers": "هذا الاسم فيه أكثر من رقم.",
+  "outreachNoDays": "بلا أيام محددة",
+  "outreachContactsCount": "{count, plural, =0{بلا أرقام} =1{رقم واحد} =2{رقمان} few{{count} أرقام} many{{count} رقمًا} other{{count} رقمًا}}",
+  "@outreachContactsCount": {
+    "description": "Number of phone numbers in a call list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaRing": "انتظار {seconds}ث",
+  "@outreachMetaRing": {
+    "description": "Compact meta: ring timeout in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaAfterAnswer": "بعد الرد {seconds}ث",
+  "@outreachMetaAfterAnswer": {
+    "description": "Compact meta: wait after answer in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaBetween": "بين الأرقام {seconds}ث",
+  "@outreachMetaBetween": {
+    "description": "Compact meta: delay between numbers in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachNearest": "الأقرب",
+  "@outreachNearest": {
+    "description": "Pill on the call list that runs soonest."
+  },
+  "outreachStartNow": "ابدأ الآن",
+  "outreachStatusActive": "نشط",
+  "outreachStatusStopped": "متوقّف",
+  "outreachStatusSemantics": "الحالة: {status}",
+  "@outreachStatusSemantics": {
+    "description": "Screen-reader label. {status} is outreachStatusActive or outreachStatusStopped.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachWeekday1": "الإثنين",
+  "@outreachWeekday1": {
+    "description": "Weekday names, 1 = Monday … 7 = Sunday."
+  },
+  "outreachWeekday2": "الثلاثاء",
+  "outreachWeekday3": "الأربعاء",
+  "outreachWeekday4": "الخميس",
+  "outreachWeekday5": "الجمعة",
+  "outreachWeekday6": "السبت",
+  "outreachWeekday7": "الأحد",
+  "travelerServicesTitle": "خدمات المسافر",
+  "@travelerServicesTitle": {
+    "description": "Title of the traveler services sheet (mosques nearby, travel adhkar, halal food, prayer on a flight)."
+  },
+  "travelerNearbyMosques": "المساجد القريبة",
+  "travelerNearbyHalalRestaurants": "مطاعم حلال قريبة",
+  "travelerHalalRestaurants": "مطاعم حلال",
+  "travelerHintAroundYou": "حولك الآن",
+  "@travelerHintAroundYou": {
+    "description": "Short hint under the 'Nearby mosques' tile: around you now."
+  },
+  "travelerHintWithCounter": "بعدّاد",
+  "@travelerHintWithCounter": {
+    "description": "Short hint under the 'Travel adhkar' tile: comes with a counter."
+  },
+  "travelerHintByCountry": "حسب بلدك",
+  "@travelerHintByCountry": {
+    "description": "Short hint under the 'Halal restaurants' tile: depends on your country."
+  },
+  "travelerFlightPrayer": "الصلاة أثناء الطيران",
+  "travelerHintByFlightNumber": "برقم الرحلة",
+  "@travelerHintByFlightNumber": {
+    "description": "Short hint under the 'Prayer during flight' tile: by flight number."
+  },
+  "travelerSetLocationForMakkah": "حدّد موقعك في المواقيت لتظهر المسافة إلى مكّة.",
+  "travelerInMakkah": "أنت في مكّة المكرّمة — تقبّل الله.",
+  "@travelerInMakkah": {
+    "description": "Shown when the user is in Makkah. 'تقبّل الله' = 'May Allah accept (your worship)'."
+  },
+  "travelerYourLocation": "موضعك",
+  "travelerMakkah": "مكّة المكرّمة",
+  "@travelerMakkah": {
+    "description": "Makkah al-Mukarramah, the holy city. Use the usual honorific form in the target language."
+  },
+  "travelerQibla": "القبلة",
+  "travelerDistanceMeters": "{value} م",
+  "@travelerDistanceMeters": {
+    "description": "A distance in meters. 'م' is the Arabic abbreviation for meters.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerDistanceKm": "{value} كم",
+  "@travelerDistanceKm": {
+    "description": "A distance in kilometers. 'كم' is the Arabic abbreviation for km.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerListSeparator": "، ",
+  "@travelerListSeparator": {
+    "description": "Separator between parts of an address or place label. Arabic comma + space; use the target language's comma + space."
+  },
+  "travelerDirectionN": "شمالًا",
+  "@travelerDirectionN": {
+    "description": "Compass direction toward Makkah (N, NE, E, SE, S, SW, W, NW), shown under the distance."
+  },
+  "travelerDirectionNE": "شمال شرق",
+  "travelerDirectionE": "شرقًا",
+  "travelerDirectionSE": "جنوب شرق",
+  "travelerDirectionS": "جنوبًا",
+  "travelerDirectionSW": "جنوب غرب",
+  "travelerDirectionW": "غربًا",
+  "travelerDirectionNW": "شمال غرب",
+  "travelerPrayerUnknown": "غير محدد",
+  "travelerPrayerShortFajr": "فجر",
+  "@travelerPrayerShortFajr": {
+    "description": "Very short prayer names for small map markers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)."
+  },
+  "travelerPrayerShortSunrise": "شروق",
+  "travelerPrayerShortDhuhr": "ظهر",
+  "travelerPrayerShortAsr": "عصر",
+  "travelerPrayerShortMaghrib": "مغرب",
+  "travelerPrayerShortIsha": "عشاء",
+  "travelerNoMosquesFound": "لم نعثر على مساجد في النطاق الحالي.",
+  "travelerNoRestaurantsFound": "لم نعثر على مطاعم حلال في هذا النطاق.",
+  "travelerWalkingMinutes": "{count, plural, other{{count} دقيقة مشيًا}}",
+  "@travelerWalkingMinutes": {
+    "description": "Estimated walking time.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerDefaultMosqueName": "مسجد قريب",
+  "@travelerDefaultMosqueName": {
+    "description": "Fallback name for a mosque with no name on the map."
+  },
+  "travelerDefaultRestaurantName": "مطعم حلال",
+  "@travelerDefaultRestaurantName": {
+    "description": "Fallback name for a halal restaurant with no name on the map."
+  },
+  "travelerNoDetailedAddress": "بدون عنوان تفصيلي",
+  "travelerRepeatBySituation": "بحسب الموقف",
+  "@travelerRepeatBySituation": {
+    "description": "Repeat count of a dhikr that depends on the situation."
+  },
+  "travelerRepeatOnce": "مرة",
+  "travelerRepeatTimes": "{count, plural, other{{count} مرة}}",
+  "@travelerRepeatTimes": {
+    "description": "How many times a dhikr is repeated.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerStageStart": "عند بداية السفر",
+  "@travelerStageStart": {
+    "description": "Stages of a journey at which a travel dhikr is said (start, on the way, stopping, returning, bidding farewell to a traveler, supplication for a traveler)."
+  },
+  "travelerStageOnTheWay": "أثناء الطريق",
+  "travelerStageStop": "عند التوقف",
+  "travelerStageReturn": "عند الرجوع",
+  "travelerStageFarewell": "توديع المسافر",
+  "travelerStageFarewellReply": "دعاء للمسافر",
+  "travelerAthkarTitle": "أذكار السفر",
+  "@travelerAthkarTitle": {
+    "description": "Travel adhkar: remembrances/supplications said while travelling."
+  },
+  "travelerAthkarLoadFailed": "تعذر تحميل أذكار السفر.",
+  "travelerFarewellTitle": "لمن يودّع مسافرًا",
+  "travelerFarewellCaption": "ليست من طريقك — بل ممّن بقي خلفك",
+  "@travelerFarewellCaption": {
+    "description": "These adhkar are not for your road, but for those left behind (seeing you off)."
+  },
+  "travelerRoadComplete": "أتممت أذكار طريقك",
+  "travelerRoadStations": "محطّات الطريق",
+  "travelerRoadCompleteCaption": "صحبتك السلامة.",
+  "@travelerRoadCompleteCaption": {
+    "description": "Blessing: 'May safety accompany you.'"
+  },
+  "travelerRoadCaption": "كل ذكر في موضعه من الرحلة — افتح المحطّة التي أنت فيها.",
+  "travelerShareVirtue": "الفضل: {virtue}",
+  "@travelerShareVirtue": {
+    "description": "In shared dhikr text. {virtue} is Arabic religious text and stays untranslated.",
+    "placeholders": {
+      "virtue": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerShareSource": "المصدر: {source} ({hadith})",
+  "@travelerShareSource": {
+    "description": "In shared dhikr text. {source} is the hadith collection, {hadith} the reference; both stay as-is.",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "hadith": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerResetCounter": "تصفير العدّاد",
+  "travelerCounterDone": "تمّ",
+  "travelerCounterCount": "عدّ",
+  "@travelerCounterCount": {
+    "description": "Button label: count (tap once per dhikr)."
+  },
+  "travelerCountDhikr": "عدّ الذكر",
+  "travelerFlightPrayerTitle": "مواقيت الصلاة أثناء الطيران",
+  "travelerShowTimes": "عرض المواقيت",
+  "travelerShowMap": "عرض الخريطة",
+  "travelerShowList": "عرض القائمة",
+  "travelerSearchByFlightNumber": "بحث برقم الرحلة",
+  "travelerRunSearchNow": "تشغيل البحث الآن",
+  "travelerFlightAttemptsExhausted": "انتهت المحاولات. أعد فتح الصفحة للمحاولة مجددًا.",
+  "travelerFlightNumberInvalid": "رقم الرحلة غير صحيح. مثال: EK202 أو MS985",
+  "travelerFlightFetchFailed": "تعذر جلب بيانات الرحلة حاليًا.",
+  "travelerSourceMock": "محاكاة محلية (بدون API)",
+  "@travelerSourceMock": {
+    "description": "Data source label: simulated locally, no real flight API."
+  },
+  "travelerCityRiyadh": "الرياض",
+  "@travelerCityRiyadh": {
+    "description": "Airport city names used by the simulated flight route."
+  },
+  "travelerCityJeddah": "جدة",
+  "travelerCityDubai": "دبي",
+  "travelerCityDoha": "الدوحة",
+  "travelerCityIstanbul": "إسطنبول",
+  "travelerCityCairo": "القاهرة",
+  "travelerCityKualaLumpur": "كوالالمبور",
+  "travelerCityLondon": "لندن",
+  "travelerCityParis": "باريس",
+  "travelerCityNewYork": "نيويورك",
+  "travelerAttemptsRemaining": "محاولات متبقّية",
+  "@travelerAttemptsRemaining": {
+    "description": "Label followed by the number of remaining flight searches."
+  },
+  "travelerLiveTrack": "مسار مباشر",
+  "travelerTakeoff": "الإقلاع",
+  "travelerLanding": "الهبوط",
+  "travelerFlightEnded": "انتهت الرحلة — لم تبقَ مواقيت على متنها.",
+  "travelerNoPrayerDuringFlight": "لم تقع أي صلاة ضمن مدّة هذه الرحلة.",
+  "travelerAllFlightPrayersPassed": "مضت كل مواقيت هذه الرحلة.",
+  "travelerCountdownHoursMinutes": "بعد {hours} س و{minutes} د",
+  "@travelerCountdownHoursMinutes": {
+    "description": "Compact countdown: 'in H h M min'. 'س' = hours, 'د' = minutes (abbreviations).",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerCountdownMinutes": "{count, plural, other{بعد {count} دقيقة}}",
+  "@travelerCountdownMinutes": {
+    "description": "Countdown: 'in N minutes'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerNextPrayerAboard": "{prayer} على متن الرحلة — {countdown}",
+  "@travelerNextPrayerAboard": {
+    "description": "{prayer} is a prayer name, {countdown} e.g. 'in 2 h 10 min'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "countdown": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerFirstPrayerAboard": "أوّل صلاة على متن الرحلة: {prayer}",
+  "@travelerFirstPrayerAboard": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerAtPlaneLocalTime": "{time} بتوقيت موضع الطائرة ({offset})",
+  "@travelerAtPlaneLocalTime": {
+    "description": "{time} is HH:mm, {offset} the UTC offset like '+3' or '+5:30', in local time below the plane.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerLocalTimeAbovePlane": "بالتوقيت المحلي فوق موضع الطائرة",
+  "travelerTapStopHint": "اضغط على أي محطّة لترى موضعها على الخريطة",
+  "travelerUpcoming": "قادم",
+  "travelerNext": "التالية",
+  "@travelerNext": {
+    "description": "Badge on the next prayer stop of a flight timeline."
+  },
+  "travelerStopGmt": "{place} · جرينتش {time}",
+  "@travelerStopGmt": {
+    "description": "{place} is a place/description, {time} is the GMT (UTC) time HH:mm.",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerSearchByFlightNumberHeader": "ابحث برقم الرحلة",
+  "travelerRun": "تشغيل",
+  "@travelerRun": {
+    "description": "Button that runs the flight search."
+  },
+  "travelerFlightSearchHint": "اكتب رقم الرحلة لنحسب مواقيت الصلاة على طول المسار.",
+  "travelerFlightDetails": "تفاصيل الرحلة",
+  "travelerFlightNumber": "رقم الرحلة",
+  "travelerFrom": "من",
+  "travelerTo": "إلى",
+  "travelerDataSource": "مصدر البيانات",
+  "travelerFlightTimeline": "خطّ زمن الرحلة",
+  "travelerNoTimesDuringFlight": "لم تظهر مواقيت ضمن مدة هذه الرحلة.",
+  "travelerFlightNumberExample": "مثال: EK202",
+  "travelerShowFullRoute": "عرض المسار كاملًا",
+  "travelerZoomIn": "تكبير",
+  "travelerZoomOut": "تصغير",
+  "travelerLocationFailed": "تعذر تحديد موقعك الحالي. حاول مرة أخرى.",
+  "travelerLocationServiceDisabled": "خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.",
+  "travelerLocationPermissionRequired": "يجب منح صلاحية الموقع حتى تعمل هذه الميزة.",
+  "travelerLocationPermissionDeniedForever": "تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.",
+  "travelerPlacesFetchFailed": "تعذر جلب النتائج القريبة الآن. حاول مجددًا.",
+  "travelerExpandRadius": "وسّع النطاق",
+  "travelerAllWithinRadius": "كلّها ضمن {radius} — والسهم يشير إلى جهة كلٍّ منها.",
+  "@travelerAllWithinRadius": {
+    "description": "{radius} is a distance like '3 km'. The arrow next to each place points toward it.",
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerRadius": "النطاق",
+  "@travelerRadius": {
+    "description": "Label before the search radius chips."
+  },
+  "travelerNearestPlaces": "أقرب الأماكن",
+  "travelerFoundResults": "{count, plural, other{وجدنا {count} نتيجة قربك}}",
+  "@travelerFoundResults": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerUnexpectedError": "حدث خطأ غير متوقع",
+  "travelerHalalRestricted": "لا يظهر بحث المطاعم الحلال في الدول الإسلامية،\nلأن مطاعمها حلال أصلًا.",
+  "travelerOpenMapsFailed": "تعذّر فتح تطبيق الخرائط.",
+  "travelerNearestMosque": "أقرب مسجد إليك",
+  "travelerNearestRestaurant": "أقرب مطعم حلال",
+  "travelerTakeMeThere": "خذني إليه",
+  "travelerWillMakeIt": "{count, plural, other{تلحق {prayer} — تبقّى {count} دقيقة}}",
+  "@travelerWillMakeIt": {
+    "description": "You will reach the mosque before {prayer}; {count} minutes remain until it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerMightMiss": "{count, plural, other{قد لا تلحق {prayer} مشيًا — تبقّى {count} دقيقة}}",
+  "@travelerMightMiss": {
+    "description": "Walking, you might miss {prayer}; {count} minutes remain until it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerOpenInGoogleMaps": "فتح في خرائط جوجل",
+  "travelerTapMarkerHint": "اضغط على العلامة لعرض التفاصيل",
+  "travelerOpenPhoneFailed": "تعذر فتح تطبيق الاتصال.",
+  "travelerOpenLinkFailed": "تعذر فتح الرابط.",
+  "travelerDirections": "الاتجاه",
+  "@travelerDirections": {
+    "description": "Button: get directions to the place."
+  },
+  "travelerGoogleMaps": "خرائط جوجل",
+  "travelerCall": "اتصال",
+  "@travelerCall": {
+    "description": "Button: phone the place."
+  },
+  "travelerUpdating": "جارٍ التحديث…",
+  "travelerResultsCount": "عدد النتائج {count}",
+  "@travelerResultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerMyCurrentLocation": "موقعي الحالي",
+  "travelerMaps": "الخرائط",
+  "travelerMyLocation": "موقعي",
+  "qiblahTitle": "القبلة",
+  "@qiblahTitle": {
+    "description": "Title of the Qibla compass screen."
+  },
+  "qiblahRefreshTooltip": "تحديث الاتجاه",
+  "@qiblahRefreshTooltip": {
+    "description": "Tooltip of the refresh button that restarts the Qibla direction detection."
+  },
+  "qiblahErrorNoSensor": "جهازك لا يدعم استشعار الاتجاه",
+  "@qiblahErrorNoSensor": {
+    "description": "Error: the device has no compass/orientation sensor."
+  },
+  "qiblahErrorPermissionRequired": "يجب السماح بالوصول للموقع لتحديد اتجاه القبلة",
+  "qiblahErrorGeneric": "حدث خطأ في تحديد اتجاه القبلة: {error}",
+  "@qiblahErrorGeneric": {
+    "description": "Generic error on the Qibla screen. {error} is a technical error message.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblahErrorLocationServiceOff": "خدمات الموقع غير مفعلة. يرجى تفعيلها من الإعدادات",
+  "qiblahErrorPermissionDeniedForever": "تم رفض أذونات الموقع نهائياً. يرجى تفعيلها من إعدادات التطبيق",
+  "qiblahErrorLocationFailed": "فشل في الحصول على الموقع الحالي",
+  "qiblahUnknownLocation": "موقع غير معروف",
+  "@qiblahUnknownLocation": {
+    "description": "Shown instead of a city name when reverse geocoding fails."
+  },
+  "qiblahErrorDirection": "خطأ في تحديد الاتجاه: {error}",
+  "@qiblahErrorDirection": {
+    "description": "Compass stream error. {error} is a technical error message.",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblahErrorStreamFailed": "فشل في بدء تتبع الاتجاه",
+  "qiblahLocating": "جاري تحديد الموقع...",
+  "qiblahAligned": "أنت متوجّه إلى القبلة",
+  "@qiblahAligned": {
+    "description": "Shown when the phone points at the Qibla."
+  },
+  "qiblahTurnLeft": "استدر يسارًا {degrees}°",
+  "@qiblahTurnLeft": {
+    "description": "Instruction to rotate the phone to the left by {degrees} degrees.",
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahTurnRight": "استدر يمينًا {degrees}°",
+  "@qiblahTurnRight": {
+    "description": "Instruction to rotate the phone to the right by {degrees} degrees.",
+    "placeholders": {
+      "degrees": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahLoadingTitle": "جارِ تحديد اتجاه القبلة",
+  "qiblahLoadingSubtitle": "تأكد من تفعيل الموقع والسماح بالأذونات",
+  "qiblahHintAligned": "ثبّت الجهاز، السهم على علامة القبلة",
+  "@qiblahHintAligned": {
+    "description": "Hint under the direction line when aligned: hold the device still, the arrow is on the Qibla mark."
+  },
+  "qiblahHintMove": "حرّك الجهاز ببطء حتى يصل السهم إلى العلامة",
+  "qiblahReadingsHeader": "قراءة البوصلة",
+  "@qiblahReadingsHeader": {
+    "description": "Section header above the compass readings (heading, Qibla angle, location, distance)."
+  },
+  "qiblahCurrentHeading": "اتجاهك الحالي",
+  "qiblahAngle": "زاوية القبلة",
+  "qiblahCurrentLocation": "موقعك الحالي",
+  "qiblahDistanceToMecca": "المسافة إلى مكة",
+  "qiblahDistanceKm": "{km} كم",
+  "@qiblahDistanceKm": {
+    "description": "Distance in kilometres.",
+    "placeholders": {
+      "km": {
+        "type": "int"
+      }
+    }
+  },
+  "qiblahInstructionsHeader": "تعليمات الاستخدام",
+  "qiblahInstructions": "• امسك الهاتف مستويًا أمامك.\n• تحرّك ببطء حتى يلتقي السهم الذهبي بالعلامة العلوية.\n• عند المحاذاة تضيء الحلقة وتشعر باهتزازة خفيفة.\n• أبعد الأجسام المعدنية عن الهاتف.\n• إذا اضطرب المؤشر، حرّك الهاتف على شكل رقم ٨.",
+  "@qiblahInstructions": {
+    "description": "Bulleted usage instructions for the Qibla compass, one bullet per line (keep the \\n line breaks and bullets)."
+  },
+  "qiblahCompassNorth": "شمال",
+  "@qiblahCompassNorth": {
+    "description": "Cardinal direction labels painted on the compass dial (N/E/S/W). Keep short."
+  },
+  "qiblahCompassEast": "شرق",
+  "qiblahCompassSouth": "جنوب",
+  "qiblahCompassWest": "غرب",
+  "homeSectionYourDay": "يومك",
+  "@homeSectionYourDay": {
+    "description": "Home section header above the daily prayer tracker and continue-reading row."
+  },
+  "homeSectionAyah": "آية من القرآن",
+  "@homeSectionAyah": {
+    "description": "Home section header above a random Quran verse."
+  },
+  "homeSectionFeatures": "المميزات",
+  "@homeSectionFeatures": {
+    "description": "Home section header above the grid of app features."
+  },
+  "homeSectionKids": "قسم الأطفال",
+  "@homeSectionKids": {
+    "description": "Home section header for the children's section."
+  },
+  "homeYoungMuslimTitle": "المسلم الصغير",
+  "@homeYoungMuslimTitle": {
+    "description": "Name of the children's section ('The Young Muslim')."
+  },
+  "homeYoungMuslimSubtitle": "قصص وآداب وأذكار للطفل",
+  "@homeYoungMuslimSubtitle": {
+    "description": "Subtitle of the children's section: stories, manners and adhkar for kids."
+  },
+  "homeUpdateAvailable": "يوجد تحديث جديد · الإصدار {version}",
+  "@homeUpdateAvailable": {
+    "description": "Home banner telling the user an app update is available.",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "homeUpdateAction": "تحديث",
+  "@homeUpdateAction": {
+    "description": "Small button on the update banner."
+  },
+  "homeContinueReading": "تكملة القراءة",
+  "@homeContinueReading": {
+    "description": "Home row to resume Quran reading where the user stopped."
+  },
+  "homeStartReading": "ابدأ القراءة",
+  "@homeStartReading": {
+    "description": "Home row to start reading the Quran (no progress yet)."
+  },
+  "homeContinueReadingPosition": "{surah} · صفحة {page}",
+  "@homeContinueReadingPosition": {
+    "description": "Last reading position. {surah} is the Arabic surah name (e.g. 'سورة البقرة'), {page} the Mushaf page number.",
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "page": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStartReadingPosition": "من سورة الفاتحة · صفحة ١",
+  "@homeStartReadingPosition": {
+    "description": "Subtitle when nothing was read yet: start from Surah Al-Fatiha, page 1."
+  },
+  "homeAyahReference": "{surah} · الآية {number}",
+  "@homeAyahReference": {
+    "description": "Reference under a Quran verse. {surah} is the Arabic surah name, {number} the verse number.",
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAyahNumber": "الآية {number}",
+  "@homeAyahNumber": {
+    "description": "Verse number when the surah name is unavailable.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAnotherAyah": "آية أخرى",
+  "@homeAnotherAyah": {
+    "description": "Button that shows another random verse."
+  },
+  "homeReadInMushaf": "اقرأها في المصحف",
+  "@homeReadInMushaf": {
+    "description": "Button that opens the verse in the Quran reader."
+  },
+  "homeTrackerComplete": "أتممت صلوات اليوم، تقبّل الله",
+  "@homeTrackerComplete": {
+    "description": "Prayer tracker message when all five prayers are marked done ('May Allah accept it')."
+  },
+  "homeTrackerPrompt": "علّم ما أدّيته اليوم",
+  "@homeTrackerPrompt": {
+    "description": "Prayer tracker hint: mark the prayers you have performed today."
+  },
+  "homeTrackerProgress": "{count} من {total}",
+  "@homeTrackerProgress": {
+    "description": "Prayer tracker counter, e.g. '3 of 5'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeTrackerStreak": "{days, plural, =1{يوم} =2{يومان متتاليان} few{{days} أيام متتالية} many{{days} يومًا متتاليًا} other{{days} يوم متتالٍ}}",
+  "@homeTrackerStreak": {
+    "description": "Streak chip: number of consecutive days all five prayers were marked done. For =1 a bare 'day' is enough.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNavHome": "الرئيسية",
+  "@homeNavHome": {
+    "description": "Bottom navigation tab: Home."
+  },
+  "homeNavSections": "الاقسام",
+  "@homeNavSections": {
+    "description": "Bottom navigation tab: Sections/categories."
+  },
+  "homeNextPrayerRemaining": "  {prayer} : {time}  \n الوقت المتبقي : {remaining} ",
+  "@homeNextPrayerRemaining": {
+    "description": "Two lines: next prayer name and time, then the remaining time (h:mm:ss).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeHighLatAuto": "تلقائي",
+  "@prayerTimeHighLatAuto": {
+    "description": "High-latitude rule option: automatic (use the calculation method's default)."
+  },
+  "prayerTimeHighLatAutoDesc": "يترك المعالجة للقيمة الافتراضية لطريقة الحساب.",
+  "prayerTimeHighLatMiddleOfNight": "منتصف الليل",
+  "@prayerTimeHighLatMiddleOfNight": {
+    "description": "High-latitude rule: 'Middle of the night' (standard astronomical rule name)."
+  },
+  "prayerTimeHighLatMiddleOfNightDesc": "لا يسبق الفجر منتصف الليل ولا يتأخر العشاء عنه.",
+  "prayerTimeHighLatSeventhOfNight": "سُبع الليل",
+  "@prayerTimeHighLatSeventhOfNight": {
+    "description": "High-latitude rule: 'Seventh of the night'."
+  },
+  "prayerTimeHighLatSeventhOfNightDesc": "يعتمد على سُبع الليل الأخير للفجر والأول للعشاء.",
+  "prayerTimeHighLatTwilightAngle": "زاوية الشفق",
+  "@prayerTimeHighLatTwilightAngle": {
+    "description": "High-latitude rule: 'Twilight angle'."
+  },
+  "prayerTimeHighLatTwilightAngleDesc": "يقسّم الليل حسب زاويتي الفجر والعشاء المختارتين.",
+  "prayerTimeIshaModeAngle": "العشاء بزاوية",
+  "@prayerTimeIshaModeAngle": {
+    "description": "Segmented option in the custom method: Isha computed by sun angle."
+  },
+  "prayerTimeIshaModeAngleDesc": "يُحسب العشاء بزاوية الشمس تحت الأفق.",
+  "prayerTimeIshaModeInterval": "العشاء بفاصل زمني",
+  "@prayerTimeIshaModeInterval": {
+    "description": "Segmented option in the custom method: Isha computed as fixed minutes after Maghrib."
+  },
+  "prayerTimeIshaModeIntervalDesc": "يُحسب العشاء بعدد دقائق ثابت بعد المغرب.",
+  "prayerTimeMethodUmmAlQura": "أم القرى - مكة المكرمة",
+  "@prayerTimeMethodUmmAlQura": {
+    "description": "Prayer calculation method names. Use the name commonly used for these institutions in the target language."
+  },
+  "prayerTimeMethodMuslimWorldLeague": "رابطة العالم الإسلامي",
+  "prayerTimeMethodEgyptian": "الهيئة المصرية العامة للمساحة",
+  "prayerTimeMethodKarachi": "جامعة العلوم الإسلامية - كراتشي",
+  "prayerTimeMethodDubai": "دبي",
+  "prayerTimeMethodQatar": "قطر",
+  "prayerTimeMethodKuwait": "الكويت",
+  "prayerTimeMethodSingapore": "سنغافورة",
+  "prayerTimeMethodTurkey": "ديانت - تركيا",
+  "@prayerTimeMethodTurkey": {
+    "description": "Turkish Presidency of Religious Affairs (Diyanet)."
+  },
+  "prayerTimeMethodTehran": "جامعة طهران للجيوفيزياء",
+  "prayerTimeMethodMoonSighting": "لجنة رؤية الهلال",
+  "@prayerTimeMethodMoonSighting": {
+    "description": "Moonsighting Committee Worldwide."
+  },
+  "prayerTimeMethodNorthAmerica": "الجمعية الإسلامية لأمريكا الشمالية",
+  "@prayerTimeMethodNorthAmerica": {
+    "description": "ISNA."
+  },
+  "prayerTimeMethodCustom": "إعداد مخصص",
+  "@prayerTimeMethodCustom": {
+    "description": "Custom calculation method where the user sets the angles."
+  },
+  "prayerTimeMethodUmmAlQuraDesc": "الفجر 18.5° والعشاء بعد المغرب بـ 90 دقيقة.",
+  "@prayerTimeMethodUmmAlQuraDesc": {
+    "description": "Short technical description of a calculation method (sun angles / minutes)."
+  },
+  "prayerTimeMethodMuslimWorldLeagueDesc": "الفجر 18° والعشاء 17°.",
+  "prayerTimeMethodEgyptianDesc": "الفجر 19.5° والعشاء 17.5°.",
+  "prayerTimeMethodKarachiDesc": "الفجر 18° والعشاء 18°.",
+  "prayerTimeMethodDubaiDesc": "الفجر والعشاء 18.2°.",
+  "prayerTimeMethodQatarDesc": "الفجر 18° والعشاء بعد المغرب بـ 90 دقيقة.",
+  "prayerTimeMethodKuwaitDesc": "الفجر 18° والعشاء 17.5°.",
+  "prayerTimeMethodSingaporeDesc": "الفجر 20° والعشاء 18°.",
+  "prayerTimeMethodTurkeyDesc": "الفجر 18° والعشاء 17° مع تعديلات ديانت.",
+  "prayerTimeMethodTehranDesc": "الفجر 17.7° والعشاء 14° والمغرب 4.5°.",
+  "prayerTimeMethodMoonSightingDesc": "الفجر 18° والعشاء 18° مع تعديلات موسمية.",
+  "prayerTimeMethodNorthAmericaDesc": "الفجر 15° والعشاء 15°.",
+  "prayerTimeMethodCustomDesc": "حدّد زوايا الفجر والعشاء والمغرب بنفسك.",
+  "prayerTimeMadhabShafi": "الشافعي والمالكي والحنبلي",
+  "@prayerTimeMadhabShafi": {
+    "description": "Asr juristic method: Shafi'i, Maliki and Hanbali (the 'standard' Asr)."
+  },
+  "prayerTimeMadhabHanafi": "الحنفي",
+  "@prayerTimeMadhabHanafi": {
+    "description": "Asr juristic method: Hanafi."
+  },
+  "prayerTimeMadhabShafiDesc": "العصر عندما يصير ظل الشيء مثله، وعليه المالكي والحنبلي أيضًا.",
+  "@prayerTimeMadhabShafiDesc": {
+    "description": "Asr begins when an object's shadow equals its length."
+  },
+  "prayerTimeMadhabHanafiDesc": "العصر عندما يصير ظل الشيء مثليه.",
+  "@prayerTimeMadhabHanafiDesc": {
+    "description": "Asr begins when an object's shadow is twice its length."
+  },
+  "prayerTimeCalcIntro": "اختر التقويم الذي تعتمده جهتك المحلية، وعدّل المواقيت يدويًا إن احتجت مطابقتها مع مسجد الحي.",
+  "@prayerTimeCalcIntro": {
+    "description": "Intro text above the prayer calculation settings."
+  },
+  "prayerTimeCalcMethod": "طريقة الحساب",
+  "@prayerTimeCalcMethod": {
+    "description": "Setting label and sheet title: prayer-time calculation method."
+  },
+  "prayerTimeCalcAsrMadhab": "مذهب حساب العصر",
+  "@prayerTimeCalcAsrMadhab": {
+    "description": "Setting label: juristic school used to compute Asr."
+  },
+  "prayerTimeMadhabShafiShort": "الشافعي",
+  "@prayerTimeMadhabShafiShort": {
+    "description": "Short segmented-button label for the Shafi'i (standard) Asr method."
+  },
+  "prayerTimeCalcHighLatitude": "خطوط العرض العالية",
+  "@prayerTimeCalcHighLatitude": {
+    "description": "Setting label and sheet title: high-latitude adjustment rule."
+  },
+  "prayerTimeCalcRamadanIsha": "تأخير العشاء في رمضان",
+  "@prayerTimeCalcRamadanIsha": {
+    "description": "Toggle: delay Isha during Ramadan."
+  },
+  "prayerTimeCalcRamadanIshaHint": "يضيف ٣٠ دقيقة على العشاء طوال الشهر كما في تقويم أم القرى.",
+  "@prayerTimeCalcRamadanIshaHint": {
+    "description": "Hint of the Ramadan Isha toggle: adds 30 minutes to Isha for the whole month, as the Umm al-Qura calendar does."
+  },
+  "prayerTimeCalcRestoreDefaults": "استعادة إعدادات أم القرى",
+  "@prayerTimeCalcRestoreDefaults": {
+    "description": "Link that resets calculation settings to the Umm al-Qura defaults."
+  },
+  "prayerTimeCalcCustomAngles": "زوايا الحساب المخصصة",
+  "@prayerTimeCalcCustomAngles": {
+    "description": "Group title for the custom-method angles."
+  },
+  "prayerTimeCalcFajrAngle": "زاوية الفجر",
+  "@prayerTimeCalcFajrAngle": {
+    "description": "Stepper label: Fajr sun angle (degrees)."
+  },
+  "prayerTimeCalcIshaMode": "حساب العشاء",
+  "@prayerTimeCalcIshaMode": {
+    "description": "Setting label: how Isha is computed (angle or interval)."
+  },
+  "prayerTimeCalcIshaModeHint": "إمّا بزاوية الشفق، وإمّا بفاصل ثابت بعد المغرب.",
+  "prayerTimeCalcIshaAngle": "زاوية العشاء",
+  "@prayerTimeCalcIshaAngle": {
+    "description": "Stepper label: Isha sun angle (degrees)."
+  },
+  "prayerTimeCalcIshaAfterMaghrib": "العشاء بعد المغرب",
+  "@prayerTimeCalcIshaAfterMaghrib": {
+    "description": "Stepper label: minutes between Maghrib and Isha."
+  },
+  "prayerTimeCalcMaghribAngleToggle": "زاوية المغرب بدل الغروب",
+  "@prayerTimeCalcMaghribAngleToggle": {
+    "description": "Toggle: compute Maghrib by a twilight angle instead of sunset."
+  },
+  "prayerTimeCalcMaghribAngleToggleHint": "لِمن يعتمد زاوية شفق للمغرب بدل لحظة الغروب.",
+  "prayerTimeCalcMaghribAngle": "زاوية المغرب",
+  "@prayerTimeCalcMaghribAngle": {
+    "description": "Stepper label: Maghrib sun angle (degrees)."
+  },
+  "prayerTimeMinutesShort": "{value} د",
+  "@prayerTimeMinutesShort": {
+    "description": "Compact minutes value in a stepper, e.g. '+5 min' or '90 min'. {value} may carry a +/- sign. Use the language's short minute abbreviation.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeMinutesZero": "٠ د",
+  "@prayerTimeMinutesZero": {
+    "description": "Zero-minutes value in the manual adjustment stepper (same abbreviation as prayerTimeMinutesShort)."
+  },
+  "prayerTimeCalcManualAdjust": "تعديل يدوي لكل وقت",
+  "@prayerTimeCalcManualAdjust": {
+    "description": "Expandable row: manual per-prayer minute adjustments."
+  },
+  "prayerTimeCalcManualAdjustHint": "طابق المواقيت مع مسجد الحي دقيقة بدقيقة",
+  "@prayerTimeCalcManualAdjustHint": {
+    "description": "Hint: match the times with your local mosque minute by minute."
+  },
+  "prayerTimeCalcManualAdjustCount": "{count, plural, =1{وقت واحد معدّل يدويًا} =2{وقتان معدّلان يدويًا} few{{count} مواقيت معدّلة يدويًا} other{{count} من المواقيت معدّلة يدويًا}}",
+  "@prayerTimeCalcManualAdjustCount": {
+    "description": "How many prayer times have a manual adjustment.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeGenericPrayer": "الصلاة",
+  "@prayerTimeGenericPrayer": {
+    "description": "Generic word 'the prayer', used when the specific prayer is unknown (e.g. in an athan notification title)."
+  },
+  "prayerTimeAthanTitle": "أذان {prayer}",
+  "@prayerTimeAthanTitle": {
+    "description": "Athan notification title without a time. {prayer} is a prayer name (e.g. 'Dhuhr').",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAthanTitleWithTime": "أذان {prayer} • {time}",
+  "@prayerTimeAthanTitleWithTime": {
+    "description": "Athan notification title: prayer name and its time, e.g. 'Dhuhr Athan • 11:48'. Keep the • separator.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAthanBodyFajr": "حيّ على الصلاة — ابدأ يومك بنور الفجر.",
+  "@prayerTimeAthanBodyFajr": {
+    "description": "One-line athan notification body for Fajr: 'Come to prayer — start your day with the light of dawn.'"
+  },
+  "prayerTimeAthanBodyDhuhr": "اجعلها استراحة قلب.",
+  "@prayerTimeAthanBodyDhuhr": {
+    "description": "Athan notification body for Dhuhr: 'Make it a rest for the heart.'"
+  },
+  "prayerTimeAthanBodyAsr": "جدّد حضورك مع الله.",
+  "@prayerTimeAthanBodyAsr": {
+    "description": "Athan notification body for Asr: 'Renew your presence with Allah.'"
+  },
+  "prayerTimeAthanBodyMaghrib": "اختم يومك بطاعة وسكينة.",
+  "@prayerTimeAthanBodyMaghrib": {
+    "description": "Athan notification body for Maghrib: 'Close your day with obedience and serenity.'"
+  },
+  "prayerTimeAthanBodyIsha": "لا تفوّت ختام الصلوات.",
+  "@prayerTimeAthanBodyIsha": {
+    "description": "Athan notification body for Isha: 'Don't miss the last prayer of the day.'"
+  },
+  "prayerTimeAthanBodyDefault": "تقبّل الله طاعتك.",
+  "@prayerTimeAthanBodyDefault": {
+    "description": "Athan notification body fallback: 'May Allah accept your worship.'"
+  },
+  "prayerTimeAthanExpandedHint": "اضغط لفتح تنبيه الصلاة والتفاصيل.",
+  "@prayerTimeAthanExpandedHint": {
+    "description": "Second line of the expanded athan notification: tap to open the prayer alert and details."
+  },
+  "prayerTimeAthanTicker": "حان الآن أذان {prayer}",
+  "@prayerTimeAthanTicker": {
+    "description": "Accessibility/status-bar ticker of the athan notification: 'It is now time for the {prayer} athan'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAlertNow": "حان الآن وقت الصلاة",
+  "@prayerTimeAlertNow": {
+    "description": "Athan alert screen: 'It is now time for prayer', shown above the prayer name."
+  },
+  "prayerTimeAlertMessage": "أقم صلاتك بخشوع، فهي نور القلب وسكينة الروح.",
+  "@prayerTimeAlertMessage": {
+    "description": "Athan alert screen encouragement: 'Pray with humility; it is light for the heart and calm for the soul.'"
+  },
+  "prayerTimeAlertReady": "تم الاستعداد للصلاة",
+  "@prayerTimeAlertReady": {
+    "description": "Main button on the athan alert screen: 'I'm ready for prayer' (dismisses the screen)."
+  },
+  "prayerTimeAlertOpenTimes": "فتح صفحة أوقات الصلاة",
+  "@prayerTimeAlertOpenTimes": {
+    "description": "Link on the athan alert screen that opens the prayer times page."
+  },
+  "prayerTimeTitle": "أوقات الصلاة",
+  "@prayerTimeTitle": {
+    "description": "Title of the prayer times screen."
+  },
+  "prayerTimeSettingsTitle": "إعدادات أوقات الصلاة",
+  "@prayerTimeSettingsTitle": {
+    "description": "Title of the prayer times settings screen (also the settings button tooltip)."
+  },
+  "prayerTimeSheetAthanTime": "وقت الأذان",
+  "@prayerTimeSheetAthanTime": {
+    "description": "Details sheet row: time of the athan."
+  },
+  "prayerTimeSheetUntilDhuhr": "حتى الظهر",
+  "@prayerTimeSheetUntilDhuhr": {
+    "description": "Details sheet row label for Sunrise: time from sunrise until Dhuhr."
+  },
+  "prayerTimeSheetWindow": "مدّة النافذة",
+  "@prayerTimeSheetWindow": {
+    "description": "Details sheet row: duration of the prayer's time window (until the next prayer)."
+  },
+  "prayerTimeSheetShift": "الفارق عن اليوم",
+  "@prayerTimeSheetShift": {
+    "description": "Details sheet row: difference compared with the same prayer today."
+  },
+  "prayerTimeWeekdaySat": "سبت",
+  "@prayerTimeWeekdaySat": {
+    "description": "Very short weekday names (about 3 letters) for the weekly prayer table header."
+  },
+  "prayerTimeWeekdaySun": "أحد",
+  "prayerTimeWeekdayMon": "إثن",
+  "prayerTimeWeekdayTue": "ثلا",
+  "prayerTimeWeekdayWed": "أرب",
+  "prayerTimeWeekdayThu": "خمي",
+  "prayerTimeWeekdayFri": "جمع",
+  "prayerTimeLessThanMinute": "أقل من دقيقة",
+  "@prayerTimeLessThanMinute": {
+    "description": "Duration shorter than one minute."
+  },
+  "prayerTimeHoursShort": "{hours} س",
+  "@prayerTimeHoursShort": {
+    "description": "Compact duration in hours, e.g. '2 h'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeHoursMinutesShort": "{hours} س {minutes} د",
+  "@prayerTimeHoursMinutesShort": {
+    "description": "Compact duration, e.g. '2 h 15 min'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeShiftSameDay": "اليوم نفسه",
+  "@prayerTimeShiftSameDay": {
+    "description": "Shift value when the selected day is today itself."
+  },
+  "prayerTimeShiftNone": "بلا فارق",
+  "@prayerTimeShiftNone": {
+    "description": "Shift value: no difference from today."
+  },
+  "prayerTimeShiftLater": "متأخّر {minutes} د",
+  "@prayerTimeShiftLater": {
+    "description": "The prayer is {minutes} minutes later than today.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeShiftEarlier": "مبكّر {minutes} د",
+  "@prayerTimeShiftEarlier": {
+    "description": "The prayer is {minutes} minutes earlier than today.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeAm": "ص",
+  "@prayerTimeAm": {
+    "description": "Short AM marker shown after a 12-hour time."
+  },
+  "prayerTimePm": "م",
+  "@prayerTimePm": {
+    "description": "Short PM marker shown after a 12-hour time."
+  },
+  "prayerTimeLocationSourceManual": "اختيار يدوي",
+  "@prayerTimeLocationSourceManual": {
+    "description": "Location source: chosen manually by the user."
+  },
+  "prayerTimeLocationSourceDevice": "موقع الجهاز",
+  "@prayerTimeLocationSourceDevice": {
+    "description": "Location source: the device's GPS location."
+  },
+  "prayerTimeLocationPickHint": "اختر مدينة أو استخدم موقع الجهاز",
+  "@prayerTimeLocationPickHint": {
+    "description": "Hint when no location is set: choose a city or use the device location."
+  },
+  "prayerTimeLocationDetails": "{details} · {source}",
+  "@prayerTimeLocationDetails": {
+    "description": "Location subtitle: region/country details followed by the location source.",
+    "placeholders": {
+      "details": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeLocationNotSet": "لم يتم تحديد موقع بعد",
+  "@prayerTimeLocationNotSet": {
+    "description": "No location has been set yet."
+  },
+  "prayerTimeMyLocation": "موقعي الحالي",
+  "@prayerTimeMyLocation": {
+    "description": "Tooltip of the button that uses the device's current location."
+  },
+  "prayerTimeGrantPermission": "منح الصلاحية",
+  "@prayerTimeGrantPermission": {
+    "description": "Link/button that requests a system permission."
+  },
+  "prayerTimeEmptyWeekTitle": "حدّد موقعك ليظهر جدول الأسبوع",
+  "@prayerTimeEmptyWeekTitle": {
+    "description": "Empty state: set your location to show the weekly table."
+  },
+  "prayerTimeEmptyWeekSubtitle": "ابحث عن مدينتك أو استخدم موقع الجهاز",
+  "prayerTimeSetLocation": "تحديد الموقع",
+  "@prayerTimeSetLocation": {
+    "description": "Link that opens the location picker."
+  },
+  "prayerTimeWeekNeedsCity": "حدّد مدينتك لعرض مواقيت الأسبوع كاملًا",
+  "@prayerTimeWeekNeedsCity": {
+    "description": "Shown when only one day is available: set a city to see the whole week."
+  },
+  "prayerTimeWeekHint": "اسحب الجدول أفقيًا لبقية الأيام · المس أي وقت لتفاصيله",
+  "@prayerTimeWeekHint": {
+    "description": "Hint under the weekly table: swipe horizontally for more days; tap a time for details."
+  },
+  "prayerTimeNightPrayerHeader": "قيام الليل · {day}",
+  "@prayerTimeNightPrayerHeader": {
+    "description": "Section header for night-prayer (Qiyam al-Layl) times. {day} is 'Today', 'Tomorrow' or a weekday name.",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeMidnight": "منتصف الليل",
+  "@prayerTimeMidnight": {
+    "description": "Islamic midnight (halfway between Maghrib and Fajr)."
+  },
+  "prayerTimeMidnightHint": "منتصف ما بين المغرب والفجر",
+  "prayerTimeLastThird": "الثلث الأخير",
+  "@prayerTimeLastThird": {
+    "description": "The last third of the night."
+  },
+  "prayerTimeLastThirdHint": "أفضل أوقات القيام والدعاء",
+  "@prayerTimeLastThirdHint": {
+    "description": "The best time for night prayer and supplication."
+  },
+  "prayerTimeLocationHeader": "الموقع",
+  "@prayerTimeLocationHeader": {
+    "description": "Section header: location."
+  },
+  "prayerTimeLocationUpdateFailed": "تعذر تحديث الموقع الحالي.",
+  "@prayerTimeLocationUpdateFailed": {
+    "description": "Fallback notice when the current location could not be updated."
+  },
+  "prayerTimeToday": "اليوم",
+  "@prayerTimeToday": {
+    "description": "Today."
+  },
+  "prayerTimeTomorrow": "غدًا",
+  "@prayerTimeTomorrow": {
+    "description": "Tomorrow."
+  },
+  "prayerTimeTablePrayerColumn": "الصلاة",
+  "@prayerTimeTablePrayerColumn": {
+    "description": "Header of the prayer-name column in the weekly table."
+  },
+  "prayerTimeSettingsCalcHeader": "طريقة حساب المواقيت",
+  "@prayerTimeSettingsCalcHeader": {
+    "description": "Settings section header: how prayer times are calculated."
+  },
+  "prayerTimeSettingsSilentHeader": "الصامت وقت الصلاة",
+  "@prayerTimeSettingsSilentHeader": {
+    "description": "Settings section header: silent mode during prayer."
+  },
+  "prayerTimeSilentNeedsPermission": "امنح صلاحية عدم الإزعاج أولًا حتى تعمل الميزة.",
+  "@prayerTimeSilentNeedsPermission": {
+    "description": "Snackbar: grant the Do Not Disturb permission first."
+  },
+  "prayerTimeSettingsSaved": "تم حفظ إعدادات أوقات الصلاة.",
+  "@prayerTimeSettingsSaved": {
+    "description": "Snackbar after saving prayer time settings."
+  },
+  "prayerTimeSilentHint": "يحوّل الجهاز إلى صامت مع وقت الصلاة ثم يعيد الصوت تلقائيًا.",
+  "@prayerTimeSilentHint": {
+    "description": "Explains the auto-silent feature: phone goes silent at prayer time, then sound is restored automatically."
+  },
+  "prayerTimeSilentEnable": "تفعيل الصامت تلقائيًا",
+  "@prayerTimeSilentEnable": {
+    "description": "Toggle: enable automatic silent mode."
+  },
+  "prayerTimeSilentPermissionNote": "تحتاج الميزة صلاحية «عدم الإزعاج» من النظام.",
+  "@prayerTimeSilentPermissionNote": {
+    "description": "Note: the feature needs the system 'Do Not Disturb' access permission."
+  },
+  "prayerTimeSilentDuration": "مدة الصامت بعد الصلاة",
+  "@prayerTimeSilentDuration": {
+    "description": "Label: how long the phone stays silent after the prayer time."
+  },
+  "prayerTimeMinutesSuffix": "د",
+  "@prayerTimeMinutesSuffix": {
+    "description": "Short 'min' suffix after a minutes input field."
+  },
+  "prayerTimeSaving": "جارِ الحفظ",
+  "@prayerTimeSaving": {
+    "description": "Save button while saving."
+  },
+  "prayerTimeSaveSettings": "حفظ الإعدادات",
+  "@prayerTimeSaveSettings": {
+    "description": "Save settings button."
+  },
+  "prayerTimeSavedLocation": "الموقع المحفوظ",
+  "@prayerTimeSavedLocation": {
+    "description": "Fallback name of the user's saved location when no place name was stored."
+  },
+  "prayerTimePickerMapPointLabel": "موقع محدد على الخريطة",
+  "@prayerTimePickerMapPointLabel": {
+    "description": "Fallback name for a point picked on the map when no place name is found."
+  },
+  "prayerTimePickerResolving": "جارِ قراءة اسم الموقع المحدد...",
+  "@prayerTimePickerResolving": {
+    "description": "Map picker: looking up the name of the tapped point."
+  },
+  "prayerTimePickerTapMap": "اضغط على الخريطة لتحديد المنطقة",
+  "@prayerTimePickerTapMap": {
+    "description": "Map picker hint: tap the map to set the area."
+  },
+  "prayerTimePickerTitle": "اختيار المنطقة",
+  "@prayerTimePickerTitle": {
+    "description": "Title of the location picker sheet."
+  },
+  "prayerTimePickerSubtitle": "ابحث أو حدّد نقطة من الخريطة",
+  "@prayerTimePickerSubtitle": {
+    "description": "Subtitle of the location picker: search, or pick a point on the map."
+  },
+  "prayerTimePickerUsingDevice": "جارِ استخدام موقع الجهاز...",
+  "@prayerTimePickerUsingDevice": {
+    "description": "Button while the device location is being fetched."
+  },
+  "prayerTimePickerUseDevice": "استخدام موقع الجهاز الحالي",
+  "@prayerTimePickerUseDevice": {
+    "description": "Button: use the device's current location."
+  },
+  "prayerTimePickerMapTab": "الخريطة",
+  "@prayerTimePickerMapTab": {
+    "description": "Tab label: map."
+  },
+  "prayerTimePickerSearchHint": "اسم المدينة أو الدولة",
+  "@prayerTimePickerSearchHint": {
+    "description": "Search field hint: city or country name."
+  },
+  "prayerTimePickerNoResults": "لم نعثر على نتائج مطابقة",
+  "@prayerTimePickerNoResults": {
+    "description": "No matching search results."
+  },
+  "prayerTimePickerStartTyping": "ابدأ بكتابة اسم المدينة",
+  "@prayerTimePickerStartTyping": {
+    "description": "Empty search state: start typing a city name."
+  },
+  "prayerTimePickerTapMapToChoose": "اضغط على الخريطة لاختيار المنطقة",
+  "@prayerTimePickerTapMapToChoose": {
+    "description": "Map picker footer hint when nothing is selected yet."
+  },
+  "prayerTimePickerApplying": "جارِ الاعتماد",
+  "@prayerTimePickerApplying": {
+    "description": "Apply button while applying the chosen location."
+  },
+  "prayerTimePickerApply": "اعتماد",
+  "@prayerTimePickerApply": {
+    "description": "Button that confirms the chosen location."
+  },
+  "prayerTimeCurrentLabel": "الحالية {prayer}",
+  "@prayerTimeCurrentLabel": {
+    "description": "Shows the current prayer, e.g. 'Current: Asr'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeNextLabel": "القادمة {prayer}",
+  "@prayerTimeNextLabel": {
+    "description": "Shows the next prayer, e.g. 'Next: Maghrib'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeEnableLocation": "تفعيل الموقع",
+  "@prayerTimeEnableLocation": {
+    "description": "Button that turns on the device location service."
+  },
+  "prayerTimeTimelineEmptyTitle": "لا يمكن عرض مواقيت الصلاة قبل تحديد المنطقة",
+  "@prayerTimeTimelineEmptyTitle": {
+    "description": "Empty state: prayer times cannot be shown before an area is set."
+  },
+  "prayerTimeTimelineEmptySubtitle": "اختر مدينة يدويًا أو استخدم موقع الجهاز الحالي",
+  "prayerTimeTimelineChooseArea": "اختيار منطقة",
+  "@prayerTimeTimelineChooseArea": {
+    "description": "Link that opens the area picker."
+  },
+  "prayerTimeNow": "الآن",
+  "@prayerTimeNow": {
+    "description": "Badge on the prayer whose time is now (current prayer)."
+  },
+  "prayerTimeNextBadge": "التالية",
+  "@prayerTimeNextBadge": {
+    "description": "Badge on the next prayer ('Next'). Feminine in Arabic because 'prayer' is feminine."
+  },
+  "prayerTimeRowNext": "الصلاة القادمة",
+  "@prayerTimeRowNext": {
+    "description": "Row subtitle: the upcoming prayer."
+  },
+  "prayerTimeRowCompleted": "انتهى وقتها",
+  "@prayerTimeRowCompleted": {
+    "description": "Row subtitle: this prayer's time has passed."
+  },
+  "prayerTimeRowLocalTime": "الوقت المحلي",
+  "@prayerTimeRowLocalTime": {
+    "description": "Row subtitle: local time."
+  },
+  "prayerTimeLoadingTimes": "جاري تحميل المواقيت",
+  "@prayerTimeLoadingTimes": {
+    "description": "Placeholder while prayer times load."
+  },
+  "prayerTimeLocatingShort": "جاري تحديد الموقع",
+  "@prayerTimeLocatingShort": {
+    "description": "Placeholder while the location is being determined."
+  },
+  "prayerTimeNoticeUnavailable": "فعّل الموقع أو امنح الصلاحية لعرض مواقيت الصلاة بدقة.",
+  "@prayerTimeNoticeUnavailable": {
+    "description": "Notice when prayer times are unavailable: enable location or grant permission."
+  },
+  "prayerTimeNoticeServiceOffSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. فعّل الموقع لتحديثها تلقائيًا.",
+  "@prayerTimeNoticeServiceOffSaved": {
+    "description": "Location service is off; times use the last saved location."
+  },
+  "prayerTimeNoticeServiceOff": "خدمة الموقع غير مفعلة. فعّلها لعرض مواقيت الصلاة حسب موقعك الحالي.",
+  "prayerTimeNoticePermissionDeniedSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. اسمح بالوصول للموقع لتحديثها الآن.",
+  "@prayerTimeNoticePermissionDeniedSaved": {
+    "description": "Location permission denied; times use the last saved location."
+  },
+  "prayerTimeNoticePermissionDenied": "صلاحية الموقع غير ممنوحة. اسمح بها لعرض المواقيت حسب موقعك الحالي.",
+  "prayerTimeNoticeDeniedForeverSaved": "الأوقات الحالية تستخدم آخر موقع محفوظ. افتح الإعدادات لإعادة تفعيل صلاحية الموقع.",
+  "@prayerTimeNoticeDeniedForeverSaved": {
+    "description": "Location permission permanently denied; times use the last saved location."
+  },
+  "prayerTimeNoticeDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات وفعّلها لعرض المواقيت بدقة.",
+  "prayerTimeNoticeErrorSaved": "تعذر تحديث الموقع الآن، لذلك يتم استخدام آخر موقع محفوظ للمستخدم.",
+  "@prayerTimeNoticeErrorSaved": {
+    "description": "Location update failed; the last saved location is used."
+  },
+  "prayerTimeNoticeError": "تعذر تحديد الموقع حاليًا. فعّل الموقع أو اسمح بالصلاحية لإظهار المواقيت.",
+  "prayerTimeOpenSettings": "فتح الإعدادات",
+  "@prayerTimeOpenSettings": {
+    "description": "Button that opens the system app settings."
+  },
+  "prayerTimeCountdownNow": "حان الآن وقت {prayer}",
+  "@prayerTimeCountdownNow": {
+    "description": "Countdown line when the prayer time has arrived.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeCountdownUnderMinute": "{prayer} بعد أقل من دقيقة",
+  "@prayerTimeCountdownUnderMinute": {
+    "description": "Countdown: prayer in less than a minute.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeCountdownMinutes": "{prayer} بعد {minutes, plural, =1{دقيقة واحدة} =2{دقيقتين} few{{minutes} دقائق} other{{minutes} دقيقة}}",
+  "@prayerTimeCountdownMinutes": {
+    "description": "Countdown: prayer in N minutes (1-59).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCountdownHours": "{prayer} بعد {hours, plural, =1{ساعة} =2{ساعتين} few{{hours} ساعات} other{{hours} ساعة}}",
+  "@prayerTimeCountdownHours": {
+    "description": "Countdown: prayer in N whole hours.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCountdownHoursMinutes": "{prayer} بعد {hours} س {minutes} د",
+  "@prayerTimeCountdownHoursMinutes": {
+    "description": "Countdown: prayer in H hours M minutes, compact ('h'/'min' abbreviations).",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingNow": "حان الوقت",
+  "@prayerTimeRemainingNow": {
+    "description": "Short remaining-time label when the time has come."
+  },
+  "prayerTimeRemainingMinutes": "بقي {minutes} د",
+  "@prayerTimeRemainingMinutes": {
+    "description": "Short remaining time, e.g. '45 min left'.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingHours": "بقي {hours} س",
+  "@prayerTimeRemainingHours": {
+    "description": "Short remaining time, e.g. '2 h left'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeRemainingHoursMinutes": "بقي {hours} س {minutes} د",
+  "@prayerTimeRemainingHoursMinutes": {
+    "description": "Short remaining time, e.g. '2 h 5 min left'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "prayerTimeCurrentLocationFallback": "الموقع الحالي",
+  "@prayerTimeCurrentLocationFallback": {
+    "description": "Fallback location label: 'Current location'."
+  },
+  "prayerTimeYouAreInTime": "أنت الآن في وقت",
+  "@prayerTimeYouAreInTime": {
+    "description": "Label above the current prayer name on the home sky panel: 'You are now in the time of'. Followed by the prayer name on the next line."
+  },
+  "prayerTimeBoardHijriLine": "{hijri} · توقيت أم القرى",
+  "@prayerTimeBoardHijriLine": {
+    "description": "Hijri date followed by the note that the calendar is Umm al-Qura.",
+    "placeholders": {
+      "hijri": {
+        "type": "String"
+      }
+    }
+  },
+  "prayerTimeAllTimes": "كل المواقيت",
+  "@prayerTimeAllTimes": {
+    "description": "Link that opens all prayer times."
+  },
+  "prayerTimeMuteAthan": "كتم أذان هذه الصلاة",
+  "@prayerTimeMuteAthan": {
+    "description": "Tooltip: mute the athan for this prayer."
+  },
+  "prayerTimeUnmuteAthan": "تشغيل أذان هذه الصلاة",
+  "@prayerTimeUnmuteAthan": {
+    "description": "Tooltip: turn on the athan for this prayer."
+  },
+  "prayerTimeQuickMushaf": "المصحف",
+  "@prayerTimeQuickMushaf": {
+    "description": "Quick action: the Quran (Mushaf)."
+  },
+  "prayerTimeQuickPrayerTimes": "مواقيت الصلاة",
+  "@prayerTimeQuickPrayerTimes": {
+    "description": "Quick action: prayer times."
+  },
+  "prayerTimeQuickAdhkar": "مكتبة الأذكار",
+  "@prayerTimeQuickAdhkar": {
+    "description": "Quick action: the adhkar library."
+  },
+  "prayerTimeErrorLoad": "تعذر تحميل مواقيت الصلاة حاليًا",
+  "@prayerTimeErrorLoad": {
+    "description": "Location/status notice: prayer times could not be loaded."
+  },
+  "prayerTimeErrorUpdateArea": "تعذر تحديث المنطقة المختارة",
+  "@prayerTimeErrorUpdateArea": {
+    "description": "Notice: the selected area could not be applied."
+  },
+  "prayerTimeErrorApplySettings": "تعذر تحديث المواقيت بالإعدادات الجديدة",
+  "@prayerTimeErrorApplySettings": {
+    "description": "Notice: prayer times could not be recalculated with the new settings."
+  },
+  "prayerTimeErrorServiceOff": "خدمة الموقع غير مفعلة. فعّلها أو اختر مدينة يدويًا.",
+  "@prayerTimeErrorServiceOff": {
+    "description": "Notice: location service is off; enable it or pick a city manually."
+  },
+  "prayerTimeErrorPermission": "يلزم منح صلاحية الموقع أو اختيار مدينة يدويًا.",
+  "@prayerTimeErrorPermission": {
+    "description": "Notice: location permission is needed, or pick a city manually."
+  },
+  "prayerTimeErrorDeniedForever": "صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات أو اختر مدينة.",
+  "@prayerTimeErrorDeniedForever": {
+    "description": "Notice: location permission permanently denied; open settings or pick a city."
+  },
+  "prayerTimeErrorDeviceLocation": "تعذر تحديد موقع الجهاز حاليًا",
+  "@prayerTimeErrorDeviceLocation": {
+    "description": "Notice: the device location could not be determined."
+  },
+  "homeWidgetsPinFailed": "تعذّر فتح نافذة الإضافة. أضفها يدويًا من الشاشة الرئيسية.",
+  "@homeWidgetsPinFailed": {
+    "description": "Toast: the system 'add widget' dialog could not be opened; add it manually from the home screen."
+  },
+  "homeWidgetsSyncSuccess": "تم تحديث الودجات",
+  "@homeWidgetsSyncSuccess": {
+    "description": "Toast after refreshing the home-screen widgets."
+  },
+  "homeWidgetsSyncFailed": "تعذّر التحديث. تأكّد من تحديد موقعك.",
+  "@homeWidgetsSyncFailed": {
+    "description": "Toast: widget refresh failed; make sure a location is set."
+  },
+  "homeWidgetsAddTooltip": "إضافة إلى الشاشة الرئيسية",
+  "@homeWidgetsAddTooltip": {
+    "description": "Tooltip of the button that pins a widget to the home screen."
+  },
+  "homeWidgetsTitle": "ودجات الشاشة الرئيسية",
+  "@homeWidgetsTitle": {
+    "description": "Title of the home-screen widgets page. Use the platform's usual word for 'widgets'."
+  },
+  "homeWidgetsHowToHeader": "طريقة الإضافة",
+  "@homeWidgetsHowToHeader": {
+    "description": "Group title: how to add a widget."
+  },
+  "homeWidgetsHowToAndroid": "اضغط زر الإضافة بجانب الودجت، أو اضغط مطوّلًا على مساحة فارغة في الشاشة الرئيسية ثم «التطبيقات المصغّرة» وابحث عن «{appName}».",
+  "@homeWidgetsHowToAndroid": {
+    "description": "Android instructions for adding a widget. «التطبيقات المصغّرة» is Android's 'Widgets' menu — use the name Android shows in the target language. {appName} is the app name.",
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWidgetsHowToIos": "اضغط مطوّلًا على مساحة فارغة في الشاشة الرئيسية، ثم زر «+» أعلى الشاشة، وابحث عن «{appName}». ودجت الصلاة القادمة متاحة أيضًا لشاشة القفل.",
+  "@homeWidgetsHowToIos": {
+    "description": "iOS instructions for adding a widget. {appName} is the app name.",
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "homeWidgetsListHeader": "الودجات",
+  "@homeWidgetsListHeader": {
+    "description": "Group title listing the available widgets."
+  },
+  "homeWidgetsNextPrayerTitle": "الصلاة القادمة",
+  "@homeWidgetsNextPrayerTitle": {
+    "description": "Widget name: Next prayer."
+  },
+  "homeWidgetsNextPrayerSubtitleAndroid": "اسم الصلاة ووقتها مع عدّ تنازلي حيّ",
+  "@homeWidgetsNextPrayerSubtitleAndroid": {
+    "description": "Android: prayer name and time with a live countdown."
+  },
+  "homeWidgetsNextPrayerSubtitleIos": "صغيرة · وشاشة القفل بثلاثة أشكال",
+  "@homeWidgetsNextPrayerSubtitleIos": {
+    "description": "iOS: small size, plus the lock screen in three styles."
+  },
+  "homeWidgetsTodayTimesTitle": "مواقيت اليوم",
+  "@homeWidgetsTodayTimesTitle": {
+    "description": "Widget name: Today's prayer times."
+  },
+  "homeWidgetsTodayTimesSubtitle": "الصلوات الستّ مع التاريخ الهجري والمدينة",
+  "@homeWidgetsTodayTimesSubtitle": {
+    "description": "The six prayer times with the Hijri date and city."
+  },
+  "homeWidgetsDailyAyahTitle": "آية اليوم",
+  "@homeWidgetsDailyAyahTitle": {
+    "description": "Widget name: Verse of the day."
+  },
+  "homeWidgetsDailyAyahSubtitle": "آية قصيرة تتجدّد كل يوم",
+  "@homeWidgetsDailyAyahSubtitle": {
+    "description": "A short Quran verse that changes every day."
+  },
+  "homeWidgetsSyncHeader": "المزامنة",
+  "@homeWidgetsSyncHeader": {
+    "description": "Group title: sync."
+  },
+  "homeWidgetsSyncNow": "تحديث الودجات الآن",
+  "@homeWidgetsSyncNow": {
+    "description": "Row: refresh the widgets now."
+  },
+  "homeWidgetsSyncSubtitle": "يحسب مواقيت {days, plural, =1{يومًا واحدًا} =2{يومين} few{{days} أيام} many{{days} يومًا} other{{days} يوم}} بموقعك وإعداداتك الحالية",
+  "@homeWidgetsSyncSubtitle": {
+    "description": "Refresh row subtitle: computes prayer times for {days} days with your current location and settings.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeWidgetsSyncHint": "الودجات تعمل {days, plural, =1{يومًا واحدًا} =2{يومين} few{{days} أيام} many{{days} يومًا} other{{days} يوم}} دون فتح التطبيق، وتتجدّد تلقائيًا في الخلفية. تتحدّث وحدها عند تغيير موقعك أو طريقة الحساب.",
+  "@homeWidgetsSyncHint": {
+    "description": "Hint: widgets keep working for {days} days without opening the app and refresh automatically in the background; they update when location or calculation method changes.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDeveloperName": "معتصم الهلالي",
+  "@settingsDeveloperName": {
+    "description": "The developer's personal name (Moatasem Alhilali). Transliterate for Latin-script languages."
+  },
+  "settingsUpdateStarting": "جارٍ بدء تحديث التطبيق...",
+  "settingsUpdateUpToDate": "أنت تستخدم أحدث إصدار من التطبيق.",
+  "settingsUpdateCheckFailed": "تعذّر التحقق من التحديثات، حاول لاحقاً.",
+  "settingsGroupPreferences": "التفضيلات",
+  "settingsDarkModeTitle": "النمط الداكن",
+  "settingsStatusOn": "مفعل",
+  "@settingsStatusOn": {
+    "description": "Subtitle under a switch row when the option is enabled."
+  },
+  "settingsStatusOff": "معطل",
+  "@settingsStatusOff": {
+    "description": "Subtitle under a switch row when the option is disabled."
+  },
+  "settingsNotificationsTitle": "إعدادات الإشعارات",
+  "settingsNotificationsSubtitle": "تحكّم بكل تنبيه يصلك من التطبيق",
+  "settingsDownloadsTitle": "إعدادات التنزيل",
+  "settingsDownloadsSubtitle": "إدارة الملفات المحمّلة والمساحة",
+  "settingsGroupApp": "التطبيق",
+  "settingsCheckUpdatesTitle": "التحقق من التحديثات",
+  "settingsCheckUpdatesSubtitle": "تأكد من أنك تستخدم أحدث إصدار",
+  "settingsAboutUsTitle": "من نحن",
+  "settingsAboutUsSubtitle": "تعرف على تطبيق طمأنينة ورسالته",
+  "settingsRateAppTitle": "قيّم التطبيق",
+  "settingsRateAppSubtitle": "ساهم في نشر الخير بتقييمك على المتجر",
+  "settingsGroupPrivacy": "الخصوصية والأمان",
+  "settingsPrivacyPolicyTitle": "سياسة الخصوصية",
+  "settingsPrivacyPolicySubtitle": "كيف يتعامل التطبيق مع بياناتك وصلاحياتك",
+  "settingsDataSafetyTitle": "أمان البيانات",
+  "settingsDataSafetySubtitle": "ملخص البيانات والصلاحيات وطريقة استخدامها",
+  "settingsGroupDeveloper": "المطوّر",
+  "settingsAboutDeveloperTitle": "حول المطور",
+  "settingsAboutDeveloperSubtitle": "معلومات وروابط التواصل الخاصة بالمطور",
+  "settingsDeveloperContactSubtitle": "تواصل مباشر عبر الموقع أو واتس اب",
+  "settingsPersonalWebsite": "الموقع الشخصي",
+  "settingsGroupFollowNews": "تابع آخر الأخبار",
+  "settingsSocialTelegram": "تليجرام",
+  "@settingsSocialTelegram": {
+    "description": "Social network names shown under icon tiles (Telegram, WhatsApp, Facebook, Instagram, Twitter/X). Use the usual local spelling."
+  },
+  "settingsSocialWhatsapp": "واتس اب",
+  "settingsSocialFacebook": "فيسبوك",
+  "settingsSocialInstagram": "انستجرام",
+  "settingsSocialTwitter": "تويتر",
+  "settingsPrivacyIntro": "معلومات واضحة ومختصرة حول طريقة تعامل التطبيق مع بياناتك.",
+  "settingsPrivacyMattersTitle": "خصوصيتك تهمنا",
+  "settingsPrivacyMattersBody": "نحرص في طمأنينة على أن تكون تجربة استخدام التطبيق واضحة وآمنة. نستخدم البيانات الضرورية فقط لتشغيل مزايا التطبيق وتحسينها، ولا نبيع بيانات المستخدمين أو نشاركها لأغراض إعلانية.",
+  "settingsPrivacyDataUsedTitle": "البيانات التي قد يستخدمها التطبيق",
+  "settingsPrivacyDataUsedBody": "قد يستخدم التطبيق الموقع لحساب أوقات الصلاة والقبلة، والإشعارات لتنبيهات الأذان والأذكار، وبيانات التخزين لحفظ المحتوى المحمل والإعدادات المحلية، وجهات الاتصال فقط في الميزات التي يفعّلها المستخدم مثل صحبة الفجر.",
+  "settingsPrivacyControlTitle": "التحكم ببياناتك",
+  "settingsPrivacyControlBody": "يمكنك تعطيل الإشعارات أو تعديلها من إعدادات الإشعارات داخل التطبيق، ويمكنك إدارة صلاحيات النظام من إعدادات جهازك في أي وقت.",
+  "settingsPrivacyThirdPartyTitle": "الخدمات الخارجية",
+  "settingsPrivacyThirdPartyBody": "قد يستخدم التطبيق خدمات مثل Firebase Remote Config وFirebase Messaging لتحديث الإعدادات وإرسال التنبيهات العامة. يتم استخدام هذه الخدمات لتشغيل التطبيق وتحسين التجربة فقط.",
+  "@settingsPrivacyThirdPartyBody": {
+    "description": "Keep product names 'Firebase Remote Config' and 'Firebase Messaging' in Latin script."
+  },
+  "settingsDataSafetyIntro": "ملخص للبيانات التي يستخدمها التطبيق وكيف تُحفظ وتُشارك.",
+  "settingsDataSafetySensitiveTitle": "البيانات الحساسة",
+  "settingsDataSafetySensitiveBody": "لا يطلب التطبيق بيانات حساسة إلا عند الحاجة لميزة واضحة يختارها المستخدم. بعض البيانات مثل أوقات التنبيه، التفضيلات، وخطط القراءة تُحفظ محليًا على الجهاز.",
+  "settingsDataSafetyLocationTitle": "الموقع",
+  "settingsDataSafetyLocationBody": "يُستخدم الموقع لحساب مواقيت الصلاة، اتجاه القبلة، والخدمات المعتمدة على المكان. يمكن للمستخدم إيقاف صلاحية الموقع من إعدادات النظام.",
+  "settingsDataSafetyNotificationsTitle": "الإشعارات",
+  "settingsDataSafetyNotificationsBody": "يستخدم التطبيق الإشعارات للأذان، الأذكار، التذكيرات، وبعض رسائل التطبيق العامة. يمكن التحكم بكل نوع إشعار من صفحة إعدادات الإشعارات.",
+  "settingsDataSafetyStorageTitle": "التخزين والتحميل",
+  "settingsDataSafetyStorageBody": "قد يستخدم التطبيق التخزين لحفظ الملفات والمحتوى الذي يختار المستخدم تحميله، مثل الصوتيات أو المواد المتاحة داخل التطبيق.",
+  "settingsDataSafetySharingTitle": "المشاركة",
+  "settingsDataSafetySharingBody": "لا تتم مشاركة بياناتك الشخصية مع أطراف خارجية للبيع أو التسويق. أي مشاركة تتم تكون ضمن خدمات تشغيل ضرورية أو إجراء يبدأه المستخدم.",
+  "settingsAboutAppBody": "تطبيق قرآني وعبادي يساعدك على الصلاة، الذكر، تلاوة القرآن، والاستمرار على ورد يومي بهدوء وبأسلوب قريب من المستخدم.",
+  "settingsAboutMissionTitle": "رسالتنا",
+  "settingsAboutMissionBody": "أن يكون التطبيق رفيقًا خفيفًا يعين المستخدم على الطاعة دون إزعاج، ويجمع الأدوات اليومية المهمة مثل المصحف، الأذكار، مواقيت الصلاة، التنبيهات، والميزات المساعدة للأسرة.",
+  "settingsAboutOfferTitle": "ما نقدمه",
+  "settingsAboutOfferBody": "مصحف، أذكار، مواقيت صلاة، قبلة، ورد يومي، تطبيقات مصغرة، صحبة الفجر، المسلم الصغير، خدمات للمسافر، وتنبيهات قابلة للتخصيص حسب حاجة المستخدم.",
+  "settingsDeveloperHeroBody": "مهندس برمجيات Full Stack وMobile بخبرة تتجاوز 7 سنوات، متخصص في Flutter وLaravel وNext.js وبناء تطبيقات إنتاجية للويب والجوال.",
+  "settingsDeveloperBioTitle": "نبذة مختصرة",
+  "settingsDeveloperBioBody": "يعمل معتصم الهلالي على بناء تطبيقات ومنصات رقمية تخدم مستخدمين حقيقيين، مع اهتمام خاص بتطبيقات الجوال، الأنظمة الخلفية، واجهات الاستخدام، ومنصات Fintech وSaaS.",
+  "settingsDeveloperFieldsTitle": "مجالات العمل",
+  "settingsDeveloperFieldsBody": "Flutter، Laravel، Next.js، React، API Development، تطبيقات الجوال، تطبيقات الويب، حلول Fintech، ومنصات SaaS.",
+  "@settingsDeveloperFieldsBody": {
+    "description": "Comma-separated list of technologies; keep technology names (Flutter, Laravel, Next.js, React, API, Fintech, SaaS) in Latin script."
+  },
+  "settingsDeveloperContactTitle": "طرق التواصل",
+  "settingsContactWebsite": "الموقع",
+  "@settingsContactWebsite": {
+    "description": "Short tile label for the developer's website link."
+  },
+  "settingsContactEmail": "البريد",
+  "settingsAppLinksTitle": "روابط التطبيق",
+  "notifSettingsLabelAppNotifications": "اشعارات التطبيق",
+  "notifSettingsLabelAllAthan": "إشعارات جميع الأذان",
+  "notifSettingsAthanOf": "أذان {prayer}",
+  "@notifSettingsAthanOf": {
+    "description": "Name of the call-to-prayer (adhan) notification for one prayer, e.g. 'Fajr adhan'. Used as a notification title.",
+    "placeholders": {
+      "prayer": {
+        "type": "String",
+        "example": "الفجر"
+      }
+    }
+  },
+  "notifSettingsLabelMiddleNight": "قيام الليل",
+  "notifSettingsLabelThikrMorning": "أذكار الصباح",
+  "notifSettingsLabelThikrEvening": "أذكار المساء",
+  "notifSettingsLabelThikrWakeUp": "أذكار الاستيقاظ",
+  "notifSettingsLabelThikrSleep": "أذكار النوم",
+  "notifSettingsLabelSalawat": "الصلاة على محمد ﷺ",
+  "@notifSettingsLabelSalawat": {
+    "description": "Reminder to send blessings upon the Prophet Muhammad ﷺ. Keep the ﷺ ligature."
+  },
+  "notifSettingsLabelRandomAudioThikr": "الأذكار الصوتية العشوائية",
+  "notifSettingsLabelFloatingAdhkar": "الأذكار العائمة والتنبيهات البديلة",
+  "notifSettingsLabelDailyQuranWird": "الورد القرآني اليومي",
+  "notifSettingsLabelReadSurahMulk": "قراءة سورة الملك",
+  "notifSettingsLabelReadSpecificSurah": "قراءة سورة محددة",
+  "notifSettingsLabelReadSurahKahf": "قراءة سورة الكهف",
+  "notifSettingsLabelFasting": "تذكير بالصيام",
+  "notifSettingsLabelFastingMonday": "صيام الاثنين",
+  "notifSettingsLabelFastingThursday": "صيام الخميس",
+  "notifSettingsLabelBestDua": "أفضل الأدعية المستحبة عند الله سبحانه وتعالى وله أثر عظيم",
+  "@notifSettingsLabelBestDua": {
+    "description": "Title/body of the recurring 'Hasbuna Allah wa ni'ma al-wakil' dhikr reminder: 'The best supplication beloved to Allah, with great effect'."
+  },
+  "notifSettingsLabelWirdMorning": "ورد الصباح",
+  "@notifSettingsLabelWirdMorning": {
+    "description": "'Wird' = a daily devotional portion (worship routine)."
+  },
+  "notifSettingsLabelWirdEvening": "ورد المساء",
+  "notifSettingsLabelWirdNight": "ورد ما قبل النوم",
+  "notifSettingsLabelWirdSummary": "ملخص الورد اليومي",
+  "notifSettingsLabelYoungMuslim": "تذكير المسلم الصغير",
+  "@notifSettingsLabelYoungMuslim": {
+    "description": "Reminder for the 'Young Muslim' (kids) section of the app."
+  },
+  "notifSettingsLabelQuranPlan": "تذكير خطط القرآن",
+  "notifSettingsLabelGeneral": "إشعارات التطبيق العامة",
+  "notifSettingsTitleRandomThikr": "ذكر عشوائي",
+  "notifSettingsTitleFloatingAdhkar": "الأذكار العائمة",
+  "notifSettingsTitlePrayerAthan": "أذان الصلاة",
+  "notifSettingsBodyThikrMorning": "لا تنس أذكار الصباح!",
+  "@notifSettingsBodyThikrMorning": {
+    "description": "Body text of a scheduled reminder notification."
+  },
+  "notifSettingsBodyThikrEvening": "لا تنس أذكار المساء!",
+  "notifSettingsBodyMiddleNight": "حان وقت قيام الليل، استغل الثلث الأخير من الليل.",
+  "notifSettingsBodySalawat": "صلِّ على النبي ﷺ تسعد في يومك.",
+  "notifSettingsBodyRememberAllah": "اذكر الله يذكرك!",
+  "notifSettingsBodyReadQuran": "خصص وقتًا لوردك القرآني اليومي.",
+  "notifSettingsBodyReadSurahMulk": "لا تنس قراءة سورة الملك الليلة.",
+  "notifSettingsBodyThikrSleep": "اذكار النوم قبل أن تغفو.",
+  "notifSettingsBodyThikrWakeUp": "ابدأ يومك بذكر الله بعد الاستيقاظ.",
+  "notifSettingsBodyReadSurah": "لا تنس قراءة السورة التي اخترتها اليوم.",
+  "notifSettingsBodyReadSurahKahf": "لا تنس قراءة سورة الكهف في يوم الجمعة.",
+  "notifSettingsBodyFasting": "تذكير بصيام التطوع.",
+  "notifSettingsBodyFastingMonday": "تذكير بصيام يوم الاثنين.",
+  "notifSettingsBodyFastingThursday": "تذكير بصيام يوم الخميس.",
+  "notifSettingsBodyAthanTime": "حان الآن موعد الأذان.",
+  "notifSettingsBodyWirdMorning": "ابدأ نهارك بزادك التعبدي.",
+  "notifSettingsBodyWirdEvening": "جدد صلتك بالله في زاد المساء.",
+  "notifSettingsBodyWirdNight": "اختم يومك بالذكر والدعاء.",
+  "notifSettingsBodyWirdSummary": "راجع زادك التعبدي اليوم.",
+  "notifSettingsBodyYoungMuslim": "تذكير للعودة إلى محتوى المسلم الصغير.",
+  "notifSettingsBodyQuranPlan": "لا تنس جلسة اليوم من خطتك القرآنية.",
+  "notifSettingsBodyGeneral": "إشعارات وتنبيهات عامة من تطبيق طمأنينة.",
+  "notifSettingsAllPrayers": "كل الصلوات",
+  "@notifSettingsAllPrayers": {
+    "description": "Row title: adhan notifications for all prayers."
+  },
+  "notifSettingsSalawatShort": "الصلاة على محمد",
+  "@notifSettingsSalawatShort": {
+    "description": "Short row title: reminder to send blessings upon the Prophet Muhammad."
+  },
+  "notifSettingsQuranWirdShort": "الورد القرآني",
+  "@notifSettingsQuranWirdShort": {
+    "description": "Short row title: daily Quran reading portion reminder."
+  },
+  "notifSettingsGroupGeneral": "عام",
+  "@notifSettingsGroupGeneral": {
+    "description": "Section headers on the notification settings screen."
+  },
+  "notifSettingsGroupAthan": "الأذان",
+  "notifSettingsGroupDailyWird": "الورد اليومي",
+  "notifSettingsGroupAdhkar": "الأذكار",
+  "notifSettingsGroupQuran": "القرآن",
+  "notifSettingsGroupAppSections": "أقسام التطبيق",
+  "notifSettingsGroupNightAndWaking": "الليل واليقظة",
+  "notifSettingsGroupFasting": "الصيام",
+  "notifSettingsGroupRecurringAdhkar": "أذكار متكررة",
+  "notifSettingsGroupSystem": "النظام",
+  "notifSettingsMasterTitle": "كل إشعارات التطبيق",
+  "notifSettingsMasterOnSubtitle": "الإشعارات مفعّلة، وتستطيع ضبط كل نوع أدناه",
+  "notifSettingsMasterOffSubtitle": "كل الإشعارات موقوفة حتى تفعّل هذا المفتاح",
+  "notifSettingsSystemTitle": "إشعارات النظام",
+  "notifSettingsSystemSubtitle": "استعرض الإشعارات المجدولة والمفعّلة على جهازك",
+  "notifSettingsStatusStopped": "موقوف",
+  "@notifSettingsStatusStopped": {
+    "description": "Short status under a notification row."
+  },
+  "notifSettingsStatusEnabled": "مفعّل",
+  "notifSettingsSummaryDaily": "يومياً · {time}",
+  "@notifSettingsSummaryDaily": {
+    "description": "Schedule summary: every day at {time} (HH:mm).",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "07:30"
+      }
+    }
+  },
+  "notifSettingsSummaryHourly": "كل ساعة عند الدقيقة {minute}",
+  "@notifSettingsSummaryHourly": {
+    "description": "Schedule summary: every hour at minute {minute} past the hour.",
+    "placeholders": {
+      "minute": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsSummaryEveryNMinutes": "{count, plural, =1{كل دقيقة} =2{كل دقيقتين} few{كل {count} دقائق} many{كل {count} دقيقة} other{كل {count} دقيقة}}",
+  "@notifSettingsSummaryEveryNMinutes": {
+    "description": "Schedule summary: repeats every {count} minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsListSeparator": "، ",
+  "@notifSettingsListSeparator": {
+    "description": "Separator between items in a short list (e.g. weekday names). Arabic comma plus space; use ', ' for Latin-script languages."
+  },
+  "notifSettingsNoDaysSelected": "بدون أيام محددة",
+  "notifSettingsSummaryWeekly": "أسبوعياً ({days}) · {time}",
+  "@notifSettingsSummaryWeekly": {
+    "description": "Schedule summary: weekly on {days} at {time}.",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "الاثنين، الخميس"
+      },
+      "time": {
+        "type": "String",
+        "example": "20:30"
+      }
+    }
+  },
+  "notifSettingsSummaryCustom": "{count, plural, =0{جدولة مخصصة · بدون توقيت} =1{جدولة مخصصة · توقيت واحد} =2{جدولة مخصصة · توقيتان} few{جدولة مخصصة · {count} توقيتات} many{جدولة مخصصة · {count} توقيتًا} other{جدولة مخصصة · {count} توقيت}}",
+  "@notifSettingsSummaryCustom": {
+    "description": "Schedule summary: custom schedule with {count} specific dates/times.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifSettingsScheduleTimesTooltip": "مواعيد التنبيه",
+  "notifSettingsEditScheduleTitle": "تعديل الجدولة",
+  "notifSettingsEditScheduleSubtitle": "غيّر نوع التكرار ووقت التنبيه",
+  "notifSettingsExtraSchedulesTitle": "إدارة مواعيد إضافية",
+  "notifSettingsExtraSchedulesSubtitle": "أضف أكثر من موعد لهذا الإشعار",
+  "notifScheduleBodyAllAthan": "سيتكرر تنبيه جميع الأذان في أوقاتها المحددة.",
+  "@notifScheduleBodyAllAthan": {
+    "description": "Bodies of notifications scheduled from the per-notification schedules screen."
+  },
+  "notifScheduleBodyAthanFajr": "حان الآن وقت أذان الفجر، بادر بالصلاة.",
+  "notifScheduleBodyAthanDhuhr": "حان الآن وقت أذان الظهر.",
+  "notifScheduleBodyAthanAsr": "حان الآن وقت أذان العصر.",
+  "notifScheduleBodyAthanMaghrib": "حان الآن وقت أذان المغرب.",
+  "notifScheduleBodyAthanIsha": "حان الآن وقت أذان العشاء.",
+  "notifScheduleBodyMiddleNight": "حان وقت قيام الليل! قم وناجِ الرحمن.",
+  "notifScheduleBodyThikrMorning": "لا تنسَ أذكار الصباح!",
+  "notifScheduleBodyThikrEvening": "لا تنسَ أذكار المساء!",
+  "notifScheduleBodySalawat": "صَلِّ على النبي الكريم ﷺ، تُكتب لك عشرُ حسنات.",
+  "notifScheduleBodyReadQuran": "لا تنسَ وردك من القرآن اليوم.",
+  "notifScheduleBodyReadSurahMulk": "اقرأ سورة الملك قبل النوم.",
+  "notifScheduleBodyThikrSleep": "اقرأ أذكار النوم قبل أن تنام.",
+  "notifScheduleBodyThikrWakeUp": "ابدأ يومك بأذكار الاستيقاظ.",
+  "notifScheduleBodyReadSurah": "لا تنسَ قراءة السورة المحددة لهذا اليوم.",
+  "notifScheduleBodyReadSurahKahf": "اقرأ سورة الكهف يوم الجمعة.",
+  "notifScheduleBodyFasting": "صيام النوافل له أجر عظيم، لا تفوت الفرصة.",
+  "notifScheduleTitleRandomThikr": "مخصصة من أذكار عشوائية",
+  "@notifScheduleTitleRandomThikr": {
+    "description": "Notification title for custom-scheduled random dhikr reminders."
+  },
+  "notifScheduleValidateTime": "حدد وقت التنبيه أولاً",
+  "notifScheduleValidateMinute": "حدد الدقيقة من كل ساعة",
+  "notifScheduleValidateWeekday": "حدد يوماً واحداً على الأقل من الأسبوع",
+  "notifScheduleValidateInterval": "أدخل عدد الدقائق (أكبر من صفر)",
+  "notifScheduleValidateDate": "أضف تاريخاً واحداً على الأقل",
+  "notifScheduleDetails": "التفاصيل",
+  "notifScheduleMinuteOfHourTitle": "الدقيقة من كل ساعة",
+  "notifScheduleMinuteOfHourSubtitle": "رقم بين 0 و 59",
+  "notifScheduleMinuteUnit": "دقيقة",
+  "@notifScheduleMinuteUnit": {
+    "description": "Unit suffix shown after a number input field (minutes)."
+  },
+  "notifScheduleRepeatTitle": "التكرار",
+  "notifScheduleRepeatSubtitle": "المدة بين كل تنبيه والذي يليه",
+  "notifScheduleCustomTime": "موعد مخصص",
+  "notifScheduleDeleteTime": "حذف الموعد",
+  "notifScheduleNoTimesYet": "لم تضف أي موعد بعد",
+  "notifScheduleAddTime": "إضافة موعد",
+  "notifScheduleSaveSchedule": "حفظ الجدولة",
+  "notifScheduleAddNewTitle": "إضافة موعد جديد",
+  "notifScheduleEditTitle": "تعديل الموعد",
+  "notifScheduleOptionalLabel": "وصف اختياري",
+  "notifScheduleAddConfirm": "إضافة الموعد",
+  "notifScheduleSaveEdit": "حفظ التعديل",
+  "notifScheduleTypeDaily": "يومي",
+  "notifScheduleTypeHourly": "كل ساعة",
+  "notifScheduleTypeEveryNMinutes": "كل عدة دقائق",
+  "notifScheduleTypeWeekly": "أسبوعي",
+  "notifScheduleTypeCustomDates": "تواريخ مخصصة",
+  "notifScheduleTypeDailyDesc": "يتكرر كل يوم في الوقت نفسه",
+  "notifScheduleTypeHourlyDesc": "يتكرر كل ساعة عند دقيقة محددة",
+  "notifScheduleTypeEveryNMinutesDesc": "يتكرر كل فترة زمنية تحددها",
+  "notifScheduleTypeWeeklyDesc": "يتكرر في أيام محددة من الأسبوع",
+  "notifScheduleTypeCustomDatesDesc": "يظهر في تواريخ وأوقات تختارها",
+  "notifScheduleTypeTitle": "نوع الجدولة",
+  "notifScheduleTimeTitle": "وقت التنبيه",
+  "notifScheduleTimeSubtitle": "اضغط لاختيار الساعة والدقيقة",
+  "notifScheduleLabelHint": "أضف وصفاً قصيراً لهذا الموعد",
+  "notifScheduleRowDaily": "كل يوم · {time}",
+  "@notifScheduleRowDaily": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "07:30"
+      }
+    }
+  },
+  "notifScheduleRowWeekly": "{days} · {time}",
+  "@notifScheduleRowWeekly": {
+    "description": "Weekly schedule row: short day names then time.",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleNoDays": "بدون أيام",
+  "notifScheduleRowCustom": "{count, plural, =0{لا مواعيد مخصصة} =1{موعد مخصص واحد} =2{موعدان مخصصان} few{{count} مواعيد مخصصة} many{{count} موعدًا مخصصًا} other{{count} موعد مخصص}}",
+  "@notifScheduleRowCustom": {
+    "description": "Number of custom date/time entries in a schedule.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifScheduleDayShort1": "اثنين",
+  "@notifScheduleDayShort1": {
+    "description": "Short weekday names for small chips: 1=Monday … 7=Sunday."
+  },
+  "notifScheduleDayShort2": "ثلاثاء",
+  "notifScheduleDayShort3": "أربعاء",
+  "notifScheduleDayShort4": "خميس",
+  "notifScheduleDayShort5": "جمعة",
+  "notifScheduleDayShort6": "سبت",
+  "notifScheduleDayShort7": "أحد",
+  "notifScheduleAllDays": "كل الأيام",
+  "notifScheduleWorkDays": "أيام العمل",
+  "@notifScheduleWorkDays": {
+    "description": "Quick-select button: working days (currently Sunday–Thursday)."
+  },
+  "notifScheduleWeekend": "العطلة",
+  "@notifScheduleWeekend": {
+    "description": "Quick-select button: weekend days (currently Friday–Saturday)."
+  },
+  "notifScheduleClear": "مسح",
+  "notifScheduleStatTotal": "الإجمالي",
+  "notifScheduleStatEnabled": "مفعّل",
+  "notifScheduleStatStopped": "موقوف",
+  "notifScheduleUnexpectedError": "حدث خطأ غير متوقع",
+  "notifScheduleSaved": "تم الحفظ",
+  "notifScheduleScreenTitle": "مواعيد الإشعار",
+  "notifScheduleListTitle": "المواعيد",
+  "notifScheduleEmpty": "لا توجد مواعيد بعد — أضف موعداً من زر «إضافة موعد».",
+  "notifScheduleDeleteTitle": "حذف موعد",
+  "notifScheduleDeleteMessage": "هل أنت متأكد من حذف هذا الموعد؟\nسيتم إلغاء جميع الإشعارات المرتبطة به.",
+  "notifScheduleSaving": "جارٍ الحفظ...",
+  "notifScheduleLoading": "جارٍ تحميل المواعيد...",
+  "notifScheduleLoadFailed": "فشل في تحميل المواعيد: {error}",
+  "@notifScheduleLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleAdded": "تم إضافة الموعد بنجاح",
+  "notifScheduleAddFailed": "فشل في إضافة الموعد: {error}",
+  "@notifScheduleAddFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleUpdated": "تم تحديث الموعد بنجاح",
+  "notifScheduleUpdateFailed": "فشل في تحديث الموعد: {error}",
+  "@notifScheduleUpdateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleDeleted": "تم حذف الموعد بنجاح",
+  "notifScheduleDeleteFailed": "فشل في حذف الموعد: {error}",
+  "@notifScheduleDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifScheduleActivated": "تم تفعيل الموعد",
+  "notifScheduleDeactivated": "تم إلغاء تفعيل الموعد",
+  "notifScheduleToggleFailed": "فشل في تغيير حالة الموعد: {error}",
+  "@notifScheduleToggleFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "notifSettingsScheduledGroup": "مجدولة",
+  "notifSettingsNoScheduled": "لا توجد إشعارات مجدولة حالياً",
+  "notifSettingsShownNowGroup": "ظاهرة الآن",
+  "notifSettingsNoShown": "لا توجد إشعارات ظاهرة في شريط الإشعارات",
+  "notifSettingsUntitled": "إشعار بلا عنوان",
+  "notifSettingsDismiss": "إخفاء الإشعار",
+  "notifSettingsCancelNotification": "إلغاء الإشعار",
+  "notifSettingsAthanTicker": "حان الآن أذان {prayer}",
+  "@notifSettingsAthanTicker": {
+    "description": "Accessibility ticker text of an adhan notification.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadTitle": "التنزيلات",
+  "downloadEmptyAll": "لا توجد تنزيلات بعد، أضف تنزيلاً للبدء.",
+  "downloadEmptyActive": "لا توجد تنزيلات نشطة",
+  "downloadEmptyCompleted": "لا توجد تنزيلات مكتملة",
+  "downloadEmptyPaused": "لا توجد تنزيلات متوقّفة",
+  "downloadEmptyFailed": "لا توجد تنزيلات فاشلة",
+  "downloadCancelAll": "إلغاء الكل",
+  "downloadCancelAllConfirm": "هل أنت متأكد من إلغاء جميع التنزيلات النشطة؟",
+  "downloadAdd": "إضافة تنزيل",
+  "downloadFilterAll": "الكل",
+  "downloadStatusActive": "نشط",
+  "@downloadStatusActive": {
+    "description": "Download status names, used as filter tab labels and summary row labels."
+  },
+  "downloadStatusCompleted": "مكتمل",
+  "downloadStatusPaused": "متوقّف",
+  "downloadStatusFailed": "فشل",
+  "downloadStarted": "بدأ التحميل",
+  "downloadAddNewTitle": "إضافة تنزيل جديد",
+  "downloadUrlLabel": "رابط الملفّ",
+  "downloadUrlRequired": "الرجاء إدخال رابط التحميل",
+  "downloadUrlInvalid": "الرجاء إدخال رابط صحيح",
+  "downloadFileNameLabel": "اسم الملفّ",
+  "downloadOptional": "اختياري",
+  "downloadPublicStorageTitle": "التخزين العام",
+  "downloadPublicStorageSubtitle": "حفظ في مجلّد التنزيلات",
+  "downloadAllowCellularTitle": "السماح بالبيانات الخلوية",
+  "downloadAllowCellularSubtitle": "التحميل عبر بيانات الجوّال",
+  "downloadStart": "بدء التحميل",
+  "downloadPause": "إيقاف مؤقّت",
+  "downloadResume": "متابعة",
+  "@downloadResume": {
+    "description": "Action: resume a paused download."
+  },
+  "downloadOpenFile": "فتح الملفّ",
+  "downloadRemoveFromList": "حذف من القائمة",
+  "downloadDeleteFile": "حذف الملفّ",
+  "downloadTotal": "الإجمالي",
+  "downloadInProgressNow": "يجري تنزيله الآن",
+  "downloadAndMore": "{count, plural, =1{وتنزيل آخر} =2{وتنزيلان آخران} few{و{count} غيرها} many{و{count} غيرها} other{و{count} غيرها}}",
+  "@downloadAndMore": {
+    "description": "Shown after the first 3 running downloads: 'and {count} more'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetLabelNextPrayer": "الصلاة القادمة",
+  "@widgetLabelNextPrayer": {
+    "description": "Home-screen widget header above the next prayer's name. Very little space: keep it short."
+  },
+  "widgetLabelDailyAyah": "آية اليوم",
+  "@widgetLabelDailyAyah": {
+    "description": "Home-screen widget header: 'Verse of the day'. Keep it short."
+  },
+  "widgetLabelOpenApp": "افتح طمأنينة",
+  "@widgetLabelOpenApp": {
+    "description": "Home-screen widget placeholder when it has no data yet: 'Open Tamaneena' (the app name)."
+  },
+  "widgetLabelSetLocation": "حدّد موقعك في التطبيق",
+  "@widgetLabelSetLocation": {
+    "description": "Home-screen widget hint: the user has not chosen a location in the app yet, so prayer times can't be shown."
+  },
+  "widgetLabelRefreshNeeded": "لتحديث المواقيت",
+  "@widgetLabelRefreshNeeded": {
+    "description": "Second line under 'Open Tamaneena' on the home-screen widget: '…to refresh the prayer times' (the stored times ran out)."
+  },
+  "widgetLabelNextIn": "{prayer} بعد",
+  "@widgetLabelNextIn": {
+    "description": "Home-screen widget footer shown right before a live countdown timer (e.g. '01:23:45'). Reads as 'Asr in' + timer. Keep the timer at the position that is natural in your language: the widget always places the countdown AFTER this text.",
+    "placeholders": {
+      "prayer": {
+        "type": "String",
+        "example": "العصر"
+      }
+    }
+  },
+  "dailyWirdTitle": "زاد اليوم والليلة",
+  "@dailyWirdTitle": {
+    "description": "Title of the Daily Wird screen: the user's daily program of worship acts (adhkar, Quran reading, duas). 'Zad' = provision for the day and night."
+  },
+  "dailyWirdSettingsTooltip": "إعدادات الزاد",
+  "dailyWirdUnexpectedError": "حدث خطأ غير متوقع.",
+  "dailyWirdRemindersHeader": "التذكيرات",
+  "dailyWirdReminderSleepLabel": "أذكار النوم",
+  "@dailyWirdReminderSleepLabel": {
+    "description": "Label of the bedtime adhkar reminder switch in Daily Wird settings."
+  },
+  "dailyWirdProgramHeader": "البرنامج",
+  "@dailyWirdProgramHeader": {
+    "description": "Section header in Daily Wird settings above the list of ready-made programs (presets)."
+  },
+  "dailyWirdSaveSetup": "حفظ التهيئة",
+  "@dailyWirdSaveSetup": {
+    "description": "Button that saves the Daily Wird settings (reminders + chosen program)."
+  },
+  "dailyWirdSetupFailed": "تعذر إعداد الزاد التعبدي.",
+  "dailyWirdItemNotFound": "تعذر العثور على عنصر الزاد التعبدي.",
+  "dailyWirdTodayTasksHeader": "أعمال اليوم",
+  "@dailyWirdTodayTasksHeader": {
+    "description": "Section header above today's list of worship acts in Daily Wird."
+  },
+  "dailyWirdStreakDays": "{count, plural, =0{المداومة 0 يوم} =1{المداومة يوم واحد} =2{المداومة يومان} few{المداومة {count} أيام} many{المداومة {count} يومًا} other{المداومة {count} يوم}}",
+  "@dailyWirdStreakDays": {
+    "description": "Streak: number of consecutive days the user kept up the daily program.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyWirdWeeklyAdherence": "مواظبة الأسبوع {percent}%",
+  "@dailyWirdWeeklyAdherence": {
+    "description": "Percentage of the daily program completed over the last week.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyWirdChoosePresetTitle": "اختر زادك التعبدي",
+  "dailyWirdChoosePresetSubtitle": "ابدأ ببرنامج جاهز ثم خصّصه كما يناسبك",
+  "dailyWirdItemOptions": "خيارات العمل",
+  "@dailyWirdItemOptions": {
+    "description": "Tooltip of the overflow menu on one worship act in the Daily Wird list."
+  },
+  "dailyWirdEditTargetCount": "تعديل العدد المقصود",
+  "@dailyWirdEditTargetCount": {
+    "description": "Menu item / sheet title: change how many times a counted dhikr should be repeated."
+  },
+  "dailyWirdStartOver": "البدء من جديد",
+  "@dailyWirdStartOver": {
+    "description": "Reset the progress of one worship act to zero."
+  },
+  "dailyWirdMoveUp": "تقديم في الترتيب",
+  "dailyWirdMoveDown": "تأخير في الترتيب",
+  "dailyWirdHideItem": "إخفاء من الزاد",
+  "dailyWirdCountHint": "مثال: ٥٠ مرة",
+  "@dailyWirdCountHint": {
+    "description": "Hint in the number field for the target repeat count. Use the target language's digits/wording, e.g. 'e.g. 50 times'."
+  },
+  "dailyWirdTimeMorning": "صباح",
+  "@dailyWirdTimeMorning": {
+    "description": "Short time-of-day tags shown next to a worship act (morning / evening / night / any time)."
+  },
+  "dailyWirdTimeEvening": "مساء",
+  "dailyWirdTimeNight": "ليل",
+  "dailyWirdTimeAny": "أي وقت",
+  "dailyWirdTimeMorningLong": "وقت الصباح",
+  "@dailyWirdTimeMorningLong": {
+    "description": "Longer time-of-day labels on the single worship act screen (morning time / evening time / before sleep / any time)."
+  },
+  "dailyWirdTimeEveningLong": "وقت المساء",
+  "dailyWirdTimeNightLong": "قبل النوم",
+  "dailyWirdTimeAnyLong": "في أي وقت",
+  "dailyWirdTypeDhikrSet": "أذكار",
+  "@dailyWirdTypeDhikrSet": {
+    "description": "Type tags of a worship act: set of adhkar / counted dhikr / Quran portion / dua (supplication) / surah."
+  },
+  "dailyWirdTypeCountedDhikr": "ذكر بعدد",
+  "dailyWirdTypeQuran": "ورد قرآن",
+  "dailyWirdTypeDua": "دعاء",
+  "dailyWirdTypeSurah": "سورة",
+  "dailyWirdCountProgress": "{done} من {total}",
+  "@dailyWirdCountProgress": {
+    "description": "Progress on a counted dhikr button, e.g. '12 of 33'.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyWirdCompletedOf": "أتممت {done} من {total}{unit}",
+  "@dailyWirdCompletedOf": {
+    "description": "Counter on the single worship act screen, e.g. 'You completed 12 of 33 times'. {unit} is an optional unit from the content data (Arabic), already prefixed with a space, or empty.",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyWirdItemDone": "أُنجز",
+  "@dailyWirdItemDone": {
+    "description": "State label of a worship act that has been completed today."
+  },
+  "dailyWirdMarkComplete": "إتمام",
+  "@dailyWirdMarkComplete": {
+    "description": "Short button: mark a worship act as done."
+  },
+  "dailyWirdCountOnce": "احتساب مرّة",
+  "@dailyWirdCountOnce": {
+    "description": "Button that adds one repetition to a counted dhikr."
+  },
+  "dailyWirdCompleteThis": "إتمام هذا العمل",
+  "dailyWirdUncomplete": "إلغاء الإتمام",
+  "dailyWirdReminderMorningTitle": "زاد الصباح",
+  "@dailyWirdReminderMorningTitle": {
+    "description": "Daily Wird notification titles/bodies (morning, evening, before sleep, end-of-day self-review). The summary title is also the label of its reminder switch."
+  },
+  "dailyWirdReminderMorningBody": "ابدأ نهارك بذكر الله وتلاوة كتابه والدعاء.",
+  "dailyWirdReminderEveningTitle": "زاد المساء",
+  "dailyWirdReminderEveningBody": "جدد صلتك بالله، وأتم ما تيسر من زاد المساء.",
+  "dailyWirdReminderNightTitle": "زاد ما قبل النوم",
+  "dailyWirdReminderNightBody": "اختم يومك بالذكر والدعاء وما بقي من زادك التعبدي.",
+  "dailyWirdReminderSummaryTitle": "محاسبة آخر اليوم",
+  "dailyWirdReminderSummaryBody": "راجع زادك التعبدي اليوم، وانظر ما أتممت منه.",
+  "wirdMorningAdhkar": "أذكار الصباح",
+  "@wirdMorningAdhkar": {
+    "description": "Names of the morning / evening adhkar collections (remembrances of Allah said after Fajr and after Asr)."
+  },
+  "wirdEveningAdhkar": "أذكار المساء",
+  "wirdMorningTitle": "الورد الصباحي",
+  "wirdEveningTitle": "الورد المسائي",
+  "wirdSearchHint": "بحث عن ذكر",
+  "wirdPagerPosition": "الذكر {current} من {total}",
+  "@wirdPagerPosition": {
+    "description": "Position in single-dhikr view, e.g. 'Dhikr 3 of 24'.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "wirdPrevious": "السابق",
+  "wirdNext": "التالي",
+  "wirdShowSingle": "عرض ذكرًا واحدًا",
+  "@wirdShowSingle": {
+    "description": "Tooltips of the view-mode toggle: show one dhikr at a time / show all as a list."
+  },
+  "wirdShowList": "عرض الأذكار قائمةً",
+  "wirdTypeMorningOnly": "صباح فقط",
+  "wirdTypeEveningOnly": "مساء فقط",
+  "wirdTypeBoth": "صباح ومساء",
+  "wirdNoAudio": "لا يوجد ملف صوتي",
+  "wirdPause": "إيقاف مؤقت",
+  "wirdReplay": "إعادة التشغيل",
+  "wirdPlayAudio": "تشغيل الصوت",
+  "wirdRemaining": "بقي {remaining} من {total}",
+  "@wirdRemaining": {
+    "description": "Repetitions left for a dhikr, e.g. '2 left of 3'.",
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "wirdCompleted": "أتممتها",
+  "@wirdCompleted": {
+    "description": "Shown when the user finished all repetitions of a dhikr."
+  },
+  "wirdResetCount": "إعادة العدّ",
+  "wirdCopyDhikr": "نسخ الذكر",
+  "wirdSource": "المصدر",
+  "wirdShowDetails": "عرض التفاصيل",
+  "wirdHideDetails": "إخفاء التفاصيل",
+  "wirdVirtue": "الفضل",
+  "@wirdVirtue": {
+    "description": "Heading: the virtue/reward of saying this dhikr (fadl)."
+  },
+  "wirdHadithText": "نص الحديث",
+  "wirdWordExplanations": "شرح مفردات مختارة",
+  "wirdReadOnce": "قرأت مرة",
+  "@wirdReadOnce": {
+    "description": "Counter button: 'I read it once' — decreases the remaining repetitions by one."
+  },
+  "wirdPlayAll": "تشغيل الورد كاملًا",
+  "wirdPreparingAudio": "تهيئة الصوت",
+  "wirdReplayAll": "إعادة تشغيل الورد",
+  "wirdPlayAllFinished": "تم الانتهاء من تشغيل جميع الأذكار.",
+  "wirdNowPlaying": "يُتلى الآن",
+  "@wirdNowPlaying": {
+    "description": "Label above the dhikr currently being recited in audio playback."
+  },
+  "wirdRepeatProgress": "التكرار {current} من {total}",
+  "@wirdRepeatProgress": {
+    "description": "Audio playback: which repetition of the current dhikr is playing, e.g. 'Repeat 2 of 3'.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "thikrLibraryTitle": "مكتبة الأذكار",
+  "thikrGroupDaily": "أذكار يومك",
+  "thikrMorningSubtitle": "وردك بعد الفجر إلى ارتفاع النهار",
+  "thikrEveningSubtitle": "وردك بعد العصر إلى الليل",
+  "thikrSleepTitle": "أذكار النوم والأحلام",
+  "thikrSleepSubtitle": "ما تقوله قبل النوم وعند الفزع منه",
+  "thikrPrayerJumuahTitle": "أذكار الصلاة والجمعة",
+  "thikrPrayerJumuahSubtitle": "أذكار الأذان ودبر الصلاة ويوم الجمعة",
+  "thikrGroupDuas": "أدعية مأثورة",
+  "@thikrGroupDuas": {
+    "description": "Group header: supplications transmitted from the Quran and Sunnah."
+  },
+  "thikrQuranicDuasTitle": "الأدعية القرآنية",
+  "thikrQuranicDuasSubtitle": "دعاء الأنبياء كما جاء في كتاب الله",
+  "thikrComprehensiveDuasTitle": "أدعية جامعة",
+  "thikrComprehensiveDuasSubtitle": "دعوات تجمع خير الدنيا والآخرة",
+  "thikrHajjTitle": "أدعية الحج والعمرة",
+  "thikrHajjSubtitle": "دعاء الإحرام والطواف والسعي والمشاعر",
+  "thikrFuneralTitle": "أدعية للميت والجنازة",
+  "thikrFuneralSubtitle": "ما يُقال في الصلاة على الميت وعند القبر",
+  "thikrGroupTools": "أدواتك",
+  "thikrTasbeehTitle": "التسبيح",
+  "thikrTasbeehSubtitle": "عدّاد يحصي تسبيحك ويحفظ حصيلة يومك",
+  "thikrMyDuasSubtitle": "أدعيتك التي أضفتها بنفسك في مكان واحد",
+  "thikrSliderSubtitle": "وردُ هذا الوقت، افتحه الآن",
+  "@thikrSliderSubtitle": {
+    "description": "Subtitle on the highlighted card that opens the morning or evening adhkar depending on the current time."
+  },
+  "afterPrayerTitle": "أذكار بعد الصلاة",
+  "afterPrayerSubtitle": "أذكار ما بعد الصلاة",
+  "afterPrayerSearchHint": "بحث عن أذكار",
+  "afterPrayerFallbackTitle": "ذكر بعد الصلاة {number}",
+  "@afterPrayerFallbackTitle": {
+    "description": "Fallback title of an after-prayer dhikr whose text is empty.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "afterPrayerRepeatCountLine": "عدد التكرار: {count}",
+  "@afterPrayerRepeatCountLine": {
+    "description": "Line in the shared/copied text of a dhikr.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "afterPrayerVirtueLine": "الفضل: {virtue}",
+  "@afterPrayerVirtueLine": {
+    "description": "Line in the shared/copied text. {virtue} is Arabic religious text from the content data.",
+    "placeholders": {
+      "virtue": {
+        "type": "String"
+      }
+    }
+  },
+  "afterPrayerRepeatLabel": "التكرار",
+  "afterPrayerVirtueLabel": "الفضل",
+  "afterPrayerMentioned": "مذكور",
+  "@afterPrayerMentioned": {
+    "description": "Value of the 'Virtue' badge: whether a virtue is stated for this dhikr (stated / not stated)."
+  },
+  "afterPrayerNotMentioned": "غير مذكور",
+  "afterPrayerTextSection": "نص الذكر",
+  "afterPrayerVirtueSection": "فضل الذكر",
+  "afterPrayerRepeatTimes": "{count, plural, =1{مرة} =2{مرتان} few{{count} مرات} many{{count} مرة} other{{count} مرة}}",
+  "@afterPrayerRepeatTimes": {
+    "description": "How many times to repeat a dhikr, e.g. 'once', '3 times'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "afterPrayerNoResults": "لا توجد نتائج مطابقة",
+  "afterPrayerShowAll": "عرض الأذكار كلها",
+  "myDuasTitle": "أدعيتي",
+  "@myDuasTitle": {
+    "description": "'My duas': supplications the user wrote and added themselves."
+  },
+  "myDuasActionFailed": "تعذر تنفيذ العملية.",
+  "myDuasEmptyCustomTitle": "لا توجد أدعية مضافة",
+  "myDuasEmptyCustomMessage": "هذا القسم يعرض الأدعية التي أضفتها أنت فقط.",
+  "myDuasEmptyTitle": "لا توجد أدعية بعد",
+  "myDuasEmptyMessage": "أضف دعاءك الأول وسيظهر هنا مباشرة.",
+  "myDuasAddNew": "إضافة دعاء جديد",
+  "myDuasAdd": "إضافة دعاء",
+  "myDuasAddSubtitle": "اكتب الدعاء ليظهر ضمن أدعيتك الخاصة.",
+  "myDuasEditTitle": "تعديل الدعاء",
+  "myDuasEditSubtitle": "يمكنك تعديل النص أو الوصف وحفظ التغييرات مباشرة.",
+  "myDuasCountLabel": "عدد الأدعية",
+  "myDuasTodayLabel": "ترديد اليوم",
+  "@myDuasTodayLabel": {
+    "description": "Total number of times the user repeated their duas today."
+  },
+  "myDuasOptions": "خيارات الدعاء",
+  "myDuasResetToday": "تصفير عداد اليوم",
+  "ruqyahTitle": "الرقية الشرعية",
+  "@ruqyahTitle": {
+    "description": "Ruqyah: Quranic verses and prophetic supplications recited for healing and protection."
+  },
+  "ruqyahSearchHint": "بحث عن رقية",
+  "ruqyahDefaultReference": "القرآن الكريم",
+  "@ruqyahDefaultReference": {
+    "description": "Source shown when a ruqyah item has no reference: 'The Holy Quran'."
+  },
+  "ruqyahUnspecified": "غير محدد",
+  "ruqyahRepeatLine": "التكرار: {count}",
+  "@ruqyahRepeatLine": {
+    "description": "Repeat count of a ruqyah item. {count} comes from the content data (may be a word or a number).",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "ruqyahReferenceLine": "المرجع: {reference}",
+  "@ruqyahReferenceLine": {
+    "description": "Line in the shared text. {reference} is the source (Arabic content).",
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "ruqyahDescriptionLine": "الوصف: {description}",
+  "@ruqyahDescriptionLine": {
+    "description": "Line in the shared text. {description} is Arabic content.",
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "ruqyahNumber": "الرقية {number}",
+  "@ruqyahNumber": {
+    "description": "Ordinal label of a ruqyah item, e.g. 'Ruqyah 3'.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "ruqyahTextSection": "نص الرقية",
+  "ruqyahDescriptionSection": "الوصف",
+  "ruqyahNoResultsTitle": "لا توجد نتائج",
+  "ruqyahNoResultsMessage": "لم نجد رقية تطابق بحثك.",
+  "ruqyahShowAll": "عرض الرقى كلها",
+  "radioTitle": "الإذاعة",
+  "@radioTitle": {
+    "description": "Title of the Islamic radio screen (live Quran recitation stations)."
+  },
+  "radioKindReciters": "قرّاء",
+  "@radioKindReciters": {
+    "description": "Station groups: Quran reciters / programs and recitations."
+  },
+  "radioKindPrograms": "برامج وتلاوات",
+  "radioLoadFailed": "تعذّر تحميل الإذاعات حاليًا.",
+  "radioPlayFailed": "تعذّر تشغيل الإذاعة الآن.",
+  "radioToggleFailed": "تعذّر تغيير حالة التشغيل.",
+  "radioStopFailed": "تعذّر إيقاف الإذاعة.",
+  "radioNoMatch": "لا توجد محطة بهذا الاسم.",
+  "radioSearchHint": "ابحث عن قارئ أو برنامج",
+  "radioFavouritesHint": "اضغط مطوّلًا على أي محطة لإضافتها إلى المفضّلة.",
+  "radioAddFavourite": "إضافة إلى المفضّلة",
+  "radioRemoveFavourite": "إزالة من المفضّلة",
+  "radioAddedToFavourites": "أُضيفت {station} إلى المفضّلة",
+  "@radioAddedToFavourites": {
+    "description": "Snackbar after long-press. {station} is the station name (from the server, usually Arabic).",
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "radioRemovedFromFavourites": "أُزيلت {station} من المفضّلة",
+  "@radioRemovedFromFavourites": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "radioSleepTimer": "مؤقّت النوم",
+  "radioSleepTimerDescription": "يتوقّف البثّ وحده بعد المدّة المختارة.",
+  "radioStopsIn": "يتوقّف بعد {time}",
+  "@radioStopsIn": {
+    "description": "Sleep timer countdown. {time} is mm:ss.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "radioCancelTimer": "إلغاء المؤقّت",
+  "radioMinutes": "{count, plural, =1{دقيقة واحدة} =2{دقيقتان} few{{count} دقائق} many{{count} دقيقة} other{{count} دقيقة}}",
+  "@radioMinutes": {
+    "description": "Sleep timer duration option in minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "radioStopBroadcast": "إيقاف البثّ",
+  "@radioStopBroadcast": {
+    "description": "Stops the stream completely (different from pause)."
+  },
+  "radioTuning": "جارٍ الالتقاط…",
+  "@radioTuning": {
+    "description": "Status while the station stream is connecting/buffering ('tuning in…')."
+  },
+  "radioLive": "بثّ مباشر",
+  "radioPaused": "متوقّف مؤقّتًا",
+  "radioTapToPlay": "اضغط للتشغيل",
+  "radioPause": "إيقاف مؤقّت",
+  "radioPlay": "تشغيل"
+}

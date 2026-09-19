@@ -7,6 +7,7 @@ import 'package:quran_app/core/notification/notification_service.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
 import 'package:quran_app/features/floating_adhkar/data/repo/floating_adhkar_repository.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class FloatingAdhkarIosReminderService {
@@ -62,12 +63,13 @@ class FloatingAdhkarIosReminderService {
 
     final details = await _notificationService.buildNotificationDetails(
       NotificationChannel.randomThikr,
-      iosSubtitle: 'الأذكار العشوائية',
+      iosSubtitle: L10nService.current.floatingAdhkarIosNotificationSubtitle,
       iosThreadIdentifier: 'floating_adhkar_ios_reminders',
       iosCategoryIdentifier: 'islamic_notifications',
       iosInterruptionLevel: InterruptionLevel.active,
     );
 
+    final randomTitle = L10nService.current.floatingAdhkarRandomDhikrTitle;
     final interval = Duration(minutes: settings.intervalMinutes.clamp(1, 1440));
     var scheduledAt = tz.TZDateTime.now(tz.local).add(interval);
 
@@ -75,7 +77,7 @@ class FloatingAdhkarIosReminderService {
       final item = selectable[i % selectable.length];
       await _notificationService.plugin.zonedSchedule(
         _baseNotificationId + i,
-        item.title.trim().isEmpty ? 'ذكر عشوائي' : item.title.trim(),
+        item.title.trim().isEmpty ? randomTitle : item.title.trim(),
         item.text.trim(),
         scheduledAt,
         details,
@@ -107,7 +109,9 @@ class FloatingAdhkarIosReminderService {
 
     await _notificationService.showNotificationWithId(
       id: _baseNotificationId + _maxPendingReminders,
-      title: item.title.trim().isEmpty ? 'ذكر عشوائي' : item.title.trim(),
+      title: item.title.trim().isEmpty
+          ? L10nService.current.floatingAdhkarRandomDhikrTitle
+          : item.title.trim(),
       body: item.text.trim(),
       channel: NotificationChannel.randomThikr,
       payload: 'floating_adhkar_ios:${item.id}',

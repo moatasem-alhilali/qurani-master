@@ -6,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// «تشغيل الكل»: صفّ نحيل بأيقونة في مربّع صغير، لا زرّ مملوء.
 class WirdPlayAllButton extends StatelessWidget {
@@ -32,17 +33,17 @@ class WirdPlayAllButton extends StatelessWidget {
             state.processingState == ProcessingState.buffering;
 
         var icon = AppIcons.play;
-        var label = 'تشغيل الورد كاملًا';
+        var label = context.l10n.wirdPlayAll;
 
         if (isBuffering) {
-          label = 'تهيئة الصوت';
+          label = context.l10n.wirdPreparingAudio;
         } else if (state.isQueueRepeated && state.isPlaying) {
           icon = AppIcons.pause;
-          label = 'إيقاف مؤقت';
+          label = context.l10n.wirdPause;
         } else if (state.isQueueRepeated &&
             state.processingState == ProcessingState.completed) {
           icon = AppIcons.replay;
-          label = 'إعادة تشغيل الورد';
+          label = context.l10n.wirdReplayAll;
         }
 
         return InkWell(

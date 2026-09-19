@@ -5,6 +5,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/radio/data/service/radio_sleep_timer.dart';
 import 'package:quran_app/features/radio/presentation/view/widgets/radio_sleep_timer_sheet.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شارة مؤقّت النوم: هلال حين لا مؤقّت، وعدّاد تنازلي حين يعمل.
 ///
@@ -26,7 +27,7 @@ class RadioSleepChip extends StatelessWidget {
 
         return Semantics(
           button: true,
-          label: 'مؤقّت النوم',
+          label: context.l10n.radioSleepTimer,
           child: InkWell(
             onTap: () {
               HapticFeedback.selectionClick();

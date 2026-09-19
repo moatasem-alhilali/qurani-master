@@ -33,7 +33,8 @@ struct DailyAyahView: View {
         let verse = entry.payload?.verse(for: entry.date) ?? Self.fallback
 
         return VStack(alignment: .leading, spacing: 6) {
-            Text("آية اليوم")
+            // الآية عربية دائمًا فيبقى الاتّجاه من اليمين؛ العنوان وحده بلغة التطبيق.
+            Text(entry.payload?.label("dailyAyah", "آية اليوم") ?? "آية اليوم")
                 .font(.caption.weight(.bold))
                 .foregroundColor(palette.accent)
 

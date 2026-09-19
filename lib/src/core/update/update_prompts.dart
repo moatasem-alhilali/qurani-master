@@ -1,6 +1,7 @@
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:quran_app/core/util/url_launcher_utils.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// Shows the "update available" dialog using [AdaptiveAlertDialog], so it
 /// renders a native Cupertino alert on iPhone (iOS 26+ uses the native iOS 26
@@ -20,26 +21,26 @@ Future<void> showIosUpdateDialog(
   String? releaseNotes,
   VoidCallback? onLater,
 }) {
-  final message =
-      StringBuffer('الإصدار $storeVersion متاح الآن على App Store.');
+  final l10n = context.l10n;
+  final message = StringBuffer(l10n.coreUpdateAvailableMessage(storeVersion));
   if (releaseNotes != null && releaseNotes.isNotEmpty) {
-    message.write('\n\nالجديد في هذا الإصدار:\n$releaseNotes');
+    message.write('\n\n${l10n.coreUpdateWhatsNew}\n$releaseNotes');
   }
 
   return AdaptiveAlertDialog.show(
     context: context,
-    title: 'يتوفر تحديث جديد',
+    title: l10n.coreUpdateAvailableTitle,
     message: message.toString(),
     icon: Icons.system_update_alt_rounded,
     iconSize: 40,
     actions: [
       AlertAction(
-        title: 'لاحقاً',
+        title: l10n.commonLater,
         style: AlertActionStyle.cancel,
         onPressed: () => onLater?.call(),
       ),
       AlertAction(
-        title: 'تحديث الآن',
+        title: l10n.coreUpdateNow,
         style: AlertActionStyle.primary,
         onPressed: () {
           if (storeUrl != null && storeUrl.isNotEmpty) {

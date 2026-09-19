@@ -59,7 +59,7 @@ class HomeSectionHeader extends StatelessWidget {
                       ),
                     ),
                     AppIcon(
-                      AppIcons.chevronLeft,
+                      AppIcons.forwardFor(context),
                       color: skin.accent,
                       size: 13.sp,
                     ),

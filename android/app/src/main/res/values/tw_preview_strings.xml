@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample text shown only in the widget picker preview (previewLayout). -->
+<resources>
+    <string name="tw_preview_city">منطقة الرياض</string>
+    <string name="tw_preview_hijri_date">٤ ربيع الآخر ١٤٤٨ هـ</string>
+    <string name="tw_preview_fajr">الفجر</string>
+    <string name="tw_preview_sunrise">الشروق</string>
+    <string name="tw_preview_dhuhr">الظهر</string>
+    <string name="tw_preview_asr">العصر</string>
+    <string name="tw_preview_maghrib">المغرب</string>
+    <string name="tw_preview_isha">العشاء</string>
+    <string name="tw_preview_time_fajr">4:25 ص</string>
+    <string name="tw_preview_time_sunrise">5:43 ص</string>
+    <string name="tw_preview_time_dhuhr">11:48 ص</string>
+    <string name="tw_preview_time_asr">3:15 م</string>
+    <string name="tw_preview_time_maghrib">6:10 م</string>
+    <string name="tw_preview_time_isha">7:40 م</string>
+    <string name="tw_preview_next_in">العصر بعد</string>
+</resources>

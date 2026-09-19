@@ -13,6 +13,7 @@ import 'package:quran_app/features/allh_name/data/models/allah_name_model.dart';
 import 'package:quran_app/features/allh_name/presentation/bloc/allah_names_bloc.dart';
 import 'package:quran_app/features/thikr/presentation/view/widgets/library_screen_kit.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أسماء الله الحسنى.
 ///
@@ -49,14 +50,14 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
       showLibraryDetailSheet(
         context,
         title: item.name,
-        subtitle: 'الاسم ${index + 1} من أسماء الله الحسنى',
+        subtitle: context.l10n.allahNamesNameOrder(index + 1),
         shareText: shareContent,
-        shareSubject: 'أسماء الله الحسنى',
+        shareSubject: context.l10n.allahNamesTitle,
         titleSize: 26,
         titleFontFamily: FontFamily.scheherazade,
         sections: [
           LibraryDetailSection(
-            title: 'المعنى',
+            title: context.l10n.allahNamesMeaning,
             content: item.text,
             scripture: false,
           ),
@@ -71,7 +72,7 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
       create: (context) => AllahNamesBloc()..add(LoadAllahNamesEvent()),
       child: GroundScaffoldTheme(
         child: AppScaffoldWidget(
-          title: 'أسماء الله الحسنى',
+          title: context.l10n.allahNamesTitle,
           trailing: BlocBuilder<AllahNamesBloc, AllahNamesState>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<AllahNameModel>(
@@ -89,7 +90,7 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
                   final index = list.indexOf(item);
                   _showDetails(context, item, index < 0 ? 0 : index);
                 },
-                hintText: 'بحث عن أسماء الله الحسنى',
+                hintText: context.l10n.allahNamesSearchHint,
                 suggestionBuilder: (context, item) =>
                     UnifiedLibrarySearchSuggestion(
                   title: item.name,
@@ -109,9 +110,9 @@ class _AllhNameScreenState extends State<AllhNameScreen> {
                       return SliverFillRemaining(
                         hasScrollBody: false,
                         child: LibraryEmptyState(
-                          title: 'لا توجد نتائج',
-                          message: 'لم نجد اسمًا يطابق بحثك.',
-                          actionLabel: 'عرض الأسماء كلها',
+                          title: context.l10n.allahNamesNoResultsTitle,
+                          message: context.l10n.allahNamesNoResultsMessage,
+                          actionLabel: context.l10n.allahNamesShowAll,
                           onAction: () => setState(() => _query = ''),
                         ),
                       );

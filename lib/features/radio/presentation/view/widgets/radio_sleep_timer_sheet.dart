@@ -5,6 +5,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/radio/data/service/radio_sleep_timer.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ورقة مؤقّت النوم.
 ///
@@ -62,7 +63,7 @@ class _SleepTimerSheet extends StatelessWidget {
                 AppIcon(AppIcons.moon, color: skin.accent, size: 16.sp),
                 SizedBox(width: 8.w),
                 Text(
-                  'مؤقّت النوم',
+                  context.l10n.radioSleepTimer,
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 13.sp,
@@ -74,7 +75,7 @@ class _SleepTimerSheet extends StatelessWidget {
             ),
             SizedBox(height: 4.h),
             Text(
-              'يتوقّف البثّ وحده بعد المدّة المختارة.',
+              context.l10n.radioSleepTimerDescription,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.78),
                 fontSize: 9.5.sp,
@@ -116,7 +117,9 @@ class _SleepTimerSheet extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              'يتوقّف بعد ${RadioSleepTimer.format(remaining)}',
+                              context.l10n.radioStopsIn(
+                                RadioSleepTimer.format(remaining),
+                              ),
                               style: TextStyle(
                                 color: skin.ink,
                                 fontSize: 12.sp,
@@ -132,7 +135,7 @@ class _SleepTimerSheet extends StatelessWidget {
                               Navigator.of(context).pop();
                             },
                             child: Text(
-                              'إلغاء المؤقّت',
+                              context.l10n.radioCancelTimer,
                               style: TextStyle(
                                 color: skin.accent,
                                 fontSize: 11.sp,
@@ -188,7 +191,7 @@ class _MinuteChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(999.r),
         ),
         child: Text(
-          '$minutes دقيقة',
+          context.l10n.radioMinutes(minutes),
           style: TextStyle(
             color: isActive
                 ? (skin.isDark ? AppColors.brandNight : AppColors.brandIvory)

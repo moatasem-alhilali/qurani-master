@@ -10,6 +10,7 @@ import 'package:quran_app/features/wird/data/models/wird_model.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_collection_view.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_search_suggestion.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class WirdScreen extends StatelessWidget {
   const WirdScreen({required this.isMorning, super.key})
@@ -56,8 +57,10 @@ class WirdScreen extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title:
-              titleOverride ?? (isMorning ? 'الورد الصباحي' : 'الورد المسائي'),
+          title: titleOverride ??
+              (isMorning
+                  ? context.l10n.wirdMorningTitle
+                  : context.l10n.wirdEveningTitle),
           trailing: BlocBuilder<WirdBloc, WirdState>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<WirdModel>(
@@ -71,7 +74,7 @@ class WirdScreen extends StatelessWidget {
                 onSelected: (item) async {
                   await CopyService.copyToClipboard(item.text);
                 },
-                hintText: 'بحث عن ذكر',
+                hintText: context.l10n.wirdSearchHint,
                 suggestionBuilder: (context, item) =>
                     WirdSearchSuggestion(item: item),
               );

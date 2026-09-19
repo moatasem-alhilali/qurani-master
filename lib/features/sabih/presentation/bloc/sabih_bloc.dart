@@ -8,6 +8,7 @@ import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/remote/sabih_repository_imp.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 part 'sabih_event.dart';
@@ -47,7 +48,8 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: failure.message ?? 'تعذر تحديث قائمة الأذكار.',
+          errorMessage:
+              failure.message ?? L10nService.current.sabihErrorRefreshList,
         ),
       );
       return;
@@ -112,7 +114,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
       emit(
         state.copyWith(
           loadState: RequestState.error,
-          errorMessage: failure.message ?? 'تعذر تحميل الأذكار.',
+          errorMessage: failure.message ?? L10nService.current.sabihErrorLoad,
         ),
       );
       return;
@@ -169,7 +171,7 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
         state.copyWith(
           countsMap: previousCounts,
           actionState: RequestState.error,
-          errorMessage: failure.message ?? 'تعذر تسجيل الذكر.',
+          errorMessage: failure.message ?? L10nService.current.sabihErrorRecord,
         ),
       );
       return;
@@ -287,7 +289,8 @@ class SabihBloc extends Bloc<SabihEvent, SabihState> {
       emit(
         state.copyWith(
           actionState: RequestState.error,
-          errorMessage: failure.message ?? 'تعذر تصفير عداد اليوم.',
+          errorMessage:
+              failure.message ?? L10nService.current.sabihErrorResetToday,
         ),
       );
       return;

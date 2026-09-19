@@ -4,6 +4,19 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
+
+/// سهم الرجوع: يشير إلى بداية السطر بحسب اتجاه لغة الواجهة.
+HugeIconData travelerBackIcon(BuildContext context) =>
+    Directionality.of(context) == TextDirection.rtl
+        ? AppIcons.backRight
+        : AppIcons.back;
+
+/// سهم «التالي» في صفّ قابل للنقر: يشير إلى نهاية السطر.
+HugeIconData travelerForwardChevron(BuildContext context) =>
+    Directionality.of(context) == TextDirection.rtl
+        ? AppIcons.chevronLeft
+        : AppIcons.chevronRight;
 
 /// هيكل شاشات المسافر: أرضية واحدة ورأس نحيل يفصله خطّ شعرة.
 ///
@@ -59,8 +72,8 @@ class TravelerHeader extends StatelessWidget {
       child: Row(
         children: [
           TravelerIconAction(
-            icon: AppIcons.backRight,
-            tooltip: 'رجوع',
+            icon: travelerBackIcon(context),
+            tooltip: context.l10n.commonBack,
             onTap: context.pop,
           ),
           SizedBox(width: 4.w),
@@ -221,7 +234,11 @@ class TravelerListRow extends StatelessWidget {
             ),
             SizedBox(width: 6.w),
             trailing ??
-                AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+                AppIcon(
+                  travelerForwardChevron(context),
+                  color: skin.accent,
+                  size: 15.sp,
+                ),
           ],
         ),
       ),

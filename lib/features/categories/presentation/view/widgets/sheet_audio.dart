@@ -12,6 +12,7 @@ import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.
 import 'package:quran_app/features/audios/presentation/bloc/base_audio_bloc.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// يفتح ورقة المواد الصوتية بلغة الشاشة نفسها: أرضية واحدة وصفوف نحيلة.
 Future<void> showCategoryAudiosSheet(
@@ -70,8 +71,10 @@ class SheetAudios extends StatelessWidget {
               RequestState.initial || RequestState.loading => const [
                   CategoryThinLoader(),
                 ],
-              RequestState.error => const [
-                  CategoryNotice(message: 'تعذر تحميل المواد الصوتية.'),
+              RequestState.error => [
+                  CategoryNotice(
+                    message: context.l10n.categoriesAudioLoadError,
+                  ),
                 ],
               RequestState.success => [
                   for (var i = 0; i < state.baseAudioDetail.length; i++)
@@ -214,7 +217,7 @@ class _AudioRowState extends State<_AudioRow> {
               children: [
                 Text(
                   _description.isEmpty
-                      ? 'مقطع ${widget.index + 1}'
+                      ? context.l10n.categoriesAudioClipNumber(widget.index + 1)
                       : _description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -242,7 +245,7 @@ class _AudioRowState extends State<_AudioRow> {
           ),
           SizedBox(width: 8.w),
           CategoryActionButton(
-            label: 'تحميل',
+            label: context.l10n.categoriesDownload,
             icon: AppIcons.download,
             isPrimary: false,
             onTap: () {
@@ -251,7 +254,9 @@ class _AudioRowState extends State<_AudioRow> {
               HapticFeedback.selectionClick();
               _downloadService.download(
                 url,
-                _description.isEmpty ? 'مقطع صوتي' : _description,
+                _description.isEmpty
+                    ? context.l10n.categoriesAudioClipFallback
+                    : _description,
               );
             },
           ),

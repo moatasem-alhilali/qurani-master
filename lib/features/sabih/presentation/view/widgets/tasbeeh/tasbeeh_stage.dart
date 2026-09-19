@@ -11,6 +11,7 @@ import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_counter.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbih_bead_chain.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مسرح التسبيح: الذكر المختار، سبحته، وعدّاده.
 ///
@@ -79,13 +80,12 @@ class TasbeehStage extends StatelessWidget {
                   ),
                 ),
               ),
-              if (subih.content.trim().isNotEmpty &&
-                  subih.content.trim() != 'بدون وصف') ...[
+              if (subih.displayContent(context.l10n).trim().isNotEmpty) ...[
                 SizedBox(height: 6.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 28.w),
                   child: Text(
-                    subih.content,
+                    subih.displayContent(context.l10n),
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -117,7 +117,9 @@ class TasbeehStage extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                reached ? 'بلغت $target' : 'الهدف $target',
+                reached
+                    ? context.l10n.sabihTargetReached(target)
+                    : context.l10n.sabihTargetLabel(target),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: reached
@@ -131,7 +133,7 @@ class TasbeehStage extends StatelessWidget {
               _CountReadout(count: count, reached: reached, skin: skin),
               SizedBox(height: 8.h),
               Text(
-                'المس أي مكان للتسبيح',
+                context.l10n.sabihTapAnywhere,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: skin.inkSoft.withValues(alpha: 0.42),
@@ -163,7 +165,7 @@ class _CountReadout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       liveRegion: true,
-      label: 'عدد التسبيح',
+      label: context.l10n.sabihCountSemantics,
       value: '$count',
       child: AnimatedDefaultTextStyle(
         duration: const Duration(milliseconds: 180),

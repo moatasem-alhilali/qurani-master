@@ -4,6 +4,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_settings.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ واحد في شاشات الأذكار العائمة: مربّع أيقونة، عنوان، وصف، ثم سهم.
 ///
@@ -99,7 +100,11 @@ class FloatingAdhkarRow extends StatelessWidget {
               ),
             ),
             trailing ??
-                AppIcon(AppIcons.chevronLeft, color: iconColor, size: 15.sp),
+                AppIcon(
+                  AppIcons.forwardFor(context),
+                  color: iconColor,
+                  size: 15.sp,
+                ),
           ],
         ),
       ),
@@ -205,27 +210,26 @@ class FloatingAdhkarSwitchRow extends StatelessWidget {
   }
 }
 
-/// نصّ معدّل الظهور بالعربية.
-String formatFloatingInterval(int minutes) {
-  if (minutes == 1) {
-    return 'كل دقيقة';
-  }
-
-  return 'كل $minutes دقائق';
+/// نصّ معدّل الظهور بلغة الواجهة.
+String formatFloatingInterval(L10n l10n, int minutes) {
+  return l10n.floatingAdhkarEveryMinutes(minutes);
 }
 
 /// وصف مصادر الأذكار المفعّلة.
-String describeFloatingSources(FloatingAdhkarSettings settings) {
+String describeFloatingSources(
+  L10n l10n,
+  FloatingAdhkarSettings settings,
+) {
   if (settings.includeBuiltIn && settings.includeCustom) {
     return settings.mixSources
-        ? 'دمج بين الافتراضي والمخصص'
-        : 'تناوب بين الافتراضي والمخصص';
+        ? l10n.floatingAdhkarSourcesMixed
+        : l10n.floatingAdhkarSourcesAlternating;
   }
   if (settings.includeBuiltIn) {
-    return 'الأذكار الافتراضية فقط';
+    return l10n.floatingAdhkarSourcesBuiltInOnly;
   }
   if (settings.includeCustom) {
-    return 'أذكار المستخدم فقط';
+    return l10n.floatingAdhkarSourcesCustomOnly;
   }
-  return 'لا يوجد مصدر مفعّل';
+  return l10n.floatingAdhkarSourcesNone;
 }

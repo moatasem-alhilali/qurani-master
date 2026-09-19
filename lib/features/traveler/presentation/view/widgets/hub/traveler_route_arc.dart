@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// قوس الرحلة: خطّ من موضعك إلى مكّة، بلغة خرائط الطيران.
 ///
@@ -63,6 +64,7 @@ class _TravelerRouteArcState extends State<TravelerRouteArc>
                     line: skin.hairline,
                     accent: skin.accent,
                     ink: skin.ink,
+                    isRtl: Directionality.of(context) == TextDirection.rtl,
                   ),
                 ),
               ),
@@ -74,7 +76,7 @@ class _TravelerRouteArcState extends State<TravelerRouteArc>
               Expanded(
                 child: _Endpoint(
                   label: widget.originLabel,
-                  caption: 'موضعك',
+                  caption: context.l10n.travelerYourLocation,
                   alignment: CrossAxisAlignment.start,
                 ),
               ),
@@ -82,7 +84,7 @@ class _TravelerRouteArcState extends State<TravelerRouteArc>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${widget.distanceLabel} كم',
+                    context.l10n.travelerDistanceKm(widget.distanceLabel),
                     style: TextStyle(
                       color: skin.accent,
                       fontSize: 13.sp,
@@ -104,8 +106,8 @@ class _TravelerRouteArcState extends State<TravelerRouteArc>
               ),
               Expanded(
                 child: _Endpoint(
-                  label: 'مكّة المكرّمة',
-                  caption: 'القبلة',
+                  label: context.l10n.travelerMakkah,
+                  caption: context.l10n.travelerQibla,
                   alignment: CrossAxisAlignment.end,
                 ),
               ),
@@ -168,6 +170,7 @@ class _RouteArcPainter extends CustomPainter {
     required this.line,
     required this.accent,
     required this.ink,
+    required this.isRtl,
   });
 
   final double progress;
@@ -175,13 +178,17 @@ class _RouteArcPainter extends CustomPainter {
   final Color accent;
   final Color ink;
 
+  /// الموضع في بداية السطر ومكّة في نهايته، كصفّ الأسماء تحت القوس.
+  final bool isRtl;
+
   /// القوس نصف قطع مكافئ: يرتفع في الوسط ويهبط على الطرفين، كخطّ الطيران.
   ///
   /// في العربية يُقرأ المشهد من اليمين لليسار، فالموضع على اليمين ومكّة على
   /// اليسار — ونقطة الضوء تسري في الاتجاه نفسه.
   Offset _pointAt(Size size, double t) {
     const inset = 0.08;
-    final x = size.width * (1 - inset - t * (1 - inset * 2));
+    final fromStart = inset + t * (1 - inset * 2);
+    final x = size.width * (isRtl ? 1 - fromStart : fromStart);
     final lift = math.sin(math.pi * t);
     final y = size.height * (0.86 - 0.58 * lift);
     return Offset(x, y);
@@ -277,5 +284,6 @@ class _RouteArcPainter extends CustomPainter {
       oldDelegate.progress != progress ||
       oldDelegate.line != line ||
       oldDelegate.accent != accent ||
-      oldDelegate.ink != ink;
+      oldDelegate.ink != ink ||
+      oldDelegate.isRtl != isRtl;
 }

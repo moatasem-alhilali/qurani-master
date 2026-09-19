@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// اللبنات المشتركة لشاشات المكتبة: صفوف نحيلة ومربّعات أيقونات،
 /// بلا بطاقات ولا ألوان حرفية.
@@ -205,7 +206,13 @@ class CategoryRow extends StatelessWidget {
               ),
             ),
             SizedBox(width: 6.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),
@@ -219,12 +226,14 @@ class CategorySearchField extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     super.key,
-    this.hintText = 'بحث',
+    this.hintText,
   });
 
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
-  final String hintText;
+
+  /// نصّ التلميح؛ الافتراضي «بحث» بلغة الواجهة.
+  final String? hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +254,7 @@ class CategorySearchField extends StatelessWidget {
           isDense: true,
           filled: true,
           fillColor: skin.raised,
-          hintText: hintText,
+          hintText: hintText ?? context.l10n.commonSearch,
           hintStyle: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.5),
             fontSize: 10.sp,
@@ -259,7 +268,7 @@ class CategorySearchField extends StatelessWidget {
           suffixIcon: controller.text.isEmpty
               ? null
               : IconButton(
-                  tooltip: 'مسح البحث',
+                  tooltip: context.l10n.categoriesClearSearch,
                   onPressed: () {
                     controller.clear();
                     onChanged('');

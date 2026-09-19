@@ -33,7 +33,7 @@ class _PlayerErrorBody extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            message ?? 'تعذّر تحميل المشغّل الآن.',
+            message ?? context.l10n.youngMuslimPlayerLoadError,
             textAlign: TextAlign.center,
             style: youngMuslimRowTitle(skin, size: 13.sp),
           ),
@@ -124,7 +124,7 @@ class _PlayerContent extends StatelessWidget {
               ),
             ),
             skin.divider(),
-            const HomeSectionHeader(title: 'خيارات المشاهدة'),
+            HomeSectionHeader(title: context.l10n.youngMuslimWatchOptions),
             _AutoPlayRow(
               enabled: autoPlayEnabled,
               onToggle: onToggleAutoPlay,
@@ -132,14 +132,15 @@ class _PlayerContent extends StatelessWidget {
             ),
             if (nextVideo != null)
               YoungMuslimActionRow(
-                icon: AppIcons.forward,
-                title: 'تشغيل الحلقة التالية',
-                subtitle: 'الحلقة $nextVideoLabel من نفس السلسلة',
+                icon: AppIcons.forwardFor(context),
+                title: context.l10n.youngMuslimPlayNextEpisode,
+                subtitle: context.l10n
+                    .youngMuslimNextEpisodeFromSeries(nextVideoLabel!),
                 isLast: true,
                 onTap: () => unawaited(onPlayNext()),
               ),
             skin.divider(),
-            const HomeSectionHeader(title: 'قائمة السلسلة'),
+            HomeSectionHeader(title: context.l10n.youngMuslimSeriesPlaylist),
             RepaintBoundary(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -199,13 +200,13 @@ class _AutoPlayRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'تشغيل الحلقة التالية تلقائيًا',
+                  context.l10n.youngMuslimAutoPlayNext,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: youngMuslimRowTitle(skin),
                 ),
                 Text(
-                  'ضمن السلسلة نفسها فقط بعد نهاية الحلقة',
+                  context.l10n.youngMuslimAutoPlayNextSubtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: youngMuslimRowSubtitle(skin),

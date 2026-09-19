@@ -4,6 +4,7 @@ import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_cont
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_schedule_model.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_native_scheduler_service.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SmartOutreachSaveScheduleResult {
@@ -231,7 +232,7 @@ class SmartOutreachScheduleRepository {
     final bundle = await getScheduleById(scheduleId);
     if (bundle == null) {
       return SmartOutreachValidationResult.invalid(
-        <String>['هذه القائمة غير موجودة.'],
+        <String>[L10nService.current.outreachErrorScheduleNotFound],
       );
     }
 
@@ -255,7 +256,7 @@ class SmartOutreachScheduleRepository {
     final updated = await getScheduleById(scheduleId);
     if (updated == null) {
       return SmartOutreachValidationResult.invalid(
-        <String>['هذه القائمة غير موجودة.'],
+        <String>[L10nService.current.outreachErrorScheduleNotFound],
       );
     }
 

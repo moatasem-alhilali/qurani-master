@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quran_app/core/shared/export/export-shared.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class ToastServes {
   static FToast? fToast;
@@ -28,7 +29,7 @@ class ToastServes {
             ),
           ),
           Text(
-            message ?? "هل تريد حفظ مكان قرائتك",
+            message ?? context.l10n.coreSaveReadingPositionPrompt,
             softWrap: true,
             style: titleMedium(context).copyWith(color: Colors.black),
           ),

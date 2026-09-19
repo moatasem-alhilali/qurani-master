@@ -10,6 +10,7 @@ import 'package:quran_app/features/setting_notification/data/constant/notificati
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/pages/system_notification_screen.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/notification_setting_item_widget.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// إعدادات الإشعارات: مفتاح رئيسي مرتفع، ثم مجموعات صغيرة من الصفوف.
 class SettingNotificationScreen extends StatelessWidget {
@@ -30,218 +31,220 @@ class _SettingNotificationView extends StatelessWidget {
   const _SettingNotificationView();
 
   /// المجموعات بالترتيب الذي تُقرأ به: الأقرب للاستعمال اليومي أولًا.
-  static const List<_NotifGroup> _groups = [
-    _NotifGroup(
-      'عام',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationFirebaseGeneral,
-          'إشعارات التطبيق العامة',
-          AppIcons.news,
+  ///
+  /// أسماء الأذكار المتكررة هي نصّ الذكر نفسه، فتبقى عربية بكل اللغات.
+  static List<_NotifGroup> _groups(L10n l10n) => [
+        _NotifGroup(
+          l10n.notifSettingsGroupGeneral,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationFirebaseGeneral,
+              l10n.notifSettingsLabelGeneral,
+              AppIcons.news,
+            ),
+          ],
         ),
-      ],
-    ),
-    _NotifGroup(
-      'الأذان',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationAllAthan,
-          'كل الصلوات',
-          AppIcons.mosque,
+        _NotifGroup(
+          l10n.notifSettingsGroupAthan,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationAllAthan,
+              l10n.notifSettingsAllPrayers,
+              AppIcons.mosque,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationAthanFagr,
+              l10n.notifSettingsAthanOf(l10n.prayerFajr),
+              AppIcons.sunrise,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationAthanDuhr,
+              l10n.notifSettingsAthanOf(l10n.prayerDhuhr),
+              AppIcons.sun,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationAthanAsr,
+              l10n.notifSettingsAthanOf(l10n.prayerAsr),
+              AppIcons.clock,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationAthanMagrib,
+              l10n.notifSettingsAthanOf(l10n.prayerMaghrib),
+              AppIcons.sunset,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationAthanIsha,
+              l10n.notifSettingsAthanOf(l10n.prayerIsha),
+              AppIcons.moon,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationAthanFagr,
-          'أذان الفجر',
-          AppIcons.sunrise,
+        _NotifGroup(
+          l10n.notifSettingsGroupDailyWird,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationDailyWirdMorning,
+              l10n.notifSettingsLabelWirdMorning,
+              AppIcons.sunrise,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationDailyWirdEvening,
+              l10n.notifSettingsLabelWirdEvening,
+              AppIcons.sunset,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationDailyWirdNight,
+              l10n.notifSettingsLabelWirdNight,
+              AppIcons.moon,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationDailyWirdSummary,
+              l10n.notifSettingsLabelWirdSummary,
+              AppIcons.check,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationAthanDuhr,
-          'أذان الظهر',
-          AppIcons.sun,
+        _NotifGroup(
+          l10n.notifSettingsGroupAdhkar,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationThikrMorning,
+              l10n.notifSettingsLabelThikrMorning,
+              AppIcons.dailyWird,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationThikrNight,
+              l10n.notifSettingsLabelThikrEvening,
+              AppIcons.bookOpen,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationMohammed,
+              l10n.notifSettingsSalawatShort,
+              AppIcons.heart,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationRandomThikr,
+              l10n.notifSettingsLabelRandomAudioThikr,
+              AppIcons.sound,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationFloatingAdhkar,
+              l10n.notifSettingsLabelFloatingAdhkar,
+              AppIcons.focus,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationAthanAsr,
-          'أذان العصر',
-          AppIcons.clock,
+        _NotifGroup(
+          l10n.notifSettingsGroupQuran,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationReadQuran,
+              l10n.notifSettingsQuranWirdShort,
+              AppIcons.quran,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationReadSurahMulk,
+              l10n.notifSettingsLabelReadSurahMulk,
+              AppIcons.book,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationReadSurah,
+              l10n.notifSettingsLabelReadSpecificSurah,
+              AppIcons.bookOpen,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationReadSurahAlkahf,
+              l10n.notifSettingsLabelReadSurahKahf,
+              AppIcons.bookmark,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationQuranPlan,
+              l10n.notifSettingsLabelQuranPlan,
+              AppIcons.calendar,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationAthanMagrib,
-          'أذان المغرب',
-          AppIcons.sunset,
+        _NotifGroup(
+          l10n.notifSettingsGroupAppSections,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationYoungMuslimResume,
+              l10n.notifSettingsLabelYoungMuslim,
+              AppIcons.play,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationAthanIsha,
-          'أذان العشاء',
-          AppIcons.moon,
+        _NotifGroup(
+          l10n.notifSettingsGroupNightAndWaking,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationWridGetup,
+              l10n.notifSettingsLabelThikrWakeUp,
+              AppIcons.sunrise,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationWridSleep,
+              l10n.notifSettingsLabelThikrSleep,
+              AppIcons.moon,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationMiddleNight,
+              l10n.notifSettingsLabelMiddleNight,
+              AppIcons.prayerRug,
+            ),
+          ],
         ),
-      ],
-    ),
-    _NotifGroup(
-      'الورد اليومي',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationDailyWirdMorning,
-          'ورد الصباح',
-          AppIcons.sunrise,
+        _NotifGroup(
+          l10n.notifSettingsGroupFasting,
+          [
+            _NotifItem(
+              NotificationKeys.isNotificationFasting,
+              l10n.notifSettingsLabelFasting,
+              AppIcons.calendar,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationFastingMonday,
+              l10n.notifSettingsLabelFastingMonday,
+              AppIcons.calendar,
+            ),
+            _NotifItem(
+              NotificationKeys.isNotificationFastingThursday,
+              l10n.notifSettingsLabelFastingThursday,
+              AppIcons.calendar,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationDailyWirdEvening,
-          'ورد المساء',
-          AppIcons.sunset,
+        _NotifGroup(
+          l10n.notifSettingsGroupRecurringAdhkar,
+          [
+            const _NotifItem(
+              NotificationKeys.isNotificationAstgferAllh,
+              'استغفر الله',
+              AppIcons.tasbih,
+            ),
+            const _NotifItem(
+              NotificationKeys.isNotificationHasbnaAllh,
+              'حسبنا الله',
+              AppIcons.allah,
+            ),
+            const _NotifItem(
+              NotificationKeys.isNotificationLahawlaWlaquoah,
+              'لا حول ولا قوة إلا بالله',
+              AppIcons.tasbih,
+            ),
+            const _NotifItem(
+              NotificationKeys.isNotificationSubhanAllh,
+              'سبحان الله',
+              AppIcons.star,
+            ),
+          ],
         ),
-        _NotifItem(
-          NotificationKeys.isNotificationDailyWirdNight,
-          'ورد ما قبل النوم',
-          AppIcons.moon,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationDailyWirdSummary,
-          'ملخص الورد اليومي',
-          AppIcons.check,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'الأذكار',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationThikrMorning,
-          'أذكار الصباح',
-          AppIcons.dailyWird,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationThikrNight,
-          'أذكار المساء',
-          AppIcons.bookOpen,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationMohammed,
-          'الصلاة على محمد',
-          AppIcons.heart,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationRandomThikr,
-          'الأذكار الصوتية العشوائية',
-          AppIcons.sound,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationFloatingAdhkar,
-          'الأذكار العائمة والتنبيهات البديلة',
-          AppIcons.focus,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'القرآن',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationReadQuran,
-          'الورد القرآني',
-          AppIcons.quran,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationReadSurahMulk,
-          'قراءة سورة الملك',
-          AppIcons.book,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationReadSurah,
-          'قراءة سورة محددة',
-          AppIcons.bookOpen,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationReadSurahAlkahf,
-          'قراءة سورة الكهف',
-          AppIcons.bookmark,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationQuranPlan,
-          'تذكير خطط القرآن',
-          AppIcons.calendar,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'أقسام التطبيق',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationYoungMuslimResume,
-          'تذكير المسلم الصغير',
-          AppIcons.play,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'الليل واليقظة',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationWridGetup,
-          'أذكار الاستيقاظ',
-          AppIcons.sunrise,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationWridSleep,
-          'أذكار النوم',
-          AppIcons.moon,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationMiddleNight,
-          'قيام الليل',
-          AppIcons.prayerRug,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'الصيام',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationFasting,
-          'تذكير بالصيام',
-          AppIcons.calendar,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationFastingMonday,
-          'صيام الاثنين',
-          AppIcons.calendar,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationFastingThursday,
-          'صيام الخميس',
-          AppIcons.calendar,
-        ),
-      ],
-    ),
-    _NotifGroup(
-      'أذكار متكررة',
-      [
-        _NotifItem(
-          NotificationKeys.isNotificationAstgferAllh,
-          'استغفر الله',
-          AppIcons.tasbih,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationHasbnaAllh,
-          'حسبنا الله',
-          AppIcons.allah,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationLahawlaWlaquoah,
-          'لا حول ولا قوة إلا بالله',
-          AppIcons.tasbih,
-        ),
-        _NotifItem(
-          NotificationKeys.isNotificationSubhanAllh,
-          'سبحان الله',
-          AppIcons.star,
-        ),
-      ],
-    ),
-  ];
+      ];
 
   @override
   Widget build(BuildContext context) {
     return SettingsScaffold(
-      title: 'إعدادات الإشعارات',
+      title: context.l10n.settingsNotificationsTitle,
       children: [
         BlocBuilder<SettingNotificationBloc, SettingNotificationState>(
           builder: (context, state) {
@@ -269,10 +272,10 @@ class _SettingNotificationView extends StatelessWidget {
         if (master != null)
           SettingsRaisedRow(
             icon: AppIcons.notifications,
-            title: 'كل إشعارات التطبيق',
+            title: context.l10n.notifSettingsMasterTitle,
             subtitle: master.enabled
-                ? 'الإشعارات مفعّلة، وتستطيع ضبط كل نوع أدناه'
-                : 'كل الإشعارات موقوفة حتى تفعّل هذا المفتاح',
+                ? context.l10n.notifSettingsMasterOnSubtitle
+                : context.l10n.notifSettingsMasterOffSubtitle,
             trailing: SettingsSwitch(
               value: master.enabled,
               onChanged: (value) => context
@@ -281,18 +284,18 @@ class _SettingNotificationView extends StatelessWidget {
             ),
           ),
         SettingsGroup(
-          title: 'النظام',
+          title: context.l10n.notifSettingsGroupSystem,
           children: [
             SettingsRow(
               icon: AppIcons.layers,
-              title: 'إشعارات النظام',
-              subtitle: 'استعرض الإشعارات المجدولة والمفعّلة على جهازك',
+              title: context.l10n.notifSettingsSystemTitle,
+              subtitle: context.l10n.notifSettingsSystemSubtitle,
               isLast: true,
               onTap: () => context.push(const SystemNotificationScreen()),
             ),
           ],
         ),
-        for (final group in _groups)
+        for (final group in _groups(context.l10n))
           SettingsGroup(
             title: group.title,
             children: [

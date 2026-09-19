@@ -158,7 +158,9 @@ class _ClockText extends StatelessWidget {
         ),
         SizedBox(width: 3.w),
         Text(
-          time.hour < 12 ? 'ص' : 'م',
+          time.hour < 12
+              ? context.l10n.prayerTimeAm
+              : context.l10n.prayerTimePm,
           style: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.8),
             fontSize: 9.sp,
@@ -189,12 +191,15 @@ class _LocationRow extends StatelessWidget {
     final label = selectedLocation?.label.trim();
     final details = selectedLocation?.detailsLabel.trim();
     final isManual = selectedLocation?.isManual ?? false;
-    final sourceLabel = isManual ? 'اختيار يدوي' : 'موقع الجهاز';
+    final l10n = context.l10n;
+    final sourceLabel = isManual
+        ? l10n.prayerTimeLocationSourceManual
+        : l10n.prayerTimeLocationSourceDevice;
     final subtitle = (details == null || details.isEmpty)
         ? (label == null || label.isEmpty
-            ? 'اختر مدينة أو استخدم موقع الجهاز'
+            ? l10n.prayerTimeLocationPickHint
             : sourceLabel)
-        : '$details · $sourceLabel';
+        : l10n.prayerTimeLocationDetails(details, sourceLabel);
 
     return InkWell(
       onTap: onChangeLocation,
@@ -211,7 +216,7 @@ class _LocationRow extends StatelessWidget {
                 children: [
                   Text(
                     (label == null || label.isEmpty)
-                        ? 'لم يتم تحديد موقع بعد'
+                        ? l10n.prayerTimeLocationNotSet
                         : label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -239,11 +244,15 @@ class _LocationRow extends StatelessWidget {
             SizedBox(width: 8.w),
             _MiniIconButton(
               icon: AppIcons.location,
-              tooltip: 'موقعي الحالي',
+              tooltip: l10n.prayerTimeMyLocation,
               onTap: onUseCurrentLocation,
             ),
             SizedBox(width: 4.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              AppIcons.forwardFor(context),
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),
@@ -302,12 +311,18 @@ class _LocationNoticeRow extends StatelessWidget {
                   children: [
                     if (needsAction)
                       _TextLink(
-                        label: 'منح الصلاحية',
+                        label: context.l10n.prayerTimeGrantPermission,
                         onTap: onGrantPermission,
                       ),
                     if (needsAction)
-                      _TextLink(label: 'الإعدادات', onTap: onOpenSettings),
-                    _TextLink(label: 'تحديث', onTap: onRetry),
+                      _TextLink(
+                        label: context.l10n.commonSettings,
+                        onTap: onOpenSettings,
+                      ),
+                    _TextLink(
+                      label: context.l10n.commonRefresh,
+                      onTap: onRetry,
+                    ),
                   ],
                 ),
               ],
@@ -335,7 +350,7 @@ class _EmptyWeekState extends StatelessWidget {
           AppIcon(AppIcons.mapPin, color: skin.accent, size: 22.sp),
           SizedBox(height: 8.h),
           Text(
-            'حدّد موقعك ليظهر جدول الأسبوع',
+            context.l10n.prayerTimeEmptyWeekTitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.ink,
@@ -344,7 +359,7 @@ class _EmptyWeekState extends StatelessWidget {
             ),
           ),
           Text(
-            'ابحث عن مدينتك أو استخدم موقع الجهاز',
+            context.l10n.prayerTimeEmptyWeekSubtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
@@ -354,7 +369,10 @@ class _EmptyWeekState extends StatelessWidget {
             ),
           ),
           SizedBox(height: 6.h),
-          _TextLink(label: 'تحديد الموقع', onTap: onChangeLocation),
+          _TextLink(
+            label: context.l10n.prayerTimeSetLocation,
+            onTap: onChangeLocation,
+          ),
         ],
       ),
     );

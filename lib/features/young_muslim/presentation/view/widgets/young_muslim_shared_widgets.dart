@@ -7,6 +7,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_shared_widgets_basics.dart';
 part 'young_muslim_shared_widgets_media.dart';
@@ -34,42 +35,49 @@ HugeIconData youngMuslimAchievementIcon(String iconName) {
 String youngMuslimDuration(int seconds) {
   final duration = Duration(seconds: seconds);
   if (duration.inHours > 0) {
-    return '${duration.inHours}س ${duration.inMinutes.remainder(60)}د';
+    return L10nService.current.youngMuslimDurationHoursMinutes(
+      duration.inHours,
+      duration.inMinutes.remainder(60),
+    );
   }
-  return '${duration.inMinutes}د';
+  return L10nService.current.youngMuslimDurationMinutes(duration.inMinutes);
 }
 
 /// متى شوهدت الحلقة آخر مرّة، بصيغة يقرأها الطفل.
 String youngMuslimRelative(DateTime? dateTime) {
+  final l10n = L10nService.current;
   if (dateTime == null) {
-    return 'لم يُشاهد بعد';
+    return l10n.youngMuslimNotWatchedYet;
   }
   final now = DateTime.now();
   final difference = now.difference(dateTime);
   if (difference.inMinutes < 1) {
-    return 'الآن';
+    return l10n.youngMuslimJustNow;
   }
   if (difference.inHours < 1) {
-    return 'منذ ${difference.inMinutes} دقيقة';
+    return l10n.youngMuslimMinutesAgo(difference.inMinutes);
   }
   if (difference.inDays < 1) {
-    return 'منذ ${difference.inHours} ساعة';
+    return l10n.youngMuslimHoursAgo(difference.inHours);
   }
   if (difference.inDays < 7) {
-    return 'منذ ${difference.inDays} يوم';
+    return l10n.youngMuslimDaysAgo(difference.inDays);
   }
   return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
 }
 
 /// سطر حالة الحلقة: مكتملة، أو نسبة التقدّم، أو أنّها لم تبدأ.
 String youngMuslimVideoStatus(YoungMuslimVideoEntity video) {
+  final l10n = L10nService.current;
   if (video.isCompleted) {
-    return 'تمت المشاهدة';
+    return l10n.youngMuslimWatched;
   }
   if (video.hasProgress) {
-    return 'تقدّم ${(video.progressPercent * 100).round()}٪';
+    return l10n.youngMuslimProgressPercent(
+      (video.progressPercent * 100).round(),
+    );
   }
-  return 'جاهزة للمشاهدة';
+  return l10n.youngMuslimReadyToWatch;
 }
 
 /// عنوان صفّ: المقاس الأساسي في كل قوائم القسم.

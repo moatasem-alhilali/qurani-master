@@ -2,7 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
-		<key>CFBundleDevelopmentRegion</key>
+		<!-- لغات التطبيق: يعرضها App Store في صفحة التطبيق. تطابق AppLanguage في Dart. -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ar</string>
+		<string>ur</string>
+		<string>bn</string>
+		<string>id</string>
+		<string>fa</string>
+		<string>tr</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
 		<string>طمأنينة</string>

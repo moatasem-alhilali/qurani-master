@@ -11,6 +11,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/core/widgets/generic_search_bar.dart';
 import 'package:quran_app/features/zkar_after_pray/data/models/zkar_after_pray_model.dart';
 import 'package:quran_app/features/zkar_after_pray/presentation/bloc/zkar_after_pray_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أذكار ما بعد الصلاة: قائمة صفوف نحيلة على أرضية الصفحة، بلا بطاقات.
 class ZkarAfterPrayScreen extends StatefulWidget {
@@ -40,7 +41,9 @@ class _ZkarAfterPrayScreenState extends State<ZkarAfterPrayScreen> {
 
   String _titleForCard(ZkarAfterPrayModel item, int index) {
     final normalized = _normalize(item.zekr);
-    if (normalized.isEmpty) return 'ذكر بعد الصلاة ${index + 1}';
+    if (normalized.isEmpty) {
+      return context.l10n.afterPrayerFallbackTitle(index + 1);
+    }
 
     final splits = normalized
         .split(RegExp('[،.]'))
@@ -63,35 +66,38 @@ class _ZkarAfterPrayScreenState extends State<ZkarAfterPrayScreen> {
       '',
       item.zekr,
       '',
-      'عدد التكرار: ${item.repeat}',
-      if (item.bless.trim().isNotEmpty) 'الفضل: ${item.bless}',
+      context.l10n.afterPrayerRepeatCountLine(item.repeat),
+      if (item.bless.trim().isNotEmpty)
+        context.l10n.afterPrayerVirtueLine(item.bless),
     ].join('\n');
 
     context.showBottomSheet(
       child: UnifiedLibraryDetailSheet(
         title: _titleForCard(item, index),
-        subtitle: 'أذكار ما بعد الصلاة',
+        subtitle: context.l10n.afterPrayerSubtitle,
         shareText: shareContent,
         copyText: shareContent,
-        shareSubject: 'أذكار ما بعد الصلاة',
+        shareSubject: context.l10n.afterPrayerSubtitle,
         badges: [
           UnifiedLibraryMeta(
-            label: 'التكرار',
+            label: context.l10n.afterPrayerRepeatLabel,
             value: '${item.repeat}',
             isPrimary: true,
           ),
           UnifiedLibraryMeta(
-            label: 'الفضل',
-            value: item.bless.trim().isEmpty ? 'غير مذكور' : 'مذكور',
+            label: context.l10n.afterPrayerVirtueLabel,
+            value: item.bless.trim().isEmpty
+                ? context.l10n.afterPrayerNotMentioned
+                : context.l10n.afterPrayerMentioned,
           ),
         ],
         sections: [
           UnifiedLibrarySection(
-            title: 'نص الذكر',
+            title: context.l10n.afterPrayerTextSection,
             content: item.zekr,
           ),
           UnifiedLibrarySection(
-            title: 'فضل الذكر',
+            title: context.l10n.afterPrayerVirtueSection,
             content: item.bless,
           ),
         ],
@@ -108,7 +114,7 @@ class _ZkarAfterPrayScreenState extends State<ZkarAfterPrayScreen> {
       child: Theme(
         data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
         child: AppScaffoldWidget(
-          title: 'أذكار بعد الصلاة',
+          title: context.l10n.afterPrayerTitle,
           trailing: BlocBuilder<ZkarAfterPrayBloc, ZkarAfterPrayState>(
             builder: (context, state) {
               return GenericSearchAnchorAsync<ZkarAfterPrayModel>(
@@ -127,7 +133,7 @@ class _ZkarAfterPrayScreenState extends State<ZkarAfterPrayScreen> {
                   final index = list.indexOf(item);
                   _showDetails(context, item, index < 0 ? 0 : index);
                 },
-                hintText: 'بحث عن أذكار',
+                hintText: context.l10n.afterPrayerSearchHint,
                 suggestionBuilder: (context, item) =>
                     UnifiedLibrarySearchSuggestion(
                   title: _titleForCard(item, 0),
@@ -280,7 +286,7 @@ class _ZkarRow extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 2.h),
               child: Text(
-                repeat > 1 ? '$repeat مرات' : 'مرة',
+                context.l10n.afterPrayerRepeatTimes(repeat < 1 ? 1 : repeat),
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 9.5.sp,
@@ -292,7 +298,9 @@ class _ZkarRow extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 1.h),
               child: AppIcon(
-                AppIcons.chevronLeft,
+                Directionality.of(context) == TextDirection.rtl
+                    ? AppIcons.chevronLeft
+                    : AppIcons.chevronRight,
                 color: skin.accent,
                 size: 15.sp,
               ),
@@ -320,7 +328,7 @@ class _ZkarEmptyState extends StatelessWidget {
           AppIcon(AppIcons.searchOff, color: skin.accent, size: 22.sp),
           SizedBox(height: 8.h),
           Text(
-            'لا توجد نتائج مطابقة',
+            context.l10n.afterPrayerNoResults,
             style: TextStyle(
               color: skin.ink,
               fontSize: 12.5.sp,
@@ -334,7 +342,7 @@ class _ZkarEmptyState extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
               child: Text(
-                'عرض الأذكار كلها',
+                context.l10n.afterPrayerShowAll,
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 10.5.sp,

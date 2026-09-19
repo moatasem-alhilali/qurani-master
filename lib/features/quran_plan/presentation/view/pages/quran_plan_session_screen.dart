@@ -15,6 +15,7 @@ import 'package:quran_app/features/quran_plan/presentation/view/widgets/current_
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/plan_progress_line.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_widget.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/smart_analysis_plan_widget.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// شاشة خطة واحدة: ملخّصها، جلسة اليوم، إيقاعها، ثم مسار جلساتها.
 ///
@@ -75,7 +76,7 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
       return;
     }
     context.showCustomSnackbar(
-      'انتبه: لديك عدة أيام ركود. جلسة قصيرة اليوم تكفي لإعادة الإيقاع.',
+      context.l10n.quranPlanStagnationWarning,
       style: SnackBarType.warning,
     );
   }
@@ -130,9 +131,9 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
 
                       final plan = state.selectedPlan;
                       if (plan == null) {
-                        return const _Note(
+                        return _Note(
                           icon: AppIcons.warning,
-                          text: 'تعذّر تحميل هذه الخطة حاليًا.',
+                          text: context.l10n.quranPlanLoadFailed,
                         );
                       }
 
@@ -153,11 +154,13 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                               loadedSessions: state.sessions.length,
                             ),
                             skin.divider(),
-                            const HomeSectionHeader(title: 'جلسة اليوم'),
+                            HomeSectionHeader(
+                              title: context.l10n.quranPlanTodaySession,
+                            ),
                             if (nextSession == null)
-                              const _Note(
+                              _Note(
                                 icon: AppIcons.check,
-                                text: 'أتممت جلسات هذه الخطة، بارك الله فيك.',
+                                text: context.l10n.quranPlanAllSessionsDone,
                               )
                             else
                               CurrentSessionWidget(
@@ -166,15 +169,19 @@ class _QuranPlanSessionScreenState extends State<QuranPlanSessionScreen> {
                               ),
                             if (analysis != null) ...[
                               skin.divider(),
-                              const HomeSectionHeader(title: 'إيقاع الخطة'),
+                              HomeSectionHeader(
+                                title: context.l10n.quranPlanRhythm,
+                              ),
                               SmartAnalysisPlanWidget(analysis: analysis),
                             ],
                             skin.divider(),
-                            const HomeSectionHeader(title: 'مسار الختمة'),
+                            HomeSectionHeader(
+                              title: context.l10n.quranPlanPath,
+                            ),
                             if (state.sessions.isEmpty)
-                              const _Note(
+                              _Note(
                                 icon: AppIcons.list,
-                                text: 'لا توجد جلسات ظاهرة بعد.',
+                                text: context.l10n.quranPlanNoSessions,
                               )
                             else
                               for (var i = 0; i < state.sessions.length; i++)
@@ -272,9 +279,12 @@ class _PlanSummary extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'الجزء ${plan.startJuz} إلى ${plan.endJuz}'
-                      ' · ${plan.totalDays} يومًا'
-                      ' · $loadedSessions جلسة محمّلة',
+                      [
+                        context.l10n
+                            .quranPlanJuzRange(plan.startJuz, plan.endJuz),
+                        context.l10n.quranPlanDaysCount(plan.totalDays),
+                        context.l10n.quranPlanLoadedSessions(loadedSessions),
+                      ].join(' · '),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -287,9 +297,9 @@ class _PlanSummary extends StatelessWidget {
                   ],
                 ),
               ),
-              // «٣ من ٣٠» بالعربية — الكسر ينقلب في الاتجاه العربي.
+              // «٣ من ٣٠» بالكلمات — الكسر ينقلب في الاتجاه العربي.
               Text(
-                '$done من $total',
+                context.l10n.quranPlanProgress(done, total),
                 style: TextStyle(
                   color: skin.accent,
                   fontSize: 12.5.sp,

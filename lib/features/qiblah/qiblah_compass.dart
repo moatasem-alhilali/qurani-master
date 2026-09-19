@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// بوصلة القبلة: بطلة الشاشة.
 ///
@@ -138,6 +140,13 @@ class _QiblahCompassState extends State<QiblahCompass>
                     strongTick: skin.inkSoft.withValues(alpha: 0.55),
                     label: skin.inkSoft.withValues(alpha: 0.78),
                     labelSize: 9.sp,
+                    directions: {
+                      0: context.l10n.qiblahCompassNorth,
+                      90: context.l10n.qiblahCompassEast,
+                      180: context.l10n.qiblahCompassSouth,
+                      270: context.l10n.qiblahCompassWest,
+                    },
+                    textDirection: Directionality.of(context),
                   ),
                 ),
               ),
@@ -283,6 +292,8 @@ class _CompassDialPainter extends CustomPainter {
     required this.strongTick,
     required this.label,
     required this.labelSize,
+    required this.directions,
+    required this.textDirection,
   });
 
   final Color tick;
@@ -290,12 +301,9 @@ class _CompassDialPainter extends CustomPainter {
   final Color label;
   final double labelSize;
 
-  static const _directions = <int, String>{
-    0: 'شمال',
-    90: 'شرق',
-    180: 'جنوب',
-    270: 'غرب',
-  };
+  /// أسماء الجهات الأربع بلغة الواجهة، مفهرسة بالدرجة.
+  final Map<int, String> directions;
+  final TextDirection textDirection;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -320,7 +328,7 @@ class _CompassDialPainter extends CustomPainter {
           ..color = isCardinal ? strongTick : tick,
       );
 
-      final name = _directions[degree];
+      final name = directions[degree];
       if (name == null) continue;
 
       final painter = TextPainter(
@@ -332,7 +340,7 @@ class _CompassDialPainter extends CustomPainter {
             fontWeight: FontWeight.w600,
           ),
         ),
-        textDirection: TextDirection.rtl,
+        textDirection: textDirection,
       )..layout();
 
       final labelRadius = radius - 27;
@@ -350,7 +358,9 @@ class _CompassDialPainter extends CustomPainter {
       oldDelegate.tick != tick ||
       oldDelegate.strongTick != strongTick ||
       oldDelegate.label != label ||
-      oldDelegate.labelSize != labelSize;
+      oldDelegate.labelSize != labelSize ||
+      oldDelegate.textDirection != textDirection ||
+      !mapEquals(oldDelegate.directions, directions);
 }
 
 /// سهم القبلة: خطّ ذهبي ينتهي برأس مثلّث، ويتوهّج عند المحاذاة.

@@ -8,6 +8,7 @@ import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/smart_outreach/data/repo/smart_outreach_schedule_repository.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/pages/smart_outreach_call_logs_screen.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachExecutionScreen extends StatefulWidget {
   const SmartOutreachExecutionScreen({
@@ -47,15 +48,15 @@ class _SmartOutreachExecutionScreenState
         _starting = false;
         _failed = false;
         _message = widget.launchedFromNotification
-            ? 'بدأت المكالمات من التنبيه.'
-            : 'بدأت المكالمات الآن.';
+            ? context.l10n.outreachCallsStartedFromAlert
+            : context.l10n.outreachCallsStartedNow;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _starting = false;
         _failed = true;
-        _message = 'تعذر بدء المكالمات الآن. حاول مرة أخرى.';
+        _message = context.l10n.outreachCallsStartFailed;
       });
     }
   }
@@ -63,9 +64,10 @@ class _SmartOutreachExecutionScreenState
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     return AppScaffoldWidget(
-      title: 'بدء المكالمات',
+      title: l10n.outreachExecutionTitle,
       showLargeHeader: false,
       initialOffset: null,
       body: OutreachGround(
@@ -77,16 +79,16 @@ class _SmartOutreachExecutionScreenState
           ),
           if (_failed)
             OutreachPrimaryButton(
-              label: 'إعادة المحاولة',
+              label: l10n.commonRetry,
               icon: AppIcons.refresh,
               onTap: _start,
             ),
           SizedBox(height: 10.h),
           skin.divider(),
           OutreachRow(
-            title: 'سجل المكالمات',
+            title: l10n.outreachCallLogsTitle,
             icon: AppIcons.clock,
-            subtitle: 'راجع من ردّ ومن لم يردّ بعد انتهاء القائمة',
+            subtitle: l10n.outreachCallLogsReviewSubtitle,
             showChevron: !_starting,
             dimmed: _starting,
             isLast: true,
@@ -170,7 +172,7 @@ class _ExecutionStatus extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  starting ? 'جارِ تجهيز المكالمات...' : message,
+                  starting ? context.l10n.outreachPreparingCalls : message,
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 14.sp,
@@ -181,8 +183,8 @@ class _ExecutionStatus extends StatelessWidget {
                 SizedBox(height: 3.h),
                 Text(
                   starting
-                      ? 'لا تغلق الصفحة حتى تبدأ العملية.'
-                      : 'يمكنك إغلاق الصفحة الآن ومراجعة النتيجة من السجل.',
+                      ? context.l10n.outreachDontCloseHint
+                      : context.l10n.outreachCanCloseHint,
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.78),
                     fontSize: 9.5.sp,

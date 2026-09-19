@@ -9,6 +9,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/presentation/view/widgets/smart_outreach_ui_kit.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// جدولة واحدة في القائمة.
 ///
@@ -44,23 +45,26 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final schedule = bundle.schedule;
+    final l10n = context.l10n;
     final timeLabel = TimeOfDay(
       hour: schedule.hour,
       minute: schedule.minute,
     ).format(context);
 
     final daysLabel = schedule.isDaily
-        ? 'كل يوم'
+        ? l10n.outreachEveryDay
         : schedule.scheduleDays.isEmpty
-            ? 'بلا أيام محددة'
-            : schedule.scheduleDays.map(outreachWeekdayLabel).join('، ');
+            ? l10n.outreachNoDays
+            : schedule.scheduleDays
+                .map((day) => outreachWeekdayLabel(l10n, day))
+                .join(l10n.outreachListSeparator);
 
     final meta = <String>[
       daysLabel,
-      _contactsLabel(bundle.contacts.length),
-      'انتظار ${schedule.ringTimeout}ث',
-      'بعد الرد ${schedule.hangupDelay}ث',
-      'بين الأرقام ${schedule.delayBetweenCalls}ث',
+      l10n.outreachContactsCount(bundle.contacts.length),
+      l10n.outreachMetaRing(schedule.ringTimeout),
+      l10n.outreachMetaAfterAnswer(schedule.hangupDelay),
+      l10n.outreachMetaBetween(schedule.delayBetweenCalls),
     ].join(' · ');
 
     final body = _ScheduleBody(
@@ -92,22 +96,6 @@ class SmartOutreachScheduleItemCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12.r),
       child: body,
     );
-  }
-
-  static String _contactsLabel(int count) {
-    if (count == 0) {
-      return 'بلا أرقام';
-    }
-    if (count == 1) {
-      return 'رقم واحد';
-    }
-    if (count == 2) {
-      return 'رقمان';
-    }
-    if (count <= 10) {
-      return '$count أرقام';
-    }
-    return '$count رقمًا';
   }
 }
 
@@ -180,7 +168,7 @@ class _ScheduleBody extends StatelessWidget {
                   ),
                   if (raised) ...[
                     SizedBox(width: 7.w),
-                    const OutreachPill(label: 'الأقرب'),
+                    OutreachPill(label: context.l10n.outreachNearest),
                   ],
                   SizedBox(width: 7.w),
                   OutreachValue(text: timeLabel, emphasised: raised),
@@ -211,19 +199,19 @@ class _ScheduleBody extends StatelessWidget {
               Row(
                 children: [
                   OutreachTextAction(
-                    label: 'ابدأ الآن',
+                    label: context.l10n.outreachStartNow,
                     icon: AppIcons.play,
                     onTap: onStart,
                   ),
                   SizedBox(width: 12.w),
                   OutreachTextAction(
-                    label: 'تعديل',
+                    label: context.l10n.commonEdit,
                     icon: AppIcons.edit,
                     onTap: onEdit,
                   ),
                   const Spacer(),
                   OutreachTextAction(
-                    label: 'حذف',
+                    label: context.l10n.commonDelete,
                     icon: AppIcons.delete,
                     danger: true,
                     onTap: onDelete,

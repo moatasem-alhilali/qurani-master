@@ -13,6 +13,7 @@ import 'package:quran_app/features/categories/presentation/view/pages/category_d
 import 'package:quran_app/features/categories/presentation/view/pages/category_view_all_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// المكتبة: ثلاث مجموعات، كل مجموعة عنوان نحيل وشبكة مربّعات أيقونات.
 ///
@@ -28,21 +29,23 @@ class CategoryScreen extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'المكتبة',
+        title: context.l10n.categoriesLibraryTitle,
         body: ColoredBox(
           color: skin.ground,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const HomeSectionHeader(title: 'القرآن الكريم وعلومه'),
+              HomeSectionHeader(
+                title: context.l10n.categoriesQuranSciencesHeader,
+              ),
               CategoryTileGrid(tiles: _recitationTiles(context)),
               SizedBox(height: 6.h),
               skin.divider(),
-              const HomeSectionHeader(title: 'تصنيفات'),
+              HomeSectionHeader(title: context.l10n.categoriesTypesHeader),
               CategoryTileGrid(tiles: _sectionTiles(context)),
               SizedBox(height: 6.h),
               skin.divider(),
-              const HomeSectionHeader(title: 'الأقسام'),
+              HomeSectionHeader(title: context.l10n.categoriesSectionsHeader),
               CategoryTileGrid(tiles: _libraryTiles(context)),
               SizedBox(height: 22.h),
             ],
@@ -53,15 +56,28 @@ class CategoryScreen extends StatelessWidget {
   }
 
   List<Widget> _recitationTiles(BuildContext context) {
-    const entries = <({String id, String title, String label})>[
-      (id: '364764', title: 'تلاوات مشهورة', label: 'تلاوات مشهورة'),
-      (id: '364777', title: 'تعليم أطفال', label: 'تعليم أطفال'),
+    final l10n = context.l10n;
+    final entries = <({String id, String title, String label})>[
+      (
+        id: '364764',
+        title: l10n.categoriesFamousRecitations,
+        label: l10n.categoriesFamousRecitations,
+      ),
+      (
+        id: '364777',
+        title: l10n.categoriesKidsTeaching,
+        label: l10n.categoriesKidsTeaching,
+      ),
       (
         id: '364774',
-        title: 'تلاوات بروايات وقراءات',
-        label: 'تلاوات بروايات',
+        title: l10n.categoriesRecitationsByNarration,
+        label: l10n.categoriesRecitationsByNarrationShort,
       ),
-      (id: '364771', title: 'مصاحف الحرمين', label: 'مصاحف الحرمين'),
+      (
+        id: '364771',
+        title: l10n.categoriesHaramainMushafs,
+        label: l10n.categoriesHaramainMushafs,
+      ),
       // أقسام صوتية أخرى متاحة في الواجهة الخلفية ومعطّلة حاليًا:
       // (id: '364768', title: 'مصاحف مترجمة معانيها', ...),
       // (id: '691', title: 'مصاحف مترجمة', ...),
@@ -80,15 +96,16 @@ class CategoryScreen extends StatelessWidget {
   }
 
   List<Widget> _sectionTiles(BuildContext context) {
-    final data = _getCategorySectionData();
+    final l10n = context.l10n;
+    final data = _getCategorySectionData(l10n);
 
-    const picks = <({int index, String label, HugeIconData icon})>[
+    final picks = <({int index, String label, HugeIconData icon})>[
       // (index: 0, label: 'فيديوهات', icon: AppIcons.news),
-      (index: 1, label: 'كتب', icon: AppIcons.menuBook),
-      (index: 2, label: 'قصص', icon: AppIcons.bookOpen),
-      (index: 3, label: 'أصوات', icon: AppIcons.sound),
+      (index: 1, label: l10n.categoriesTypeBooks, icon: AppIcons.menuBook),
+      (index: 2, label: l10n.categoriesTypeStories, icon: AppIcons.bookOpen),
+      (index: 3, label: l10n.categoriesTypeAudios, icon: AppIcons.sound),
       // (index: 4, label: 'فتاوى', icon: AppIcons.list),
-      (index: 5, label: 'قرآن', icon: AppIcons.quran),
+      (index: 5, label: l10n.categoriesTypeQuran, icon: AppIcons.quran),
       // (index: 6, label: 'عروض تقديمية', icon: AppIcons.layers),
       // (index: 7, label: 'أخبار', icon: AppIcons.news),
       // (index: 8, label: 'مقالات', icon: AppIcons.noteEdit),
@@ -109,25 +126,54 @@ class CategoryScreen extends StatelessWidget {
   }
 
   List<Widget> _libraryTiles(BuildContext context) {
+    final l10n = context.l10n;
     final sections = <({
       String title,
       HugeIconData icon,
       List<Map<String, dynamic>> data,
     })>[
-      (title: 'القرآن', icon: AppIcons.quran, data: quranJson),
-      (title: 'السنة', icon: AppIcons.star, data: sonaJson),
-      (title: 'السيرة النبوية', icon: AppIcons.user, data: serahNabawyJson),
-      (title: 'العقيدة', icon: AppIcons.allah, data: aqidaJson),
-      (title: 'فقه', icon: AppIcons.book, data: fikhJson),
+      (title: l10n.categoriesTopicQuran, icon: AppIcons.quran, data: quranJson),
+      (title: l10n.categoriesTopicSunnah, icon: AppIcons.star, data: sonaJson),
+      (
+        title: l10n.categoriesTopicSeerah,
+        icon: AppIcons.user,
+        data: serahNabawyJson,
+      ),
+      (
+        title: l10n.categoriesTopicAqeedah,
+        icon: AppIcons.allah,
+        data: aqidaJson
+      ),
+      (title: l10n.categoriesTopicFiqh, icon: AppIcons.book, data: fikhJson),
       // (title: 'الخطب المنبرية', icon: AppIcons.sound, data: kotabManbrJson),
       // (title: 'فضائل الأقوال', icon: AppIcons.heart, data: fdaelJson),
       // (title: 'الدعوة إلى الله', icon: AppIcons.globe,
       //     data: dawaForAllhJson),
-      (title: 'التاريخ', icon: AppIcons.calendar, data: historyJson),
-      (title: 'اللغة العربية', icon: AppIcons.globe, data: arabicLangJson),
-      (title: 'دراسات إسلامية', icon: AppIcons.bookOpen, data: studyIslamic),
-      (title: 'الدروس العلمية', icon: AppIcons.menuBook, data: lessonJson),
-      (title: 'الكبائر والمحرمات', icon: AppIcons.warning, data: kabaerJson),
+      (
+        title: l10n.categoriesTopicHistory,
+        icon: AppIcons.calendar,
+        data: historyJson,
+      ),
+      (
+        title: l10n.categoriesTopicArabic,
+        icon: AppIcons.globe,
+        data: arabicLangJson,
+      ),
+      (
+        title: l10n.categoriesTopicIslamicStudies,
+        icon: AppIcons.bookOpen,
+        data: studyIslamic,
+      ),
+      (
+        title: l10n.categoriesTopicLessons,
+        icon: AppIcons.menuBook,
+        data: lessonJson,
+      ),
+      (
+        title: l10n.categoriesTopicMajorSins,
+        icon: AppIcons.warning,
+        data: kabaerJson,
+      ),
     ];
 
     return [
@@ -146,80 +192,80 @@ class CategoryScreen extends StatelessWidget {
   }
 }
 
-List<CategorySectionModel> _getCategorySectionData() {
+List<CategorySectionModel> _getCategorySectionData(L10n l10n) {
   return [
     CategorySectionModel(
-      title: 'فيديوهات',
+      title: l10n.categoriesTypeVideos,
       type: 'section',
       itemsCount: 1010,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/videos/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'كتب',
+      title: l10n.categoriesTypeBooks,
       type: 'section',
       itemsCount: 4984,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/books/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'قصص',
+      title: l10n.categoriesTypeStories,
       type: 'section',
       itemsCount: 1703,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/articles/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'اصوات',
+      title: l10n.categoriesTypeAudios,
       type: 'section',
       itemsCount: 4057,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/audios/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'فتاوي',
+      title: l10n.categoriesTypeFatwas,
       type: 'section',
       itemsCount: 527,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/fatwa/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'قرأن',
+      title: l10n.categoriesTypeQuran,
       type: 'section',
       itemsCount: 164,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/quran/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'عروض تقديميه',
+      title: l10n.categoriesTypePresentations,
       type: 'section',
       itemsCount: 5,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/cards/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'اخبار',
+      title: l10n.categoriesTypeNews,
       type: 'section',
       itemsCount: 1,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/news/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'مقالات',
+      title: l10n.categoriesTypeArticles,
       type: 'section',
       itemsCount: 275,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/poster/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'تطبيقات',
+      title: l10n.categoriesTypeApps,
       type: 'section',
       itemsCount: 55,
       apiUrl:
           'https://api3.islamhouse.com/v3/paV29H2gm56kvLPy/main/apps/ar/ar/1/25/json',
     ),
     CategorySectionModel(
-      title: 'خطب',
+      title: l10n.categoriesTypeSermons,
       type: 'section',
       itemsCount: 288,
       apiUrl:

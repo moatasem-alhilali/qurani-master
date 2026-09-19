@@ -4,6 +4,7 @@ import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/time_notification_data_model.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ✅ Singleton + Seeder for notification data
 /// Updated to work with the new unified notification system
@@ -152,15 +153,19 @@ class NotificationDataConstSeed {
   }
 
   /// Prayer info list with updated ID management using unified system
+  ///
+  /// Names are resolved in the saved app language (this also runs in
+  /// background isolates, so there is no BuildContext).
   List<PrayerInfoModel> prayerInfoListSeed(PrayerTimes times) {
+    final l10n = L10nService.current;
     return [
       PrayerInfoModel(
         id: NotificationIdManager.generateNotificationId(
           NotificationKeys.isNotificationAthanFagr,
         ),
         type: Prayer.fajr,
-        name: 'الفجر',
-        description: 'اذان الفجر',
+        name: l10n.prayerFajr,
+        description: l10n.coreAthanDescription(l10n.prayerFajr),
         time: times.fajr,
       ),
       PrayerInfoModel(
@@ -168,8 +173,8 @@ class NotificationDataConstSeed {
           NotificationKeys.isNotificationAthanSunrise,
         ),
         type: Prayer.sunrise,
-        name: 'الشروق',
-        description: 'اذان الشروق',
+        name: l10n.prayerSunrise,
+        description: l10n.coreAthanDescription(l10n.prayerSunrise),
         time: times.sunrise,
       ),
       PrayerInfoModel(
@@ -177,8 +182,8 @@ class NotificationDataConstSeed {
           NotificationKeys.isNotificationAthanDuhr,
         ),
         type: Prayer.dhuhr,
-        name: 'الظهر',
-        description: 'اذان الظهر',
+        name: l10n.prayerDhuhr,
+        description: l10n.coreAthanDescription(l10n.prayerDhuhr),
         time: times.dhuhr,
       ),
       PrayerInfoModel(
@@ -186,8 +191,8 @@ class NotificationDataConstSeed {
           NotificationKeys.isNotificationAthanAsr,
         ),
         type: Prayer.asr,
-        name: 'العصر',
-        description: 'اذان العصر',
+        name: l10n.prayerAsr,
+        description: l10n.coreAthanDescription(l10n.prayerAsr),
         time: times.asr,
       ),
       PrayerInfoModel(
@@ -195,8 +200,8 @@ class NotificationDataConstSeed {
           NotificationKeys.isNotificationAthanMagrib,
         ),
         type: Prayer.maghrib,
-        name: 'المغرب',
-        description: 'اذان المغرب',
+        name: l10n.prayerMaghrib,
+        description: l10n.coreAthanDescription(l10n.prayerMaghrib),
         time: times.maghrib,
       ),
       PrayerInfoModel(
@@ -204,8 +209,8 @@ class NotificationDataConstSeed {
           NotificationKeys.isNotificationAthanIsha,
         ),
         type: Prayer.isha,
-        name: 'العشاء',
-        description: 'اذان العشاء',
+        name: l10n.prayerIsha,
+        description: l10n.coreAthanDescription(l10n.prayerIsha),
         time: times.isha,
       ),
     ];

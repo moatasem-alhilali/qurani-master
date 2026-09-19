@@ -4,6 +4,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// نظرة عامة على الذكر: صفوف نحيلة تفصلها خطوط شعرة، بلا بطاقات.
 class AnalyticsOverviewTab extends StatelessWidget {
@@ -27,28 +28,29 @@ class AnalyticsOverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     final periods = <_PeriodRow>[
       _PeriodRow(
-        label: 'اليوم',
+        label: l10n.sabihPeriodToday,
         subih: state.mostUsedTodaySubih,
         count: _countOf(state.todayCounts, state.todayMostUsed),
         total: _totalOf(state.todayCounts),
       ),
       _PeriodRow(
-        label: 'هذا الأسبوع',
+        label: l10n.sabihThisWeek,
         subih: state.mostUsedWeekSubih,
         count: _countOf(state.weekCounts, state.weekMostUsed),
         total: _totalOf(state.weekCounts),
       ),
       _PeriodRow(
-        label: 'هذا الشهر',
+        label: l10n.sabihThisMonth,
         subih: state.mostUsedMonthSubih,
         count: _countOf(state.monthCounts, state.monthMostUsed),
         total: _totalOf(state.monthCounts),
       ),
       _PeriodRow(
-        label: 'كل الوقت',
+        label: l10n.sabihAllTime,
         subih: state.mostUsedAllTimeSubih,
         count: _countOf(state.allTimeCounts, state.allTimeMostUsed),
         total: _totalOf(state.allTimeCounts),
@@ -58,13 +60,13 @@ class AnalyticsOverviewTab extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.only(bottom: 24.h),
       children: [
-        const HomeSectionHeader(title: 'الأذكار الأكثر استخدامًا'),
+        HomeSectionHeader(title: l10n.sabihMostUsed),
         for (var i = 0; i < periods.length; i++) ...[
           _MostUsedTile(row: periods[i]),
           if (i != periods.length - 1) skin.divider(),
         ],
         skin.divider(),
-        const HomeSectionHeader(title: 'إجمالي عدد الأذكار'),
+        HomeSectionHeader(title: l10n.sabihTotalCount),
         for (var i = 0; i < periods.length; i++) ...[
           _TotalTile(label: periods[i].label, total: periods[i].total),
           if (i != periods.length - 1) skin.divider(),
@@ -121,7 +123,7 @@ class _MostUsedTile extends StatelessWidget {
           Expanded(
             child: subih == null
                 ? Text(
-                    'لا توجد بيانات بعد',
+                    context.l10n.sabihNoDataYet,
                     style: TextStyle(
                       color: skin.inkSoft.withValues(alpha: 0.6),
                       fontSize: 10.sp,
@@ -143,9 +145,9 @@ class _MostUsedTile extends StatelessWidget {
                           height: 1.2,
                         ),
                       ),
-                      if (subih.content.trim().isNotEmpty)
+                      if (subih.displayContent(context.l10n).isNotEmpty)
                         Text(
-                          subih.content,
+                          subih.displayContent(context.l10n),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

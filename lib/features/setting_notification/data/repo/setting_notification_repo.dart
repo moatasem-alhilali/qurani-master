@@ -6,7 +6,9 @@ import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_
 import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_labels.dart';
 import 'package:quran_app/features/setting_notification/data/database/database_notification_setting_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 /// Repository for managing notification settings and applying changes to the notification scheduler
@@ -112,7 +114,10 @@ class SettingNotificationRepo {
         final prayerName = _athanPayloadService.prayerNameFromKey(setting.key);
         final title = isAthan
             ? _athanPayloadService.buildAthanTitle(prayerName: prayerName)
-            : setting.label;
+            : NotificationLabels.resolve(
+                setting.key,
+                fallback: setting.label,
+              );
         final body = isAthan
             ? _athanPayloadService.buildAthanBody(prayerName: prayerName)
             : NotificationDataConst.resolveNotificationBody(setting.key);
@@ -134,7 +139,9 @@ class SettingNotificationRepo {
           // لا يُمرَّر مكان هنا: هذا المسار يجدول من شاشة الإعدادات بلا مواقيت
           // محسوبة، والمنسّق يعيد الجدولة بالمكان عند أوّل حساب.
           subText: null,
-          ticker: isAthan ? 'حان الآن أذان $prayerName' : null,
+          ticker: isAthan
+              ? L10nService.current.notifSettingsAthanTicker(prayerName)
+              : null,
           iosSubtitle: null,
           iosThreadIdentifier: isAthan ? 'athan_notifications' : null,
           iosCategoryIdentifier: isAthan ? 'islamic_notifications' : null,

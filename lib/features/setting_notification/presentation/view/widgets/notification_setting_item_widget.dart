@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/util/my_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
@@ -9,6 +10,7 @@ import 'package:quran_app/features/setting/data/model/notification_setting_model
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/show_edit_schedule_dialog.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ إشعار واحد: أيقونة + اسم + وصف جدولته + مفتاح التشغيل.
 ///
@@ -39,7 +41,7 @@ class NotificationSettingItemWidget extends StatelessWidget {
     return SettingsRow(
       icon: icon,
       title: title,
-      subtitle: _describe(model),
+      subtitle: _describe(context, model),
       active: model.enabled,
       isLast: isLast,
       onTap: () => _toggle(context, model, value: !model.enabled),
@@ -49,7 +51,7 @@ class NotificationSettingItemWidget extends StatelessWidget {
           if (canSchedule)
             SettingsIconButton(
               icon: AppIcons.clock,
-              tooltip: 'مواعيد التنبيه',
+              tooltip: context.l10n.notifSettingsScheduleTimesTooltip,
               onTap: () => _openActions(context, model),
             ),
           SettingsSwitch(
@@ -84,11 +86,14 @@ class NotificationSettingItemWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SettingsSheetHeader(title: title, subtitle: _describe(model)),
+          SettingsSheetHeader(
+            title: title,
+            subtitle: _describe(context, model),
+          ),
           SettingsRow(
             icon: AppIcons.edit,
-            title: 'تعديل الجدولة',
-            subtitle: 'غيّر نوع التكرار ووقت التنبيه',
+            title: context.l10n.notifSettingsEditScheduleTitle,
+            subtitle: context.l10n.notifSettingsEditScheduleSubtitle,
             onTap: () {
               Navigator.of(sheetContext).pop();
               _openEditSchedule(context, bloc, model);
@@ -96,8 +101,8 @@ class NotificationSettingItemWidget extends StatelessWidget {
           ),
           SettingsRow(
             icon: AppIcons.calendar,
-            title: 'إدارة مواعيد إضافية',
-            subtitle: 'أضف أكثر من موعد لهذا الإشعار',
+            title: context.l10n.notifSettingsExtraSchedulesTitle,
+            subtitle: context.l10n.notifSettingsExtraSchedulesSubtitle,
             isLast: true,
             onTap: () {
               Navigator.of(sheetContext).pop();
@@ -131,32 +136,42 @@ class NotificationSettingItemWidget extends StatelessWidget {
     );
   }
 
-  String _describe(NotificationSettingModel model) {
+  String _describe(BuildContext context, NotificationSettingModel model) {
+    final l10n = context.l10n;
     if (!model.enabled) {
-      return 'موقوف';
+      return l10n.notifSettingsStatusStopped;
     }
     if (model.onlySetting) {
-      return 'مفعّل';
+      return l10n.notifSettingsStatusEnabled;
     }
-    return scheduleSummary(model);
+    return scheduleSummary(l10n, model);
   }
 }
 
 /// وصف مختصر لجدولة إشعار — يُستخدم في الصفّ وفي نافذة التعديل.
-String scheduleSummary(NotificationSettingModel model) {
+String scheduleSummary(L10n l10n, NotificationSettingModel model) {
   switch (model.scheduleType) {
     case ScheduleType.daily:
-      return 'يومياً · ${formatClock(model.hour, model.minute)}';
+      return l10n.notifSettingsSummaryDaily(
+        formatClock(model.hour, model.minute),
+      );
     case ScheduleType.hourly:
-      return 'كل ساعة عند الدقيقة ${model.minute ?? 0}';
+      return l10n.notifSettingsSummaryHourly(model.minute ?? 0);
     case ScheduleType.everyNMinutes:
-      return 'كل ${model.intervalMinutes ?? 1} دقيقة';
+      return l10n.notifSettingsSummaryEveryNMinutes(
+        model.intervalMinutes ?? 1,
+      );
     case ScheduleType.weekly:
-      final days = (model.weekdays ?? []).map(arabicDayOfWeek).join('، ');
-      final label = days.isEmpty ? 'بدون أيام محددة' : days;
-      return 'أسبوعياً ($label) · ${formatClock(model.hour, model.minute)}';
+      final days = (model.weekdays ?? [])
+          .map((day) => localizedDayOfWeek(l10n, day))
+          .join(l10n.notifSettingsListSeparator);
+      final label = days.isEmpty ? l10n.notifSettingsNoDaysSelected : days;
+      return l10n.notifSettingsSummaryWeekly(
+        label,
+        formatClock(model.hour, model.minute),
+      );
     case ScheduleType.customDates:
-      return 'جدولة مخصصة · ${model.customDates?.length ?? 0} توقيت';
+      return l10n.notifSettingsSummaryCustom(model.customDates?.length ?? 0);
   }
 }
 
@@ -167,24 +182,9 @@ String formatClock(int? hour, int? minute) {
   return '$h:$m';
 }
 
-/// اسم يوم الأسبوع بالعربية (1 = الاثنين ... 7 = الأحد).
-String arabicDayOfWeek(int day) {
-  switch (day) {
-    case 1:
-      return 'الاثنين';
-    case 2:
-      return 'الثلاثاء';
-    case 3:
-      return 'الأربعاء';
-    case 4:
-      return 'الخميس';
-    case 5:
-      return 'الجمعة';
-    case 6:
-      return 'السبت';
-    case 7:
-      return 'الأحد';
-    default:
-      return '؟';
-  }
+/// اسم يوم الأسبوع بلغة الواجهة (1 = الاثنين ... 7 = الأحد).
+String localizedDayOfWeek(L10n l10n, int day) {
+  if (day < 1 || day > 7) return '?';
+  // 1 يناير 2024 كان يوم اثنين، فيطابق ترقيم DateTime.weekday.
+  return DateFormat.EEEE(l10n.localeName).format(DateTime(2024, 1, day));
 }

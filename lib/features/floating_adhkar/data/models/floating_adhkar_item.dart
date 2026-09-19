@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 enum FloatingAdhkarSourceType {
   builtIn,
@@ -15,12 +16,12 @@ extension FloatingAdhkarSourceTypeX on FloatingAdhkarSourceType {
     }
   }
 
-  String get label {
+  String label(L10n l10n) {
     switch (this) {
       case FloatingAdhkarSourceType.builtIn:
-        return 'افتراضي';
+        return l10n.floatingAdhkarSourceBuiltIn;
       case FloatingAdhkarSourceType.custom:
-        return 'مخصص';
+        return l10n.floatingAdhkarSourceCustom;
     }
   }
 

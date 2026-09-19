@@ -5,6 +5,7 @@ import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_entities.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_rewards_sheet_achievement_card.dart';
 
@@ -79,7 +80,7 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '${rewardsSummary.xp} نقطة',
+                              context.l10n.youngMuslimPoints(rewardsSummary.xp),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: youngMuslimNumber(
@@ -91,7 +92,8 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                             ),
                             SizedBox(height: 2.h),
                             Text(
-                              'المستوى ${rewardsSummary.level}',
+                              context.l10n
+                                  .youngMuslimLevel(rewardsSummary.level),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: youngMuslimRowSubtitle(skin, size: 10.sp),
@@ -106,14 +108,17 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'التقدّم للمستوى التالي',
+                          context.l10n.youngMuslimNextLevelProgress,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: youngMuslimRowSubtitle(skin),
                         ),
                       ),
                       Text(
-                        '${rewardsSummary.xpIntoCurrentLevel} من 100',
+                        context.l10n.youngMuslimProgressOf(
+                          rewardsSummary.xpIntoCurrentLevel,
+                          100,
+                        ),
                         style: youngMuslimNumber(skin, size: 10.sp),
                       ),
                     ],
@@ -129,37 +134,37 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
             cells: [
               YoungMuslimStatCell(
                 value: '${rewardsSummary.completedVideos}',
-                label: 'حلقات',
+                label: context.l10n.youngMuslimStatEpisodes,
                 icon: AppIcons.play,
               ),
               YoungMuslimStatCell(
                 value: '${rewardsSummary.correctAnswers}',
-                label: 'إجابات',
+                label: context.l10n.youngMuslimStatAnswers,
                 icon: AppIcons.checkSmall,
               ),
               YoungMuslimStatCell(
                 value: '${rewardsSummary.completedSeries}',
-                label: 'سلاسل',
+                label: context.l10n.youngMuslimStatSeriesPlural,
                 icon: AppIcons.layers,
               ),
               YoungMuslimStatCell(
                 value: '${rewardsSummary.perfectQuizzes}',
-                label: 'نتائج كاملة',
+                label: context.l10n.youngMuslimStatPerfectScores,
                 icon: AppIcons.target,
               ),
             ],
           ),
           skin.divider(),
           YoungMuslimSectionHeader(
-            title: 'الإنجازات المفتوحة',
+            title: context.l10n.youngMuslimUnlockedAchievements,
             trailing: YoungMuslimMetricChip(
-              label: '${unlocked.length} إنجاز',
+              label: context.l10n.youngMuslimAchievementsCount(unlocked.length),
             ),
           ),
           if (unlocked.isEmpty)
-            const YoungMuslimEmptyState(
-              title: 'لا توجد إنجازات بعد',
-              subtitle: 'أكمل أول حلقة أو أجب عن أول سؤال لتبدأ الرحلة.',
+            YoungMuslimEmptyState(
+              title: context.l10n.youngMuslimNoAchievementsTitle,
+              subtitle: context.l10n.youngMuslimNoAchievementsSubtitle,
               icon: AppIcons.star,
             )
           else
@@ -175,9 +180,9 @@ class YoungMuslimRewardsSheet extends StatelessWidget {
           if (locked.isNotEmpty) ...[
             skin.divider(),
             YoungMuslimSectionHeader(
-              title: 'إنجازات قادمة',
+              title: context.l10n.youngMuslimUpcomingAchievements,
               trailing: YoungMuslimMetricChip(
-                label: '${locked.length} إنجاز',
+                label: context.l10n.youngMuslimAchievementsCount(locked.length),
               ),
             ),
             for (var i = 0; i < locked.length; i++)
@@ -236,7 +241,7 @@ class _RewardsSheetHeader extends StatelessWidget
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              'نقاطي وإنجازاتي',
+              context.l10n.youngMuslimRewardsTitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(

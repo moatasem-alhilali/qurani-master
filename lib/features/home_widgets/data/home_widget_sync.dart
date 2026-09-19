@@ -13,6 +13,7 @@ import 'package:quran_app/features/home_widgets/data/home_widget_ids.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_payload.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_params.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_library/quran_library.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -104,9 +105,11 @@ abstract final class HomeWidgetSync {
   static Future<bool> _sync(String reason) async {
     try {
       await HomeWidget.setAppGroupId(HomeWidgetIds.appGroupId);
-      // DateFormat بلغة 'ar' يرمي في عزل الخلفية ما لم تُحمَّل بيانات اللغة؛
-      // في الواجهة تحمّلها Material Localizations، وفي الخلفية لا أحد.
-      await initializeDateFormatting('ar');
+      // لغة التطبيق المحفوظة — عزل الخلفية لا يرى LocaleCubit.
+      // DateFormat يرمي في عزل الخلفية ما لم تُحمَّل بيانات اللغة؛ في الواجهة
+      // تحمّلها Material Localizations، وفي الخلفية لا أحد.
+      final language = L10nService.savedLanguage;
+      await initializeDateFormatting(language.code);
 
       final location = await DatabaseCoordinatesService().getSavedLocation();
       final payload = HomeWidgetPayloadBuilder.build(
@@ -115,6 +118,7 @@ abstract final class HomeWidgetSync {
         settings: location == null ? null : PrayerCalculationParams.load(),
         versePool: await _loadVersePool(),
         previousVerses: await _readPreviousVerses(),
+        language: language,
       );
 
       await HomeWidget.saveWidgetData<String>(

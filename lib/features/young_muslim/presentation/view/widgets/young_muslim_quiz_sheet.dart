@@ -10,6 +10,7 @@ import 'package:quran_app/features/young_muslim/domain/entities/young_muslim_ent
 import 'package:quran_app/features/young_muslim/domain/repositories/young_muslim_repository.dart';
 import 'package:quran_app/features/young_muslim/presentation/cubit/young_muslim_quiz_cubit.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_quiz_sheet_form.dart';
 part 'young_muslim_quiz_sheet_result.dart';

@@ -12,6 +12,7 @@ import 'package:quran_app/features/traveler/presentation/view/widgets/flight_pra
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_command_panel.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/flight_prayer/flight_prayer_map_layer.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FlightPrayerTimesScreen extends StatelessWidget {
   const FlightPrayerTimesScreen({super.key});
@@ -151,16 +152,18 @@ class _FlightPrayerTimesOrchestratorState
         }
       },
       child: TravelerScaffold(
-        title: 'مواقيت الصلاة أثناء الطيران',
+        title: context.l10n.travelerFlightPrayerTitle,
         actions: [
           TravelerIconAction(
             icon: _showMap ? AppIcons.sections : AppIcons.mapPin,
-            tooltip: _showMap ? 'عرض المواقيت' : 'عرض الخريطة',
+            tooltip: _showMap
+                ? context.l10n.travelerShowTimes
+                : context.l10n.travelerShowMap,
             active: _showMap,
             onTap: () => setState(() => _showMap = !_showMap),
           ),
           GenericSearchAnchorAsync<String>(
-            hintText: 'بحث برقم الرحلة',
+            hintText: context.l10n.travelerSearchByFlightNumber,
             asyncSuggestions: (query) => _flightSuggestions(context, query),
             onSelected: (item) => _onFlightSuggestionSelected(context, item),
             suggestionBuilder: (context, item) {
@@ -179,7 +182,7 @@ class _FlightPrayerTimesOrchestratorState
                   ),
                 ),
                 subtitle: Text(
-                  'تشغيل البحث الآن',
+                  context.l10n.travelerRunSearchNow,
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.78),
                     fontSize: 9.5.sp,

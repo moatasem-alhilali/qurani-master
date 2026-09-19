@@ -135,7 +135,7 @@ class _AnimatedSnackbarWidgetState extends State<AnimatedSnackbarWidget>
           ),
           if (widget.actionLabel != null && widget.onAction != null)
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsetsDirectional.only(end: 8),
               child: TextButton(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8),

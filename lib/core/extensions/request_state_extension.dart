@@ -4,6 +4,7 @@ import 'package:quran_app/core/components/quran_widgets/enhanced_spiritual_loadi
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/core/theme/theme_data.dart';
 
 /// Extension on RequestState enum to handle different states with widgets
@@ -55,7 +56,7 @@ extension RequestStateWidget on RequestState {
                   ),
                   SizedBox(height: 16.h),
                   Text(
-                    'جاري تحميل ...',
+                    (context?.l10n ?? L10nService.current).commonLoading,
                     style: TextStyle(
                       fontSize: 16.sp,
                       color: context?.gray1,
@@ -80,7 +81,8 @@ extension RequestStateWidget on RequestState {
                       onRefresh?.call();
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('هناك خطأ ما يرجى المحاولة مرة أخرى'),
+                    label: Text((context?.l10n ?? L10nService.current)
+                        .coreGenericError),
                   ),
                 ),
           ],
@@ -100,7 +102,7 @@ extension RequestStateWidget on RequestState {
               onEmptyList ??
                   Center(
                     child: Text(
-                      'لا يوجد بيانات',
+                      (context?.l10n ?? L10nService.current).coreNoData,
                       style: context?.titleMedium?.copyWith(
                         color: context.gray1,
                         fontSize: 16.sp,

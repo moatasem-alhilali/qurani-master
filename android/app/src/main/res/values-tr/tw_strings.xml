@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">Sıradaki namaz</string>
+    <string name="tw_next_prayer_description">Sıradaki namazın adı, vakti ve canlı geri sayım</string>
+    <string name="tw_prayer_times_label">Bugünün vakitleri</string>
+    <string name="tw_prayer_times_description">Hicri tarih ve şehirle birlikte namaz vakitleri</string>
+    <string name="tw_daily_ayah_label">Günün ayeti</string>
+    <string name="tw_daily_ayah_description">Her gün yenilenen kısa bir ayet</string>
+    <string name="tw_open_app">Tamaneena\'yı aç</string>
+    <string name="tw_set_location">Uygulamada konumunu belirle</string>
+    <string name="tw_refresh_needed">Vakitleri güncellemek için</string>
+</resources>

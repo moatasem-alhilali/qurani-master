@@ -7,6 +7,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
 import 'package:quran_app/features/sabih/data/request/subih_request.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// يفتح ورقة إضافة ذكر أو تعديله بلغة الشاشة نفسها: أرضية واحدة،
 /// عنوان نحيل، وفواصل بسُمك شعرة — لا ترويسة ملوّنة تكسر الهوية.
@@ -69,7 +70,9 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
 
     if (_isEditing) {
       _titleController.text = widget.subihToEdit!.title;
-      _contentController.text = widget.subihToEdit!.content;
+      // L10nService: context.l10n is not available in initState.
+      _contentController.text =
+          widget.subihToEdit!.displayContent(L10nService.current);
     }
   }
 
@@ -113,7 +116,8 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    final actionLabel = _isEditing ? 'حفظ التعديلات' : 'إضافة الذكر';
+    final actionLabel =
+        _isEditing ? context.l10n.sabihSaveChanges : context.l10n.sabihAddDhikr;
 
     return BlocListener<SabihBloc, SabihState>(
       listenWhen: (previous, current) =>
@@ -139,7 +143,9 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? 'تعذر حفظ الذكر.'),
+                content: Text(
+                  state.errorMessage ?? context.l10n.sabihSaveFailed,
+                ),
               ),
             );
           }
@@ -153,7 +159,9 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                _isEditing ? 'تم تحديث الذكر بنجاح.' : 'تمت إضافة الذكر بنجاح.',
+                _isEditing
+                    ? context.l10n.sabihUpdatedSuccess
+                    : context.l10n.sabihAddedSuccess,
               ),
             ),
           );
@@ -180,7 +188,9 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
               Padding(
                 padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 8.h),
                 child: Text(
-                  _isEditing ? 'تعديل الذكر' : 'إضافة ذكر مخصص',
+                  _isEditing
+                      ? context.l10n.sabihEditDhikr
+                      : context.l10n.sabihAddCustomDhikr,
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 12.5.sp,
@@ -197,15 +207,16 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
                   children: [
                     _SkinField(
                       controller: _titleController,
-                      label: 'نص الذكر',
-                      hint: 'مثال: سبحان الله وبحمده',
+                      label: context.l10n.sabihFieldText,
+                      // مثال الذكر نصّ ديني فيبقى عربيًا.
+                      hint: context.l10n.sabihExampleHint('سبحان الله وبحمده'),
                       validator: (value) {
                         final text = value?.trim() ?? '';
                         if (text.isEmpty) {
-                          return 'يرجى إدخال نص الذكر';
+                          return context.l10n.sabihTextRequired;
                         }
                         if (text.length < 2) {
-                          return 'نص الذكر قصير جدًا';
+                          return context.l10n.sabihTextTooShort;
                         }
                         return null;
                       },
@@ -213,8 +224,8 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
                     SizedBox(height: 12.h),
                     _SkinField(
                       controller: _contentController,
-                      label: 'الفضل أو وصف مختصر (اختياري)',
-                      hint: 'مثال: تُحطّ بها الخطايا',
+                      label: context.l10n.sabihFieldVirtue,
+                      hint: context.l10n.sabihExampleHint('تُحطّ بها الخطايا'),
                       maxLines: 3,
                     ),
                     SizedBox(height: 16.h),
@@ -222,7 +233,7 @@ class _AddDhikrDialogState extends State<AddDhikrDialog> {
                       children: [
                         Expanded(
                           child: _SheetButton(
-                            label: 'إلغاء',
+                            label: context.l10n.commonCancel,
                             onTap: _isSubmitting
                                 ? null
                                 : () => Navigator.of(context).pop(),

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/presentation/bloc/wird_bloc.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// تبديل طريقة العرض بين القائمة والبطاقة الواحدة.
 class WirdDisplayModeToggle extends StatelessWidget {
@@ -20,7 +21,9 @@ class WirdDisplayModeToggle extends StatelessWidget {
         final isListMode = state.displayMode == WirdDisplayMode.listView;
 
         return Tooltip(
-          message: isListMode ? 'عرض ذكرًا واحدًا' : 'عرض الأذكار قائمةً',
+          message: isListMode
+              ? context.l10n.wirdShowSingle
+              : context.l10n.wirdShowList,
           child: InkWell(
             onTap: () {
               HapticFeedback.selectionClick();

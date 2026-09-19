@@ -7,6 +7,7 @@ import 'package:quran_app/features/floating_adhkar/data/models/floating_adhkar_s
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_built_in_source.dart';
 import 'package:quran_app/features/floating_adhkar/data/service/floating_adhkar_selector.dart';
 import 'package:quran_app/features/sabih/data/database/database_sabih_service.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class FloatingAdhkarRepository {
   FloatingAdhkarRepository({
@@ -87,7 +88,7 @@ class FloatingAdhkarRepository {
         title: item.title,
         text: item.content.trim().isEmpty ? item.title : item.content.trim(),
         sourceType: FloatingAdhkarSourceType.custom,
-        sourceLabel: 'أذكاري الخاصة',
+        sourceLabel: L10nService.current.floatingAdhkarSourceMyAdhkar,
         customAdhkarId: item.id,
       );
     }).toList();

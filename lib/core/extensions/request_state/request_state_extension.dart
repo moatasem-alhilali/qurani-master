@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/extensions/text_styles_extension.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/failure/request_state.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// Extension on RequestState enum to handle different states with widgets
 ///
@@ -109,7 +110,8 @@ extension RequestStateWidget on RequestState {
                           },
                           icon: const Icon(Icons.refresh),
                           label: Text(
-                            'هناك خطأ ما يرجى المحاولة مرة أخرى',
+                            (context?.l10n ?? L10nService.current)
+                                .coreGenericError,
                             style: context?.bodyMedium?.copyWith(
                               color: context.onSurfaceColor,
                             ),
@@ -138,7 +140,7 @@ extension RequestStateWidget on RequestState {
                         right: 0,
                         child: Center(
                           child: Text(
-                            'لا يوجد بيانات',
+                            (context?.l10n ?? L10nService.current).coreNoData,
                             style: context?.bodyMedium?.copyWith(
                               color: context.onSurfaceColor,
                             ),

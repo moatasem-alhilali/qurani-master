@@ -7,6 +7,7 @@ import 'package:quran_app/features/traveler/data/models/travel_dhikr_model.dart'
 import 'package:quran_app/features/traveler/presentation/bloc/travel_athkar/travel_athkar_bloc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_athkar/travel_road_station.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أذكار السفر — مرسومة طريقًا لا مسرودة قائمة.
 ///
@@ -91,7 +92,7 @@ class _TravelAthkarViewState extends State<_TravelAthkarView> {
   @override
   Widget build(BuildContext context) {
     return TravelerScaffold(
-      title: 'أذكار السفر',
+      title: context.l10n.travelerAthkarTitle,
       child: BlocBuilder<TravelAthkarBloc, TravelAthkarState>(
         builder: (context, state) {
           if (state.status == TravelAthkarStatus.loading ||
@@ -102,9 +103,10 @@ class _TravelAthkarViewState extends State<_TravelAthkarView> {
           if (state.status == TravelAthkarStatus.failure) {
             return TravelerNotice(
               icon: AppIcons.error,
-              message: state.errorMessage ?? 'تعذّر تحميل أذكار السفر.',
+              message:
+                  state.errorMessage ?? context.l10n.travelerAthkarLoadFailed,
               isError: true,
-              actionLabel: 'إعادة المحاولة',
+              actionLabel: context.l10n.commonRetry,
               onAction: () =>
                   context.read<TravelAthkarBloc>().add(LoadAthkarEvent()),
             );
@@ -130,9 +132,9 @@ class _TravelAthkarViewState extends State<_TravelAthkarView> {
                 ),
               if (farewell.isNotEmpty) ...[
                 SizedBox(height: 18.h),
-                const _SectionLabel(
-                  title: 'لمن يودّع مسافرًا',
-                  caption: 'ليست من طريقك — بل ممّن بقي خلفك',
+                _SectionLabel(
+                  title: context.l10n.travelerFarewellTitle,
+                  caption: context.l10n.travelerFarewellCaption,
                 ),
                 SizedBox(height: 10.h),
                 for (var i = 0; i < farewell.length; i++)
@@ -178,7 +180,9 @@ class _RoadHeader extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          isComplete ? 'أتممت أذكار طريقك' : 'محطّات الطريق',
+          isComplete
+              ? context.l10n.travelerRoadComplete
+              : context.l10n.travelerRoadStations,
           style: TextStyle(
             color: isComplete ? skin.accent : skin.ink,
             fontSize: 13.sp,
@@ -189,8 +193,8 @@ class _RoadHeader extends StatelessWidget {
         SizedBox(height: 2.h),
         Text(
           isComplete
-              ? 'صحبتك السلامة.'
-              : 'كل ذكر في موضعه من الرحلة — افتح المحطّة التي أنت فيها.',
+              ? context.l10n.travelerRoadCompleteCaption
+              : context.l10n.travelerRoadCaption,
           style: TextStyle(
             color: skin.inkSoft.withValues(alpha: 0.75),
             fontSize: 9.5.sp,

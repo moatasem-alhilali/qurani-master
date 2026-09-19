@@ -4,10 +4,9 @@ import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
-import 'package:quran_app/core/app_localizations/AppLocalizations.dart';
+import 'package:quran_app/core/bloc/locale/locale_cubit.dart';
 import 'package:quran_app/core/bloc/base/base_bloc.dart';
 import 'package:quran_app/core/bloc/connectivity/connectivity_bloc.dart';
 import 'package:quran_app/core/bloc/device_sync/device_sync_bloc.dart';
@@ -27,6 +26,8 @@ import 'package:quran_app/features/daily_wird/data/repo/daily_wird_repository.da
 import 'package:quran_app/features/home/presentation/bloc/random_ayah_bloc.dart';
 import 'package:quran_app/features/home/presentation/view/pages/home_screen.dart';
 import 'package:quran_app/features/home_widgets/presentation/home_widget_click_router.dart';
+import 'package:quran_app/features/language/presentation/language_picker_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_notification_router_service.dart';
@@ -117,32 +118,27 @@ class MyApp extends StatelessWidget {
           create: (context) => AppUpdateCubit(),
           lazy: false,
         ),
+
+        ///language — يُنشأ أوّلًا فعليًا: MaterialApp يقرأ لغته منه.
+        BlocProvider(
+          create: (context) => LocaleCubit(),
+          lazy: false,
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
+          final localeState = context.watch<LocaleCubit>().state;
           return BlocBuilder<ConnectivityBloc, ConnectivityState>(
             builder: (context, state) {
               return ScreenUtilInit(
                 minTextAdapt: true,
                 splitScreenMode: true,
                 builder: (_, child) => MaterialApp(
-                  locale: const Locale('ar'),
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  localeResolutionCallback: (deviceLocale, supportedLocales) {
-                    for (final locale in supportedLocales) {
-                      if (deviceLocale != null &&
-                          deviceLocale.languageCode == locale.languageCode) {
-                        return deviceLocale;
-                      }
-                    }
-                    return supportedLocales.first;
-                  },
-                  supportedLocales: const [Locale('ar'), Locale('en')],
+                  // اللغة من LocaleCubit وحده. اتّجاه الواجهة (يمين/يسار)
+                  // يتبعها تلقائيًا عبر GlobalWidgetsLocalizations.
+                  locale: localeState.locale,
+                  localizationsDelegates: L10n.localizationsDelegates,
+                  supportedLocales: L10n.supportedLocales,
                   onGenerateRoute: RouterGenerator.getRoute,
                   initialRoute: RoutesManager.main,
                   // // darkTheme: getDarkMode(),
@@ -151,7 +147,7 @@ class MyApp extends StatelessWidget {
                   darkTheme: darkTheme,
                   theme: lightTheme,
                   themeMode: themeState.currentThemeMode,
-                  title: 'طمأنينة',
+                  onGenerateTitle: (context) => context.l10n.appName,
                   themeAnimationCurve: Curves.decelerate,
                   themeAnimationDuration: const Duration(milliseconds: 300),
                   themeAnimationStyle: const AnimationStyle(
@@ -171,7 +167,10 @@ class MyApp extends StatelessWidget {
                     );
                   },
 
-                  home: const _App(),
+                  // أوّل فتح: اختيار اللغة قبل أيّ شيء آخر.
+                  home: localeState.confirmed
+                      ? const _App()
+                      : const LanguagePickerScreen.onboarding(),
                 ),
               );
             },
@@ -285,10 +284,10 @@ class _AppState extends State<_App> with WidgetsBindingObserver {
         if (state is AppUpdateAndroidReady) {
           AdaptiveSnackBar.show(
             context,
-            message: 'تم تحميل التحديث، يمكنك تثبيته الآن.',
+            message: context.l10n.coreUpdateDownloaded,
             type: AdaptiveSnackBarType.success,
             duration: const Duration(seconds: 8),
-            action: 'تثبيت الآن',
+            action: context.l10n.coreUpdateInstallNow,
             onActionPressed: () =>
                 context.read<AppUpdateCubit>().installAndroidUpdate(),
           );

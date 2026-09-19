@@ -10,6 +10,7 @@ import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/wird/data/models/wird_model.dart';
 import 'package:quran_app/features/wird/presentation/view/widgets/wird/wird_info_row.dart';
 import 'package:quran_app/gen/fonts.gen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ذكر واحد من الورد.
 ///
@@ -60,11 +61,11 @@ class _WirdItemCardState extends State<WirdItemCard> {
   String _typeLabel(int type) {
     switch (type) {
       case 1:
-        return 'صباح فقط';
+        return context.l10n.wirdTypeMorningOnly;
       case 2:
-        return 'مساء فقط';
+        return context.l10n.wirdTypeEveningOnly;
       default:
-        return 'صباح ومساء';
+        return context.l10n.wirdTypeBoth;
     }
   }
 
@@ -72,7 +73,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
     if (!widget.hasAudio) {
       return (
         icon: AppIcons.mute,
-        tooltip: 'لا يوجد ملف صوتي',
+        tooltip: context.l10n.wirdNoAudio,
         busy: false,
         enabled: false,
       );
@@ -86,7 +87,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
     if (isBuffering) {
       return (
         icon: AppIcons.sound,
-        tooltip: 'جاري التحميل',
+        tooltip: context.l10n.commonLoading,
         busy: true,
         enabled: false,
       );
@@ -95,7 +96,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
     if (widget.isCurrentAudio && widget.isAudioPlaying) {
       return (
         icon: AppIcons.pause,
-        tooltip: 'إيقاف مؤقت',
+        tooltip: context.l10n.wirdPause,
         busy: false,
         enabled: true,
       );
@@ -105,7 +106,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
         widget.audioProcessingState == ProcessingState.completed) {
       return (
         icon: AppIcons.replay,
-        tooltip: 'إعادة التشغيل',
+        tooltip: context.l10n.wirdReplay,
         busy: false,
         enabled: true,
       );
@@ -113,7 +114,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
 
     return (
       icon: AppIcons.play,
-      tooltip: 'تشغيل الصوت',
+      tooltip: context.l10n.wirdPlayAudio,
       busy: false,
       enabled: true,
     );
@@ -195,7 +196,9 @@ class _WirdItemCardState extends State<WirdItemCard> {
             ),
             SizedBox(width: 8.w),
             Text(
-              done ? 'أتممتها' : 'بقي ${widget.remaining} من ${item.counter}',
+              done
+                  ? context.l10n.wirdCompleted
+                  : context.l10n.wirdRemaining(widget.remaining, item.counter),
               style: TextStyle(
                 color:
                     done ? skin.accent : skin.inkSoft.withValues(alpha: 0.78),
@@ -218,13 +221,13 @@ class _WirdItemCardState extends State<WirdItemCard> {
             SizedBox(width: 6.w),
             _MiniAction(
               icon: AppIcons.refresh,
-              tooltip: 'إعادة العدّ',
+              tooltip: context.l10n.wirdResetCount,
               onTap: widget.onReset,
             ),
             SizedBox(width: 6.w),
             _MiniAction(
               icon: AppIcons.copy,
-              tooltip: 'نسخ الذكر',
+              tooltip: context.l10n.wirdCopyDhikr,
               onTap: () async {
                 await HapticFeedback.selectionClick();
                 await CopyService.copyToClipboard(item.text);
@@ -240,7 +243,7 @@ class _WirdItemCardState extends State<WirdItemCard> {
             SizedBox(width: 6.w),
             _MiniAction(
               icon: AppIcons.link,
-              tooltip: 'المصدر',
+              tooltip: context.l10n.wirdSource,
               onTap: item.sourceUrl.trim().isEmpty
                   ? null
                   : () => _openLink(item.sourceUrl),
@@ -248,7 +251,9 @@ class _WirdItemCardState extends State<WirdItemCard> {
             SizedBox(width: 6.w),
             _MiniAction(
               icon: showDetails ? AppIcons.up : AppIcons.down,
-              tooltip: showDetails ? 'إخفاء التفاصيل' : 'عرض التفاصيل',
+              tooltip: showDetails
+                  ? context.l10n.wirdHideDetails
+                  : context.l10n.wirdShowDetails,
               onTap: () {
                 setState(() {
                   showDetails = !showDetails;
@@ -267,15 +272,24 @@ class _WirdItemCardState extends State<WirdItemCard> {
               children: [
                 Divider(height: 1, thickness: 1, color: skin.hairline),
                 SizedBox(height: 9.h),
-                WirdInfoRow(title: 'الفضل', content: item.virtue),
+                WirdInfoRow(
+                  title: context.l10n.wirdVirtue,
+                  content: item.virtue,
+                ),
                 SizedBox(height: 8.h),
-                WirdInfoRow(title: 'المصدر', content: item.source),
+                WirdInfoRow(
+                  title: context.l10n.wirdSource,
+                  content: item.source,
+                ),
                 SizedBox(height: 8.h),
-                WirdInfoRow(title: 'نص الحديث', content: item.hadithText),
+                WirdInfoRow(
+                  title: context.l10n.wirdHadithText,
+                  content: item.hadithText,
+                ),
                 if (item.wordExplanations.isNotEmpty) ...[
                   SizedBox(height: 8.h),
                   Text(
-                    'شرح مفردات مختارة',
+                    context.l10n.wirdWordExplanations,
                     style: TextStyle(
                       color: skin.inkSoft.withValues(alpha: 0.8),
                       fontSize: 10.sp,
@@ -462,7 +476,9 @@ class _WirdCountButtonState extends State<WirdCountButton>
                               ),
                             Flexible(
                               child: Text(
-                                widget.done ? 'تم' : 'قرأت مرة',
+                                widget.done
+                                    ? context.l10n.commonDone
+                                    : context.l10n.wirdReadOnce,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

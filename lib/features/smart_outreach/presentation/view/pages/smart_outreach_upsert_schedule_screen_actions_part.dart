@@ -30,6 +30,7 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
     final fajrPrayer = _getFajrPrayer(context);
     final fajrTime =
         fajrPrayer == null ? null : _formatPrayerTime(context, fajrPrayer);
+    final l10n = context.l10n;
 
     final selectedOption = await showModalBottomSheet<_ScheduleTimeOption>(
       context: context,
@@ -55,11 +56,11 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
                   ),
                 ),
               ),
-              const HomeSectionHeader(title: 'وقت الاتصال'),
+              HomeSectionHeader(title: l10n.outreachCallTimeHeader),
               OutreachRow(
-                title: 'اختيار وقت يدوي',
+                title: l10n.outreachManualTime,
                 icon: AppIcons.clock,
-                subtitle: 'حدّد الساعة والدقيقة بنفسك',
+                subtitle: l10n.outreachManualTimeSubtitle,
                 showChevron: true,
                 onTap: () {
                   Navigator.of(sheetContext).pop(_ScheduleTimeOption.manual);
@@ -67,12 +68,12 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
               ),
               OutreachRow(
                 title: fajrTime == null
-                    ? 'استخدام وقت الفجر'
-                    : 'استخدام وقت الفجر · $fajrTime',
+                    ? l10n.outreachUseFajrTime
+                    : l10n.outreachUseFajrTimeWithTime(fajrTime),
                 icon: AppIcons.moon,
                 subtitle: fajrTime == null
-                    ? 'مواقيت الصلاة غير جاهزة الآن'
-                    : 'يُعبَّأ الوقت تلقائيًا من مواقيت اليوم',
+                    ? l10n.outreachPrayerTimesNotReady
+                    : l10n.outreachFajrAutoFill,
                 dimmed: fajrTime == null,
                 showChevron: fajrTime != null,
                 isLast: true,
@@ -116,8 +117,8 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
     final fajrPrayer = _getFajrPrayer(context);
     if (fajrPrayer == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('وقت الفجر غير متاح الآن. جرّب بعد قليل.'),
+        SnackBar(
+          content: Text(context.l10n.outreachFajrUnavailable),
         ),
       );
       return;
@@ -137,7 +138,9 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
         ..showSnackBar(
           SnackBar(
             content: Text(
-              'تم استخدام وقت الفجر: ${_formatPrayerTime(context, fajrPrayer)}',
+              context.l10n.outreachFajrTimeUsed(
+                _formatPrayerTime(context, fajrPrayer),
+              ),
             ),
           ),
         );
@@ -152,7 +155,7 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            result.errorMessage ?? 'ما قدرنا نجيب جهة الاتصال الآن.',
+            result.errorMessage ?? context.l10n.outreachContactFetchFailed,
           ),
         ),
       );
@@ -210,11 +213,8 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(
-              content: Text(
-                'لضمان صحبة الفجر في وقتها بدقة، '
-                'فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.',
-              ),
+            SnackBar(
+              content: Text(context.l10n.outreachExactAlarmHint),
             ),
           );
       }

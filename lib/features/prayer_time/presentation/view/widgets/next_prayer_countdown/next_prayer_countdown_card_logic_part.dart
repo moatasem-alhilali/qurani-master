@@ -32,27 +32,31 @@ String _formatFallbackTime12(String input) {
   return _formatPrayerTime12(DateTime(2025, 1, 1, hour, minute));
 }
 
-String _buildCountdownLine(String prayerName, Duration remaining) {
+String _buildCountdownLine(
+  L10n l10n,
+  String prayerName,
+  Duration remaining,
+) {
   if (remaining.inSeconds <= 0) {
-    return 'حان الآن وقت $prayerName';
+    return l10n.prayerTimeCountdownNow(prayerName);
   }
 
   final totalMinutes = remaining.inMinutes;
   if (totalMinutes < 1) {
-    return '$prayerName بعد أقل من دقيقة';
+    return l10n.prayerTimeCountdownUnderMinute(prayerName);
   }
 
   if (totalMinutes < 60) {
-    return '$prayerName بعد $totalMinutes دقيقة';
+    return l10n.prayerTimeCountdownMinutes(prayerName, totalMinutes);
   }
 
   final hours = totalMinutes ~/ 60;
   final minutes = totalMinutes.remainder(60);
   if (minutes == 0) {
-    return '$prayerName بعد $hours ساعة';
+    return l10n.prayerTimeCountdownHours(prayerName, hours);
   }
 
-  return '$prayerName بعد $hours س $minutes د';
+  return l10n.prayerTimeCountdownHoursMinutes(prayerName, hours, minutes);
 }
 
 _ResolvedPrayerState _resolvePrayerStateFromList({
@@ -167,44 +171,20 @@ List<_PrayerMiniEntry> _buildPrayerEntries({
   ];
 }
 
-const _weekdaysArabic = [
-  'الاثنين',
-  'الثلاثاء',
-  'الأربعاء',
-  'الخميس',
-  'الجمعة',
-  'السبت',
-  'الأحد',
-];
-
-const _monthsArabic = [
-  'يناير',
-  'فبراير',
-  'مارس',
-  'أبريل',
-  'مايو',
-  'يونيو',
-  'يوليو',
-  'أغسطس',
-  'سبتمبر',
-  'أكتوبر',
-  'نوفمبر',
-  'ديسمبر',
-];
-
-/// «الأحد ١٤ سبتمبر» — يُعرض بجانب التاريخ الهجري تحت المشهد.
-String _formatGregorianArabic(DateTime date) {
-  final weekday = _weekdaysArabic[(date.weekday - 1).clamp(0, 6)];
-  final month = _monthsArabic[(date.month - 1).clamp(0, 11)];
-  return '$weekday ${date.day} $month';
+/// «الأحد ١٤ سبتمبر» — يُعرض بجانب التاريخ الهجري تحت المشهد، بأسماء
+/// الأيام والشهور في لغة الواجهة.
+String _formatGregorian(String localeCode, DateTime date) {
+  return DateFormat('EEEE d MMMM', localeCode).format(date);
 }
 
 /// «بقي ٤٥ د» — صيغة قصيرة تصلح داخل صفّ ضيّق.
-String _formatShortRemaining(Duration remaining) {
-  if (remaining.inSeconds <= 0) return 'حان الوقت';
+String _formatShortRemaining(L10n l10n, Duration remaining) {
+  if (remaining.inSeconds <= 0) return l10n.prayerTimeRemainingNow;
   final minutes = remaining.inMinutes;
-  if (minutes < 60) return 'بقي $minutes د';
+  if (minutes < 60) return l10n.prayerTimeRemainingMinutes(minutes);
   final hours = minutes ~/ 60;
   final rest = minutes.remainder(60);
-  return rest == 0 ? 'بقي $hours س' : 'بقي $hours س $rest د';
+  return rest == 0
+      ? l10n.prayerTimeRemainingHours(hours)
+      : l10n.prayerTimeRemainingHoursMinutes(hours, rest);
 }

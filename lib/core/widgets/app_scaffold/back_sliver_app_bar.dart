@@ -24,8 +24,8 @@ class BackSliverAppBar extends StatelessWidget {
           child: FittedBox(
             child: IconButton(
               onPressed: () => context.pop(),
-              icon: const AppIcon(
-                AppIcons.back,
+              icon: AppIcon(
+                AppIcons.backFor(context),
                 color: Colors.white,
                 size: 25,
               ),

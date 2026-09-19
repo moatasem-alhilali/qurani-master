@@ -14,6 +14,7 @@ import 'package:quran_app/features/categories/data/remote/category_repository_im
 import 'package:quran_app/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:quran_app/features/categories/presentation/view/pages/category_detail_screen.dart';
 import 'package:quran_app/features/categories/presentation/view/widgets/category_skin_widgets.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// أبواب تصنيف واحد: بحث نحيل فوق قائمة صفوف تفصلها خطوط شعرة.
 class CategoryDataScreen extends StatefulWidget {
@@ -81,8 +82,8 @@ class _CategoryDataScreenState extends State<CategoryDataScreen> {
                         ),
                         skin.divider(),
                         if (items.isEmpty)
-                          const CategoryNotice(
-                            message: 'لا توجد نتائج لهذا البحث.',
+                          CategoryNotice(
+                            message: context.l10n.categoriesNoSearchResults,
                           )
                         else
                           for (var i = 0; i < items.length; i++)
@@ -90,7 +91,9 @@ class _CategoryDataScreenState extends State<CategoryDataScreen> {
                               title: items[i].title ?? '',
                               subtitle: items[i].itemsCount == null
                                   ? null
-                                  : '${items[i].itemsCount} عنصرًا',
+                                  : context.l10n.categoriesItemsCount(
+                                      items[i].itemsCount!,
+                                    ),
                               icon: AppIcons.bookOpen,
                               isLast: i == items.length - 1,
                               onTap: () => _onTap(items[i], context),

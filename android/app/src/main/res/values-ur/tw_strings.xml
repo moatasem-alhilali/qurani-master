@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tw_next_prayer_label">اگلی نماز</string>
+    <string name="tw_next_prayer_description">اگلی نماز کا نام اور وقت، براہِ راست الٹی گنتی کے ساتھ</string>
+    <string name="tw_prayer_times_label">آج کے اوقات</string>
+    <string name="tw_prayer_times_description">نماز کے اوقات، ہجری تاریخ اور شہر کے ساتھ</string>
+    <string name="tw_daily_ayah_label">آج کی آیت</string>
+    <string name="tw_daily_ayah_description">ایک مختصر آیت جو روز بدلتی ہے</string>
+    <string name="tw_open_app">طمأنينة کھولیں</string>
+    <string name="tw_set_location">ایپ میں اپنا مقام مقرر کریں</string>
+    <string name="tw_refresh_needed">اوقات تازہ کرنے کے لیے</string>
+</resources>

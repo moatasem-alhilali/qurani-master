@@ -16,6 +16,7 @@ import 'package:quran_app/features/notification_schedules/presentation/view/widg
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedule_row_widget.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedules_summary_widget.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// مواعيد إشعار واحد: ملخّص رقمي ثم قائمة صفوف نحيلة.
 class NotificationSchedulesScreen extends StatelessWidget {
@@ -59,14 +60,14 @@ class _SchedulesView extends StatelessWidget {
         if (state.hasError) {
           AdaptiveSnackBar.show(
             context,
-            message: state.error ?? 'حدث خطأ غير متوقع',
+            message: state.error ?? context.l10n.notifScheduleUnexpectedError,
             type: AdaptiveSnackBarType.error,
           );
           context.read<NotificationScheduleBloc>().add(ClearError());
         } else if (state.hasSuccess) {
           AdaptiveSnackBar.show(
             context,
-            message: state.successMessage ?? 'تم الحفظ',
+            message: state.successMessage ?? context.l10n.notifScheduleSaved,
             type: AdaptiveSnackBarType.success,
           );
           context.read<NotificationScheduleBloc>().add(ClearError());
@@ -74,7 +75,7 @@ class _SchedulesView extends StatelessWidget {
       },
       builder: (context, state) {
         return SettingsScaffold(
-          title: 'مواعيد الإشعار',
+          title: context.l10n.notifScheduleScreenTitle,
           onRefresh: () async {
             context.read<NotificationScheduleBloc>().add(LoadSchedules());
           },
@@ -93,12 +94,10 @@ class _SchedulesView extends StatelessWidget {
                   disabledCount: state.disabledCount,
                 ),
               SettingsGroup(
-                title: 'المواعيد',
+                title: context.l10n.notifScheduleListTitle,
                 children: [
                   if (state.isEmpty)
-                    const SettingsHint(
-                      'لا توجد مواعيد بعد — أضف موعداً من زر «إضافة موعد».',
-                    )
+                    SettingsHint(context.l10n.notifScheduleEmpty)
                   else
                     for (var i = 0; i < state.schedules.length; i++)
                       ScheduleRowWidget(
@@ -158,9 +157,8 @@ class _SchedulesView extends StatelessWidget {
     final bloc = context.read<NotificationScheduleBloc>();
     final result = await showDeleteConfirmationDialog<bool>(
       context,
-      title: 'حذف موعد',
-      message: 'هل أنت متأكد من حذف هذا الموعد؟\n'
-          'سيتم إلغاء جميع الإشعارات المرتبطة به.',
+      title: context.l10n.notifScheduleDeleteTitle,
+      message: context.l10n.notifScheduleDeleteMessage,
     );
 
     final id = schedule.id;
@@ -202,7 +200,9 @@ class _AddScheduleButton extends StatelessWidget {
             )
           : AppIcon(AppIcons.add, size: 15.sp, color: foreground),
       label: Text(
-        busy ? 'جارٍ الحفظ...' : 'إضافة موعد',
+        busy
+            ? context.l10n.notifScheduleSaving
+            : context.l10n.notifScheduleAddTime,
         style: TextStyle(
           color: foreground,
           fontSize: 11.5.sp,
@@ -233,7 +233,7 @@ class _LoadingRow extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           Text(
-            'جارٍ تحميل المواعيد...',
+            context.l10n.notifScheduleLoading,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.78),
               fontSize: 10.sp,

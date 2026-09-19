@@ -35,7 +35,7 @@ struct PrayerTimesView: View {
         }
         .widgetSurface(palette.surface)
         .widgetURL(WidgetLinks.prayerTimes)
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, entry.payload?.isRtl == false ? .leftToRight : .rightToLeft)
     }
 
     private func schedule(day: WidgetDay, next: WidgetPrayer, palette: WidgetPalette) -> some View {
@@ -78,7 +78,7 @@ struct PrayerTimesView: View {
             .frame(maxHeight: .infinity)
 
             HStack(spacing: 4) {
-                Text("\(next.name) بعد")
+                Text(entry.payload?.nextIn(next.name) ?? "\(next.name) بعد")
                     .font(.caption)
                     .foregroundColor(palette.inkSoft)
                 Text(next.date, style: .timer)

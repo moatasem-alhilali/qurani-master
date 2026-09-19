@@ -9,6 +9,7 @@ import 'package:quran_app/features/notification_schedules/data/model/notificatio
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/schedule_form_fields.dart';
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/weekdays_picker_widget.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// يفتح نموذج إنشاء أو تعديل موعد كنافذة سفلية بأرضية الشاشة نفسها.
 Future<void> showImprovedScheduleDialog(
@@ -69,28 +70,28 @@ class _CreateOrUpdateScheduleDialogState
       case ScheduleType.daily:
       case ScheduleType.hourly:
         if (_type == ScheduleType.daily && (_hour == null || _minute == null)) {
-          return 'حدد وقت التنبيه أولاً';
+          return context.l10n.notifScheduleValidateTime;
         }
         if (_type == ScheduleType.hourly && _minute == null) {
-          return 'حدد الدقيقة من كل ساعة';
+          return context.l10n.notifScheduleValidateMinute;
         }
         return null;
       case ScheduleType.weekly:
         if (_hour == null || _minute == null) {
-          return 'حدد وقت التنبيه أولاً';
+          return context.l10n.notifScheduleValidateTime;
         }
         if (_weekdays.isEmpty) {
-          return 'حدد يوماً واحداً على الأقل من الأسبوع';
+          return context.l10n.notifScheduleValidateWeekday;
         }
         return null;
       case ScheduleType.everyNMinutes:
         if (_intervalMinutes == null || _intervalMinutes! < 1) {
-          return 'أدخل عدد الدقائق (أكبر من صفر)';
+          return context.l10n.notifScheduleValidateInterval;
         }
         return null;
       case ScheduleType.customDates:
         if (_customDates.isEmpty) {
-          return 'أضف تاريخاً واحداً على الأقل';
+          return context.l10n.notifScheduleValidateDate;
         }
         return null;
     }
@@ -163,8 +164,10 @@ class _CreateOrUpdateScheduleDialogState
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SettingsSheetHeader(
-            title: isNew ? 'إضافة موعد جديد' : 'تعديل الموعد',
-            subtitle: scheduleTypeDescription(_type),
+            title: isNew
+                ? context.l10n.notifScheduleAddNewTitle
+                : context.l10n.notifScheduleEditTitle,
+            subtitle: scheduleTypeDescription(context.l10n, _type),
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -182,11 +185,11 @@ class _CreateOrUpdateScheduleDialogState
                     }),
                   ),
                   SettingsGroup(
-                    title: 'التفاصيل',
+                    title: context.l10n.notifScheduleDetails,
                     children: _detailFields(),
                   ),
                   SettingsGroup(
-                    title: 'وصف اختياري',
+                    title: context.l10n.notifScheduleOptionalLabel,
                     children: [
                       ScheduleLabelField(
                         value: _label,
@@ -201,7 +204,9 @@ class _CreateOrUpdateScheduleDialogState
             ),
           ),
           SettingsPrimaryButton(
-            label: isNew ? 'إضافة الموعد' : 'حفظ التعديل',
+            label: isNew
+                ? context.l10n.notifScheduleAddConfirm
+                : context.l10n.notifScheduleSaveEdit,
             icon: AppIcons.save,
             onPressed: _save,
           ),
@@ -239,10 +244,10 @@ class _CreateOrUpdateScheduleDialogState
         return [
           ScheduleNumberRow(
             icon: AppIcons.clock,
-            title: 'الدقيقة من كل ساعة',
-            subtitle: 'رقم بين 0 و 59',
+            title: context.l10n.notifScheduleMinuteOfHourTitle,
+            subtitle: context.l10n.notifScheduleMinuteOfHourSubtitle,
             value: _minute,
-            suffix: 'دقيقة',
+            suffix: context.l10n.notifScheduleMinuteUnit,
             isLast: true,
             onChanged: (value) => _minute = value,
           ),
@@ -251,10 +256,10 @@ class _CreateOrUpdateScheduleDialogState
         return [
           ScheduleNumberRow(
             icon: AppIcons.refresh,
-            title: 'التكرار',
-            subtitle: 'المدة بين كل تنبيه والذي يليه',
+            title: context.l10n.notifScheduleRepeatTitle,
+            subtitle: context.l10n.notifScheduleRepeatSubtitle,
             value: _intervalMinutes,
-            suffix: 'دقيقة',
+            suffix: context.l10n.notifScheduleMinuteUnit,
             isLast: true,
             onChanged: (value) => _intervalMinutes = value,
           ),
@@ -265,21 +270,22 @@ class _CreateOrUpdateScheduleDialogState
             SettingsRow(
               icon: AppIcons.calendar,
               title: _formatDate(_customDates[i]),
-              subtitle: 'موعد مخصص',
+              subtitle: context.l10n.notifScheduleCustomTime,
               trailing: SettingsIconButton(
                 icon: AppIcons.delete,
-                tooltip: 'حذف الموعد',
+                tooltip: context.l10n.notifScheduleDeleteTime,
                 color: AppColors.error,
                 onTap: () => setState(() => _customDates.removeAt(i)),
               ),
             ),
-          if (_customDates.isEmpty) const SettingsHint('لم تضف أي موعد بعد'),
+          if (_customDates.isEmpty)
+            SettingsHint(context.l10n.notifScheduleNoTimesYet),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: SettingsGhostButton(
-                label: 'إضافة موعد',
+                label: context.l10n.notifScheduleAddTime,
                 icon: AppIcons.add,
                 onPressed: _addCustomDate,
               ),

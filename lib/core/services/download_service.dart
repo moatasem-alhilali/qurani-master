@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quran_app/core/util/toast_manager.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 class DownloadService {
@@ -76,7 +77,7 @@ class DownloadService {
       final extension = url.split('/').last.split('.').last;
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final fileName = '$timestamp$description.$extension';
-      ToastServes.showToast(message: 'التنزيل بدأ');
+      ToastServes.showToast(message: L10nService.current.coreDownloadStarted);
 
       await FlutterDownloader.enqueue(
         url: url,
@@ -84,7 +85,8 @@ class DownloadService {
         fileName: fileName,
       ).then((value) => logger.i(value));
       try {
-        ToastServes.showToast(message: 'تم التنزيل');
+        ToastServes.showToast(
+            message: L10nService.current.coreDownloadCompleted);
       } catch (e) {
         logger.e(e);
       }

@@ -5,43 +5,33 @@ import 'package:quran_app/core/util/url_launcher_utils.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/setting/data/services/social_links_service.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const _InfoPage(
-      title: 'سياسة الخصوصية',
+    return _InfoPage(
+      title: context.l10n.settingsPrivacyPolicyTitle,
       icon: AppIcons.shield,
-      intro: 'معلومات واضحة ومختصرة حول طريقة تعامل التطبيق مع بياناتك.',
+      intro: context.l10n.settingsPrivacyIntro,
       sections: [
         _InfoSectionData(
-          title: 'خصوصيتك تهمنا',
-          body:
-              'نحرص في طمأنينة على أن تكون تجربة استخدام التطبيق واضحة وآمنة. '
-              'نستخدم البيانات الضرورية فقط لتشغيل مزايا التطبيق وتحسينها، '
-              'ولا نبيع بيانات المستخدمين أو نشاركها لأغراض إعلانية.',
+          title: context.l10n.settingsPrivacyMattersTitle,
+          body: context.l10n.settingsPrivacyMattersBody,
         ),
         _InfoSectionData(
-          title: 'البيانات التي قد يستخدمها التطبيق',
-          body:
-              'قد يستخدم التطبيق الموقع لحساب أوقات الصلاة والقبلة، والإشعارات '
-              'لتنبيهات الأذان والأذكار، وبيانات التخزين لحفظ المحتوى المحمل '
-              'والإعدادات المحلية، وجهات الاتصال فقط في الميزات التي يفعّلها '
-              'المستخدم مثل صحبة الفجر.',
+          title: context.l10n.settingsPrivacyDataUsedTitle,
+          body: context.l10n.settingsPrivacyDataUsedBody,
         ),
         _InfoSectionData(
-          title: 'التحكم ببياناتك',
-          body: 'يمكنك تعطيل الإشعارات أو تعديلها من إعدادات الإشعارات داخل '
-              'التطبيق، ويمكنك إدارة صلاحيات النظام من إعدادات جهازك في أي '
-              'وقت.',
+          title: context.l10n.settingsPrivacyControlTitle,
+          body: context.l10n.settingsPrivacyControlBody,
         ),
         _InfoSectionData(
-          title: 'الخدمات الخارجية',
-          body: 'قد يستخدم التطبيق خدمات مثل Firebase Remote Config وFirebase '
-              'Messaging لتحديث الإعدادات وإرسال التنبيهات العامة. يتم استخدام '
-              'هذه الخدمات لتشغيل التطبيق وتحسين التجربة فقط.',
+          title: context.l10n.settingsPrivacyThirdPartyTitle,
+          body: context.l10n.settingsPrivacyThirdPartyBody,
         ),
       ],
     );
@@ -53,42 +43,30 @@ class DataSafetyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _InfoPage(
-      title: 'أمان البيانات',
+    return _InfoPage(
+      title: context.l10n.settingsDataSafetyTitle,
       icon: AppIcons.security,
-      intro: 'ملخص للبيانات التي يستخدمها التطبيق وكيف تُحفظ وتُشارك.',
+      intro: context.l10n.settingsDataSafetyIntro,
       sections: [
         _InfoSectionData(
-          title: 'البيانات الحساسة',
-          body:
-              'لا يطلب التطبيق بيانات حساسة إلا عند الحاجة لميزة واضحة يختارها '
-              'المستخدم. بعض البيانات مثل أوقات التنبيه، التفضيلات، وخطط '
-              'القراءة تُحفظ محليًا على الجهاز.',
+          title: context.l10n.settingsDataSafetySensitiveTitle,
+          body: context.l10n.settingsDataSafetySensitiveBody,
         ),
         _InfoSectionData(
-          title: 'الموقع',
-          body: 'يُستخدم الموقع لحساب مواقيت الصلاة، اتجاه القبلة، والخدمات '
-              'المعتمدة على المكان. يمكن للمستخدم إيقاف صلاحية الموقع من '
-              'إعدادات النظام.',
+          title: context.l10n.settingsDataSafetyLocationTitle,
+          body: context.l10n.settingsDataSafetyLocationBody,
         ),
         _InfoSectionData(
-          title: 'الإشعارات',
-          body:
-              'يستخدم التطبيق الإشعارات للأذان، الأذكار، التذكيرات، وبعض رسائل '
-              'التطبيق العامة. يمكن التحكم بكل نوع إشعار من صفحة إعدادات '
-              'الإشعارات.',
+          title: context.l10n.settingsDataSafetyNotificationsTitle,
+          body: context.l10n.settingsDataSafetyNotificationsBody,
         ),
         _InfoSectionData(
-          title: 'التخزين والتحميل',
-          body: 'قد يستخدم التطبيق التخزين لحفظ الملفات والمحتوى الذي يختار '
-              'المستخدم تحميله، مثل الصوتيات أو المواد المتاحة داخل التطبيق.',
+          title: context.l10n.settingsDataSafetyStorageTitle,
+          body: context.l10n.settingsDataSafetyStorageBody,
         ),
         _InfoSectionData(
-          title: 'المشاركة',
-          body:
-              'لا تتم مشاركة بياناتك الشخصية مع أطراف خارجية للبيع أو التسويق. '
-              'أي مشاركة تتم تكون ضمن خدمات تشغيل ضرورية أو إجراء يبدأه '
-              'المستخدم.',
+          title: context.l10n.settingsDataSafetySharingTitle,
+          body: context.l10n.settingsDataSafetySharingBody,
         ),
       ],
     );
@@ -100,36 +78,31 @@ class AboutAppScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SettingsScaffold(
-      title: 'من نحن',
+    return SettingsScaffold(
+      title: context.l10n.settingsAboutUsTitle,
       children: [
         _InfoHero(
           icon: AppIcons.quran,
-          title: 'طمأنينة',
-          body: 'تطبيق قرآني وعبادي يساعدك على الصلاة، الذكر، تلاوة القرآن، '
-              'والاستمرار على ورد يومي بهدوء وبأسلوب قريب من المستخدم.',
+          title: context.l10n.appName,
+          body: context.l10n.settingsAboutAppBody,
         ),
         SettingsGroup(
-          title: 'رسالتنا',
+          title: context.l10n.settingsAboutMissionTitle,
           children: [
             SettingsParagraph(
-              'أن يكون التطبيق رفيقًا خفيفًا يعين المستخدم على الطاعة دون '
-              'إزعاج، ويجمع الأدوات اليومية المهمة مثل المصحف، الأذكار، '
-              'مواقيت الصلاة، التنبيهات، والميزات المساعدة للأسرة.',
+              context.l10n.settingsAboutMissionBody,
             ),
           ],
         ),
         SettingsGroup(
-          title: 'ما نقدمه',
+          title: context.l10n.settingsAboutOfferTitle,
           children: [
             SettingsParagraph(
-              'مصحف، أذكار، مواقيت صلاة، قبلة، ورد يومي، تطبيقات مصغرة، '
-              'صحبة الفجر، المسلم الصغير، خدمات للمسافر، وتنبيهات قابلة '
-              'للتخصيص حسب حاجة المستخدم.',
+              context.l10n.settingsAboutOfferBody,
             ),
           ],
         ),
-        _AppSocialLinksSection(),
+        const _AppSocialLinksSection(),
       ],
     );
   }
@@ -148,44 +121,51 @@ class DeveloperAboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SettingsScaffold(
-      title: 'حول المطور',
+    return SettingsScaffold(
+      title: context.l10n.settingsAboutDeveloperTitle,
       children: [
         _InfoHero(
           icon: AppIcons.user,
-          title: 'معتصم الهلالي',
-          body: 'مهندس برمجيات Full Stack وMobile بخبرة تتجاوز 7 سنوات، '
-              'متخصص في Flutter وLaravel وNext.js وبناء تطبيقات إنتاجية '
-              'للويب والجوال.',
+          title: context.l10n.settingsDeveloperName,
+          body: context.l10n.settingsDeveloperHeroBody,
         ),
         SettingsGroup(
-          title: 'نبذة مختصرة',
+          title: context.l10n.settingsDeveloperBioTitle,
           children: [
             SettingsParagraph(
-              'يعمل معتصم الهلالي على بناء تطبيقات ومنصات رقمية تخدم '
-              'مستخدمين حقيقيين، مع اهتمام خاص بتطبيقات الجوال، الأنظمة '
-              'الخلفية، واجهات الاستخدام، ومنصات Fintech وSaaS.',
+              context.l10n.settingsDeveloperBioBody,
             ),
           ],
         ),
         SettingsGroup(
-          title: 'مجالات العمل',
+          title: context.l10n.settingsDeveloperFieldsTitle,
           children: [
             SettingsParagraph(
-              'Flutter، Laravel، Next.js، React، API Development، تطبيقات '
-              'الجوال، تطبيقات الويب، حلول Fintech، ومنصات SaaS.',
+              context.l10n.settingsDeveloperFieldsBody,
             ),
           ],
         ),
         _ContactActions(
-          title: 'طرق التواصل',
+          title: context.l10n.settingsDeveloperContactTitle,
           actions: [
-            _ContactAction('الموقع', AppIcons.globe, _website),
-            _ContactAction('البريد', AppIcons.link, 'mailto:$_email'),
-            _ContactAction('واتس اب', AppIcons.whatsapp, 'wa:$_whatsapp'),
-            _ContactAction('GitHub', AppIcons.source, _github),
-            _ContactAction('LinkedIn', AppIcons.user, _linkedin),
-            _ContactAction('X', AppIcons.twitter, _twitter),
+            _ContactAction(
+              context.l10n.settingsContactWebsite,
+              AppIcons.globe,
+              _website,
+            ),
+            _ContactAction(
+              context.l10n.settingsContactEmail,
+              AppIcons.link,
+              'mailto:$_email',
+            ),
+            _ContactAction(
+              context.l10n.settingsSocialWhatsapp,
+              AppIcons.whatsapp,
+              'wa:$_whatsapp',
+            ),
+            const _ContactAction('GitHub', AppIcons.source, _github),
+            const _ContactAction('LinkedIn', AppIcons.user, _linkedin),
+            const _ContactAction('X', AppIcons.twitter, _twitter),
           ],
         ),
       ],
@@ -216,18 +196,41 @@ class _AppSocialLinksSectionState extends State<_AppSocialLinksSection> {
       builder: (context, snapshot) {
         final links = snapshot.data ?? SocialLinks.defaults();
         final items = [
-          _ContactAction('تليجرام', AppIcons.telegram, links.telegram),
-          _ContactAction('واتس اب', AppIcons.whatsapp, links.whatsapp),
-          _ContactAction('فيسبوك', AppIcons.facebook, links.facebook),
-          _ContactAction('انستجرام', AppIcons.instagram, links.instagram),
-          _ContactAction('تويتر', AppIcons.twitter, links.twitter),
+          _ContactAction(
+            context.l10n.settingsSocialTelegram,
+            AppIcons.telegram,
+            links.telegram,
+          ),
+          _ContactAction(
+            context.l10n.settingsSocialWhatsapp,
+            AppIcons.whatsapp,
+            links.whatsapp,
+          ),
+          _ContactAction(
+            context.l10n.settingsSocialFacebook,
+            AppIcons.facebook,
+            links.facebook,
+          ),
+          _ContactAction(
+            context.l10n.settingsSocialInstagram,
+            AppIcons.instagram,
+            links.instagram,
+          ),
+          _ContactAction(
+            context.l10n.settingsSocialTwitter,
+            AppIcons.twitter,
+            links.twitter,
+          ),
         ].where((item) => item.url.trim().isNotEmpty).toList();
 
         if (items.isEmpty) {
           return const SizedBox.shrink();
         }
 
-        return _ContactActions(title: 'روابط التطبيق', actions: items);
+        return _ContactActions(
+          title: context.l10n.settingsAppLinksTitle,
+          actions: items,
+        );
       },
     );
   }

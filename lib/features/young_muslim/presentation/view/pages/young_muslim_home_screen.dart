@@ -16,6 +16,7 @@ import 'package:quran_app/features/young_muslim/presentation/view/pages/young_mu
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_rewards_sheet.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/widgets/young_muslim_shared_widgets.dart';
 import 'package:quran_app/features/young_muslim/presentation/view/young_muslim_provider.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'young_muslim_home_screen_content.dart';
 part 'young_muslim_home_screen_rail_content.dart';
@@ -38,7 +39,7 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'المسلم الصغير',
+        title: context.l10n.youngMuslimTitle,
         showLargeHeader: false,
         initialOffset: null,
         trailing: BlocBuilder<YoungMuslimBloc, YoungMuslimState>(
@@ -53,7 +54,7 @@ class _YoungMuslimHomeScreenState extends State<YoungMuslimHomeScreen> {
                 _buildFilterAction(context, state),
                 SizedBox(width: 4.w),
                 GenericSearchAnchorAsync<_YoungMuslimSearchSuggestion>(
-                  hintText: 'ابحث عن قصة...',
+                  hintText: context.l10n.youngMuslimSearchHint,
                   asyncSuggestions: (query) async {
                     final trimmed = query.trim();
                     if (trimmed.isEmpty) return const [];

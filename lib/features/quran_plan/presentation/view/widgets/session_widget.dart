@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_model.dart';
 import 'package:quran_app/features/quran_plan/data/model/quran_plan_session_model.dart';
 import 'package:quran_app/features/quran_plan/presentation/view/widgets/session_navigation.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ جلسة في قائمة الخطة: نحيل، تفصله شعرة، بلا بطاقة ولا ظلّ.
 class SessionWidget extends StatelessWidget {
@@ -26,7 +27,8 @@ class SessionWidget extends StatelessWidget {
     final isCompleted = session.completed;
     final completedAt = session.completedAt;
     final dateLabel = completedAt != null
-        ? DateFormat('yyyy/MM/dd · HH:mm').format(completedAt)
+        ? DateFormat('yyyy/MM/dd · HH:mm', context.localeCode)
+            .format(completedAt)
         : null;
 
     return InkWell(
@@ -67,7 +69,7 @@ class SessionWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    sessionRangeLabel(session),
+                    sessionRangeLabel(context.l10n, session),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -81,7 +83,7 @@ class SessionWidget extends StatelessWidget {
                   ),
                   if (dateLabel != null)
                     Text(
-                      'تم الإنجاز · $dateLabel',
+                      context.l10n.quranPlanCompletedAt(dateLabel),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -95,7 +97,13 @@ class SessionWidget extends StatelessWidget {
               ),
             ),
             SizedBox(width: 8.w),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 15.sp,
+            ),
           ],
         ),
       ),

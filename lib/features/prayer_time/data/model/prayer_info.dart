@@ -1,5 +1,6 @@
 import 'package:adhan/adhan.dart';
 import 'package:intl/intl.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 class PrayerInfoModel {
   // dummy data
@@ -21,6 +22,11 @@ class PrayerInfoModel {
   final DateTime time;
   final String time12;
   final String time24;
+
+  /// اسم الصلاة المعروض بلغة الواجهة. [name] يبقى معرّفًا ثابتًا
+  /// (يُخزَّن في حمولة الإشعار ويُقارن به) فلا يُترجم.
+  String localizedName(L10n l10n) =>
+      type == Prayer.none ? name : l10n.prayerName(type.name);
 
   static List<PrayerInfoModel> dummy() => [
         PrayerInfoModel(

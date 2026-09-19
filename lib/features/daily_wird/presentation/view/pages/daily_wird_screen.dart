@@ -18,6 +18,7 @@ import 'package:quran_app/features/daily_wird/presentation/view/daily_wird_desti
 import 'package:quran_app/features/daily_wird/presentation/view/pages/daily_wird_focus_screen.dart';
 import 'package:quran_app/features/daily_wird/presentation/view/widgets/daily_wird_common.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'daily_wird_screen_body_part.dart';
 part 'daily_wird_screen_presets_part.dart';
@@ -39,7 +40,7 @@ class DailyWirdScreen extends StatelessWidget {
             current.errorMessage != null,
         listener: (context, state) {
           context.showCustomSnackbar(
-            state.errorMessage ?? 'حدث خطأ غير متوقع.',
+            state.errorMessage ?? context.l10n.dailyWirdUnexpectedError,
             style: SnackBarType.error,
           );
         },
@@ -49,14 +50,14 @@ class DailyWirdScreen extends StatelessWidget {
             data: Theme.of(context)
                 .copyWith(scaffoldBackgroundColor: skin.ground),
             child: AppScaffoldWidget(
-              title: 'زاد اليوم والليلة',
+              title: context.l10n.dailyWirdTitle,
               showLargeHeader: false,
               initialOffset: null,
               onRefresh: () async {
                 context.read<DailyWirdBloc>().add(const DailyWirdLoadEvent());
               },
               trailing: IconButton(
-                tooltip: 'إعدادات الزاد',
+                tooltip: context.l10n.dailyWirdSettingsTooltip,
                 onPressed: state.settings == null
                     ? null
                     : () => _showSettingsSheet(context, state),
@@ -120,9 +121,11 @@ class DailyWirdScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const HomeSectionHeader(title: 'التذكيرات'),
+                  HomeSectionHeader(
+                    title: context.l10n.dailyWirdRemindersHeader,
+                  ),
                   _ReminderRow(
-                    label: 'أذكار الصباح',
+                    label: context.l10n.wirdMorningAdhkar,
                     value: draft.morningReminderEnabled,
                     time: draft.morningReminderTime,
                     onChanged: (value) => setState(() {
@@ -138,7 +141,7 @@ class DailyWirdScreen extends StatelessWidget {
                     },
                   ),
                   _ReminderRow(
-                    label: 'أذكار المساء',
+                    label: context.l10n.wirdEveningAdhkar,
                     value: draft.eveningReminderEnabled,
                     time: draft.eveningReminderTime,
                     onChanged: (value) => setState(() {
@@ -154,7 +157,7 @@ class DailyWirdScreen extends StatelessWidget {
                     },
                   ),
                   _ReminderRow(
-                    label: 'أذكار النوم',
+                    label: context.l10n.dailyWirdReminderSleepLabel,
                     value: draft.nightReminderEnabled,
                     time: draft.nightReminderTime,
                     onChanged: (value) => setState(() {
@@ -170,7 +173,7 @@ class DailyWirdScreen extends StatelessWidget {
                     },
                   ),
                   _ReminderRow(
-                    label: 'محاسبة آخر اليوم',
+                    label: context.l10n.dailyWirdReminderSummaryTitle,
                     value: draft.endOfDaySummaryEnabled,
                     time: draft.endOfDaySummaryTime,
                     isLast: true,
@@ -187,7 +190,7 @@ class DailyWirdScreen extends StatelessWidget {
                     },
                   ),
                   skin.divider(),
-                  const HomeSectionHeader(title: 'البرنامج'),
+                  HomeSectionHeader(title: context.l10n.dailyWirdProgramHeader),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Wrap(
@@ -215,7 +218,7 @@ class DailyWirdScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: DailyWirdPrimaryButton(
-                      label: 'حفظ التهيئة',
+                      label: context.l10n.dailyWirdSaveSetup,
                       icon: AppIcons.save,
                       onTap: () {
                         Navigator.of(sheetContext).pop();

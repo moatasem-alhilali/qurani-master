@@ -87,7 +87,13 @@ class AudioRow extends StatelessWidget {
           SizedBox(width: 8.w),
           trailing!,
         ] else
-          AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 15.sp),
+          AppIcon(
+            Directionality.of(context) == TextDirection.rtl
+                ? AppIcons.chevronLeft
+                : AppIcons.chevronRight,
+            color: skin.accent,
+            size: 15.sp,
+          ),
       ],
     );
 

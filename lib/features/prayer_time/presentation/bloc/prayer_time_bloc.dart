@@ -16,6 +16,7 @@ import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart
 import 'package:quran_app/features/prayer_time/data/service/prayer_location_resolver.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_native_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/prayer_silent_mode_settings_store.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 part 'prayer_time_event.dart';
@@ -97,7 +98,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         state.copyWith(
           prayerState: RequestState.error,
           locationStatus: PrayerLocationStatus.error,
-          locationStatusMessage: 'تعذر تحميل مواقيت الصلاة حاليًا',
+          locationStatusMessage: L10nService.current.prayerTimeErrorLoad,
         ),
       );
     }
@@ -146,7 +147,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         state.copyWith(
           prayerState: RequestState.error,
           locationStatus: PrayerLocationStatus.error,
-          locationStatusMessage: 'تعذر تحديث المنطقة المختارة',
+          locationStatusMessage: L10nService.current.prayerTimeErrorUpdateArea,
         ),
       );
     }
@@ -234,7 +235,8 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         state.copyWith(
           prayerState: RequestState.error,
           locationStatus: PrayerLocationStatus.error,
-          locationStatusMessage: 'تعذر تحديث المواقيت بالإعدادات الجديدة',
+          locationStatusMessage:
+              L10nService.current.prayerTimeErrorApplySettings,
         ),
       );
     }
@@ -260,7 +262,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
           emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.serviceDisabled,
-          message: 'خدمة الموقع غير مفعلة. فعّلها أو اختر مدينة يدويًا.',
+          message: L10nService.current.prayerTimeErrorServiceOff,
         );
         return;
       }
@@ -275,7 +277,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
           emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.permissionDenied,
-          message: 'يلزم منح صلاحية الموقع أو اختيار مدينة يدويًا.',
+          message: L10nService.current.prayerTimeErrorPermission,
         );
         return;
       }
@@ -285,8 +287,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
           emit: emit,
           fallbackLocation: fallbackLocation,
           status: PrayerLocationStatus.permissionDeniedForever,
-          message:
-              'صلاحية الموقع مرفوضة نهائيًا. افتح الإعدادات أو اختر مدينة.',
+          message: L10nService.current.prayerTimeErrorDeniedForever,
         );
         return;
       }
@@ -311,7 +312,7 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         emit: emit,
         fallbackLocation: fallbackLocation,
         status: PrayerLocationStatus.error,
-        message: 'تعذر تحديد موقع الجهاز حاليًا',
+        message: L10nService.current.prayerTimeErrorDeviceLocation,
       );
     }
   }

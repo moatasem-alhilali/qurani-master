@@ -1,0 +1,812 @@
+{
+  "youngMuslimTitle": "المسلم الصغير",
+  "@youngMuslimTitle": {
+    "description": "Name of the kids section (Young Muslim) with Islamic story videos; screen title."
+  },
+  "youngMuslimQuizUnanswered": "لم تتم الإجابة",
+  "@youngMuslimQuizUnanswered": {
+    "description": "Shown in quiz review when the child left a question unanswered."
+  },
+  "youngMuslimResumeReminderTitle": "كمل المشاهدة في المسلم الصغير",
+  "@youngMuslimResumeReminderTitle": {
+    "description": "Notification title reminding the child to resume a video."
+  },
+  "youngMuslimResumeReminderBody": "ارجع إلى \"{topic}\" وأكمل رحلتك بهدوء.",
+  "@youngMuslimResumeReminderBody": {
+    "description": "Notification body. {topic} is the story title (Arabic content).",
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimAudienceKidsSafe": "واجهة آمنة للأطفال",
+  "@youngMuslimAudienceKidsSafe": {
+    "description": "Chip on a kids category cover."
+  },
+  "youngMuslimAudienceGeneral": "مشاهدة عامة",
+  "@youngMuslimAudienceGeneral": {
+    "description": "Chip on a general-audience category cover."
+  },
+  "youngMuslimStatSeries": "سلسلة",
+  "@youngMuslimStatSeries": {
+    "description": "Label under a number: count of series."
+  },
+  "youngMuslimStatEpisode": "حلقة",
+  "@youngMuslimStatEpisode": {
+    "description": "Label under a number: count of episodes."
+  },
+  "youngMuslimChooseSeries": "اختر السلسلة",
+  "youngMuslimEpisodes": "الحلقات",
+  "@youngMuslimEpisodes": {
+    "description": "Section header: list of episodes."
+  },
+  "youngMuslimEpisodesCount": "{count, plural, other{{count} حلقة}}",
+  "@youngMuslimEpisodesCount": {
+    "description": "Number of episodes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoEpisodesTitle": "لا توجد حلقات الآن",
+  "youngMuslimNoEpisodesSubtitle": "غيّر السلسلة المختارة أو عد لاحقًا بعد تحديث الفلاتر.",
+  "youngMuslimCategoryLoadError": "تعذّر تحميل القسم",
+  "youngMuslimTryAgainShortly": "حاول مرة أخرى بعد قليل.",
+  "youngMuslimSearchHint": "ابحث عن قصة...",
+  "youngMuslimAchievements": "الإنجازات",
+  "@youngMuslimAchievements": {
+    "description": "Section header."
+  },
+  "youngMuslimQuickFilter": "تصفية سريعة",
+  "@youngMuslimQuickFilter": {
+    "description": "Section header above quick filter chips."
+  },
+  "youngMuslimFilterResults": "نتائج الفلترة",
+  "youngMuslimResultsCount": "{count, plural, other{{count} نتيجة}}",
+  "@youngMuslimResultsCount": {
+    "description": "Number of search/filter results.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoMatchesTitle": "لا توجد نتائج مطابقة",
+  "youngMuslimNoMatchesSubtitle": "جرّب كلمات أبسط أو غيّر الفلاتر لتظهر حلقات أكثر.",
+  "youngMuslimSections": "الأقسام",
+  "@youngMuslimSections": {
+    "description": "Section header: content categories."
+  },
+  "youngMuslimContinueWatching": "أكمل المشاهدة",
+  "@youngMuslimContinueWatching": {
+    "description": "Section header: videos in progress."
+  },
+  "youngMuslimRecentlyWatched": "شاهدت مؤخرًا",
+  "youngMuslimFavorites": "المفضلة",
+  "youngMuslimWatchLater": "سأشاهد لاحقًا",
+  "@youngMuslimWatchLater": {
+    "description": "Watch-later list / toggle."
+  },
+  "youngMuslimSuggestions": "اقتراحات مناسبة",
+  "youngMuslimGreetingWelcome": "مرحبًا بك في عالم القصص والتعلّم",
+  "youngMuslimGreetingPickNew": "اختر قصة جديدة وابدأ رحلتك اليوم",
+  "youngMuslimGreetingWaiting": "{count, plural, other{لديك {count} حلقة بانتظارك لتعود إليها}}",
+  "@youngMuslimGreetingWaiting": {
+    "description": "Greeting when the child has unfinished episodes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimRewardsTitle": "نقاطي وإنجازاتي",
+  "@youngMuslimRewardsTitle": {
+    "description": "My points and achievements."
+  },
+  "youngMuslimLevelAndPoints": "المستوى {level} · {points} نقطة",
+  "@youngMuslimLevelAndPoints": {
+    "description": "Gamification: current level and total points (XP).",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNextLevelProgress": "التقدّم للمستوى التالي",
+  "youngMuslimProgressOf": "{current} من {total}",
+  "@youngMuslimProgressOf": {
+    "description": "Progress fraction, e.g. \"40 of 100\".",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimStatAchievements": "إنجازات",
+  "@youngMuslimStatAchievements": {
+    "description": "Label under a number."
+  },
+  "youngMuslimStatEpisodes": "حلقات",
+  "@youngMuslimStatEpisodes": {
+    "description": "Label under a number: completed episodes."
+  },
+  "youngMuslimStatAnswers": "إجابات",
+  "@youngMuslimStatAnswers": {
+    "description": "Label under a number: correct answers."
+  },
+  "youngMuslimFilterAll": "الكل",
+  "@youngMuslimFilterAll": {
+    "description": "Filter option: all."
+  },
+  "youngMuslimStatusInProgress": "قيد المشاهدة",
+  "youngMuslimStatusCompleted": "مكتمل",
+  "youngMuslimStatusWatchLater": "لاحقًا",
+  "@youngMuslimStatusWatchLater": {
+    "description": "Short filter chip: watch later."
+  },
+  "youngMuslimFiltersActiveNote": "الفلاتر مفعّلة الآن، ويمكنك تعديلها من زرّ التصفية أعلى الصفحة.",
+  "youngMuslimClearFilters": "مسح",
+  "@youngMuslimClearFilters": {
+    "description": "Button: clear filters."
+  },
+  "youngMuslimContentLoadError": "تعذّر تحميل المحتوى",
+  "youngMuslimPullToRetry": "اسحب الصفحة للأسفل لإعادة المحاولة.",
+  "youngMuslimFilterSheetTitle": "تصفية المحتوى",
+  "youngMuslimCategoryLabel": "القسم",
+  "@youngMuslimCategoryLabel": {
+    "description": "Label: the content category (filter group / info row)."
+  },
+  "youngMuslimFilterLanguage": "اللغة",
+  "@youngMuslimFilterLanguage": {
+    "description": "Filter group: language of the video content."
+  },
+  "youngMuslimLanguageArabic": "العربية",
+  "@youngMuslimLanguageArabic": {
+    "description": "Content language filter option."
+  },
+  "youngMuslimLanguageFrench": "الفرنسية",
+  "@youngMuslimLanguageFrench": {
+    "description": "Content language filter option."
+  },
+  "youngMuslimLanguageMixed": "مختلط",
+  "@youngMuslimLanguageMixed": {
+    "description": "Content language filter option: mixed languages."
+  },
+  "youngMuslimFilterContentType": "نوع المحتوى",
+  "youngMuslimContentTypeStorySeries": "سلاسل قصصية",
+  "youngMuslimApplyFilters": "تطبيق الفلاتر",
+  "youngMuslimPlayerTitle": "تشغيل آمن للأطفال",
+  "@youngMuslimPlayerTitle": {
+    "description": "Title of the kid-safe video player screen."
+  },
+  "youngMuslimEpisodeQuizTitle": "سؤال الحلقة بعد المشاهدة",
+  "youngMuslimSeriesChallenge": "تحدي السلسلة",
+  "@youngMuslimSeriesChallenge": {
+    "description": "Quiz at the end of a whole series."
+  },
+  "youngMuslimPlayerLoadError": "تعذّر تحميل المشغّل الآن.",
+  "youngMuslimWatchOptions": "خيارات المشاهدة",
+  "youngMuslimPlayNextEpisode": "تشغيل الحلقة التالية",
+  "youngMuslimNextEpisodeFromSeries": "الحلقة {episode} من نفس السلسلة",
+  "@youngMuslimNextEpisodeFromSeries": {
+    "description": "{episode} is the episode number.",
+    "placeholders": {
+      "episode": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimSeriesPlaylist": "قائمة السلسلة",
+  "youngMuslimAutoPlayNext": "تشغيل الحلقة التالية تلقائيًا",
+  "youngMuslimAutoPlayNextSubtitle": "ضمن السلسلة نفسها فقط بعد نهاية الحلقة",
+  "youngMuslimResumeButton": "متابعة المشاهدة",
+  "@youngMuslimResumeButton": {
+    "description": "Button: resume watching."
+  },
+  "youngMuslimPlayNow": "تشغيل الآن",
+  "youngMuslimPercent": "{percent}٪",
+  "@youngMuslimPercent": {
+    "description": "A percentage; use the target language percent format.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimProgress": "التقدّم",
+  "youngMuslimWatchCount": "مرات المشاهدة",
+  "youngMuslimEpisodeDuration": "مدّة الحلقة",
+  "youngMuslimLastWatched": "آخر مشاهدة: {when}",
+  "@youngMuslimLastWatched": {
+    "description": "{when} is a relative time like \"5 minutes ago\".",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimEpisodeInfo": "معلومات الحلقة",
+  "youngMuslimStory": "القصة",
+  "youngMuslimSeries": "السلسلة",
+  "youngMuslimEpisodeNumber": "رقم الحلقة",
+  "youngMuslimEpisodeTools": "أدوات الحلقة",
+  "youngMuslimEpisodeQuestions": "أسئلة الحلقة",
+  "youngMuslimEpisodeQuestionsSubtitle": "أسئلة قصيرة تثبّت ما شاهده الطفل",
+  "youngMuslimAfterWatchQuestion": "سؤال بعد المشاهدة",
+  "youngMuslimNextEpisode": "الحلقة التالية",
+  "youngMuslimSimilarEpisodes": "حلقات مشابهة",
+  "youngMuslimDetailsLoadError": "تعذّر تحميل تفاصيل الحلقة",
+  "youngMuslimQuizIntro": "أسئلة بسيطة تساعد الطفل على تثبيت ما شاهده.",
+  "youngMuslimQuestionsCount": "{count, plural, other{{count} أسئلة}}",
+  "@youngMuslimQuestionsCount": {
+    "description": "Number of quiz questions.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimXpOnPass": "+{points} نقطة عند النجاح",
+  "@youngMuslimXpOnPass": {
+    "description": "Points awarded for passing a quiz.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimPassingScore": "النجاح من {score}",
+  "@youngMuslimPassingScore": {
+    "description": "Minimum correct answers needed to pass.",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimGrading": "جارٍ تصحيح الإجابات",
+  "youngMuslimSubmitAnswers": "إرسال الإجابات",
+  "youngMuslimAnswerHint": "اكتب إجابتك هنا بوضوح...",
+  "youngMuslimQuizPassed": "أحسنت يا بطل",
+  "@youngMuslimQuizPassed": {
+    "description": "Praise for a child who passed the quiz (\"Well done, champ\")."
+  },
+  "youngMuslimQuizAlmost": "أنت قريب من الإجابة الكاملة",
+  "youngMuslimQuizScore": "أجبت {correct} من {total} إجابة صحيحة",
+  "@youngMuslimQuizScore": {
+    "description": "Quiz result summary.",
+    "placeholders": {
+      "correct": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimXpGained": "+{points} نقطة",
+  "@youngMuslimXpGained": {
+    "description": "Points gained.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimLevel": "المستوى {level}",
+  "@youngMuslimLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimPoints": "{points, plural, other{{points} نقطة}}",
+  "@youngMuslimPoints": {
+    "description": "Total points.",
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNewAchievements": "إنجازات جديدة",
+  "youngMuslimReviewAnswers": "مراجعة الإجابات",
+  "youngMuslimFinish": "إنهاء",
+  "@youngMuslimFinish": {
+    "description": "Button: finish the quiz."
+  },
+  "youngMuslimYourAnswer": "إجابتك",
+  "youngMuslimCorrectAnswer": "الإجابة الصحيحة",
+  "youngMuslimStatSeriesPlural": "سلاسل",
+  "@youngMuslimStatSeriesPlural": {
+    "description": "Label under a number: completed series."
+  },
+  "youngMuslimStatPerfectScores": "نتائج كاملة",
+  "@youngMuslimStatPerfectScores": {
+    "description": "Label under a number: quizzes with full marks."
+  },
+  "youngMuslimUnlockedAchievements": "الإنجازات المفتوحة",
+  "youngMuslimAchievementsCount": "{count, plural, other{{count} إنجاز}}",
+  "@youngMuslimAchievementsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNoAchievementsTitle": "لا توجد إنجازات بعد",
+  "youngMuslimNoAchievementsSubtitle": "أكمل أول حلقة أو أجب عن أول سؤال لتبدأ الرحلة.",
+  "youngMuslimUpcomingAchievements": "إنجازات قادمة",
+  "youngMuslimAchievementUnlocked": "تم فتح هذا الإنجاز.",
+  "youngMuslimAchievementUnlockedAt": "فُتح {when}",
+  "@youngMuslimAchievementUnlockedAt": {
+    "description": "{when} is a relative time like \"5 minutes ago\".",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimCurrentProgress": "التقدّم الحالي",
+  "youngMuslimDurationHoursMinutes": "{hours}س {minutes}د",
+  "@youngMuslimDurationHoursMinutes": {
+    "description": "Compact video duration: hours and minutes (e.g. \"1h 20m\").",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimDurationMinutes": "{minutes}د",
+  "@youngMuslimDurationMinutes": {
+    "description": "Compact video duration in minutes (e.g. \"12m\").",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimNotWatchedYet": "لم يُشاهد بعد",
+  "youngMuslimJustNow": "الآن",
+  "@youngMuslimJustNow": {
+    "description": "Relative time: just now."
+  },
+  "youngMuslimMinutesAgo": "{count, plural, other{منذ {count} دقيقة}}",
+  "@youngMuslimMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimHoursAgo": "{count, plural, other{منذ {count} ساعة}}",
+  "@youngMuslimHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimDaysAgo": "{count, plural, other{منذ {count} يوم}}",
+  "@youngMuslimDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimWatched": "تمت المشاهدة",
+  "@youngMuslimWatched": {
+    "description": "Episode status: watched."
+  },
+  "youngMuslimProgressPercent": "تقدّم {percent}٪",
+  "@youngMuslimProgressPercent": {
+    "description": "Episode status: percent watched.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimReadyToWatch": "جاهزة للمشاهدة",
+  "@youngMuslimReadyToWatch": {
+    "description": "Episode status: not started yet."
+  },
+  "youngMuslimCategorySeriesCount": "{count, plural, other{{count} سلسلة}}",
+  "@youngMuslimCategorySeriesCount": {
+    "description": "Number of series in a category.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimCategorySeriesCountKids": "{count, plural, other{{count} سلسلة · للأطفال}}",
+  "@youngMuslimCategorySeriesCountKids": {
+    "description": "Number of series in a category aimed at kids.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "youngMuslimEpisodeMeta": "حلقة {episode} · {duration}",
+  "@youngMuslimEpisodeMeta": {
+    "description": "Episode number and its duration.",
+    "placeholders": {
+      "episode": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimResumeWhereLeft": "تابع من حيث توقفت",
+  "youngMuslimTimeRemaining": "يتبقّى {duration}",
+  "@youngMuslimTimeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "youngMuslimAlmostDone": "اقتربت النهاية",
+  "@youngMuslimAlmostDone": {
+    "description": "The video is almost finished."
+  },
+  "categoriesRequestFailed": "غير قادر على معالجة العملية",
+  "@categoriesRequestFailed": {
+    "description": "Generic error when loading library content (categories, books, audios) from the server fails."
+  },
+  "categoriesLibraryTitle": "المكتبة",
+  "@categoriesLibraryTitle": {
+    "description": "Title of the Islamic library screen (books, audios, lessons)."
+  },
+  "categoriesQuranSciencesHeader": "القرآن الكريم وعلومه",
+  "@categoriesQuranSciencesHeader": {
+    "description": "Section header: the Holy Quran and its sciences."
+  },
+  "categoriesTypesHeader": "تصنيفات",
+  "@categoriesTypesHeader": {
+    "description": "Section header: content types (books, stories, audios...)."
+  },
+  "categoriesSectionsHeader": "الأقسام",
+  "@categoriesSectionsHeader": {
+    "description": "Section header: library topics."
+  },
+  "categoriesFamousRecitations": "تلاوات مشهورة",
+  "@categoriesFamousRecitations": {
+    "description": "Audio collection: famous Quran recitations."
+  },
+  "categoriesKidsTeaching": "تعليم أطفال",
+  "@categoriesKidsTeaching": {
+    "description": "Audio collection: Quran teaching for children."
+  },
+  "categoriesRecitationsByNarration": "تلاوات بروايات وقراءات",
+  "@categoriesRecitationsByNarration": {
+    "description": "Audio collection: Quran recitations in different riwayat/qira'at (screen title)."
+  },
+  "categoriesRecitationsByNarrationShort": "تلاوات بروايات",
+  "@categoriesRecitationsByNarrationShort": {
+    "description": "Short tile label for categoriesRecitationsByNarration."
+  },
+  "categoriesHaramainMushafs": "مصاحف الحرمين",
+  "@categoriesHaramainMushafs": {
+    "description": "Audio collection: recitations by imams of the Two Holy Mosques (Makkah & Madinah)."
+  },
+  "categoriesTypeVideos": "فيديوهات",
+  "categoriesTypeBooks": "كتب",
+  "categoriesTypeStories": "قصص",
+  "categoriesTypeAudios": "أصوات",
+  "@categoriesTypeAudios": {
+    "description": "Content type: audio lectures."
+  },
+  "categoriesTypeFatwas": "فتاوى",
+  "@categoriesTypeFatwas": {
+    "description": "Content type: fatwas (religious rulings)."
+  },
+  "categoriesTypeQuran": "قرآن",
+  "@categoriesTypeQuran": {
+    "description": "Content type: Quran-related materials."
+  },
+  "categoriesTypePresentations": "عروض تقديمية",
+  "categoriesTypeNews": "أخبار",
+  "categoriesTypeArticles": "مقالات",
+  "categoriesTypeApps": "تطبيقات",
+  "categoriesTypeSermons": "خطب",
+  "@categoriesTypeSermons": {
+    "description": "Content type: Friday sermons (khutbahs)."
+  },
+  "categoriesTopicQuran": "القرآن",
+  "@categoriesTopicQuran": {
+    "description": "Library topic."
+  },
+  "categoriesTopicSunnah": "السنة",
+  "@categoriesTopicSunnah": {
+    "description": "Library topic: the Prophetic Sunnah."
+  },
+  "categoriesTopicSeerah": "السيرة النبوية",
+  "@categoriesTopicSeerah": {
+    "description": "Library topic: biography of the Prophet ﷺ."
+  },
+  "categoriesTopicAqeedah": "العقيدة",
+  "@categoriesTopicAqeedah": {
+    "description": "Library topic: Islamic creed (aqeedah)."
+  },
+  "categoriesTopicFiqh": "فقه",
+  "@categoriesTopicFiqh": {
+    "description": "Library topic: Islamic jurisprudence (fiqh)."
+  },
+  "categoriesTopicHistory": "التاريخ",
+  "@categoriesTopicHistory": {
+    "description": "Library topic: history."
+  },
+  "categoriesTopicArabic": "اللغة العربية",
+  "@categoriesTopicArabic": {
+    "description": "Library topic: the Arabic language."
+  },
+  "categoriesTopicIslamicStudies": "دراسات إسلامية",
+  "@categoriesTopicIslamicStudies": {
+    "description": "Library topic."
+  },
+  "categoriesTopicLessons": "الدروس العلمية",
+  "@categoriesTopicLessons": {
+    "description": "Library topic: scholarly lessons."
+  },
+  "categoriesTopicMajorSins": "الكبائر والمحرمات",
+  "@categoriesTopicMajorSins": {
+    "description": "Library topic: major sins and prohibitions."
+  },
+  "categoriesNoSearchResults": "لا توجد نتائج لهذا البحث.",
+  "categoriesItemsCount": "{count, plural, other{{count} عنصرًا}}",
+  "@categoriesItemsCount": {
+    "description": "Number of items in a library section.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesItemAudio": "مادة صوتية",
+  "@categoriesItemAudio": {
+    "description": "Type label of a library item: audio."
+  },
+  "categoriesItemBook": "كتاب",
+  "@categoriesItemBook": {
+    "description": "Type label of a library item: book."
+  },
+  "categoriesItemArticle": "مقال",
+  "@categoriesItemArticle": {
+    "description": "Type label of a library item: article."
+  },
+  "categoriesItemVideo": "مرئي",
+  "@categoriesItemVideo": {
+    "description": "Type label of a library item: video."
+  },
+  "categoriesFallbackTitle": "التصنيف",
+  "@categoriesFallbackTitle": {
+    "description": "Fallback screen title when a category has no name."
+  },
+  "categoriesNoAttachments": "لا توجد مرفقات لهذه المادة.",
+  "categoriesAttachments": "المرفقات",
+  "@categoriesAttachments": {
+    "description": "Section header: files attached to a library item."
+  },
+  "categoriesActionWatch": "مشاهدة",
+  "@categoriesActionWatch": {
+    "description": "Button: watch a video attachment."
+  },
+  "categoriesActionRead": "قراءة",
+  "@categoriesActionRead": {
+    "description": "Button: read a PDF attachment."
+  },
+  "categoriesActionOpen": "فتح",
+  "@categoriesActionOpen": {
+    "description": "Button: open a link attachment."
+  },
+  "categoriesOrder": "الترتيب {order}",
+  "@categoriesOrder": {
+    "description": "Position of an attachment in its list.",
+    "placeholders": {
+      "order": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesDownload": "تحميل",
+  "@categoriesDownload": {
+    "description": "Button: download a file."
+  },
+  "categoriesAttachmentFallback": "مرفق",
+  "@categoriesAttachmentFallback": {
+    "description": "Default name of a downloaded attachment without a description."
+  },
+  "categoriesNoChapters": "لا توجد أبواب في هذا القسم.",
+  "categoriesClearSearch": "مسح البحث",
+  "@categoriesClearSearch": {
+    "description": "Tooltip: clear the search field."
+  },
+  "categoriesAudioLoadError": "تعذر تحميل المواد الصوتية.",
+  "categoriesAudioClipNumber": "مقطع {number}",
+  "@categoriesAudioClipNumber": {
+    "description": "Name of an untitled audio clip by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesAudioClipFallback": "مقطع صوتي",
+  "@categoriesAudioClipFallback": {
+    "description": "Default name of a downloaded audio clip."
+  },
+  "booksTitle": "كتب",
+  "@booksTitle": {
+    "description": "Title of the books screen."
+  },
+  "booksLoadError": "تعذّر تحميل الكتب حاليًا.",
+  "booksEmpty": "لا توجد كتب للعرض.",
+  "booksFilesHeader": "ملفّات الكتاب",
+  "@booksFilesHeader": {
+    "description": "Section header: downloadable files of a book."
+  },
+  "booksNoFilesTitle": "لا توجد ملفّات",
+  "booksNoFilesBody": "لم تُرفق بهذا الكتاب ملفّات للتنزيل.",
+  "booksDescriptionHeader": "الوصف",
+  "@booksDescriptionHeader": {
+    "description": "Section header: book description."
+  },
+  "booksReferenceHeader": "المرجع",
+  "@booksReferenceHeader": {
+    "description": "Section header: bibliographic reference of the book."
+  },
+  "booksFileNumber": "الملفّ {number}",
+  "@booksFileNumber": {
+    "description": "Name of an untitled book file by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "booksReadTitle": "قراءة الكتاب",
+  "@booksReadTitle": {
+    "description": "Title bar of the in-app PDF book reader."
+  },
+  "booksViewerFailed": "تعذّر عرض الكتاب داخل التطبيق",
+  "booksOpenOutsideHint": "يمكنك فتحه خارج التطبيق",
+  "booksOpenOutside": "فتح خارج التطبيق",
+  "@booksOpenOutside": {
+    "description": "Button: open the book in an external app/browser."
+  },
+  "hadith40Title": "الأربعون النووية",
+  "@hadith40Title": {
+    "description": "Title: Imam al-Nawawi's Forty Hadith collection. Use the name Muslims know in the target language (e.g. 'Arbain Nawawi')."
+  },
+  "hadith40Number": "الحديث {number}",
+  "@hadith40Number": {
+    "description": "Fallback title of a hadith by its number in the collection.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hadith40SearchHint": "بحث عن حديث",
+  "hadith40NoResults": "لا توجد نتائج لهذا البحث",
+  "hadith40ShowAll": "عرض الأحاديث كلها",
+  "hadith40SheetSubtitle": "الأربعون النووية · الحديث {number}",
+  "@hadith40SheetSubtitle": {
+    "description": "Subtitle in the hadith sheet: collection name and hadith number.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hadith40Explanation": "شرح الحديث",
+  "@hadith40Explanation": {
+    "description": "Heading above the explanation (commentary) of the hadith."
+  },
+  "hadith40ShareText": "{title}\n\n{hadith}\n\nشرح الحديث:\n{explanation}",
+  "@hadith40ShareText": {
+    "description": "Text shared/copied for a hadith. {title}, {hadith} and {explanation} are Arabic content; translate only the \"Explanation of the hadith:\" label.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "hadith": {
+        "type": "String"
+      },
+      "explanation": {
+        "type": "String"
+      }
+    }
+  },
+  "allahNamesTitle": "أسماء الله الحسنى",
+  "@allahNamesTitle": {
+    "description": "Title: the 99 Beautiful Names of Allah (Asma ul-Husna)."
+  },
+  "allahNamesNameOrder": "الاسم {number} من أسماء الله الحسنى",
+  "@allahNamesNameOrder": {
+    "description": "Subtitle in the name details sheet, e.g. \"Name 5 of the Beautiful Names of Allah\".",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "allahNamesMeaning": "المعنى",
+  "@allahNamesMeaning": {
+    "description": "Section header: meaning of the name."
+  },
+  "allahNamesSearchHint": "بحث عن أسماء الله الحسنى",
+  "allahNamesNoResultsTitle": "لا توجد نتائج",
+  "allahNamesNoResultsMessage": "لم نجد اسمًا يطابق بحثك.",
+  "allahNamesShowAll": "عرض الأسماء كلها",
+  "readQuranListen": "السماع",
+  "@readQuranListen": {
+    "description": "Section header in the ayah sheet: listen to the recitation."
+  },
+  "readQuranAyah": "الآية",
+  "@readQuranAyah": {
+    "description": "Section header in the ayah sheet: the verse text."
+  },
+  "readQuranTafsir": "تفسير الآية",
+  "@readQuranTafsir": {
+    "description": "Section header in the ayah sheet: exegesis (tafsir) of the verse."
+  },
+  "quranAudioPlayPause": "تشغيل أو إيقاف",
+  "@quranAudioPlayPause": {
+    "description": "Accessibility label of the play/pause button."
+  },
+  "audiosTrackNumber": "المقطع {number}",
+  "@audiosTrackNumber": {
+    "description": "Name of an untitled audio track by its position.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "audiosTracksHeader": "المقاطع",
+  "@audiosTracksHeader": {
+    "description": "Section header: audio tracks of a series."
+  },
+  "audiosSearchSeriesHint": "ابحث عن سلسلة",
+  "audiosSeriesSubtitle": "سلسلة صوتية",
+  "@audiosSeriesSubtitle": {
+    "description": "Subtitle of a row: an audio lecture series."
+  },
+  "audiosNoSeries": "لا توجد سلاسل للعرض",
+  "audiosNoResults": "لا نتائج لبحثك",
+  "audiosPrevious": "السابق",
+  "@audiosPrevious": {
+    "description": "Player button: previous track."
+  },
+  "audiosNext": "التالي",
+  "@audiosNext": {
+    "description": "Player button: next track."
+  },
+  "audiosPause": "إيقاف مؤقّت",
+  "@audiosPause": {
+    "description": "Accessibility label: pause."
+  },
+  "audiosPlay": "تشغيل",
+  "@audiosPlay": {
+    "description": "Accessibility label: play."
+  }
+}

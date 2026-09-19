@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// ملخّص المواعيد: ثلاثة أرقام في صفّ واحد، بلا بطاقة ولا تدرّج لوني.
 class SchedulesSummaryWidget extends StatelessWidget {
@@ -28,11 +29,20 @@ class SchedulesSummaryWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 10.h),
         child: Row(
           children: [
-            _Stat(label: 'الإجمالي', value: totalCount),
+            _Stat(
+              label: context.l10n.notifScheduleStatTotal,
+              value: totalCount,
+            ),
             _Divider(color: skin.hairline),
-            _Stat(label: 'مفعّل', value: enabledCount),
+            _Stat(
+              label: context.l10n.notifScheduleStatEnabled,
+              value: enabledCount,
+            ),
             _Divider(color: skin.hairline),
-            _Stat(label: 'موقوف', value: disabledCount),
+            _Stat(
+              label: context.l10n.notifScheduleStatStopped,
+              value: disabledCount,
+            ),
           ],
         ),
       ),

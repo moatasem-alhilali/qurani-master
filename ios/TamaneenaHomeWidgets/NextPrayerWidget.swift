@@ -36,7 +36,7 @@ struct NextPrayerView: View {
     var body: some View {
         content
             .widgetURL(WidgetLinks.nextPrayer)
-            .environment(\.layoutDirection, .rightToLeft)
+            .environment(\.layoutDirection, entry.payload?.isRtl == false ? .leftToRight : .rightToLeft)
     }
 
     @ViewBuilder
@@ -63,7 +63,7 @@ struct NextPrayerView: View {
         let palette = WidgetPalette.of(scheme)
 
         return VStack(alignment: .leading, spacing: 2) {
-            Text("الصلاة القادمة")
+            Text(entry.payload?.label("nextPrayer", "الصلاة القادمة") ?? "الصلاة القادمة")
                 .font(.caption2)
                 .foregroundColor(palette.inkSoft)
 
@@ -143,7 +143,7 @@ struct NextPrayerView: View {
                     .font(.caption2)
                     .lineLimit(1)
             } else {
-                Text("افتح طمأنينة")
+                Text(entry.payload?.label("openApp", "افتح طمأنينة") ?? "افتح طمأنينة")
                     .font(.headline)
             }
         }
@@ -164,12 +164,19 @@ struct EmptyStateText: View {
     let payload: WidgetPayload?
     let palette: WidgetPalette
 
+    private var reason: String {
+        guard let payload = payload else { return "حدّد موقعك في التطبيق" }
+        return payload.location == nil
+            ? payload.label("setLocation", "حدّد موقعك في التطبيق")
+            : payload.label("refreshNeeded", "لتحديث المواقيت")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("افتح طمأنينة")
+            Text(payload?.label("openApp", "افتح طمأنينة") ?? "افتح طمأنينة")
                 .font(.headline)
                 .foregroundColor(palette.accent)
-            Text(payload?.location == nil ? "حدّد موقعك في التطبيق" : "لتحديث المواقيت")
+            Text(reason)
                 .font(.caption)
                 .foregroundColor(palette.inkSoft)
         }

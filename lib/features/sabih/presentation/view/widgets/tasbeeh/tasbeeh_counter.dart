@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/core/util/theme_colors.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// الهدف الحالي للتسبيح: ثلاث وثلاثون، ثم تسع وتسعون، ثم كل مئة.
 ///
@@ -124,7 +125,7 @@ class _TasbeehCounterState extends State<TasbeehCounter>
 
     return Semantics(
       button: true,
-      label: 'تسبيح',
+      label: context.l10n.sabihCounterSemantics,
       value: '${widget.count}',
       child: Center(
         child: InkResponse(
@@ -168,7 +169,9 @@ class _TasbeehCounterState extends State<TasbeehCounter>
                           ),
                           SizedBox(height: 2.h),
                           Text(
-                            reached ? 'بلغت $target' : 'من $target',
+                            reached
+                                ? context.l10n.sabihTargetReached(target)
+                                : context.l10n.sabihTargetOf(target),
                             style: TextStyle(
                               color: reached
                                   ? skin.accent

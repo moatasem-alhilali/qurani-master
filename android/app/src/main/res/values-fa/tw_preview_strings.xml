@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sample text shown only in the widget picker preview (previewLayout). -->
+<resources>
+    <string name="tw_preview_city">ریاض</string>
+    <string name="tw_preview_hijri_date">4 ربیع‌الثانی 1448 ه‍.ق</string>
+    <string name="tw_preview_fajr">صبح</string>
+    <string name="tw_preview_sunrise">طلوع آفتاب</string>
+    <string name="tw_preview_dhuhr">ظهر</string>
+    <string name="tw_preview_asr">عصر</string>
+    <string name="tw_preview_maghrib">مغرب</string>
+    <string name="tw_preview_isha">عشا</string>
+    <string name="tw_preview_time_fajr">04:25</string>
+    <string name="tw_preview_time_sunrise">05:43</string>
+    <string name="tw_preview_time_dhuhr">11:48</string>
+    <string name="tw_preview_time_asr">15:15</string>
+    <string name="tw_preview_time_maghrib">18:10</string>
+    <string name="tw_preview_time_isha">19:40</string>
+    <string name="tw_preview_next_in">تا عصر</string>
+</resources>

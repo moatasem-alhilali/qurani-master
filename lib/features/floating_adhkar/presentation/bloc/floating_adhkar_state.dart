@@ -9,18 +9,18 @@ enum FloatingAdhkarFeatureStatus {
 }
 
 extension FloatingAdhkarFeatureStatusX on FloatingAdhkarFeatureStatus {
-  String get label {
+  String label(L10n l10n) {
     switch (this) {
       case FloatingAdhkarFeatureStatus.unsupported:
-        return 'غير مدعومة';
+        return l10n.floatingAdhkarStatusUnsupported;
       case FloatingAdhkarFeatureStatus.permissionRequired:
-        return 'تحتاج صلاحية';
+        return l10n.floatingAdhkarStatusPermissionRequired;
       case FloatingAdhkarFeatureStatus.misconfigured:
-        return 'تحتاج تهيئة';
+        return l10n.floatingAdhkarStatusMisconfigured;
       case FloatingAdhkarFeatureStatus.active:
-        return 'تعمل الآن';
+        return l10n.floatingAdhkarStatusActive;
       case FloatingAdhkarFeatureStatus.inactive:
-        return 'متوقفة';
+        return l10n.floatingAdhkarStatusInactive;
     }
   }
 }

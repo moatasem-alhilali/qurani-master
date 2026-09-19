@@ -1,0 +1,699 @@
+{
+  "outreachTitle": "صحبة الفجر",
+  "@outreachTitle": {
+    "description": "Name of the 'Dawn companionship' feature: scheduled call lists that phone relatives/friends (e.g. to wake them for Fajr prayer). Screen title."
+  },
+  "outreachTagline": "قوائم اتصال هادئة تبدأ يوم من تحبّ بالخير",
+  "@outreachTagline": {
+    "description": "One-line subtitle under the feature title: calm call lists that start your loved ones' day with good."
+  },
+  "outreachActionCallOnly": "اتصال فقط",
+  "@outreachActionCallOnly": {
+    "description": "Action type of a contact in a call list: just place a phone call."
+  },
+  "outreachErrorScheduleNotFound": "هذه القائمة غير موجودة.",
+  "@outreachErrorScheduleNotFound": {
+    "description": "Error: the call list (schedule) no longer exists."
+  },
+  "outreachContactsPermissionDenied": "يجب السماح بالوصول لجهات الاتصال لاختيار رقم تلقائياً.",
+  "outreachContactNoPhone": "جهة الاتصال المختارة لا تحتوي على رقم هاتف.",
+  "outreachContactPickError": "حدث خطأ أثناء اختيار جهة الاتصال.",
+  "outreachUnnamed": "بدون اسم",
+  "@outreachUnnamed": {
+    "description": "Fallback name for a contact that has no name."
+  },
+  "outreachPermissionPhone": "الاتصال",
+  "@outreachPermissionPhone": {
+    "description": "Name of the Phone (make calls) permission, listed among missing permissions."
+  },
+  "outreachPermissionContacts": "جهات الاتصال",
+  "@outreachPermissionContacts": {
+    "description": "Name of the Contacts permission, listed among missing permissions."
+  },
+  "outreachPermissionNotifications": "الإشعارات",
+  "@outreachPermissionNotifications": {
+    "description": "Name of the Notifications permission, listed among missing permissions."
+  },
+  "outreachListSeparator": "، ",
+  "@outreachListSeparator": {
+    "description": "Separator placed between items of an inline list (permission names, weekday names). Arabic comma followed by a space; use the target language's comma + space."
+  },
+  "outreachValidationTitleRequired": "اكتب اسمًا للقائمة.",
+  "outreachValidationAddNumber": "أضف رقمًا واحدًا على الأقل.",
+  "outreachValidationEmptyPhone": "كل خانة يجب أن تحتوي على رقم هاتف.",
+  "outreachValidationIncompleteNumber": "يوجد رقم غير مكتمل.",
+  "outreachValidationDuplicateNumber": "يوجد رقم مكرر في نفس القائمة.",
+  "outreachValidationPickDay": "اختر يومًا واحدًا على الأقل.",
+  "outreachValidationEnableWithoutNumbers": "لا يمكن تشغيل قائمة بدون أرقام.",
+  "outreachCallLogsTitle": "سجل المكالمات",
+  "outreachClearLog": "مسح السجل",
+  "outreachStatTotal": "الإجمالي",
+  "outreachStatAnswered": "ردّوا",
+  "@outreachStatAnswered": {
+    "description": "Stat label: number of people who answered the call."
+  },
+  "outreachStatNotAnswered": "لم يردّوا",
+  "@outreachStatNotAnswered": {
+    "description": "Stat label: number of people who did not answer."
+  },
+  "outreachStatFailed": "فشل",
+  "@outreachStatFailed": {
+    "description": "Stat label: number of calls that failed."
+  },
+  "outreachResultsHeader": "النتائج",
+  "outreachNoResultsTitle": "لا توجد نتائج بعد",
+  "outreachNoResultsMessage": "ستظهر هنا نتيجة كل مكالمة بعد أول تشغيل.",
+  "outreachSecondsShort": "{seconds}ث",
+  "@outreachSecondsShort": {
+    "description": "Compact duration in seconds, e.g. '12s'. 'ث' is the Arabic abbreviation for seconds.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachSecondsValue": "{seconds} ث",
+  "@outreachSecondsValue": {
+    "description": "Slider value in seconds, e.g. '30 s'. 'ث' is the Arabic abbreviation for seconds.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachCallStatusAnswered": "تم الرد",
+  "outreachCallStatusNotAnswered": "لم يتم الرد",
+  "outreachCallStatusFailed": "فشل الاتصال",
+  "outreachExecutionTitle": "بدء المكالمات",
+  "outreachCallsStartedFromAlert": "بدأت المكالمات من التنبيه.",
+  "outreachCallsStartedNow": "بدأت المكالمات الآن.",
+  "outreachCallsStartFailed": "تعذر بدء المكالمات الآن. حاول مرة أخرى.",
+  "outreachCallLogsReviewSubtitle": "راجع من ردّ ومن لم يردّ بعد انتهاء القائمة",
+  "outreachPreparingCalls": "جارِ تجهيز المكالمات...",
+  "outreachDontCloseHint": "لا تغلق الصفحة حتى تبدأ العملية.",
+  "outreachCanCloseHint": "يمكنك إغلاق الصفحة الآن ومراجعة النتيجة من السجل.",
+  "outreachAddList": "إضافة قائمة",
+  "outreachStatLists": "القوائم",
+  "outreachStatEnabled": "المفعّلة",
+  "@outreachStatEnabled": {
+    "description": "Stat label: number of enabled call lists."
+  },
+  "outreachStatNumbers": "الأرقام",
+  "@outreachStatNumbers": {
+    "description": "Stat label: total number of phone numbers across all lists."
+  },
+  "outreachListsHeader": "قوائم الاتصال",
+  "outreachToolsHeader": "أدوات",
+  "outreachCallLogsSubtitle": "نتيجة كل اتصال: من ردّ ومن لم يردّ",
+  "outreachSettingsTitle": "إعدادات الاتصال",
+  "outreachSettingsSubtitle": "المدد الافتراضية وسلوك القوائم الجديدة",
+  "outreachNoListsTitle": "لا توجد قوائم بعد",
+  "outreachNoListsMessage": "أضف قائمة وحدّد وقتها والأرقام التي تودّ الاتصال بها.",
+  "outreachStartsNow": "تبدأ الآن",
+  "@outreachStartsNow": {
+    "description": "Countdown label on the next call list: it starts now."
+  },
+  "outreachStartsInMinutes": "{count, plural, other{بعد {count} دقيقة}}",
+  "@outreachStartsInMinutes": {
+    "description": "Countdown until the next call list runs: 'in N minutes'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInHours": "{count, plural, other{بعد {count} ساعة}}",
+  "@outreachStartsInHours": {
+    "description": "Countdown until the next call list runs: 'in N hours'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInHoursMinutes": "بعد {hours} ساعة و{minutes} دقيقة",
+  "@outreachStartsInHoursMinutes": {
+    "description": "Countdown until the next call list runs: 'in H hours and M minutes'.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachStartsInDays": "{count, plural, =1{بعد يوم} other{بعد {count} أيام}}",
+  "@outreachStartsInDays": {
+    "description": "Countdown until the next call list runs: 'in N days'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachPermissionsRequiredSnack": "لازم تفعيل هذه الصلاحيات أولًا: {permissions}",
+  "@outreachPermissionsRequiredSnack": {
+    "description": "Snackbar. {permissions} is a comma-separated list of permission names.",
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachPermissionsNotice": "الصلاحيات المطلوبة غير مكتملة. لتعمل القوائم في وقتها فعّل: {permissions}",
+  "@outreachPermissionsNotice": {
+    "description": "Notice banner. {permissions} is a comma-separated list of permission names.",
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachGrantPermissions": "منح الصلاحيات",
+  "outreachOpenSettings": "فتح الإعدادات",
+  "outreachSettingsSaved": "تم حفظ الإعدادات.",
+  "outreachSettingsIntro": "تُطبَّق هذه القيم على كل قائمة جديدة.",
+  "outreachDefaultDurationsHeader": "المدد الافتراضية",
+  "outreachRingTimeout": "مدة انتظار الرد",
+  "@outreachRingTimeout": {
+    "description": "Slider: how long to let the phone ring before giving up."
+  },
+  "outreachHangupDelay": "الانتظار بعد الرد",
+  "@outreachHangupDelay": {
+    "description": "Slider: how long to stay on the call after it is answered before hanging up."
+  },
+  "outreachDelayBetweenEach": "الفاصل بين كل رقم",
+  "outreachBehaviorHeader": "سلوك القوائم",
+  "outreachStopAfterFirstAnswerList": "إيقاف القائمة بعد أول رد",
+  "outreachRetryIfNoAnswer": "إعادة الاتصال إذا لم يتم الرد",
+  "outreachRestartAfterFinish": "إعادة البدء بعد الانتهاء",
+  "outreachSaveSettings": "حفظ الإعدادات",
+  "outreachBackgroundHeader": "التشغيل في الخلفية",
+  "outreachBatteryTitle": "استثناء التطبيق من توفير البطارية",
+  "outreachBatterySubtitle": "إذا توقفت القوائم وهي في الخلفية، اسمح للتطبيق بالعمل من إعدادات البطارية.",
+  "outreachEditList": "تعديل القائمة",
+  "outreachNewList": "قائمة جديدة",
+  "outreachCallTimeHeader": "وقت الاتصال",
+  "outreachManualTime": "اختيار وقت يدوي",
+  "outreachManualTimeSubtitle": "حدّد الساعة والدقيقة بنفسك",
+  "outreachUseFajrTime": "استخدام وقت الفجر",
+  "outreachUseFajrTimeWithTime": "استخدام وقت الفجر · {time}",
+  "@outreachUseFajrTimeWithTime": {
+    "description": "Option to use today's Fajr (dawn prayer) time. {time} is the formatted time.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachPrayerTimesNotReady": "مواقيت الصلاة غير جاهزة الآن",
+  "outreachFajrAutoFill": "يُعبَّأ الوقت تلقائيًا من مواقيت اليوم",
+  "outreachFajrUnavailable": "وقت الفجر غير متاح الآن. جرّب بعد قليل.",
+  "outreachFajrTimeUsed": "تم استخدام وقت الفجر: {time}",
+  "@outreachFajrTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachContactFetchFailed": "ما قدرنا نجيب جهة الاتصال الآن.",
+  "outreachExactAlarmHint": "لضمان صحبة الفجر في وقتها بدقة، فعّل إذن التنبيهات الدقيقة من إعدادات الجهاز.",
+  "outreachListNameHeader": "اسم القائمة",
+  "outreachStartTime": "موعد البدء",
+  "outreachStartTimeHint": "اختر وقتًا يدويًا أو استعمل وقت الفجر",
+  "outreachFajrTimeToday": "وقت الفجر اليوم {time}",
+  "@outreachFajrTimeToday": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachContactsHeader": "جهات الاتصال · {count}",
+  "@outreachContactsHeader": {
+    "description": "Section header with the number of contacts in the list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachPickFromContacts": "اختيار من جهات الاتصال",
+  "outreachPickFromContactsSubtitle": "أضف رقمًا جديدًا إلى هذه القائمة",
+  "outreachAdvancedSettings": "إعدادات متقدمة",
+  "outreachAdvancedSettingsSubtitle": "الأيام، مدد الانتظار، وسلوك التكرار",
+  "outreachSaving": "جارِ الحفظ...",
+  "outreachSaveList": "حفظ القائمة",
+  "outreachNoNumbersYet": "لم تُضف أرقام بعد.",
+  "outreachEnableList": "تشغيل هذه القائمة",
+  "outreachDailyRepeat": "تكرار يومي",
+  "outreachEveryDay": "كل يوم",
+  "outreachSelectedWeekdays": "أيام مختارة من الأسبوع",
+  "outreachDelayBetweenNumbers": "الفاصل بين الأرقام",
+  "outreachStopAfterFirstAnswer": "إيقاف بعد أول رد",
+  "outreachRetryOnNoAnswer": "إعادة عند عدم الرد",
+  "outreachRepeatWholeCycle": "تكرار الحلقة بالكامل",
+  "outreachListNameHint": "مثال: تذكير الفجر",
+  "outreachTitleFieldRequired": "اكتب اسمًا للقائمة",
+  "outreachPickNumber": "اختر الرقم",
+  "outreachMultipleNumbers": "هذا الاسم فيه أكثر من رقم.",
+  "outreachNoDays": "بلا أيام محددة",
+  "outreachContactsCount": "{count, plural, =0{بلا أرقام} =1{رقم واحد} =2{رقمان} few{{count} أرقام} many{{count} رقمًا} other{{count} رقمًا}}",
+  "@outreachContactsCount": {
+    "description": "Number of phone numbers in a call list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaRing": "انتظار {seconds}ث",
+  "@outreachMetaRing": {
+    "description": "Compact meta: ring timeout in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaAfterAnswer": "بعد الرد {seconds}ث",
+  "@outreachMetaAfterAnswer": {
+    "description": "Compact meta: wait after answer in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachMetaBetween": "بين الأرقام {seconds}ث",
+  "@outreachMetaBetween": {
+    "description": "Compact meta: delay between numbers in seconds ('ث' = seconds).",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "outreachNearest": "الأقرب",
+  "@outreachNearest": {
+    "description": "Pill on the call list that runs soonest."
+  },
+  "outreachStartNow": "ابدأ الآن",
+  "outreachStatusActive": "نشط",
+  "outreachStatusStopped": "متوقّف",
+  "outreachStatusSemantics": "الحالة: {status}",
+  "@outreachStatusSemantics": {
+    "description": "Screen-reader label. {status} is outreachStatusActive or outreachStatusStopped.",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "outreachWeekday1": "الإثنين",
+  "outreachWeekday2": "الثلاثاء",
+  "outreachWeekday3": "الأربعاء",
+  "outreachWeekday4": "الخميس",
+  "outreachWeekday5": "الجمعة",
+  "outreachWeekday6": "السبت",
+  "outreachWeekday7": "الأحد",
+  "@outreachWeekday1": {
+    "description": "Weekday names, 1 = Monday … 7 = Sunday."
+  },
+  "travelerServicesTitle": "خدمات المسافر",
+  "@travelerServicesTitle": {
+    "description": "Title of the traveler services sheet (mosques nearby, travel adhkar, halal food, prayer on a flight)."
+  },
+  "travelerNearbyMosques": "المساجد القريبة",
+  "travelerNearbyHalalRestaurants": "مطاعم حلال قريبة",
+  "travelerHalalRestaurants": "مطاعم حلال",
+  "travelerHintAroundYou": "حولك الآن",
+  "@travelerHintAroundYou": {
+    "description": "Short hint under the 'Nearby mosques' tile: around you now."
+  },
+  "travelerHintWithCounter": "بعدّاد",
+  "@travelerHintWithCounter": {
+    "description": "Short hint under the 'Travel adhkar' tile: comes with a counter."
+  },
+  "travelerHintByCountry": "حسب بلدك",
+  "@travelerHintByCountry": {
+    "description": "Short hint under the 'Halal restaurants' tile: depends on your country."
+  },
+  "travelerFlightPrayer": "الصلاة أثناء الطيران",
+  "travelerHintByFlightNumber": "برقم الرحلة",
+  "@travelerHintByFlightNumber": {
+    "description": "Short hint under the 'Prayer during flight' tile: by flight number."
+  },
+  "travelerSetLocationForMakkah": "حدّد موقعك في المواقيت لتظهر المسافة إلى مكّة.",
+  "travelerInMakkah": "أنت في مكّة المكرّمة — تقبّل الله.",
+  "@travelerInMakkah": {
+    "description": "Shown when the user is in Makkah. 'تقبّل الله' = 'May Allah accept (your worship)'."
+  },
+  "travelerYourLocation": "موضعك",
+  "travelerMakkah": "مكّة المكرّمة",
+  "@travelerMakkah": {
+    "description": "Makkah al-Mukarramah, the holy city. Use the usual honorific form in the target language."
+  },
+  "travelerQibla": "القبلة",
+  "travelerDistanceMeters": "{value} م",
+  "@travelerDistanceMeters": {
+    "description": "A distance in meters. 'م' is the Arabic abbreviation for meters.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerDistanceKm": "{value} كم",
+  "@travelerDistanceKm": {
+    "description": "A distance in kilometers. 'كم' is the Arabic abbreviation for km.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerListSeparator": "، ",
+  "@travelerListSeparator": {
+    "description": "Separator between parts of an address or place label. Arabic comma + space; use the target language's comma + space."
+  },
+  "travelerDirectionN": "شمالًا",
+  "travelerDirectionNE": "شمال شرق",
+  "travelerDirectionE": "شرقًا",
+  "travelerDirectionSE": "جنوب شرق",
+  "travelerDirectionS": "جنوبًا",
+  "travelerDirectionSW": "جنوب غرب",
+  "travelerDirectionW": "غربًا",
+  "travelerDirectionNW": "شمال غرب",
+  "@travelerDirectionN": {
+    "description": "Compass direction toward Makkah (N, NE, E, SE, S, SW, W, NW), shown under the distance."
+  },
+  "travelerPrayerUnknown": "غير محدد",
+  "travelerPrayerShortFajr": "فجر",
+  "travelerPrayerShortSunrise": "شروق",
+  "travelerPrayerShortDhuhr": "ظهر",
+  "travelerPrayerShortAsr": "عصر",
+  "travelerPrayerShortMaghrib": "مغرب",
+  "travelerPrayerShortIsha": "عشاء",
+  "@travelerPrayerShortFajr": {
+    "description": "Very short prayer names for small map markers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)."
+  },
+  "travelerNoMosquesFound": "لم نعثر على مساجد في النطاق الحالي.",
+  "travelerNoRestaurantsFound": "لم نعثر على مطاعم حلال في هذا النطاق.",
+  "travelerWalkingMinutes": "{count, plural, other{{count} دقيقة مشيًا}}",
+  "@travelerWalkingMinutes": {
+    "description": "Estimated walking time.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerDefaultMosqueName": "مسجد قريب",
+  "@travelerDefaultMosqueName": {
+    "description": "Fallback name for a mosque with no name on the map."
+  },
+  "travelerDefaultRestaurantName": "مطعم حلال",
+  "@travelerDefaultRestaurantName": {
+    "description": "Fallback name for a halal restaurant with no name on the map."
+  },
+  "travelerNoDetailedAddress": "بدون عنوان تفصيلي",
+  "travelerRepeatBySituation": "بحسب الموقف",
+  "@travelerRepeatBySituation": {
+    "description": "Repeat count of a dhikr that depends on the situation."
+  },
+  "travelerRepeatOnce": "مرة",
+  "travelerRepeatTimes": "{count, plural, other{{count} مرة}}",
+  "@travelerRepeatTimes": {
+    "description": "How many times a dhikr is repeated.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerStageStart": "عند بداية السفر",
+  "travelerStageOnTheWay": "أثناء الطريق",
+  "travelerStageStop": "عند التوقف",
+  "travelerStageReturn": "عند الرجوع",
+  "travelerStageFarewell": "توديع المسافر",
+  "travelerStageFarewellReply": "دعاء للمسافر",
+  "@travelerStageStart": {
+    "description": "Stages of a journey at which a travel dhikr is said (start, on the way, stopping, returning, bidding farewell to a traveler, supplication for a traveler)."
+  },
+  "travelerAthkarTitle": "أذكار السفر",
+  "@travelerAthkarTitle": {
+    "description": "Travel adhkar: remembrances/supplications said while travelling."
+  },
+  "travelerAthkarLoadFailed": "تعذر تحميل أذكار السفر.",
+  "travelerFarewellTitle": "لمن يودّع مسافرًا",
+  "travelerFarewellCaption": "ليست من طريقك — بل ممّن بقي خلفك",
+  "@travelerFarewellCaption": {
+    "description": "These adhkar are not for your road, but for those left behind (seeing you off)."
+  },
+  "travelerRoadComplete": "أتممت أذكار طريقك",
+  "travelerRoadStations": "محطّات الطريق",
+  "travelerRoadCompleteCaption": "صحبتك السلامة.",
+  "@travelerRoadCompleteCaption": {
+    "description": "Blessing: 'May safety accompany you.'"
+  },
+  "travelerRoadCaption": "كل ذكر في موضعه من الرحلة — افتح المحطّة التي أنت فيها.",
+  "travelerShareVirtue": "الفضل: {virtue}",
+  "@travelerShareVirtue": {
+    "description": "In shared dhikr text. {virtue} is Arabic religious text and stays untranslated.",
+    "placeholders": {
+      "virtue": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerShareSource": "المصدر: {source} ({hadith})",
+  "@travelerShareSource": {
+    "description": "In shared dhikr text. {source} is the hadith collection, {hadith} the reference; both stay as-is.",
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "hadith": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerResetCounter": "تصفير العدّاد",
+  "travelerCounterDone": "تمّ",
+  "travelerCounterCount": "عدّ",
+  "@travelerCounterCount": {
+    "description": "Button label: count (tap once per dhikr)."
+  },
+  "travelerCountDhikr": "عدّ الذكر",
+  "travelerFlightPrayerTitle": "مواقيت الصلاة أثناء الطيران",
+  "travelerShowTimes": "عرض المواقيت",
+  "travelerShowMap": "عرض الخريطة",
+  "travelerShowList": "عرض القائمة",
+  "travelerSearchByFlightNumber": "بحث برقم الرحلة",
+  "travelerRunSearchNow": "تشغيل البحث الآن",
+  "travelerFlightAttemptsExhausted": "انتهت المحاولات. أعد فتح الصفحة للمحاولة مجددًا.",
+  "travelerFlightNumberInvalid": "رقم الرحلة غير صحيح. مثال: EK202 أو MS985",
+  "travelerFlightFetchFailed": "تعذر جلب بيانات الرحلة حاليًا.",
+  "travelerSourceMock": "محاكاة محلية (بدون API)",
+  "@travelerSourceMock": {
+    "description": "Data source label: simulated locally, no real flight API."
+  },
+  "travelerCityRiyadh": "الرياض",
+  "travelerCityJeddah": "جدة",
+  "travelerCityDubai": "دبي",
+  "travelerCityDoha": "الدوحة",
+  "travelerCityIstanbul": "إسطنبول",
+  "travelerCityCairo": "القاهرة",
+  "travelerCityKualaLumpur": "كوالالمبور",
+  "travelerCityLondon": "لندن",
+  "travelerCityParis": "باريس",
+  "travelerCityNewYork": "نيويورك",
+  "@travelerCityRiyadh": {
+    "description": "Airport city names used by the simulated flight route."
+  },
+  "travelerAttemptsRemaining": "محاولات متبقّية",
+  "@travelerAttemptsRemaining": {
+    "description": "Label followed by the number of remaining flight searches."
+  },
+  "travelerLiveTrack": "مسار مباشر",
+  "travelerTakeoff": "الإقلاع",
+  "travelerLanding": "الهبوط",
+  "travelerFlightEnded": "انتهت الرحلة — لم تبقَ مواقيت على متنها.",
+  "travelerNoPrayerDuringFlight": "لم تقع أي صلاة ضمن مدّة هذه الرحلة.",
+  "travelerAllFlightPrayersPassed": "مضت كل مواقيت هذه الرحلة.",
+  "travelerCountdownHoursMinutes": "بعد {hours} س و{minutes} د",
+  "@travelerCountdownHoursMinutes": {
+    "description": "Compact countdown: 'in H h M min'. 'س' = hours, 'د' = minutes (abbreviations).",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerCountdownMinutes": "{count, plural, other{بعد {count} دقيقة}}",
+  "@travelerCountdownMinutes": {
+    "description": "Countdown: 'in N minutes'.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerNextPrayerAboard": "{prayer} على متن الرحلة — {countdown}",
+  "@travelerNextPrayerAboard": {
+    "description": "{prayer} is a prayer name, {countdown} e.g. 'in 2 h 10 min'.",
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      },
+      "countdown": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerFirstPrayerAboard": "أوّل صلاة على متن الرحلة: {prayer}",
+  "@travelerFirstPrayerAboard": {
+    "placeholders": {
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerAtPlaneLocalTime": "{time} بتوقيت موضع الطائرة ({offset})",
+  "@travelerAtPlaneLocalTime": {
+    "description": "{time} is HH:mm, {offset} the UTC offset like '+3' or '+5:30', in local time below the plane.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "offset": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerLocalTimeAbovePlane": "بالتوقيت المحلي فوق موضع الطائرة",
+  "travelerTapStopHint": "اضغط على أي محطّة لترى موضعها على الخريطة",
+  "travelerUpcoming": "قادم",
+  "travelerNext": "التالية",
+  "@travelerNext": {
+    "description": "Badge on the next prayer stop of a flight timeline."
+  },
+  "travelerStopGmt": "{place} · جرينتش {time}",
+  "@travelerStopGmt": {
+    "description": "{place} is a place/description, {time} is the GMT (UTC) time HH:mm.",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerSearchByFlightNumberHeader": "ابحث برقم الرحلة",
+  "travelerRun": "تشغيل",
+  "@travelerRun": {
+    "description": "Button that runs the flight search."
+  },
+  "travelerFlightSearchHint": "اكتب رقم الرحلة لنحسب مواقيت الصلاة على طول المسار.",
+  "travelerFlightDetails": "تفاصيل الرحلة",
+  "travelerFlightNumber": "رقم الرحلة",
+  "travelerFrom": "من",
+  "travelerTo": "إلى",
+  "travelerDataSource": "مصدر البيانات",
+  "travelerFlightTimeline": "خطّ زمن الرحلة",
+  "travelerNoTimesDuringFlight": "لم تظهر مواقيت ضمن مدة هذه الرحلة.",
+  "travelerFlightNumberExample": "مثال: EK202",
+  "travelerShowFullRoute": "عرض المسار كاملًا",
+  "travelerZoomIn": "تكبير",
+  "travelerZoomOut": "تصغير",
+  "travelerLocationFailed": "تعذر تحديد موقعك الحالي. حاول مرة أخرى.",
+  "travelerLocationServiceDisabled": "خدمة الموقع غير مفعلة. فعّلها لإظهار النتائج القريبة.",
+  "travelerLocationPermissionRequired": "يجب منح صلاحية الموقع حتى تعمل هذه الميزة.",
+  "travelerLocationPermissionDeniedForever": "تم رفض صلاحية الموقع نهائيًا. افتح إعدادات التطبيق.",
+  "travelerPlacesFetchFailed": "تعذر جلب النتائج القريبة الآن. حاول مجددًا.",
+  "travelerExpandRadius": "وسّع النطاق",
+  "travelerAllWithinRadius": "كلّها ضمن {radius} — والسهم يشير إلى جهة كلٍّ منها.",
+  "@travelerAllWithinRadius": {
+    "description": "{radius} is a distance like '3 km'. The arrow next to each place points toward it.",
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerRadius": "النطاق",
+  "@travelerRadius": {
+    "description": "Label before the search radius chips."
+  },
+  "travelerNearestPlaces": "أقرب الأماكن",
+  "travelerFoundResults": "{count, plural, other{وجدنا {count} نتيجة قربك}}",
+  "@travelerFoundResults": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerUnexpectedError": "حدث خطأ غير متوقع",
+  "travelerHalalRestricted": "لا يظهر بحث المطاعم الحلال في الدول الإسلامية،\nلأن مطاعمها حلال أصلًا.",
+  "travelerOpenMapsFailed": "تعذّر فتح تطبيق الخرائط.",
+  "travelerNearestMosque": "أقرب مسجد إليك",
+  "travelerNearestRestaurant": "أقرب مطعم حلال",
+  "travelerTakeMeThere": "خذني إليه",
+  "travelerWillMakeIt": "{count, plural, other{تلحق {prayer} — تبقّى {count} دقيقة}}",
+  "@travelerWillMakeIt": {
+    "description": "You will reach the mosque before {prayer}; {count} minutes remain until it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerMightMiss": "{count, plural, other{قد لا تلحق {prayer} مشيًا — تبقّى {count} دقيقة}}",
+  "@travelerMightMiss": {
+    "description": "Walking, you might miss {prayer}; {count} minutes remain until it.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "prayer": {
+        "type": "String"
+      }
+    }
+  },
+  "travelerOpenInGoogleMaps": "فتح في خرائط جوجل",
+  "travelerTapMarkerHint": "اضغط على العلامة لعرض التفاصيل",
+  "travelerOpenPhoneFailed": "تعذر فتح تطبيق الاتصال.",
+  "travelerOpenLinkFailed": "تعذر فتح الرابط.",
+  "travelerDirections": "الاتجاه",
+  "@travelerDirections": {
+    "description": "Button: get directions to the place."
+  },
+  "travelerGoogleMaps": "خرائط جوجل",
+  "travelerCall": "اتصال",
+  "@travelerCall": {
+    "description": "Button: phone the place."
+  },
+  "travelerUpdating": "جارٍ التحديث…",
+  "travelerResultsCount": "عدد النتائج {count}",
+  "@travelerResultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelerMyCurrentLocation": "موقعي الحالي",
+  "travelerMaps": "الخرائط",
+  "travelerMyLocation": "موقعي"
+}

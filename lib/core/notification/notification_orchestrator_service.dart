@@ -11,7 +11,9 @@ import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/remote/prayer_time_repo.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_labels.dart';
 import 'package:quran_app/features/setting_notification/data/repo/setting_notification_repo.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_app/main.dart';
 
 /// Orchestrates all notification scheduling using the new unified notification system
@@ -185,7 +187,7 @@ class NotificationOrchestratorService {
         prayerTimeLabel: prayerTimeLabel,
       ),
       subText: subText,
-      ticker: 'حان الآن أذان $prayerName',
+      ticker: L10nService.current.coreAthanTicker(prayerName),
       iosSubtitle: subText,
       iosThreadIdentifier: 'athan_notifications',
       iosCategoryIdentifier: 'islamic_notifications',
@@ -275,7 +277,10 @@ class NotificationOrchestratorService {
         final success =
             await notificationService.scheduleNotificationCompatType(
           id: id,
-          title: setting.label,
+          title: NotificationLabels.resolve(
+            setting.key,
+            fallback: setting.label,
+          ),
           body: NotificationDataConst.resolveNotificationBody(setting.key),
           channel: NotificationDataConst.resolveChannel(setting.key),
           schedule: setting.schedule,

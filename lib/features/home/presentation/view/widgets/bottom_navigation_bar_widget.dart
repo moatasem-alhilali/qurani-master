@@ -3,6 +3,7 @@ import 'package:quran_app/core/components/button_progress_state.dart';
 import 'package:quran_app/core/components/card_widget.dart';
 import 'package:quran_app/core/extensions/theme_extensions.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// Custom bottom navigation bar with smooth animations and modern design
 class CustomBottomNavigationBarWidget extends StatefulWidget {
@@ -56,12 +57,12 @@ class _CustomBottomNavigationBarWidgetState
           children: [
             _buildNavItem(
               icon: AppIcons.home,
-              label: 'الرئيسية',
+              label: context.l10n.homeNavHome,
               index: 0,
             ),
             _buildNavItem(
               icon: AppIcons.sections,
-              label: 'الاقسام',
+              label: context.l10n.homeNavSections,
               index: 1,
             ),
           ],

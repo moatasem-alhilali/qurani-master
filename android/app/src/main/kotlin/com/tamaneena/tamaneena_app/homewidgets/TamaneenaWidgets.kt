@@ -186,11 +186,16 @@ object WidgetRenderer {
     fun nextPrayer(context: Context, payload: WidgetPayload?, now: Long): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.tw_next_prayer)
         views.setOnClickPendingIntent(android.R.id.background, launch(context, "next-prayer"))
+        applyDirection(views, payload)
+        views.setTextViewText(
+            R.id.tw_label,
+            label(context, payload, "nextPrayer", R.string.tw_next_prayer_label),
+        )
 
         val next = payload?.nextPrayer(now)
         if (next == null) {
-            views.setTextViewText(R.id.tw_name, context.getString(R.string.tw_open_app))
-            views.setTextViewText(R.id.tw_time, context.getString(emptyReason(payload)))
+            views.setTextViewText(R.id.tw_name, label(context, payload, "openApp", R.string.tw_open_app))
+            views.setTextViewText(R.id.tw_time, emptyReason(context, payload))
             views.setViewVisibility(R.id.tw_countdown, View.GONE)
             views.setTextViewText(R.id.tw_location, payload?.location.orEmpty())
             return views
@@ -207,11 +212,12 @@ object WidgetRenderer {
     fun prayerTimes(context: Context, payload: WidgetPayload?, now: Long): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.tw_prayer_times)
         views.setOnClickPendingIntent(android.R.id.background, launch(context, "prayer-times"))
+        applyDirection(views, payload)
 
         val next = payload?.nextPrayer(now)
         if (next == null) {
-            views.setTextViewText(R.id.tw_location, context.getString(R.string.tw_open_app))
-            views.setTextViewText(R.id.tw_date, context.getString(emptyReason(payload)))
+            views.setTextViewText(R.id.tw_location, label(context, payload, "openApp", R.string.tw_open_app))
+            views.setTextViewText(R.id.tw_date, emptyReason(context, payload))
             for (index in cellIds.indices) {
                 views.setViewVisibility(cellIds[index], View.INVISIBLE)
             }
@@ -241,7 +247,9 @@ object WidgetRenderer {
         }
 
         views.setViewVisibility(R.id.tw_footer, View.VISIBLE)
-        views.setTextViewText(R.id.tw_next_label, "${prayer.name} بعد")
+        val nextIn = payload?.labels?.get("nextIn")?.takeIf { it.contains("{prayer}") }
+            ?: "{prayer} بعد"
+        views.setTextViewText(R.id.tw_next_label, nextIn.replace("{prayer}", prayer.name))
         startCountdown(views, prayer.at, now)
         return views
     }
@@ -249,6 +257,11 @@ object WidgetRenderer {
     fun dailyAyah(context: Context, payload: WidgetPayload?, now: Long): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.tw_daily_ayah)
         views.setOnClickPendingIntent(android.R.id.background, launch(context, "daily-ayah"))
+        // الآية عربية دائمًا فيبقى التخطيط من اليمين؛ العنوان وحده بلغة التطبيق.
+        views.setTextViewText(
+            R.id.tw_title,
+            label(context, payload, "dailyAyah", R.string.tw_daily_ayah_label),
+        )
 
         val verse = payload?.verseFor(now)
         views.setTextViewText(
@@ -274,9 +287,27 @@ object WidgetRenderer {
         views.setChronometer(R.id.tw_countdown, base, null, true)
     }
 
-    private fun emptyReason(payload: WidgetPayload?): Int =
-        if (payload == null || payload.location == null) R.string.tw_set_location
-        else R.string.tw_refresh_needed
+    private fun emptyReason(context: Context, payload: WidgetPayload?): String =
+        if (payload == null || payload.location == null) {
+            label(context, payload, "setLocation", R.string.tw_set_location)
+        } else {
+            label(context, payload, "refreshNeeded", R.string.tw_refresh_needed)
+        }
+
+    private fun label(context: Context, payload: WidgetPayload?, key: String, fallback: Int): String =
+        payload?.label(key, context.getString(fallback)) ?: context.getString(fallback)
+
+    /**
+     * اتّجاه لغة التطبيق لا لغة الجهاز: مستخدم يختار التركية على هاتف عربي يرى
+     * الودجت من اليسار. `View.setLayoutDirection` معلَّم `@RemotableViewMethod`.
+     */
+    private fun applyDirection(views: RemoteViews, payload: WidgetPayload?) {
+        views.setInt(
+            android.R.id.background,
+            "setLayoutDirection",
+            if (payload?.rtl == false) View.LAYOUT_DIRECTION_LTR else View.LAYOUT_DIRECTION_RTL,
+        )
+    }
 
     /**
      * `homeWidget` في الرابط شرط home_widget على iOS؛ يُضاف هنا أيضًا ليبقى

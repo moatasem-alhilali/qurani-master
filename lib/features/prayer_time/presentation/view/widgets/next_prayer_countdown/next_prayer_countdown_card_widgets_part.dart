@@ -92,14 +92,14 @@ class _SkyHeroPanel extends StatelessWidget {
                           palette: palette,
                           icon: AppIcons.settings,
                           onTap: onSettingsTap,
-                          tooltip: 'الإعدادات',
+                          tooltip: context.l10n.commonSettings,
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    'أنت الآن في وقت',
+                    context.l10n.prayerTimeYouAreInTime,
                     style: TextStyle(
                       color: palette.inkSoft.withValues(alpha: 0.84),
                       fontSize: 10.5.sp,
@@ -383,7 +383,7 @@ class _PrayerBoard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '$hijriText · توقيت أم القرى',
+                      context.l10n.prayerTimeBoardHijriLine(hijriText),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -397,7 +397,10 @@ class _PrayerBoard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8.w),
-              _BoardLink(label: 'كل المواقيت', onTap: onOpenAll),
+              _BoardLink(
+                label: context.l10n.prayerTimeAllTimes,
+                onTap: onOpenAll,
+              ),
             ],
           ),
           SizedBox(height: 6.h),
@@ -450,7 +453,11 @@ class _BoardLink extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 13.sp),
+            AppIcon(
+              AppIcons.forwardFor(context),
+              color: skin.accent,
+              size: 13.sp,
+            ),
           ],
         ),
       ),
@@ -550,12 +557,12 @@ class _PlainRowBody extends StatelessWidget {
           : BoxDecoration(
               border: Border(bottom: BorderSide(color: skin.hairline)),
             ),
-      padding: EdgeInsets.fromLTRB(4.w, 11.h, 2.w, 11.h),
+      padding: EdgeInsetsDirectional.fromSTEB(2.w, 11.h, 4.w, 11.h),
       child: Row(
         children: [
           Expanded(
             child: Text(
-              entry.name,
+              entry.displayName(context.l10n),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -567,7 +574,7 @@ class _PlainRowBody extends StatelessWidget {
           ),
           if (entry.isNext) ...[
             Text(
-              'التالية',
+              context.l10n.prayerTimeNextBadge,
               style: TextStyle(
                 color: skin.accent,
                 fontSize: 9.sp,
@@ -628,7 +635,7 @@ class _RaisedRowBody extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  entry.name,
+                  entry.displayName(context.l10n),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -645,7 +652,9 @@ class _RaisedRowBody extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
-                  entry.isCurrent ? 'الآن' : 'التالية',
+                  entry.isCurrent
+                      ? context.l10n.prayerTimeNow
+                      : context.l10n.prayerTimeNextBadge,
                   style: TextStyle(
                     color: skin.isDark
                         ? AppColors.brandNight
@@ -729,7 +738,9 @@ class _AthanBell extends StatelessWidget {
       valueListenable: listenable,
       builder: (context, enabled, _) {
         return Tooltip(
-          message: enabled ? 'كتم أذان هذه الصلاة' : 'تشغيل أذان هذه الصلاة',
+          message: enabled
+              ? context.l10n.prayerTimeMuteAthan
+              : context.l10n.prayerTimeUnmuteAthan,
           child: InkResponse(
             onTap: () {
               AthanMuteStore.instance.toggle(prayer);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
 import 'package:quran_app/features/sabih/data/model/subih_model.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// صفّ إحصاء ذكر واحد: عنوان ووصف ورقم، بلا بطاقة ولا دائرة ملوّنة.
 class DhikrStatsCard extends StatelessWidget {
@@ -56,7 +57,7 @@ class DhikrStatsCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999.r),
                         ),
                         child: Text(
-                          'مخصص',
+                          context.l10n.sabihCustomBadge,
                           style: TextStyle(
                             color: skin.accent,
                             fontSize: 8.5.sp,
@@ -67,9 +68,9 @@ class DhikrStatsCard extends StatelessWidget {
                     ],
                   ],
                 ),
-                if (subih.content.trim().isNotEmpty)
+                if (subih.displayContent(context.l10n).trim().isNotEmpty)
                   Text(
-                    subih.content,
+                    subih.displayContent(context.l10n),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

@@ -6,6 +6,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/home/data/surah_label.dart';
 import 'package:quran_app/features/read_quran/presentation/view/pages/read_quran_screen.dart';
+import 'package:quran_app/l10n/l10n.dart';
 import 'package:quran_library/quran_library.dart';
 
 /// عدد صفحات المصحف — يُستخدم لقياس نسبة ما قُرئ.
@@ -83,7 +84,9 @@ class _HomeContinueReadingState extends State<HomeContinueReading> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            hasProgress ? 'تكملة القراءة' : 'ابدأ القراءة',
+                            hasProgress
+                                ? context.l10n.homeContinueReading
+                                : context.l10n.homeStartReading,
                             style: TextStyle(
                               color: skin.ink,
                               fontSize: 12.5.sp,
@@ -93,9 +96,11 @@ class _HomeContinueReadingState extends State<HomeContinueReading> {
                           ),
                           Text(
                             hasProgress
-                                ? '${surahLabel(lastRead.surahName)} · '
-                                    'صفحة ${lastRead.page}'
-                                : 'من سورة الفاتحة · صفحة ١',
+                                ? context.l10n.homeContinueReadingPosition(
+                                    surahLabel(lastRead.surahName),
+                                    lastRead.page,
+                                  )
+                                : context.l10n.homeStartReadingPosition,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -123,7 +128,7 @@ class _HomeContinueReadingState extends State<HomeContinueReading> {
                         ),
                       ),
                     AppIcon(
-                      AppIcons.chevronLeft,
+                      AppIcons.forwardFor(context),
                       color: skin.accent,
                       size: 15.sp,
                     ),

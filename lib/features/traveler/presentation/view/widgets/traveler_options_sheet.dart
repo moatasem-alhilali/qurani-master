@@ -7,6 +7,7 @@ import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_blo
 import 'package:quran_app/features/traveler/data/services/makkah_geo.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/hub/traveler_route_arc.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// خدمات المسافر.
 ///
@@ -60,7 +61,7 @@ class TravelerOptionsSheet extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'خدمات المسافر',
+                      context.l10n.travelerServicesTitle,
                       style: TextStyle(
                         color: skin.ink,
                         fontSize: 14.sp,
@@ -71,7 +72,7 @@ class TravelerOptionsSheet extends StatelessWidget {
                   ),
                   TravelerIconAction(
                     icon: AppIcons.close,
-                    tooltip: 'إغلاق',
+                    tooltip: context.l10n.commonClose,
                     onTap: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -90,8 +91,8 @@ class TravelerOptionsSheet extends StatelessWidget {
                       Expanded(
                         child: TravelerServiceTile(
                           icon: AppIcons.mosque,
-                          title: 'المساجد القريبة',
-                          hint: 'حولك الآن',
+                          title: context.l10n.travelerNearbyMosques,
+                          hint: context.l10n.travelerHintAroundYou,
                           onTap: onOpenNearbyMosques,
                         ),
                       ),
@@ -99,8 +100,8 @@ class TravelerOptionsSheet extends StatelessWidget {
                       Expanded(
                         child: TravelerServiceTile(
                           icon: AppIcons.bookOpen,
-                          title: 'أذكار السفر',
-                          hint: 'بعدّاد',
+                          title: context.l10n.travelerAthkarTitle,
+                          hint: context.l10n.travelerHintWithCounter,
                           onTap: onOpenTravelAzkar,
                         ),
                       ),
@@ -112,8 +113,8 @@ class TravelerOptionsSheet extends StatelessWidget {
                       Expanded(
                         child: TravelerServiceTile(
                           icon: AppIcons.restaurant,
-                          title: 'مطاعم حلال',
-                          hint: 'حسب بلدك',
+                          title: context.l10n.travelerHalalRestaurants,
+                          hint: context.l10n.travelerHintByCountry,
                           onTap: onOpenHalalRestaurants,
                         ),
                       ),
@@ -121,8 +122,8 @@ class TravelerOptionsSheet extends StatelessWidget {
                       Expanded(
                         child: TravelerServiceTile(
                           icon: AppIcons.flight,
-                          title: 'الصلاة أثناء الطيران',
-                          hint: 'برقم الرحلة',
+                          title: context.l10n.travelerFlightPrayer,
+                          hint: context.l10n.travelerHintByFlightNumber,
                           onTap: onOpenFlightPrayerTimes,
                         ),
                       ),
@@ -159,7 +160,7 @@ class _RouteToMakkah extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 2.h),
             child: Text(
-              'حدّد موقعك في المواقيت لتظهر المسافة إلى مكّة.',
+              context.l10n.travelerSetLocationForMakkah,
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.72),
                 fontSize: 9.5.sp,
@@ -179,7 +180,7 @@ class _RouteToMakkah extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 2.h),
             child: Text(
-              'أنت في مكّة المكرّمة — تقبّل الله.',
+              context.l10n.travelerInMakkah,
               style: TextStyle(
                 color: skin.accent,
                 fontSize: 12.sp,
@@ -195,7 +196,7 @@ class _RouteToMakkah extends StatelessWidget {
               ? location.locality!.trim()
               : location.label,
           distanceLabel: geo.distanceLabel,
-          directionLabel: geo.directionLabel,
+          directionLabel: geo.directionLabel(context.l10n),
         );
       },
     );

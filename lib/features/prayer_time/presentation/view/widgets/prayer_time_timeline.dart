@@ -10,6 +10,7 @@ import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_info.dart';
 import 'package:quran_app/features/prayer_time/data/model/prayer_location_selection.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_time_timeline_header.dart';
 part 'prayer_time_timeline_notice.dart';

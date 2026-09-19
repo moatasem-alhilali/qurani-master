@@ -16,6 +16,7 @@ import 'package:quran_app/features/traveler/presentation/view/widgets/travel_pla
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_selected_card.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/travel_places/travel_places_top_controls.dart';
 import 'package:quran_app/features/traveler/presentation/view/widgets/traveler_shell.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// الأماكن القريبة — قرارٌ أوّلًا، وخريطةٌ عند الطلب.
 ///
@@ -75,11 +76,13 @@ class _TravelPlacesViewState extends State<_TravelPlacesView> {
   @override
   Widget build(BuildContext context) {
     return TravelerScaffold(
-      title: widget.placeType.title,
+      title: widget.placeType.title(context.l10n),
       actions: [
         TravelerIconAction(
           icon: _showMap ? AppIcons.sections : AppIcons.mapPin,
-          tooltip: _showMap ? 'عرض القائمة' : 'عرض الخريطة',
+          tooltip: _showMap
+              ? context.l10n.travelerShowList
+              : context.l10n.travelerShowMap,
           active: _showMap,
           onTap: () => setState(() => _showMap = !_showMap),
         ),
@@ -181,8 +184,8 @@ class _TravelPlacesViewState extends State<_TravelPlacesView> {
         else if (places.isEmpty)
           TravelerNotice(
             icon: AppIcons.searchOff,
-            message: widget.placeType.emptyMessage,
-            actionLabel: 'وسّع النطاق',
+            message: widget.placeType.emptyMessage(context.l10n),
+            actionLabel: context.l10n.travelerExpandRadius,
             onAction: () => context
                 .read<TravelPlacesBloc>()
                 .add(ChangeRadiusEvent(_nextRadius(state.radiusMeters))),
@@ -191,7 +194,9 @@ class _TravelPlacesViewState extends State<_TravelPlacesView> {
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 4.h),
             child: Text(
-              'كلّها ضمن ${_radiusLabel(state.radiusMeters)} — والسهم يشير إلى جهة كلٍّ منها.',
+              context.l10n.travelerAllWithinRadius(
+                _radiusLabel(context.l10n, state.radiusMeters),
+              ),
               style: TextStyle(
                 color: skin.inkSoft.withValues(alpha: 0.65),
                 fontSize: 9.sp,
@@ -224,8 +229,9 @@ class _TravelPlacesViewState extends State<_TravelPlacesView> {
     return 10000;
   }
 
-  static String _radiusLabel(int meters) =>
-      meters < 1000 ? '$meters م' : '${meters ~/ 1000} كم';
+  static String _radiusLabel(L10n l10n, int meters) => meters < 1000
+      ? l10n.travelerDistanceMeters('$meters')
+      : l10n.travelerDistanceKm('${meters ~/ 1000}');
 }
 
 /// شريط نطاق البحث. كان يطفو فوق الخريطة وحدها، فصار في مسار القراءة.
@@ -245,7 +251,7 @@ class _RadiusBar extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'النطاق',
+            context.l10n.travelerRadius,
             style: TextStyle(
               color: skin.inkSoft.withValues(alpha: 0.7),
               fontSize: 9.5.sp,
@@ -256,7 +262,7 @@ class _RadiusBar extends StatelessWidget {
           SizedBox(width: 10.w),
           for (final radius in _options) ...[
             _RadiusChip(
-              label: _TravelPlacesViewState._radiusLabel(radius),
+              label: _TravelPlacesViewState._radiusLabel(context.l10n, radius),
               isSelected: state.radiusMeters == radius,
               onTap: state.isLoadingPlaces || state.radiusMeters == radius
                   ? null
@@ -269,7 +275,7 @@ class _RadiusBar extends StatelessWidget {
           const Spacer(),
           TravelerIconAction(
             icon: AppIcons.refresh,
-            tooltip: 'تحديث',
+            tooltip: context.l10n.commonRefresh,
             onTap: () => state.isLoadingPlaces
                 ? null
                 : context.read<TravelPlacesBloc>().add(LoadNearbyPlacesEvent()),

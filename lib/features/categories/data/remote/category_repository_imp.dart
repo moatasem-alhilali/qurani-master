@@ -4,6 +4,7 @@ import 'package:quran_app/core/server_failure/failure.dart';
 import 'package:quran_app/features/categories/data/model/category_video_model.dart';
 import 'package:quran_app/features/categories/data/model/section_type_model.dart';
 import 'package:quran_app/main.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 abstract class CategoryRepository {
   Future<Either<Failure, List<SectionTypeModel>>> getCategories(String url);
@@ -30,7 +31,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       );
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 
@@ -48,7 +49,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       );
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 
@@ -63,7 +64,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return right(CategoryDetailModel.fromJson(data as Map<String, dynamic>));
     } catch (e) {
       logger.e(e);
-      return left(ServerFailure('غير قادر على معالجة العملية'));
+      return left(ServerFailure(L10nService.current.categoriesRequestFailed));
     }
   }
 

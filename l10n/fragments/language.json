@@ -1,0 +1,12 @@
+{
+  "languageTitle": "اختر لغتك",
+  "@languageTitle": { "description": "Title of the first-launch language picker." },
+  "languageSubtitle": "يمكنك تغييرها لاحقًا من الإعدادات.",
+  "@languageSubtitle": { "description": "Subtitle under the picker title." },
+  "languageSettingTitle": "اللغة",
+  "@languageSettingTitle": { "description": "Settings row and page title for changing the app language." },
+  "languageSettingSubtitle": "لغة واجهة التطبيق",
+  "@languageSettingSubtitle": { "description": "Settings row subtitle. The current language name is shown separately." },
+  "languageReligiousTextNote": "القرآن الكريم والأذكار والأدعية تبقى بنصّها العربي.",
+  "@languageReligiousTextNote": { "description": "Tells the user that Quran, adhkar and duas are always shown in their original Arabic text, whatever the interface language." }
+}

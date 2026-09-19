@@ -24,6 +24,7 @@ import 'package:quran_app/features/prayer_time/data/service/prayer_calculation_p
 import 'package:quran_app/features/prayer_time/presentation/bloc/prayer_time_bloc.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/pages/prayer_time_settings_screen.dart';
 import 'package:quran_app/features/prayer_time/presentation/view/widgets/prayer_location_picker_sheet.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_time_screen_week_part.dart';
 part 'prayer_time_screen_rows_part.dart';
@@ -77,9 +78,9 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: skin.ground),
       child: AppScaffoldWidget(
-        title: 'أوقات الصلاة',
+        title: context.l10n.prayerTimeTitle,
         trailing: IconButton(
-          tooltip: 'إعدادات أوقات الصلاة',
+          tooltip: context.l10n.prayerTimeSettingsTitle,
           onPressed: () {
             context.push(
               BlocProvider.value(
@@ -265,6 +266,9 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   }) {
     final skin = AppSkin.of(context);
     final day = week[dayIndex];
+    final gregorianDate =
+        DateFormat('EEEE d MMMM yyyy', context.localeCode).format(day.date);
+    final hijriDate = HijriDate.fromDate(day.date).format(context.l10n);
     final time = day.slots[prayerIndex];
     final window = day.windowOf(prayerIndex);
     final todayTime = week.first.slots[prayerIndex];
@@ -296,7 +300,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 ),
                 SizedBox(height: 14.h),
                 Text(
-                  _prayerNames[prayerIndex],
+                  _prayerName(context.l10n, prayerIndex),
                   style: TextStyle(
                     color: skin.ink,
                     fontSize: 14.sp,
@@ -305,8 +309,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                   ),
                 ),
                 Text(
-                  '${DateFormat('EEEE d MMMM yyyy', 'ar').format(day.date)}'
-                  ' · ${HijriDate.fromDate(day.date).formatArabic()}',
+                  '$gregorianDate · $hijriDate',
                   style: TextStyle(
                     color: skin.inkSoft.withValues(alpha: 0.78),
                     fontSize: 9.5.sp,
@@ -316,7 +319,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                 ),
                 SizedBox(height: 10.h),
                 _SheetRow(
-                  label: 'وقت الأذان',
+                  label: context.l10n.prayerTimeSheetAthanTime,
                   child: _ClockText(
                     time: time,
                     size: 12.5.sp,
@@ -324,12 +327,18 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
                   ),
                 ),
                 _SheetRow(
-                  label: prayerIndex == 1 ? 'حتى الظهر' : 'مدّة النافذة',
-                  value: _formatDuration(window),
+                  label: prayerIndex == 1
+                      ? context.l10n.prayerTimeSheetUntilDhuhr
+                      : context.l10n.prayerTimeSheetWindow,
+                  value: _formatDuration(context.l10n, window),
                 ),
                 _SheetRow(
-                  label: 'الفارق عن اليوم',
-                  value: _shiftLabel(shift, isToday: dayIndex == 0),
+                  label: context.l10n.prayerTimeSheetShift,
+                  value: _shiftLabel(
+                    context.l10n,
+                    shift,
+                    isToday: dayIndex == 0,
+                  ),
                   isLast: true,
                 ),
               ],

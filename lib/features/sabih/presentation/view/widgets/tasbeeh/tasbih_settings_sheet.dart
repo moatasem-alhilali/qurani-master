@@ -11,6 +11,7 @@ import 'package:quran_app/features/sabih/data/service/tasbih_preferences.dart';
 import 'package:quran_app/features/sabih/presentation/bloc/sabih_bloc.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbeeh_counter.dart';
 import 'package:quran_app/features/sabih/presentation/view/widgets/tasbeeh/tasbih_bead_painter.dart';
+import 'package:quran_app/l10n/l10n.dart';
 
 /// يفتح إعدادات المسبحة كورقة منبثقة فوق الشاشة.
 ///
@@ -74,7 +75,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
     final parsed = int.tryParse(_targetController.text.trim());
     if (parsed == null || parsed <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('أدخل رقمًا صحيحًا أكبر من صفر')),
+        SnackBar(content: Text(context.l10n.sabihInvalidNumber)),
       );
       return;
     }
@@ -87,6 +88,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
+    final l10n = context.l10n;
 
     return Padding(
       // ترتفع الورقة فوق لوحة المفاتيح عند الكتابة في حقل الهدف.
@@ -120,7 +122,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'إعدادات المسبحة',
+                          l10n.sabihSettingsTitle,
                           style: TextStyle(
                             color: skin.ink,
                             fontSize: 14.sp,
@@ -141,7 +143,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                     ),
                   ),
                   IconButton(
-                    tooltip: 'إغلاق',
+                    tooltip: l10n.commonClose,
                     onPressed: () => Navigator.of(context).pop(),
                     icon: AppIcon(
                       AppIcons.close,
@@ -158,7 +160,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _SectionLabel(label: 'هدف الذكر', skin: skin),
+                    _SectionLabel(label: l10n.sabihTargetSection, skin: skin),
                     Row(
                       children: [
                         Expanded(
@@ -171,7 +173,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                             style: TextStyle(color: skin.ink, fontSize: 13.sp),
                             decoration: InputDecoration(
                               isDense: true,
-                              hintText: 'مثال: 100',
+                              hintText: l10n.sabihExampleHint('100'),
                               hintStyle: TextStyle(
                                 color: skin.inkSoft.withValues(alpha: 0.5),
                                 fontSize: 11.sp,
@@ -199,24 +201,27 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                           ),
                         ),
                         SizedBox(width: 8.w),
-                        _GoldButton(label: 'حفظ', onTap: _applyTarget),
+                        _GoldButton(
+                          label: l10n.commonSave,
+                          onTap: _applyTarget,
+                        ),
                       ],
                     ),
                     SizedBox(height: 6.h),
                     Text(
-                      'اتركه كما هو وسيتدرّج تلقائيًا: ٣٣ ثم ٩٩ ثم كل مئة.',
+                      l10n.sabihTargetAutoHint,
                       style: TextStyle(
                         color: skin.inkSoft.withValues(alpha: 0.6),
                         fontSize: 9.5.sp,
                       ),
                     ),
-                    _SectionLabel(label: 'حجم الخط', skin: skin),
+                    _SectionLabel(label: l10n.sabihFontSize, skin: skin),
                     ValueListenableBuilder<double>(
                       valueListenable: _prefs.fontScale,
                       builder: (context, scale, _) => Row(
                         children: [
                           Text(
-                            'أ',
+                            l10n.sabihFontSizeGlyph,
                             style: TextStyle(
                               color: skin.inkSoft,
                               fontSize: 11.sp,
@@ -230,18 +235,18 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                               divisions: 10,
                               activeColor: AppColors.gold,
                               inactiveColor: skin.hairline,
-                              label: '${(scale * 100).round()}٪',
+                              label: l10n.sabihPercent((scale * 100).round()),
                               onChanged: _prefs.setFontScale,
                             ),
                           ),
                           Text(
-                            'أ',
+                            l10n.sabihFontSizeGlyph,
                             style: TextStyle(color: skin.ink, fontSize: 19.sp),
                           ),
                         ],
                       ),
                     ),
-                    _SectionLabel(label: 'الاهتزاز', skin: skin),
+                    _SectionLabel(label: l10n.sabihVibration, skin: skin),
                     ValueListenableBuilder<bool>(
                       valueListenable: _prefs.hapticsEnabled,
                       builder: (context, enabled, _) => SwitchListTile.adaptive(
@@ -251,11 +256,11 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                         onChanged: (value) =>
                             _prefs.setHapticsEnabled(value: value),
                         title: Text(
-                          'اهتزاز خفيف مع كل تسبيحة',
+                          l10n.sabihVibrationTitle,
                           style: TextStyle(color: skin.ink, fontSize: 11.5.sp),
                         ),
                         subtitle: Text(
-                          'واهتزازة أوضح عند بلوغ الهدف',
+                          l10n.sabihVibrationSubtitle,
                           style: TextStyle(
                             color: skin.inkSoft.withValues(alpha: 0.7),
                             fontSize: 9.5.sp,
@@ -263,7 +268,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                         ),
                       ),
                     ),
-                    _SectionLabel(label: 'تصميم السبحة', skin: skin),
+                    _SectionLabel(label: l10n.sabihBeadDesign, skin: skin),
                     ValueListenableBuilder<TasbihBeadMaterial>(
                       valueListenable: _prefs.material,
                       builder: (context, selected, _) => Wrap(
@@ -285,7 +290,7 @@ class _TasbihSettingsSheetState extends State<_TasbihSettingsSheet> {
                     ),
                     SizedBox(height: 22.h),
                     _DangerRow(
-                      label: 'إعادة ضبط عدّاد اليوم',
+                      label: l10n.sabihResetTodayCounterAction,
                       onTap: () {
                         final id = widget.subih.id;
                         if (id == null) return;
@@ -358,7 +363,7 @@ class _BeadSwatch extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: material.label,
+      label: material.label(context.l10n),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12.r),
@@ -380,7 +385,7 @@ class _BeadSwatch extends StatelessWidget {
               ),
               SizedBox(height: 5.h),
               Text(
-                material.label,
+                material.label(context.l10n),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -465,7 +470,13 @@ class _DangerRow extends StatelessWidget {
                 ),
               ),
             ),
-            AppIcon(AppIcons.chevronLeft, color: skin.accent, size: 14.sp),
+            AppIcon(
+              Directionality.of(context) == TextDirection.rtl
+                  ? AppIcons.chevronLeft
+                  : AppIcons.chevronRight,
+              color: skin.accent,
+              size: 14.sp,
+            ),
           ],
         ),
       ),
