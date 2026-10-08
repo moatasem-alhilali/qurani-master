@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
@@ -16,8 +15,10 @@ enum _Step { notifications, location }
 
 /// شاشات الصلاحيات بعد اختيار اللغة: الإشعارات ثم الموقع — مرّة واحدة.
 ///
-/// - كل خطوة تشرح الفائدة **قبل** نافذة النظام؛ ضغطة «السماح» وحدها تعرضها.
-/// - «ليس الآن» ينتقل دون سؤال، فلا يُستهلك طلب iOS الوحيد على مستخدم متردّد.
+/// - كل خطوة تشرح الفائدة ثم تعرض نافذة النظام؛ لا مخرج يتجاوزها.
+///   App Store Review Guideline 5.1.1(iv) يمنع رسالة تمهيديّة يستطيع
+///   المستخدم إغلاقها دون أن يصل إلى طلب النظام — فحُذف زرّ «ليس الآن»،
+///   والرفض يحدث في نافذة النظام نفسها.
 /// - صلاحية ممنوحة سلفًا (مستخدم قديم حدّث التطبيق) أو محجوبة نهائيًا تُتخطّى
 ///   خطوتها: لا فائدة من سؤال لن تعرضه المنصّة.
 @RoutePage()
@@ -68,7 +69,7 @@ class _PermissionsOnboardingScreenState
           await AppPermissions.requestLocation();
       }
     } catch (_) {
-      // نافذة لم تُعرض أو منصّة لا تدعمها — ننتقل كما لو قال «ليس الآن».
+      // نافذة لم تُعرض أو منصّة لا تدعمها — ننتقل للخطوة التالية بلا تعطيل.
     }
     if (!mounted) return;
     setState(() => _busy = false);
@@ -131,19 +132,8 @@ class _PermissionsOnboardingScreenState
                     busy: _busy,
                     onPressed: _allow,
                   ),
-                  Center(
-                    child: SettingsGhostButton(
-                      label: context.l10n.coreNotNow,
-                      onPressed: _busy
-                          ? null
-                          : () {
-                              unawaited(HapticFeedback.selectionClick());
-                              unawaited(_next());
-                            },
-                    ),
-                  ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(24.w, 2.h, 24.w, 14.h),
+                    padding: EdgeInsets.fromLTRB(24.w, 10.h, 24.w, 14.h),
                     child: Text(
                       steps[_index] == _Step.notifications
                           ? context.l10n.onboardingChangeLater
