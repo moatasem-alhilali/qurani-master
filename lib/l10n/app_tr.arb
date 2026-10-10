@@ -1660,5 +1660,6 @@
   "homeNoticeNotificationsAction": "Aç",
   "homeNoticeExactAlarmsTitle": "Ezan gecikebilir",
   "homeNoticeExactAlarmsBody": "Ezanın tam vaktinde gelmesi için uygulamanın alarm kurmasına izin ver.",
-  "homeNoticeExactAlarmsAction": "İzin ver"
+  "homeNoticeExactAlarmsAction": "İzin ver",
+  "settingsSocialTiktok": "TikTok"
 }

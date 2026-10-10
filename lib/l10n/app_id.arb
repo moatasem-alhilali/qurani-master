@@ -1660,5 +1660,6 @@
   "homeNoticeNotificationsAction": "Aktifkan",
   "homeNoticeExactAlarmsTitle": "Azan mungkin terlambat",
   "homeNoticeExactAlarmsBody": "Izinkan aplikasi menyetel alarm agar azan tiba tepat waktu.",
-  "homeNoticeExactAlarmsAction": "Izinkan"
+  "homeNoticeExactAlarmsAction": "Izinkan",
+  "settingsSocialTiktok": "TikTok"
 }

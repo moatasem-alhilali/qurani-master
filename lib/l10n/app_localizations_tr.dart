@@ -5292,6 +5292,9 @@ class L10nTr extends L10n {
   }
 
   @override
+  String get settingsSocialTiktok => 'TikTok';
+
+  @override
   String get widgetLabelNextPrayer => 'Sıradaki namaz';
 
   @override

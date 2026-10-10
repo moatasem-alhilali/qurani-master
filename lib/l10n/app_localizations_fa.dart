@@ -5297,6 +5297,9 @@ class L10nFa extends L10n {
   }
 
   @override
+  String get settingsSocialTiktok => 'تیک‌تاک';
+
+  @override
   String get widgetLabelNextPrayer => 'نماز بعدی';
 
   @override

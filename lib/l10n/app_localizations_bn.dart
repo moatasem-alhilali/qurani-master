@@ -5317,6 +5317,9 @@ class L10nBn extends L10n {
   }
 
   @override
+  String get settingsSocialTiktok => 'টিকটক';
+
+  @override
   String get widgetLabelNextPrayer => 'পরবর্তী নামাজ';
 
   @override

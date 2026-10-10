@@ -99,6 +99,7 @@ abstract final class AppIcons {
   static const whatsapp = HugeIcons.strokeRoundedWhatsapp;
   static const facebook = HugeIcons.strokeRoundedFacebook02;
   static const instagram = HugeIcons.strokeRoundedInstagram;
+  static const tiktok = HugeIcons.strokeRoundedTiktok;
   static const twitter = HugeIcons.strokeRoundedTwitter;
   static const search = HugeIcons.strokeRoundedSearch01;
   static const searchOff = HugeIcons.strokeRoundedSearchRemove;

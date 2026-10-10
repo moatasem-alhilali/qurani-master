@@ -17,21 +17,37 @@ class SocialLinksService {
   static const Duration _cacheMaxAge = Duration(days: 30);
   static const String _cacheKey = 'settings_social_links';
   static const String _cacheTimeKey = 'settings_social_links_cached_at';
+
+  /// The accounts as they stand today.
+  ///
+  /// They are defaults, not constants: Remote Config overrides any of them
+  /// without a release, which is the point of reading them from there. But
+  /// an app that has never reached Remote Config — offline on first run, or
+  /// with Firebase unavailable — should still show the accounts rather than
+  /// an empty section, so the current URLs live here too.
   static const String telegramFallbackUrl = 'https://t.me/tamaneenaquran';
+  static const String tiktokFallbackUrl =
+      'https://www.tiktok.com/@tamaneena.app';
+  static const String instagramFallbackUrl =
+      'https://www.instagram.com/tamaneena.app';
+  static const String facebookFallbackUrl =
+      'https://www.facebook.com/share/1DRvBpEMae/';
 
   static const Map<String, String> remoteConfigKeys = {
     'telegram': 'app_social_telegram_url',
     'whatsapp': 'app_social_whatsapp_url',
     'facebook': 'app_social_facebook_url',
     'instagram': 'app_social_instagram_url',
+    'tiktok': 'app_social_tiktok_url',
     'twitter': 'app_social_twitter_url',
   };
 
   static const Map<String, String> _defaults = {
     'app_social_telegram_url': telegramFallbackUrl,
     'app_social_whatsapp_url': '',
-    'app_social_facebook_url': '',
-    'app_social_instagram_url': '',
+    'app_social_facebook_url': facebookFallbackUrl,
+    'app_social_instagram_url': instagramFallbackUrl,
+    'app_social_tiktok_url': tiktokFallbackUrl,
     'app_social_twitter_url': '',
   };
 
@@ -48,8 +64,9 @@ class SocialLinksService {
       final links = SocialLinks(
         telegram: _readUrl('telegram', fallback: telegramFallbackUrl),
         whatsapp: _readUrl('whatsapp'),
-        facebook: _readUrl('facebook'),
-        instagram: _readUrl('instagram'),
+        facebook: _readUrl('facebook', fallback: facebookFallbackUrl),
+        instagram: _readUrl('instagram', fallback: instagramFallbackUrl),
+        tiktok: _readUrl('tiktok', fallback: tiktokFallbackUrl),
         twitter: _readUrl('twitter'),
       );
 
@@ -105,6 +122,7 @@ class SocialLinks {
     required this.whatsapp,
     required this.facebook,
     required this.instagram,
+    required this.tiktok,
     required this.twitter,
   });
 
@@ -112,8 +130,9 @@ class SocialLinks {
     return const SocialLinks(
       telegram: SocialLinksService.telegramFallbackUrl,
       whatsapp: '',
-      facebook: '',
-      instagram: '',
+      facebook: SocialLinksService.facebookFallbackUrl,
+      instagram: SocialLinksService.instagramFallbackUrl,
+      tiktok: SocialLinksService.tiktokFallbackUrl,
       twitter: '',
     );
   }
@@ -124,6 +143,7 @@ class SocialLinks {
       whatsapp: json['whatsapp'] as String? ?? '',
       facebook: json['facebook'] as String? ?? '',
       instagram: json['instagram'] as String? ?? '',
+      tiktok: json['tiktok'] as String? ?? '',
       twitter: json['twitter'] as String? ?? '',
     );
   }
@@ -132,6 +152,7 @@ class SocialLinks {
   final String whatsapp;
   final String facebook;
   final String instagram;
+  final String tiktok;
   final String twitter;
 
   Map<String, dynamic> toJson() {
@@ -140,6 +161,7 @@ class SocialLinks {
       'whatsapp': whatsapp,
       'facebook': facebook,
       'instagram': instagram,
+      'tiktok': tiktok,
       'twitter': twitter,
     };
   }

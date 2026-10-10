@@ -1660,5 +1660,6 @@
   "homeNoticeNotificationsAction": "চালু করুন",
   "homeNoticeExactAlarmsTitle": "আজান দেরিতে আসতে পারে",
   "homeNoticeExactAlarmsBody": "অ্যাপকে অ্যালার্ম সেট করার অনুমতি দিন, যাতে আজান ঠিক সময়ে পৌঁছায়।",
-  "homeNoticeExactAlarmsAction": "অনুমতি দিন"
+  "homeNoticeExactAlarmsAction": "অনুমতি দিন",
+  "settingsSocialTiktok": "টিকটক"
 }

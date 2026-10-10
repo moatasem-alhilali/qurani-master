@@ -493,5 +493,9 @@
         "type": "int"
       }
     }
+  },
+  "settingsSocialTiktok": "تيك توك",
+  "@settingsSocialTiktok": {
+    "description": "Name of the TikTok social network; a tile that opens the app's account there."
   }
 }

@@ -1660,5 +1660,6 @@
   "homeNoticeNotificationsAction": "فعال کریں",
   "homeNoticeExactAlarmsTitle": "اذان میں تاخیر ہو سکتی ہے",
   "homeNoticeExactAlarmsBody": "ایپ کو الارم سیٹ کرنے کی اجازت دیں تاکہ اذان عین وقت پر آئے۔",
-  "homeNoticeExactAlarmsAction": "اجازت دیں"
+  "homeNoticeExactAlarmsAction": "اجازت دیں",
+  "settingsSocialTiktok": "ٹک ٹوک"
 }

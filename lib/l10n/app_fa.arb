@@ -1660,5 +1660,6 @@
   "homeNoticeNotificationsAction": "فعال‌سازی",
   "homeNoticeExactAlarmsTitle": "ممکن است اذان با تأخیر برسد",
   "homeNoticeExactAlarmsBody": "به برنامه اجازهٔ تنظیم هشدار بدهید تا اذان دقیقاً سر وقت برسد.",
-  "homeNoticeExactAlarmsAction": "اجازه"
+  "homeNoticeExactAlarmsAction": "اجازه",
+  "settingsSocialTiktok": "تیک‌تاک"
 }

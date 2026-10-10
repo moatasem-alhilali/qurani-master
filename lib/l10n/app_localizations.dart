@@ -8992,6 +8992,12 @@ abstract class L10n {
   /// **'{count, plural, =1{وتنزيل آخر} =2{وتنزيلان آخران} few{و{count} غيرها} many{و{count} غيرها} other{و{count} غيرها}}'**
   String downloadAndMore(int count);
 
+  /// Name of the TikTok social network; a tile that opens the app's account there.
+  ///
+  /// In ar, this message translates to:
+  /// **'تيك توك'**
+  String get settingsSocialTiktok;
+
   /// Home-screen widget header above the next prayer's name. Very little space: keep it short.
   ///
   /// In ar, this message translates to:

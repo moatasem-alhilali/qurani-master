@@ -5301,6 +5301,9 @@ class L10nUr extends L10n {
   }
 
   @override
+  String get settingsSocialTiktok => 'ٹک ٹوک';
+
+  @override
   String get widgetLabelNextPrayer => 'اگلی نماز';
 
   @override

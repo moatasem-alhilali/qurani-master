@@ -255,6 +255,7 @@ class _SocialTiles extends StatelessWidget {
         links.instagram,
         AppIcons.instagram,
       ),
+      _SocialItem(l10n.settingsSocialTiktok, links.tiktok, AppIcons.tiktok),
       _SocialItem(l10n.settingsSocialTwitter, links.twitter, AppIcons.twitter),
     ];
 

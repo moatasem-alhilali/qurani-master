@@ -4425,6 +4425,10 @@
       }
     }
   },
+  "settingsSocialTiktok": "تيك توك",
+  "@settingsSocialTiktok": {
+    "description": "Name of the TikTok social network; a tile that opens the app's account there."
+  },
   "widgetLabelNextPrayer": "الصلاة القادمة",
   "@widgetLabelNextPrayer": {
     "description": "Home-screen widget header above the next prayer's name. Very little space: keep it short."

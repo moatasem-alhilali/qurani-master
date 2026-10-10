@@ -5290,6 +5290,9 @@ class L10nId extends L10n {
   }
 
   @override
+  String get settingsSocialTiktok => 'TikTok';
+
+  @override
   String get widgetLabelNextPrayer => 'Salat berikutnya';
 
   @override

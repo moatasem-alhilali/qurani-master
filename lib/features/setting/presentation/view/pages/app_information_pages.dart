@@ -222,6 +222,11 @@ class _AppSocialLinksSectionState extends State<_AppSocialLinksSection> {
             links.instagram,
           ),
           _ContactAction(
+            context.l10n.settingsSocialTiktok,
+            AppIcons.tiktok,
+            links.tiktok,
+          ),
+          _ContactAction(
             context.l10n.settingsSocialTwitter,
             AppIcons.twitter,
             links.twitter,
