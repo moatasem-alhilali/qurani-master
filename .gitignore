@@ -76,3 +76,5 @@ lib/firebase_options.dart
 !.env.example
 *service-account*.json
 secrets.properties
+# Widget Preview related
+.widget_preview/
