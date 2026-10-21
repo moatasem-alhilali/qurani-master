@@ -27,3 +27,7 @@ migrate_working_dir/
 **/doc/api/
 .dart_tool/
 build/
+
+# Gradle build cache — binary hashes, lock files and a workspace id that
+# change on every build. Twenty of them were tracked here.
+/android/.gradle/
