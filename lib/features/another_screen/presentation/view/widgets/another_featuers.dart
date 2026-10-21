@@ -195,6 +195,9 @@ class _FeatureShortcut {
 class _FeatureGroupBlock extends StatelessWidget {
   const _FeatureGroupBlock({required this.group});
 
+  /// Tiles per row — the width four of them read at.
+  static const _perRow = 4;
+
   final _FeatureGroup group;
 
   @override
@@ -223,19 +226,30 @@ class _FeatureGroupBlock extends StatelessWidget {
             ],
           ),
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var i = 0; i < 4; i++) ...[
-              if (i != 0) SizedBox(width: 6.w),
-              Expanded(
-                child: i < group.items.length
-                    ? _FeatureTile(item: group.items[i])
-                    : const SizedBox.shrink(),
-              ),
-            ],
-          ],
-        ),
+        // Rows of four, wrapping. A fixed single row of four silently hid
+        // every item past the fourth — a feature added to a full group
+        // simply never appeared, with nothing to show it had been dropped.
+        for (var start = 0; start < group.items.length; start += _perRow)
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: start + _perRow < group.items.length ? 10.h : 0,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < _perRow; i++) ...[
+                  if (i != 0) SizedBox(width: 6.w),
+                  Expanded(
+                    // The last row is padded out with blanks so its tiles
+                    // keep the column width of the rows above.
+                    child: start + i < group.items.length
+                        ? _FeatureTile(item: group.items[start + i])
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ],
+            ),
+          ),
       ],
     );
   }
