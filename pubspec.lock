@@ -1093,6 +1093,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  hijri_core:
+    dependency: "direct main"
+    description:
+      name: hijri_core
+      sha256: "4c674c03072802d80349feaff9ae5275ffb63c0cc8de937925a1eee031e6f9ae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   home_widget:
     dependency: "direct main"
     description:

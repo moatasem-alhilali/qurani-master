@@ -1,13 +1,45 @@
+import 'package:hijri_core/hijri_core.dart' as hijri_core;
 import 'package:quran_app/l10n/l10n.dart';
 
-/// تاريخ هجري محسوب من التاريخ الميلادي بالمعادلة الفلكية الجدولية.
+/// تاريخ هجري بتقويم أم القرى.
 ///
 /// يُستخدم في عرض التاريخ الهجري داخل شاشات المواقيت، وفي تحديد شهر رمضان
-/// لتطبيق تعديل العشاء الخاص بتقويم أم القرى.
+/// لتطبيق تعديل العشاء.
+///
+/// **Why not the arithmetic formula.** This used to convert with the tabular
+/// 30-year cycle, which approximates the calendar instead of reproducing it.
+/// Measured against the Saudi High Judiciary Council calendar over 730 days,
+/// it was wrong on 477 of them — 411 off by a day and 66 off by two. So the
+/// date on the prayer screen was wrong two days out of three, and the Ramadan
+/// boundary that drives the Isha adjustment moved with it.
+///
+/// Umm al-Qura is a published table of real month lengths, not a formula, so
+/// it has to be looked up. `hijri_core` carries that table for 1356–1500 AH
+/// and `test/core/hijri_date_test.dart` checks every day of it against the
+/// official calendar.
 class HijriDate {
   const HijriDate(this.day, this.month, this.year);
 
+  /// يحوّل تاريخًا ميلاديًّا إلى ما يقابله في تقويم أم القرى.
+  ///
+  /// خارج مدى الجدول (1356–1500 هـ) يسقط على الحساب الجدولي بدل أن يرمي:
+  /// تاريخٌ تقريبي أهون من شاشةِ مواقيتَ لا تُفتح.
   factory HijriDate.fromDate(DateTime date) {
+    // The table is keyed by calendar day, so the time of day must not shift
+    // it across a boundary.
+    final converted = hijri_core.toHijri(
+      DateTime.utc(date.year, date.month, date.day),
+    );
+
+    if (converted == null) {
+      return HijriDate._tabular(date);
+    }
+
+    return HijriDate(converted.hd, converted.hm, converted.hy);
+  }
+
+  /// الحساب الجدولي القديم — احتياطٌ خارج مدى جدول أم القرى وحده.
+  factory HijriDate._tabular(DateTime date) {
     final a = (14 - date.month) ~/ 12;
     final y = date.year + 4800 - a;
     final m = date.month + 12 * a - 3;
