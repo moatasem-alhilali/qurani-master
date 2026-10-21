@@ -1,4 +1,5 @@
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_enums.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_phone_normalizer.dart';
 
 class SmartOutreachContactModel {
   const SmartOutreachContactModel({
@@ -58,11 +59,16 @@ class SmartOutreachContactModel {
   }
 
   Map<String, dynamic> toMap() {
+    // The native dialer reads this row and builds a `tel:` URI straight from
+    // `number`, so it has to be dialable here — whatever the user typed or
+    // their address book stored. This is the one write path to the table.
+    final dialable = SmartOutreachPhoneNormalizer.normalize(phone);
+
     return {
       if (id != null) 'id': id,
       'group_id': scheduleId,
       'label': name?.trim(),
-      'number': phone.trim(),
+      'number': dialable.isEmpty ? phone.trim() : dialable,
       'sort_order': order,
     };
   }

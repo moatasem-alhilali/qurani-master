@@ -19,7 +19,6 @@
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!--
@@ -237,10 +236,24 @@
             </intent-filter>
         </receiver>
 
+        <!--
+          specialUse, not phoneCall. On Android 14+ the phoneCall type is only
+          allowed for an app that holds MANAGE_OWN_CALLS or owns the ROLE_DIALER
+          role; this app is neither, so startForeground() was refused and the
+          process died the moment "start now" was tapped.
+
+          The type also describes the service badly: it does not host a call. It
+          wakes at a scheduled time and hands each number to the system dialer,
+          which is scheduling work, not telephony.
+        -->
         <service
             android:name=".smartoutreach.autodialer.AutoDialerCallManagerService"
             android:exported="false"
-            android:foregroundServiceType="phoneCall" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="fajr_wakeup_call_scheduler" />
+        </service>
 
         <service
             android:name="flutter.overlay.window.flutter_overlay_window.OverlayService"

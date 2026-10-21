@@ -169,12 +169,19 @@ extension _UpsertScheduleActions on _SmartOutreachUpsertScheduleScreenState {
 
     if (!mounted || selectedPhone == null) return;
 
+    // The address book stores numbers however the user saved them —
+    // `+966 50 123 4567`, `(050) 123-4567`, Arabic-Indic digits. Clean it on
+    // the way in so the field shows what will actually be dialled.
+    final dialable = SmartOutreachPhoneNormalizer.normalize(selectedPhone);
+
     unawaited(HapticFeedback.selectionClick());
     rebuild(() {
       _rows.add(
         _EditablePhoneRow(
           labelController: TextEditingController(text: result.contact!.name),
-          phoneController: TextEditingController(text: selectedPhone),
+          phoneController: TextEditingController(
+            text: dialable.isEmpty ? selectedPhone : dialable,
+          ),
         ),
       );
     });

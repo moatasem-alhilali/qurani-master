@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Build
@@ -98,7 +99,15 @@ class AutoDialerCallManagerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         localizedContext = appLocalized()
         AutoDialerNotificationChannel.ensure(this)
-        startForeground(NOTIFICATION_ID, buildNotification(text(R.string.ad_session_starting)))
+
+        // Android gives a service started with startForegroundService ~5s to
+        // promote itself, and kills the process if it does not. Nothing above
+        // this line may block, and a refusal here must not propagate: the whole
+        // feature failing is better than the app dying.
+        if (!promoteToForeground()) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         groupId = intent?.getIntExtra("group_id", -1) ?: -1
         if (groupId <= 0) {
@@ -106,9 +115,52 @@ class AutoDialerCallManagerService : Service() {
             return START_NOT_STICKY
         }
 
-        loadGroupData()
+        // Reading the schedule touches SQLite, which can fail for reasons the
+        // user can do nothing about (file not created yet, schema older than
+        // this build). It used to be unguarded, so any of those took the
+        // process down with it.
+        val loaded = try {
+            loadGroupData()
+            true
+        } catch (error: Exception) {
+            false
+        }
+
+        if (!loaded) {
+            finishSession(text(R.string.ad_reason_call_failed))
+            return START_NOT_STICKY
+        }
+
+        if (numbers.isEmpty()) {
+            finishSession(text(R.string.ad_reason_invalid_number))
+            return START_NOT_STICKY
+        }
+
         startCallingCycle()
         return START_NOT_STICKY
+    }
+
+    /** Returns false when the system refuses the promotion. */
+    private fun promoteToForeground(): Boolean {
+        val notification = buildNotification(text(R.string.ad_session_starting))
+        return try {
+            // The type argument is only passed on 34+, where types exist and
+            // are enforced. FOREGROUND_SERVICE_TYPE_SPECIAL_USE itself was
+            // added in 34, so on older releases the manifest value is ignored
+            // and the two-argument call is the correct one.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    notification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, notification)
+            }
+            true
+        } catch (error: Exception) {
+            false
+        }
     }
 
     override fun onDestroy() {
@@ -229,7 +281,7 @@ class AutoDialerCallManagerService : Service() {
     }
 
     private fun placeCall(number: String) {
-        val cleanNumber = number.trim()
+        val cleanNumber = sanitizeForDial(number)
         if (cleanNumber.isBlank()) {
             failCall(number, text(R.string.ad_reason_invalid_number))
             return
@@ -242,7 +294,10 @@ class AutoDialerCallManagerService : Service() {
             return
         }
 
-        val uri = Uri.parse("tel:$cleanNumber")
+        // fromParts encodes the scheme-specific part; Uri.parse("tel:$n") does
+        // not, so a stored number that still carries a space produced a broken
+        // URI and the call either failed or dialled a truncated number.
+        val uri = Uri.fromParts("tel", cleanNumber, null)
         try {
             val telecomManager = getSystemService(Context.TELECOM_SERVICE) as TelecomManager
             telecomManager.placeCall(uri, null)
@@ -258,6 +313,35 @@ class AutoDialerCallManagerService : Service() {
         } catch (e: Exception) {
             failCall(cleanNumber, resolveFailureReason(e))
         }
+    }
+
+    /**
+     * Last line of defence for the dialled string. Dart normalises on the way
+     * in, but rows written by older builds are still in the database, so the
+     * number is cleaned again here rather than trusted.
+     *
+     * Keeps digits, a leading +, and the DTMF characters tel: allows.
+     */
+    private fun sanitizeForDial(raw: String): String {
+        val builder = StringBuilder()
+        var plus = false
+
+        for (char in raw.trim()) {
+            when {
+                char == '+' -> if (builder.isEmpty() && !plus) plus = true
+                char.isDigit() -> builder.append(char)
+                char in "*#,;" -> builder.append(char)
+            }
+        }
+
+        var digits = builder.toString()
+        if (!plus && digits.startsWith("00")) {
+            plus = true
+            digits = digits.substring(2)
+        }
+
+        if (digits.isEmpty()) return ""
+        return if (plus) "+$digits" else digits
     }
 
     private fun failCall(number: String, reason: String) {

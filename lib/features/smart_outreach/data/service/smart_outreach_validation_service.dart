@@ -1,5 +1,6 @@
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bundle_models.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_phone_normalizer.dart';
 import 'package:quran_app/l10n/l10n.dart';
 
 class SmartOutreachValidationService {
@@ -29,12 +30,17 @@ class SmartOutreachValidationService {
         continue;
       }
 
-      if (phone.length < 7) {
+      // Counts digits, not characters: `+966 50 123 4567` is 17 characters and
+      // `٠٥٠١٢٣٤٥٦٧` is 10, and the old length check passed or failed on the
+      // separators rather than the number.
+      if (!SmartOutreachPhoneNormalizer.isPlausible(phone)) {
         errors.add(l10n.outreachValidationIncompleteNumber);
       }
 
-      final normalized = phone.replaceAll(RegExp('[^0-9+]'), '');
-      if (!normalizedNumbers.add(normalized)) {
+      // +966501234567 and 00966501234567 are the same line.
+      if (!normalizedNumbers.add(
+        SmartOutreachPhoneNormalizer.comparisonKey(phone),
+      )) {
         errors.add(l10n.outreachValidationDuplicateNumber);
       }
     }
