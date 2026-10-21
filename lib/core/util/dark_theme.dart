@@ -270,17 +270,30 @@ final ThemeData darkTheme = ThemeData(
   ),
 
   // SWITCH
+  //
+  // Prefer AppSwitch (lib/core/widgets/app_switch.dart). This is the fallback
+  // for any bare Switch, and it mirrors AppSwitch so the two never disagree.
+  //
+  // The thumb is NOT gold. It used to be, on a gold track at half opacity, and
+  // the on-state read as a faint blob with no edge. The thumb now takes the
+  // page background so it reads as a hole punched in a gold pill.
   switchTheme: SwitchThemeData(
     thumbColor: WidgetStateProperty.resolveWith<Color>(
       (states) => states.contains(WidgetState.selected)
-          ? AppColors.gold
+          ? AppColors.darkBackground
           : AppColors.darkDisabled,
     ),
     trackColor: WidgetStateProperty.resolveWith<Color>(
       (states) => states.contains(WidgetState.selected)
-          ? AppColors.gold.withOpacity(0.5)
-          : AppColors.darkOutline,
+          ? AppColors.gold
+          : Colors.transparent,
     ),
+    trackOutlineColor: WidgetStateProperty.resolveWith<Color>(
+      (states) => states.contains(WidgetState.selected)
+          ? Colors.transparent
+          : AppColors.darkDisabled,
+    ),
+    trackOutlineWidth: WidgetStateProperty.all(1.2),
   ),
 
   // CHECKBOX
