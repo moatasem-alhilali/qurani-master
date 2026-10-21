@@ -85,16 +85,20 @@ class ScheduleTypeSelector extends StatelessWidget {
   const ScheduleTypeSelector({
     required this.value,
     required this.onChanged,
+    this.types = ScheduleType.values,
     super.key,
   });
 
   final ScheduleType value;
   final ValueChanged<ScheduleType> onChanged;
 
+  /// الأنواع المعروضة. الافتراضي كلّها؛ ويضيّقها الإشعار الذي لا يقبل بعضها
+  /// فلا يختار المستخدم نوعًا يُعرَض له وصفه ثم لا يُنفَّذ.
+  final List<ScheduleType> types;
+
   @override
   Widget build(BuildContext context) {
     final skin = AppSkin.of(context);
-    const types = ScheduleType.values;
 
     return SettingsGroup(
       title: context.l10n.notifScheduleTypeTitle,

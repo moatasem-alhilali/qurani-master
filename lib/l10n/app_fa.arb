@@ -1661,5 +1661,12 @@
   "homeNoticeExactAlarmsTitle": "ممکن است اذان با تأخیر برسد",
   "homeNoticeExactAlarmsBody": "به برنامه اجازهٔ تنظیم هشدار بدهید تا اذان دقیقاً سر وقت برسد.",
   "homeNoticeExactAlarmsAction": "اجازه",
-  "settingsSocialTiktok": "تیک‌تاک"
+  "settingsSocialTiktok": "تیک‌تاک",
+  "ayahReminderLabel": "آیهٔ امروز",
+  "ayahReminderNotificationTitle": "{surah} — {ayah}",
+  "ayahReminderSourceTitle": "سرچشمهٔ آیه",
+  "ayahReminderSourceContinue": "از جایی که رها کردید",
+  "ayahReminderSourceContinueHint": "از صفحه‌ای که در آن ایستادید آغاز می‌شود و هر روز یک آیه پیش می‌رود",
+  "ayahReminderSourceRandom": "آیهٔ تصادفی",
+  "ayahReminderSourceRandomHint": "از همهٔ قرآن"
 }

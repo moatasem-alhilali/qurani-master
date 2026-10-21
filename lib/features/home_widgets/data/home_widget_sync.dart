@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:quran_app/core/cash/cache_config.dart';
 import 'package:quran_app/core/services/firebase_monitoring.dart';
 import 'package:quran_app/features/home/data/surah_label.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_background_top_up.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_ids.dart';
 import 'package:quran_app/features/home_widgets/data/home_widget_payload.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
@@ -34,6 +35,11 @@ void tamaneenaWidgetsBackgroundDispatcher() {
         // بلا مصحف تُحفظ آيات المزامنة السابقة؛ المواقيت لا تتأثّر.
         debugPrint('HomeWidgetSync: Quran unavailable in background: $error');
       }
+      // المهمّة الدوريّة الوحيدة في التطبيق، وقد هيّأت هنا الذاكرة المؤقتة
+      // والمصحف — وهما ما يحتاجه طابور «آية اليوم» ليُملأ لمن لا يفتح
+      // التطبيق أسبوعًا. لا تُفشل المزامنة: ترجع بقيمتها ولا ترمي.
+      await AyahReminderBackgroundTopUp.run();
+
       return await HomeWidgetSync.syncNow(reason: 'background:$task');
     } catch (error) {
       debugPrint('HomeWidgetSync: background sync failed: $error');

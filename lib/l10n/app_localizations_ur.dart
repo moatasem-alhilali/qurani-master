@@ -955,6 +955,30 @@ class L10nUr extends L10n {
   String get quranPlanStagnationDays => 'تلاوت کے بغیر دن';
 
   @override
+  String get ayahReminderLabel => 'آية اليوم';
+
+  @override
+  String ayahReminderNotificationTitle(String surah, int ayah) {
+    return '$surah — $ayah';
+  }
+
+  @override
+  String get ayahReminderSourceTitle => 'مصدر الآية';
+
+  @override
+  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+
+  @override
+  String get ayahReminderSourceContinueHint =>
+      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+
+  @override
+  String get ayahReminderSourceRandom => 'آية عشوائية';
+
+  @override
+  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+
+  @override
   String get cleanupRouteNotFound => 'صفحہ نہیں ملا';
 
   @override

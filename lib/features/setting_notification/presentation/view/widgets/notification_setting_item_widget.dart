@@ -8,6 +8,7 @@ import 'package:quran_app/core/router/app_router.gr.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/features/setting_notification/presentation/bloc/setting_notification_bloc.dart';
 import 'package:quran_app/features/setting_notification/presentation/view/widgets/show_edit_schedule_dialog.dart';
 import 'package:quran_app/l10n/l10n.dart';
@@ -80,6 +81,13 @@ class NotificationSettingItemWidget extends StatelessWidget {
   ) async {
     final bloc = context.read<SettingNotificationBloc>();
 
+    // المواعيد الإضافية تمرّ على `NotificationConfig`، وهو يرمي استثناءً
+    // للمفتاح غير المسجَّل عنده ويجدول نصًّا واحدًا ثابتًا بمعرّف من نظامه
+    // الخاص. فالإشعار الذي يبني محتواه بنفسه لا يُعرض له هذا الصفّ: تعديل
+    // موعده الأساسي يكفيه.
+    final allowsExtraSchedules =
+        !NotificationKeys.ownsItsSchedule(model.key);
+
     await showSettingsSheet<void>(
       context: context,
       builder: (sheetContext) => Column(
@@ -94,23 +102,25 @@ class NotificationSettingItemWidget extends StatelessWidget {
             icon: AppIcons.edit,
             title: context.l10n.notifSettingsEditScheduleTitle,
             subtitle: context.l10n.notifSettingsEditScheduleSubtitle,
+            isLast: !allowsExtraSchedules,
             onTap: () {
               Navigator.of(sheetContext).pop();
               _openEditSchedule(context, bloc, model);
             },
           ),
-          SettingsRow(
-            icon: AppIcons.calendar,
-            title: context.l10n.notifSettingsExtraSchedulesTitle,
-            subtitle: context.l10n.notifSettingsExtraSchedulesSubtitle,
-            isLast: true,
-            onTap: () {
-              Navigator.of(sheetContext).pop();
-              context.router.push(
-                NotificationSchedulesRoute(notifKey: model.key),
-              );
-            },
-          ),
+          if (allowsExtraSchedules)
+            SettingsRow(
+              icon: AppIcons.calendar,
+              title: context.l10n.notifSettingsExtraSchedulesTitle,
+              subtitle: context.l10n.notifSettingsExtraSchedulesSubtitle,
+              isLast: true,
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                context.router.push(
+                  NotificationSchedulesRoute(notifKey: model.key),
+                );
+              },
+            ),
           SizedBox(height: 10.h),
         ],
       ),

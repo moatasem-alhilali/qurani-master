@@ -9,6 +9,11 @@ import 'package:quran_app/core/device_sync/data/device_sync_repository.dart';
 import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_permissions_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_adapters.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_payload_service.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_router_service.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_scheduler.dart';
+import 'package:quran_app/features/ayah_reminder/domain/ayah_reminder_picker.dart';
 import 'package:quran_app/core/services/device_info_service.dart';
 import 'package:quran_app/features/audios/data/remote/base_audio_repository_imp.dart';
 import 'package:quran_app/features/bookmark/data/database/bookmark_service.dart';
@@ -102,6 +107,18 @@ Future<void> setupServiceLocator() async {
         notificationService: sl.get(),
       ),
     )
+    ..registerSingleton<AyahReminderPayloadService>(
+      AyahReminderPayloadService(),
+    )
+    ..registerSingleton<AyahReminderScheduler>(
+      AyahReminderScheduler(
+        notificationService: sl.get(),
+        payloadService: sl.get(),
+        picker: AyahReminderPicker(
+          mushaf: QuranAyahReminderMushafSource(),
+        ),
+      ),
+    )
     ..registerSingleton<NotificationOrchestratorService>(
       NotificationOrchestratorService(
         notificationService: sl.get(),
@@ -109,6 +126,13 @@ Future<void> setupServiceLocator() async {
         notificationSchedulesRepo: sl.get(),
         adhanPrayerTimeService: sl.get(),
         athanPayloadService: sl.get(),
+        ayahReminderScheduler: sl.get(),
+      ),
+    )
+    ..registerSingleton<AyahReminderRouterService>(
+      AyahReminderRouterService(
+        notificationService: sl.get(),
+        payloadService: sl.get(),
       ),
     )
     ..registerSingleton<AthanAlarmNotificationRouterService>(

@@ -315,6 +315,16 @@ class NotificationSettingsSeeder {
           minute: 0,
           onlySetting: true,
         ),
+        // آية اليوم — مُطفأة في البداية: إشعار يوميّ لم يطلبه المستخدم
+        // يُطفئه من الإعدادات كلّها، لا من هذا الصفّ وحده.
+        NotificationSettingSeedData(
+          key: NotificationKeys.isNotificationAyahReminder,
+          label: 'آية اليوم',
+          enabled: false,
+          scheduleType: ScheduleType.daily,
+          hour: 8,
+          minute: 0,
+        ),
         NotificationSettingSeedData(
           key: NotificationKeys.isNotificationFirebaseGeneral,
           label: 'إشعارات التطبيق العامة',

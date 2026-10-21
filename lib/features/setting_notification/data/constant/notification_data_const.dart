@@ -1,5 +1,7 @@
 import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
+import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_scheduler.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_labels.dart';
 import 'package:quran_app/l10n/l10n.dart';
@@ -27,6 +29,7 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationDailyWirdSummary:
       case NotificationKeys.isNotificationYoungMuslimResume:
       case NotificationKeys.isNotificationQuranPlan:
+      case NotificationKeys.isNotificationAyahReminder:
       case NotificationKeys.isNotificationFirebaseGeneral:
       case NotificationKeys.isNotificationAstgferAllh:
       case NotificationKeys.isNotificationHasbnaAllh:
@@ -78,6 +81,9 @@ class NotificationDataConst {
       case NotificationKeys.isNotificationAllAthan:
         // Allow up to 5 athan notifications per day
         return 5;
+      case NotificationKeys.isNotificationAyahReminder:
+        // طابور «آية اليوم»: معرّف لكل يوم من أيامه المجدولة مقدَّمًا.
+        return AyahReminderScheduler.horizonDays;
       case NotificationKeys.isNotificationThikrMorning:
       case NotificationKeys.isNotificationThikrNight:
       case NotificationKeys.isNotificationMiddleNight:
@@ -302,6 +308,37 @@ class NotificationIds {
 }
 
 class NotificationKeys {
+  /// المفاتيح التي تبني إشعاراتها بنفسها، فلا تصلح لها الجدولة العامّة.
+  ///
+  /// محتوى هذه الإشعارات يُحسب لكل مرّة على حدة — آية اليوم آيةٌ غير آية
+  /// الغد — والمسار العامّ يجدول عنوانًا ونصًّا واحدين يأتيان من
+  /// `NotificationConfig`، وهو يرمي استثناءً للمفتاح غير المسجَّل عنده أصلًا.
+  static const featureOwnedScheduleKeys = <String>[
+    isNotificationAyahReminder,
+  ];
+
+  /// هل يملك هذا المفتاح جدولته بنفسه.
+  static bool ownsItsSchedule(String key) =>
+      featureOwnedScheduleKeys.contains(key);
+
+  /// أنواع الجدولة التي يُعرض اختيارها لهذا المفتاح.
+  ///
+  /// «آية اليوم» آيةٌ في اليوم: `hourly` و`everyNMinutes` لا تحفظان ساعةً
+  /// أصلًا، فلو عُرضتا لقرأهما المجدول يوميًّا في ساعته الافتراضية بينما يقول
+  /// وصف الصفّ «كل خمس دقائق» — إعدادٌ يعرض شيئًا وينفّذ غيره.
+  static List<ScheduleType> allowedScheduleTypes(String key) {
+    switch (key) {
+      case isNotificationAyahReminder:
+        return const <ScheduleType>[
+          ScheduleType.daily,
+          ScheduleType.weekly,
+          ScheduleType.customDates,
+        ];
+      default:
+        return ScheduleType.values;
+    }
+  }
+
   static const athanKeys = [
     NotificationKeys.isNotificationAthanFagr,
     NotificationKeys.isNotificationAthanDuhr,
@@ -400,5 +437,8 @@ class NotificationKeys {
   static const isNotificationYoungMuslimResume =
       'isNotificationYoungMuslimResume';
   static const isNotificationQuranPlan = 'isNotificationQuranPlan';
+
+  /// آية اليوم — آية واحدة في اليوم، مصدرها في إعدادات الميزة نفسها.
+  static const isNotificationAyahReminder = 'isNotificationAyahReminder';
   static const isNotificationFirebaseGeneral = 'isNotificationFirebaseGeneral';
 }

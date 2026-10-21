@@ -9,6 +9,7 @@ import 'package:quran_app/features/notification_schedules/presentation/view/widg
 import 'package:quran_app/features/notification_schedules/presentation/view/widgets/weekdays_picker_widget.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
+import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
 import 'package:quran_app/l10n/l10n.dart';
 
 /// تعديل جدولة إشعار: نموذج واحد بدل معالج بثلاث صفحات.
@@ -146,6 +147,9 @@ class _ShowEditScheduleDialogState extends State<ShowEditScheduleDialog> {
                 children: [
                   ScheduleTypeSelector(
                     value: _type,
+                    types: NotificationKeys.allowedScheduleTypes(
+                      widget.model.key,
+                    ),
                     onChanged: (type) => setState(() {
                       _type = type;
                       _error = null;

@@ -5,6 +5,7 @@ import 'package:quran_app/core/extensions/request_state_extension.dart';
 import 'package:quran_app/core/router/app_router.gr.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
+import 'package:quran_app/features/ayah_reminder/presentation/view/widgets/ayah_reminder_source_row.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
 import 'package:quran_app/features/setting/presentation/view/widgets/settings_skin.dart';
 import 'package:quran_app/features/setting_notification/data/constant/notification_data_const.dart';
@@ -163,6 +164,11 @@ class _SettingNotificationView extends StatelessWidget {
               l10n.notifSettingsLabelQuranPlan,
               AppIcons.calendar,
             ),
+            _NotifItem(
+              NotificationKeys.isNotificationAyahReminder,
+              l10n.ayahReminderLabel,
+              AppIcons.bookOpen,
+            ),
           ],
         ),
         _NotifGroup(
@@ -300,19 +306,35 @@ class _SettingNotificationView extends StatelessWidget {
           SettingsGroup(
             title: group.title,
             children: [
-              for (var i = 0; i < group.items.length; i++)
+              for (var i = 0; i < group.items.length; i++) ...<Widget>[
                 NotificationSettingItemWidget(
                   setting: settings[group.items[i].key],
                   title: group.items[i].title,
                   icon: group.items[i].icon,
-                  isLast: i == group.items.length - 1,
+                  isLast: i == group.items.length - 1 &&
+                      !_hasSourceRow(group.items[i].key, settings),
                 ),
+                // مصدر الآية يتبع صفّه مباشرةً، ولا يظهر إلا وهو مشتغل:
+                // خيارٌ لإشعار مُطفأ يشغل سطرًا بلا أثر.
+                if (_hasSourceRow(group.items[i].key, settings))
+                  AyahReminderSourceRow(
+                    isLast: i == group.items.length - 1,
+                  ),
+              ],
             ],
           ),
       ],
     );
   }
 }
+
+/// هل لهذا المفتاح صفّ إعداد يتبعه.
+bool _hasSourceRow(
+  String key,
+  Map<String, NotificationSettingModel> settings,
+) =>
+    key == NotificationKeys.isNotificationAyahReminder &&
+    (settings[key]?.enabled ?? false);
 
 class _NotifGroup {
   const _NotifGroup(this.title, this.items);

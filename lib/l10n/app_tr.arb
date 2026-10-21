@@ -1661,5 +1661,12 @@
   "homeNoticeExactAlarmsTitle": "Ezan gecikebilir",
   "homeNoticeExactAlarmsBody": "Ezanın tam vaktinde gelmesi için uygulamanın alarm kurmasına izin ver.",
   "homeNoticeExactAlarmsAction": "İzin ver",
-  "settingsSocialTiktok": "TikTok"
+  "settingsSocialTiktok": "TikTok",
+  "ayahReminderLabel": "Günün ayeti",
+  "ayahReminderNotificationTitle": "{surah} — {ayah}",
+  "ayahReminderSourceTitle": "Ayetin kaynağı",
+  "ayahReminderSourceContinue": "Bıraktığınız yerden",
+  "ayahReminderSourceContinueHint": "Kaldığınız sayfadan başlar ve her gün bir ayet ilerler",
+  "ayahReminderSourceRandom": "Rastgele ayet",
+  "ayahReminderSourceRandomHint": "Mushafın tamamından"
 }

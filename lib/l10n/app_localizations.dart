@@ -1696,6 +1696,48 @@ abstract class L10n {
   /// **'أيام الركود'**
   String get quranPlanStagnationDays;
 
+  /// Name of the scheduled daily-ayah reminder, in notification settings.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية اليوم'**
+  String get ayahReminderLabel;
+
+  /// Title line of the daily-ayah notification: the ayah's reference, so the ayah text itself can fill the body.
+  ///
+  /// In ar, this message translates to:
+  /// **'{surah} — {ayah}'**
+  String ayahReminderNotificationTitle(String surah, int ayah);
+
+  /// Row that opens the picker choosing where the daily ayah comes from.
+  ///
+  /// In ar, this message translates to:
+  /// **'مصدر الآية'**
+  String get ayahReminderSourceTitle;
+
+  /// Ayah source: starts at the page the reader stopped on.
+  ///
+  /// In ar, this message translates to:
+  /// **'من موضع قراءتك'**
+  String get ayahReminderSourceContinue;
+
+  /// Explains the continue-reading ayah source.
+  ///
+  /// In ar, this message translates to:
+  /// **'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم'**
+  String get ayahReminderSourceContinueHint;
+
+  /// Ayah source: anywhere in the mushaf.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية عشوائية'**
+  String get ayahReminderSourceRandom;
+
+  /// Explains the random ayah source.
+  ///
+  /// In ar, this message translates to:
+  /// **'من المصحف كلّه'**
+  String get ayahReminderSourceRandomHint;
+
   /// Title and body of the fallback screen shown when the app navigates to a page that does not exist.
   ///
   /// In ar, this message translates to:

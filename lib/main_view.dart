@@ -18,6 +18,8 @@ import 'package:quran_app/core/notification/bloc/notification_bloc.dart';
 import 'package:quran_app/core/services/firebase_monitoring.dart';
 import 'package:quran_app/core/services/navigation_service.dart';
 import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_router_service.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_scheduler.dart';
 import 'package:quran_app/core/util/dark_theme.dart';
 import 'package:quran_app/core/util/exit_alert.dialog.dart';
 import 'package:quran_app/core/util/light_theme.dart';
@@ -271,6 +273,7 @@ class _AppShellState extends State<_AppShell> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     sl<AthanAlarmNotificationRouterService>().initialize();
+    sl<AyahReminderRouterService>().initialize();
     unawaited(sl<DailyWirdRepository>().syncReminderSchedules());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
@@ -308,6 +311,11 @@ class _AppShellState extends State<_AppShell> with WidgetsBindingObserver {
     // الآيفون يُرجِع التطبيق من الذاكرة بدل إقلاعه، ففحص الإقلاع وحده قد لا
     // يجري أيامًا. المكعّب يحدّه بمرّة كل 12 ساعة ويتجاهله على أندرويد.
     unawaited(context.read<AppUpdateCubit>().checkForUpdateOnResume());
+
+    // ولِلسبب نفسه يُملأ طابور «آية اليوم» هنا: سبعة أيام تُستهلك يومًا بيوم،
+    // ولو انتظر الإقلاع البارد لانقطع الإشعار عن مستخدم يفتح التطبيق كل يوم.
+    // رخيص: إلغاء سبعة معرّفات وإعادة جدولتها.
+    unawaited(sl<AyahReminderScheduler>().reschedule());
 
     final prayerBloc = context.read<PrayerTimeBloc>()
       ..add(const PrayerTimeRefreshOnAppResumeRequested());

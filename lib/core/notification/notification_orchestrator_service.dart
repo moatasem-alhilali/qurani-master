@@ -4,6 +4,7 @@ import 'package:quran_app/core/notification/base_notification_service.dart';
 import 'package:quran_app/core/notification/channel/notification_channel.dart';
 import 'package:quran_app/core/notification/model/notification_schedule_model.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_scheduler.dart';
 import 'package:quran_app/features/notification_schedules/data/model/notification_custom_schedule_model.dart';
 import 'package:quran_app/features/notification_schedules/data/repo/notification_schedules_repo.dart';
 import 'package:quran_app/features/prayer_time/data/database/database_coordinates_service.dart';
@@ -25,6 +26,7 @@ class NotificationOrchestratorService {
     required this.notificationSchedulesRepo,
     required this.adhanPrayerTimeService,
     required this.athanPayloadService,
+    required this.ayahReminderScheduler,
     DatabaseCoordinatesService? coordinatesService,
   }) : coordinatesService = coordinatesService ?? DatabaseCoordinatesService();
 
@@ -33,6 +35,7 @@ class NotificationOrchestratorService {
   final NotificationSchedulesRepo notificationSchedulesRepo;
   final AdhanPrayerTimeService adhanPrayerTimeService;
   final AthanAlarmPayloadService athanPayloadService;
+  final AyahReminderScheduler ayahReminderScheduler;
   final DatabaseCoordinatesService coordinatesService;
 
   /// Reschedule all notifications using the unified notification system
@@ -42,6 +45,7 @@ class NotificationOrchestratorService {
 
       await _rescheduleAthanNotifications();
       await _rescheduleStaticNotifications();
+      await _rescheduleAyahReminder();
       // await _rescheduleCustomSchedules(); // Uncomment when ready
 
       // logger.d('Completed comprehensive notification rescheduling');
@@ -262,6 +266,12 @@ class NotificationOrchestratorService {
           continue;
         }
 
+        // آية اليوم تبني طابورها بنفسها: نصّ كل يوم آيته، ولا يصلح لها
+        // التكرار اليوميّ بنصٍّ واحد الذي تجدوله هذه الحلقة.
+        if (setting.key == NotificationKeys.isNotificationAyahReminder) {
+          continue;
+        }
+
         // Use new NotificationIdManager for consistent ID generation
         final id = NotificationIdManager.generateNotificationId(setting.key);
 
@@ -302,6 +312,21 @@ class NotificationOrchestratorService {
     } catch (e, track) {
       logger.e('Error in _rescheduleStaticNotifications: $e');
       logger.e('Error in _rescheduleStaticNotifications: $track');
+    }
+  }
+
+  /// يعيد بناء طابور «آية اليوم».
+  ///
+  /// هذا المسار يجري عند الإقلاع وعند تغيير الإعدادات وحدهما. والطابور
+  /// يُستهلك يومًا بيوم، فلو كان هذا كلّ ما يملؤه لمات الإشعار صامتًا بعد
+  /// أسبوع من آخر إقلاع بارد — وعلى iOS يُرجَع التطبيق من الذاكرة أيامًا بلا
+  /// إقلاع. فيملؤه معه موضعان آخران: عودة التطبيق في `main_view`، ومهمّة
+  /// الخلفية كل 12 ساعة في `AyahReminderBackgroundTopUp`.
+  Future<void> _rescheduleAyahReminder() async {
+    try {
+      await ayahReminderScheduler.reschedule();
+    } catch (e) {
+      logger.e('Error in _rescheduleAyahReminder: $e');
     }
   }
 

@@ -758,6 +758,42 @@
   "@quranPlanStagnationDays": {
     "description": "Days on which the user did not read."
   },
+  "ayahReminderLabel": "آية اليوم",
+  "@ayahReminderLabel": {
+    "description": "Name of the scheduled daily-ayah reminder, in notification settings."
+  },
+  "ayahReminderNotificationTitle": "{surah} — {ayah}",
+  "@ayahReminderNotificationTitle": {
+    "description": "Title line of the daily-ayah notification: the ayah's reference, so the ayah text itself can fill the body.",
+    "placeholders": {
+      "surah": {
+        "type": "String"
+      },
+      "ayah": {
+        "type": "int"
+      }
+    }
+  },
+  "ayahReminderSourceTitle": "مصدر الآية",
+  "@ayahReminderSourceTitle": {
+    "description": "Row that opens the picker choosing where the daily ayah comes from."
+  },
+  "ayahReminderSourceContinue": "من موضع قراءتك",
+  "@ayahReminderSourceContinue": {
+    "description": "Ayah source: starts at the page the reader stopped on."
+  },
+  "ayahReminderSourceContinueHint": "تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم",
+  "@ayahReminderSourceContinueHint": {
+    "description": "Explains the continue-reading ayah source."
+  },
+  "ayahReminderSourceRandom": "آية عشوائية",
+  "@ayahReminderSourceRandom": {
+    "description": "Ayah source: anywhere in the mushaf."
+  },
+  "ayahReminderSourceRandomHint": "من المصحف كلّه",
+  "@ayahReminderSourceRandomHint": {
+    "description": "Explains the random ayah source."
+  },
   "cleanupRouteNotFound": "الصفحة غير موجودة",
   "@cleanupRouteNotFound": {
     "description": "Title and body of the fallback screen shown when the app navigates to a page that does not exist."

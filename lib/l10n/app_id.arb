@@ -1661,5 +1661,12 @@
   "homeNoticeExactAlarmsTitle": "Azan mungkin terlambat",
   "homeNoticeExactAlarmsBody": "Izinkan aplikasi menyetel alarm agar azan tiba tepat waktu.",
   "homeNoticeExactAlarmsAction": "Izinkan",
-  "settingsSocialTiktok": "TikTok"
+  "settingsSocialTiktok": "TikTok",
+  "ayahReminderLabel": "Ayat hari ini",
+  "ayahReminderNotificationTitle": "{surah} — {ayah}",
+  "ayahReminderSourceTitle": "Sumber ayat",
+  "ayahReminderSourceContinue": "Dari tempat Anda berhenti",
+  "ayahReminderSourceContinueHint": "Dimulai dari halaman tempat Anda berhenti, dan maju satu ayat setiap hari",
+  "ayahReminderSourceRandom": "Ayat acak",
+  "ayahReminderSourceRandomHint": "Dari seluruh mushaf"
 }

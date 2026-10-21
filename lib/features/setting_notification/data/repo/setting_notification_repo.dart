@@ -1,7 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:quran_app/core/local_database/database_service.dart';
 import 'package:quran_app/core/notification/base_notification_service.dart';
+import 'package:quran_app/core/notification/notification_orchestrator_service.dart';
 import 'package:quran_app/core/notification/notification_service.dart';
+import 'package:quran_app/core/services/service_locator.dart';
+import 'package:quran_app/features/ayah_reminder/data/ayah_reminder_scheduler.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_alarm_payload_service.dart';
 import 'package:quran_app/features/prayer_time/data/service/athan_mute_store.dart';
 import 'package:quran_app/features/setting/data/model/notification_setting_model.dart';
@@ -103,8 +106,23 @@ class SettingNotificationRepo {
         await _cancelFeatureOwnedNotifications(setting.key);
       }
 
-      if (setting.key == NotificationKeys.isNotify && !setting.enabled) {
-        await notificationService.cancelAll();
+      if (setting.key == NotificationKeys.isNotify) {
+        // المفتاح الرئيسي `onlySetting`، فلا يُجدَّل لنفسه شيء. وإطفاؤه يمحو
+        // كل إشعارات التطبيق بـ`cancelAll`؛ فكان إشعاله لا يعيد شيئًا، وتبقى
+        // الإشعارات كلّها ميتة حتى إقلاع بارد. النقيض هو إعادة الجدولة
+        // الشاملة، لا السكوت.
+        if (setting.enabled) {
+          await sl<NotificationOrchestratorService>()
+              .rescheduleAllNotifications();
+        } else {
+          await notificationService.cancelAll();
+        }
+        return;
+      }
+
+      // إشعارات تملك جدولتها بنفسها: النصّ يتغيّر كل يوم، فلا تُجدَّل بالنصّ
+      // الواحد الثابت الذي تبنيه الجدولة العامّة أدناه.
+      if (await _scheduleFeatureOwnedNotification(setting)) {
         return;
       }
 
@@ -200,6 +218,23 @@ class SettingNotificationRepo {
       logger.d('Cancelled all notifications for key: $key');
     } catch (e) {
       logger.e('Error cancelling notifications for key $key: $e');
+    }
+  }
+
+  /// يجدول الإشعارات التي تملك جدولتها الخاصّة، ويعود بـ`true` إن تولّى
+  /// المفتاح — فتتوقّف الجدولة العامّة عنده.
+  ///
+  /// المجدول يُطلب من `sl` عند الاستدعاء لا في المُنشئ: هو يحتاج هذا الريبو
+  /// في طريقه، فربطهما في الإنشاء حلقة.
+  Future<bool> _scheduleFeatureOwnedNotification(
+    NotificationSettingModel setting,
+  ) async {
+    switch (setting.key) {
+      case NotificationKeys.isNotificationAyahReminder:
+        await sl<AyahReminderScheduler>().reschedule();
+        return true;
+      default:
+        return false;
     }
   }
 

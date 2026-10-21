@@ -73,6 +73,8 @@ abstract final class NotificationLabels {
         return l10n.notifSettingsLabelYoungMuslim;
       case NotificationKeys.isNotificationQuranPlan:
         return l10n.notifSettingsLabelQuranPlan;
+      case NotificationKeys.isNotificationAyahReminder:
+        return l10n.ayahReminderLabel;
       case NotificationKeys.isNotificationFirebaseGeneral:
         return l10n.notifSettingsLabelGeneral;
       default:

@@ -1661,5 +1661,12 @@
   "homeNoticeExactAlarmsTitle": "اذان میں تاخیر ہو سکتی ہے",
   "homeNoticeExactAlarmsBody": "ایپ کو الارم سیٹ کرنے کی اجازت دیں تاکہ اذان عین وقت پر آئے۔",
   "homeNoticeExactAlarmsAction": "اجازت دیں",
-  "settingsSocialTiktok": "ٹک ٹوک"
+  "settingsSocialTiktok": "ٹک ٹوک",
+  "ayahReminderLabel": "آج کی آیت",
+  "ayahReminderNotificationTitle": "{surah} — {ayah}",
+  "ayahReminderSourceTitle": "آیت کا ذریعہ",
+  "ayahReminderSourceContinue": "جہاں سے آپ نے چھوڑا",
+  "ayahReminderSourceContinueHint": "اُس صفحے سے شروع ہوتی ہے جہاں آپ رکے تھے، اور ہر دن ایک آیت آگے بڑھتی ہے",
+  "ayahReminderSourceRandom": "بے ترتیب آیت",
+  "ayahReminderSourceRandomHint": "پورے قرآن میں سے"
 }
