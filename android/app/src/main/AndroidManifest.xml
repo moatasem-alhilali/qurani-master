@@ -73,7 +73,7 @@
                  upload key works in a locally built release APK and fails for
                  every Play install — see docs/DEEP_LINKS.md.
 
-                 console.tamaneena.app is deliberately NOT listed: on Android 11
+                 orbit.tamaneena.app is deliberately NOT listed: on Android 11
                  and below one host without a matching assetlinks.json fails
                  verification for the whole app, and admin console URLs should
                  stay in the browser anyway. -->

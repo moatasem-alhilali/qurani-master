@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   /// المضيف إلى أوّل المسار. وروابط لوحة التحكّم لا تخصّ التطبيق فتُردّ إلى
   /// الرئيسية بدل أن تفتح شاشة فارغة.
   static Future<Uri> _transformDeepLink(Uri uri) async {
-    if (uri.host == 'console.tamaneena.app') {
+    if (uri.host == 'orbit.tamaneena.app') {
       return Uri.parse('/');
     }
 

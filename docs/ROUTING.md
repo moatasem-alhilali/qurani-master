@@ -266,7 +266,7 @@ an alias there.** Otherwise nothing to do.
 
 ## Deep links
 
-Public domain: `tamaneena.app`. The admin console (`console.tamaneena.app`) is
+Public domain: `tamaneena.app`. The admin console (`orbit.tamaneena.app`) is
 deliberately **not** registered — on Android 11 and below a single unverifiable
 host fails verification for the whole app.
 

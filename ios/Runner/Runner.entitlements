@@ -19,7 +19,7 @@
 	     opens these links in the app if it lists W77Q2VMT4P.com.tamaanina.app.
 
 	     Subdomains are NOT wildcarded — each host needs its own entry.
-	     console.tamaneena.app is deliberately omitted: the admin console
+	     orbit.tamaneena.app is deliberately omitted: the admin console
 	     should stay in the browser.
 
 	     While iterating you can append "?mode=developer" to a domain to skip
