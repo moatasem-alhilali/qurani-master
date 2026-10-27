@@ -15,9 +15,12 @@ class FloatingAdhkarOverlayCoordinator {
 
   static const int overlayWidth = 250;
   static const int overlayWindowWidth = overlayWidth + 22;
-  static const int minVisibleHeight = 92;
-  static const int maxVisibleHeight = 250;
+  static const int minVisibleHeight = 124;
+  static const int maxVisibleHeight = 280;
   static const int hiddenHeight = 1;
+
+  /// Header, hairline, countdown rail and the padding around the dhikr.
+  static const int cardChromeHeight = 70;
 
   final FloatingAdhkarRepository _repository;
   final ValueNotifier<FloatingAdhkarOverlayState> notifier =
@@ -252,8 +255,8 @@ class FloatingAdhkarOverlayCoordinator {
 
   int _estimateVisibleHeight(FloatingAdhkarItem item) {
     final normalizedLength = item.normalizedText.length;
-    final estimatedLines = (normalizedLength / 14).ceil().clamp(2, 8);
-    final estimatedHeight = 40 + (estimatedLines * 24);
+    final estimatedLines = (normalizedLength / 16).ceil().clamp(2, 7);
+    final estimatedHeight = cardChromeHeight + (estimatedLines * 31);
     return estimatedHeight.clamp(minVisibleHeight, maxVisibleHeight);
   }
 }
