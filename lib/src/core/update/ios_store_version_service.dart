@@ -52,6 +52,10 @@ class IosStoreVersionService {
 
   static const String _lookupUrl = 'https://itunes.apple.com/lookup';
 
+  /// Counter keeping the cache-busting parameter unique even for two checks
+  /// that land in the same clock tick.
+  static int _cacheBusterSeq = 0;
+
   /// Queries the App Store and returns the comparison result, or `null` when
   /// the lookup yields nothing usable (app not found in any resolved
   /// storefront, malformed response, or a network error). Callers treat `null`
@@ -109,7 +113,7 @@ class IosStoreVersionService {
       queryParameters: {
         'bundleId': bundleId,
         if (country != null && country.isNotEmpty) 'country': country,
-        '_cb': DateTime.now().microsecondsSinceEpoch.toString(),
+        '_cb': '${DateTime.now().millisecondsSinceEpoch}-${_cacheBusterSeq++}',
       },
       options: Options(
         headers: const {'Cache-Control': 'no-cache', 'Pragma': 'no-cache'},
