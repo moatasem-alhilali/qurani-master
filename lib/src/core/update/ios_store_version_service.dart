@@ -53,7 +53,7 @@ class IosStoreVersionService {
   static const String _lookupUrl = 'https://itunes.apple.com/lookup';
 
   /// Queries the App Store and returns the comparison result, or `null` when
-  /// the lookup yields nothing usable (app not found in the resolved
+  /// the lookup yields nothing usable (app not found in any resolved
   /// storefront, malformed response, or a network error). Callers treat `null`
   /// as "couldn't determine — assume up to date".
   Future<IosStoreVersionResult?> check() async {
@@ -67,39 +67,64 @@ class IosStoreVersionService {
       // store the user actually installs from (an app can differ per country).
       final country = ui.PlatformDispatcher.instance.locale.countryCode;
 
-      final response = await _dio.get<Map<String, dynamic>>(
-        _lookupUrl,
-        queryParameters: {
-          'bundleId': bundleId,
-          if (country != null && country.isNotEmpty) 'country': country,
-        },
-      );
-
-      final data = response.data;
-      if (data == null) return null;
-
-      final resultCount = (data['resultCount'] as num?)?.toInt() ?? 0;
-      final results = data['results'];
-      if (resultCount == 0 || results is! List || results.isEmpty) {
-        return null;
+      var entry = await _lookup(bundleId, country);
+      // The device region is not the account's storefront: a user in a country
+      // the app is not sold in resolves to an empty result. Fall back to the
+      // default (US) storefront rather than reporting "up to date".
+      if (entry == null && country != null && country.isNotEmpty) {
+        entry = await _lookup(bundleId, null);
       }
+      if (entry == null) return null;
 
-      final first = results.first as Map<String, dynamic>;
-      final storeVersion = (first['version'] as String?)?.trim();
+      final storeVersion = (entry['version'] as String?)?.trim();
       if (storeVersion == null || storeVersion.isEmpty) return null;
 
       return IosStoreVersionResult(
         currentVersion: currentVersion,
         storeVersion: storeVersion,
         isUpdateAvailable: _isVersionNewer(storeVersion, currentVersion),
-        storeUrl: (first['trackViewUrl'] as String?)?.trim(),
-        releaseNotes: (first['releaseNotes'] as String?)?.trim(),
+        storeUrl: (entry['trackViewUrl'] as String?)?.trim(),
+        releaseNotes: (entry['releaseNotes'] as String?)?.trim(),
       );
     } catch (_) {
       // Network / parsing failures are non-fatal: never block the app over an
       // update check. Caller treats null as "no update".
       return null;
     }
+  }
+
+  /// One lookup request against [country]'s storefront (the default one when
+  /// [country] is null). Returns the first result entry, or `null`.
+  Future<Map<String, dynamic>?> _lookup(
+    String bundleId,
+    String? country,
+  ) async {
+    // Apple's CDN caches this endpoint on the full URL and happily serves a
+    // response that is several releases old — the store page shows the update
+    // while the lookup still reports the previous version, so no prompt ever
+    // appears. A `Cache-Control: no-cache` header does not reach past that
+    // cache; a unique query parameter does, so each check gets a fresh answer.
+    final response = await _dio.get<Map<String, dynamic>>(
+      _lookupUrl,
+      queryParameters: {
+        'bundleId': bundleId,
+        if (country != null && country.isNotEmpty) 'country': country,
+        '_cb': DateTime.now().microsecondsSinceEpoch.toString(),
+      },
+      options: Options(
+        headers: const {'Cache-Control': 'no-cache', 'Pragma': 'no-cache'},
+      ),
+    );
+
+    final data = response.data;
+    if (data == null) return null;
+
+    final resultCount = (data['resultCount'] as num?)?.toInt() ?? 0;
+    final results = data['results'];
+    if (resultCount == 0 || results is! List || results.isEmpty) return null;
+
+    final first = results.first;
+    return first is Map<String, dynamic> ? first : null;
   }
 
   /// Compares dotted numeric versions (e.g. `4.2.1`). Returns `true` when
