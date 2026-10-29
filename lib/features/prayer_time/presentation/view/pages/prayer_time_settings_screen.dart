@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -8,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:quran_app/core/services/service_locator.dart';
 import 'package:quran_app/core/theme/app_skin.dart';
-import 'package:quran_app/core/util/theme_colors.dart';
 import 'package:quran_app/core/widgets/app_icon.dart';
 import 'package:quran_app/core/widgets/app_scaffold/app_scaffold_widget.dart';
 import 'package:quran_app/features/home/presentation/view/widgets/home_section_header.dart';
@@ -23,10 +23,9 @@ import 'package:quran_app/l10n/l10n.dart';
 
 part 'prayer_time_settings_screen_sections_part.dart';
 part 'prayer_time_settings_screen_duration_part.dart';
-part 'prayer_time_settings_screen_footer_part.dart';
 
 /// إعدادات أوقات الصلاة: قسمان من صفوف نحيلة على أرضية الصفحة،
-/// وزرّ حفظ واحد ذهبي في آخر الصفحة.
+/// وكل تغييرٍ يُحفظ من تلقاء نفسه.
 @RoutePage()
 class PrayerTimeSettingsScreen extends StatefulWidget
     implements AutoRouteWrapper {
@@ -51,19 +50,52 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
   final PrayerSilentModeNativeService _nativeService =
       PrayerSilentModeNativeService();
 
+  /// How long a change waits before it is written.
+  ///
+  /// The minute steppers fire once per tap, so a user nudging Maghrib by a
+  /// whole hour would otherwise write sixty times and recalculate the day's
+  /// times sixty times behind them.
+  static const Duration _autoSaveDelay = Duration(milliseconds: 600);
+
   late PrayerSilentModeSettings _settings;
+  late PrayerSilentModeSettings _savedSettings;
   late PrayerCalculationSettings _calculationSettings;
   late PrayerCalculationSettings _savedCalculationSettings;
   bool _hasNotificationPolicyAccess = false;
-  bool _isSaving = false;
+
+  /// Held rather than read from `context`, because the last write runs from
+  /// [dispose] — after the screen has left the tree and `context.read` is no
+  /// longer allowed.
+  late final PrayerTimeBloc _prayerTimeBloc;
+
+  Timer? _autoSaveTimer;
+  bool _isPersisting = false;
+  bool _persistAgain = false;
+
+  bool get _hasUnsavedChanges =>
+      _calculationSettings != _savedCalculationSettings ||
+      _settings != _savedSettings;
 
   @override
   void initState() {
     super.initState();
-    _settings = _settingsStore.load();
+    _prayerTimeBloc = context.read<PrayerTimeBloc>();
+    _savedSettings = _settingsStore.load();
+    _settings = _savedSettings;
     _savedCalculationSettings = _calculationSettingsStore.load();
     _calculationSettings = _savedCalculationSettings;
     _refreshNativeState();
+  }
+
+  @override
+  void dispose() {
+    _autoSaveTimer?.cancel();
+    // A change made within the last [_autoSaveDelay] has not been written
+    // yet, and leaving the page must not be what loses it.
+    if (_hasUnsavedChanges) {
+      unawaited(_persist());
+    }
+    super.dispose();
   }
 
   Future<void> _refreshNativeState() async {
@@ -98,11 +130,11 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
               ),
               PrayerCalculationSettingsCard(
                 settings: _calculationSettings,
-                isSaving: _isSaving,
                 onChanged: (settings) {
                   setState(() {
                     _calculationSettings = settings;
                   });
+                  _scheduleAutoSave();
                 },
               ),
               if (isAndroid) ...[
@@ -113,19 +145,12 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
                 _SilentModeSection(
                   settings: _settings,
                   hasPolicyAccess: _hasNotificationPolicyAccess,
-                  isSaving: _isSaving,
                   onEnabledChanged: _handleEnabledChanged,
                   onDurationChanged: _handleDurationChanged,
                   onOpenPermission: _openNotificationPolicySettings,
                 ),
               ],
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 24.h),
-                child: _SaveButton(
-                  isSaving: _isSaving,
-                  onTap: _isSaving ? null : _save,
-                ),
-              ),
+              SizedBox(height: 24.h),
             ],
           ),
         ),
@@ -140,93 +165,92 @@ class _PrayerTimeSettingsScreenState extends State<PrayerTimeSettingsScreen> {
     setState(() {
       _settings = _settings.copyWith(enabled: value);
     });
+    _scheduleAutoSave();
   }
 
   void _handleDurationChanged(int value) {
     setState(() {
       _settings = _settings.copyWith(durationMinutes: value.clamp(1, 360));
     });
+    _scheduleAutoSave();
   }
 
   Future<void> _openNotificationPolicySettings() async {
     await _nativeService.openNotificationPolicySettings();
   }
 
-  void _reloadPrayerTimesIfNeeded(bool calculationChanged) {
-    if (!calculationChanged) {
-      return;
-    }
-    context
-        .read<PrayerTimeBloc>()
-        .add(const PrayerTimeCalculationSettingsChanged());
+  /// Puts the current settings on their way to disk after [_autoSaveDelay].
+  ///
+  /// There is no save button: the page used to end in one, and a user who
+  /// changed the method or nudged a prayer and then went back lost it all
+  /// without being told. Every change now writes itself.
+  void _scheduleAutoSave() {
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = Timer(_autoSaveDelay, () => unawaited(_persist()));
   }
 
-  Future<void> _save() async {
-    setState(() {
-      _isSaving = true;
-    });
+  /// Serialised: a change arriving while a write is in flight is picked up by
+  /// the loop rather than racing it to the same keys.
+  Future<void> _persist() async {
+    if (_isPersisting) {
+      _persistAgain = true;
+      return;
+    }
 
+    _isPersisting = true;
     try {
-      // إعدادات الحساب مستقلة عن صلاحية عدم الإزعاج، فتُحفظ أولًا حتى لا
-      // تضيع لو تعذّر تفعيل وضع الصامت.
-      final calculationChanged =
-          _calculationSettings != _savedCalculationSettings;
-      if (calculationChanged) {
-        await _calculationSettingsStore.save(_calculationSettings);
-        _savedCalculationSettings = _calculationSettings;
-      }
-
-      await _refreshNativeState();
-      final canEnable = !_settings.enabled ||
-          !Platform.isAndroid ||
-          _hasNotificationPolicyAccess;
-
-      if (!canEnable) {
-        if (mounted) {
-          _reloadPrayerTimesIfNeeded(calculationChanged);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.prayerTimeSilentNeedsPermission),
-            ),
-          );
-        }
-        return;
-      }
-
-      await _settingsStore.save(_settings);
-      if (!mounted) {
-        return;
-      }
-
-      if (calculationChanged) {
-        // إعادة احتساب المواقيت تتكفّل أيضًا بإعادة جدولة وضع الصامت،
-        // لذلك لا نستخدم قائمة المواقيت القديمة هنا.
-        _reloadPrayerTimesIfNeeded(true);
-      } else {
-        final state = context.read<PrayerTimeBloc>().state;
-        await _nativeService.applySchedule(
-          settings: _settings,
-          prayers: state.prayerList,
-          selectedLocation: state.selectedLocation,
-        );
-      }
-
-      if (!mounted) {
-        return;
-      }
-      await HapticFeedback.mediumImpact();
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.prayerTimeSettingsSaved)),
-      );
+      do {
+        _persistAgain = false;
+        await _persistOnce();
+      } while (_persistAgain);
     } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
+      _isPersisting = false;
+    }
+  }
+
+  Future<void> _persistOnce() async {
+    // إعدادات الحساب مستقلة عن صلاحية عدم الإزعاج، فتُحفظ أولًا حتى لا
+    // تضيع لو تعذّر تفعيل وضع الصامت.
+    final calculation = _calculationSettings;
+    final calculationChanged = calculation != _savedCalculationSettings;
+    if (calculationChanged) {
+      await _calculationSettingsStore.save(calculation);
+      _savedCalculationSettings = calculation;
+    }
+
+    await _refreshNativeState();
+
+    // A switch that is on without the access would promise a silence the app
+    // cannot deliver, so it is not written.
+    final silent = _settings;
+    final canEnable = !silent.enabled ||
+        !Platform.isAndroid ||
+        _hasNotificationPolicyAccess;
+    final silentSaved = silent != _savedSettings && canEnable;
+    if (silentSaved) {
+      await _settingsStore.save(silent);
+      _savedSettings = silent;
+    }
+
+    if (calculationChanged) {
+      // إعادة احتساب المواقيت تتكفّل أيضًا بإعادة جدولة وضع الصامت،
+      // لذلك لا نستخدم قائمة المواقيت القديمة هنا.
+      if (!_prayerTimeBloc.isClosed) {
+        _prayerTimeBloc.add(const PrayerTimeCalculationSettingsChanged());
       }
+    } else if (silentSaved) {
+      final state = _prayerTimeBloc.state;
+      await _nativeService.applySchedule(
+        settings: silent,
+        prayers: state.prayerList,
+        selectedLocation: state.selectedLocation,
+      );
+    }
+
+    if (!canEnable && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.prayerTimeSilentNeedsPermission)),
+      );
     }
   }
 }

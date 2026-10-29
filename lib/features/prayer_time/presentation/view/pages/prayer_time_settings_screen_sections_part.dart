@@ -5,7 +5,6 @@ class _SilentModeSection extends StatelessWidget {
   const _SilentModeSection({
     required this.settings,
     required this.hasPolicyAccess,
-    required this.isSaving,
     required this.onEnabledChanged,
     required this.onDurationChanged,
     required this.onOpenPermission,
@@ -13,7 +12,6 @@ class _SilentModeSection extends StatelessWidget {
 
   final PrayerSilentModeSettings settings;
   final bool hasPolicyAccess;
-  final bool isSaving;
   final ValueChanged<bool> onEnabledChanged;
   final ValueChanged<int> onDurationChanged;
   final Future<void> Function() onOpenPermission;
@@ -32,7 +30,7 @@ class _SilentModeSection extends StatelessWidget {
           label: context.l10n.prayerTimeSilentEnable,
           hint: hint,
           value: enabled,
-          enabled: !isSaving,
+          enabled: true,
           onChanged: onEnabledChanged,
         ),
         AnimatedOpacity(
@@ -45,7 +43,7 @@ class _SilentModeSection extends StatelessWidget {
               children: [
                 _DurationRow(
                   value: settings.durationMinutes,
-                  enabled: !isSaving,
+                  enabled: true,
                   onChanged: onDurationChanged,
                 ),
                 if (!hasPolicyAccess)
