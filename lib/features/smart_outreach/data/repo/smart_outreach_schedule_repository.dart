@@ -53,10 +53,10 @@ class SmartOutreachCallLogEntry {
   final int duration;
   final DateTime calledAt;
 
-  /// اسم جهة الاتصال كما حفظه المستخدم، إن كان الرقم ما يزال في قائمة ما.
+  /// The contact's saved name, when the number is still on some list.
   final String? name;
 
-  /// ما يُكتب للمستخدم: الاسم إن وُجد، وإلا الرقم.
+  /// What the log shows: the name when there is one, the number otherwise.
   String get displayName {
     final safeName = (name ?? '').trim();
     return safeName.isEmpty ? number : safeName;
@@ -358,12 +358,13 @@ class SmartOutreachScheduleRepository {
         .toList(growable: false);
   }
 
-  /// أسماء جهات الاتصال مفهرسة بأرقامها، ليقرأ السجلّ اسمًا بدل رقم.
+  /// Contact names indexed by number, so the log can show a name, not digits.
   ///
-  /// الكود الأصلي هو من يكتب صفّ المكالمة، وهو لا يقرأ من جدول الأرقام سوى
-  /// الرقم نفسه، فالاسم يُلحق هنا عند القراءة. المفتاح مفتاح المقارنة لا النصّ
-  /// الخام: الرقم الواحد قد يُكتب بصيغتين، 2010+… و010…. ويُخزَّن الاسم مرّتين،
-  /// مقيّدًا بجدولته ثم طليقًا، ليبقى معروفًا لو نُقل الرقم إلى جدولة أخرى.
+  /// The native dialer writes the log row and never reads the label, so the
+  /// name is attached here on read. Matching is on the comparison key rather
+  /// than the raw text, because one line is stored as +2010… in one place and
+  /// 010… in another. Each name is indexed twice — under its schedule, then
+  /// loose — so it survives the number moving to another schedule.
   Future<Map<String, String>> _contactNamesByNumber() async {
     final db = await _databaseService.database;
     final rows = await db.query(

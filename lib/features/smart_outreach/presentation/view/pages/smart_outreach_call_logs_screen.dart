@@ -141,9 +141,6 @@ class _SmartOutreachCallLogsScreenState
 
 /// نتيجة مكالمة واحدة: اسم المتّصَل به، ثم وقتها وحالتها، ثم مدّتها.
 ///
-/// الاسم يسبق الرقم: صاحب السجلّ يعرف صحبه بأسمائهم، ولا يقرأ أحدٌ عمودًا من
-/// الأرقام ليعرف من ردّ. الرقم يبقى عنوان الصفّ وحده حين لا اسم محفوظًا له.
-///
 /// الحالة تُقرأ من نصّها وأيقونتها معًا، لا من لونها وحده.
 class _LogRow extends StatelessWidget {
   const _LogRow({
@@ -195,7 +192,7 @@ class _LogRow extends StatelessWidget {
                   log.displayName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  // الرقم وحده يُجبَر على اليسار؛ الاسم يتبع لغة الواجهة.
+                  // Only a bare number is forced LTR; a name follows the UI.
                   textDirection: log.displayName == log.number
                       ? TextDirection.ltr
                       : null,
@@ -267,10 +264,11 @@ class _LogRow extends StatelessWidget {
   }
 }
 
-/// مدّة المكالمة. الساعة الصغيرة هي ما يقول إن «٣٠ث» وقتٌ انقضى، لا عدّ تنازلي.
+/// How long the call lasted. The glyph is what says "30s" is time spent, not
+/// a countdown — the reading the screenshot in the bug report got wrong.
 ///
-/// المدّة تُكتب فقط حين يُغلق التطبيق مكالمةً مردودًا عليها بعد المهلة
-/// المضبوطة في الجدولة؛ وما أنهاه الطرفان قبلها يُسجَّل بصفر فلا يظهر شيء.
+/// A duration is logged only when the app itself ended an answered call after
+/// the schedule's delay; a call the two sides ended is logged as zero.
 class _CallDuration extends StatelessWidget {
   const _CallDuration({required this.seconds});
 
