@@ -955,7 +955,7 @@ class L10nUr extends L10n {
   String get quranPlanStagnationDays => 'تلاوت کے بغیر دن';
 
   @override
-  String get ayahReminderLabel => 'آية اليوم';
+  String get ayahReminderLabel => 'آج کی آیت';
 
   @override
   String ayahReminderNotificationTitle(String surah, int ayah) {
@@ -963,20 +963,20 @@ class L10nUr extends L10n {
   }
 
   @override
-  String get ayahReminderSourceTitle => 'مصدر الآية';
+  String get ayahReminderSourceTitle => 'آیت کا ذریعہ';
 
   @override
-  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+  String get ayahReminderSourceContinue => 'جہاں سے آپ نے چھوڑا';
 
   @override
   String get ayahReminderSourceContinueHint =>
-      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+      'اُس صفحے سے شروع ہوتی ہے جہاں آپ رکے تھے، اور ہر دن ایک آیت آگے بڑھتی ہے';
 
   @override
-  String get ayahReminderSourceRandom => 'آية عشوائية';
+  String get ayahReminderSourceRandom => 'بے ترتیب آیت';
 
   @override
-  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+  String get ayahReminderSourceRandomHint => 'پورے قرآن میں سے';
 
   @override
   String get cleanupRouteNotFound => 'صفحہ نہیں ملا';
@@ -2461,6 +2461,15 @@ class L10nUr extends L10n {
   @override
   String outreachSecondsShort(int seconds) {
     return '$seconds سیکنڈ';
+  }
+
+  @override
+  String get outreachCallDurationNote =>
+      'ہر کال کے ساتھ دکھایا گیا دورانیہ یہ بتاتا ہے کہ ایپ کے خودکار طور پر کال بند کرنے سے پہلے کال کتنی دیر چلی، یہ جواب کا انتظار نہیں ہے۔';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'کال کا دورانیہ: $seconds سیکنڈ';
   }
 
   @override

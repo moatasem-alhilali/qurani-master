@@ -4252,6 +4252,18 @@ abstract class L10n {
   /// **'{seconds}ث'**
   String outreachSecondsShort(int seconds);
 
+  /// Caption above the call results list. It explains the duration shown on each row: the app ends an answered call itself after the configured delay, so the number is how long the call lasted, not a countdown before it was answered.
+  ///
+  /// In ar, this message translates to:
+  /// **'المدة بجانب كل مكالمة هي طول المكالمة قبل أن يُغلقها التطبيق تلقائيًا، وليست مهلة انتظار الرد.'**
+  String get outreachCallDurationNote;
+
+  /// Tooltip and screen-reader label for the duration shown on a call result row.
+  ///
+  /// In ar, this message translates to:
+  /// **'مدة المكالمة: {seconds} ثانية'**
+  String outreachCallDurationLabel(int seconds);
+
   /// Slider value in seconds, e.g. '30 s'. 'ث' is the Arabic abbreviation for seconds.
   ///
   /// In ar, this message translates to:

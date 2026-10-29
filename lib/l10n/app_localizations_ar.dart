@@ -2451,6 +2451,15 @@ class L10nAr extends L10n {
   }
 
   @override
+  String get outreachCallDurationNote =>
+      'المدة بجانب كل مكالمة هي طول المكالمة قبل أن يُغلقها التطبيق تلقائيًا، وليست مهلة انتظار الرد.';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'مدة المكالمة: $seconds ثانية';
+  }
+
+  @override
   String outreachSecondsValue(int seconds) {
     return '$seconds ث';
   }

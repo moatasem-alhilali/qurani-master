@@ -954,7 +954,7 @@ class L10nBn extends L10n {
   String get quranPlanStagnationDays => 'বিরতির দিনগুলো';
 
   @override
-  String get ayahReminderLabel => 'آية اليوم';
+  String get ayahReminderLabel => 'আজকের আয়াত';
 
   @override
   String ayahReminderNotificationTitle(String surah, int ayah) {
@@ -962,20 +962,20 @@ class L10nBn extends L10n {
   }
 
   @override
-  String get ayahReminderSourceTitle => 'مصدر الآية';
+  String get ayahReminderSourceTitle => 'আয়াতের উৎস';
 
   @override
-  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+  String get ayahReminderSourceContinue => 'যেখানে থেমেছেন সেখান থেকে';
 
   @override
   String get ayahReminderSourceContinueHint =>
-      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+      'আপনি যে পৃষ্ঠায় থেমেছেন সেখান থেকে শুরু হয়, প্রতিদিন এক আয়াত এগিয়ে যায়';
 
   @override
-  String get ayahReminderSourceRandom => 'آية عشوائية';
+  String get ayahReminderSourceRandom => 'এলোমেলো আয়াত';
 
   @override
-  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+  String get ayahReminderSourceRandomHint => 'পুরো কুরআন থেকে';
 
   @override
   String get cleanupRouteNotFound => 'পৃষ্ঠাটি পাওয়া যায়নি';
@@ -2466,6 +2466,15 @@ class L10nBn extends L10n {
   @override
   String outreachSecondsShort(int seconds) {
     return '$secondsসে';
+  }
+
+  @override
+  String get outreachCallDurationNote =>
+      'প্রতিটি কলের পাশে দেখানো সময় হলো অ্যাপ নিজে কলটি কেটে দেওয়ার আগে কলটি কত সময় স্থায়ী হয়েছিল, উত্তরের জন্য অপেক্ষার সময় নয়।';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'কলের সময়কাল: $seconds সেকেন্ড';
   }
 
   @override

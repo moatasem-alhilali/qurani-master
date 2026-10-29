@@ -647,6 +647,8 @@
   "outreachNoResultsTitle": "এখনো কোনো ফলাফল নেই",
   "outreachNoResultsMessage": "প্রথমবার চালানোর পর প্রতিটি কলের ফলাফল এখানে দেখাবে।",
   "outreachSecondsShort": "{seconds}সে",
+  "outreachCallDurationNote": "প্রতিটি কলের পাশে দেখানো সময় হলো অ্যাপ নিজে কলটি কেটে দেওয়ার আগে কলটি কত সময় স্থায়ী হয়েছিল, উত্তরের জন্য অপেক্ষার সময় নয়।",
+  "outreachCallDurationLabel": "কলের সময়কাল: {seconds} সেকেন্ড",
   "outreachSecondsValue": "{seconds} সে",
   "outreachCallStatusAnswered": "কল ধরেছেন",
   "outreachCallStatusNotAnswered": "কল ধরেননি",

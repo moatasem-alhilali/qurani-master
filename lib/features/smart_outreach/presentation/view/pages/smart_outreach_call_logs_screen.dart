@@ -115,6 +115,11 @@ class _SmartOutreachCallLogsScreenState
                     ],
                   ),
                 HomeSectionHeader(title: l10n.outreachResultsHeader),
+                if (_logs.any((log) => log.duration > 0))
+                  OutreachNotice(
+                    message: l10n.outreachCallDurationNote,
+                    icon: AppIcons.clock,
+                  ),
                 if (_logs.isEmpty)
                   OutreachEmptyState(
                     title: l10n.outreachNoResultsTitle,
@@ -134,7 +139,10 @@ class _SmartOutreachCallLogsScreenState
   }
 }
 
-/// نتيجة مكالمة واحدة: الرقم، ثم وقتها وحالتها، ثم مدّتها.
+/// نتيجة مكالمة واحدة: اسم المتّصَل به، ثم وقتها وحالتها، ثم مدّتها.
+///
+/// الاسم يسبق الرقم: صاحب السجلّ يعرف صحبه بأسمائهم، ولا يقرأ أحدٌ عمودًا من
+/// الأرقام ليعرف من ردّ. الرقم يبقى عنوان الصفّ وحده حين لا اسم محفوظًا له.
 ///
 /// الحالة تُقرأ من نصّها وأيقونتها معًا، لا من لونها وحده.
 class _LogRow extends StatelessWidget {
@@ -184,10 +192,13 @@ class _LogRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  log.number,
+                  log.displayName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  textDirection: TextDirection.ltr,
+                  // الرقم وحده يُجبَر على اليسار؛ الاسم يتبع لغة الواجهة.
+                  textDirection: log.displayName == log.number
+                      ? TextDirection.ltr
+                      : null,
                   textAlign: outreachStartAlign(context),
                   style: TextStyle(
                     color: skin.ink,
@@ -213,10 +224,7 @@ class _LogRow extends StatelessWidget {
           ),
           if (log.duration > 0) ...[
             SizedBox(width: 8.w),
-            OutreachValue(
-              text: l10n.outreachSecondsShort(log.duration),
-              accented: true,
-            ),
+            _CallDuration(seconds: log.duration),
           ],
         ],
       ),
@@ -256,5 +264,40 @@ class _LogRow extends StatelessWidget {
       default:
         return status;
     }
+  }
+}
+
+/// مدّة المكالمة. الساعة الصغيرة هي ما يقول إن «٣٠ث» وقتٌ انقضى، لا عدّ تنازلي.
+///
+/// المدّة تُكتب فقط حين يُغلق التطبيق مكالمةً مردودًا عليها بعد المهلة
+/// المضبوطة في الجدولة؛ وما أنهاه الطرفان قبلها يُسجَّل بصفر فلا يظهر شيء.
+class _CallDuration extends StatelessWidget {
+  const _CallDuration({required this.seconds});
+
+  final int seconds;
+
+  @override
+  Widget build(BuildContext context) {
+    final skin = AppSkin.of(context);
+    final label = context.l10n.outreachCallDurationLabel(seconds);
+
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        label: label,
+        excludeSemantics: true,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(AppIcons.clock, color: skin.accent, size: 11.sp),
+            SizedBox(width: 3.w),
+            OutreachValue(
+              text: context.l10n.outreachSecondsShort(seconds),
+              accented: true,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -76,16 +76,27 @@ class DatabaseCoordinatesService {
     final coordinates = await getCoordinates();
     if (coordinates == null) return null;
 
+    final source = PrayerLocationSelection.sourceFromStorage(
+      _cache.getString(_sourceKey),
+    );
+
+    // The stored offset is a snapshot of the moment the place was saved, and
+    // a country that ends summer time — or goes back to plain Greenwich with
+    // no extra hour — leaves every prayer an hour out for good. A device fix
+    // reads the phone's own clock instead, which follows the switch on its
+    // own; a place the user picked by hand keeps what was stored with it.
+    final deviceOffset = DateTime.now().timeZoneOffset.inMinutes;
+    final offsetMinutes = source == PrayerLocationSource.device
+        ? deviceOffset
+        : _cache.getInt(_utcOffsetKey) ?? deviceOffset;
+
     return PrayerLocationSelection(
       latitude: coordinates['latitude'] as double,
       longitude: coordinates['longitude'] as double,
       label: _cache.getString(_labelKey) ??
           L10nService.current.prayerTimeSavedLocation,
-      source: PrayerLocationSelection.sourceFromStorage(
-        _cache.getString(_sourceKey),
-      ),
-      utcOffsetMinutes: _cache.getInt(_utcOffsetKey) ??
-          DateTime.now().timeZoneOffset.inMinutes,
+      source: source,
+      utcOffsetMinutes: offsetMinutes,
       locality: _cache.getString(_localityKey),
       administrativeArea: _cache.getString(_administrativeAreaKey),
       country: _cache.getString(_countryKey),

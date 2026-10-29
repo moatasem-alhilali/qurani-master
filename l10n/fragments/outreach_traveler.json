@@ -72,6 +72,19 @@
       }
     }
   },
+  "outreachCallDurationNote": "المدة بجانب كل مكالمة هي طول المكالمة قبل أن يُغلقها التطبيق تلقائيًا، وليست مهلة انتظار الرد.",
+  "@outreachCallDurationNote": {
+    "description": "Caption above the call results list. It explains the duration shown on each row: the app ends an answered call itself after the configured delay, so the number is how long the call lasted, not a countdown before it was answered."
+  },
+  "outreachCallDurationLabel": "مدة المكالمة: {seconds} ثانية",
+  "@outreachCallDurationLabel": {
+    "description": "Tooltip and screen-reader label for the duration shown on a call result row.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "outreachSecondsValue": "{seconds} ث",
   "@outreachSecondsValue": {
     "description": "Slider value in seconds, e.g. '30 s'. 'ث' is the Arabic abbreviation for seconds.",

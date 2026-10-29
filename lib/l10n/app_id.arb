@@ -647,6 +647,8 @@
   "outreachNoResultsTitle": "Belum ada hasil",
   "outreachNoResultsMessage": "Hasil setiap panggilan akan muncul di sini setelah dijalankan pertama kali.",
   "outreachSecondsShort": "{seconds}d",
+  "outreachCallDurationNote": "Durasi di samping setiap panggilan adalah lama panggilan berlangsung sebelum aplikasi menutupnya sendiri, bukan waktu tunggu jawaban.",
+  "outreachCallDurationLabel": "Durasi panggilan: {seconds} detik",
   "outreachSecondsValue": "{seconds} dtk",
   "outreachCallStatusAnswered": "Dijawab",
   "outreachCallStatusNotAnswered": "Tidak dijawab",

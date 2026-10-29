@@ -952,7 +952,7 @@ class L10nTr extends L10n {
   String get quranPlanStagnationDays => 'Ara verilen günler';
 
   @override
-  String get ayahReminderLabel => 'آية اليوم';
+  String get ayahReminderLabel => 'Günün ayeti';
 
   @override
   String ayahReminderNotificationTitle(String surah, int ayah) {
@@ -960,20 +960,20 @@ class L10nTr extends L10n {
   }
 
   @override
-  String get ayahReminderSourceTitle => 'مصدر الآية';
+  String get ayahReminderSourceTitle => 'Ayetin kaynağı';
 
   @override
-  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+  String get ayahReminderSourceContinue => 'Bıraktığınız yerden';
 
   @override
   String get ayahReminderSourceContinueHint =>
-      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+      'Kaldığınız sayfadan başlar ve her gün bir ayet ilerler';
 
   @override
-  String get ayahReminderSourceRandom => 'آية عشوائية';
+  String get ayahReminderSourceRandom => 'Rastgele ayet';
 
   @override
-  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+  String get ayahReminderSourceRandomHint => 'Mushafın tamamından';
 
   @override
   String get cleanupRouteNotFound => 'Sayfa bulunamadı';
@@ -2459,6 +2459,15 @@ class L10nTr extends L10n {
   @override
   String outreachSecondsShort(int seconds) {
     return '$seconds sn';
+  }
+
+  @override
+  String get outreachCallDurationNote =>
+      'Her aramanın yanındaki süre, uygulama aramayı kendisi kapatmadan önce aramanın ne kadar sürdüğünü gösterir; cevap bekleme süresi değildir.';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'Arama süresi: $seconds saniye';
   }
 
   @override

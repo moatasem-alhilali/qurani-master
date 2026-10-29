@@ -951,7 +951,7 @@ class L10nFa extends L10n {
   String get quranPlanStagnationDays => 'روزهای وقفه';
 
   @override
-  String get ayahReminderLabel => 'آية اليوم';
+  String get ayahReminderLabel => 'آیهٔ امروز';
 
   @override
   String ayahReminderNotificationTitle(String surah, int ayah) {
@@ -959,20 +959,20 @@ class L10nFa extends L10n {
   }
 
   @override
-  String get ayahReminderSourceTitle => 'مصدر الآية';
+  String get ayahReminderSourceTitle => 'سرچشمهٔ آیه';
 
   @override
-  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+  String get ayahReminderSourceContinue => 'از جایی که رها کردید';
 
   @override
   String get ayahReminderSourceContinueHint =>
-      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+      'از صفحه‌ای که در آن ایستادید آغاز می‌شود و هر روز یک آیه پیش می‌رود';
 
   @override
-  String get ayahReminderSourceRandom => 'آية عشوائية';
+  String get ayahReminderSourceRandom => 'آیهٔ تصادفی';
 
   @override
-  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+  String get ayahReminderSourceRandomHint => 'از همهٔ قرآن';
 
   @override
   String get cleanupRouteNotFound => 'صفحه پیدا نشد';
@@ -2456,6 +2456,15 @@ class L10nFa extends L10n {
   @override
   String outreachSecondsShort(int seconds) {
     return '$secondsث';
+  }
+
+  @override
+  String get outreachCallDurationNote =>
+      'مدتی که کنار هر تماس نشان داده می‌شود، طول تماس تا پیش از قطع خودکار آن توسط برنامه است، نه مهلت انتظار برای پاسخ.';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'مدت تماس: $seconds ثانیه';
   }
 
   @override

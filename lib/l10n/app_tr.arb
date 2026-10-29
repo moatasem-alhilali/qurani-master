@@ -647,6 +647,8 @@
   "outreachNoResultsTitle": "Henüz sonuç yok",
   "outreachNoResultsMessage": "İlk çalıştırmadan sonra her aramanın sonucu burada görünür.",
   "outreachSecondsShort": "{seconds} sn",
+  "outreachCallDurationNote": "Her aramanın yanındaki süre, uygulama aramayı kendisi kapatmadan önce aramanın ne kadar sürdüğünü gösterir; cevap bekleme süresi değildir.",
+  "outreachCallDurationLabel": "Arama süresi: {seconds} saniye",
   "outreachSecondsValue": "{seconds} sn",
   "outreachCallStatusAnswered": "Cevaplandı",
   "outreachCallStatusNotAnswered": "Cevaplanmadı",

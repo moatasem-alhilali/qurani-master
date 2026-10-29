@@ -647,6 +647,8 @@
   "outreachNoResultsTitle": "هنوز نتیجه‌ای نیست",
   "outreachNoResultsMessage": "نتیجهٔ هر تماس پس از نخستین اجرا این‌جا نمایش داده می‌شود.",
   "outreachSecondsShort": "{seconds}ث",
+  "outreachCallDurationNote": "مدتی که کنار هر تماس نشان داده می‌شود، طول تماس تا پیش از قطع خودکار آن توسط برنامه است، نه مهلت انتظار برای پاسخ.",
+  "outreachCallDurationLabel": "مدت تماس: {seconds} ثانیه",
   "outreachSecondsValue": "{seconds} ثانیه",
   "outreachCallStatusAnswered": "پاسخ داده شد",
   "outreachCallStatusNotAnswered": "پاسخ داده نشد",

@@ -951,7 +951,7 @@ class L10nId extends L10n {
   String get quranPlanStagnationDays => 'Hari tanpa membaca';
 
   @override
-  String get ayahReminderLabel => 'آية اليوم';
+  String get ayahReminderLabel => 'Ayat hari ini';
 
   @override
   String ayahReminderNotificationTitle(String surah, int ayah) {
@@ -959,20 +959,20 @@ class L10nId extends L10n {
   }
 
   @override
-  String get ayahReminderSourceTitle => 'مصدر الآية';
+  String get ayahReminderSourceTitle => 'Sumber ayat';
 
   @override
-  String get ayahReminderSourceContinue => 'من موضع قراءتك';
+  String get ayahReminderSourceContinue => 'Dari tempat Anda berhenti';
 
   @override
   String get ayahReminderSourceContinueHint =>
-      'تبدأ من الصفحة التي وقفت عندها، وتتقدّم آية كل يوم';
+      'Dimulai dari halaman tempat Anda berhenti, dan maju satu ayat setiap hari';
 
   @override
-  String get ayahReminderSourceRandom => 'آية عشوائية';
+  String get ayahReminderSourceRandom => 'Ayat acak';
 
   @override
-  String get ayahReminderSourceRandomHint => 'من المصحف كلّه';
+  String get ayahReminderSourceRandomHint => 'Dari seluruh mushaf';
 
   @override
   String get cleanupRouteNotFound => 'Halaman tidak ditemukan';
@@ -2452,6 +2452,15 @@ class L10nId extends L10n {
   @override
   String outreachSecondsShort(int seconds) {
     return '${seconds}d';
+  }
+
+  @override
+  String get outreachCallDurationNote =>
+      'Durasi di samping setiap panggilan adalah lama panggilan berlangsung sebelum aplikasi menutupnya sendiri, bukan waktu tunggu jawaban.';
+
+  @override
+  String outreachCallDurationLabel(int seconds) {
+    return 'Durasi panggilan: $seconds detik';
   }
 
   @override

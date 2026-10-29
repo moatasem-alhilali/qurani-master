@@ -647,6 +647,8 @@
   "outreachNoResultsTitle": "ابھی کوئی نتیجہ نہیں",
   "outreachNoResultsMessage": "پہلی بار چلنے کے بعد ہر کال کا نتیجہ یہاں نظر آئے گا۔",
   "outreachSecondsShort": "{seconds} سیکنڈ",
+  "outreachCallDurationNote": "ہر کال کے ساتھ دکھایا گیا دورانیہ یہ بتاتا ہے کہ ایپ کے خودکار طور پر کال بند کرنے سے پہلے کال کتنی دیر چلی، یہ جواب کا انتظار نہیں ہے۔",
+  "outreachCallDurationLabel": "کال کا دورانیہ: {seconds} سیکنڈ",
   "outreachSecondsValue": "{seconds} سیکنڈ",
   "outreachCallStatusAnswered": "جواب دیا گیا",
   "outreachCallStatusNotAnswered": "جواب نہیں ملا",

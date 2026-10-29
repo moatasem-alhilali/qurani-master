@@ -3,6 +3,7 @@ import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_bund
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_contact_model.dart';
 import 'package:quran_app/features/smart_outreach/data/model/smart_outreach_schedule_model.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_native_scheduler_service.dart';
+import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_phone_normalizer.dart';
 import 'package:quran_app/features/smart_outreach/data/service/smart_outreach_validation_service.dart';
 import 'package:quran_app/l10n/l10n.dart';
 import 'package:sqflite/sqflite.dart';
@@ -28,6 +29,7 @@ class SmartOutreachCallLogEntry {
     required this.reason,
     required this.duration,
     required this.calledAt,
+    this.name,
   });
 
   factory SmartOutreachCallLogEntry.fromMap(Map<String, dynamic> map) {
@@ -50,6 +52,28 @@ class SmartOutreachCallLogEntry {
   final String? reason;
   final int duration;
   final DateTime calledAt;
+
+  /// اسم جهة الاتصال كما حفظه المستخدم، إن كان الرقم ما يزال في قائمة ما.
+  final String? name;
+
+  /// ما يُكتب للمستخدم: الاسم إن وُجد، وإلا الرقم.
+  String get displayName {
+    final safeName = (name ?? '').trim();
+    return safeName.isEmpty ? number : safeName;
+  }
+
+  SmartOutreachCallLogEntry withName(String? value) {
+    return SmartOutreachCallLogEntry(
+      id: id,
+      groupId: groupId,
+      number: number,
+      status: status,
+      reason: reason,
+      duration: duration,
+      calledAt: calledAt,
+      name: value,
+    );
+  }
 }
 
 class SmartOutreachCallStats {
@@ -323,7 +347,55 @@ class SmartOutreachScheduleRepository {
       orderBy: 'called_at DESC',
       limit: limit,
     );
-    return rows.map(SmartOutreachCallLogEntry.fromMap).toList(growable: false);
+    final names = await _contactNamesByNumber();
+
+    return rows
+        .map(SmartOutreachCallLogEntry.fromMap)
+        .map(
+          (entry) =>
+              entry.withName(_lookUpName(names, entry.groupId, entry.number)),
+        )
+        .toList(growable: false);
+  }
+
+  /// أسماء جهات الاتصال مفهرسة بأرقامها، ليقرأ السجلّ اسمًا بدل رقم.
+  ///
+  /// الكود الأصلي هو من يكتب صفّ المكالمة، وهو لا يقرأ من جدول الأرقام سوى
+  /// الرقم نفسه، فالاسم يُلحق هنا عند القراءة. المفتاح مفتاح المقارنة لا النصّ
+  /// الخام: الرقم الواحد قد يُكتب بصيغتين، 2010+… و010…. ويُخزَّن الاسم مرّتين،
+  /// مقيّدًا بجدولته ثم طليقًا، ليبقى معروفًا لو نُقل الرقم إلى جدولة أخرى.
+  Future<Map<String, String>> _contactNamesByNumber() async {
+    final db = await _databaseService.database;
+    final rows = await db.query(
+      SmartOutreachDatabaseService.contactsTable,
+      columns: const <String>['group_id', 'number', 'label'],
+    );
+
+    final names = <String, String>{};
+    for (final row in rows) {
+      final label = (row['label'] as String? ?? '').trim();
+      if (label.isEmpty) continue;
+
+      final key = SmartOutreachPhoneNormalizer.comparisonKey(
+        (row['number'] as String?) ?? '',
+      );
+      if (key.isEmpty) continue;
+
+      final groupId = (row['group_id'] as num?)?.toInt() ?? 0;
+      names.putIfAbsent('$groupId|$key', () => label);
+      names.putIfAbsent('*|$key', () => label);
+    }
+    return names;
+  }
+
+  static String? _lookUpName(
+    Map<String, String> names,
+    int groupId,
+    String number,
+  ) {
+    final key = SmartOutreachPhoneNormalizer.comparisonKey(number);
+    if (key.isEmpty) return null;
+    return names['$groupId|$key'] ?? names['*|$key'];
   }
 
   Future<SmartOutreachCallStats> getCallStats() async {
