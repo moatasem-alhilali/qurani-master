@@ -610,7 +610,7 @@ class QuranCtrl extends GetxController {
     if (quranPagesController.hasClients) {
       log('Jumping to page: $targetPage (requested: $page, isDual: $isDual)',
           name: 'QuranCtrl');
-      quranPagesController.jumpToPage(
+      quranPagesController.safeJumpToPage(
         targetPage,
       );
     } else {
@@ -633,7 +633,7 @@ class QuranCtrl extends GetxController {
       final targetPage = isDual ? page - (page % 2) : page;
       log('Animating to page: $targetPage (requested: $page, isDual: $isDual)',
           name: 'QuranCtrl');
-      quranPagesController.animateToPage(
+      quranPagesController.safeAnimateToPage(
         targetPage,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -676,7 +676,7 @@ class QuranCtrl extends GetxController {
       // حافظ على الفهرس الحالي للصفحة
       int currentIndex;
       if (quranPagesController.hasClients) {
-        final double? p = quranPagesController.page;
+        final double? p = quranPagesController.safePage;
         currentIndex =
             (p != null) ? p.round() : state.currentPageNumber.value - 1;
       } else {
@@ -967,13 +967,13 @@ class QuranCtrl extends GetxController {
 
     // وضع الصفحتين (viewportFraction < 1): نقفز بمقدار 2
     final step = quranPagesController.viewportFraction < 1.0 ? 2 : 1;
-    final currentIndex = quranPagesController.page?.round() ?? 0;
+    final currentIndex = quranPagesController.safePage?.round() ?? 0;
 
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
       log('Left Arrow Pressed');
       final target = currentIndex + step;
       if (target <= 603) {
-        quranPagesController.animateToPage(
+        quranPagesController.safeAnimateToPage(
           target,
           duration: const Duration(milliseconds: 600),
           curve: Curves.easeInOut,
@@ -984,7 +984,7 @@ class QuranCtrl extends GetxController {
       log('Right Arrow Pressed');
       final target = currentIndex - step;
       if (target >= 0) {
-        quranPagesController.animateToPage(
+        quranPagesController.safeAnimateToPage(
           target,
           duration: const Duration(milliseconds: 600),
           curve: Curves.easeInOut,

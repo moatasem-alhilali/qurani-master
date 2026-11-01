@@ -224,7 +224,7 @@ extension AyahCtrlExtension on AudioCtrl {
             log('Page changed: $prevPage -> $newPage, animating...',
                 name: 'AudioController');
             // animateToPage يستقبل فهرسًا صفريًا
-            await QuranCtrl.instance.quranPagesController.animateToPage(
+            await QuranCtrl.instance.quranPagesController.safeAnimateToPage(
                 newPage - 1,
                 duration: const Duration(milliseconds: 600),
                 curve: Curves.easeInOut);
@@ -421,14 +421,14 @@ extension AyahCtrlExtension on AudioCtrl {
   }
 
   Future<void> moveToNextPage({int? customPageIndex}) {
-    return QuranCtrl.instance.quranPagesController.animateToPage(
+    return QuranCtrl.instance.quranPagesController.safeAnimateToPage(
         (customPageIndex ?? QuranCtrl.instance.state.currentPageNumber.value),
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut);
   }
 
   Future<void> moveToPreviousPage({bool withScroll = true}) {
-    return QuranCtrl.instance.quranPagesController.animateToPage(
+    return QuranCtrl.instance.quranPagesController.safeAnimateToPage(
         (QuranCtrl.instance.state.currentPageNumber.value - 2),
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeInOut);

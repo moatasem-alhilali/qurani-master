@@ -7,6 +7,44 @@ part of '/quran.dart';
 /// `viewportFraction: 0.5` يعرض 1.5 صفحة بدل 2.
 ///
 /// عند `padEnds: false`، تُعرض الصفحات بدون هامش إضافي.
+/// The reader's controller is a shared singleton, so a second reader (a pushed
+/// route, a display-mode switch) can attach to it while the first is still
+/// mounted. The package's [PreloadPageController.page], `jumpToPage` and
+/// `animateToPage` all assert a single attached view; these do not.
+extension SafePreloadPageController on PreloadPageController {
+  /// Page of the most recently attached view, or null before layout.
+  double? get safePage {
+    if (!hasClients) return null;
+    final ScrollPosition p = positions.last;
+    if (!p.hasPixels || !p.hasViewportDimension) return null;
+    final double pixels = p.hasContentDimensions
+        ? p.pixels.clamp(p.minScrollExtent, p.maxScrollExtent)
+        : p.pixels;
+    return math.max(0.0, pixels) /
+        math.max(1.0, p.viewportDimension * viewportFraction);
+  }
+
+  void safeJumpToPage(int page) {
+    for (final ScrollPosition p in positions.toList()) {
+      p.jumpTo(_pixelsFor(p, page));
+    }
+  }
+
+  Future<void> safeAnimateToPage(
+    int page, {
+    required Duration duration,
+    required Curve curve,
+  }) {
+    return Future.wait<void>([
+      for (final ScrollPosition p in positions.toList())
+        p.animateTo(_pixelsFor(p, page), duration: duration, curve: curve),
+    ]);
+  }
+
+  double _pixelsFor(ScrollPosition p, int page) =>
+      page * (p.hasViewportDimension ? p.viewportDimension : 0) * viewportFraction;
+}
+
 class PatchedPreloadPageView extends StatefulWidget {
   PatchedPreloadPageView.builder({
     super.key,
@@ -49,6 +87,15 @@ class _PatchedPreloadPageViewState extends State<PatchedPreloadPageView> {
     _lastReportedPage = widget.controller.initialPage;
   }
 
+  double? _pageFromMetrics(ScrollMetrics metrics) {
+    if (!metrics.hasPixels || !metrics.hasViewportDimension) return null;
+    final double pixels = metrics.hasContentDimensions
+        ? metrics.pixels.clamp(metrics.minScrollExtent, metrics.maxScrollExtent)
+        : metrics.pixels;
+    return math.max(0.0, pixels) /
+        math.max(1.0, metrics.viewportDimension * widget.controller.viewportFraction);
+  }
+
   AxisDirection _getDirection(BuildContext context) {
     switch (widget.scrollDirection) {
       case Axis.horizontal:
@@ -78,10 +125,11 @@ class _PatchedPreloadPageViewState extends State<PatchedPreloadPageView> {
         if (notification.depth == 0 &&
             widget.onPageChanged != null &&
             notification is ScrollUpdateNotification) {
-          // نستخدم controller.page مباشرة بدل PageMetrics لتجنب
-          // تعارض الأسماء بين Flutter و preload_page_view
-          final int currentPage =
-              widget.controller.page?.round() ?? _lastReportedPage;
+          // Read this view's own metrics: the controller is shared, and
+          // controller.page asserts once two views are attached to it.
+          final int currentPage = _pageFromMetrics(notification.metrics)
+                  ?.round() ??
+              _lastReportedPage;
           if (currentPage != _lastReportedPage) {
             _lastReportedPage = currentPage;
             widget.onPageChanged!(currentPage);

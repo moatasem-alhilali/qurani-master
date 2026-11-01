@@ -34,7 +34,7 @@ class JumpingPageControllerWidget extends StatelessWidget {
               onPressed: () {
                 final controller = quranCtrl.quranPagesController;
                 if (!controller.hasClients) return;
-                final currentIndex = controller.page?.round() ?? 0;
+                final currentIndex = controller.safePage?.round() ?? 0;
                 // وضع الصفحتين (viewportFraction < 1): نقفز بمقدار 2
                 final step = controller.viewportFraction < 1.0 ? 2 : 1;
                 final target = currentIndex - step;
@@ -53,7 +53,7 @@ class JumpingPageControllerWidget extends StatelessWidget {
               onPressed: () {
                 final controller = quranCtrl.quranPagesController;
                 if (!controller.hasClients) return;
-                final currentIndex = controller.page?.round() ?? 0;
+                final currentIndex = controller.safePage?.round() ?? 0;
                 // وضع الصفحتين (viewportFraction < 1): نقفز بمقدار 2
                 final step = controller.viewportFraction < 1.0 ? 2 : 1;
                 final target = currentIndex + step;

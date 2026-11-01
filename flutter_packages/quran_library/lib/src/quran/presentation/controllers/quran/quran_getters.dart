@@ -502,7 +502,7 @@ extension QuranGetters on QuranCtrl {
     // Save current page before mode switch to prevent jumping to page 1
     int currentPage = state.currentPageNumber.value - 1;
     if (quranPagesController.hasClients) {
-      final double? p = quranPagesController.page;
+      final double? p = quranPagesController.safePage;
       if (p != null) currentPage = p.round();
     }
     currentPage = currentPage.clamp(0, 603);
